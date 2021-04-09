@@ -1,0 +1,29 @@
+is_global = true
+build_property.TargetFramework = net6.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property._SupportedPlatformList = Linux,macOS,Windows,browser
+build_property.RootNamespace = BlazorComponent
+build_property.RootNamespace = BlazorComponent
+build_property.ProjectDir = D:\Project\MASAOpen\BlazorComponent\src\Component\BlazorComponent\
+build_property.RazorLangVersion = 5.0
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = D:\Project\MASAOpen\BlazorComponent\src\Component\BlazorComponent
+build_property._RazorSourceGeneratorDebug = 
+build_property._RazorSourceGeneratorLog = 
+
+[d:/Project/MASAOpen/BlazorComponent/src/Component/BlazorComponent/Components/Grid/Col.razor]
+build_metadata.AdditionalFiles.TargetPath = Components\Grid\Col.razor
+build_metadata.AdditionalFiles.GeneratedOutputFullPath = D:\Project\MASAOpen\BlazorComponent\src\Component\BlazorComponent\obj\Debug\net6.0\Razor\Components\Grid\Col.razor.g.cs
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/Project/MASAOpen/BlazorComponent/src/Component/BlazorComponent/Components/Grid/Row.razor]
+build_metadata.AdditionalFiles.TargetPath = Components\Grid\Row.razor
+build_metadata.AdditionalFiles.GeneratedOutputFullPath = D:\Project\MASAOpen\BlazorComponent\src\Component\BlazorComponent\obj\Debug\net6.0\Razor\Components\Grid\Row.razor.g.cs
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/Project/MASAOpen/BlazorComponent/src/Component/BlazorComponent/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = _Imports.razor
+build_metadata.AdditionalFiles.GeneratedOutputFullPath = D:\Project\MASAOpen\BlazorComponent\src\Component\BlazorComponent\obj\Debug\net6.0\Razor\_Imports.razor.g.cs
+build_metadata.AdditionalFiles.CssScope =
