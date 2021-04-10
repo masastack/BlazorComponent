@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
@@ -13,9 +16,6 @@ namespace BlazorComponent
 
         [Parameter]
         public string Id { get; set; }
-
-        //[Parameter(CaptureUnmatchedValues = true)]
-        //public Dictionary<string, object> Attributes { get; set; } = new Dictionary<string, object>();
 
         private ElementReference _ref;
 
@@ -71,6 +71,21 @@ namespace BlazorComponent
                 _style = value;
                 StateHasChanged();
             }
+        }
+
+        /// <summary>
+        /// Custom attributes
+        /// </summary>
+        [Parameter(CaptureUnmatchedValues = true)]
+        public IDictionary<string, object> Attributes { get; set; }
+
+        public abstract void SetComponentClass();
+
+        protected override Task OnInitializedAsync()
+        {
+            SetComponentClass();
+
+            return base.OnInitializedAsync();
         }
 
         protected virtual string GenerateStyle()

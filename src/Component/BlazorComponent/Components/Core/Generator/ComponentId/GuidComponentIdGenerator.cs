@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlazorComponent.Components.Core.Generators.ComponentId
+namespace BlazorComponent
 {
     public class GuidComponentIdGenerator : IComponentIdGenerator
     {

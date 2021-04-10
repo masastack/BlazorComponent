@@ -8,18 +8,13 @@ namespace BlazorComponent
 {
     public class ClassMapper
     {
-        public string Class => AsString();
+        public string Class => ToString();
 
         internal string OriginalClass { get; set; }
 
-        public string AsString()
-        {
-            return string.Join(" ", _mapper.Where(i => i.Value()).Select(i => i.Key()));
-        }
-
         public override string ToString()
         {
-            return AsString();
+            return string.Join(" ", _mapper.Where(i => i.Value()).Select(i => i.Key()));
         }
 
         private readonly Dictionary<Func<string>, Func<bool>> _mapper = new Dictionary<Func<string>, Func<bool>>();

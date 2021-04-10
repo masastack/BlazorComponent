@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1 - Test", "1 - Test", "{E2
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2 - Component", "2 - Component", "{E5AF9CFB-D4B4-43F9-86DA-C9B84A1ECEC2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorComponent", "Component\BlazorComponent\BlazorComponent.csproj", "{A81FAD5B-C1B2-498B-8A16-46DDDD1C5612}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorComponent", "Component\BlazorComponent\BlazorComponent.csproj", "{A81FAD5B-C1B2-498B-8A16-46DDDD1C5612}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using OneOf;
 
-namespace AntDesign
+namespace BlazorComponent
 {
     using StringNumber = OneOf<string, int>;
 
@@ -19,7 +19,7 @@ namespace AntDesign
         public StringNumber Order { get; set; }
     }
 
-    public partial class Col : AntDomComponentBase
+    public abstract partial class BCol : BDomComponentBase
     {
         [Parameter]
         public RenderFragment ChildContent { get; set; }
@@ -61,7 +61,7 @@ namespace AntDesign
         public OneOf<int, EmbeddedProperty> Xxl { get; set; }
 
         [CascadingParameter]
-        public Row Row { get; set; }
+        public BRow Row { get; set; }
 
         private string _hostFlexStyle;
 
@@ -81,11 +81,11 @@ namespace AntDesign
             var prefixCls = "ant-col";
             this.ClassMapper.Clear()
                 .Add(prefixCls)
-                .GetIf(()=>$"{prefixCls}-{this.Span.Value}", () => this.Span.Value != null)
-                .GetIf(() => $"{prefixCls}-order-{this.Order.Value}", () => this.Order.Value != null)
-                .GetIf(() => $"{prefixCls}-offset-{this.Offset.Value}", () => this.Offset.Value != null)
-                .GetIf(() => $"{prefixCls}-pull-{this.Pull.Value}", () => this.Pull.Value != null)
-                .GetIf(() => $"{prefixCls}-push-{this.Push.Value}", () => this.Push.Value != null)
+                .GetIf(() => $"{prefixCls}-{Span.Value}", () => Span.Value != null)
+                .GetIf(() => $"{prefixCls}-order-{Order.Value}", () => Order.Value != null)
+                .GetIf(() => $"{prefixCls}-offset-{Offset.Value}", () => Offset.Value != null)
+                .GetIf(() => $"{prefixCls}-pull-{Pull.Value}", () => Pull.Value != null)
+                .GetIf(() => $"{prefixCls}-push-{Push.Value}", () => Push.Value != null)
                 ;
 
             SetSizeClassMapper(prefixCls, Xs, "xs");

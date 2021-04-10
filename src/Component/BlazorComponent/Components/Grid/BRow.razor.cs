@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AntDesign.JsInterop;
 using Microsoft.AspNetCore.Components;
 using OneOf;
 
@@ -19,7 +18,7 @@ namespace BlazorComponent
 
     using GutterType = OneOf<int, Dictionary<string, int>, (int, int), (Dictionary<string, int>, int), (int, Dictionary<string, int>), (Dictionary<string, int>, Dictionary<string, int>)>;
 
-    public partial class Row : BDomComponentBase
+    public abstract partial class BRow : BDomComponentBase
     {
         [Parameter]
         public RenderFragment ChildContent { get; set; }
@@ -55,36 +54,23 @@ namespace BlazorComponent
         public BreakpointType DefaultBreakpoint { get; set; }
 
         [Inject]
-        public DomEventService DomEventService { get; set; }
+        public DomEventJsInterop DomEventJsInterop { get; set; }
 
         private string GutterStyle { get; set; }
 
-        public IList<Col> Cols { get; } = new List<Col>();
+        public IList<BCol> Cols { get; } = new List<BCol>();
 
         private static BreakpointType[] _breakpoints = new[] {
-            BreakpointType.Xs,
-            BreakpointType.Sm,
-            BreakpointType.Md,
-            BreakpointType.Lg,
-            BreakpointType.Xl,
-            BreakpointType.Xxl
+            BreakpointTypes.Xs,
+            BreakpointTypes.Sm,
+            BreakpointTypes.Md,
+            BreakpointTypes.Lg,
+            BreakpointTypes.Xl,
+            BreakpointTypes.Xxl
         };
 
         protected override async Task OnInitializedAsync()
         {
-            var prefixCls = "ant-row";
-            ClassMapper.Add(prefixCls)
-                .If($"{prefixCls}-top", () => Align == "top")
-                .If($"{prefixCls}-middle", () => Align == "middle")
-                .If($"{prefixCls}-bottom", () => Align == "bottom")
-                .If($"{prefixCls}-start", () => Justify == "start")
-                .If($"{prefixCls}-end", () => Justify == "end")
-                .If($"{prefixCls}-center", () => Justify == "center")
-                .If($"{prefixCls}-space-around", () => Justify == "space-around")
-                .If($"{prefixCls}-space-between", () => Justify == "space-between")
-                .If($"{prefixCls}-no-wrap", () => !Wrap)
-                ;
-
             if (DefaultBreakpoint != null)
             {
                 SetGutterStyle(DefaultBreakpoint.Name);
@@ -97,8 +83,8 @@ namespace BlazorComponent
         {
             if (firstRender)
             {
-                var dimensions = await JsInvokeAsync<Window>(JSInteropConstants.GetWindow);
-                DomEventService.AddEventListener<Window>("window", "resize", OnResize, false);
+                var dimensions = await JsInvokeAsync<Window>(JsInteropConstants.GetWindow);
+                DomEventJsInterop.AddEventListener<Window>("window", "resize", OnResize, false);
                 OptimizeSize(dimensions.innerWidth);
             }
 
@@ -107,7 +93,7 @@ namespace BlazorComponent
 
         private async void OnResize(Window window)
         {
-            OptimizeSize(window.innerWidth);
+            await Task.Run(() => OptimizeSize(window.innerWidth));
         }
 
         private void OptimizeSize(decimal windowWidth)
@@ -133,7 +119,8 @@ namespace BlazorComponent
 
         private void SetGutterStyle(string breakPoint)
         {
-            var gutter = this.GetGutter(breakPoint);
+            var gutter = GetGutter(breakPoint);
+
             Cols.ForEach(x => x.RowGutterChanged(gutter));
 
             GutterStyle = "";
@@ -149,8 +136,8 @@ namespace BlazorComponent
         private (int horizontalGutter, int verticalGutter) GetGutter(string breakPoint)
         {
             GutterType gutter = 0;
-            if (this.Gutter.Value != null)
-                gutter = this.Gutter;
+            if (Gutter.Value != null)
+                gutter = Gutter;
 
             return gutter.Match(
                 num => (num, 0),
@@ -166,17 +153,7 @@ namespace BlazorComponent
         {
             base.Dispose(disposing);
 
-            DomEventService.RemoveEventListerner<Window>("window", "resize", OnResize);
+            DomEventJsInterop.RemoveEventListerner<Window>("window", "resize", OnResize);
         }
-    }
-
-    public enum BreakpointEnum
-    {
-        xxl,
-        xl,
-        lg,
-        md,
-        sm,
-        xs
     }
 }
