@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "BlazorComponent.Doc.CLI": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

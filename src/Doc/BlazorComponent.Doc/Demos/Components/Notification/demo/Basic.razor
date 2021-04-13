@@ -1,0 +1,16 @@
+﻿@inject NotificationService _notice
+ 
+<Button Type="@ButtonType.Primary" OnClick="@OnClick">
+    Open the notification box
+</Button>
+
+@code{
+    private async Task OnClick()
+    {
+        await _notice.Open(new NotificationConfig()
+        {
+            Message = "title",
+            Description = "This is the content of the notification. This is the content of the notification. This is the content of the notification."
+        });
+    }
+}

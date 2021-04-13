@@ -11,14 +11,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorComponent", "Componen
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3 - Docs", "3 - Docs", "{C001BD36-40F0-42AF-8E27-7A564153F56A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorComponent.Doc.CLI", "Doc\BlazorComponent.Doc.CLI\BlazorComponent.Doc.CLI.csproj", "{383DE5D3-9934-44E0-B826-2E0DBA402F8A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorComponent.Doc", "Doc\BlazorComponent.Doc\BlazorComponent.Doc.csproj", "{BAED7868-5E08-4ED5-A36F-7F29024CD374}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorComponent.Doc.CLI", "Doc\BlazorComponent.Doc.CLI\BlazorComponent.Doc.CLI.csproj", "{383DE5D3-9934-44E0-B826-2E0DBA402F8A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0 - Solution Items", "0 - Solution Items", "{8A8FC98B-13C5-4339-A342-82CE822C6B5E}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorComponent.Test.Wasm", "Test\BlazorComponent.Test.Wasm\BlazorComponent.Test.Wasm.csproj", "{4A3BDE5F-D683-4024-AF57-E86FBAA937A5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorComponent.Doc", "Doc\BlazorComponent.Doc\BlazorComponent.Doc.csproj", "{F0F27A9D-5EA7-4A8B-A0E5-2B658602E38D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorComponent.Test.ServerHost", "Test\BlazorComponent.Test.ServerHost\BlazorComponent.Test.ServerHost.csproj", "{DB36CF9F-D7F9-4F77-A2DF-5F169D4A640A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,10 +38,18 @@ Global
 		{383DE5D3-9934-44E0-B826-2E0DBA402F8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{383DE5D3-9934-44E0-B826-2E0DBA402F8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{383DE5D3-9934-44E0-B826-2E0DBA402F8A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BAED7868-5E08-4ED5-A36F-7F29024CD374}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BAED7868-5E08-4ED5-A36F-7F29024CD374}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BAED7868-5E08-4ED5-A36F-7F29024CD374}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BAED7868-5E08-4ED5-A36F-7F29024CD374}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A3BDE5F-D683-4024-AF57-E86FBAA937A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A3BDE5F-D683-4024-AF57-E86FBAA937A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A3BDE5F-D683-4024-AF57-E86FBAA937A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A3BDE5F-D683-4024-AF57-E86FBAA937A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0F27A9D-5EA7-4A8B-A0E5-2B658602E38D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0F27A9D-5EA7-4A8B-A0E5-2B658602E38D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0F27A9D-5EA7-4A8B-A0E5-2B658602E38D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0F27A9D-5EA7-4A8B-A0E5-2B658602E38D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB36CF9F-D7F9-4F77-A2DF-5F169D4A640A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB36CF9F-D7F9-4F77-A2DF-5F169D4A640A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB36CF9F-D7F9-4F77-A2DF-5F169D4A640A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB36CF9F-D7F9-4F77-A2DF-5F169D4A640A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -45,7 +57,9 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{A81FAD5B-C1B2-498B-8A16-46DDDD1C5612} = {E5AF9CFB-D4B4-43F9-86DA-C9B84A1ECEC2}
 		{383DE5D3-9934-44E0-B826-2E0DBA402F8A} = {C001BD36-40F0-42AF-8E27-7A564153F56A}
-		{BAED7868-5E08-4ED5-A36F-7F29024CD374} = {C001BD36-40F0-42AF-8E27-7A564153F56A}
+		{4A3BDE5F-D683-4024-AF57-E86FBAA937A5} = {E2FCFCC9-03B4-4881-B272-B374A5CFB9C1}
+		{F0F27A9D-5EA7-4A8B-A0E5-2B658602E38D} = {C001BD36-40F0-42AF-8E27-7A564153F56A}
+		{DB36CF9F-D7F9-4F77-A2DF-5F169D4A640A} = {E2FCFCC9-03B4-4881-B272-B374A5CFB9C1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {828BAB6B-B5E2-4244-90AA-0644472A4D55}

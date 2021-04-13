@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ namespace BlazorComponent.Doc.CLI.Wrappers
 
         static ConfigWrapper()
         {
-            var json = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json"));
+            var json = File.ReadAllText(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "appsettings.json"));
             Config = Newtonsoft.Json.JsonConvert.DeserializeObject<ConfigModel>(json);
 
             var docsMenus = Config.GenerateRule.Menus

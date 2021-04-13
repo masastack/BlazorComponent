@@ -1,0 +1,37 @@
+﻿@using System.Text.Json;
+
+<Form Model="@model"
+      OnFinish="OnFinish"
+      OnFinishFailed="OnFinishFailed"
+      LabelColSpan="8"
+      WrapperColSpan="16">
+    <FormItem Label="Input">
+        <PriceInput @bind-Value="context.Price" />
+    </FormItem>
+    <FormItem WrapperColOffset="8" WrapperColSpan="16">
+        <Button HtmlType="submit">Submit</Button>
+    </FormItem>
+</Form>
+
+@code
+{
+    public class Model
+    {
+        public Price Price { get; set; } = new Price() { 
+            Number = 0,
+            Currency = "rmb"
+        };
+    }
+
+    private Model model = new Model();
+
+    private void OnFinish(EditContext editContext)
+    {
+        Console.WriteLine($"Success:{JsonSerializer.Serialize(model)}");
+    }
+
+    private void OnFinishFailed(EditContext editContext)
+    {
+        Console.WriteLine($"Failed:{JsonSerializer.Serialize(model)}");
+    }
+}

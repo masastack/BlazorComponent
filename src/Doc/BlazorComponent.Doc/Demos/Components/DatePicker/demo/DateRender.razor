@@ -1,0 +1,18 @@
+﻿<DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" DateRender="CustomRender"/><br />
+<RangePicker TValue="DateTime?[]" Picker="@DatePickerType.Date" DateRender="CustomRender" />
+
+@code
+{
+    private Func<DateTime, DateTime, RenderFragment> CustomRender = (currentViewDate, today) =>
+    {
+        string style = "";
+        if (currentViewDate.Day == 1)
+        {
+            style = "border: 1px solid #1890ff; borderRadius: 50%";
+        }
+
+        return @<div class="ant-picker-cell-inner" style="@style">
+            @currentViewDate.Day
+        </div>;
+    };
+}

@@ -1,0 +1,17 @@
+﻿@inject NotificationService _notice
+
+<Button Type="@ButtonType.Primary" OnClick="@OnClick">
+    Open the notification box
+</Button>
+
+@code{
+    private async Task OnClick()
+    {
+        await _notice.Open(new NotificationConfig()
+        {
+            Message = "title",
+            Duration = 0,
+            Description = "This notification box will not close automatically"
+        });
+    }
+}

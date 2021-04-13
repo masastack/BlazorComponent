@@ -1,0 +1,24 @@
+﻿<div>
+    <Slider TValue="double" DefaultValue="30.5" OnChange="(e)=>OnChange1(e)" OnAfterChange="(e)=>OnAfterChange1(e)" />
+    <Slider TValue="(double, double)" Step="10" DefaultValue="( 20.3, 50.3 )" OnChange="(e)=>OnChange2(e)" OnAfterChange="(e)=>OnAfterChange2(e)" />
+</div>
+
+
+@code {
+
+    private void OnChange1(double args)
+    {
+    }
+
+    private void OnAfterChange1(double args)
+    {
+    }
+
+    private void OnChange2((double, double) args)
+    {
+    }
+
+    private void OnAfterChange2((double, double) args)
+    {
+    }
+}
