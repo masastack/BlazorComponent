@@ -1,37 +1,54 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">BlazorComponent.Doc</a>
-    <button class="navbar-toggler" @onclick="ToggleNavMenu">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-</div>
+﻿@using BlazorComponent.Doc.CLI.Models
+@using BlazorComponent.Doc.Services
+<Menu Class="aside-container menu-site" Theme="MenuTheme.Light" Mode="MenuMode.Inline" >
+    @menuItemTemplate((MenuItems, LanguageService, 1))
+</Menu>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </li>
-    </ul>
-</div>
+
+@inject ILanguageService LanguageService
+@inject NavigationManager NavigationManager
+@inject HttpClient HttpClient
+@inject DemoService DemoService; 
 
 @code {
-    private bool collapseNavMenu = true;
 
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    [Parameter]
+    public DemoMenuItemModel[] MenuItems { get; set; } = {};
 
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
+    static readonly RenderFragment<(DemoMenuItemModel[] items, ILanguageService languageService, int level)> menuItemTemplate = context =>
+        @<Template>
+            @foreach (var menu in context.items)
+            {
+                if (menu.Type == "menuItem")
+                {
+                        <MenuItem RouterLink="@($"{context.languageService.CurrentCulture.Name}/{menu.Url}")" RouterMatch="@NavLinkMatch.All">
+                            <span>@menu.Title</span>
+                            @if (menu.SubTitle != null)
+                            {
+                                <span class="chinese">@menu.SubTitle</span>
+                            }
+                        </MenuItem>
+                }
+                else if (menu.Type == "subMenu")
+                {
+                    <SubMenu Title="@menu.Title" IsOpen="true">
+                        @if (menu.Children.Any())
+                        {
+                            @menuItemTemplate((menu.Children, context.languageService, context.level + 1))
+                        }
+                    </SubMenu>
+                }
+                else if (menu.Type == "itemGroup")
+                {
+                    <MenuItemGroup Title="@menu.Title">
+                        @if (menu.Children.Any())
+                        {
+                            @menuItemTemplate((menu.Children, context.languageService, context.level + 1))
+                        }
+                    </MenuItemGroup>
+                }
+            }
+        </Template>;
+
+
 }

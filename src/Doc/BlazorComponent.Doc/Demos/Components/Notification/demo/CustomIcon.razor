@@ -1,0 +1,19 @@
+﻿@inject NotificationService _notice
+
+<Button Type="@ButtonType.Primary" OnClick="@OnClick">
+    Open the notification box
+</Button>
+
+@code{
+
+    private async Task OnClick()
+    {
+        RenderFragment customIcon = @<Icon Type="smile" Theme="outline" Style="color:#108ee9;"></Icon>;
+        await _notice.Open(new NotificationConfig()
+        {
+            Message = "Notification Title",
+            Description = "This is the content of the notification. This is the content of the notification. This is the content of the notification.",
+            Icon = customIcon
+        });
+    }
+}
