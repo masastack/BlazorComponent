@@ -20,10 +20,6 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.x
-    - name: Restore dependencies
-      run: dotnet restore
+        dotnet-version: 6.0.100-preview.3.21202.5
     - name: Build
-      run: dotnet build --no-restore
-#     - name: Test
-#       run: dotnet test --no-build --verbosity normal
+      run: dotnet build ./src/BlazorComponent.sln
