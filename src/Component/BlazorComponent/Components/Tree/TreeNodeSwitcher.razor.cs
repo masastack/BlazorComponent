@@ -36,11 +36,11 @@ namespace BlazorComponent
         /// </summary>
         private bool IsSwitcherClose => !SelfNode.Expanded && !SelfNode.IsLeaf;
 
-        protected CssBuilder cssBuilder { get; } = new CssBuilder();
+        protected CssBuilder CssBuilder { get; } = new CssBuilder();
 
         private void SetClassMap()
         {
-            cssBuilder.Clear().Add("ant-tree-switcher")
+            CssBuilder.Clear().Add("ant-tree-switcher")
                 .AddIf("ant-tree-switcher-noop", () => SelfNode.IsLeaf)
                 .AddIf("ant-tree-switcher_open", () => IsSwitcherOpen)
                 .AddIf("ant-tree-switcher_close", () => IsSwitcherClose);

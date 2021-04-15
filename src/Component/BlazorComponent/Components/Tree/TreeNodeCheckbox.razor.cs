@@ -18,11 +18,11 @@ namespace BlazorComponent
         [CascadingParameter(Name = "SelfNode")]
         public TreeNode<TItem> SelfNode { get; set; }
 
-        protected CssBuilder cssBuilder { get; } = new CssBuilder();
+        protected CssBuilder CssBuilder { get; } = new CssBuilder();
 
         private void SetClassMap()
         {
-            cssBuilder.Clear().Add("ant-tree-checkbox")
+            CssBuilder.Clear().Add("ant-tree-checkbox")
                 .AddIf("ant-tree-checkbox-checked", () => SelfNode.Checked)
                 .AddIf("ant-tree-checkbox-indeterminate", () => SelfNode.Indeterminate)
                 .AddIf("ant-tree-checkbox-disabled", () => SelfNode.Disabled || SelfNode.DisableCheckbox);

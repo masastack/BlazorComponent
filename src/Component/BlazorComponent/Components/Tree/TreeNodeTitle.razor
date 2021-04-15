@@ -2,7 +2,7 @@
 @inherits ComponentBase
 @typeparam TItem
 
-<span class="@cssBuilder.Class" title="@SelfNode.Title" @onclick="OnClick" @ondblclick="OnDblClick" draggable="@CanDraggable" aria-grabbed="@CanDraggable">
+<span class="@CssBuilder.Class" title="@SelfNode.Title" @onclick="OnClick" @ondblclick="OnDblClick" draggable="@CanDraggable" aria-grabbed="@CanDraggable">
     @if (TreeComponent.TitleIconTemplate != null && TreeComponent.ShowIcon)
     {
         <span class="ant-tree-iconEle @(IsSwitcherOpen?"ant-tree-icon__open":"") @(IsSwitcherClose?"ant-tree-icon__close":"") @(SelfNode.Loading?"ant-tree-icon_loading":"")">

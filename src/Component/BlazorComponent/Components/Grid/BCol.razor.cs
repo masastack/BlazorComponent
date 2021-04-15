@@ -79,7 +79,7 @@ namespace BlazorComponent
         private void SetHostClassMap()
         {
             var prefixCls = "ant-col";
-            this.cssBuilder.Clear()
+            this.CssBuilder.Clear()
                 .Add(prefixCls)
                 .AddIf(() => $"{prefixCls}-{Span.Value}", () => Span.Value != null)
                 .AddIf(() => $"{prefixCls}-order-{Order.Value}", () => Order.Value != null)
@@ -100,10 +100,10 @@ namespace BlazorComponent
         {
             parameter.Switch(strNum =>
             {
-                cssBuilder.AddIf($"{prefixCls}-{sizeName}-{strNum}", () => strNum > 0);
+                CssBuilder.AddIf($"{prefixCls}-{sizeName}-{strNum}", () => strNum > 0);
             }, embedded =>
             {
-                cssBuilder
+                CssBuilder
                     .AddIf(() => $"{prefixCls}-{sizeName}-{embedded.Span.Value}", () => embedded.Span.Value != null)
                     .AddIf(() => $"{prefixCls}-{sizeName}-order-{embedded.Order.Value}", () => embedded.Order.Value != null)
                     .AddIf(() => $"{prefixCls}-{sizeName}-offset-{embedded.Offset.Value}", () => embedded.Offset.Value != null)

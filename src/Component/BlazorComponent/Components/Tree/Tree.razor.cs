@@ -42,7 +42,7 @@ namespace BlazorComponent
 
         private void SetClassMapper()
         {
-            cssBuilder.Clear().Add("ant-tree")
+            CssBuilder.Clear().Add("ant-tree")
                 .AddIf("ant-tree-show-line", () => ShowLine)
                 .AddIf("ant-tree-icon-hide", () => ShowIcon)
                 .AddIf("ant-tree-block-node", () => BlockNode)

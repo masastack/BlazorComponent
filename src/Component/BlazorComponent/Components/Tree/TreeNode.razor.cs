@@ -195,7 +195,7 @@ namespace BlazorComponent
 
         private void SetTreeNodeClassMapper()
         {
-            cssBuilder.Clear().Add("ant-tree-treenode")
+            CssBuilder.Clear().Add("ant-tree-treenode")
                 .AddIf("ant-tree-treenode-disabled", () => Disabled)
                 .AddIf("ant-tree-treenode-switcher-open", () => SwitcherOpen)
                 .AddIf("ant-tree-treenode-switcher-close", () => SwitcherClose)

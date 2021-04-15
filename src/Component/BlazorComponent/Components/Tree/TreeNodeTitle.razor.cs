@@ -27,11 +27,11 @@ namespace BlazorComponent
 
         private bool IsSwitcherClose => !SelfNode.Expanded && !SelfNode.IsLeaf;
 
-        protected CssBuilder cssBuilder { get; } = new CssBuilder();
+        protected CssBuilder CssBuilder { get; } = new CssBuilder();
 
         private void SetTitleClassMapper()
         {
-            cssBuilder.Clear().Add("ant-tree-node-content-wrapper")
+            CssBuilder.Clear().Add("ant-tree-node-content-wrapper")
                 .AddIf("draggable", () => CanDraggable)
                 .AddIf("ant-tree-node-content-wrapper-open", () => IsSwitcherOpen)
                 .AddIf("ant-tree-node-content-wrapper-close", () => IsSwitcherClose)
