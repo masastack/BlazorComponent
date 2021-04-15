@@ -1,0 +1,23 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+@typeparam TItem
+
+<div class="@cssBuilder.Class" style="@Style" @ref="Ref">
+    <div class="ant-tree-list">
+        <div class="ant-tree-list-holder-inner">
+            <CascadingValue Value="this" Name="Tree" IsFixed="@true">
+                @if (DataSource != null)
+                {
+                    foreach (var item in DataSource)
+                    {
+                        <TreeNode DataItem="@item" @key="item.GetHashCode()"></TreeNode>
+                    }
+                }
+                else
+                {
+                    @Nodes
+                }
+            </CascadingValue>
+        </div>
+    </div>
+</div>

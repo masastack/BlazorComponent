@@ -32,11 +32,11 @@ namespace BlazorComponent
             }
         }
 
-        protected CssBuilder ClassMapper { get; } = new CssBuilder();
+        protected CssBuilder cssBuilder { get; } = new CssBuilder();
 
         public BDomComponentBase()
         {
-            ClassMapper.Add(() => Class);
+            cssBuilder.Add(() => Class);
         }
 
         protected override void OnInitialized()
@@ -55,7 +55,7 @@ namespace BlazorComponent
             set
             {
                 _class = value;
-                ClassMapper.OriginalClass = value;
+                cssBuilder.OriginalClass = value;
             }
         }
 
