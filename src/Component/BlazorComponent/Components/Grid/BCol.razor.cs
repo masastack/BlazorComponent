@@ -81,11 +81,11 @@ namespace BlazorComponent
             var prefixCls = "ant-col";
             this.ClassMapper.Clear()
                 .Add(prefixCls)
-                .GetIf(() => $"{prefixCls}-{Span.Value}", () => Span.Value != null)
-                .GetIf(() => $"{prefixCls}-order-{Order.Value}", () => Order.Value != null)
-                .GetIf(() => $"{prefixCls}-offset-{Offset.Value}", () => Offset.Value != null)
-                .GetIf(() => $"{prefixCls}-pull-{Pull.Value}", () => Pull.Value != null)
-                .GetIf(() => $"{prefixCls}-push-{Push.Value}", () => Push.Value != null)
+                .AddIf(() => $"{prefixCls}-{Span.Value}", () => Span.Value != null)
+                .AddIf(() => $"{prefixCls}-order-{Order.Value}", () => Order.Value != null)
+                .AddIf(() => $"{prefixCls}-offset-{Offset.Value}", () => Offset.Value != null)
+                .AddIf(() => $"{prefixCls}-pull-{Pull.Value}", () => Pull.Value != null)
+                .AddIf(() => $"{prefixCls}-push-{Push.Value}", () => Push.Value != null)
                 ;
 
             SetSizeClassMapper(prefixCls, Xs, "xs");
@@ -100,15 +100,15 @@ namespace BlazorComponent
         {
             parameter.Switch(strNum =>
             {
-                ClassMapper.If($"{prefixCls}-{sizeName}-{strNum}", () => strNum > 0);
+                ClassMapper.AddIf($"{prefixCls}-{sizeName}-{strNum}", () => strNum > 0);
             }, embedded =>
             {
                 ClassMapper
-                    .GetIf(() => $"{prefixCls}-{sizeName}-{embedded.Span.Value}", () => embedded.Span.Value != null)
-                    .GetIf(() => $"{prefixCls}-{sizeName}-order-{embedded.Order.Value}", () => embedded.Order.Value != null)
-                    .GetIf(() => $"{prefixCls}-{sizeName}-offset-{embedded.Offset.Value}", () => embedded.Offset.Value != null)
-                    .GetIf(() => $"{prefixCls}-{sizeName}-push-{embedded.Push.Value}", () => embedded.Push.Value != null)
-                    .GetIf(() => $"{prefixCls}-{sizeName}-pull-{embedded.Pull.Value}", () => embedded.Pull.Value != null);
+                    .AddIf(() => $"{prefixCls}-{sizeName}-{embedded.Span.Value}", () => embedded.Span.Value != null)
+                    .AddIf(() => $"{prefixCls}-{sizeName}-order-{embedded.Order.Value}", () => embedded.Order.Value != null)
+                    .AddIf(() => $"{prefixCls}-{sizeName}-offset-{embedded.Offset.Value}", () => embedded.Offset.Value != null)
+                    .AddIf(() => $"{prefixCls}-{sizeName}-push-{embedded.Push.Value}", () => embedded.Push.Value != null)
+                    .AddIf(() => $"{prefixCls}-{sizeName}-pull-{embedded.Pull.Value}", () => embedded.Pull.Value != null);
             });
         }
 
