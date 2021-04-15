@@ -1,0 +1,38 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+@typeparam TItem
+
+@if (RealDisplay)
+{
+    <CascadingValue Value="this" Name="SelfNode">
+        <div @key="NodeId" class="@CssBuilder.Class" style="@Style">
+
+            <TreeIndent TreeLevel="@TreeLevel" TItem="TItem"></TreeIndent>
+
+            @if (TreeComponent.ShowExpand)
+            {
+                <TreeNodeSwitcher OnSwitcherClick="OnSwitcherClick" TItem="TItem"></TreeNodeSwitcher>
+            }
+
+            @if (TreeComponent.Checkable)
+            {
+                <TreeNodeCheckbox OnCheckBoxClick="OnCheckBoxClick" TItem="TItem"></TreeNodeCheckbox>
+            }
+
+            <TreeNodeTitle TItem="TItem"></TreeNodeTitle>
+        </div>
+    </CascadingValue>
+}
+<CascadingValue Value="this" Name="Node">
+    @if (DataItem != null)
+    {
+        foreach (var item in ChildDataItems)
+        {
+            <TreeNode DataItem="@item" @key="item.GetHashCode()"></TreeNode>
+        }
+    }
+    else
+    {
+        @Nodes
+    }
+</CascadingValue>
