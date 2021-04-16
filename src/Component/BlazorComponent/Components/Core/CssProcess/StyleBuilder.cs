@@ -10,11 +10,12 @@ namespace BlazorComponent.Components.Core.CssProcess
 
         public override string ToString()
         {
-            var style = string.Join(";", _mapper.Where(i => i.Value()).Select(i => i.Key()));
+            var separator = "; ";
+            var style = string.Join(separator, _mapper.Where(i => i.Value()).Select(i => i.Key()));
 
-            if (!string.IsNullOrWhiteSpace(style))
+            if (!string.IsNullOrWhiteSpace(style) && style.StartsWith(separator))
             {
-                style = style.Substring(1);
+                style = style[separator.Length..];
             }
 
             return style;
