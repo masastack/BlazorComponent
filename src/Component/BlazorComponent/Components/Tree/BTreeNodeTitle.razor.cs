@@ -7,21 +7,21 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public abstract partial class TreeNodeTitle<TItem> : ComponentBase
+    public abstract partial class BTreeNodeTitle<TItem> : ComponentBase
     {
         /// <summary>
         /// 树控件本身
         /// </summary>
-        [CascadingParameter(Name = "Tree")]
-        public Tree<TItem> TreeComponent { get; set; }
+        [CascadingParameter(Name = "BTree")]
+        public BTree<TItem> BTreeComponent { get; set; }
 
         /// <summary>
         /// 当前节点
         /// </summary>
         [CascadingParameter(Name = "SelfNode")]
-        public TreeNode<TItem> SelfNode { get; set; }
+        public BTreeNode<TItem> SelfNode { get; set; }
 
-        private bool CanDraggable => TreeComponent.Draggable && !SelfNode.Disabled;
+        private bool CanDraggable => BTreeComponent.Draggable && !SelfNode.Disabled;
 
         private bool IsSwitcherOpen => SelfNode.Expanded && !SelfNode.IsLeaf;
 
@@ -31,11 +31,11 @@ namespace BlazorComponent
 
         private void SetTitleCssBuilder()
         {
-            CssBuilder.Clear().Add("ant-tree-node-content-wrapper")
+            CssBuilder.Clear().Add("ant-BTree-node-content-wrapper")
                 .AddIf("draggable", () => CanDraggable)
-                .AddIf("ant-tree-node-content-wrapper-open", () => IsSwitcherOpen)
-                .AddIf("ant-tree-node-content-wrapper-close", () => IsSwitcherClose)
-                .AddIf("ant-tree-node-selected", () => SelfNode.Selected);
+                .AddIf("ant-BTree-node-content-wrapper-open", () => IsSwitcherOpen)
+                .AddIf("ant-BTree-node-content-wrapper-close", () => IsSwitcherClose)
+                .AddIf("ant-BTree-node-selected", () => SelfNode.Selected);
         }
 
         protected override void OnInitialized()
@@ -53,16 +53,16 @@ namespace BlazorComponent
         private async Task OnClick(MouseEventArgs args)
         {
             SelfNode.SetSelected(!SelfNode.Selected);
-            if (TreeComponent.OnClick.HasDelegate && args.Button == 0)
-                await TreeComponent.OnClick.InvokeAsync(new TreeEventArgs<TItem>(TreeComponent, SelfNode, args));
-            else if (TreeComponent.OnContextMenu.HasDelegate && args.Button == 2)
-                await TreeComponent.OnContextMenu.InvokeAsync(new TreeEventArgs<TItem>(TreeComponent, SelfNode, args));
+            if (BTreeComponent.OnClick.HasDelegate && args.Button == 0)
+                await BTreeComponent.OnClick.InvokeAsync(new BTreeEventArgs<TItem>(BTreeComponent, SelfNode, args));
+            else if (BTreeComponent.OnContextMenu.HasDelegate && args.Button == 2)
+                await BTreeComponent.OnContextMenu.InvokeAsync(new BTreeEventArgs<TItem>(BTreeComponent, SelfNode, args));
         }
 
         private async Task OnDblClick(MouseEventArgs args)
         {
-            if (TreeComponent.OnDblClick.HasDelegate && args.Button == 0)
-                await TreeComponent.OnDblClick.InvokeAsync(new TreeEventArgs<TItem>(TreeComponent, SelfNode, args));
+            if (BTreeComponent.OnDblClick.HasDelegate && args.Button == 0)
+                await BTreeComponent.OnDblClick.InvokeAsync(new BTreeEventArgs<TItem>(BTreeComponent, SelfNode, args));
         }
     }
 }
