@@ -193,7 +193,7 @@ namespace BlazorComponent
         [Parameter]
         public bool Loading { get; set; }
 
-        private void SetTreeNodeClassMapper()
+        private void SetTreeNodeCssBuilder()
         {
             CssBuilder.Clear().Add("ant-tree-treenode")
                 .AddIf("ant-tree-treenode-disabled", () => Disabled)
@@ -573,7 +573,7 @@ namespace BlazorComponent
         protected override void OnInitialized()
 
         {
-            SetTreeNodeClassMapper();
+            SetTreeNodeCssBuilder();
             if (ParentNode != null)
                 ParentNode.AddNode(this);
             else
@@ -583,7 +583,7 @@ namespace BlazorComponent
 
         protected override void OnParametersSet()
         {
-            SetTreeNodeClassMapper();
+            SetTreeNodeCssBuilder();
             base.OnParametersSet();
         }
 

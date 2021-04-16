@@ -88,15 +88,15 @@ namespace BlazorComponent
                 .AddIf(() => $"{prefixCls}-push-{Push.Value}", () => Push.Value != null)
                 ;
 
-            SetSizeClassMapper(prefixCls, Xs, "xs");
-            SetSizeClassMapper(prefixCls, Sm, "sm");
-            SetSizeClassMapper(prefixCls, Md, "md");
-            SetSizeClassMapper(prefixCls, Lg, "lg");
-            SetSizeClassMapper(prefixCls, Xl, "xl");
-            SetSizeClassMapper(prefixCls, Xxl, "xxl");
+            SetSizeCssBuilder(prefixCls, Xs, "xs");
+            SetSizeCssBuilder(prefixCls, Sm, "sm");
+            SetSizeCssBuilder(prefixCls, Md, "md");
+            SetSizeCssBuilder(prefixCls, Lg, "lg");
+            SetSizeCssBuilder(prefixCls, Xl, "xl");
+            SetSizeCssBuilder(prefixCls, Xxl, "xxl");
         }
 
-        private void SetSizeClassMapper(string prefixCls, OneOf<int, EmbeddedProperty> parameter, string sizeName)
+        private void SetSizeCssBuilder(string prefixCls, OneOf<int, EmbeddedProperty> parameter, string sizeName)
         {
             parameter.Switch(strNum =>
             {
