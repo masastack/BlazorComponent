@@ -32,7 +32,7 @@ namespace BlazorComponent.Components.Core.CssProcess
             return this;
         }
 
-        public BuilderBase AddOneOf(params (Func<string> funcName, Func<bool> func)[] list)
+        public BuilderBase AddFirstIf(params (Func<string> funcName, Func<bool> func)[] list)
         {
             var item = list.LastOrDefault(u => u.func.Invoke());
 
@@ -44,7 +44,7 @@ namespace BlazorComponent.Components.Core.CssProcess
             return this;
         }
 
-        public BuilderBase AddOneOf(params (string name, Func<bool> func)[] list)
+        public BuilderBase AddFirstIf(params (string name, Func<bool> func)[] list)
         {
             var item = list.LastOrDefault(u => u.func.Invoke());
 
