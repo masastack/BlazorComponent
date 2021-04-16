@@ -40,7 +40,7 @@ namespace BlazorComponent
         [Parameter]
         public bool Draggable { get; set; }
 
-        private void SetClassMapper()
+        private void SetCssBuilder()
         {
             CssBuilder.Clear().Add("ant-tree")
                 .AddIf("ant-tree-show-line", () => ShowLine)
@@ -428,7 +428,7 @@ namespace BlazorComponent
 
         protected override void OnInitialized()
         {
-            SetClassMapper();
+            SetCssBuilder();
             base.OnInitialized();
         }
 

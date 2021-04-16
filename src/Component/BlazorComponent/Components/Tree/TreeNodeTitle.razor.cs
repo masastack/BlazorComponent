@@ -29,7 +29,7 @@ namespace BlazorComponent
 
         protected CssBuilder CssBuilder { get; } = new CssBuilder();
 
-        private void SetTitleClassMapper()
+        private void SetTitleCssBuilder()
         {
             CssBuilder.Clear().Add("ant-tree-node-content-wrapper")
                 .AddIf("draggable", () => CanDraggable)
@@ -40,13 +40,13 @@ namespace BlazorComponent
 
         protected override void OnInitialized()
         {
-            SetTitleClassMapper();
+            SetTitleCssBuilder();
             base.OnInitialized();
         }
 
         protected override void OnParametersSet()
         {
-            SetTitleClassMapper();
+            SetTitleCssBuilder();
             base.OnParametersSet();
         }
 
