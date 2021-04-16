@@ -13,6 +13,8 @@ namespace BlazorComponent
         [Inject]
         protected HeadJsInterop HeadJsInterop { get; set; }
 
+        protected CssBuilder WrapCssBuilder { get; } = new CssBuilder();
+
         public ThemeCssBuilder ThemeCssBuilder { get; } = new ThemeCssBuilder();
 
         protected override Task OnInitializedAsync()
@@ -23,6 +25,5 @@ namespace BlazorComponent
             return base.OnInitializedAsync();
         }
 
-        protected CssBuilder WrapCssBuilder { get; } = new CssBuilder();
     }
 }
