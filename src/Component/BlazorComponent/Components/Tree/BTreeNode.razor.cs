@@ -8,21 +8,21 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public abstract partial class TreeNode<TItem> : BDomComponentBase
+    public abstract partial class BTreeNode<TItem> : BDomComponentBase
     {
         #region Node
 
         /// <summary>
         /// 树控件本身
         /// </summary>
-        [CascadingParameter(Name = "Tree")]
-        public Tree<TItem> TreeComponent { get; set; }
+        [CascadingParameter(Name = "BTree")]
+        public BTree<TItem> BTreeComponent { get; set; }
 
         /// <summary>
         /// 上一级节点
         /// </summary>
         [CascadingParameter(Name = "Node")]
-        public TreeNode<TItem> ParentNode { get; set; }
+        public BTreeNode<TItem> ParentNode { get; set; }
 
         /// <summary>
         /// 子节点
@@ -30,14 +30,14 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment Nodes { get; set; }
 
-        public List<TreeNode<TItem>> ChildNodes { get; set; } = new List<TreeNode<TItem>>();
+        public List<BTreeNode<TItem>> ChildNodes { get; set; } = new List<BTreeNode<TItem>>();
 
         public bool HasChildNodes => ChildNodes?.Count > 0;
 
         /// <summary>
         /// 当前节点级别
         /// </summary>
-        public int TreeLevel => (ParentNode?.TreeLevel ?? -1) + 1;//因为第一层是0，所以默认是-1
+        public int BTreeLevel => (ParentNode?.BTreeLevel ?? -1) + 1;//因为第一层是0，所以默认是-1
 
         
 #pragma warning disable CS1572 // XML 注释中有“”的 param 标记，但是没有该名称的参数
@@ -45,12 +45,12 @@ namespace BlazorComponent
         /// 添加节点
         /// </summary>
         /// <param name=""></param>
-#pragma warning disable CS1573 // 参数“treeNode”在“TreeNode<TItem>.AddNode(TreeNode<TItem>)”的 XML 注释中没有匹配的 param 标记(但其他参数有)
-        internal void AddNode(TreeNode<TItem> treeNode)
+#pragma warning disable CS1573 // 参数“BTreeNode”在“BTreeNode<TItem>.AddNode(BTreeNode<TItem>)”的 XML 注释中没有匹配的 param 标记(但其他参数有)
+        internal void AddNode(BTreeNode<TItem> BTreeNode)
 #pragma warning restore CS1572 // XML 注释中有“”的 param 标记，但是没有该名称的参数
-#pragma warning restore CS1573 // 参数“treeNode”在“TreeNode<TItem>.AddNode(TreeNode<TItem>)”的 XML 注释中没有匹配的 param 标记(但其他参数有)
+#pragma warning restore CS1573 // 参数“BTreeNode”在“BTreeNode<TItem>.AddNode(BTreeNode<TItem>)”的 XML 注释中没有匹配的 param 标记(但其他参数有)
         {
-            ChildNodes.Add(treeNode);
+            ChildNodes.Add(BTreeNode);
             IsLeaf = false;
         }
 
@@ -60,7 +60,7 @@ namespace BlazorComponent
         /// <param name="predicate">Predicate</param>
         /// <param name="recursive">Recursive Find</param>
         /// <returns></returns>
-        public TreeNode<TItem> FindFirstOrDefaultNode(Func<TreeNode<TItem>, bool> predicate, bool recursive = true)
+        public BTreeNode<TItem> FindFirstOrDefaultNode(Func<BTreeNode<TItem>, bool> predicate, bool recursive = true)
         {
             foreach (var child in ChildNodes)
             {
@@ -84,15 +84,15 @@ namespace BlazorComponent
         /// 获得上级数据集合
         /// </summary>
         /// <returns></returns>
-        public List<TreeNode<TItem>> GetParentNodes()
+        public List<BTreeNode<TItem>> GetParentNodes()
         {
             if (this.ParentNode != null)
                 return this.ParentNode.ChildNodes;
             else
-                return this.TreeComponent.ChildNodes;
+                return this.BTreeComponent.ChildNodes;
         }
 
-        public TreeNode<TItem> GetPreviousNode()
+        public BTreeNode<TItem> GetPreviousNode()
         {
             var parentNodes = GetParentNodes();
             var index = parentNodes.IndexOf(this);
@@ -100,7 +100,7 @@ namespace BlazorComponent
             else return parentNodes[index - 1];
         }
 
-        public TreeNode<TItem> GetNextNode()
+        public BTreeNode<TItem> GetNextNode()
         {
             var parentNodes = GetParentNodes();
             var index = parentNodes.IndexOf(this);
@@ -110,13 +110,13 @@ namespace BlazorComponent
 
         #endregion Node
 
-        #region TreeNode
+        #region BTreeNode
 
         private static long _nextNodeId;
 
         internal long NodeId { get; private set; }
 
-        public TreeNode()
+        public BTreeNode()
         {
             NodeId = Interlocked.Increment(ref _nextNodeId);
         }
@@ -131,8 +131,8 @@ namespace BlazorComponent
         {
             get
             {
-                if (TreeComponent.KeyExpression != null)
-                    return TreeComponent.KeyExpression(this);
+                if (BTreeComponent.KeyExpression != null)
+                    return BTreeComponent.KeyExpression(this);
                 else
                     return _key;
             }
@@ -177,12 +177,12 @@ namespace BlazorComponent
             _selected = value;
             if (value == true)
             {
-                if (TreeComponent.Multiple == false) TreeComponent.DeselectAll();
-                TreeComponent.SelectedNodeAdd(this);
+                if (BTreeComponent.Multiple == false) BTreeComponent.DeselectAll();
+                BTreeComponent.SelectedNodeAdd(this);
             }
             else
             {
-                TreeComponent.SelectedNodeRemove(this);
+                BTreeComponent.SelectedNodeRemove(this);
             }
             StateHasChanged();
         }
@@ -193,19 +193,19 @@ namespace BlazorComponent
         [Parameter]
         public bool Loading { get; set; }
 
-        private void SetTreeNodeCssBuilder()
+        private void SetBTreeNodeCssBuilder()
         {
-            CssBuilder.Clear().Add("ant-tree-treenode")
-                .AddIf("ant-tree-treenode-disabled", () => Disabled)
-                .AddIf("ant-tree-treenode-switcher-open", () => SwitcherOpen)
-                .AddIf("ant-tree-treenode-switcher-close", () => SwitcherClose)
-                .AddIf("ant-tree-treenode-checkbox-checked", () => Checked)
-                .AddIf("ant-tree-treenode-checkbox-indeterminate", () => Indeterminate)
-                .AddIf("ant-tree-treenode-selected", () => Selected)
-                .AddIf("ant-tree-treenode-loading", () => Loading);
+            CssBuilder.Clear().Add("ant-BTree-BTreenode")
+                .AddIf("ant-BTree-BTreenode-disabled", () => Disabled)
+                .AddIf("ant-BTree-BTreenode-switcher-open", () => SwitcherOpen)
+                .AddIf("ant-BTree-BTreenode-switcher-close", () => SwitcherClose)
+                .AddIf("ant-BTree-BTreenode-checkbox-checked", () => Checked)
+                .AddIf("ant-BTree-BTreenode-checkbox-indeterminate", () => Indeterminate)
+                .AddIf("ant-BTree-BTreenode-selected", () => Selected)
+                .AddIf("ant-BTree-BTreenode-loading", () => Loading);
         }
 
-        #endregion TreeNode
+        #endregion BTreeNode
 
         #region Switcher
 
@@ -219,8 +219,8 @@ namespace BlazorComponent
         {
             get
             {
-                if (TreeComponent.IsLeafExpression != null)
-                    return TreeComponent.IsLeafExpression(this);
+                if (BTreeComponent.IsLeafExpression != null)
+                    return BTreeComponent.IsLeafExpression(this);
                 else
                     return _isLeaf;
             }
@@ -254,7 +254,7 @@ namespace BlazorComponent
         {
             get
             {
-                if (string.IsNullOrEmpty(TreeComponent.SearchValue))
+                if (string.IsNullOrEmpty(BTreeComponent.SearchValue))
                 {//普通模式下节点显示规则
                     if (ParentNode == null) return true;//第一级节点默认显示
                     if (ParentNode.Expanded == false) return false;//上级节点如果是折叠的，必定折叠
@@ -270,16 +270,16 @@ namespace BlazorComponent
         private async Task OnSwitcherClick(MouseEventArgs args)
         {
             this.Expanded = !this.Expanded;
-            if (TreeComponent.OnNodeLoadDelayAsync.HasDelegate && this.Expanded == true)
+            if (BTreeComponent.OnNodeLoadDelayAsync.HasDelegate && this.Expanded == true)
             {
                 //自有节点被展开时才需要延迟加载
                 //如果支持异步载入，那么在展开时是调用异步载入代码
                 this.Loading = true;
-                await TreeComponent.OnNodeLoadDelayAsync.InvokeAsync(new TreeEventArgs<TItem>(TreeComponent, this, args));
+                await BTreeComponent.OnNodeLoadDelayAsync.InvokeAsync(new BTreeEventArgs<TItem>(BTreeComponent, this, args));
                 this.Loading = false;
             }
-            if (TreeComponent.OnExpandChanged.HasDelegate)
-                await TreeComponent.OnExpandChanged.InvokeAsync(new TreeEventArgs<TItem>(TreeComponent, this, args));
+            if (BTreeComponent.OnExpandChanged.HasDelegate)
+                await BTreeComponent.OnExpandChanged.InvokeAsync(new BTreeEventArgs<TItem>(BTreeComponent, this, args));
         }
 
         private bool SwitcherOpen => Expanded && !IsLeaf;
@@ -305,8 +305,8 @@ namespace BlazorComponent
         private async void OnCheckBoxClick(MouseEventArgs args)
         {
             SetChecked(!Checked);
-            if (TreeComponent.OnCheckBoxChanged.HasDelegate)
-                await TreeComponent.OnCheckBoxChanged.InvokeAsync(new TreeEventArgs<TItem>(TreeComponent, this, args));
+            if (BTreeComponent.OnCheckBoxChanged.HasDelegate)
+                await BTreeComponent.OnCheckBoxChanged.InvokeAsync(new BTreeEventArgs<TItem>(BTreeComponent, this, args));
         }
 
         /// <summary>
@@ -392,8 +392,8 @@ namespace BlazorComponent
         {
             get
             {
-                if (TreeComponent.IconExpression != null)
-                    return TreeComponent.IconExpression(this);
+                if (BTreeComponent.IconExpression != null)
+                    return BTreeComponent.IconExpression(this);
                 else
                     return _icon;
             }
@@ -413,8 +413,8 @@ namespace BlazorComponent
         {
             get
             {
-                if (TreeComponent.TitleExpression != null)
-                    return TreeComponent.TitleExpression(this);
+                if (BTreeComponent.TitleExpression != null)
+                    return BTreeComponent.TitleExpression(this);
                 else
                     return _title;
             }
@@ -445,8 +445,8 @@ namespace BlazorComponent
         {
             get
             {
-                if (TreeComponent.ChildrenExpression != null)
-                    return TreeComponent.ChildrenExpression(this) ?? new List<TItem>();
+                if (BTreeComponent.ChildrenExpression != null)
+                    return BTreeComponent.ChildrenExpression(this) ?? new List<TItem>();
                 else
                     return new List<TItem>();
             }
@@ -461,7 +461,7 @@ namespace BlazorComponent
             if (this.ParentNode != null)
                 return this.ParentNode.ChildDataItems;
             else
-                return this.TreeComponent.DataSource;
+                return this.BTreeComponent.DataSource;
         }
 
         #endregion 数据绑定
@@ -512,12 +512,12 @@ namespace BlazorComponent
             parentChildDataItems.Remove(this.DataItem);
         }
 
-        public void MoveInto(TreeNode<TItem> treeNode)
+        public void MoveInto(BTreeNode<TItem> BTreeNode)
         {
-            if (treeNode == this || this.DataItem.Equals(treeNode.DataItem)) return;
+            if (BTreeNode == this || this.DataItem.Equals(BTreeNode.DataItem)) return;
             var parentChildDataItems = GetParentChildDataItems();
             parentChildDataItems.Remove(this.DataItem);
-            treeNode.AddChildNode(this.DataItem);
+            BTreeNode.AddChildNode(this.DataItem);
         }
 
         /// <summary>
@@ -573,23 +573,23 @@ namespace BlazorComponent
         protected override void OnInitialized()
 
         {
-            SetTreeNodeCssBuilder();
+            SetBTreeNodeCssBuilder();
             if (ParentNode != null)
                 ParentNode.AddNode(this);
             else
-                TreeComponent.AddNode(this);
+                BTreeComponent.AddNode(this);
             base.OnInitialized();
         }
 
         protected override void OnParametersSet()
         {
-            SetTreeNodeCssBuilder();
+            SetBTreeNodeCssBuilder();
             base.OnParametersSet();
         }
 
         private void AddNodeAndSelect(TItem dataItem)
         {
-            var tn = ChildNodes.FirstOrDefault(treeNode => treeNode.DataItem.Equals(dataItem));
+            var tn = ChildNodes.FirstOrDefault(BTreeNode => BTreeNode.DataItem.Equals(dataItem));
             if (tn != null)
             {
                 this.Expand(true);

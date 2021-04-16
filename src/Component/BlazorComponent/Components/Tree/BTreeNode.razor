@@ -7,19 +7,19 @@
     <CascadingValue Value="this" Name="SelfNode">
         <div @key="NodeId" class="@CssBuilder.Class" style="@Style">
 
-            <TreeIndent TreeLevel="@TreeLevel" TItem="TItem"></TreeIndent>
+            <BTreeIndent BTreeLevel="@BTreeLevel" TItem="TItem"></BTreeIndent>
 
-            @if (TreeComponent.ShowExpand)
+            @if (BTreeComponent.ShowExpand)
             {
-                <TreeNodeSwitcher OnSwitcherClick="OnSwitcherClick" TItem="TItem"></TreeNodeSwitcher>
+                <BTreeNodeSwitcher OnSwitcherClick="OnSwitcherClick" TItem="TItem"></BTreeNodeSwitcher>
             }
 
-            @if (TreeComponent.Checkable)
+            @if (BTreeComponent.Checkable)
             {
-                <TreeNodeCheckbox OnCheckBoxClick="OnCheckBoxClick" TItem="TItem"></TreeNodeCheckbox>
+                <BTreeNodeCheckbox OnCheckBoxClick="OnCheckBoxClick" TItem="TItem"></BTreeNodeCheckbox>
             }
 
-            <TreeNodeTitle TItem="TItem"></TreeNodeTitle>
+            <BTreeNodeTitle TItem="TItem"></BTreeNodeTitle>
         </div>
     </CascadingValue>
 }
@@ -28,7 +28,7 @@
     {
         foreach (var item in ChildDataItems)
         {
-            <TreeNode DataItem="@item" @key="item.GetHashCode()"></TreeNode>
+            <BTreeNode DataItem="@item" @key="item.GetHashCode()"></BTreeNode>
         }
     }
     else

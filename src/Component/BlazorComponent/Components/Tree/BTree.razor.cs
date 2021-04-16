@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
-    public abstract partial class Tree<TItem> : BDomComponentBase
+    public abstract partial class BTree<TItem> : BDomComponentBase
     {
-        #region Tree
+        #region BTree
 
         /// <summary>
         /// 节点前添加展开图标
@@ -23,7 +23,7 @@ namespace BlazorComponent
         public bool ShowLine { get; set; }
 
         /// <summary>
-        /// 是否展示 TreeNode title 前的图标
+        /// 是否展示 BTreeNode title 前的图标
         /// </summary>
         [Parameter]
         public bool ShowIcon { get; set; }
@@ -42,14 +42,14 @@ namespace BlazorComponent
 
         private void SetCssBuilder()
         {
-            CssBuilder.Clear().Add("ant-tree")
-                .AddIf("ant-tree-show-line", () => ShowLine)
-                .AddIf("ant-tree-icon-hide", () => ShowIcon)
-                .AddIf("ant-tree-block-node", () => BlockNode)
-                .AddIf("draggable-tree", () => Draggable);
+            CssBuilder.Clear().Add("ant-BTree")
+                .AddIf("ant-BTree-show-line", () => ShowLine)
+                .AddIf("ant-BTree-icon-hide", () => ShowIcon)
+                .AddIf("ant-BTree-block-node", () => BlockNode)
+                .AddIf("draggable-BTree", () => Draggable);
         }
 
-        #endregion Tree
+        #endregion BTree
 
         #region Node
 
@@ -57,19 +57,19 @@ namespace BlazorComponent
         public RenderFragment Nodes { get; set; }
 
         [Parameter]
-        public List<TreeNode<TItem>> ChildNodes { get; set; } = new List<TreeNode<TItem>>();
+        public List<BTreeNode<TItem>> ChildNodes { get; set; } = new List<BTreeNode<TItem>>();
 
         
 #pragma warning disable CS1572 // XML 注释中有“”的 param 标记，但是没有该名称的参数
 /// <summary>
         /// 添加节点
         /// </summary>
-        /// <param name="treeNode"></param>
+        /// <param name="BTreeNode"></param>
         /// <param name=""></param>
-        internal void AddNode(TreeNode<TItem> treeNode)
+        internal void AddNode(BTreeNode<TItem> BTreeNode)
 #pragma warning restore CS1572 // XML 注释中有“”的 param 标记，但是没有该名称的参数
         {
-            ChildNodes.Add(treeNode);
+            ChildNodes.Add(BTreeNode);
         }
 
         #endregion Node
@@ -85,22 +85,22 @@ namespace BlazorComponent
         /// <summary>
         /// 选中的树节点
         /// </summary>
-        internal Dictionary<long, TreeNode<TItem>> SelectedNodesDictionary { get; set; } = new Dictionary<long, TreeNode<TItem>>();
+        internal Dictionary<long, BTreeNode<TItem>> SelectedNodesDictionary { get; set; } = new Dictionary<long, BTreeNode<TItem>>();
 
         public List<string> SelectedTitles => SelectedNodesDictionary.Select(x => x.Value.Title).ToList();
 
-        internal void SelectedNodeAdd(TreeNode<TItem> treeNode)
+        internal void SelectedNodeAdd(BTreeNode<TItem> BTreeNode)
         {
-            if (SelectedNodesDictionary.ContainsKey(treeNode.NodeId) == false)
-                SelectedNodesDictionary.Add(treeNode.NodeId, treeNode);
+            if (SelectedNodesDictionary.ContainsKey(BTreeNode.NodeId) == false)
+                SelectedNodesDictionary.Add(BTreeNode.NodeId, BTreeNode);
 
             UpdateBindData();
         }
 
-        internal void SelectedNodeRemove(TreeNode<TItem> treeNode)
+        internal void SelectedNodeRemove(BTreeNode<TItem> BTreeNode)
         {
-            if (SelectedNodesDictionary.ContainsKey(treeNode.NodeId) == true)
-                SelectedNodesDictionary.Remove(treeNode.NodeId);
+            if (SelectedNodesDictionary.ContainsKey(BTreeNode.NodeId) == true)
+                SelectedNodesDictionary.Remove(BTreeNode.NodeId);
 
             UpdateBindData();
         }
@@ -126,10 +126,10 @@ namespace BlazorComponent
         /// 选择的节点
         /// </summary>
         [Parameter]
-        public TreeNode<TItem> SelectedNode { get; set; }
+        public BTreeNode<TItem> SelectedNode { get; set; }
 
         [Parameter]
-        public EventCallback<TreeNode<TItem>> SelectedNodeChanged { get; set; }
+        public EventCallback<BTreeNode<TItem>> SelectedNodeChanged { get; set; }
 
         /// <summary>
         /// 选择的数据
@@ -153,7 +153,7 @@ namespace BlazorComponent
         /// 选择的节点集合
         /// </summary>
         [Parameter]
-        public TreeNode<TItem>[] SelectedNodes { get; set; }
+        public BTreeNode<TItem>[] SelectedNodes { get; set; }
 
         /// <summary>
         /// 选择的数据集合
@@ -172,7 +172,7 @@ namespace BlazorComponent
                 SelectedNode = null;
                 SelectedData = default(TItem);
                 SelectedKeys = Array.Empty<string>();
-                SelectedNodes = Array.Empty<TreeNode<TItem>>();
+                SelectedNodes = Array.Empty<BTreeNode<TItem>>();
                 SelectedDatas = Array.Empty<TItem>();
             }
             else
@@ -202,15 +202,15 @@ namespace BlazorComponent
         [Parameter]
         public bool Checkable { get; set; }
 
-        public List<TreeNode<TItem>> CheckedNodes => GetCheckedNodes(ChildNodes);
+        public List<BTreeNode<TItem>> CheckedNodes => GetCheckedNodes(ChildNodes);
 
         public List<string> CheckedKeys => GetCheckedNodes(ChildNodes).Select(x => x.Key).ToList();
 
         public List<string> CheckedTitles => GetCheckedNodes(ChildNodes).Select(x => x.Title).ToList();
 
-        private List<TreeNode<TItem>> GetCheckedNodes(List<TreeNode<TItem>> childs)
+        private List<BTreeNode<TItem>> GetCheckedNodes(List<BTreeNode<TItem>> childs)
         {
-            List<TreeNode<TItem>> checkeds = new List<TreeNode<TItem>>();
+            List<BTreeNode<TItem>> checkeds = new List<BTreeNode<TItem>>();
             foreach (var item in childs)
             {
                 if (item.Checked) checkeds.Add(item);
@@ -257,27 +257,27 @@ namespace BlazorComponent
         /// 返回一个值是否是页节点
         /// </summary>
         [Parameter]
-        public Func<TreeNode<TItem>, bool> SearchExpression { get; set; }
+        public Func<BTreeNode<TItem>, bool> SearchExpression { get; set; }
 
         /// <summary>
         /// 查询节点
         /// </summary>
-        /// <param name="treeNode"></param>
+        /// <param name="BTreeNode"></param>
         /// <returns></returns>
-        private bool SearchNode(TreeNode<TItem> treeNode)
+        private bool SearchNode(BTreeNode<TItem> BTreeNode)
         {
             if (SearchExpression != null)
-                treeNode.Matched = SearchExpression(treeNode);
+                BTreeNode.Matched = SearchExpression(BTreeNode);
             else
-                treeNode.Matched = treeNode.Title.Contains(SearchValue);
+                BTreeNode.Matched = BTreeNode.Title.Contains(SearchValue);
 
-            var hasChildMatched = treeNode.Matched;
-            foreach (var item in treeNode.ChildNodes)
+            var hasChildMatched = BTreeNode.Matched;
+            foreach (var item in BTreeNode.ChildNodes)
             {
                 var itemMatched = SearchNode(item);
                 hasChildMatched = hasChildMatched || itemMatched;
             }
-            treeNode.HasChildMatched = hasChildMatched;
+            BTreeNode.HasChildMatched = hasChildMatched;
 
             return hasChildMatched;
         }
@@ -293,31 +293,31 @@ namespace BlazorComponent
         /// 指定一个方法，该表达式返回节点的文本。
         /// </summary>
         [Parameter]
-        public Func<TreeNode<TItem>, string> TitleExpression { get; set; }
+        public Func<BTreeNode<TItem>, string> TitleExpression { get; set; }
 
         /// <summary>
         /// 指定一个返回节点名称的方法。
         /// </summary>
         [Parameter]
-        public Func<TreeNode<TItem>, string> KeyExpression { get; set; }
+        public Func<BTreeNode<TItem>, string> KeyExpression { get; set; }
 
         /// <summary>
         /// 指定一个返回节点名称的方法。
         /// </summary>
         [Parameter]
-        public Func<TreeNode<TItem>, string> IconExpression { get; set; }
+        public Func<BTreeNode<TItem>, string> IconExpression { get; set; }
 
         /// <summary>
         /// 返回一个值是否是页节点
         /// </summary>
         [Parameter]
-        public Func<TreeNode<TItem>, bool> IsLeafExpression { get; set; }
+        public Func<BTreeNode<TItem>, bool> IsLeafExpression { get; set; }
 
         /// <summary>
         /// 返回子节点的方法
         /// </summary>
         [Parameter]
-        public Func<TreeNode<TItem>, IList<TItem>> ChildrenExpression { get; set; }
+        public Func<BTreeNode<TItem>, IList<TItem>> ChildrenExpression { get; set; }
 
         #endregion DataBind
 
@@ -328,73 +328,73 @@ namespace BlazorComponent
         /// </summary>
         /// <remarks>必须使用async，且返回类型为Task，否则可能会出现载入时差导致显示问题</remarks>
         [Parameter]
-        public EventCallback<TreeEventArgs<TItem>> OnNodeLoadDelayAsync { get; set; }
+        public EventCallback<BTreeEventArgs<TItem>> OnNodeLoadDelayAsync { get; set; }
 
         /// <summary>
         /// 点击树节点触发
         /// </summary>
         [Parameter]
-        public EventCallback<TreeEventArgs<TItem>> OnClick { get; set; }
+        public EventCallback<BTreeEventArgs<TItem>> OnClick { get; set; }
 
         /// <summary>
         /// 双击树节点触发
         /// </summary>
         [Parameter]
-        public EventCallback<TreeEventArgs<TItem>> OnDblClick { get; set; }
+        public EventCallback<BTreeEventArgs<TItem>> OnDblClick { get; set; }
 
         /// <summary>
         /// 右键树节点触发
         /// </summary>
         [Parameter]
-        public EventCallback<TreeEventArgs<TItem>> OnContextMenu { get; set; }
+        public EventCallback<BTreeEventArgs<TItem>> OnContextMenu { get; set; }
 
         /// <summary>
         /// 点击树节点 Checkbox 触发
         /// </summary>
         [Parameter]
-        public EventCallback<TreeEventArgs<TItem>> OnCheckBoxChanged { get; set; }
+        public EventCallback<BTreeEventArgs<TItem>> OnCheckBoxChanged { get; set; }
 
         /// <summary>
         /// 点击展开树节点图标触发
         /// </summary>
         [Parameter]
-        public EventCallback<TreeEventArgs<TItem>> OnExpandChanged { get; set; }
+        public EventCallback<BTreeEventArgs<TItem>> OnExpandChanged { get; set; }
 
         /// <summary>
         /// 搜索节点时调用(与SearchValue配合使用)
         /// </summary>
         [Parameter]
-        public EventCallback<TreeEventArgs<TItem>> OnSearchValueChanged { get; set; }
+        public EventCallback<BTreeEventArgs<TItem>> OnSearchValueChanged { get; set; }
 
         ///// <summary>
         ///// 开始拖拽时调用
         ///// </summary>
-        //public EventCallback<TreeEventArgs> OnDragStart { get; set; }
+        //public EventCallback<BTreeEventArgs> OnDragStart { get; set; }
 
         ///// <summary>
         ///// dragenter 触发时调用
         ///// </summary>
-        //public EventCallback<TreeEventArgs> OnDragEnter { get; set; }
+        //public EventCallback<BTreeEventArgs> OnDragEnter { get; set; }
 
         ///// <summary>
         ///// dragover 触发时调用
         ///// </summary>
-        //public EventCallback<TreeEventArgs> OnDragOver { get; set; }
+        //public EventCallback<BTreeEventArgs> OnDragOver { get; set; }
 
         ///// <summary>
         ///// dragleave 触发时调用
         ///// </summary>
-        //public EventCallback<TreeEventArgs> OnDragLeave { get; set; }
+        //public EventCallback<BTreeEventArgs> OnDragLeave { get; set; }
 
         ///// <summary>
         ///// drop 触发时调用
         ///// </summary>
-        //public EventCallback<TreeEventArgs> OnDrop { get; set; }
+        //public EventCallback<BTreeEventArgs> OnDrop { get; set; }
 
         ///// <summary>
         ///// dragend 触发时调用
         ///// </summary>
-        //public EventCallback<TreeEventArgs> OnDragEnd { get; set; }
+        //public EventCallback<BTreeEventArgs> OnDragEnd { get; set; }
 
         #endregion Event
 
@@ -404,25 +404,25 @@ namespace BlazorComponent
         /// 缩进模板
         /// </summary>
         [Parameter]
-        public RenderFragment<TreeNode<TItem>> IndentTemplate { get; set; }
+        public RenderFragment<BTreeNode<TItem>> IndentTemplate { get; set; }
 
         /// <summary>
         /// 标题模板
         /// </summary>
         [Parameter]
-        public RenderFragment<TreeNode<TItem>> TitleTemplate { get; set; }
+        public RenderFragment<BTreeNode<TItem>> TitleTemplate { get; set; }
 
         /// <summary>
         /// 图标模板
         /// </summary>
         [Parameter]
-        public RenderFragment<TreeNode<TItem>> TitleIconTemplate { get; set; }
+        public RenderFragment<BTreeNode<TItem>> TitleIconTemplate { get; set; }
 
         /// <summary>
         /// 切换图标模板
         /// </summary>
         [Parameter]
-        public RenderFragment<TreeNode<TItem>> SwitcherIconTemplate { get; set; }
+        public RenderFragment<BTreeNode<TItem>> SwitcherIconTemplate { get; set; }
 
         #endregion Template
 
@@ -438,7 +438,7 @@ namespace BlazorComponent
         /// <param name="predicate">Predicate</param>
         /// <param name="recursive">Recursive Find</param>
         /// <returns></returns>
-        public TreeNode<TItem> FindFirstOrDefaultNode(Func<TreeNode<TItem>, bool> predicate, bool recursive = true)
+        public BTreeNode<TItem> FindFirstOrDefaultNode(Func<BTreeNode<TItem>, bool> predicate, bool recursive = true)
         {
             foreach (var child in ChildNodes)
             {
@@ -463,7 +463,7 @@ namespace BlazorComponent
         /// from node expand to root
         /// </summary>
         /// <param name="node">Node</param>
-        public void ExpandToNode(TreeNode<TItem> node)
+        public void ExpandToNode(BTreeNode<TItem> node)
         {
             if (node == null)
             {
@@ -493,7 +493,7 @@ namespace BlazorComponent
             this.ChildNodes.ForEach(node => Switch(node, false));
         }
 
-        private void Switch(TreeNode<TItem> node, bool expanded)
+        private void Switch(BTreeNode<TItem> node, bool expanded)
         {
             node.Expand(expanded);
             node.ChildNodes.ForEach(n => Switch(n, expanded));

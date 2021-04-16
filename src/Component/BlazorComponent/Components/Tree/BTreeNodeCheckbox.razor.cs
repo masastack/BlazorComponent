@@ -4,28 +4,28 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public abstract partial class TreeNodeCheckbox<TItem> : ComponentBase
+    public abstract partial class BTreeNodeCheckbox<TItem> : ComponentBase
     {
         /// <summary>
         /// 树控件本身
         /// </summary>
-        [CascadingParameter(Name = "Tree")]
-        public Tree<TItem> TreeComponent { get; set; }
+        [CascadingParameter(Name = "BTree")]
+        public BTree<TItem> BTreeComponent { get; set; }
 
         /// <summary>
         /// 当前节点
         /// </summary>
         [CascadingParameter(Name = "SelfNode")]
-        public TreeNode<TItem> SelfNode { get; set; }
+        public BTreeNode<TItem> SelfNode { get; set; }
 
         protected CssBuilder CssBuilder { get; } = new CssBuilder();
 
         private void SetClassMap()
         {
-            CssBuilder.Clear().Add("ant-tree-checkbox")
-                .AddIf("ant-tree-checkbox-checked", () => SelfNode.Checked)
-                .AddIf("ant-tree-checkbox-indeterminate", () => SelfNode.Indeterminate)
-                .AddIf("ant-tree-checkbox-disabled", () => SelfNode.Disabled || SelfNode.DisableCheckbox);
+            CssBuilder.Clear().Add("ant-BTree-checkbox")
+                .AddIf("ant-BTree-checkbox-checked", () => SelfNode.Checked)
+                .AddIf("ant-BTree-checkbox-indeterminate", () => SelfNode.Indeterminate)
+                .AddIf("ant-BTree-checkbox-disabled", () => SelfNode.Disabled || SelfNode.DisableCheckbox);
         }
 
         protected override void OnInitialized()

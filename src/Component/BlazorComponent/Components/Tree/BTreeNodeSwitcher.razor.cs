@@ -8,23 +8,23 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public abstract partial class TreeNodeSwitcher<TItem> : ComponentBase
+    public abstract partial class BTreeNodeSwitcher<TItem> : ComponentBase
     {
         /// <summary>
         /// 树控件本身
         /// </summary>
-        [CascadingParameter(Name = "Tree")]
-        public Tree<TItem> TreeComponent { get; set; }
+        [CascadingParameter(Name = "BTree")]
+        public BTree<TItem> BTreeComponent { get; set; }
 
         /// <summary>
         /// 当前节点
         /// </summary>
         [CascadingParameter(Name = "SelfNode")]
-        public TreeNode<TItem> SelfNode { get; set; }
+        public BTreeNode<TItem> SelfNode { get; set; }
 
-        private bool IsShowLineIcon => !SelfNode.IsLeaf && TreeComponent.ShowLine;
+        private bool IsShowLineIcon => !SelfNode.IsLeaf && BTreeComponent.ShowLine;
 
-        private bool IsShowSwitchIcon => !SelfNode.IsLeaf && !TreeComponent.ShowLine;
+        private bool IsShowSwitchIcon => !SelfNode.IsLeaf && !BTreeComponent.ShowLine;
 
         /// <summary>
         /// 节点是否处于展开状态
@@ -40,10 +40,10 @@ namespace BlazorComponent
 
         private void SetClassMap()
         {
-            CssBuilder.Clear().Add("ant-tree-switcher")
-                .AddIf("ant-tree-switcher-noop", () => SelfNode.IsLeaf)
-                .AddIf("ant-tree-switcher_open", () => IsSwitcherOpen)
-                .AddIf("ant-tree-switcher_close", () => IsSwitcherClose);
+            CssBuilder.Clear().Add("ant-BTree-switcher")
+                .AddIf("ant-BTree-switcher-noop", () => SelfNode.IsLeaf)
+                .AddIf("ant-BTree-switcher_open", () => IsSwitcherOpen)
+                .AddIf("ant-BTree-switcher_close", () => IsSwitcherClose);
         }
 
         protected override void OnInitialized()

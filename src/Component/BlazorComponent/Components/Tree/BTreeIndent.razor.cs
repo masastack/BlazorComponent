@@ -5,21 +5,21 @@ using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
-    public abstract partial class TreeIndent<TItem> : ComponentBase
+    public abstract partial class BTreeIndent<TItem> : ComponentBase
     {
         /// <summary>
         /// 树控件本身
         /// </summary>
-        [CascadingParameter(Name = "Tree")]
-        public Tree<TItem> TreeComponent { get; set; }
+        [CascadingParameter(Name = "BTree")]
+        public BTree<TItem> BTreeComponent { get; set; }
 
         /// <summary>
         /// 当前节点
         /// </summary>
         [CascadingParameter(Name = "SelfNode")]
-        public TreeNode<TItem> SelfNode { get; set; }
+        public BTreeNode<TItem> SelfNode { get; set; }
 
         [Parameter]
-        public int TreeLevel { get; set; }
+        public int BTreeLevel { get; set; }
     }
 }
