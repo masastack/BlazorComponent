@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BlazorComponent.Components.Core.CssProcess
 {
@@ -28,6 +29,30 @@ namespace BlazorComponent.Components.Core.CssProcess
         public BuilderBase AddIf(string name, Func<bool> func)
         {
             _mapper.Add(() => name, func);
+            return this;
+        }
+
+        public BuilderBase AddOneOf(params (Func<string> funcName, Func<bool> func)[] list)
+        {
+            var item = list.LastOrDefault(u => u.func.Invoke());
+
+            if (!item.Equals(default))
+            {
+                _mapper.Add(item.funcName, item.func);
+            }
+
+            return this;
+        }
+
+        public BuilderBase AddOneOf(params (string name, Func<bool> func)[] list)
+        {
+            var item = list.LastOrDefault(u => u.func.Invoke());
+
+            if (!item.Equals(default))
+            {
+                _mapper.Add(() => item.name, item.func);
+            }
+
             return this;
         }
 
