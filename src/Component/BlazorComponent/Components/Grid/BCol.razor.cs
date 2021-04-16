@@ -79,36 +79,36 @@ namespace BlazorComponent
         private void SetHostClassMap()
         {
             var prefixCls = "ant-col";
-            this.ClassMapper.Clear()
+            this.CssBuilder.Clear()
                 .Add(prefixCls)
-                .GetIf(() => $"{prefixCls}-{Span.Value}", () => Span.Value != null)
-                .GetIf(() => $"{prefixCls}-order-{Order.Value}", () => Order.Value != null)
-                .GetIf(() => $"{prefixCls}-offset-{Offset.Value}", () => Offset.Value != null)
-                .GetIf(() => $"{prefixCls}-pull-{Pull.Value}", () => Pull.Value != null)
-                .GetIf(() => $"{prefixCls}-push-{Push.Value}", () => Push.Value != null)
+                .AddIf(() => $"{prefixCls}-{Span.Value}", () => Span.Value != null)
+                .AddIf(() => $"{prefixCls}-order-{Order.Value}", () => Order.Value != null)
+                .AddIf(() => $"{prefixCls}-offset-{Offset.Value}", () => Offset.Value != null)
+                .AddIf(() => $"{prefixCls}-pull-{Pull.Value}", () => Pull.Value != null)
+                .AddIf(() => $"{prefixCls}-push-{Push.Value}", () => Push.Value != null)
                 ;
 
-            SetSizeClassMapper(prefixCls, Xs, "xs");
-            SetSizeClassMapper(prefixCls, Sm, "sm");
-            SetSizeClassMapper(prefixCls, Md, "md");
-            SetSizeClassMapper(prefixCls, Lg, "lg");
-            SetSizeClassMapper(prefixCls, Xl, "xl");
-            SetSizeClassMapper(prefixCls, Xxl, "xxl");
+            SetSizeCssBuilder(prefixCls, Xs, "xs");
+            SetSizeCssBuilder(prefixCls, Sm, "sm");
+            SetSizeCssBuilder(prefixCls, Md, "md");
+            SetSizeCssBuilder(prefixCls, Lg, "lg");
+            SetSizeCssBuilder(prefixCls, Xl, "xl");
+            SetSizeCssBuilder(prefixCls, Xxl, "xxl");
         }
 
-        private void SetSizeClassMapper(string prefixCls, OneOf<int, EmbeddedProperty> parameter, string sizeName)
+        private void SetSizeCssBuilder(string prefixCls, OneOf<int, EmbeddedProperty> parameter, string sizeName)
         {
             parameter.Switch(strNum =>
             {
-                ClassMapper.If($"{prefixCls}-{sizeName}-{strNum}", () => strNum > 0);
+                CssBuilder.AddIf($"{prefixCls}-{sizeName}-{strNum}", () => strNum > 0);
             }, embedded =>
             {
-                ClassMapper
-                    .GetIf(() => $"{prefixCls}-{sizeName}-{embedded.Span.Value}", () => embedded.Span.Value != null)
-                    .GetIf(() => $"{prefixCls}-{sizeName}-order-{embedded.Order.Value}", () => embedded.Order.Value != null)
-                    .GetIf(() => $"{prefixCls}-{sizeName}-offset-{embedded.Offset.Value}", () => embedded.Offset.Value != null)
-                    .GetIf(() => $"{prefixCls}-{sizeName}-push-{embedded.Push.Value}", () => embedded.Push.Value != null)
-                    .GetIf(() => $"{prefixCls}-{sizeName}-pull-{embedded.Pull.Value}", () => embedded.Pull.Value != null);
+                CssBuilder
+                    .AddIf(() => $"{prefixCls}-{sizeName}-{embedded.Span.Value}", () => embedded.Span.Value != null)
+                    .AddIf(() => $"{prefixCls}-{sizeName}-order-{embedded.Order.Value}", () => embedded.Order.Value != null)
+                    .AddIf(() => $"{prefixCls}-{sizeName}-offset-{embedded.Offset.Value}", () => embedded.Offset.Value != null)
+                    .AddIf(() => $"{prefixCls}-{sizeName}-push-{embedded.Push.Value}", () => embedded.Push.Value != null)
+                    .AddIf(() => $"{prefixCls}-{sizeName}-pull-{embedded.Pull.Value}", () => embedded.Pull.Value != null);
             });
         }
 

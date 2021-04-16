@@ -14,6 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddBlazorComponent(this IServiceCollection services)
         {
             services.TryAddScoped<DomEventJsInterop>();
+            services.TryAddScoped<HeadJsInterop>();
             //services.TryAddScoped(sp => new HtmlRenderService(new HtmlRenderer(sp, sp.GetRequiredService<ILoggerFactory>(),
             //            s => HtmlEncoder.Default.Encode(s)))
             //);

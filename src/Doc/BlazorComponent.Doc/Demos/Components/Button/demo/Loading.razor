@@ -1,0 +1,53 @@
+﻿@using System.Timers
+
+<div>
+    <Button Type="primary" Loading>
+        Loading
+    </Button>
+    <Button Type="primary" Size="small" Loading>
+        Loading
+    </Button>
+    <br />
+    <Button Type="primary" Loading="loading" OnClick=enterLoading>
+        Click me!
+    </Button>
+    <Button
+        Type="primary"
+        Icon="poweroff"
+    Loading="iconLoading"
+    OnClick="enterIconLoading"
+    >
+    Click me!
+    </Button>
+</div>
+
+@code
+{
+    bool loading = false;
+    bool iconLoading = false;
+
+    private void enterLoading()
+    {
+        loading = true;
+        Task.Run(async () =>
+        {
+            await Task.Delay(8000);
+            loading = false;
+            await InvokeAsync(StateHasChanged);
+            Console.WriteLine("Timer2 ended" + DateTime.Now);
+        });
+
+    }
+
+    private void enterIconLoading()
+    {
+        iconLoading = true;
+
+        Task.Run(async () =>
+        {
+            await Task.Delay(8000);
+            iconLoading = false;
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+}

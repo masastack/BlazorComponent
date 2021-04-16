@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using BlazorComponent.Components.Core.CssProcess;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.AspNetCore.Components.RenderTree;
 
 namespace BlazorComponent
 {
@@ -32,11 +34,14 @@ namespace BlazorComponent
             }
         }
 
-        protected ClassMapper ClassMapper { get; } = new ClassMapper();
+        protected CssBuilder CssBuilder { get; } = new CssBuilder();
+
+        protected StyleBuilder StyleBuilder { get; } = new StyleBuilder();
 
         public BDomComponentBase()
         {
-            ClassMapper.Get(() => Class);
+            CssBuilder.Add(() => Class);
+            StyleBuilder.Add(() => Style);
         }
 
         protected override void OnInitialized()
@@ -55,7 +60,7 @@ namespace BlazorComponent
             set
             {
                 _class = value;
-                ClassMapper.OriginalClass = value;
+                CssBuilder.OriginalClass = value;
             }
         }
 
@@ -69,7 +74,8 @@ namespace BlazorComponent
             set
             {
                 _style = value;
-                StateHasChanged();
+                StyleBuilder.OriginalStyle = value;
+                StateHasChanged(); // TODO: need this?
             }
         }
 
@@ -91,6 +97,24 @@ namespace BlazorComponent
         protected virtual string GenerateStyle()
         {
             return Style;
+        }
+
+        /// <summary>
+        /// Gets text in ChildContent.
+        /// </summary>
+        /// <param name="childContent">The child content of <see cref="RenderFragment"/></param>
+        /// <returns>The text.</returns>
+        protected string GetChildContentText(RenderFragment childContent)
+        {
+            var builder = new RenderTreeBuilder();
+            childContent(builder);
+            BuildRenderTree(builder);
+
+            // TODO: will be changed next release version!
+
+            var frame = builder.GetFrames().Array.FirstOrDefault(u => u.FrameType == RenderTreeFrameType.Text);
+
+            return frame.TextContent;
         }
     }
 }

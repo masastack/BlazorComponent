@@ -1,0 +1,13 @@
+﻿@inject MessageService _message
+
+<Button Type="primary" OnClick="OnClick">
+    Display normal message
+</Button>
+
+@code{
+    private void OnClick()
+    {
+        Console.WriteLine("onclick");
+        _message.Info("This is a normal message");
+    }
+}

@@ -1,0 +1,59 @@
+﻿@inject NotificationService _notice
+
+<div>
+    <Button Type="@ButtonType.Primary" OnClick="@OnTopLeftClick">
+        <Icon Type="Radius-Upleft" Theme="Outline"></Icon>
+        TopLeft
+    </Button>
+
+    <Button Type="@ButtonType.Primary" OnClick="@OnTopRightClick">
+        <Icon Type="Radius-Upright" Theme="Outline"></Icon>
+        TopRight
+    </Button>
+</div>
+
+<br/>
+
+<div>
+    <Button Type="@ButtonType.Primary" OnClick="@OnBottomLeftClick">
+        <Icon Type="Radius-Bottomleft" Theme="Outline"></Icon>
+        BottomLeft
+    </Button>
+
+    <Button Type="@ButtonType.Primary" OnClick="@OnBottomRightClick">
+        <Icon Type="Radius-Bottomright" Theme="Outline"></Icon>
+        BottomRight
+    </Button>
+</div>
+
+@code {
+    private async Task OpenWithPlacement(NotificationPlacement placement)
+    {
+        await _notice.Open(new NotificationConfig()
+        {
+            Message = $"Notification {placement}",
+            Description = "This is the content of the notification. This is the content of the notification. This is the content of the notification.",
+            Placement = placement
+        });
+    }
+
+    private async Task OnTopLeftClick()
+    {
+        await OpenWithPlacement(NotificationPlacement.TopLeft);
+    }
+
+    private async Task OnTopRightClick()
+    {
+        await OpenWithPlacement(NotificationPlacement.TopRight);
+    }
+
+    private async Task OnBottomLeftClick()
+    {
+        await OpenWithPlacement(NotificationPlacement.BottomLeft);
+    }
+
+    private async Task OnBottomRightClick()
+    {
+        await OpenWithPlacement(NotificationPlacement.BottomRight);
+    }
+}
