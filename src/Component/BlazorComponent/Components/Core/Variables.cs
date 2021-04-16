@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public class Variables
     {
@@ -14,6 +8,6 @@ namespace BlazorComponent
 
         public static bool DarkTheme { get; set; }
 
-        public static ThemeModel Theme { get; set; }
+        public static ThemeOptions Theme { get; set; }
     }
 }

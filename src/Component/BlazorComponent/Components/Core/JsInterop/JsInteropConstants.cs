@@ -102,6 +102,8 @@ namespace BlazorComponent
 
         public static string DisposeResizeTextArea => $"{Variables.JsInteropFuncNamePrefix}disposeResizeTextArea";
 
+        public static string InsertAdjacentHTML => $"{Variables.JsInteropFuncNamePrefix}insertAdjacentHTML";
+
         #region Draggable Modal
 
         public static string EnableDraggable => $"{Variables.JsInteropFuncNamePrefix}enableDraggable";
