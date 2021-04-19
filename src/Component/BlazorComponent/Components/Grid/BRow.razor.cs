@@ -114,7 +114,7 @@ namespace BlazorComponent
                 OnBreakpoint.InvokeAsync(actualBreakpoint);
             }
 
-            StateHasChanged();
+            InvokeStateHasChanged();
         }
 
         private void SetGutterStyle(string breakPoint)
@@ -130,7 +130,7 @@ namespace BlazorComponent
             }
             GutterStyle += $"row-gap: {gutter.verticalGutter}px; ";
 
-            StateHasChanged();
+            InvokeStateHasChanged();
         }
 
         private (int horizontalGutter, int verticalGutter) GetGutter(string breakPoint)
