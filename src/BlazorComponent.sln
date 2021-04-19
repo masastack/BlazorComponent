@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2 - Component", "2 - Compon
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorComponent", "Component\BlazorComponent\BlazorComponent.csproj", "{A81FAD5B-C1B2-498B-8A16-46DDDD1C5612}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3 - Docs", "3 - Docs", "{C001BD36-40F0-42AF-8E27-7A564153F56A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3 - Doc", "3 - Doc", "{C001BD36-40F0-42AF-8E27-7A564153F56A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorComponent.Doc.CLI", "Doc\BlazorComponent.Doc.CLI\BlazorComponent.Doc.CLI.csproj", "{383DE5D3-9934-44E0-B826-2E0DBA402F8A}"
 EndProject
@@ -22,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorComponent.Test.Wasm",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorComponent.Doc", "Doc\BlazorComponent.Doc\BlazorComponent.Doc.csproj", "{F0F27A9D-5EA7-4A8B-A0E5-2B658602E38D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorComponent.Test.ServerHost", "Test\BlazorComponent.Test.ServerHost\BlazorComponent.Test.ServerHost.csproj", "{DB36CF9F-D7F9-4F77-A2DF-5F169D4A640A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorComponent.Test.ServerHost", "Test\BlazorComponent.Test.ServerHost\BlazorComponent.Test.ServerHost.csproj", "{DB36CF9F-D7F9-4F77-A2DF-5F169D4A640A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

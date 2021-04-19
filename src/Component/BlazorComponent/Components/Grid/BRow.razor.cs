@@ -27,7 +27,7 @@ namespace BlazorComponent
         public string Type { get; set; }
 
         /// <summary>
-        /// 'top' | 'middle' | 'bottom'
+        /// 'start' | 'center' | 'end'
         /// </summary>
         [Parameter]
         public string Align { get; set; }

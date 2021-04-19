@@ -34,6 +34,9 @@ namespace BlazorComponent.Doc.CLI
             new List<IAppCommand>()
             {
                 new GenerateDemoJsonCommand(),
+                new GenerateDocsToHtmlCommand(),
+                new GenerateIconsToJsonCommand(),
+                new GenerateMenuJsonCommand(),
             }
             .ToList()
             .ForEach(cmd =>
