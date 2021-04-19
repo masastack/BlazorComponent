@@ -76,42 +76,6 @@ namespace BlazorComponent
             }
         }
 
-        private void SetHostClassMap()
-        {
-            var prefixCls = "ant-col";
-            this.CssBuilder.Clear()
-                .Add(prefixCls)
-                .AddIf(() => $"{prefixCls}-{Span.Value}", () => Span.Value != null)
-                .AddIf(() => $"{prefixCls}-order-{Order.Value}", () => Order.Value != null)
-                .AddIf(() => $"{prefixCls}-offset-{Offset.Value}", () => Offset.Value != null)
-                .AddIf(() => $"{prefixCls}-pull-{Pull.Value}", () => Pull.Value != null)
-                .AddIf(() => $"{prefixCls}-push-{Push.Value}", () => Push.Value != null)
-                ;
-
-            SetSizeCssBuilder(prefixCls, Xs, "xs");
-            SetSizeCssBuilder(prefixCls, Sm, "sm");
-            SetSizeCssBuilder(prefixCls, Md, "md");
-            SetSizeCssBuilder(prefixCls, Lg, "lg");
-            SetSizeCssBuilder(prefixCls, Xl, "xl");
-            SetSizeCssBuilder(prefixCls, Xxl, "xxl");
-        }
-
-        private void SetSizeCssBuilder(string prefixCls, OneOf<int, EmbeddedProperty> parameter, string sizeName)
-        {
-            parameter.Switch(strNum =>
-            {
-                CssBuilder.AddIf($"{prefixCls}-{sizeName}-{strNum}", () => strNum > 0);
-            }, embedded =>
-            {
-                CssBuilder
-                    .AddIf(() => $"{prefixCls}-{sizeName}-{embedded.Span.Value}", () => embedded.Span.Value != null)
-                    .AddIf(() => $"{prefixCls}-{sizeName}-order-{embedded.Order.Value}", () => embedded.Order.Value != null)
-                    .AddIf(() => $"{prefixCls}-{sizeName}-offset-{embedded.Offset.Value}", () => embedded.Offset.Value != null)
-                    .AddIf(() => $"{prefixCls}-{sizeName}-push-{embedded.Push.Value}", () => embedded.Push.Value != null)
-                    .AddIf(() => $"{prefixCls}-{sizeName}-pull-{embedded.Pull.Value}", () => embedded.Pull.Value != null);
-            });
-        }
-
         private void SetHostFlexStyle()
         {
             if (this.Flex.Value == null)
@@ -133,7 +97,6 @@ namespace BlazorComponent
         {
             this.Row?.Cols.Add(this);
 
-            this.SetHostClassMap();
             this.SetHostFlexStyle();
 
             base.OnInitialized();
