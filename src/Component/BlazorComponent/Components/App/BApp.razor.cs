@@ -20,7 +20,6 @@ namespace BlazorComponent
 
         protected override Task OnInitializedAsync()
         {
-            Console.WriteLine("1234");
             if (Variables.Theme != null)
                 HeadJsInterop.InsertAdjacentHTML("beforeend", ThemeCssBuilder.Build());
 
