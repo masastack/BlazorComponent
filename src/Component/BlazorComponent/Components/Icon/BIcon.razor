@@ -1,11 +1,40 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<span role="img"
-      class="@CssBuilder.Class"
-      style="@StyleBuilder.Style"
-      id="@Id"
-      @ref="Ref"
-      @onclick="HandleOnClick">
-    <i class="oi oi-@_icon"></i>
-</span>
+@if (_tag == IconTag.I)
+{
+    if (Click.HasDelegate)
+    {
+        <button type="button"
+                class="@CssBuilder.Class"
+                style="@StyleBuilder.Style"
+                id="@Id"
+                @ref="Ref"
+                @onclick="HandleOnClick">
+            @_icon
+        </button>
+    }
+    else
+    {
+        <i class="@CssBuilder.Class"
+           style="@StyleBuilder.Style"
+           id="@Id"
+           @ref="Ref"
+           @onclick="HandleOnClick">
+            @_icon
+        </i>
+    }
+}
+else
+{
+    // Render SVG
+
+    <span role="img"
+          class="@CssBuilder.Class"
+          style="@StyleBuilder.Style"
+          id="@Id"
+          @ref="Ref"
+          @onclick="HandleOnClick">
+        @((MarkupString) _icon)
+    </span>
+}
