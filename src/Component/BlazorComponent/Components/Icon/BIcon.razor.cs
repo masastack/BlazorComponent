@@ -43,38 +43,40 @@ namespace BlazorComponent
 
             // TODO: will be changed next release version!
             var frame = builder.GetFrames().Array.FirstOrDefault(u => u.FrameType == RenderTreeFrameType.Text || u.FrameType == RenderTreeFrameType.Markup);
-            if (frame.FrameType == RenderTreeFrameType.Markup)
+
+            if (frame.FrameType != RenderTreeFrameType.None)
             {
-                // support SVG
                 if (frame.TextContent.Contains("<svg"))
                 {
+                    // support SVG
+
                     _tag = IconTag.Span;
                     _icon = frame.TextContent;
                 }
-            }
-            else if (frame.FrameType == RenderTreeFrameType.Text)
-            {
-                _tag = IconTag.I;
-                _icon = frame.TextContent;
-
-                // support Font Awesome 5
-                if (_icon.StartsWith("fas "))
-                {
-                    CssBuilder.Add(_icon);
-
-                    _icon = null;
-                }
-                // support Material Design Icons
-                else if (_icon.StartsWith("mdi-"))
-                {
-                    CssBuilder.Add($"mdi {_icon}");
-
-                    _icon = null;
-                }
-                // support Material Design
                 else
                 {
-                    CssBuilder.Add("material-icons");
+                    _tag = IconTag.I;
+                    _icon = frame.TextContent.Trim();
+
+                    // support Font Awesome 5
+                    if (_icon.StartsWith("fas "))
+                    {
+                        CssBuilder.Add(_icon);
+
+                        _icon = null;
+                    }
+                    // support Material Design Icons
+                    else if (_icon.StartsWith("mdi-"))
+                    {
+                        CssBuilder.Add($"mdi {_icon}");
+
+                        _icon = null;
+                    }
+                    // support Material Design
+                    else
+                    {
+                        CssBuilder.Add("material-icons");
+                    }
                 }
             }
 
