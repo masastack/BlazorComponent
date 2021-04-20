@@ -1,9 +1,12 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<aside class="@CssBuilder.Class" style="@Style" id="@Id" @ref="Ref">
-    <div class="@ContentCssBuilder.Class">
-        @ChildContent
-    </div>
-    <div class="@BorderCssBuilder.Class"></div>
-</aside>
+<CascadingValue Value="this">
+    <aside class="@CssBuilder.Class" style="@Style" id="@Id" @ref="Ref">
+        <div class="@ContentCssBuilder.Class">
+            @ChildContent
+        </div>
+        <div class="@BorderCssBuilder.Class"></div>
+    </aside>
+</CascadingValue>
+

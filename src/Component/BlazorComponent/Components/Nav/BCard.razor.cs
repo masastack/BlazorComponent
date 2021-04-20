@@ -7,16 +7,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
-    public abstract partial class BList
+    public abstract partial class BCard : BDomComponentBase
     {
         [Parameter]
         public RenderFragment ChildContent { get; set; }
-
-        public virtual List<BListItem> Items { get; set; }
-
-        public virtual void Select(BListItem mListItem)
-        {
-            
-        }
     }
 }
