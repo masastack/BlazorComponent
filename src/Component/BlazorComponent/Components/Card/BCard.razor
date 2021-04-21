@@ -1,0 +1,44 @@
+@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<CascadingValue Value="this" IsFixed="@true">
+    <div class="@CssBuilder.Class" style="@Style" id="@Id" @ref="Ref">
+
+        @if (Cover != null)
+        {
+            <div class="@CardCoverCssBuilder.Class" style="@CoverStyleBuilder.Style">
+                @Cover
+            </div>
+        }
+
+        @if (Title != null)
+        {
+            <div class="@TitleCssBuilder.Class">
+                @Title
+            </div>
+        }
+
+        @if (SubTitle != null)
+        {
+            <div class="@SubTitleCssBuilder.Class">
+                @SubTitle
+            </div>
+        }
+
+
+        @if (Text != null )
+        {
+            <div class="@TextCssBuilder.Class">
+                @Text
+            </div>
+        }
+
+        @if (Actions != null)
+        {
+            <div class="@ActionsCssBuilder.Class">
+                @Actions
+            </div>
+        }
+
+    </div>
+</CascadingValue>
