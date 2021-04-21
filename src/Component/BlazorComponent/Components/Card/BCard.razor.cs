@@ -6,8 +6,6 @@ namespace BlazorComponent
 {
     public abstract partial class BCard : BDomComponentBase
     {
-
-
         protected CssBuilder CardCoverCssBuilder { get; } = new CssBuilder();
         protected StyleBuilder CoverStyleBuilder { get; } = new StyleBuilder();
 
@@ -17,9 +15,8 @@ namespace BlazorComponent
         protected CssBuilder TextCssBuilder { get; } = new CssBuilder();
         protected CssBuilder ActionsCssBuilder { get; } = new CssBuilder();
 
-
         [Parameter]
-        public bool Bordered { get; set; } = false;
+        public bool Outlined { get; set; }
 
         [Parameter]
         public RenderFragment Cover { get; set; }
@@ -35,7 +32,6 @@ namespace BlazorComponent
 
         [Parameter]
         public RenderFragment Actions { get; set; }
-
 
     }
 }
