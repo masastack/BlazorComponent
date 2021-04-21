@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.AspNetCore.Components.RenderTree;
 using Microsoft.AspNetCore.Components.Web;
 using OneOf;
-using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
@@ -10,6 +13,7 @@ namespace BlazorComponent
     public abstract partial class BIcon : BDomComponentBase
     {
         private string _icon;
+        private IconTag _tag = IconTag.I;
 
         // TODO: 维护内置颜色列表
         [Parameter]
@@ -34,7 +38,47 @@ namespace BlazorComponent
 
         protected override void OnInitialized()
         {
-            _icon = GetChildContentText(ChildContent);
+            var builder = new RenderTreeBuilder();
+            ChildContent(builder);
+
+            // TODO: will be changed next release version!
+            var frame = builder.GetFrames().Array.FirstOrDefault(u => u.FrameType == RenderTreeFrameType.Text || u.FrameType == RenderTreeFrameType.Markup);
+
+            if (frame.FrameType != RenderTreeFrameType.None)
+            {
+                if (frame.TextContent.Contains("<svg"))
+                {
+                    // support SVG
+
+                    _tag = IconTag.Span;
+                    _icon = frame.TextContent;
+                }
+                else
+                {
+                    _tag = IconTag.I;
+                    _icon = frame.TextContent.Trim();
+
+                    // support Font Awesome 5
+                    if (_icon.StartsWith("fas "))
+                    {
+                        CssBuilder.Add(_icon);
+
+                        _icon = null;
+                    }
+                    // support Material Design Icons
+                    else if (_icon.StartsWith("mdi-"))
+                    {
+                        CssBuilder.Add($"mdi {_icon}");
+
+                        _icon = null;
+                    }
+                    // support Material Design
+                    else
+                    {
+                        CssBuilder.Add("material-icons");
+                    }
+                }
+            }
 
             base.OnInitialized();
         }

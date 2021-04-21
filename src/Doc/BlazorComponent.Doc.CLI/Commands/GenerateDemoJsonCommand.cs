@@ -192,7 +192,7 @@ namespace BlazorComponent.Doc.CLI.Commands
             var demoJson = JsonSerializer.Serialize(demoTypes, new JsonSerializerOptions()
             {
                 WriteIndented = true,
-                IgnoreNullValues = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             });
 

@@ -46,7 +46,7 @@ namespace BlazorComponent.Components.Core.CssProcess
 
         public BuilderBase AddFirstIf(params (string name, Func<bool> func)[] list)
         {
-            var item = list.LastOrDefault(u => u.func.Invoke());
+            var item = list.FirstOrDefault(u => u.func.Invoke());
 
             if (!item.Equals(default))
             {
