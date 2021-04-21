@@ -1,0 +1,22 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<button type="button"
+		class="@CssBuilder.Class"
+		style="@StyleBuilder.Style"
+		id="@Id"
+		@ref="Ref"
+		@onclick="HandleOnClick">
+
+	<div class="@_btnContentClass">
+		@ChildContent
+	</div>
+
+	@if (Loading)
+	{
+	 <div class="@_btnLoaderClass">
+			@LoadingFragment
+	 </div>
+	}
+
+</button>
