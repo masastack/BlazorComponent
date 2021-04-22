@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
@@ -16,7 +17,7 @@ namespace BlazorComponent
 
         protected CssBuilder WrapCssBuilder { get; } = new CssBuilder();
 
-        public ThemeCssBuilder ThemeCssBuilder { get; } = new ThemeCssBuilder();
+        protected ThemeCssBuilder ThemeCssBuilder { get; } = new ThemeCssBuilder();
 
         protected override Task OnInitializedAsync()
         {

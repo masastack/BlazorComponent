@@ -85,6 +85,8 @@ namespace BlazorComponent
         [Parameter(CaptureUnmatchedValues = true)]
         public IDictionary<string, object> Attributes { get; set; }
 
+        protected virtual Dictionary<string, object> StaticAttributes { get; } = new();
+
         public abstract void SetComponentClass();
 
         protected override Task OnInitializedAsync()
