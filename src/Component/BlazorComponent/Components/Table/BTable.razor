@@ -1,0 +1,21 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<div class="@CssBuilder.Class" style="@OriginalStyle" id="@Id" @ref="Ref">
+
+    @if (Top != default)
+    {
+        @Top
+    }
+
+    <div class="@WrapCssBuilder.Class" style="@WrapStyleBuilder.Style">
+        <table>
+            @ChildContent
+        </table>
+    </div>
+
+    @if (Bottom != default)
+    {
+        @Bottom
+    }
+</div>

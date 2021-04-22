@@ -10,8 +10,8 @@ namespace BlazorComponent
 {
     public abstract class BDomComponentBase : BComponentBase
     {
-        private string _class;
-        private string _style;
+        private string _originalClass;
+        private string _originalStyle;
 
         [Inject]
         private IComponentIdGenerator ComponentIdGenerator { get; set; }
@@ -40,8 +40,8 @@ namespace BlazorComponent
 
         public BDomComponentBase()
         {
-            CssBuilder.Add(() => Class);
-            StyleBuilder.Add(() => Style);
+            CssBuilder.Add(() => OriginalClass);
+            StyleBuilder.Add(() => OriginalStyle);
         }
 
         protected override void OnInitialized()
@@ -54,12 +54,12 @@ namespace BlazorComponent
         /// Specifies one or more class names for an DOM element.
         /// </summary>
         [Parameter]
-        public string Class
+        public string OriginalClass
         {
-            get => _class;
+            get => _originalClass;
             set
             {
-                _class = value;
+                _originalClass = value;
                 CssBuilder.OriginalClass = value;
             }
         }
@@ -68,16 +68,26 @@ namespace BlazorComponent
         /// Specifies an inline style for an DOM element.
         /// </summary>
         [Parameter]
-        public string Style
+        public string OriginalStyle
         {
-            get => _style;
+            get => _originalStyle;
             set
             {
-                _style = value;
+                _originalStyle = value;
                 StyleBuilder.OriginalStyle = value;
                 StateHasChanged(); // TODO: need this?
             }
         }
+
+        /// <summary>
+        /// All css class 
+        /// </summary>
+        public string Class => CssBuilder.Class;
+
+        /// <summary>
+        /// All css style
+        /// </summary>
+        public string Style => StyleBuilder.Style;
 
         /// <summary>
         /// Custom attributes
@@ -96,7 +106,7 @@ namespace BlazorComponent
 
         protected virtual string GenerateStyle()
         {
-            return Style;
+            return OriginalStyle;
         }
 
         /// <summary>
