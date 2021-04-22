@@ -1,0 +1,16 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<div role="alert" class="@CssBuilder.Class" style="@StyleBuilder.Style" id="@Id">
+	<div class="@WrapperCssBuilder.Class">
+		@IconContent
+		<div class="@ContentCssBuilder.Class">
+			@ChildContent
+		</div>
+		@if (Border.HasValue)
+		{
+	  <div class="@BorderCssBuilder.Class" style="@BorderStyleBuilder.Style"></div>
+		}
+		@DismissibleButtonContent
+ </div>
+</div>
