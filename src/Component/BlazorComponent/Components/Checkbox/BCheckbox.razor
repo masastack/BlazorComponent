@@ -1,0 +1,38 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<div class="@CssBuilder.Class"
+	 style="@StyleBuilder.Style"
+	 id="@Id">
+	<div class="@ControlCssBuilder.Class">
+		<div class="@SlotCssBuilder.Class" @onclick="Toggle">
+			<div class="@InputWrapperCssBuilder.Class">
+				@if (Checked)
+				{
+					@CheckedIconContent
+				}
+				else if (Indeterminate)
+				{
+					@IndeterminateIconContent
+				}
+				else
+				{
+					@UncheckIconContent
+				}
+	<input role="checkbox" type="checkbox" class="" disabled="@Disabled" id="check-@Id" />
+				@AnimationContent
+   </div>
+
+			@if (ChildContent == null)
+			{
+	   <label class="@LabelCssBuilder.Class">
+					@Label
+	   </label>
+			}
+			else
+			{
+				@ChildContent
+			}
+  </div>
+ </div>
+</div>
