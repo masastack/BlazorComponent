@@ -10,9 +10,7 @@ namespace BlazorComponent
 {
     public abstract partial class BTreeItem<TItem> : BDomComponentBase
     {
-        //CssBuilderRoot.Add("m-treeview-node__root");
 
-        //CssBuilderChildren.Add("m-treeview-node__children");
         protected CssBuilder CssBuilderRoot { get; } = new CssBuilder();
         protected CssBuilder CssBuilderLevel { get; } = new CssBuilder();
 

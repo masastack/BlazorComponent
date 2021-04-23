@@ -1,0 +1,469 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BlazorComponent</name>
+    </assembly>
+    <members>
+        <member name="F:BlazorComponent.BButton._btnContentClass">
+            <summary>
+            The name of css class for button content
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BButton.Color">
+            <summary>
+            The background color
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BButton.Fab">
+            <summary>
+            Floating
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BDomComponentBase.Ref">
+            <summary>
+            Returned ElementRef reference for DOM element.
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BDomComponentBase.Class">
+            <summary>
+            Specifies one or more class names for an DOM element.
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BDomComponentBase.Style">
+            <summary>
+            Specifies an inline style for an DOM element.
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BDomComponentBase.Attributes">
+            <summary>
+            Custom attributes
+            </summary>
+        </member>
+        <member name="M:BlazorComponent.BDomComponentBase.GetChildContentText(Microsoft.AspNetCore.Components.RenderFragment)">
+            <summary>
+            Gets text in ChildContent.
+            </summary>
+            <param name="childContent">The child content of <see cref="T:Microsoft.AspNetCore.Components.RenderFragment"/></param>
+            <returns>The text.</returns>
+        </member>
+        <member name="M:BlazorComponent.HeadJsInterop.InsertAdjacentHTML(System.String,System.String)">
+            <summary>
+            The insertAdjacentHTML() method of the Element interface parses the specified text as HTML or XML and inserts the resulting nodes into the DOM tree at a specified position.
+            <see cref="!:https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentHTML"/>
+            </summary>
+            <param name="position"></param>
+            <param name="text"></param>
+        </member>
+        <member name="P:BlazorComponent.BRow.Align">
+            <summary>
+            'start' | 'center' | 'end'
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BRow.Justify">
+            <summary>
+            'start' | 'end' | 'center' | 'space-around' | 'space-between'
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BRow.DefaultBreakpoint">
+            <summary>
+            Used to set gutter during pre-rendering
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BProcessCircular.Delay">
+            <summary>
+            TODO: 延迟
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BProcessCircular.Tip">
+            <summary>
+            TODO: 自定义描述文案
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BProcessCircular.ChildContent">
+            <summary>
+            加载指示符
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.ShowExpand">
+            <summary>
+            节点前添加展开图标
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.ShowLine">
+            <summary>
+            是否展示连接线
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.ShowIcon">
+            <summary>
+            是否展示 BTreeItem title 前的图标
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.BlockNode">
+            <summary>
+            是否节点占据一行
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.Draggable">
+            <summary>
+            设置节点可拖拽
+            </summary>
+        </member>
+        <member name="M:BlazorComponent.BTree`1.AddNode(BlazorComponent.BTreeItem{`0})">
+            <summary>
+            添加节点
+            </summary>
+            <param name="BTreeItem"></param>
+            <param name=""></param>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.Multiple">
+            <summary>
+            支持点选多个节点（节点本身）
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.SelectedNodesDictionary">
+            <summary>
+            选中的树节点
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.SelectedKey">
+            <summary>
+            选择的Key
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.SelectedNode">
+            <summary>
+            选择的节点
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.SelectedData">
+            <summary>
+            选择的数据
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.SelectedKeys">
+            <summary>
+            选择的Key集合
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.SelectedNodes">
+            <summary>
+            选择的节点集合
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.SelectedDatas">
+            <summary>
+            选择的数据集合
+            </summary>
+        </member>
+        <member name="M:BlazorComponent.BTree`1.UpdateBindData">
+            <summary>
+            更新绑定数据
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.Checkable">
+            <summary>
+            节点前添加 Checkbox 复选框
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.SearchValue">
+            <summary>
+            按需筛选树,双向绑定
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.SearchExpression">
+            <summary>
+            返回一个值是否是页节点
+            </summary>
+        </member>
+        <member name="M:BlazorComponent.BTree`1.SearchNode(BlazorComponent.BTreeItem{`0})">
+            <summary>
+            查询节点
+            </summary>
+            <param name="BTreeItem"></param>
+            <returns></returns>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.TitleExpression">
+            <summary>
+            指定一个方法，该表达式返回节点的文本。
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.KeyExpression">
+            <summary>
+            指定一个返回节点名称的方法。
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.IconExpression">
+            <summary>
+            指定一个返回节点名称的方法。
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.IsLeafExpression">
+            <summary>
+            返回一个值是否是页节点
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.ChildrenExpression">
+            <summary>
+            返回子节点的方法
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.OnNodeLoadDelayAsync">
+            <summary>
+            延迟加载
+            </summary>
+            <remarks>必须使用async，且返回类型为Task，否则可能会出现载入时差导致显示问题</remarks>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.OnClick">
+            <summary>
+            点击树节点触发
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.OnDblClick">
+            <summary>
+            双击树节点触发
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.OnContextMenu">
+            <summary>
+            右键树节点触发
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.OnCheckBoxChanged">
+            <summary>
+            点击树节点 Checkbox 触发
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.OnExpandChanged">
+            <summary>
+            点击展开树节点图标触发
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.OnSearchValueChanged">
+            <summary>
+            搜索节点时调用(与SearchValue配合使用)
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.IndentTemplate">
+            <summary>
+            缩进模板
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.TitleTemplate">
+            <summary>
+            标题模板
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.TitleIconTemplate">
+            <summary>
+            图标模板
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTree`1.SwitcherIconTemplate">
+            <summary>
+            切换图标模板
+            </summary>
+        </member>
+        <member name="M:BlazorComponent.BTree`1.FindFirstOrDefaultNode(System.Func{BlazorComponent.BTreeItem{`0},System.Boolean},System.Boolean)">
+            <summary>
+            Find Node
+            </summary>
+            <param name="predicate">Predicate</param>
+            <param name="recursive">Recursive Find</param>
+            <returns></returns>
+        </member>
+        <member name="M:BlazorComponent.BTree`1.ExpandToNode(BlazorComponent.BTreeItem{`0})">
+            <summary>
+            from node expand to root
+            </summary>
+            <param name="node">Node</param>
+        </member>
+        <member name="M:BlazorComponent.BTree`1.ExpandAll">
+            <summary>
+            展开全部节点
+            </summary>
+        </member>
+        <member name="M:BlazorComponent.BTree`1.CollapseAll">
+            <summary>
+            折叠全部节点
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTreeItem`1.TreeComponent">
+            <summary>
+            树控件本身
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTreeItem`1.ParentNode">
+            <summary>
+            上一级节点
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTreeItem`1.Nodes">
+            <summary>
+            子节点
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTreeItem`1.TreeLevel">
+            <summary>
+            当前节点级别
+            </summary>
+        </member>
+        <member name="M:BlazorComponent.BTreeItem`1.AddNode(BlazorComponent.BTreeItem{`0})">
+            <summary>
+            添加节点
+            </summary>
+            <param name=""></param>
+        </member>
+        <member name="M:BlazorComponent.BTreeItem`1.FindFirstOrDefaultNode(System.Func{BlazorComponent.BTreeItem{`0},System.Boolean},System.Boolean)">
+            <summary>
+            Find a node
+            </summary>
+            <param name="predicate">Predicate</param>
+            <param name="recursive">Recursive Find</param>
+            <returns></returns>
+        </member>
+        <member name="M:BlazorComponent.BTreeItem`1.GetParentNodes">
+            <summary>
+            获得上级数据集合
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:BlazorComponent.BTreeItem`1.Key">
+            <summary>
+            指定当前节点的唯一标识符名称。
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTreeItem`1.Disabled">
+            <summary>
+            是否禁用
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTreeItem`1.Selected">
+            <summary>
+            是否已选中
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTreeItem`1.Loading">
+            <summary>
+            是否异步加载状态(影响展开图标展示)
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTreeItem`1.IsLeaf">
+            <summary>
+            是否为叶子节点
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTreeItem`1.Expanded">
+            <summary>
+            是否已展开
+            </summary>
+        </member>
+        <member name="M:BlazorComponent.BTreeItem`1.Expand(System.Boolean)">
+            <summary>
+            折叠节点
+            </summary>
+            <param name="expanded"></param>
+        </member>
+        <member name="P:BlazorComponent.BTreeItem`1.RealDisplay">
+            <summary>
+            真实的展开状态，路径上只要存在折叠，那么下面的全部折叠
+            </summary>
+        </member>
+        <member name="M:BlazorComponent.BTreeItem`1.OnCheckBoxClick(Microsoft.AspNetCore.Components.Web.MouseEventArgs)">
+            <summary>
+            当点击选择框是触发
+            </summary>
+        </member>
+        <member name="M:BlazorComponent.BTreeItem`1.SetChecked(System.Boolean)">
+            <summary>
+            设置选中状态
+            </summary>
+            <param name="check"></param>
+        </member>
+        <member name="M:BlazorComponent.BTreeItem`1.UpdateCheckState(System.Nullable{System.Boolean})">
+            <summary>
+            更新选中状态
+            </summary>
+            <param name="halfChecked"></param>
+        </member>
+        <member name="P:BlazorComponent.BTreeItem`1.Icon">
+            <summary>
+            节点前的图标，与 `ShowIcon` 组合使用
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTreeItem`1.Title">
+            <summary>
+            文本
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTreeItem`1.Matched">
+            <summary>
+            title是否包含SearchValue(搜索使用)
+            </summary>
+        </member>
+        <member name="P:BlazorComponent.BTreeItem`1.HasChildMatched">
+            <summary>
+            子节点存在满足搜索条件，所以夫节点也需要显示
+            </summary>
+        </member>
+        <member name="M:BlazorComponent.BTreeItem`1.GetParentChildDataItems">
+            <summary>
+            获得上级数据集合
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BlazorComponent.BTreeItem`1.AddChildNode(`0)">
+            <summary>
+            添加子节点
+            </summary>
+            <param name="dataItem"></param>
+        </member>
+        <member name="M:BlazorComponent.BTreeItem`1.AddNextNode(`0)">
+            <summary>
+            节点后面添加节点
+            </summary>
+            <param name="dataItem"></param>
+        </member>
+        <member name="M:BlazorComponent.BTreeItem`1.AddPreviousNode(`0)">
+            <summary>
+            节点前面添加节点
+            </summary>
+            <param name="dataItem"></param>
+        </member>
+        <member name="M:BlazorComponent.BTreeItem`1.Remove">
+            <summary>
+            删除节点
+            </summary>
+        </member>
+        <member name="M:BlazorComponent.BTreeItem`1.MoveUp">
+            <summary>
+            上移节点
+            </summary>
+        </member>
+        <member name="M:BlazorComponent.BTreeItem`1.MoveDown">
+            <summary>
+            下移节点
+            </summary>
+        </member>
+        <member name="M:BlazorComponent.BTreeItem`1.Downgrade">
+            <summary>
+            降级节点
+            </summary>
+        </member>
+        <member name="M:BlazorComponent.BTreeItem`1.Upgrade">
+            <summary>
+            升级节点
+            </summary>
+        </member>
+        <member name="M:BlazorComponent.EnumerableExtensions.AddIf``1(System.Collections.Generic.IList{``0},System.Boolean,``0)">
+            <summary>
+            add item to items when condition is true
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="items"></param>
+            <param name="condition"></param>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

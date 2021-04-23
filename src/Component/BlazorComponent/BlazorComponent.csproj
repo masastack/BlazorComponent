@@ -11,11 +11,11 @@
 		<Description>BlazorComponent</Description>
 		<PackageReleaseNotes />
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	  <DocumentationFile>D:\Masa\MASA.Blazor\src\BlazorComponent\src\Component\BlazorComponent\BlazorComponent.xml</DocumentationFile>
+	  <DocumentationFile></DocumentationFile>
 	</PropertyGroup>
 
 
