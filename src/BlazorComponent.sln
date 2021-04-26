@@ -16,7 +16,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0 - Solution Items", "0 - Solution Items", "{8A8FC98B-13C5-4339-A342-82CE822C6B5E}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
-		nuget.config = nuget.config
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorComponent.Test.Wasm", "Test\BlazorComponent.Test.Wasm\BlazorComponent.Test.Wasm.csproj", "{4A3BDE5F-D683-4024-AF57-E86FBAA937A5}"
