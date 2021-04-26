@@ -16,6 +16,7 @@ namespace BlazorComponent
 
         public override BuilderBase Clear()
         {
+            //Review:what we are doing here? base.Clear() will clear this
             _mapper.Add(() => OriginalClass, () => !string.IsNullOrEmpty(OriginalClass));
 
             return base.Clear();
