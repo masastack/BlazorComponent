@@ -1,29 +1,29 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div class="@CssBuilder.Class" style="@StyleBuilder.Style" id="@Id" @ref="Ref">
+<div class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)" id="@Id" @ref="Ref">
     @if (Stream)
     {
-        <div class="@ConfigProvider.GetCss(typeof(BProcessLinear),"stream")" style="@ConfigProvider.GetStyle(typeof(BProcessLinear),"stream")"></div>
+        <div class="@CssProvider.GetClass(this,"stream")" style="@CssProvider.GetStyle(this,"stream")"></div>
     }
 
-    <div class="@ConfigProvider.GetCss(typeof(BProcessLinear),"background")" style="@ConfigProvider.GetStyle(typeof(BProcessLinear),"background")"></div>
+    <div class="@CssProvider.GetClass(this,"background")" style="@CssProvider.GetStyle(this,"background")"></div>
 
-    <div class="@ConfigProvider.GetCss(typeof(BProcessLinear),"buffer")" style="@ConfigProvider.GetStyle(typeof(BProcessLinear),"buffer")"></div>
+    <div class="@CssProvider.GetClass(this,"buffer")" style="@CssProvider.GetStyle(this,"buffer")"></div>
 
     @if (Indeterminate)
     {
-        <div class="@ConfigProvider.GetCss(typeof(BProcessLinear),"indeterminate")">
-            <div class="@ConfigProvider.GetCss(typeof(BProcessLinear),"long")"></div>
-            <div class="@ConfigProvider.GetCss(typeof(BProcessLinear),"short")"></div>
+        <div class="@CssProvider.GetClass(this,"indeterminate")">
+            <div class="@CssProvider.GetClass(this,"long")"></div>
+            <div class="@CssProvider.GetClass(this,"short")"></div>
         </div>
     }
     else
     {
-        <div class="@ConfigProvider.GetCss(typeof(BProcessLinear),"determinate")"></div>
+        <div class="@CssProvider.GetClass(this,"determinate")"></div>
     }
 
-    <div class="@ConfigProvider.GetCss(typeof(BProcessLinear),"content")">
+    <div class="@CssProvider.GetClass(this,"content")">
         @ChildContent
     </div>
 </div>

@@ -49,8 +49,8 @@ namespace BlazorComponent
 
         protected int TotalCount => Items?.Count() ?? 0;
 
-        protected bool PrevDisabled { get; set; }
+        protected bool PrevDisabled => Page <= 1;
 
-        protected bool NextDisabled { get; set; }
+        protected bool NextDisabled => Page >= TotalPage;
     }
 }

@@ -8,6 +8,6 @@ namespace BlazorComponent
 {
     public partial class BTableLoading : BDomComponentBase
     {
-
+       
     }
 }

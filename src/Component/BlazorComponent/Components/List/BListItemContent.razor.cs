@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
-    public abstract partial class BListItemContent
+    public abstract partial class BListItemContent:BDomComponentBase
     {
         [Parameter]
         public RenderFragment ChildContent { get; set; }

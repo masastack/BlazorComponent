@@ -2,60 +2,58 @@
 @inherits BDomComponentBase
 @typeparam TItem
 
-<CascadingValue Value="ConfigProvider">
-    <div class="@ConfigProvider.GetCss(this)" style="@ConfigProvider.GetStyle(this)" id="@Id" @ref="Ref">
-        @Top
-        <div class="@ConfigProvider.GetCss(this,"wrap")">
-            <table>
-                @if (Loading)
+<div class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)" id="@Id" @ref="Ref">
+    @Top
+    <div class="@CssProvider.GetClass(this,"wrap")">
+        <table>
+            @if (Loading)
+            {
+                <SlotComponent Description="SlotProvider.GetSlot<BTableLoading>()"></SlotComponent>
+                <tbody class="@CssProvider.GetClass(this,"empty")">
+                    <tr>
+                        <td>Loading... Please wait</td>
+                    </tr>
+                </tbody>
+            }
+            else
+            {
+                if (!HideDefaultHeader)
                 {
-                    <BTableLoading></BTableLoading>
-                    <tbody class="@ConfigProvider.GetCss(this,"empty")">
-                        <tr>
-                            <td>Loading... Please wait</td>
-                        </tr>
-                    </tbody>
+                    <SlotComponent Description="SlotProvider.GetSlot<BTableHeader>()"></SlotComponent>
                 }
-                else
-                {
-                    if (!HideDefaultHeader)
+                <tbody>
+                    @if (Items == null)
                     {
-                        <BTableHeader Headers="Headers"></BTableHeader>
-                    }
-                    <tbody>
-                        @if (Items == null)
+                        if (NoResult != null)
                         {
-                            if (NoResult != null)
-                            {
-                                @NoResult
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="@Headers.Count" style="text-align:center">No result</td>
-                                </tr>
-                            }
+                            @NoResult
                         }
                         else
                         {
-                            foreach (var item in Items.Skip(PageStart - 1).Take(Size))
-                            {
-                                <tr>
-                                    @ChildContent(item)
-                                </tr>
-                            }
+                            <tr>
+                                <td colspan="@Headers.Count" style="text-align:center">No result</td>
+                            </tr>
                         }
-                    </tbody>
+                    }
+                    else
+                    {
+                        var items = Items.Skip(PageStart - 1).Take(Size);
+                        foreach (var item in items)
+                        {
+                            <tr>
+                                @ChildContent(item)
+                            </tr>
+                        }
+                    }
+                </tbody>
 
-                }
-            </table>
-        </div>
-        @if (!HideDefaultFooter && Items != null)
-        {
-            <BTableFooter PageStart="PageStart" PageStop="PageStop" ItemsLength="Items.Count()">
-            </BTableFooter>
-        }
-        @Bottom
+            }
+        </table>
     </div>
-</CascadingValue>
+    @if (!HideDefaultFooter && Items != null)
+    {
+        <SlotComponent Description="SlotProvider.GetSlot<BTableFooter>()"></SlotComponent>
+    }
+    @Bottom
+</div>
 
