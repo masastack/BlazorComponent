@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public class BComponentBase : ComponentBase, IDisposable
+    public abstract class BComponentBase : ComponentBase, IDisposable
     {
         private readonly Queue<Func<Task>> _afterRenderCallQuene = new Queue<Func<Task>>();
 

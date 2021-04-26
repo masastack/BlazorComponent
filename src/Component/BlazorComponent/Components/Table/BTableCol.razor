@@ -1,6 +1,6 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div class="@Class" style="@Style">
+<td class="@ConfigProvider.GetCss(typeof(BTableCol))">
     @ChildContent
-</div>
+</td>

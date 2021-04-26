@@ -1,0 +1,17 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<div class="@ConfigProvider.GetCss(typeof(BTableFooter))">
+    <div class="@ConfigProvider.GetCss(typeof(BTableFooter),"select")">
+        @Select
+    </div>
+    <div class="@ConfigProvider.GetCss(typeof(BTableFooter),"pagination")">
+        @PageStart-@PageStop of @ItemsLength
+    </div>
+    <div class="@ConfigProvider.GetCss(typeof(BTableFooter),"before")">
+        <SlotComponent Type="ConfigProvider.Get<BButton>(PREV)" Properties="ConfigProvider.GetProperties<BButton>(PREV)"></SlotComponent>
+    </div>
+    <div class="@ConfigProvider.GetCss(typeof(BTableFooter),"after")">
+        <SlotComponent Type="ConfigProvider.Get<BButton>(NEXT)" Properties="ConfigProvider.GetProperties<BButton>(NEXT)"></SlotComponent>
+    </div>
+</div>

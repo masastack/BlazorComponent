@@ -1,21 +1,61 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
+@typeparam TItem
 
-<div class="@CssBuilder.Class" style="@OriginalStyle" id="@Id" @ref="Ref">
-
-    @if (Top != default)
-    {
+<CascadingValue Value="ConfigProvider">
+    <div class="@ConfigProvider.GetCss(this)" style="@ConfigProvider.GetStyle(this)" id="@Id" @ref="Ref">
         @Top
-    }
+        <div class="@ConfigProvider.GetCss(this,"wrap")">
+            <table>
+                @if (Loading)
+                {
+                    <BTableLoading></BTableLoading>
+                    <tbody class="@ConfigProvider.GetCss(this,"empty")">
+                        <tr>
+                            <td>Loading... Please wait</td>
+                        </tr>
+                    </tbody>
+                }
+                else
+                {
+                    if (!HideDefaultHeader)
+                    {
+                        <BTableHeader Headers="Headers"></BTableHeader>
+                    }
+                    <tbody>
+                        @if (Items == null)
+                        {
+                            if (NoResult != null)
+                            {
+                                @NoResult
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="@Headers.Count" style="text-align:center">No result</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            foreach (var item in Items.Skip(PageStart - 1).Take(Size))
+                            {
+                                <tr>
+                                    @ChildContent(item)
+                                </tr>
+                            }
+                        }
+                    </tbody>
 
-    <div class="@WrapCssBuilder.Class" style="@WrapStyleBuilder.Style">
-        <table>
-            @ChildContent
-        </table>
-    </div>
-
-    @if (Bottom != default)
-    {
+                }
+            </table>
+        </div>
+        @if (!HideDefaultFooter && Items != null)
+        {
+            <BTableFooter PageStart="PageStart" PageStop="PageStop" ItemsLength="Items.Count()">
+            </BTableFooter>
+        }
         @Bottom
-    }
-</div>
+    </div>
+</CascadingValue>
+

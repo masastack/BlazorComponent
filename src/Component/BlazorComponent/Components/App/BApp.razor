@@ -1,8 +1,8 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div class="@CssBuilder.Class" style="@OriginalStyle" id="@Id" @ref="Ref" @attributes="Attributes">
-    <div class="@WrapCssBuilder.Class">
+<div class="@ConfigProvider.GetCss(this)" style="@OriginalStyle" id="@Id" @ref="Ref" @attributes="Attributes">
+    <div class="@ConfigProvider.GetCss(this,"wrap")">
         @ChildContent
     </div>
 </div>

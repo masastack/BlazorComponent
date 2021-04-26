@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BlazorComponent.Components.Core.CssProcess;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.RenderTree;
@@ -37,6 +37,9 @@ namespace BlazorComponent
         protected CssBuilder CssBuilder { get; } = new CssBuilder();
 
         protected StyleBuilder StyleBuilder { get; } = new StyleBuilder();
+
+        [CascadingParameter]
+        protected ComponentConfigProvider ConfigProvider { get; set; } = new();
 
         public BDomComponentBase()
         {
@@ -95,12 +98,14 @@ namespace BlazorComponent
         [Parameter(CaptureUnmatchedValues = true)]
         public IDictionary<string, object> Attributes { get; set; } = new Dictionary<string, object>();
 
-        public abstract void SetComponentClass();
+        protected virtual void SetComponentClass()
+        {
+
+        }
 
         protected override Task OnInitializedAsync()
         {
             SetComponentClass();
-
             return base.OnInitializedAsync();
         }
 

@@ -1,0 +1,10 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<thead class="@ConfigProvider.GetCss(typeof(BTableLoading))" id="@Id" @ref="Ref">
+    <tr class="@ConfigProvider.GetCss(typeof(BTableLoading),"progress")">
+        <th class="@ConfigProvider.GetCss(typeof(BTableLoading),"column")" style="@ConfigProvider.GetStyle(typeof(BTableLoading),"column")">
+            <SlotComponent Properties="ConfigProvider.GetProperties<BProcessLinear>()" Type="ConfigProvider.Get<BProcessLinear>()"></SlotComponent>
+        </th>
+    </tr>
+</thead>
