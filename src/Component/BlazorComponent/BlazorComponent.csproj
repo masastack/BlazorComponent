@@ -2,6 +2,20 @@
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
+		<Version>0.1.0</Version>
+		<PackageProjectUrl></PackageProjectUrl>
+		<PackageIcon>logo_blazorcomponent_32.png</PackageIcon>
+		<PackageIconUrl />
+		<RepositoryUrl>https://github.com/BlazorComponent/BlazorComponent</RepositoryUrl>
+		<RepositoryType>github</RepositoryType>
+		<Description>BlazorComponent</Description>
+		<PackageReleaseNotes />
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <DocumentationFile></DocumentationFile>
 	</PropertyGroup>
 
 
@@ -21,6 +35,10 @@
 	<ItemGroup>
 		<!-- ignore the tsconfig.json file in package -->
 		<Content Remove="tsconfig.json" />
+		<None Include="..\..\..\docs\logo_blazorcomponent_32.png">
+		  <Pack>True</Pack>
+		  <PackagePath></PackagePath>
+		</None>
 		<None Include="tsconfig.json" CopyToOutputDirectory="Never"></None>
 	</ItemGroup>
 
