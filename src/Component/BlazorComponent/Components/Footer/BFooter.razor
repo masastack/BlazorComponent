@@ -1,6 +1,6 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<footer class="@CssBuilder.Class" style="@Style" id="@Id" @ref="Ref">
+<footer class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)" id="@Id" @ref="Ref">
     @ChildContent
 </footer>

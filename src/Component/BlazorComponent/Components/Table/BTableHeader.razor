@@ -1,7 +1,7 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<thead class="@ConfigProvider.GetCss(typeof(BTableHeader))" id="@Id" @ref="Ref">
+<thead class="@CssProvider.GetClass(typeof(BTableHeader))" id="@Id" @ref="Ref">
     <tr>
         @if (Headers != null)
         {

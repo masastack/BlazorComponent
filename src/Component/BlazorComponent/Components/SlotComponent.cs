@@ -9,36 +9,32 @@ namespace BlazorComponent
 {
     public class SlotComponent : ComponentBase
     {
-
         [Parameter]
-        public IDictionary<string, object> Properties { get; set; }
-
-        [Parameter]
-        public Type Type { get; set; }
+        public SlotComponentDescription Description { get; set; }
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
-            if (Type == null)
+            if (Description == null)
             {
-                throw new ArgumentNullException(nameof(Type));
+                throw new ArgumentNullException(nameof(Description));
             }
 
-            if (!Type.IsAssignableTo(typeof(IComponent)))
+            if (!Description.Type.IsAssignableTo(typeof(IComponent)))
             {
                 throw new InvalidOperationException("Type should be a component type.");
             }
 
-            if (Type.IsAbstract || Type.IsInterface || !Type.IsClass)
+            if (Description.Type.IsAbstract || Description.Type.IsInterface || !Description.Type.IsClass)
             {
                 throw new InvalidOperationException("Type should be not abstract class.");
             }
 
             var sequence = 0;
-            builder.OpenComponent(sequence++, Type);
+            builder.OpenComponent(sequence++, Description.Type);
 
-            if (Properties != null)
+            if (Description.Properties != null)
             {
-                foreach (var property in Properties)
+                foreach (var property in Description.Properties)
                 {
                     builder.AddAttribute(sequence++, property.Key, property.Value);
                 }

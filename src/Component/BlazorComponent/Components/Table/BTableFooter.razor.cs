@@ -22,6 +22,6 @@ namespace BlazorComponent
         public int PageStop { get; set; }
 
         [Parameter]
-        public int ItemsLength { get; set; }
+        public int TotalCount { get; set; }
     }
 }

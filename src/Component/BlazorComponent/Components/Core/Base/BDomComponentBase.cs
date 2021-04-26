@@ -38,8 +38,9 @@ namespace BlazorComponent
 
         protected StyleBuilder StyleBuilder { get; } = new StyleBuilder();
 
-        [CascadingParameter]
-        protected ComponentConfigProvider ConfigProvider { get; set; } = new();
+        protected ComponentCssProvider CssProvider { get; set; } = new();
+
+        protected ComponentSlotProvider SlotProvider { get; set; } = new();
 
         public BDomComponentBase()
         {

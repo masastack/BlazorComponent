@@ -1,8 +1,8 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<header class="@CssBuilder.Class" style="@Style" id="@Id" @ref="Ref" @attributes="Attributes">
-    <div class="@ContentCssBuilder.Class" style="@ContentStyleBuilder.Style">
+<header class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)" id="@Id" @ref="Ref" @attributes="Attributes">
+    <div class="@CssProvider.GetClass(this,"content")" style="@CssProvider.GetStyle(this,"content")">
         @ChildContent
     </div>
 </header>
