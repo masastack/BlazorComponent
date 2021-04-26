@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public abstract partial class BSpacer
+    public abstract partial class BSpacer:BDomComponentBase
     {
 
     }

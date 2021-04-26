@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public abstract partial class BNavigationDrawer
+    public abstract partial class BNavigationDrawer:BDomComponentBase
     {
         [Parameter]
         public RenderFragment ChildContent { get; set; }

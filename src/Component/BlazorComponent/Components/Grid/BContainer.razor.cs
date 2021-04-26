@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public abstract partial class BContainer
+    public abstract partial class BContainer:BDomComponentBase
     {
         [Parameter]
         public RenderFragment ChildContent { get; set; }
