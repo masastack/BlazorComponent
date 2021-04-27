@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Rendering;
 
 namespace BlazorComponent
@@ -11,6 +8,9 @@ namespace BlazorComponent
     {
         [Parameter]
         public SlotComponentDescription Description { get; set; }
+
+        [Parameter]
+        public RenderFragment ChildContent { get; set; }
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
@@ -38,6 +38,11 @@ namespace BlazorComponent
                 {
                     builder.AddAttribute(sequence++, property.Key, property.Value);
                 }
+            }
+
+            if (!Description.Properties.ContainsKey(nameof(ChildContent)))
+            {
+                builder.AddAttribute(sequence++, nameof(ChildContent), ChildContent);
             }
 
             builder.CloseComponent();
