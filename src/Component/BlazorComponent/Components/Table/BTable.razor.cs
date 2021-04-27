@@ -22,6 +22,9 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment NoResult { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [Parameter]
         public bool HideDefaultHeader { get; set; }
 

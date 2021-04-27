@@ -1,0 +1,16 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<div class="@CssProvider.GetClass(this)">
+    <div class="@CssProvider.GetClass(this,"wrap")">
+        @if (Value != null)
+        {
+            foreach (var message in Value)
+            {
+                <div class="@CssProvider.GetClass(this,"message")">
+                    @message
+                </div>
+            }
+        }
+    </div>
+</div>

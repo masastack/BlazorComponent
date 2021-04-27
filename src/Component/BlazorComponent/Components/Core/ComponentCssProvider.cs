@@ -53,6 +53,45 @@ namespace BlazorComponent
             return Apply(typeof(TComponent), name, cssAction, styleAction);
         }
 
+        public ComponentCssProvider Merge<TComponent>(Action<CssBuilder> mergeCssAction = null, Action<StyleBuilder> mergeStyleAction = null)
+        {
+            var key=ComponentKey.Get<TComponent>();
+            Merge(key, mergeCssAction, mergeStyleAction);
+
+            return this;
+        }
+
+        private void Merge(ComponentKey key, Action<CssBuilder> mergeCssAction = null, Action<StyleBuilder> mergeStyleAction = null)
+        {
+            if (mergeCssAction != null)
+            {
+                var cssAction= _cssConfig.GetValueOrDefault(key);
+                _cssConfig[key] = cssBuilder =>
+                {
+                    cssAction?.Invoke(cssBuilder);
+                    mergeCssAction?.Invoke(cssBuilder);
+                };
+            }
+
+            if (mergeStyleAction != null)
+            {
+                var styleAction= _styleConfig.GetValueOrDefault(key);
+                _styleConfig[key] = styleBuilder =>
+                {
+                    styleAction?.Invoke(styleBuilder);
+                    mergeStyleAction?.Invoke(styleBuilder);
+                };
+            }
+        }
+
+        public ComponentCssProvider Merge<TComponent>(string name, Action<CssBuilder> mergeCssAction = null, Action<StyleBuilder> mergeStyleAction = null)
+        {
+            var key=ComponentKey.Get<TComponent>(name);
+            Merge(key, mergeCssAction, mergeStyleAction);
+
+            return this;
+        }
+
         public string GetClass(Type type)
         {
             var action= _cssConfig.GetValueOrDefault(new ComponentKey(type), _ => { });

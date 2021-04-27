@@ -12,6 +12,9 @@ namespace BlazorComponent
         [Parameter]
         public SlotComponentDescription Description { get; set; }
 
+        [Parameter]
+        public RenderFragment ChildContent { get; set; }
+
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
             if (Description == null)
@@ -39,6 +42,8 @@ namespace BlazorComponent
                     builder.AddAttribute(sequence++, property.Key, property.Value);
                 }
             }
+
+            builder.AddContent(sequence++, ChildContent);
 
             builder.CloseComponent();
         }
