@@ -40,10 +40,7 @@ namespace BlazorComponent
                 }
             }
 
-            if (!Description.Properties.ContainsKey(nameof(ChildContent)))
-            {
-                builder.AddAttribute(sequence++, nameof(ChildContent), ChildContent);
-            }
+            builder.AddContent(sequence++, ChildContent);
 
             builder.CloseComponent();
         }
