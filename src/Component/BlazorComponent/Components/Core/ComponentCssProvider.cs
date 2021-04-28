@@ -10,8 +10,8 @@ namespace BlazorComponent
 {
     public class ComponentCssProvider
     {
-        private readonly Dictionary<ComponentKey, Action<CssBuilder>> _cssConfig  = new();
-        private readonly Dictionary<ComponentKey, Action<StyleBuilder>> _styleConfig  = new();
+        private readonly Dictionary<ComponentKey, Action<CssBuilder>> _cssConfig = new();
+        private readonly Dictionary<ComponentKey, Action<StyleBuilder>> _styleConfig = new();
 
         public ComponentCssProvider Apply(Type type, Action<CssBuilder> cssAction = null, Action<StyleBuilder> styleAction = null)
         {

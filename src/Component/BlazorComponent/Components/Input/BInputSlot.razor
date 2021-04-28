@@ -17,5 +17,13 @@
     {
         <SlotComponent Description="SlotProvider.GetSlot<BLabel>()"></SlotComponent>
     }
-    <input type="@Type" @onblur="HandleBlur" value="@Value" @onchange="HandleChange" placeholder="@PlaceHolder" />
+
+    @if (IsTextArea)
+    {
+        <textarea rows="@Rows" @onblur="HandleBlur" value="@Value" @onchange="HandleChange"></textarea>
+    }
+    else
+    {
+        <input type="@Type" @onblur="HandleBlur" value="@Value" @onchange="HandleChange" placeholder="@PlaceHolder" />
+    }
 </div>
