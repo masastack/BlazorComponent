@@ -10,7 +10,7 @@ namespace BlazorComponent
 {
     using StringNumber = OneOf<string, int>;
 
-    public abstract partial class BIcon : BDomComponentBase
+    public partial class BIcon : BDomComponentBase
     {
         private string _icon;
         private IconTag _tag = IconTag.I;
