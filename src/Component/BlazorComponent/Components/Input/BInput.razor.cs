@@ -30,7 +30,6 @@ namespace BlazorComponent
 
         protected virtual void HandleClick(MouseEventArgs args)
         {
-
         }
     }
 }

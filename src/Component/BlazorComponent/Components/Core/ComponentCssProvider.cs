@@ -55,7 +55,7 @@ namespace BlazorComponent
 
         public ComponentCssProvider Merge<TComponent>(Action<CssBuilder> mergeCssAction = null, Action<StyleBuilder> mergeStyleAction = null)
         {
-            var key=ComponentKey.Get<TComponent>();
+            var key = ComponentKey.Get<TComponent>();
             Merge(key, mergeCssAction, mergeStyleAction);
 
             return this;
@@ -65,7 +65,7 @@ namespace BlazorComponent
         {
             if (mergeCssAction != null)
             {
-                var cssAction= _cssConfig.GetValueOrDefault(key);
+                var cssAction = _cssConfig.GetValueOrDefault(key);
                 _cssConfig[key] = cssBuilder =>
                 {
                     cssAction?.Invoke(cssBuilder);
@@ -75,7 +75,7 @@ namespace BlazorComponent
 
             if (mergeStyleAction != null)
             {
-                var styleAction= _styleConfig.GetValueOrDefault(key);
+                var styleAction = _styleConfig.GetValueOrDefault(key);
                 _styleConfig[key] = styleBuilder =>
                 {
                     styleAction?.Invoke(styleBuilder);
@@ -86,7 +86,7 @@ namespace BlazorComponent
 
         public ComponentCssProvider Merge<TComponent>(string name, Action<CssBuilder> mergeCssAction = null, Action<StyleBuilder> mergeStyleAction = null)
         {
-            var key=ComponentKey.Get<TComponent>(name);
+            var key = ComponentKey.Get<TComponent>(name);
             Merge(key, mergeCssAction, mergeStyleAction);
 
             return this;
@@ -94,9 +94,9 @@ namespace BlazorComponent
 
         public string GetClass(Type type)
         {
-            var action= _cssConfig.GetValueOrDefault(new ComponentKey(type), _ => { });
+            var action = _cssConfig.GetValueOrDefault(new ComponentKey(type), _ => { });
 
-            var builder=new CssBuilder();
+            var builder = new CssBuilder();
             action?.Invoke(builder);
 
             return builder.Class;
@@ -104,9 +104,9 @@ namespace BlazorComponent
 
         public string GetStyle(Type type)
         {
-            var action= _styleConfig.GetValueOrDefault(new ComponentKey(type), _ => { });
+            var action = _styleConfig.GetValueOrDefault(new ComponentKey(type), _ => { });
 
-            var builder=new StyleBuilder();
+            var builder = new StyleBuilder();
             action?.Invoke(builder);
 
             return builder.Style;
@@ -114,9 +114,9 @@ namespace BlazorComponent
 
         public string GetClass(Type type, string name)
         {
-            var action= _cssConfig.GetValueOrDefault(new ComponentKey(type, name), _ => { });
+            var action = _cssConfig.GetValueOrDefault(new ComponentKey(type, name), _ => { });
 
-            var builder=new CssBuilder();
+            var builder = new CssBuilder();
             action?.Invoke(builder);
 
             return builder.Class;
@@ -124,9 +124,9 @@ namespace BlazorComponent
 
         public string GetStyle(Type type, string name)
         {
-            var action= _styleConfig.GetValueOrDefault(new ComponentKey(type, name), _ => { });
+            var action = _styleConfig.GetValueOrDefault(new ComponentKey(type, name), _ => { });
 
-            var builder=new StyleBuilder();
+            var builder = new StyleBuilder();
             action?.Invoke(builder);
 
             return builder.Style;
@@ -154,7 +154,7 @@ namespace BlazorComponent
 
         public ComponentCssProvider<TComponent> AsProvider<TComponent>()
         {
-            var provider= new ComponentCssProvider<TComponent>(this);
+            var provider = new ComponentCssProvider<TComponent>(this);
             return provider;
         }
     }

@@ -13,7 +13,7 @@ namespace BlazorComponent
         public bool Outlined { get; set; }
 
         [Parameter]
-        public string InnerHtml { get; set; }
+        public MarkupString InnerHtml { get; set; }
 
         [Parameter]
         public bool ShowLabel { get; set; }
