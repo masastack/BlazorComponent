@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
-    public partial class BMessage
+    public partial class BForm : BDomComponentBase
     {
         [Parameter]
-        public List<string> Value{ get; set; }
+        public RenderFragment ChildContent { get; set; }
+
+        [Parameter]
+        public EventCallback<EventArgs> Submit{ get; set; }
     }
 }

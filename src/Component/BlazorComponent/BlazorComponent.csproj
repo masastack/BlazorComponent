@@ -10,7 +10,6 @@
 		<RepositoryType>github</RepositoryType>
 		<Description>BlazorComponent</Description>
 		<PackageReleaseNotes />
-		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 	</PropertyGroup>
 

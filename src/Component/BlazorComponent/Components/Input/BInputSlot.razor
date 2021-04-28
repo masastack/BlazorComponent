@@ -1,0 +1,29 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+@if (Outlined)
+{
+    <fieldset>
+        <legend style="@CssProvider.GetStyle(this, "legend")">
+            <span>
+                @InnerHtml
+            </span>
+        </legend>
+    </fieldset>
+}
+
+<div class="@CssProvider.GetClass(this)">
+    @if (ShowLabel)
+    {
+        <SlotComponent Description="SlotProvider.GetSlot<BLabel>()"></SlotComponent>
+    }
+
+    @if (IsTextArea)
+    {
+        <textarea rows="@Rows" @onblur="HandleBlur" value="@Value" @onchange="HandleChange"></textarea>
+    }
+    else
+    {
+        <input type="@Type" @onblur="HandleBlur" value="@Value" @onchange="HandleChange" placeholder="@PlaceHolder" />
+    }
+</div>

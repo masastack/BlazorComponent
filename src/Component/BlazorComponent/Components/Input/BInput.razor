@@ -1,0 +1,27 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<div class="@CssProvider.GetClass(this)" id="@Id" @ref="Ref" @onclick="HandleClick">
+    @if (Prepend != default)
+    {
+        <div class="@CssProvider.GetClass(this, "prepend")">
+            @Prepend
+        </div>
+    }
+    <div class="@CssProvider.GetClass(this, "control")">
+        <div class="@CssProvider.GetClass(this, "input-slot")" style="@CssProvider.GetStyle(this, "input-slot")">
+            <SlotComponent Description="SlotProvider.GetSlot<BInputSlot>()"></SlotComponent>
+        </div>
+        @if (ShowDetails)
+        {
+            <SlotComponent Description="SlotProvider.GetSlot<BMessage>()"></SlotComponent>
+        }
+    </div>
+    @if (Append != default)
+    {
+        <div class="@CssProvider.GetClass(this, "append")">
+            @Append
+        </div>
+    }
+
+</div>

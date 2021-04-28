@@ -1,0 +1,6 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<form class="@CssProvider.GetClass(this)" @onsubmit="Submit">
+    @ChildContent
+</form>
