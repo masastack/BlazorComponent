@@ -31,10 +31,13 @@ namespace BlazorComponent
         public string Value { get; set; }
 
         [Parameter]
+        public EventCallback<string> ValueChanged { get; set; }
+
+        [Parameter]
         public string PlaceHolder { get; set; }
 
         [Parameter]
-        public EventCallback<string> ValueChanged { get; set; }
+        public string Type { get; set; } = "text";
 
         public async Task HandleChange(ChangeEventArgs args)
         {

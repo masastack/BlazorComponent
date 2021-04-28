@@ -1,7 +1,7 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div class="@CssProvider.GetClass(this)" id="@Id" @ref="Ref" @onclick="HandleClick" @onblur="HandleBlur">
+<div class="@CssProvider.GetClass(this)" id="@Id" @ref="Ref" @onclick="HandleClick">
     @if (Prepend != default)
     {
         <div class="@CssProvider.GetClass(this,"prepend")">

@@ -22,15 +22,15 @@ namespace BlazorComponent
         [Parameter]
         public string Label { get; set; }
 
-        [Parameter]
-        public List<string> Messages { get; set; }
+        public List<string> Messages { get; set; } = new();
 
         protected bool Blur { get; set; }
 
         protected bool ShowDetails => Messages?.Count > 0;
 
-        protected EventCallback<MouseEventArgs> HandleClick { get; set; }
+        protected virtual void HandleClick(MouseEventArgs args)
+        {
 
-        protected EventCallback HandleBlur { get; set; }
+        }
     }
 }
