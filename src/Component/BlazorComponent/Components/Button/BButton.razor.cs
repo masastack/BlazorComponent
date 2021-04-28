@@ -86,6 +86,9 @@ namespace BlazorComponent
         public EventCallback<MouseEventArgs> Click { get; set; }
 
         [Parameter]
+        public bool ClickStopPropagation { get; set; }
+
+        [Parameter]
         public RenderFragment LoadingFragment { get; set; }
 
         [Parameter]
