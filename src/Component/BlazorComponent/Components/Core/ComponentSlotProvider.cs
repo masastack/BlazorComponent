@@ -33,6 +33,35 @@ namespace BlazorComponent
             return this;
         }
 
+        public ComponentSlotProvider Merge<TComponent>(Action<Dictionary<string, object>> mergePropertiesAction = null)
+        {
+            var key=ComponentKey.Get<TComponent>();
+            Merge(key, mergePropertiesAction);
+
+            return this;
+        }
+
+        private void Merge(ComponentKey key, Action<Dictionary<string, object>> mergePropertiesAction = null)
+        {
+            if (mergePropertiesAction != null)
+            {
+                var propertiesAction = _propertiesConfig.GetValueOrDefault(key);
+                _propertiesConfig[key] = properties =>
+                {
+                    propertiesAction?.Invoke(properties);
+                    mergePropertiesAction?.Invoke(properties);
+                };
+            }
+        }
+
+        public ComponentSlotProvider Merge<TComponent>(string name, Action<Dictionary<string, object>> mergePropertiesAction = null)
+        {
+            var key=ComponentKey.Get<TComponent>(name);
+            Merge(key, mergePropertiesAction);
+
+            return this;
+        }
+
         public SlotComponentDescription GetSlot<TComponent>()
         {
             var type=_typeConfig.GetValueOrDefault(ComponentKey.Get<TComponent>(), typeof(TComponent));

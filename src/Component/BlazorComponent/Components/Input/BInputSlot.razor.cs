@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
-    public partial class BInputDefault : BDomComponentBase
+    public partial class BInputSlot : BDomComponentBase
     {
         [Parameter]
         public bool Outlined { get; set; }
@@ -38,6 +38,12 @@ namespace BlazorComponent
 
         [Parameter]
         public string Type { get; set; } = "text";
+
+        [Parameter]
+        public bool IsTextArea { get; set; }
+
+        [Parameter]
+        public int Rows { get; set; }
 
         public async Task HandleChange(ChangeEventArgs args)
         {
