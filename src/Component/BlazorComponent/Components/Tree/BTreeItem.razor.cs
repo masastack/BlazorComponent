@@ -148,8 +148,14 @@ namespace BlazorComponent
         [Parameter]
         public bool Disabled
         {
-            get { return _disabled || (ParentNode?.Disabled ?? false); }//禁用状态受制于父节点
-            set { _disabled = value; }
+            get
+            {
+                return _disabled || (ParentNode?.Disabled ?? false);
+            }//禁用状态受制于父节点
+            set
+            {
+                _disabled = value;
+            }
         }
 
         private bool _selected;
@@ -200,7 +206,7 @@ namespace BlazorComponent
         /// <summary>
         /// 是否为叶子节点
         /// </summary>
-        public bool IsLeaf => DataItem == null && ChildDataItems.Count == 0 && Nodes == null;
+        public bool IsLeaf => ChildDataItems.Count == 0 && ChildNodes.Count == 0;
 
         /// <summary>
         /// 是否已展开
@@ -267,7 +273,7 @@ namespace BlazorComponent
         public bool Indeterminate { get; set; }
 
         [Parameter]
-        public bool DisableCheckbox { get; set; }//是否可以选择不受父节点控制
+        public bool Checkbox { get; set; }//是否可以选择不受父节点控制
 
         /// <summary>
         /// 当点击选择框是触发
@@ -541,7 +547,6 @@ namespace BlazorComponent
         #endregion 节点数据操作
 
         protected override void OnInitialized()
-
         {
             //SetBTreeItemClassMapper();
             if (ParentNode != null)
@@ -566,5 +571,8 @@ namespace BlazorComponent
                 tn.SetSelected(true);
             }
         }
+
+        [Parameter]
+        public EventCallback<TItem> HandleItemClick { get; set; }
     }
 }
