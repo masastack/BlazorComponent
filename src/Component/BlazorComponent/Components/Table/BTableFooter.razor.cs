@@ -13,9 +13,6 @@ namespace BlazorComponent
         public const string NEXT = "next";
 
         [Parameter]
-        public RenderFragment Select { get; set; }
-
-        [Parameter]
         public int PageStart { get; set; }
 
         [Parameter]

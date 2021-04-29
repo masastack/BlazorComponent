@@ -3,59 +3,59 @@
 @typeparam TItem
 
 <div class="@CssBuilder.Class" style="@StyleBuilder.Style" id="@Id">
-	<div class="@ControlCssBuilder.Class">
-		<div class="@SlotCssBuilder.Class"
-			 @onclick="Click"
-			 @ref="Ref"
-			 tabindex="0"
-			 @onblur="HandleOnBlur">
-			<div class="@SelectSlotCssBuilder.Class">
-				@if (!string.IsNullOrWhiteSpace(Label))
-				{
-					if (!Solo || (Solo && Text == null))
-					{
-			<label class="@LabelCssBuilder.Class" style="@LabelStyleCssBuilder.Style">@Label</label>
-					}
-				}
-	<div class="@SelectorCssBuilder.Class">
-	 <div class="@SelectedCssBuilder.Class">@Text</div>
-	 <input id="input-@Id" type="text" readonly="readonly"
-						   class="@SelectInputCssBuilder.Class" />
-	</div>
-	<div class="@SelectArrowCssBuilder.Class">
-	 <div class="@SelectArrowIconCssBuilder.Class">
-	  <SlotComponent Description="SlotProvider.GetSlot<BIcon>()">
-							@_icon
-	  </SlotComponent>
-	 </div>
-	</div>
-	<input type="hidden" value="@Value" />
-   </div>
-			@if (_visible)
-			{
-	   <SlotComponent Description="SlotProvider.GetSlot<BPopover>()">
-		<SlotComponent Description="SlotProvider.GetSlot<BList>()">
-		 <SlotComponent Description="SlotProvider.GetSlot<BListItemGroup>()">
-		  <CascadingValue Value="@this">
-								@foreach (var item in Items)
-							{
-		   <SlotComponent Description="SlotProvider.GetSlot<BSelectOption<TItem>>()" Value="@item">
-									@ItemText.Invoke(item)
-		   </SlotComponent>
-							}
-	  </CascadingValue>
-	 </SlotComponent>
-	</SlotComponent>
-   </SlotComponent>
-			}
-  </div>
-  <div class="@HitCssBuilder.Class">
-   <SlotComponent Description="SlotProvider.GetSlot<BHitMessage>()">@HitMessage</SlotComponent>
-  </div>
- </div>
+    <div class="@ControlCssBuilder.Class">
+        <div class="@SlotCssBuilder.Class"
+             @onclick="Click"
+             @ref="Ref"
+             tabindex="0"
+             @onblur="HandleOnBlur">
+            <div class="@SelectSlotCssBuilder.Class">
+                @if (!string.IsNullOrWhiteSpace(Label))
+                {
+                    if (!Solo || (Solo && Text == null))
+                    {
+                        <label class="@LabelCssBuilder.Class" style="@LabelStyleCssBuilder.Style">@Label</label>
+                    }
+                }
+                <div class="@SelectorCssBuilder.Class">
+                    <div class="@SelectedCssBuilder.Class">@Text</div>
+                    <input id="input-@Id" type="text" readonly="readonly"
+                           class="@SelectInputCssBuilder.Class" />
+                </div>
+                <div class="@SelectArrowCssBuilder.Class">
+                    <div class="@SelectArrowIconCssBuilder.Class">
+                        <SlotComponent Description="SlotProvider.GetSlot<BIcon>()">
+                            @_icon
+                        </SlotComponent>
+                    </div>
+                </div>
+                <input type="hidden" value="@Value" />
+            </div>
+            @if (_visible && Items != null && ItemText != null)
+            {
+                <SlotComponent Description="SlotProvider.GetSlot<BPopover>()">
+                    <SlotComponent Description="SlotProvider.GetSlot<BList>()">
+                        <SlotComponent Description="SlotProvider.GetSlot<BListItemGroup>()">
+                            <CascadingValue Value="this">
+                                @foreach (var item in Items)
+                                {
+                                    <SlotComponent Description="SlotProvider.GetSlot<BSelectOption<TItem>>()" Value="@item">
+                                        @ItemText.Invoke(item)
+                                    </SlotComponent>
+                                }
+                            </CascadingValue>
+                        </SlotComponent>
+                    </SlotComponent>
+                </SlotComponent>
+            }
+        </div>
+        <div class="@HitCssBuilder.Class">
+            <SlotComponent Description="SlotProvider.GetSlot<BHitMessage>()">@HitMessage</SlotComponent>
+        </div>
+    </div>
 </div>
 
 @if (_visible)
 {
-	<SlotComponent Description="SlotProvider.GetSlot<BOverlay>()" />
+    <SlotComponent Description="SlotProvider.GetSlot<BOverlay>()" />
 }
