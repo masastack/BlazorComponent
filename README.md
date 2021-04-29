@@ -1,10 +1,5 @@
-<p align="center">
-  <a href="https://yangshunjie.com/ant-design-blazor/">
-      <img src="./docs/logo_blazorcomponent_1280_640_01.jpg">
-  </a>
-</p>
 
-# BlazorComponent
+![](./docs/logo_blazorcomponent_1280_640_01.jpg)
 
 源自 [ant-design-blazor](https://github.com/ant-design-blazor/ant-design-blazor) 的 基础组件库。用于定制自有样式及交互的前置组件。
 
@@ -30,7 +25,7 @@
 
 感谢所有为本项目做出过贡献的朋友。
 
-![](docs/20210427112456.png)
+![](https://github.com/BlazorComponent/BlazorComponent/raw/develop/docs/20210427112456.png)
 
 
 ## 行为准则
@@ -40,6 +35,6 @@
 
 ## 授权协议
 
-[![ant-design-blazor](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://github.com/BlazorComponent/BlazorComponent/blob/master/LICENSE)
+[![BlazorComponent](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://github.com/BlazorComponent/BlazorComponent/blob/master/LICENSE)
 
 Copyright (c) 2021-present BlazorComponent
