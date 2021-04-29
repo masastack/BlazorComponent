@@ -1,6 +1,7 @@
-﻿using System;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
+using System;
+using System.Collections.Generic;
 
 namespace BlazorComponent
 {
@@ -11,6 +12,9 @@ namespace BlazorComponent
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
+
+        [Parameter(CaptureUnmatchedValues = true)]
+        public Dictionary<string, object> Attributes { get; set; }
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
@@ -39,6 +43,8 @@ namespace BlazorComponent
                     builder.AddAttribute(sequence++, property.Key, property.Value);
                 }
             }
+
+            Attributes.ForEach(attr => builder.AddAttribute(sequence++, attr.Key, attr.Value));
 
             if (!Description.Properties.ContainsKey(nameof(ChildContent)))
             {
