@@ -6,7 +6,8 @@
 		style="@StyleBuilder.Style"
 		id="@Id"
 		@ref="Ref"
-		@onclick="HandleOnClick">
+		@onclick="HandleOnClick"
+		@onclick:stopPropagation="ClickStopPropagation">
 
 	<div class="@_btnContentClass">
 		@ChildContent

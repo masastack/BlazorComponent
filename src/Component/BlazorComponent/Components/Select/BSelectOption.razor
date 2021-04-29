@@ -1,0 +1,11 @@
+﻿@namespace BlazorComponent
+@typeparam T
+@inherits BDomComponentBase
+
+<SlotComponent Description="SlotProvider.GetSlot<BListItem>()">
+	<SlotComponent Description="SlotProvider.GetSlot<BListItemContent>()">
+		<SlotComponent Description="SlotProvider.GetSlot<BListItemTitle>()">
+			@ChildContent
+		</SlotComponent>
+	</SlotComponent>
+</SlotComponent>

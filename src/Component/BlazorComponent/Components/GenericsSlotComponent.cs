@@ -4,13 +4,19 @@ using Microsoft.AspNetCore.Components.Rendering;
 
 namespace BlazorComponent
 {
-    public class SlotComponent : ComponentBase
+    public class GenericsSlotComponent<T> : ComponentBase
     {
         [Parameter]
         public SlotComponentDescription Description { get; set; }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
+
+        [Parameter]
+        public T Value { get; set; }
+
+        [Parameter]
+        public string Label { get; set; }
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
@@ -39,6 +45,8 @@ namespace BlazorComponent
                     builder.AddAttribute(sequence++, property.Key, property.Value);
                 }
             }
+
+            builder.AddAttribute(sequence++, Label, Value);
 
             if (!Description.Properties.ContainsKey(nameof(ChildContent)))
             {

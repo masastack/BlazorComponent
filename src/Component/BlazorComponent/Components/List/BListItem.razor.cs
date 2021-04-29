@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public abstract partial class BListItem : BDomComponentBase
+    public partial class BListItem : BDomComponentBase
     {
         [Parameter]
         public RenderFragment ChildContent { get; set; }
@@ -16,11 +12,46 @@ namespace BlazorComponent
         [Parameter]
         public string Href { get; set; }
 
-        public virtual bool IsClickable { get; }
+        [CascadingParameter]
+        protected BListItemGroup Group { get; set; }
 
-        public virtual Task HandleOnClick(MouseEventArgs args)
+        private bool _link;
+        [Parameter]
+        public bool Link
         {
-            return Task.CompletedTask;
+            get
+            {
+                return _link || (Group != null);
+            }
+            set
+            {
+                _link = value;
+            }
+        }
+
+        private string _key;
+        [Parameter]
+        public string Key
+        {
+            get
+            {
+                return _key == null ? Id : _key;
+            }
+            set
+            {
+                _key = value;
+            }
+        }
+
+        [Parameter]
+        public EventCallback<MouseEventArgs> Click { get; set; }
+
+        protected virtual async Task HandleOnClick(MouseEventArgs args)
+        {
+            if (Click.HasDelegate)
+            {
+                await Click.InvokeAsync(args);
+            }
         }
     }
 }
