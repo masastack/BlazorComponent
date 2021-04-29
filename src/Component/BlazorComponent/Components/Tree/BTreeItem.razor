@@ -2,43 +2,43 @@
 @inherits BDomComponentBase
 @typeparam TItem
 
+@if (RealDisplay)
+{
+    <CascadingValue Value="this" Name="SelfNode">
+        <div @key="NodeId" class="@CssBuilderRoot.Class" style="@Style" @onclick="async ()=> { if (HandleItemClick.HasDelegate) await HandleItemClick.InvokeAsync(DataItem);}">
+            @for (int i = 0; i < TreeLevel; i++)
+            {
+                <div class="@CssBuilderLevel.Class"></div>
+            }
+            @if (!IsLeaf)
+            {
+                <i Class="mr-3 fas @((HasChildNodes && Expanded)? "fa-caret-down" : "fa-caret-right")" @onclick="@(() => Expanded = !Expanded)"></i>
+            }
+            else
+            {
+                <i class="mr-3 fas fa-genderless"></i>
+            }
 
-<CascadingValue Value="this" Name="SelfNode">
-    <div @key="NodeId" class="@CssBuilderRoot.Class" style="@Style">
-        @for (int i = 0; i < TreeLevel; i++)
-        {
-            <div class="@CssBuilderLevel.Class"></div>
-        }
-        @if (!IsLeaf)
-        {
-            <i Class="mr-3 fas @(HasChildNodes ? "fa-caret-down":"fa-caret-right")" @onclick ="@(() => Expanded = !Expanded)"></i>
-        }
-        else
-        {
-            <i class="mr-3 fas fa-genderless"></i>
-        }
+            @if (Checkbox)
+            {
+                <i Class="mr-3 far @(Checked?"fa-square":"fa-check-square")" @onclick="OnCheckBoxClick"></i>
+            }
 
-        <i Class="mr-3 far @(Checked?"fa-square":"fa-check-square")" @onclick ="OnCheckBoxClick"></i>
-
-        @Title 
-
-
-    </div>
-</CascadingValue>
+            @Title
+        </div>
+    </CascadingValue>
+}
 
 <CascadingValue Value="this" Name="Node">
-    @if (Expanded)
+    @if (DataItem != null)
     {
-        @if (DataItem != null)
+        foreach (var item in ChildDataItems)
         {
-            foreach (var item in ChildDataItems)
-            {
-                <TreeItem DataItem="@item" @key="item.GetHashCode()"></TreeItem>
-            }
+            <SlotComponent DataItem="@item" @key="item.GetHashCode()" Description="SlotProvider.GetSlot<BTreeItem<TItem>>()"></SlotComponent>
         }
-        else
-        {
-            @Nodes
-        }
+    }
+    else
+    {
+        @Nodes
     }
 </CascadingValue>
