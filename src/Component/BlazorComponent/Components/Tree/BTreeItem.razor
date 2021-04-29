@@ -10,14 +10,13 @@
             {
                 <div class="@CssBuilderLevel.Class"></div>
             }
-            @if (!IsLeaf)
-            {
-                <i Class="mr-3 fas @((HasChildNodes && Expanded)? "fa-caret-down" : "fa-caret-right")" @onclick="@(() => Expanded = !Expanded)"></i>
-            }
-            else
-            {
-                <i class="mr-3 fas fa-genderless"></i>
-            }
+
+            <div style="@CssProvider.GetStyle(this,"icon")">
+                @if (!IsLeaf)
+                {
+                    <i Class="mr-3 fas @((HasChildNodes && Expanded)? "fa-caret-down" : "fa-caret-right")" @onclick="@(() => Expanded = !Expanded)"></i>
+                }
+            </div>
 
             @if (Checkbox)
             {
