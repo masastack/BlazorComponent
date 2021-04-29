@@ -671,7 +671,5 @@ export function removePreventEnterOnOverlayVisible(element) {
 }
 
 export function insertAdjacentHTML(position, text: string) {
-    debugger
-    console.log("insertAdjacentHTML:" + position + " - " + text);
     document.head.insertAdjacentHTML(position, text);
 }
