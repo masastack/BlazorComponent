@@ -311,6 +311,9 @@ namespace BlazorComponent
         [Parameter]
         public Func<BTreeItem<TItem>, IList<TItem>> ChildrenExpression { get; set; }
 
+        [Parameter]
+        public EventCallback<TItem> HandleItemClick { get; set; }
+
         #endregion DataBind
 
         #region Event
