@@ -14,13 +14,13 @@
             <div style="@CssProvider.GetStyle(this,"icon")">
                 @if (!IsLeaf)
                 {
-                    <i Class="mr-3 fas @((HasChildNodes && Expanded)? "fa-caret-down" : "fa-caret-right")" @onclick="@(() => Expanded = !Expanded)"></i>
+                    <i Class="mr-3 fas @((HasChildNodes && Expanded) ? "fa-caret-down" : "fa-caret-right")" @onclick="@(() => Expanded = !Expanded)"></i>
                 }
             </div>
 
             @if (Checkbox)
             {
-                <i Class="mr-3 far @(Checked?"fa-square":"fa-check-square")" @onclick="OnCheckBoxClick"></i>
+                <i Class="mr-3 far @(Checked ? "fa-square" : "fa-check-square")" @onclick="OnCheckBoxClick"></i>
             }
 
             @Title

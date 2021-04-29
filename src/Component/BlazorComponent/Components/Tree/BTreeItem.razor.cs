@@ -125,14 +125,17 @@ namespace BlazorComponent
         /// 指定当前节点的唯一标识符名称。
         /// </summary>
         [Parameter]
-        public string Key {
-            get {
+        public string Key
+        {
+            get
+            {
                 if (TreeComponent.KeyExpression != null)
                     return TreeComponent.KeyExpression(this);
                 else
                     return _key;
             }
-            set {
+            set
+            {
                 _key = value;
             }
         }
@@ -143,9 +146,16 @@ namespace BlazorComponent
         /// 是否禁用
         /// </summary>
         [Parameter]
-        public bool Disabled {
-            get { return _disabled || (ParentNode?.Disabled ?? false); }//禁用状态受制于父节点
-            set { _disabled = value; }
+        public bool Disabled
+        {
+            get
+            {
+                return _disabled || (ParentNode?.Disabled ?? false);
+            }//禁用状态受制于父节点
+            set
+            {
+                _disabled = value;
+            }
         }
 
         private bool _selected;
@@ -154,9 +164,11 @@ namespace BlazorComponent
         /// 是否已选中
         /// </summary>
         [Parameter]
-        public bool Selected {
+        public bool Selected
+        {
             get => _selected;
-            set {
+            set
+            {
                 if (_selected == value) return;
                 SetSelected(value);
             }
@@ -214,8 +226,10 @@ namespace BlazorComponent
         /// <summary>
         /// 真实的展开状态，路径上只要存在折叠，那么下面的全部折叠
         /// </summary>
-        internal bool RealDisplay {
-            get {
+        internal bool RealDisplay
+        {
+            get
+            {
                 if (string.IsNullOrEmpty(TreeComponent.SearchValue))
                 {//普通模式下节点显示规则
                     if (ParentNode == null) return true;//第一级节点默认显示
@@ -350,14 +364,17 @@ namespace BlazorComponent
         /// 节点前的图标，与 `ShowIcon` 组合使用
         /// </summary>
         [Parameter]
-        public string Icon {
-            get {
+        public string Icon
+        {
+            get
+            {
                 if (TreeComponent.IconExpression != null)
                     return TreeComponent.IconExpression(this);
                 else
                     return _icon;
             }
-            set {
+            set
+            {
                 _icon = value;
             }
         }
@@ -368,14 +385,17 @@ namespace BlazorComponent
         /// 文本
         /// </summary>
         [Parameter]
-        public string Title {
-            get {
+        public string Title
+        {
+            get
+            {
                 if (TreeComponent.TitleExpression != null)
                     return TreeComponent.TitleExpression(this);
                 else
                     return _title;
             }
-            set {
+            set
+            {
                 _title = value;
             }
         }
@@ -397,8 +417,10 @@ namespace BlazorComponent
         [Parameter]
         public TItem DataItem { get; set; }
 
-        private IList<TItem> ChildDataItems {
-            get {
+        private IList<TItem> ChildDataItems
+        {
+            get
+            {
                 if (TreeComponent.ChildrenExpression != null)
                     return TreeComponent.ChildrenExpression(this) ?? new List<TItem>();
                 else
