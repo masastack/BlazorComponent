@@ -39,11 +39,9 @@
 		  <CascadingValue Value="@this">
 								@foreach (var item in Items)
 							{
-		   <GenericsSlotComponent Value=item
-												   Label="@(nameof(BSelectOption<TItem>.Value))"
-												   Description="SlotProvider.GetSlot<BSelectOption<TItem>>()">
+		   <SlotComponent Description="SlotProvider.GetSlot<BSelectOption<TItem>>()" Value="@item">
 									@ItemText.Invoke(item)
-		   </GenericsSlotComponent>
+		   </SlotComponent>
 							}
 	  </CascadingValue>
 	 </SlotComponent>
