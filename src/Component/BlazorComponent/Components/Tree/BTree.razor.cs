@@ -42,7 +42,8 @@ namespace BlazorComponent
         [Parameter]
         public bool Draggable { get; set; }
 
-
+        [Parameter]
+        public bool Expanded { get; set; }
 
         #endregion Tree
 
@@ -220,6 +221,8 @@ namespace BlazorComponent
             }
         }
 
+        [Parameter]
+        public Func<TItem, bool> DefaultCheckedExpression { get; set; }
         #endregion Checkable
 
         #region Search

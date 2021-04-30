@@ -273,7 +273,10 @@ namespace BlazorComponent
         public bool Indeterminate { get; set; }
 
         [Parameter]
-        public bool Checkbox { get; set; }//是否可以选择不受父节点控制
+        public Func<TItem, bool> DefaultCheckedExpression { get; set; }
+
+        [Parameter]
+        public bool Checkable { get; set; }//是否可以选择不受父节点控制
 
         /// <summary>
         /// 当点击选择框是触发
@@ -560,6 +563,19 @@ namespace BlazorComponent
         {
             //SetBTreeItemClassMapper();
             base.OnParametersSet();
+        }
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            base.OnAfterRender(firstRender);
+            if (firstRender)
+            {
+                if (DefaultCheckedExpression != default)
+                {
+                    Checked = DefaultCheckedExpression.Invoke(DataItem);
+                    SetSelected(Checked);
+                }
+            }
         }
 
         private void AddNodeAndSelect(TItem dataItem)
