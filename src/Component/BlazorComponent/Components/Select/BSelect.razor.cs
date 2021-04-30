@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -7,19 +8,19 @@ namespace BlazorComponent
 {
     public partial class BSelect<TItem> : BDomComponentBase
     {
-        protected CssBuilder ControlCssBuilder = new ();
-        protected CssBuilder SlotCssBuilder = new ();
-        protected CssBuilder SelectSlotCssBuilder = new ();
-        protected CssBuilder LabelCssBuilder = new ();
-        protected StyleBuilder LabelStyleCssBuilder = new ();
-        protected CssBuilder SelectorCssBuilder = new ();
-        protected CssBuilder SelectedCssBuilder = new ();
-        protected CssBuilder SelectInputCssBuilder = new ();
-        protected CssBuilder SelectArrowCssBuilder= new ();
-        protected CssBuilder SelectArrowIconCssBuilder = new ();
-        protected CssBuilder HitCssBuilder = new ();
+        protected CssBuilder ControlCssBuilder = new();
+        protected CssBuilder SlotCssBuilder = new();
+        protected CssBuilder SelectSlotCssBuilder = new();
+        protected CssBuilder LabelCssBuilder = new();
+        protected StyleBuilder LabelStyleCssBuilder = new();
+        protected CssBuilder SelectorCssBuilder = new();
+        protected CssBuilder SelectedCssBuilder = new();
+        protected CssBuilder SelectInputCssBuilder = new();
+        protected CssBuilder SelectArrowCssBuilder = new();
+        protected CssBuilder SelectArrowIconCssBuilder = new();
+        protected CssBuilder HitCssBuilder = new();
 
-        protected CssBuilder ListCssBuilder = new ();
+        protected CssBuilder ListCssBuilder = new();
 
         protected bool _visible;
         protected bool _focused;
@@ -45,8 +46,14 @@ namespace BlazorComponent
 
         public string HitMessage { get; set; }
 
+        [Parameter]
         public string Text { get; set; }
+
+        [Parameter]
         public string Value { get; set; }
+
+        [Parameter]
+        public EventCallback<string> ValueChanged { get; set; }
 
         [Parameter]
         public Func<TItem, string> ItemText { get; set; }
@@ -79,7 +86,7 @@ namespace BlazorComponent
             InvokeStateHasChanged();
         }
 
-        public void SetSelected(TItem value)
+        public async Task SetSelectedAsync(TItem value)
         {
             Text = ItemText != null
                 ? ItemText.Invoke(value)
@@ -88,6 +95,11 @@ namespace BlazorComponent
             Value = ItemValue != null
                 ? ItemValue.Invoke(value)
                 : value.ToString();
+
+            if (ValueChanged.HasDelegate)
+            {
+                await ValueChanged.InvokeAsync(Value);
+            }
         }
     }
 }
