@@ -18,9 +18,9 @@
                 }
             </div>
 
-            @if (Checkbox)
+            @if (Checkable)
             {
-                <i Class="mr-3 far @(Checked ? "fa-square" : "fa-check-square")" @onclick="OnCheckBoxClick"></i>
+                <i Class="mr-3 far @(Checked ? "fa-check-square" : "fa-square")" @onclick="OnCheckBoxClick"></i>
             }
 
             @Title
