@@ -575,6 +575,9 @@ namespace BlazorComponent
                     Checked = DefaultCheckedExpression.Invoke(DataItem);
                     SetSelected(Checked);
                 }
+
+                Expanded = TreeComponent.Expanded;
+                StateHasChanged();
             }
         }
 
