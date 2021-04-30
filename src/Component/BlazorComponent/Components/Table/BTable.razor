@@ -37,7 +37,7 @@
                     }
                     else
                     {
-                        var items = Items.Skip(PageStart - 1).Take(Size);
+                        var items = Items.Skip(PageStart - 1).Take(PageSize);
                         foreach (var item in items)
                         {
                             <tr>

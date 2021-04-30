@@ -37,15 +37,15 @@ namespace BlazorComponent
         [Parameter]
         public IEnumerable<TItem> Items { get; set; }
 
-        protected int PageStart => ((Page - 1) * Size) + 1;
+        protected int PageStart => ((Page - 1) * PageSize) + 1;
 
-        protected int PageStop => Page == TotalPage ? TotalCount : Page * Size;
+        protected int PageStop => Page == TotalPage ? TotalCount : Page * PageSize;
 
         protected int Page { get; set; } = 1;
 
-        protected int Size { get; set; } = 10;
+        protected int PageSize { get; set; } = 10;
 
-        protected int TotalPage => Convert.ToInt32(Math.Ceiling(TotalCount / Convert.ToDecimal(Size)));
+        protected int TotalPage => Convert.ToInt32(Math.Ceiling(TotalCount / Convert.ToDecimal(PageSize)));
 
         protected int TotalCount => Items?.Count() ?? 0;
 
