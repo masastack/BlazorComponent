@@ -1,0 +1,15 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+@if (Visible)
+{
+	<SlotComponent Description="SlotProvider.GetSlot<BPopover>()">
+	 <div class="@CssBuilder.Class" id="@Id" style="@StyleBuilder.Style">
+	  <div class="@BodyCssBuilder.Class" style="@BodyStyleBuilder.Style">
+				@ChildContent
+	  </div>
+	 </div>
+	</SlotComponent>
+
+	<SlotComponent Description="SlotProvider.GetSlot<BOverlay>()" />
+}
