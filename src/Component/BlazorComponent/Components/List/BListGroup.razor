@@ -1,7 +1,7 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div class="@CssProvider.GetClass(this)" id="@Id" @ref="Ref" @onclick="args => IsActive =! IsActive">
+<div class="@CssProvider.GetClass(this)" id="@Id" @ref="Ref">
     <SlotComponent Description="SlotProvider.GetSlot<BListItem>()">
         <SlotComponent Description="SlotProvider.GetSlot<BListItemIcon>(PREPEND)">
             <SlotComponent Description="SlotProvider.GetSlot<BIcon>()">
