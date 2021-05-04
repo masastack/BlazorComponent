@@ -59,7 +59,7 @@ namespace BlazorComponent
                     _icon = frame.TextContent.Trim();
 
                     // support Font Awesome 5
-                    if (_icon.StartsWith("fas "))
+                    if (_icon.StartsWith("fas ") || _icon.StartsWith("far "))
                     {
                         CssBuilder.Add(_icon);
 
