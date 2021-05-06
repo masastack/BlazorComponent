@@ -1,17 +1,14 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-@if (Value)
-{
-	<div class="@OverlayCss" style="@StyleBuilder.Style" id="@Id"
+<div class="@OverlayCss" style="@StyleBuilder.Style" id="@Id"
 	 @onclick="HandleOnClick"
 	 @onclick:stopPropagation="true">
-	 <div class="@ScrimCssBuilder.Class" style="@ScrimStyle" />
-		@if (Value)
-		{
-		 <div class="@ContentCssBuilder.Class">
-				@ChildContent
-		 </div>
-		}
-	</div>
-}
+	<div class="@ScrimCssBuilder.Class" style="@ScrimStyle" />
+	@if (Value)
+	{
+	 <div class="@ContentCssBuilder.Class">
+			@ChildContent
+	 </div>
+	}
+</div>

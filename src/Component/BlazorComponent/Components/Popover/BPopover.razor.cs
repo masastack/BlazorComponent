@@ -27,15 +27,5 @@ namespace BlazorComponent
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
-
-        protected string PopoverStyle =>
-            StyleBuilder
-                .Clear()
-                .Add(() => "z-index: 1000;")
-                .Add(() => Visible ? "position: absolute" : "display: none")
-                .Add(() => $"top: {ClientY?.TryGetNumber().number ?? 0}px")
-                .Add(() => $"left: {ClientX?.TryGetNumber().number ?? 0}px")
-                .Add(() => $"min-width: {MinWidth?.TryGetNumber().number ?? 0}px")
-                .ToString();
     }
 }
