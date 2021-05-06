@@ -23,6 +23,9 @@ namespace BlazorComponent
         public StringOrNumber MinWidth { get; set; }
 
         [Parameter]
+        public StringOrNumber MaxHeight { get; set; }
+
+        [Parameter]
         public string Absolute { get; set; }
 
         [Parameter]

@@ -12,15 +12,26 @@
             <div class="@SelectSlotCssBuilder.Class">
                 @if (!string.IsNullOrWhiteSpace(Label))
                 {
-                    if (!Solo || (Solo && Text == null))
+                    if (!Solo || Solo && !_text.Any())
                     {
                         <label class="@LabelCssBuilder.Class" style="@LabelStyleCssBuilder.Style">@Label</label>
                     }
                 }
                 <div class="@SelectorCssBuilder.Class">
-                    <div class="@SelectedCssBuilder.Class">@Text</div>
+                    @for (var i = 0; i < _text.Count(); i++)
+                    {
+                        var item = _text.ElementAt(i);
+                        if (i == _text.Count() - 1)
+                        {
+                            <div class="@SelectedCssBuilder.Class">@item</div>
+                        }
+                        else
+                        {
+                            <div class="@SelectedCssBuilder.Class">@($"{item}, ")</div>
+                        }
+                    }
                     <input id="input-@Id" type="text" readonly="readonly"
-                           class="@SelectInputCssBuilder.Class" />
+                           class="@SelectInputCssBuilder.Class"/>
                 </div>
                 <div class="@SelectArrowCssBuilder.Class">
                     <div class="@SelectArrowIconCssBuilder.Class">
@@ -29,33 +40,30 @@
                         </SlotComponent>
                     </div>
                 </div>
-                <input type="hidden" value="@Value" />
+                <input type="hidden" value="@(Multiple ? string.Join(',', Values) : Value)"/>
             </div>
-            @if (_visible && Items != null && ItemText != null)
-            {
-                <SlotComponent Description="SlotProvider.GetSlot<BPopover>()">
-                    <SlotComponent Description="SlotProvider.GetSlot<BList>()">
-                        <SlotComponent Description="SlotProvider.GetSlot<BListItemGroup>()">
-                            <CascadingValue Value="this">
-                                @foreach (var item in Items)
-                                {
-                                    <SlotComponent Description="SlotProvider.GetSlot<BSelectOption<TItem>>()" Value="@item">
-                                        @ItemText.Invoke(item)
-                                    </SlotComponent>
-                                }
-                            </CascadingValue>
-                        </SlotComponent>
+            <SlotComponent Description="SlotProvider.GetSlot<BPopover>()">
+                <SlotComponent Description="SlotProvider.GetSlot<BList>()">
+                    <SlotComponent Description="SlotProvider.GetSlot<BListItemGroup>()">
+                        <CascadingValue Value="this">
+                            @foreach (var item in Items)
+                            {
+                                <SlotComponent Description="SlotProvider.GetSlot<BSelectOption<TItem>>()"
+                                               Value="@item"
+                                               Key="@(ItemValue?.Invoke(item) ?? item.ToString())"
+                                               Checked="@IsSelected(item)">
+                                    @(ItemText?.Invoke(item) ?? item.ToString())
+                                </SlotComponent>
+                            }
+                        </CascadingValue>
                     </SlotComponent>
                 </SlotComponent>
-            }
+            </SlotComponent>
         </div>
         <div class="@HitCssBuilder.Class">
-            <SlotComponent Description="SlotProvider.GetSlot<BHitMessage>()">@HitMessage</SlotComponent>
+            <SlotComponent Description="SlotProvider.GetSlot<BHitMessage>()">@Hint</SlotComponent>
         </div>
     </div>
 </div>
 
-@if (_visible)
-{
-    <SlotComponent Description="SlotProvider.GetSlot<BOverlay>()" />
-}
+<SlotComponent Description="SlotProvider.GetSlot<BOverlay>()"/>

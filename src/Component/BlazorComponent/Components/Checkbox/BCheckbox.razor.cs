@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public abstract partial class BCheckbox : BDomComponentBase
+    public partial class BCheckbox : BDomComponentBase
     {
         protected CssBuilder ControlCssBuilder = new ();
         protected CssBuilder SlotCssBuilder = new ();
