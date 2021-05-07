@@ -2,8 +2,8 @@
 @inherits BDomComponentBase
 
 <button type="button"
-		class="@CssBuilder.Class"
-		style="@StyleBuilder.Style"
+		class="@CssProvider.GetClass(this)"
+		style="@CssProvider.GetStyle(this)"
 		id="@Id"
 		@ref="Ref"
 		@onclick="HandleOnClick"

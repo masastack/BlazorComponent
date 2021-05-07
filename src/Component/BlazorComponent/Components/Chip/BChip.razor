@@ -1,0 +1,17 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+@if (Show)
+{
+    <span class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)" id="@Id" @ref="Ref">
+        <span class="@CssProvider.GetClass(this,"content")">
+            @ChildContent
+            @if (Close)
+            {
+                <SlotComponent Description="SlotProvider.GetSlot<BIcon>()">
+                    @CloseIcon
+                </SlotComponent>
+            }
+        </span>
+    </span>
+}
