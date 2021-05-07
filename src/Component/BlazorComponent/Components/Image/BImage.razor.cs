@@ -2,8 +2,14 @@
 
 namespace BlazorComponent
 {
-    public abstract partial class BCard : BDomComponentBase
+    public partial class BImage : BDomComponentBase
     {
+        protected string RespSizerStyle { get; set; }
+
+        [Parameter] public StringOrNumber AspectRatio { get; set; }
+
+        [Parameter] public bool Contain { get; set; }
+
         [Parameter] public StringOrNumber Height { get; set; }
 
         [Parameter] public StringOrNumber MaxHeight { get; set; }
@@ -16,8 +22,6 @@ namespace BlazorComponent
 
         [Parameter] public StringOrNumber MinWidth { get; set; }
 
-        [Parameter] public bool Outlined { get; set; }
-
-        [Parameter] public RenderFragment ChildContent { get; set; }
+        [Parameter] public string Src { get; set; }
     }
 }
