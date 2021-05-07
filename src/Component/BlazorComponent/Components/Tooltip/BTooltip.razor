@@ -1,0 +1,11 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<div class="@CssProvider.GetClass(this,"content")" style="@CssProvider.GetStyle(this,"content")" @ref="ContentRef">
+    @ChildContent
+</div>
+<div class="@CssProvider.GetClass(this,"activator")" style="@CssProvider.GetStyle(this,"activator")" @ref="Ref" @onmouseenter="()=>IsActive=true" @onmouseleave="()=>IsActive=false">
+    @Activator
+</div>
+<span class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)">
+</span>
