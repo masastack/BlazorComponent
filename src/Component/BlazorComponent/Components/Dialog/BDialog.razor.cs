@@ -4,8 +4,8 @@ namespace BlazorComponent
 {
     public partial class BDialog : BDomComponentBase
     {
-        protected CssBuilder BodyCssBuilder = new();
-        protected StyleBuilder BodyStyleBuilder = new();
+        protected CssBuilder BodyCssBuilder { get; } = new();
+        protected StyleBuilder BodyStyleBuilder { get; } = new();
 
         [Parameter] public bool Visible { get; set; }
 
@@ -16,8 +16,8 @@ namespace BlazorComponent
         [Parameter] public StringOrNumber MaxWidth { get; set; }
 
         [Parameter] public bool Persistent { get; set; }
-        
-        [Parameter] public  bool Scrollable { get; set; }
+
+        [Parameter] public bool Scrollable { get; set; }
 
         [Parameter] public RenderFragment ChildContent { get; set; }
     }

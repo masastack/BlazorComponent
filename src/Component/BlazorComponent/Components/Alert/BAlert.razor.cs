@@ -1,14 +1,13 @@
-﻿using BlazorComponent.Components.Core.CssProcess;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
     public abstract partial class BAlert : BDomComponentBase
     {
-        protected CssBuilder WrapperCssBuilder = new ();
-        protected CssBuilder ContentCssBuilder = new ();
-        protected CssBuilder BorderCssBuilder = new ();
-        protected StyleBuilder BorderStyleBuilder = new ();
+        protected CssBuilder WrapperCssBuilder { get; } = new();
+        protected CssBuilder ContentCssBuilder { get; } = new();
+        protected CssBuilder BorderCssBuilder { get; } = new();
+        protected StyleBuilder BorderStyleBuilder { get; } = new();
 
         [Parameter]
         public bool Dense { get; set; }
