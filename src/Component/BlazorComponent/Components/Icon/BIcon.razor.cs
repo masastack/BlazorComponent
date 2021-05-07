@@ -61,21 +61,38 @@ namespace BlazorComponent
                     // support Font Awesome 5
                     if (_icon.StartsWith("fas ") || _icon.StartsWith("far "))
                     {
-                        CssBuilder.Add(_icon);
+                        CssProvider
+                            .Apply<BIcon>(cssBuilder =>
+                            {
+                                cssBuilder
+                                    .Add(_icon);
+                            });
 
                         _icon = null;
                     }
                     // support Material Design Icons
                     else if (_icon.StartsWith("mdi-"))
                     {
-                        CssBuilder.Add($"mdi {_icon}");
+                        var icon = _icon;
+
+                        CssProvider
+                            .Apply<BIcon>(cssBuilder =>
+                            {
+                                cssBuilder
+                                   .Add($"mdi {icon}");
+                            });
 
                         _icon = null;
                     }
                     // support Material Design
                     else
                     {
-                        CssBuilder.Add("material-icons");
+                        CssProvider
+                            .Apply<BIcon>(cssBuilder =>
+                            {
+                                cssBuilder
+                                   .Add("material-icons");
+                            });
                     }
                 }
             }
