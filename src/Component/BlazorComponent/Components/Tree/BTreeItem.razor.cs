@@ -278,6 +278,9 @@ namespace BlazorComponent
         [Parameter]
         public bool Checkable { get; set; }//是否可以选择不受父节点控制
 
+        [Parameter]
+        public EventCallback<TItem> HandleCheckboxClick { get; set; }
+
         /// <summary>
         /// 当点击选择框是触发
         /// </summary>
@@ -286,6 +289,11 @@ namespace BlazorComponent
             SetChecked(!Checked);
             if (TreeComponent.OnCheckBoxChanged.HasDelegate)
                 await TreeComponent.OnCheckBoxChanged.InvokeAsync(new TreeEventArgs<TItem>(TreeComponent, this, args));
+
+            if (HandleCheckboxClick.HasDelegate)
+            {
+                await HandleCheckboxClick.InvokeAsync(DataItem);
+            }
         }
 
         /// <summary>
