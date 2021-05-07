@@ -1,0 +1,10 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<div class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)">
+    <div class="@CssProvider.GetClass(this, "resp_sizer")" style="@RespSizerStyle"></div>
+    <div class="@CssProvider.GetClass(this, "image")"
+         style="@CssProvider.GetStyle(this, "image")">
+    </div>
+    <div class="@CssProvider.GetClass(this, "resp_content")"></div>
+</div>
