@@ -394,6 +394,8 @@ namespace BlazorComponent
         ///// </summary>
         //public EventCallback<TreeEventArgs> OnDragEnd { get; set; }
 
+        [Parameter]
+        public EventCallback<TItem> HandleCheckboxClick { get; set; }
         #endregion Event
 
         #region Template
