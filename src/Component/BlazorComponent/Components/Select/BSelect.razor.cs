@@ -9,6 +9,10 @@ namespace BlazorComponent
 {
     public partial class BSelect<TItem> : BDomComponentBase
     {
+        protected bool _visible;
+        protected bool _focused;
+        protected string _icon;
+
         protected CssBuilder ControlCssBuilder { get; } = new();
         protected CssBuilder SlotCssBuilder { get; } = new();
         protected CssBuilder SelectSlotCssBuilder { get; } = new();
@@ -23,10 +27,6 @@ namespace BlazorComponent
 
         // TODO:
         protected virtual string LegendStyle { get; }
-
-        protected bool _visible;
-        protected bool _focused;
-        protected string _icon;
 
         [Parameter] public string Label { get; set; }
 
