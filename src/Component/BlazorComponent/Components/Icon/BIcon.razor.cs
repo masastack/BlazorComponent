@@ -14,6 +14,10 @@ namespace BlazorComponent
     {
         private string _icon;
         private IconTag _tag = IconTag.I;
+        /// <summary>
+        /// Attention! End with a space
+        /// </summary>
+        private static string[] _arrFa5Prefix = new string[] { "fa ", "fab ", "fal ", "far ", "fas " };
 
         // TODO: 维护内置颜色列表
         [Parameter]
@@ -59,7 +63,7 @@ namespace BlazorComponent
                     _icon = frame.TextContent.Trim();
 
                     // support Font Awesome 5
-                    if (_icon.StartsWith("fas ") || _icon.StartsWith("far "))
+                    if (_arrFa5Prefix.Any(prefix => _icon.StartsWith(prefix)))
                     {
                         CssProvider
                             .Apply<BIcon>(cssBuilder =>
