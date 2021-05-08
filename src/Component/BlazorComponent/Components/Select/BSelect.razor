@@ -8,7 +8,18 @@
              @onclick="Click"
              @ref="Ref"
              tabindex="0"
+             style="outline:none"
              @onblur="HandleOnBlur">
+
+            @if (Outlined)
+            {
+                <fieldset>
+                    <legend style="@LegendStyle">
+                        <span>@((MarkupString)"&#8203;")</span>
+                    </legend>
+                </fieldset>
+            }
+
             <div class="@CssProvider.GetClass(this,"select-slot")">
                 @if (!string.IsNullOrWhiteSpace(Label))
                 {
@@ -18,16 +29,26 @@
                     }
                 }
                 <div class="@CssProvider.GetClass(this,"selector")">
-                    @for (var i = 0; i < _text.Count(); i++)
+                    @if (Chips)
                     {
-                        var item = _text.ElementAt(i);
-                        if (i == _text.Count() - 1)
+                        @foreach (var item in _text)
                         {
-                            <div class="@CssProvider.GetClass(this,"selected")">@item</div>
+                            <SlotComponent Description="SlotProvider.GetSlot<BChip>()">@item</SlotComponent>
                         }
-                        else
+                    }
+                    else
+                    {
+                        @for (var i = 0; i < _text.Count(); i++)
                         {
-                            <div class="@CssProvider.GetClass(this,"selected")">@($"{item}, ")</div>
+                            var item = _text.ElementAt(i);
+                            if (i == _text.Count() - 1)
+                            {
+                                <div class="@CssProvider.GetClass(this,"selected")">@item</div>
+                            }
+                            else
+                            {
+                                <div class="@CssProvider.GetClass(this,"selected")">@($"{item}, ")</div>
+                            }
                         }
                     }
                     <input id="input-@Id" type="text" readonly="readonly"

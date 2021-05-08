@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
@@ -12,6 +12,9 @@ namespace BlazorComponent
         protected bool _visible;
         protected bool _focused;
         protected string _icon;
+
+        // TODO:
+        protected virtual string LegendStyle { get; }
 
         [Parameter] public string Label { get; set; }
 
@@ -80,10 +83,8 @@ namespace BlazorComponent
                             ? ItemText.Invoke(u)
                             : u.ToString();
 
-                    if (Multiple)
-                    {
+                    if (!Multiple)
                         _text.Clear();
-                    }
 
                     _text.Add(t);
                 }
