@@ -21,6 +21,9 @@ namespace BlazorComponent
         protected CssBuilder SelectArrowIconCssBuilder { get; } = new();
         protected CssBuilder HitCssBuilder { get; } = new();
 
+        // TODO:
+        protected virtual string LegendStyle { get; }
+
         protected bool _visible;
         protected bool _focused;
         protected string _icon;
