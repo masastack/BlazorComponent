@@ -5,10 +5,10 @@
 @if (RealDisplay)
 {
     <CascadingValue Value="this" Name="SelfNode">
-        <div @key="NodeId" class="@CssBuilderRoot.Class" style="@Style">
+        <div @key="NodeId" class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)">
             @for (int i = 0; i < TreeLevel; i++)
         {
-            <div class="@CssBuilderLevel.Class"></div>
+            <div class="@CssProvider.GetClass(this,"level")"></div>
         }
 
         <div style="@CssProvider.GetStyle(this,"icon")">

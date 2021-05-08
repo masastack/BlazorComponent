@@ -2,7 +2,7 @@
 @inherits BDomComponentBase
 @typeparam TItem
 
-<div class="@CssBuilder.Class" style="@Style" @ref="Ref">
+<div class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)" @ref="Ref">
     <CascadingValue Value="this" Name="Tree" IsFixed="@true">
         @if (DataSource != null)
         {
@@ -13,7 +13,7 @@
         }
         else
         {
-            <div class="@CssBuilderChildren.Class">
+            <div class="@CssProvider.GetClass(this,"child")">
                 @Nodes
             </div>
         }

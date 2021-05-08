@@ -1,5 +1,5 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div class="@CssBuilder.Class" style="@OriginalStyle" id="@Id" @ref="Ref">
+<div class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)" id="@Id" @ref="Ref">
 </div>

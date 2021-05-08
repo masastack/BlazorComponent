@@ -11,7 +11,5 @@ namespace BlazorComponent
     {
         [Parameter]
         public RenderFragment ChildContent { get; set; }
-
-        protected CssBuilder WrapCssBuilder { get; } = new CssBuilder();
     }
 }

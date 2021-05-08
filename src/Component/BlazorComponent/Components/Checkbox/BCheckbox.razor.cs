@@ -7,12 +7,6 @@ namespace BlazorComponent
 {
     public partial class BCheckbox : BDomComponentBase
     {
-        protected CssBuilder ControlCssBuilder { get; } = new();
-        protected CssBuilder SlotCssBuilder { get; } = new();
-        protected CssBuilder InputWrapperCssBuilder { get; } = new();
-        protected CssBuilder InputCssBuilder { get; } = new();
-        protected CssBuilder LabelCssBuilder { get; } = new();
-
         protected RenderFragment CheckedIconContent { get; set; }
         protected RenderFragment UncheckIconContent { get; set; }
         protected RenderFragment IndeterminateIconContent { get; set; }

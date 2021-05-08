@@ -6,8 +6,8 @@
 	<div role="progressbar"
 	 aria-valuemin="0"
 	 aria-valuemax="100"
-	 class="@CssBuilder.Class"
-	 style="@StyleBuilder.Style">
+	 class="@CssProvider.GetClass(this)"
+	 style="@CssProvider.GetStyle(this)">
 	 <svg xmlns="http://www.w3.org/2000/svg"
 		 viewBox="21.904761904761905 21.904761904761905 43.80952380952381 43.80952380952381"
 		 style="transform: rotate(0deg);">
@@ -24,8 +24,8 @@
 }
 else
 {
-	<div class="@CssBuilder.Class"
-	 style="@StyleBuilder.Style"
+	<div class="@CssProvider.GetClass(this)"
+	 style="@CssProvider.GetStyle(this)"
 	 id="@Id"
 	 @ref="Ref">
 		@ChildContent

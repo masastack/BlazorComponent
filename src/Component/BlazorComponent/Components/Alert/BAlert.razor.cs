@@ -4,11 +4,6 @@ namespace BlazorComponent
 {
     public abstract partial class BAlert : BDomComponentBase
     {
-        protected CssBuilder WrapperCssBuilder { get; } = new();
-        protected CssBuilder ContentCssBuilder { get; } = new();
-        protected CssBuilder BorderCssBuilder { get; } = new();
-        protected StyleBuilder BorderStyleBuilder { get; } = new();
-
         [Parameter]
         public bool Dense { get; set; }
 

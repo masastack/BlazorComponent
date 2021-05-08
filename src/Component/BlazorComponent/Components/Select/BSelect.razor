@@ -2,9 +2,9 @@
 @inherits BDomComponentBase
 @typeparam TItem
 
-<div class="@CssBuilder.Class" style="@StyleBuilder.Style" id="@Id">
-    <div class="@ControlCssBuilder.Class">
-        <div class="@SlotCssBuilder.Class"
+<div class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)" id="@Id">
+    <div class="@CssProvider.GetClass(this,"control")">
+        <div class="@CssProvider.GetClass(this,"slot")"
              @onclick="Click"
              @ref="Ref"
              tabindex="0"
@@ -20,15 +20,15 @@
                 </fieldset>
             }
 
-            <div class="@SelectSlotCssBuilder.Class">
+            <div class="@CssProvider.GetClass(this,"select-slot")">
                 @if (!string.IsNullOrWhiteSpace(Label))
                 {
                     if (!Solo || Solo && !_text.Any())
                     {
-                        <label class="@LabelCssBuilder.Class" style="@LabelStyleCssBuilder.Style">@Label</label>
+                        <label class="@CssProvider.GetClass(this,"label")" style="@CssProvider.GetStyle(this,"label")">@Label</label>
                     }
                 }
-                <div class="@SelectorCssBuilder.Class">
+                <div class="@CssProvider.GetClass(this,"selector")">
                     @if (Chips)
                     {
                         @foreach (var item in _text)
@@ -43,19 +43,19 @@
                             var item = _text.ElementAt(i);
                             if (i == _text.Count() - 1)
                             {
-                                <div class="@SelectedCssBuilder.Class">@item</div>
+                                <div class="@CssProvider.GetClass(this,"selected")">@item</div>
                             }
                             else
                             {
-                                <div class="@SelectedCssBuilder.Class">@($"{item}, ")</div>
+                                <div class="@CssProvider.GetClass(this,"selected")">@($"{item}, ")</div>
                             }
                         }
                     }
                     <input id="input-@Id" type="text" readonly="readonly"
-                           class="@SelectInputCssBuilder.Class" />
+                           class="@CssProvider.GetClass(this,"select-input")" />
                 </div>
-                <div class="@SelectArrowCssBuilder.Class">
-                    <div class="@SelectArrowIconCssBuilder.Class">
+                <div class="@CssProvider.GetClass(this,"select-arrow")">
+                    <div class="@CssProvider.GetClass(this,"select-arrow-icon")">
                         <SlotComponent Description="SlotProvider.GetSlot<BIcon>()">
                             @_icon
                         </SlotComponent>
@@ -81,7 +81,7 @@
                 </SlotComponent>
             </SlotComponent>
         </div>
-        <div class="@HitCssBuilder.Class">
+        <div class="@CssProvider.GetClass(this,"hit")">
             <SlotComponent Description="SlotProvider.GetSlot<BHitMessage>()">@Hint</SlotComponent>
         </div>
     </div>
