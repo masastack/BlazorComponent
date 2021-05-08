@@ -10,10 +10,6 @@ namespace BlazorComponent
 {
     public abstract partial class BTreeItem<TItem> : BDomComponentBase
     {
-
-        protected CssBuilder CssBuilderRoot { get; } = new CssBuilder();
-        protected CssBuilder CssBuilderLevel { get; } = new CssBuilder();
-
         #region Node
 
         /// <summary>

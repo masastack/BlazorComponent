@@ -9,13 +9,13 @@
 		@onclick="HandleOnClick"
 		@onclick:stopPropagation="ClickStopPropagation">
 
-	<div class="@_btnContentClass">
+	<div class="@CssProvider.GetClass(this,"content")">
 		@ChildContent
 	</div>
 
 	@if (Loading)
 	{
-	 <div class="@_btnLoaderClass">
+	 <div class="@CssProvider.GetClass(this,"loader")">
 			@LoadingFragment
 	 </div>
 	}

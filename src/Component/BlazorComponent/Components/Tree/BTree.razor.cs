@@ -8,8 +8,6 @@ namespace BlazorComponent
 {
     public abstract partial class BTree<TItem> : BDomComponentBase
     {
-        protected CssBuilder CssBuilderChildren { get; } = new CssBuilder();
-
         #region Tree
 
         /// <summary>

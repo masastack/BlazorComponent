@@ -9,18 +9,6 @@ namespace BlazorComponent
 {
     public partial class BSelect<TItem> : BDomComponentBase
     {
-        protected CssBuilder ControlCssBuilder { get; } = new();
-        protected CssBuilder SlotCssBuilder { get; } = new();
-        protected CssBuilder SelectSlotCssBuilder { get; } = new();
-        protected CssBuilder LabelCssBuilder { get; } = new();
-        protected StyleBuilder LabelStyleCssBuilder { get; } = new();
-        protected CssBuilder SelectorCssBuilder { get; } = new();
-        protected CssBuilder SelectedCssBuilder { get; } = new();
-        protected CssBuilder SelectInputCssBuilder { get; } = new();
-        protected CssBuilder SelectArrowCssBuilder { get; } = new();
-        protected CssBuilder SelectArrowIconCssBuilder { get; } = new();
-        protected CssBuilder HitCssBuilder { get; } = new();
-
         protected bool _visible;
         protected bool _focused;
         protected string _icon;

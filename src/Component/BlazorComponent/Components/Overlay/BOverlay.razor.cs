@@ -5,13 +5,6 @@ namespace BlazorComponent
 {
     public partial class BOverlay : BDomComponentBase
     {
-        protected CssBuilder ScrimCssBuilder { get; } = new();
-        protected StyleBuilder ScrimStyleBuilder { get; } = new();
-        protected CssBuilder ContentCssBuilder { get; } = new();
-
-        protected virtual string OverlayCss { get; }
-        protected virtual string ScrimStyle { get; }
-
         [Parameter]
         public bool Absolute { get; set; }
 

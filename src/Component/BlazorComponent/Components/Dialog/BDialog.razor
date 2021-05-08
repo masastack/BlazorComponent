@@ -3,13 +3,13 @@
 
 @if (Visible)
 {
-	<SlotComponent Description="SlotProvider.GetSlot<BPopover>()">
-	 <div class="@CssBuilder.Class" id="@Id" style="@StyleBuilder.Style">
-	  <div class="@BodyCssBuilder.Class" style="@BodyStyleBuilder.Style">
-				@ChildContent
-	  </div>
-	 </div>
-	</SlotComponent>
+    <SlotComponent Description="SlotProvider.GetSlot<BPopover>()">
+        <div class="@CssProvider.GetClass(this)" id="@Id" style="@CssProvider.GetStyle(this)">
+            <div class="@CssProvider.GetClass(this,"body")" style="@CssProvider.GetStyle(this,"body")">
+                @ChildContent
+            </div>
+        </div>
+    </SlotComponent>
 
-	<SlotComponent Description="SlotProvider.GetSlot<BOverlay>()" />
+    <SlotComponent Description="SlotProvider.GetSlot<BOverlay>()" />
 }

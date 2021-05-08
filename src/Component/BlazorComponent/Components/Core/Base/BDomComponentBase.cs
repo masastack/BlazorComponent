@@ -10,16 +10,23 @@ namespace BlazorComponent
 {
     public abstract class BDomComponentBase : BComponentBase
     {
-        private string _originalClass;
-        private string _originalStyle;
+        private ElementReference _ref;
+
+        public BDomComponentBase()
+        {
+            CssProvider.StaticClassProvider = () => Class;
+            CssProvider.StaticStyleProvider = () => Style;
+        }
+
+        protected ComponentCssProvider CssProvider { get; } = new();
+
+        protected ComponentSlotProvider SlotProvider { get; } = new();
 
         [Inject]
-        private IComponentIdGenerator ComponentIdGenerator { get; set; }
+        public IComponentIdGenerator ComponentIdGenerator { get; set; }
 
         [Parameter]
         public string Id { get; set; }
-
-        private ElementReference _ref;
 
         /// <summary>
         /// Returned ElementRef reference for DOM element.
@@ -34,64 +41,17 @@ namespace BlazorComponent
             }
         }
 
-        protected CssBuilder CssBuilder { get; } = new CssBuilder();
-
-        protected StyleBuilder StyleBuilder { get; } = new StyleBuilder();
-
-        protected ComponentCssProvider CssProvider { get; set; } = new();
-
-        protected ComponentSlotProvider SlotProvider { get; set; } = new();
-
-        public BDomComponentBase()
-        {
-            CssBuilder.Add(() => OriginalClass);
-            StyleBuilder.Add(() => OriginalStyle);
-        }
-
-        protected override void OnInitialized()
-        {
-            Id ??= ComponentIdGenerator.Generate(this);
-            base.OnInitialized();
-        }
-
         /// <summary>
         /// Specifies one or more class names for an DOM element.
         /// </summary>
         [Parameter]
-        public string OriginalClass
-        {
-            get => _originalClass;
-            set
-            {
-                _originalClass = value;
-                CssBuilder.OriginalClass = value;
-            }
-        }
+        public string Class { get; set; }
 
         /// <summary>
         /// Specifies an inline style for an DOM element.
         /// </summary>
         [Parameter]
-        public string OriginalStyle
-        {
-            get => _originalStyle;
-            set
-            {
-                _originalStyle = value;
-                StyleBuilder.OriginalStyle = value;
-                StateHasChanged(); // TODO: need this?
-            }
-        }
-
-        /// <summary>
-        /// All css class 
-        /// </summary>
-        public string Class => CssBuilder.Class;
-
-        /// <summary>
-        /// All css style
-        /// </summary>
-        public string Style => StyleBuilder.Style;
+        public string Style { get; set; }
 
         /// <summary>
         /// Custom attributes
@@ -99,9 +59,10 @@ namespace BlazorComponent
         [Parameter(CaptureUnmatchedValues = true)]
         public IDictionary<string, object> Attributes { get; set; } = new Dictionary<string, object>();
 
-        protected virtual void SetComponentClass()
+        protected override void OnInitialized()
         {
-
+            Id ??= ComponentIdGenerator.Generate(this);
+            base.OnInitialized();
         }
 
         protected override Task OnInitializedAsync()
@@ -110,9 +71,9 @@ namespace BlazorComponent
             return base.OnInitializedAsync();
         }
 
-        protected virtual string GenerateStyle()
+        protected virtual void SetComponentClass()
         {
-            return OriginalStyle;
+
         }
 
         /// <summary>
