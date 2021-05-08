@@ -18,20 +18,30 @@
                     }
                 }
                 <div class="@SelectorCssBuilder.Class">
-                    @for (var i = 0; i < _text.Count(); i++)
+                    @if (Chips)
                     {
-                        var item = _text.ElementAt(i);
-                        if (i == _text.Count() - 1)
+                        @foreach (var item in _text)
                         {
-                            <div class="@SelectedCssBuilder.Class">@item</div>
+                            <SlotComponent Description="SlotProvider.GetSlot<BChip>()">@item</SlotComponent>
                         }
-                        else
+                    }
+                    else
+                    {
+                        @for (var i = 0; i < _text.Count(); i++)
                         {
-                            <div class="@SelectedCssBuilder.Class">@($"{item}, ")</div>
+                            var item = _text.ElementAt(i);
+                            if (i == _text.Count() - 1)
+                            {
+                                <div class="@SelectedCssBuilder.Class">@item</div>
+                            }
+                            else
+                            {
+                                <div class="@SelectedCssBuilder.Class">@($"{item}, ")</div>
+                            }
                         }
                     }
                     <input id="input-@Id" type="text" readonly="readonly"
-                           class="@SelectInputCssBuilder.Class"/>
+                           class="@SelectInputCssBuilder.Class" />
                 </div>
                 <div class="@SelectArrowCssBuilder.Class">
                     <div class="@SelectArrowIconCssBuilder.Class">
@@ -40,7 +50,7 @@
                         </SlotComponent>
                     </div>
                 </div>
-                <input type="hidden" value="@(Multiple ? string.Join(',', Values) : Value)"/>
+                <input type="hidden" value="@(Multiple ? string.Join(',', Values) : Value)" />
             </div>
             <SlotComponent Description="SlotProvider.GetSlot<BPopover>()">
                 <SlotComponent Description="SlotProvider.GetSlot<BList>()">
@@ -49,9 +59,9 @@
                             @foreach (var item in Items)
                             {
                                 <SlotComponent Description="SlotProvider.GetSlot<BSelectOption<TItem>>()"
-                                               Value="@item"
-                                               Key="@(ItemValue?.Invoke(item) ?? item.ToString())"
-                                               Checked="@IsSelected(item)">
+                                           Value="@item"
+                                           Key="@(ItemValue?.Invoke(item) ?? item.ToString())"
+                                           Checked="@IsSelected(item)">
                                     @(ItemText?.Invoke(item) ?? item.ToString())
                                 </SlotComponent>
                             }
@@ -66,4 +76,4 @@
     </div>
 </div>
 
-<SlotComponent Description="SlotProvider.GetSlot<BOverlay>()"/>
+<SlotComponent Description="SlotProvider.GetSlot<BOverlay>()" />
