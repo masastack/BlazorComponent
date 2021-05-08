@@ -65,11 +65,13 @@ namespace BlazorComponent
                     // support Font Awesome 5
                     if (_arrFa5Prefix.Any(prefix => _icon.StartsWith(prefix)))
                     {
+                        var icon = _icon;
+
                         CssProvider
                             .Apply<BIcon>(cssBuilder =>
                             {
                                 cssBuilder
-                                    .Add(_icon);
+                                    .Add(icon);
                             });
 
                         _icon = null;
