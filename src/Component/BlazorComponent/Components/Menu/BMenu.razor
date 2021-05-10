@@ -1,9 +1,9 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div class="@CssBuilder.Class" id="@Id">
+<div class="@CssProvider.GetClass(this)" id="@Id">
     <div @onclick="Click" @onmouseover="MouseOver"
-         onmouseleave="@(EventCallback.Factory.Create<EventArgs>(this, MouseOut))" @ref="Ref" style="position:relative; display:inline-block">
+         @onmouseleave="MouseOut" @ref="Ref" style="@CssProvider.GetStyle(this,"slot")">
         @Slot
         <SlotComponent Description="SlotProvider.GetSlot<BPopover>()">
             @ChildContent

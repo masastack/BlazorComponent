@@ -13,6 +13,10 @@ namespace BlazorComponent
         private readonly Dictionary<ComponentKey, Action<CssBuilder>> _cssConfig = new();
         private readonly Dictionary<ComponentKey, Action<StyleBuilder>> _styleConfig = new();
 
+        internal Func<string> StaticClassProvider { get; set; }
+
+        internal Func<string> StaticStyleProvider { get; set; }
+
         public ComponentCssProvider Apply(Type type, Action<CssBuilder> cssAction = null, Action<StyleBuilder> styleAction = null)
         {
             if (cssAction != null)
@@ -99,6 +103,8 @@ namespace BlazorComponent
             var builder = new CssBuilder();
             action?.Invoke(builder);
 
+            builder.Add(StaticClassProvider);
+
             return builder.Class;
         }
 
@@ -108,6 +114,8 @@ namespace BlazorComponent
 
             var builder = new StyleBuilder();
             action?.Invoke(builder);
+
+            builder.Add(StaticStyleProvider);
 
             return builder.Style;
         }

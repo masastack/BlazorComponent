@@ -10,13 +10,6 @@ namespace BlazorComponent
     public abstract partial class BButton : BDomComponentBase
     {
         /// <summary>
-        /// The name of css class for button content
-        /// </summary>
-        protected string _btnContentClass;
-
-        protected string _btnLoaderClass;
-
-        /// <summary>
         /// The background color
         /// </summary>
         [Parameter]

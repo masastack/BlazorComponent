@@ -13,18 +13,6 @@ namespace BlazorComponent
         protected bool _focused;
         protected string _icon;
 
-        protected CssBuilder ControlCssBuilder { get; } = new();
-        protected CssBuilder SlotCssBuilder { get; } = new();
-        protected CssBuilder SelectSlotCssBuilder { get; } = new();
-        protected CssBuilder LabelCssBuilder { get; } = new();
-        protected StyleBuilder LabelStyleCssBuilder { get; } = new();
-        protected CssBuilder SelectorCssBuilder { get; } = new();
-        protected CssBuilder SelectedCssBuilder { get; } = new();
-        protected CssBuilder SelectInputCssBuilder { get; } = new();
-        protected CssBuilder SelectArrowCssBuilder { get; } = new();
-        protected CssBuilder SelectArrowIconCssBuilder { get; } = new();
-        protected CssBuilder HitCssBuilder { get; } = new();
-
         // TODO:
         protected virtual string LegendStyle { get; }
 

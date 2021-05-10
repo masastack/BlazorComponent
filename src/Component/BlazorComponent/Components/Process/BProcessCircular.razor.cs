@@ -36,30 +36,5 @@ namespace BlazorComponent
         /// </summary>
         [Parameter]
         public RenderFragment ChildContent { get; set; }
-
-        protected override void SetComponentClass()
-        {
-            CssBuilder
-                .Add("m-progress-circular")
-                .AddIf("m-progress-circular--indeterminate", () => Indeterminate);
-
-            StyleBuilder
-                .AddIf(() => Size.Value.Match(
-                        str => $"height: {str}; width: {str}",
-                        num => $"height: {num}px; width: {num}px"),
-                    () => Size.HasValue);
-
-            if (!string.IsNullOrWhiteSpace(Color))
-            {
-                if (Color.StartsWith("#"))
-                {
-                    StyleBuilder.Add($"color: {Color}");
-                }
-                else
-                {
-                    CssBuilder.Add($"{Color}--text");
-                }
-            }
-        }
     }
 }
