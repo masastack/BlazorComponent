@@ -7,9 +7,16 @@
             @ChildContent
         </div>
         <div class="@CssProvider.GetClass(this,"action")" style="@CssProvider.GetStyle(this,"action")">
-            <SlotComponent Description="SlotProvider.GetSlot<BButton>()">
-                @Action
-            </SlotComponent>
+            @if (!string.IsNullOrEmpty(Action))
+            {
+                <SlotComponent Description="SlotProvider.GetSlot<BButton>()">
+                    @Action
+                </SlotComponent>
+            }
+            else
+            {
+                @ActionContent
+            }
         </div>
     </div>
 </div>
