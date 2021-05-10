@@ -36,3 +36,8 @@
 [![BlazorComponent](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://github.com/BlazorComponent/BlazorComponent/blob/master/LICENSE)
 
 Copyright (c) 2021-present BlazorComponent
+
+> Third party software  
+  [![AntDesign](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://github.com/ant-design-blazor/ant-design-blazor/blob/master/LICENSE)  
+  [Ant Design Blazor](https://github.com/ant-design-blazor/ant-design-blazor.git)
+
