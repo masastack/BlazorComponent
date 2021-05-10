@@ -1,0 +1,19 @@
+﻿@namespace BlazorComponent
+@inherits BSelectSlot
+
+<CascadingValue Value="Select">
+    <SlotComponent Description="SlotProvider.GetSlot<BPopover>()">
+        <SlotComponent Description="SlotProvider.GetSlot<BList>()">
+            <SlotComponent Description="SlotProvider.GetSlot<BListItemGroup>()">
+                @foreach (var item in Items)
+                {
+                    <SlotComponent Description="SlotProvider.GetSlot<BSelectOption<BCascaderNode>>()"
+                               Value="@item"
+                               Key="@item.Value">
+                        @item.Label
+                    </SlotComponent>
+                }
+            </SlotComponent>
+        </SlotComponent>
+    </SlotComponent>
+</CascadingValue>

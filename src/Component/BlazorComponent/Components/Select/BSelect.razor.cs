@@ -81,6 +81,8 @@ namespace BlazorComponent
 
         [Parameter] public RenderFragment ChildContent { get; set; }
 
+        protected bool Slot { get; set; }
+
         protected override Task OnInitializedAsync()
         {
             Items.ForEach(u =>

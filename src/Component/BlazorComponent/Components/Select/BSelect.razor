@@ -63,27 +63,37 @@
                 </div>
                 <input type="hidden" value="@(Multiple ? string.Join(',', Values) : Value)" />
             </div>
-            <SlotComponent Description="SlotProvider.GetSlot<BPopover>()">
-                <SlotComponent Description="SlotProvider.GetSlot<BList>()">
-                    <SlotComponent Description="SlotProvider.GetSlot<BListItemGroup>()">
-                        <CascadingValue Value="this">
-                            @foreach (var item in Items)
-                            {
-                                <SlotComponent Description="SlotProvider.GetSlot<BSelectOption<TItem>>()"
+            <CascadingValue Value="this">
+                @if (Slot)
+                {
+                    <SlotComponent Description="SlotProvider.GetSlot<BSelectSlot>()"></SlotComponent>
+                }
+                else
+                {
+                    <SlotComponent Description="SlotProvider.GetSlot<BPopover>()">
+                        <SlotComponent Description="SlotProvider.GetSlot<BList>()">
+                            <SlotComponent Description="SlotProvider.GetSlot<BListItemGroup>()">
+                                @foreach (var item in Items)
+                                {
+                                    <SlotComponent Description="SlotProvider.GetSlot<BSelectOption<TItem>>()"
                                            Value="@item"
                                            Key="@(ItemValue?.Invoke(item) ?? item.ToString())"
                                            Checked="@IsSelected(item)">
-                                    @(ItemText?.Invoke(item) ?? item.ToString())
-                                </SlotComponent>
-                            }
-                        </CascadingValue>
+                                        @(ItemText?.Invoke(item) ?? item.ToString())
+                                    </SlotComponent>
+                                }
+                            </SlotComponent>
+                        </SlotComponent>
                     </SlotComponent>
-                </SlotComponent>
-            </SlotComponent>
+                }
+            </CascadingValue>
         </div>
-        <div class="@HitCssBuilder.Class">
-            <SlotComponent Description="SlotProvider.GetSlot<BHitMessage>()">@Hint</SlotComponent>
-        </div>
+        @if (!Slot)
+        {
+            <div class="@HitCssBuilder.Class">
+                <SlotComponent Description="SlotProvider.GetSlot<BHitMessage>()">@Hint</SlotComponent>
+            </div>
+        }
     </div>
 </div>
 
