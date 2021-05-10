@@ -152,6 +152,27 @@ export function getBoundingClientRect(element) {
     return null;
 }
 
+export function getFirstChildBoundingClientRect(element) {
+    let dom = getDom(element);
+    if (dom.firstElementChild) {
+        if (dom.firstElementChild.style['display'] === 'none') {
+            // clone and set display not none becuase
+            // element with display:none can not getBoundingClientRect
+            var cloned = dom.firstElementChild.cloneNode(true);
+            cloned.style['display'] = 'initial'
+            cloned.style['z-index'] = -1000
+            document.body.appendChild(cloned);
+            var value = getBoundingClientRect(cloned);
+            document.body.removeChild(cloned);
+            return value;
+        }
+        else {
+            return getBoundingClientRect(dom.firstElementChild);
+        }
+    }
+    return null;
+}
+
 export function addDomEventListener(element, eventName, preventDefault, invoker) {
     let callback = args => {
         const obj = {};

@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
+using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
@@ -30,5 +32,16 @@ namespace BlazorComponent
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
+
+        [Parameter]
+        public EventCallback<MouseEventArgs> Click { get; set; }
+
+        protected virtual async Task HandleOnClick(MouseEventArgs args)
+        {
+            if (Click.HasDelegate)
+            {
+                await Click.InvokeAsync(args);
+            }
+        }
     }
 }
