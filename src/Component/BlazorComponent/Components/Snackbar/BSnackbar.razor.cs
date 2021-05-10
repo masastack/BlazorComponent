@@ -14,5 +14,8 @@ namespace BlazorComponent
 
         [Parameter]
         public string Action { get; set; }
+
+        [Parameter]
+        public RenderFragment ActionContent { get; set; }
     }
 }
