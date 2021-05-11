@@ -1,6 +1,6 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div class="@CssProvider.GetClass(this)">
+<div class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)">
     @ChildContent
 </div>
