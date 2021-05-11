@@ -2,7 +2,7 @@
 @inherits BDomComponentBase
 @typeparam TItem
 
-<div class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)" id="@Id">
+<div class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)" id="@Id" @ref="Ref">
     <div class="@CssProvider.GetClass(this,"control")">
         <div class="@CssProvider.GetClass(this,"slot")"
              @onclick="Click"
@@ -64,13 +64,13 @@
                 <input type="hidden" value="@(Multiple ? string.Join(',', Values) : Value)" />
             </div>
             <CascadingValue Value="this">
-                @if (Slot)
-                {
-                    <SlotComponent Description="SlotProvider.GetSlot<BSelectSlot>()"></SlotComponent>
-                }
-                else
-                {
-                    <SlotComponent Description="SlotProvider.GetSlot<BPopover>()">
+                <SlotComponent Description="SlotProvider.GetSlot<BPopover>()">
+                    @if (Slot)
+                    {
+                        <SlotComponent Description="SlotProvider.GetSlot<BSelectSlot>()"></SlotComponent>
+                    }
+                    else
+                    {
                         <SlotComponent Description="SlotProvider.GetSlot<BList>()">
                             <SlotComponent Description="SlotProvider.GetSlot<BListItemGroup>()">
                                 @foreach (var item in Items)
@@ -84,13 +84,13 @@
                                 }
                             </SlotComponent>
                         </SlotComponent>
-                    </SlotComponent>
-                }
+                    }
+                </SlotComponent>
             </CascadingValue>
         </div>
         @if (!Slot)
         {
-            <div class="@@CssProvider.GetClass(this,"hit")">
+            <div class="@CssProvider.GetClass(this,"hit")">
                 <SlotComponent Description="SlotProvider.GetSlot<BHitMessage>()">@Hint</SlotComponent>
             </div>
         }

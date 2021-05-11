@@ -9,10 +9,11 @@ namespace BlazorComponent
 {
     public partial class BCascaderSelectSlot : BSelectSlot
     {
-        [Parameter]
-        public List<BCascaderNode> Items { get; set; }
+        protected bool ShowSubItems { get; set; }
+
+        protected List<BCascaderNode> SubItems { get; set; }
 
         [Parameter]
-        public BSelect<BCascaderNode> Select { get; set; }
+        public List<BCascaderNode> Items { get; set; }
     }
 }
