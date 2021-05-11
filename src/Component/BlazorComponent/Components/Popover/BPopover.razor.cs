@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
+using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
@@ -23,19 +25,23 @@ namespace BlazorComponent
         public StringOrNumber MinWidth { get; set; }
 
         [Parameter]
+        public StringOrNumber MaxHeight { get; set; }
+
+        [Parameter]
         public string Absolute { get; set; }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
-        protected string PopoverStyle =>
-            StyleBuilder
-                .Clear()
-                .Add(() => "z-index: 1000;")
-                .Add(() => Visible ? "position: absolute" : "display: none")
-                .Add(() => $"top: {ClientY?.TryGetNumber().number ?? 0}px")
-                .Add(() => $"left: {ClientX?.TryGetNumber().number ?? 0}px")
-                .Add(() => $"min-width: {MinWidth?.TryGetNumber().number ?? 0}px")
-                .ToString();
+        [Parameter]
+        public EventCallback<MouseEventArgs> Click { get; set; }
+
+        protected virtual async Task HandleOnClick(MouseEventArgs args)
+        {
+            if (Click.HasDelegate)
+            {
+                await Click.InvokeAsync(args);
+            }
+        }
     }
 }

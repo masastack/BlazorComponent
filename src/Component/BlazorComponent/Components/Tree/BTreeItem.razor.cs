@@ -10,10 +10,6 @@ namespace BlazorComponent
 {
     public abstract partial class BTreeItem<TItem> : BDomComponentBase
     {
-
-        protected CssBuilder CssBuilderRoot { get; } = new CssBuilder();
-        protected CssBuilder CssBuilderLevel { get; } = new CssBuilder();
-
         #region Node
 
         /// <summary>
@@ -273,7 +269,13 @@ namespace BlazorComponent
         public bool Indeterminate { get; set; }
 
         [Parameter]
-        public bool Checkbox { get; set; }//是否可以选择不受父节点控制
+        public Func<TItem, bool> DefaultCheckedExpression { get; set; }
+
+        [Parameter]
+        public bool Checkable { get; set; }//是否可以选择不受父节点控制
+
+        [Parameter]
+        public EventCallback<TItem> HandleCheckboxClick { get; set; }
 
         /// <summary>
         /// 当点击选择框是触发
@@ -283,6 +285,11 @@ namespace BlazorComponent
             SetChecked(!Checked);
             if (TreeComponent.OnCheckBoxChanged.HasDelegate)
                 await TreeComponent.OnCheckBoxChanged.InvokeAsync(new TreeEventArgs<TItem>(TreeComponent, this, args));
+
+            if (HandleCheckboxClick.HasDelegate)
+            {
+                await HandleCheckboxClick.InvokeAsync(DataItem);
+            }
         }
 
         /// <summary>
@@ -560,6 +567,22 @@ namespace BlazorComponent
         {
             //SetBTreeItemClassMapper();
             base.OnParametersSet();
+        }
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            base.OnAfterRender(firstRender);
+            if (firstRender)
+            {
+                if (DefaultCheckedExpression != default)
+                {
+                    Checked = DefaultCheckedExpression.Invoke(DataItem);
+                    SetSelected(Checked);
+                }
+
+                Expanded = TreeComponent.Expanded;
+                StateHasChanged();
+            }
         }
 
         private void AddNodeAndSelect(TItem dataItem)

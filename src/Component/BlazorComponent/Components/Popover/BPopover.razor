@@ -1,6 +1,11 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div class="@CssBuilder.Class" style="@PopoverStyle" @onclick:stopPropagation="true" id="@Id">
-	@ChildContent
+<div class="@CssProvider.GetClass(this)"
+     style="@CssProvider.GetStyle(this)"
+     @onclick="HandleOnClick"
+     @onclick:stopPropagation="true"
+     id="@Id"
+     @ref="Ref">
+    @ChildContent
 </div>

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public static class JsInteropConstants
     {
@@ -25,6 +19,8 @@ namespace BlazorComponent
         public static string GetFileInfo => $"{Variables.JsInteropFuncNamePrefix}getFileInfo";
 
         public static string GetBoundingClientRect => $"{Variables.JsInteropFuncNamePrefix}getBoundingClientRect";
+
+        public static string GetFirstChildBoundingClientRect => $"{Variables.JsInteropFuncNamePrefix}getFirstChildBoundingClientRect";
 
         public static string AddDomEventListener => $"{Variables.JsInteropFuncNamePrefix}addDomEventListener";
 
@@ -103,6 +99,8 @@ namespace BlazorComponent
         public static string DisposeResizeTextArea => $"{Variables.JsInteropFuncNamePrefix}disposeResizeTextArea";
 
         public static string InsertAdjacentHTML => $"{Variables.JsInteropFuncNamePrefix}insertAdjacentHTML";
+
+        public static string GetImageDimensions => $"{Variables.JsInteropFuncNamePrefix}getImageDimensions";
 
         #region Draggable Modal
 

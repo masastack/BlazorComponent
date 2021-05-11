@@ -152,6 +152,27 @@ export function getBoundingClientRect(element) {
     return null;
 }
 
+export function getFirstChildBoundingClientRect(element) {
+    let dom = getDom(element);
+    if (dom.firstElementChild) {
+        if (dom.firstElementChild.style['display'] === 'none') {
+            // clone and set display not none becuase
+            // element with display:none can not getBoundingClientRect
+            var cloned = dom.firstElementChild.cloneNode(true);
+            cloned.style['display'] = 'initial'
+            cloned.style['z-index'] = -1000
+            document.body.appendChild(cloned);
+            var value = getBoundingClientRect(cloned);
+            document.body.removeChild(cloned);
+            return value;
+        }
+        else {
+            return getBoundingClientRect(dom.firstElementChild);
+        }
+    }
+    return null;
+}
+
 export function addDomEventListener(element, eventName, preventDefault, invoker) {
     let callback = args => {
         const obj = {};
@@ -608,7 +629,7 @@ function mentionsOnWindowClick(e) {
 
 //#endregion
 
-export { enableDraggable, disableDraggable, resetModalPosition } from "./modules/dragHelper";
+export { disableDraggable, enableDraggable, resetModalPosition } from "./modules/dragHelper";
 
 export function bindTableHeaderAndBodyScroll(bodyRef, headerRef) {
     bodyRef.bindScrollLeftToHeader = () => {
@@ -672,4 +693,23 @@ export function removePreventEnterOnOverlayVisible(element) {
 
 export function insertAdjacentHTML(position, text: string) {
     document.head.insertAdjacentHTML(position, text);
+}
+
+export function getImageDimensions(src: string) {
+    return new Promise(function (resolve, reject) {
+        var img = new Image()
+        img.src = src
+        img.onload = function () {
+            resolve({
+                width: img.width,
+                height: img.height
+            })
+        }
+        img.onerror = function () {
+            reject({
+                width: 0,
+                height: 0
+            })
+        }
+    })
 }

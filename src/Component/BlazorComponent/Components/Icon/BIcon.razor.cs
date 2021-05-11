@@ -14,6 +14,10 @@ namespace BlazorComponent
     {
         private string _icon;
         private IconTag _tag = IconTag.I;
+        /// <summary>
+        /// Attention! End with a space
+        /// </summary>
+        private static string[] _arrFa5Prefix = new string[] { "fa ", "fab ", "fal ", "far ", "fas " };
 
         // TODO: 维护内置颜色列表
         [Parameter]
@@ -59,23 +63,42 @@ namespace BlazorComponent
                     _icon = frame.TextContent.Trim();
 
                     // support Font Awesome 5
-                    if (_icon.StartsWith("fas "))
+                    if (_arrFa5Prefix.Any(prefix => _icon.StartsWith(prefix)))
                     {
-                        CssBuilder.Add(_icon);
+                        var icon = _icon;
+
+                        CssProvider
+                            .Apply<BIcon>(cssBuilder =>
+                            {
+                                cssBuilder
+                                    .Add(icon);
+                            });
 
                         _icon = null;
                     }
                     // support Material Design Icons
                     else if (_icon.StartsWith("mdi-"))
                     {
-                        CssBuilder.Add($"mdi {_icon}");
+                        var icon = _icon;
+
+                        CssProvider
+                            .Apply<BIcon>(cssBuilder =>
+                            {
+                                cssBuilder
+                                   .Add($"mdi {icon}");
+                            });
 
                         _icon = null;
                     }
                     // support Material Design
                     else
                     {
-                        CssBuilder.Add("material-icons");
+                        CssProvider
+                            .Apply<BIcon>(cssBuilder =>
+                            {
+                                cssBuilder
+                                   .Add("material-icons");
+                            });
                     }
                 }
             }

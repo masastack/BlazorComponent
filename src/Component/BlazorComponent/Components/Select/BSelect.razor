@@ -2,60 +2,89 @@
 @inherits BDomComponentBase
 @typeparam TItem
 
-<div class="@CssBuilder.Class" style="@StyleBuilder.Style" id="@Id">
-    <div class="@ControlCssBuilder.Class">
-        <div class="@SlotCssBuilder.Class"
+<div class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)" id="@Id">
+    <div class="@CssProvider.GetClass(this,"control")">
+        <div class="@CssProvider.GetClass(this,"slot")"
              @onclick="Click"
              @ref="Ref"
              tabindex="0"
+             style="outline:none"
              @onblur="HandleOnBlur">
-            <div class="@SelectSlotCssBuilder.Class">
+
+            @if (Outlined)
+            {
+                <fieldset>
+                    <legend style="@LegendStyle">
+                        <span>@((MarkupString)"&#8203;")</span>
+                    </legend>
+                </fieldset>
+            }
+
+            <div class="@CssProvider.GetClass(this,"select-slot")">
                 @if (!string.IsNullOrWhiteSpace(Label))
                 {
-                    if (!Solo || (Solo && Text == null))
+                    if (!Solo || Solo && !_text.Any())
                     {
-                        <label class="@LabelCssBuilder.Class" style="@LabelStyleCssBuilder.Style">@Label</label>
+                        <label class="@CssProvider.GetClass(this,"label")" style="@CssProvider.GetStyle(this,"label")">@Label</label>
                     }
                 }
-                <div class="@SelectorCssBuilder.Class">
-                    <div class="@SelectedCssBuilder.Class">@Text</div>
+                <div class="@CssProvider.GetClass(this,"selector")">
+                    @if (Chips)
+                    {
+                        @foreach (var item in _text)
+                        {
+                            <SlotComponent Description="SlotProvider.GetSlot<BChip>()">@item</SlotComponent>
+                        }
+                    }
+                    else
+                    {
+                        @for (var i = 0; i < _text.Count(); i++)
+                        {
+                            var item = _text.ElementAt(i);
+                            if (i == _text.Count() - 1)
+                            {
+                                <div class="@CssProvider.GetClass(this,"selected")">@item</div>
+                            }
+                            else
+                            {
+                                <div class="@CssProvider.GetClass(this,"selected")">@($"{item}, ")</div>
+                            }
+                        }
+                    }
                     <input id="input-@Id" type="text" readonly="readonly"
-                           class="@SelectInputCssBuilder.Class" />
+                           class="@CssProvider.GetClass(this,"select-input")" />
                 </div>
-                <div class="@SelectArrowCssBuilder.Class">
-                    <div class="@SelectArrowIconCssBuilder.Class">
+                <div class="@CssProvider.GetClass(this,"select-arrow")">
+                    <div class="@CssProvider.GetClass(this,"select-arrow-icon")">
                         <SlotComponent Description="SlotProvider.GetSlot<BIcon>()">
                             @_icon
                         </SlotComponent>
                     </div>
                 </div>
-                <input type="hidden" value="@Value" />
+                <input type="hidden" value="@(Multiple ? string.Join(',', Values) : Value)" />
             </div>
-            @if (_visible && Items != null && ItemText != null)
-            {
-                <SlotComponent Description="SlotProvider.GetSlot<BPopover>()">
-                    <SlotComponent Description="SlotProvider.GetSlot<BList>()">
-                        <SlotComponent Description="SlotProvider.GetSlot<BListItemGroup>()">
-                            <CascadingValue Value="this">
-                                @foreach (var item in Items)
-                                {
-                                    <SlotComponent Description="SlotProvider.GetSlot<BSelectOption<TItem>>()" Value="@item">
-                                        @ItemText.Invoke(item)
-                                    </SlotComponent>
-                                }
-                            </CascadingValue>
-                        </SlotComponent>
+            <SlotComponent Description="SlotProvider.GetSlot<BPopover>()">
+                <SlotComponent Description="SlotProvider.GetSlot<BList>()">
+                    <SlotComponent Description="SlotProvider.GetSlot<BListItemGroup>()">
+                        <CascadingValue Value="this">
+                            @foreach (var item in Items)
+                            {
+                                <SlotComponent Description="SlotProvider.GetSlot<BSelectOption<TItem>>()"
+                                           Value="@item"
+                                           Key="@(ItemValue?.Invoke(item) ?? item.ToString())"
+                                           Checked="@IsSelected(item)">
+                                    @(ItemText?.Invoke(item) ?? item.ToString())
+                                </SlotComponent>
+                            }
+                        </CascadingValue>
                     </SlotComponent>
                 </SlotComponent>
-            }
+            </SlotComponent>
         </div>
-        <div class="@HitCssBuilder.Class">
-            <SlotComponent Description="SlotProvider.GetSlot<BHitMessage>()">@HitMessage</SlotComponent>
+        <div class="@CssProvider.GetClass(this,"hit")">
+            <SlotComponent Description="SlotProvider.GetSlot<BHitMessage>()">@Hint</SlotComponent>
         </div>
     </div>
 </div>
 
-@if (_visible)
-{
-    <SlotComponent Description="SlotProvider.GetSlot<BOverlay>()" />
-}
+<SlotComponent Description="SlotProvider.GetSlot<BOverlay>()" />

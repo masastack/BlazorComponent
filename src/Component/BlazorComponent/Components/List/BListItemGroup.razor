@@ -2,7 +2,7 @@
 @inherits BDomComponentBase
 
 <CascadingValue Value=this>
-	<div class="@CssBuilder.Class">
+	<div class="@CssProvider.GetClass(this)">
 		@ChildContent
 	</div>
 </CascadingValue>

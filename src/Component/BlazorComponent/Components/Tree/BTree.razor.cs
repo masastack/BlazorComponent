@@ -8,8 +8,6 @@ namespace BlazorComponent
 {
     public abstract partial class BTree<TItem> : BDomComponentBase
     {
-        protected CssBuilder CssBuilderChildren { get; } = new CssBuilder();
-
         #region Tree
 
         /// <summary>
@@ -42,7 +40,8 @@ namespace BlazorComponent
         [Parameter]
         public bool Draggable { get; set; }
 
-
+        [Parameter]
+        public bool Expanded { get; set; }
 
         #endregion Tree
 
@@ -220,6 +219,8 @@ namespace BlazorComponent
             }
         }
 
+        [Parameter]
+        public Func<TItem, bool> DefaultCheckedExpression { get; set; }
         #endregion Checkable
 
         #region Search
@@ -391,6 +392,8 @@ namespace BlazorComponent
         ///// </summary>
         //public EventCallback<TreeEventArgs> OnDragEnd { get; set; }
 
+        [Parameter]
+        public EventCallback<TItem> HandleCheckboxClick { get; set; }
         #endregion Event
 
         #region Template

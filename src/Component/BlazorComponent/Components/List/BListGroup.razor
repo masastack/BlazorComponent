@@ -1,0 +1,21 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<div class="@CssProvider.GetClass(this)" id="@Id" @ref="Ref">
+    <SlotComponent Description="SlotProvider.GetSlot<BListItem>()">
+        <SlotComponent Description="SlotProvider.GetSlot<BListItemIcon>(PREPEND)">
+            <SlotComponent Description="SlotProvider.GetSlot<BIcon>()">
+                @PrependIcon
+            </SlotComponent>
+        </SlotComponent>
+        @Activator
+        <SlotComponent Description="SlotProvider.GetSlot<BListItemIcon>(APPEND)">
+            <SlotComponent Description="SlotProvider.GetSlot<BIcon>()">
+                @AppendIcon
+            </SlotComponent>
+        </SlotComponent>
+    </SlotComponent>
+    <div class="@CssProvider.GetClass(this,"items")" style="@CssProvider.GetStyle(this,"items")">
+        @ChildContent
+    </div>
+</div>

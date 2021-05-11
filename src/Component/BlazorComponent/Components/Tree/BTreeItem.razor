@@ -5,27 +5,29 @@
 @if (RealDisplay)
 {
     <CascadingValue Value="this" Name="SelfNode">
-        <div @key="NodeId" class="@CssBuilderRoot.Class" style="@Style" @onclick="async ()=> { if (HandleItemClick.HasDelegate) await HandleItemClick.InvokeAsync(DataItem);}">
+        <div @key="NodeId" class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)">
             @for (int i = 0; i < TreeLevel; i++)
+        {
+            <div class="@CssProvider.GetClass(this,"level")"></div>
+        }
+
+        <div style="@CssProvider.GetStyle(this,"icon")">
+            @if (!IsLeaf)
             {
-                <div class="@CssBuilderLevel.Class"></div>
+                <i Class="mr-3 fas @((HasChildNodes && Expanded) ? "fa-caret-down" : "fa-caret-right")" @onclick="@(() => Expanded = !Expanded)"></i>
             }
-
-            <div style="@CssProvider.GetStyle(this,"icon")">
-                @if (!IsLeaf)
-                {
-                    <i Class="mr-3 fas @((HasChildNodes && Expanded) ? "fa-caret-down" : "fa-caret-right")" @onclick="@(() => Expanded = !Expanded)"></i>
-                }
-            </div>
-
-            @if (Checkbox)
-            {
-                <i Class="mr-3 far @(Checked ? "fa-square" : "fa-check-square")" @onclick="OnCheckBoxClick"></i>
-            }
-
-            @Title
         </div>
-    </CascadingValue>
+
+        @if (Checkable)
+        {
+            <i Class="mr-3 far @(Checked ? "fa-check-square" : "fa-square")" @onclick="OnCheckBoxClick"></i>
+        }
+
+        <span style="@CssProvider.GetStyle(this,"title")" @onclick="async ()=> { if (HandleItemClick.HasDelegate) await HandleItemClick.InvokeAsync(DataItem);}">
+            @Title
+        </span>
+    </div>
+</CascadingValue>
 }
 
 <CascadingValue Value="this" Name="Node">

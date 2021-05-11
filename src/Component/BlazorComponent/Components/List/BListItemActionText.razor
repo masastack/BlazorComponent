@@ -1,0 +1,6 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<span class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)" id="@Id" @ref="Ref">
+    @ChildContent
+</span>

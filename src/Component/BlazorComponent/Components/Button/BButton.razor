@@ -2,20 +2,20 @@
 @inherits BDomComponentBase
 
 <button type="button"
-		class="@CssBuilder.Class"
-		style="@StyleBuilder.Style"
+		class="@CssProvider.GetClass(this)"
+		style="@CssProvider.GetStyle(this)"
 		id="@Id"
 		@ref="Ref"
 		@onclick="HandleOnClick"
 		@onclick:stopPropagation="ClickStopPropagation">
 
-	<div class="@_btnContentClass">
+	<div class="@CssProvider.GetClass(this,"content")">
 		@ChildContent
 	</div>
 
 	@if (Loading)
 	{
-	 <div class="@_btnLoaderClass">
+	 <div class="@CssProvider.GetClass(this,"loader")">
 			@LoadingFragment
 	 </div>
 	}

@@ -1,0 +1,22 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<div class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)" id="@Id" @ref="Ref">
+    <div class="@CssProvider.GetClass(this,"wrap")" style="@CssProvider.GetStyle(this,"wrap")">
+        <div class="@CssProvider.GetClass(this,"content")" style="@CssProvider.GetStyle(this,"content")">
+            @ChildContent
+        </div>
+        <div class="@CssProvider.GetClass(this,"action")" style="@CssProvider.GetStyle(this,"action")">
+            @if (!string.IsNullOrEmpty(Action))
+            {
+                <SlotComponent Description="SlotProvider.GetSlot<BButton>()">
+                    @Action
+                </SlotComponent>
+            }
+            else
+            {
+                @ActionContent
+            }
+        </div>
+    </div>
+</div>
