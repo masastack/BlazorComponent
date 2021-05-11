@@ -69,7 +69,7 @@ namespace BlazorComponent
 
         [Parameter] public RenderFragment ChildContent { get; set; }
 
-        protected override Task OnInitializedAsync()
+        protected override Task OnParametersSetAsync()
         {
             Items.ForEach(u =>
             {
@@ -90,7 +90,7 @@ namespace BlazorComponent
                 }
             });
 
-            return base.OnInitializedAsync();
+            return base.OnParametersSetAsync();
         }
 
         protected virtual void HandleOnBlur(FocusEventArgs args)
