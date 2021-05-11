@@ -24,7 +24,7 @@ namespace BlazorComponent
         public EventCallback<bool> ValueChanged { get; set; }
 
         [Parameter]
-        public StringOrNumber ZIndex { get; set; } = 5;
+        public StringOrNumber ZIndex { get; set; } = 201;
 
         [Parameter]
         public EventCallback<MouseEventArgs> Click { get; set; }

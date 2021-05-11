@@ -58,7 +58,7 @@
 
         public static string FocusDialog => $"{Variables.JsInteropFuncNamePrefix}focusDialog";
 
-        public static string GetWindow = $"{Variables.JsInteropFuncNamePrefix}getWindow";
+        public static string GetWindow => $"{Variables.JsInteropFuncNamePrefix}getWindow";
 
         public static string DisableBodyScroll => $"{Variables.JsInteropFuncNamePrefix}disableBodyScroll";
 

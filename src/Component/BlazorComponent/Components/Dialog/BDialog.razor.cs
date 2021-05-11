@@ -4,25 +4,25 @@ namespace BlazorComponent
 {
     public partial class BDialog : BDomComponentBase
     {
-        [Parameter] 
+        [Parameter]
         public bool Visible { get; set; }
 
-        [Parameter] 
+        [Parameter]
         public EventCallback<bool> VisibleChanged { get; set; }
 
-        [Parameter] 
+        [Parameter]
         public StringOrNumber Width { get; set; }
 
-        [Parameter] 
+        [Parameter]
         public StringOrNumber MaxWidth { get; set; }
 
-        [Parameter] 
+        [Parameter]
         public bool Persistent { get; set; }
 
-        [Parameter] 
+        [Parameter]
         public bool Scrollable { get; set; }
 
-        [Parameter] 
+        [Parameter]
         public RenderFragment ChildContent { get; set; }
     }
 }
