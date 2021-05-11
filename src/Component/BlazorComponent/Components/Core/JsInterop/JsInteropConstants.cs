@@ -20,6 +20,8 @@
 
         public static string GetBoundingClientRect => $"{Variables.JsInteropFuncNamePrefix}getBoundingClientRect";
 
+        public static string GetFirstChildBoundingClientRect => $"{Variables.JsInteropFuncNamePrefix}getFirstChildBoundingClientRect";
+
         public static string AddDomEventListener => $"{Variables.JsInteropFuncNamePrefix}addDomEventListener";
 
         public static string MatchMedia => $"{Variables.JsInteropFuncNamePrefix}matchMedia";

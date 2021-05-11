@@ -1,6 +1,6 @@
-﻿using System;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using System;
 
 namespace BlazorComponent
 {
@@ -27,6 +27,21 @@ namespace BlazorComponent
         public bool Right { get; set; }
 
         [Parameter]
+        public StringOrNumber NudgeTop { get; set; }
+
+        [Parameter]
+        public StringOrNumber NudgeBottom { get; set; }
+
+        [Parameter]
+        public StringOrNumber NudgeLeft { get; set; }
+
+        [Parameter]
+        public StringOrNumber NudgeRight { get; set; }
+
+        [Parameter]
+        public StringOrNumber NudgeWidth { get; set; }
+
+        [Parameter]
         public bool Absolute { get; set; }
 
         [Parameter]
@@ -36,10 +51,18 @@ namespace BlazorComponent
         public bool OpenOnHover { get; set; }
 
         [Parameter]
-        public RenderFragment Slot { get; set; }
+        public bool CloseOnClick { get; set; } = true;
+
+        [Parameter]
+        public bool CloseOnContentClick { get; set; } = true;
+
+        [Parameter]
+        public RenderFragment Activator { get; set; }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
+
+        public ElementReference ContentRef { get; set; }
 
         protected abstract void Click(MouseEventArgs args);
 
@@ -48,8 +71,6 @@ namespace BlazorComponent
             if (OpenOnHover && !_visible)
             {
                 _visible = true;
-
-                Console.WriteLine("over");
             }
         }
 
@@ -58,7 +79,6 @@ namespace BlazorComponent
             if (OpenOnHover && _visible)
             {
                 _visible = false;
-                Console.WriteLine("out");
             }
         }
     }

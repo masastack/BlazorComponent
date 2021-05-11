@@ -1,6 +1,11 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)" @onclick:stopPropagation="true" id="@Id" @ref="Ref">
-	@ChildContent
+<div class="@CssProvider.GetClass(this)"
+     style="@CssProvider.GetStyle(this)"
+     @onclick="HandleOnClick"
+     @onclick:stopPropagation="true"
+     id="@Id"
+     @ref="Ref">
+    @ChildContent
 </div>
