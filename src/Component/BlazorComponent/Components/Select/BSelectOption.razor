@@ -14,4 +14,12 @@
             @ChildContent
         </SlotComponent>
     </SlotComponent>
+    @if (!string.IsNullOrEmpty(Icon))
+    {
+        <SlotComponent Description="SlotProvider.GetSlot<BListItemIcon>()">
+            <SlotComponent Description="SlotProvider.GetSlot<BIcon>()">
+                @Icon
+            </SlotComponent>
+        </SlotComponent>
+    }
 </SlotComponent>

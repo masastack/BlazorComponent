@@ -15,9 +15,15 @@ namespace BlazorComponent
             where TImplementComponent : TComponent
         {
             var key = ComponentKey.Get<TComponent>();
-            _typeConfig.TryAdd(key, typeof(TImplementComponent));
+            return Apply<TComponent, TImplementComponent>(key, propertiesAction);
+        }
 
-            _propertiesConfig[key] = propertiesAction;
+        private ComponentSlotProvider Apply<TComponent, TImplementComponent>(ComponentKey key, Action<Dictionary<string, object>> propertiesAction) where TImplementComponent : TComponent
+        {
+            if (_typeConfig.TryAdd(key, typeof(TImplementComponent)))
+            {
+                _propertiesConfig[key] = propertiesAction;
+            }
 
             return this;
         }
@@ -26,11 +32,7 @@ namespace BlazorComponent
             where TImplementComponent : TComponent
         {
             var key = ComponentKey.Get<TComponent>(name);
-            _typeConfig.TryAdd(key, typeof(TImplementComponent));
-
-            _propertiesConfig[key] = propertiesAction;
-
-            return this;
+            return Apply<TComponent, TImplementComponent>(key, propertiesAction);
         }
 
         public ComponentSlotProvider Merge<TComponent>(Action<Dictionary<string, object>> mergePropertiesAction = null)

@@ -16,25 +16,35 @@ namespace BlazorComponent
         // TODO:
         protected virtual string LegendStyle { get; }
 
-        [Parameter] public string Label { get; set; }
+        [Parameter]
+        public string Label { get; set; }
 
-        [Parameter] public bool Dense { get; set; }
+        [Parameter]
+        public bool Dense { get; set; }
 
-        [Parameter] public bool Disabled { get; set; }
+        [Parameter]
+        public bool Disabled { get; set; }
 
-        [Parameter] public bool Filled { get; set; }
+        [Parameter]
+        public bool Filled { get; set; }
 
-        [Parameter] public bool Outlined { get; set; }
+        [Parameter]
+        public bool Outlined { get; set; }
 
-        [Parameter] public bool Solo { get; set; }
+        [Parameter]
+        public bool Solo { get; set; }
 
-        [Parameter] public bool Multiple { get; set; }
+        [Parameter]
+        public bool Multiple { get; set; }
 
-        [Parameter] public bool Chips { get; set; }
+        [Parameter]
+        public bool Chips { get; set; }
 
-        [Parameter] public string Hint { get; set; }
+        [Parameter]
+        public string Hint { get; set; }
 
-        [Parameter] public bool PersistentHint { get; set; }
+        [Parameter]
+        public bool PersistentHint { get; set; }
 
         protected List<string> _text = new();
 
@@ -55,19 +65,28 @@ namespace BlazorComponent
             set => _values = value.ToList();
         }
 
-        [Parameter] public EventCallback<IEnumerable<string>> ValuesChanged { get; set; }
+        [Parameter]
+        public EventCallback<IEnumerable<string>> ValuesChanged { get; set; }
 
         #endregion
 
-        [Parameter] public Func<TItem, string> ItemText { get; set; }
+        [Parameter]
+        public Func<TItem, string> ItemText { get; set; }
 
-        [Parameter] public Func<TItem, string> ItemValue { get; set; }
+        [Parameter]
+        public Func<TItem, string> ItemValue { get; set; }
 
-        [Parameter] public IReadOnlyList<TItem> Items { get; set; }
+        [Parameter]
+        public IReadOnlyList<TItem> Items { get; set; }
 
         protected RenderFragment SelectArrowContent { get; set; }
 
-        [Parameter] public RenderFragment ChildContent { get; set; }
+        [Parameter]
+        public RenderFragment ChildContent { get; set; }
+
+        protected bool Slot { get; set; }
+
+        protected TItem SelectNode { get; set; }
 
         protected override Task OnParametersSetAsync()
         {
@@ -112,6 +131,8 @@ namespace BlazorComponent
 
         public async Task SetSelectedAsync(TItem value)
         {
+            SelectNode = value;
+
             var t = ItemText != null
                 ? ItemText.Invoke(value)
                 : value.ToString();

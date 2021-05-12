@@ -1,0 +1,25 @@
+﻿@namespace BlazorComponent
+@inherits BSelectSlot
+
+<div class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)" id="@Id" @ref="Ref">
+    <SlotComponent Description="SlotProvider.GetSlot<BList>()">
+        <SlotComponent Description="SlotProvider.GetSlot<BListItemGroup>()">
+            @foreach (var item in Items)
+            {
+                <SlotComponent Description="SlotProvider.GetSlot<BSelectOption<BCascaderNode>>()"
+                           Value="@item"
+                           Key="@item.Value">
+                    @item.Label
+                </SlotComponent>
+            }
+        </SlotComponent>
+    </SlotComponent>
+</div>
+
+@if (ShowSubItems)
+{
+    <SlotComponent Description="SlotProvider.GetSlot<BCascaderSelectSlot>()"></SlotComponent>
+}
+
+
+

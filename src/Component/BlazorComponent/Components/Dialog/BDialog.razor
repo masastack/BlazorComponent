@@ -1,8 +1,8 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-@if (Visible)
-{
+
+<div @ref="Ref">
     <SlotComponent Description="SlotProvider.GetSlot<BPopover>()">
         <div class="@CssProvider.GetClass()" id="@Id" style="@CssProvider.GetStyle()">
             <div class="@CssProvider.GetClass("body")" style="@CssProvider.GetStyle("body")">
@@ -12,4 +12,4 @@
     </SlotComponent>
 
     <SlotComponent Description="SlotProvider.GetSlot<BOverlay>()" />
-}
+</div>
