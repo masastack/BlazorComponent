@@ -43,6 +43,12 @@ namespace BlazorComponent
         public bool IsTextArea { get; set; }
 
         [Parameter]
+        public bool IsTextField { get; set; }
+
+        [Parameter]
+        public RenderFragment ChildContent { get; set; }
+
+        [Parameter]
         public int Rows { get; set; }
 
         public async Task HandleChange(ChangeEventArgs args)

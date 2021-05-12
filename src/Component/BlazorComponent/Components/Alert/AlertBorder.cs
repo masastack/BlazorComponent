@@ -2,12 +2,10 @@
 {
     public enum AlertBorder
     {
-        Left = 0,
-
+        None = 0,
+        Left,
         Right,
-
         Top,
-
         Bottom
     }
 }

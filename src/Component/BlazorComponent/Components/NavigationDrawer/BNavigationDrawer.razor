@@ -2,11 +2,11 @@
 @inherits BDomComponentBase
 
 <CascadingValue Value="this">
-    <aside class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)" id="@Id" @ref="Ref" @attributes="Attributes">
-        <div class="@CssProvider.GetClass(this,"content")">
+    <aside class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @attributes="Attributes">
+        <div class="@CssProvider.GetClass("content")">
             @ChildContent
         </div>
-        <div class="@CssProvider.GetClass(this,"border")"></div>
+        <div class="@CssProvider.GetClass("border")"></div>
     </aside>
 </CascadingValue>
 

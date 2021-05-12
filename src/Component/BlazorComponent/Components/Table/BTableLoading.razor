@@ -1,9 +1,9 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<thead class="@CssProvider.GetClass(this)" id="@Id" @ref="Ref">
-    <tr class="@CssProvider.GetClass(this,"progress")">
-        <th class="@CssProvider.GetClass(this,"column")" style="@CssProvider.GetStyle(this,"column")">
+<thead class="@CssProvider.GetClass()" id="@Id" @ref="Ref">
+    <tr class="@CssProvider.GetClass("progress")">
+        <th class="@CssProvider.GetClass("column")" style="@CssProvider.GetStyle("column")">
             <SlotComponent Description="SlotProvider.GetSlot<BProcessLinear>()"></SlotComponent>
         </th>
     </tr>
