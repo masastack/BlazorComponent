@@ -5,13 +5,13 @@
 @if (RealDisplay)
 {
     <CascadingValue Value="this" Name="SelfNode">
-        <div @key="NodeId" class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)">
+        <div @key="NodeId" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">
             @for (int i = 0; i < TreeLevel; i++)
         {
-            <div class="@CssProvider.GetClass(this,"level")"></div>
+            <div class="@CssProvider.GetClass("level")"></div>
         }
 
-        <div style="@CssProvider.GetStyle(this,"icon")">
+        <div style="@CssProvider.GetStyle("icon")">
             @if (!IsLeaf)
             {
                 <i Class="mr-3 fas @((HasChildNodes && Expanded) ? "fa-caret-down" : "fa-caret-right")" @onclick="@(() => Expanded = !Expanded)"></i>
@@ -23,7 +23,7 @@
             <i Class="mr-3 far @(Checked ? "fa-check-square" : "fa-square")" @onclick="OnCheckBoxClick"></i>
         }
 
-        <span style="@CssProvider.GetStyle(this,"title")" @onclick="async ()=> { if (HandleItemClick.HasDelegate) await HandleItemClick.InvokeAsync(DataItem);}">
+        <span style="@CssProvider.GetStyle("title")" @onclick="async ()=> { if (HandleItemClick.HasDelegate) await HandleItemClick.InvokeAsync(DataItem);}">
             @Title
         </span>
     </div>

@@ -1,29 +1,29 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)" id="@Id" @ref="Ref">
+<div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
     @if (Stream)
     {
-        <div class="@CssProvider.GetClass(this,"stream")" style="@CssProvider.GetStyle(this,"stream")"></div>
+        <div class="@CssProvider.GetClass("stream")" style="@CssProvider.GetStyle("stream")"></div>
     }
 
-    <div class="@CssProvider.GetClass(this,"background")" style="@CssProvider.GetStyle(this,"background")"></div>
+    <div class="@CssProvider.GetClass("background")" style="@CssProvider.GetStyle("background")"></div>
 
-    <div class="@CssProvider.GetClass(this,"buffer")" style="@CssProvider.GetStyle(this,"buffer")"></div>
+    <div class="@CssProvider.GetClass("buffer")" style="@CssProvider.GetStyle("buffer")"></div>
 
     @if (Indeterminate)
     {
-        <div class="@CssProvider.GetClass(this,"indeterminate")">
-            <div class="@CssProvider.GetClass(this,"long")"></div>
-            <div class="@CssProvider.GetClass(this,"short")"></div>
+        <div class="@CssProvider.GetClass("indeterminate")">
+            <div class="@CssProvider.GetClass("long")"></div>
+            <div class="@CssProvider.GetClass("short")"></div>
         </div>
     }
     else
     {
-        <div class="@CssProvider.GetClass(this,"determinate")"></div>
+        <div class="@CssProvider.GetClass("determinate")"></div>
     }
 
-    <div class="@CssProvider.GetClass(this,"content")">
+    <div class="@CssProvider.GetClass("content")">
         @ChildContent
     </div>
 </div>

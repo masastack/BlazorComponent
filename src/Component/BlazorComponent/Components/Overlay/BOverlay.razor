@@ -1,13 +1,13 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)" id="@Id"
+<div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id"
 	 @onclick="HandleOnClick"
 	 @onclick:stopPropagation="true">
-	<div class="@CssProvider.GetClass(this,"scrim")" style="@CssProvider.GetStyle(this,"scrim")" />
+	<div class="@CssProvider.GetClass("scrim")" style="@CssProvider.GetStyle("scrim")" />
 	@if (Value)
 	{
-	 <div class="@CssProvider.GetClass(this,"content")">
+	 <div class="@CssProvider.GetClass("content")">
 			@ChildContent
 	 </div>
 	}

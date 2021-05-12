@@ -2,14 +2,14 @@
 @inherits BDomComponentBase
 @typeparam TItem
 
-<div class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)" id="@Id" @ref="Ref">
+<div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
     @Top
-    <div class="@CssProvider.GetClass(this,"wrap")">
+    <div class="@CssProvider.GetClass("wrap")">
         <table>
             @if (Loading)
             {
                 <SlotComponent Description="SlotProvider.GetSlot<BTableLoading>()"></SlotComponent>
-                <tbody class="@CssProvider.GetClass(this,"empty")">
+                <tbody class="@CssProvider.GetClass("empty")">
                     <tr>
                         <td>Loading... Please wait</td>
                     </tr>

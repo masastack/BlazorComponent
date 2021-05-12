@@ -1,9 +1,9 @@
 @namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div class="@CssProvider.GetClass(this)" id="@Id">
-    <div class="@CssProvider.GetClass(this,"wrap")">
-        <div class="@CssProvider.GetClass(this,"message")">
+<div class="@CssProvider.GetClass()" id="@Id">
+    <div class="@CssProvider.GetClass("wrap")">
+        <div class="@CssProvider.GetClass("message")">
             @ChildContent
         </div>
     </div>

@@ -11,5 +11,8 @@ namespace BlazorComponent
     {
         [Parameter]
         public string Value { get; set; }
+
+        [Parameter]
+        public RenderFragment ChildContent { get; set; }
     }
 }

@@ -1,12 +1,12 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div class="@CssProvider.GetClass(this)"
-     style="@CssProvider.GetStyle(this)"
+<div class="@CssProvider.GetClass()"
+     style="@CssProvider.GetStyle()"
      id="@Id">
-    <div class="@CssProvider.GetClass(this,"control")">
-        <div class="@CssProvider.GetClass(this,"slot")" @onclick="Toggle">
-            <div class="@CssProvider.GetClass(this,"input")">
+    <div class="@CssProvider.GetClass("control")">
+        <div class="@CssProvider.GetClass("slot")" @onclick="Toggle">
+            <div class="@CssProvider.GetClass("input")">
                 @if (Checked)
                 {
                     @CheckedIconContent
@@ -25,7 +25,7 @@
 
             @if (ChildContent == null)
             {
-                <label class="@CssProvider.GetClass(this,"label")">
+                <label class="@CssProvider.GetClass("label")">
                     @Label
                 </label>
             }

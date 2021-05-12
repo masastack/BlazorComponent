@@ -4,8 +4,8 @@
 @if (Visible)
 {
     <SlotComponent Description="SlotProvider.GetSlot<BPopover>()">
-        <div class="@CssProvider.GetClass(this)" id="@Id" style="@CssProvider.GetStyle(this)">
-            <div class="@CssProvider.GetClass(this,"body")" style="@CssProvider.GetStyle(this,"body")">
+        <div class="@CssProvider.GetClass()" id="@Id" style="@CssProvider.GetStyle()">
+            <div class="@CssProvider.GetClass("body")" style="@CssProvider.GetStyle("body")">
                 @ChildContent
             </div>
         </div>
