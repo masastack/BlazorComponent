@@ -4,7 +4,7 @@
 @if (Outlined)
 {
     <fieldset>
-        <legend style="@CssProvider.GetStyle(this, "legend")">
+        <legend style="@CssProvider.GetStyle( "legend")">
             <span>
                 @InnerHtml
             </span>
@@ -12,7 +12,7 @@
     </fieldset>
 }
 
-<div class="@CssProvider.GetClass(this)">
+<div class="@CssProvider.GetClass()">
     @if (ShowLabel)
     {
         <SlotComponent Description="SlotProvider.GetSlot<BLabel>()"></SlotComponent>
@@ -22,8 +22,12 @@
     {
         <textarea rows="@Rows" @onblur="HandleBlur" value="@Value" @onchange="HandleChange"></textarea>
     }
-    else
+    else if (IsTextField)
     {
         <input type="@Type" @onblur="HandleBlur" value="@Value" @onchange="HandleChange" placeholder="@PlaceHolder" />
+    }
+    else
+    {
+        @ChildContent
     }
 </div>

@@ -1,0 +1,38 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+@typeparam TValue
+
+<div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @onclick="HandleClick">
+    <div class="@CssProvider.GetClass("radio")" style="@CssProvider.GetStyle("radio")">
+        @if (IsActive)
+        {
+            <SlotComponent Description="SlotProvider.GetSlot<BIcon>()">
+                @OnIcon
+            </SlotComponent>
+        }
+        else
+        {
+            <SlotComponent Description="SlotProvider.GetSlot<BIcon>()">
+                @OffIcon
+            </SlotComponent>
+        }
+
+        <input disabled="@IsDisabled" role="radio" type="radio" checked="@IsActive" value="@Value"
+               @onblur="OnBlur" @onchange="OnChange" @onfocus="OnFocus" @onkeydown="OnKeyDown" @onclick="HandleClick" @onclick:stopPropagation/>
+
+        @if (Ripple)
+        {
+            <div class="@CssProvider.GetClass("ripple")" style="@CssProvider.GetStyle("ripple")"></div>
+        }
+    </div>
+    <SlotComponent Description="SlotProvider.GetSlot<BLabel>()">
+        @if (LabelContent != default)
+        {
+            @LabelContent
+        }
+        else
+        {
+            @Label
+        }
+    </SlotComponent>
+</div>

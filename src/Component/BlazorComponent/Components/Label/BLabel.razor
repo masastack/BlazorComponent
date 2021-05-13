@@ -1,6 +1,13 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<label class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)">
-    @Value
+<label class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">
+    @if (ChildContent != default)
+    {
+        @ChildContent
+    }
+    else
+    {
+        @Value
+    }
 </label>

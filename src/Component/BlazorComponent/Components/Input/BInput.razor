@@ -1,27 +1,30 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div class="@CssProvider.GetClass(this)" id="@Id" @ref="Ref" @onclick="HandleClick">
-    @if (Prepend != default)
-    {
-        <div class="@CssProvider.GetClass(this, "prepend")">
-            @Prepend
-        </div>
-    }
-    <div class="@CssProvider.GetClass(this, "control")">
-        <div class="@CssProvider.GetClass(this, "input-slot")" style="@CssProvider.GetStyle(this, "input-slot")">
-            <SlotComponent Description="SlotProvider.GetSlot<BInputSlot>()"></SlotComponent>
-        </div>
-        @if (ShowDetails)
+<CascadingValue Value="this">
+    <div class="@CssProvider.GetClass()" id="@Id" @ref="Ref" @onclick="HandleClick">
+        @if (Prepend != default)
         {
-            <SlotComponent Description="SlotProvider.GetSlot<BMessage>()"></SlotComponent>
+            <div class="@CssProvider.GetClass( "prepend")">
+                @Prepend
+            </div>
+        }
+        <div class="@CssProvider.GetClass( "control")">
+            <div class="@CssProvider.GetClass( "input-slot")" style="@CssProvider.GetStyle( "input-slot")">
+                <SlotComponent Description="SlotProvider.GetSlot<BInputSlot>()">
+                    @ChildContent
+                </SlotComponent>
+            </div>
+            @if (ShowDetails)
+            {
+                <SlotComponent Description="SlotProvider.GetSlot<BMessage>()"></SlotComponent>
+            }
+        </div>
+        @if (Append != default)
+        {
+            <div class="@CssProvider.GetClass( "append")">
+                @Append
+            </div>
         }
     </div>
-    @if (Append != default)
-    {
-        <div class="@CssProvider.GetClass(this, "append")">
-            @Append
-        </div>
-    }
-
-</div>
+</CascadingValue>
