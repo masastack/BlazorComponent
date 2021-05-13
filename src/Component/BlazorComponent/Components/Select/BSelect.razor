@@ -79,7 +79,7 @@
                                            Value="@item"
                                            Key="@(ItemValue?.Invoke(item) ?? item.ToString())"
                                            Checked="@IsSelected(item)">
-                                        @(ItemText?.Invoke(item) ?? item.ToString())
+                                        @ItemText?.Invoke(item)
                                     </SlotComponent>
                                 }
                             </SlotComponent>

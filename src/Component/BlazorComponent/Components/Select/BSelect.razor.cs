@@ -50,8 +50,20 @@ namespace BlazorComponent
 
         #region Binding
 
+        private string _value;
+
         [Parameter]
-        public string Value { get; set; }
+        public string Value
+        {
+            get => _value;
+            set
+            {
+                _text = Items.Where(u => ItemValue(u) == value)
+                    .Select(ItemText).ToList();
+
+                _value = value;
+            }
+        }
 
         [Parameter]
         public EventCallback<string> ValueChanged { get; set; }
@@ -62,7 +74,14 @@ namespace BlazorComponent
         public IEnumerable<string> Values
         {
             get => _values;
-            set => _values = value.ToList();
+            set
+            {
+                _text = Items
+                    .Where(u => value.Contains(ItemValue(u)))
+                    .Select(ItemText).ToList();
+
+                _values = value.ToList();
+            }
         }
 
         [Parameter]
@@ -71,10 +90,10 @@ namespace BlazorComponent
         #endregion
 
         [Parameter]
-        public Func<TItem, string> ItemText { get; set; }
+        public Func<TItem, string> ItemText { get; set; } = new Func<TItem, string>(u => u.ToString());
 
         [Parameter]
-        public Func<TItem, string> ItemValue { get; set; }
+        public Func<TItem, string> ItemValue { get; set; } = new Func<TItem, string>(u => u.ToString());
 
         [Parameter]
         public IReadOnlyList<TItem> Items { get; set; }
@@ -88,19 +107,15 @@ namespace BlazorComponent
 
         protected TItem SelectNode { get; set; }
 
-        protected override Task OnParametersSetAsync()
+        protected override Task OnInitializedAsync()
         {
             Items.ForEach(u =>
             {
-                var v = ItemValue != null
-                        ? ItemValue.Invoke(u)
-                        : u.ToString();
+                var v = ItemValue.Invoke(u);
 
                 if (Value == v || Values.Contains(v))
                 {
-                    var t = ItemText != null
-                            ? ItemText.Invoke(u)
-                            : u.ToString();
+                    var t = ItemText.Invoke(u);
 
                     if (!Multiple)
                         _text.Clear();
@@ -109,7 +124,7 @@ namespace BlazorComponent
                 }
             });
 
-            return base.OnParametersSetAsync();
+            return base.OnInitializedAsync();
         }
 
         protected virtual void HandleOnBlur(FocusEventArgs args)
@@ -129,30 +144,11 @@ namespace BlazorComponent
             InvokeStateHasChanged();
         }
 
-        public async Task SetSelectedAsync(TItem value)
+        public async Task SetSelectedAsync(TItem item)
         {
-            SelectNode = value;
+            SelectNode = item;
 
-            var t = ItemText != null
-                ? ItemText.Invoke(value)
-                : value.ToString();
-
-            var v = ItemValue != null
-                ? ItemValue.Invoke(value)
-                : value.ToString();
-
-            if (Multiple)
-            {
-                if (!_text.Contains(t))
-                {
-                    _text.Add(t);
-                }
-            }
-            else
-            {
-                _text.Clear();
-                _text.Add(t);
-            }
+            var v = ItemValue.Invoke(item);
 
             if (Multiple)
             {
@@ -163,49 +159,34 @@ namespace BlazorComponent
             }
             else
             {
-                Value = v;
+                _value = v;
             }
 
             if (ValueChanged.HasDelegate)
             {
-                await ValueChanged.InvokeAsync(Value);
+                await ValueChanged.InvokeAsync(_value);
             }
 
             if (ValuesChanged.HasDelegate)
             {
-                await ValuesChanged.InvokeAsync(Values);
+                await ValuesChanged.InvokeAsync(_values);
             }
         }
 
-        public async Task RemoveSelectedAsync(TItem value)
+        public async Task RemoveSelectedAsync(TItem item)
         {
-            var t = ItemText != null
-                ? ItemText.Invoke(value)
-                : value.ToString();
-
-            var v = ItemValue != null
-                ? ItemValue.Invoke(value)
-                : value.ToString();
-
-            _text.Remove(t);
+            var v = ItemValue.Invoke(item);
             _values.Remove(v);
-
-            if (ValueChanged.HasDelegate)
-            {
-                await ValueChanged.InvokeAsync(Value);
-            }
 
             if (ValuesChanged.HasDelegate)
             {
-                await ValuesChanged.InvokeAsync(Values);
+                await ValuesChanged.InvokeAsync(_values);
             }
         }
 
         private bool IsSelected(TItem item)
         {
-            var v = ItemValue != null
-                    ? ItemValue.Invoke(item)
-                    : item.ToString();
+            var v = ItemValue.Invoke(item);
 
             return Multiple ? Values.Contains(v) : Value == v;
         }
