@@ -16,6 +16,7 @@ namespace BlazorComponent
         protected BListItemGroup Group { get; set; }
 
         private bool _link;
+
         [Parameter]
         public bool Link
         {
@@ -30,6 +31,7 @@ namespace BlazorComponent
         }
 
         private string _key;
+
         [Parameter]
         public string Key
         {

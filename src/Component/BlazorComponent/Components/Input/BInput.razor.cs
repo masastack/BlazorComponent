@@ -28,8 +28,9 @@ namespace BlazorComponent
 
         protected bool ShowDetails => Messages?.Count > 0;
 
-        protected virtual void HandleClick(MouseEventArgs args)
+        protected virtual Task HandleClick(MouseEventArgs args)
         {
+            return Task.CompletedTask;
         }
     }
 }

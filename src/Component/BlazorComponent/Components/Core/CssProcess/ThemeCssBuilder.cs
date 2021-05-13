@@ -39,14 +39,14 @@ namespace BlazorComponent
         private string Build(string combinePrefix, string selector, string color)
         {
             return @$"
-{combinePrefix}.{selector} {{
-    background-color: {color} !important;
-    border-color: {color} !important;
-}}
-{combinePrefix}.{selector}--text {{
-    color: {color} !important;
-    caret-color: {color} !important;
-}}";
+                {combinePrefix}.{selector} {{
+                    background-color: {color} !important;
+                    border-color: {color} !important;
+                }}
+                {combinePrefix}.{selector}--text {{
+                    color: {color} !important;
+                    caret-color: {color} !important;
+                }}";
         }
     }
 }

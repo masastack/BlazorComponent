@@ -7,8 +7,6 @@ namespace BlazorComponent
     {
         public string Style => ToString();
 
-        internal string OriginalStyle { get; set; }
-
         public override string ToString()
         {
             var separator = "; ";
@@ -20,13 +18,6 @@ namespace BlazorComponent
             }
 
             return style;
-        }
-
-        public override BuilderBase Clear()
-        {
-            _mapper.Add(() => OriginalStyle, () => !string.IsNullOrEmpty(OriginalStyle));
-
-            return base.Clear();
         }
     }
 }
