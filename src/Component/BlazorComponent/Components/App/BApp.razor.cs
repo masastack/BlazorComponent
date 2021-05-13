@@ -24,6 +24,5 @@ namespace BlazorComponent
 
             return base.OnInitializedAsync();
         }
-
     }
 }
