@@ -128,5 +128,9 @@ namespace BlazorComponent
                 file.Url = $"data:{file.BrowserFile.ContentType};base64,{Convert.ToBase64String(buffers)}";
             }
         }
+
+        protected virtual string GetColorCss(bool uploaded) => "";
+
+        protected virtual string GetListItemStyle(bool uploaded) => "";
     }
 }
