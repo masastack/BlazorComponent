@@ -9,6 +9,7 @@ namespace BlazorComponent
 {
     public partial class BSelect<TItem> : BDomComponentBase
     {
+        private bool _shouldReformatText = true;
         protected bool _visible;
         protected bool _focused;
         protected string _icon;
@@ -48,6 +49,20 @@ namespace BlazorComponent
 
         protected List<string> _text = new();
 
+        protected virtual List<string> FormatText(string value)
+        {
+            return Items
+                .Where(u => ItemValue(u) == value)
+                .Select(ItemText).ToList();
+        }
+
+        protected virtual List<string> FormatText(IEnumerable<string> values)
+        {
+            return Items
+                .Where(u => values.Contains(ItemValue(u)))
+                .Select(ItemText).ToList();
+        }
+
         #region Binding
 
         private string _value;
@@ -58,10 +73,12 @@ namespace BlazorComponent
             get => _value;
             set
             {
-                _text = Items.Where(u => ItemValue(u) == value)
-                    .Select(ItemText).ToList();
-
                 _value = value;
+
+                if (_shouldReformatText)
+                    _text = FormatText(value);
+
+                _shouldReformatText = true;
             }
         }
 
@@ -76,11 +93,12 @@ namespace BlazorComponent
             get => _values;
             set
             {
-                _text = Items
-                    .Where(u => value.Contains(ItemValue(u)))
-                    .Select(ItemText).ToList();
-
                 _values = value.ToList();
+
+                if (_shouldReformatText)
+                    _text = FormatText(value);
+
+                _shouldReformatText = true;
             }
         }
 
@@ -107,26 +125,6 @@ namespace BlazorComponent
 
         protected TItem SelectNode { get; set; }
 
-        protected override Task OnInitializedAsync()
-        {
-            Items.ForEach(u =>
-            {
-                var v = ItemValue.Invoke(u);
-
-                if (Value == v || Values.Contains(v))
-                {
-                    var t = ItemText.Invoke(u);
-
-                    if (!Multiple)
-                        _text.Clear();
-
-                    _text.Add(t);
-                }
-            });
-
-            return base.OnInitializedAsync();
-        }
-
         protected virtual void HandleOnBlur(FocusEventArgs args)
         {
             _focused = false;
@@ -146,7 +144,9 @@ namespace BlazorComponent
 
         public async Task SetSelectedAsync(TItem item)
         {
-            SelectNode = item;
+            //SelectNode = item;
+
+            _shouldReformatText = false;
 
             var v = ItemValue.Invoke(item);
 
@@ -155,11 +155,14 @@ namespace BlazorComponent
                 if (!_values.Contains(v))
                 {
                     _values.Add(v);
+                    _text.Add(ItemText.Invoke(item));
                 }
             }
             else
             {
                 _value = v;
+                _text.Clear();
+                _text.Add(ItemText.Invoke(item));
             }
 
             if (ValueChanged.HasDelegate)
@@ -175,8 +178,10 @@ namespace BlazorComponent
 
         public async Task RemoveSelectedAsync(TItem item)
         {
-            var v = ItemValue.Invoke(item);
-            _values.Remove(v);
+            _shouldReformatText = false;
+
+            _values.Remove(ItemValue.Invoke(item));
+            _text.Remove(ItemText.Invoke(item));
 
             if (ValuesChanged.HasDelegate)
             {

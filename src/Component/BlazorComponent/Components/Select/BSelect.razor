@@ -77,7 +77,7 @@
                                 {
                                     <SlotComponent Description="SlotProvider.GetSlot<BSelectOption<TItem>>()"
                                            Value="@item"
-                                           Key="@(ItemValue?.Invoke(item) ?? item.ToString())"
+                                           Key="@(ItemValue?.Invoke(item))"
                                            Checked="@IsSelected(item)">
                                         @ItemText?.Invoke(item)
                                     </SlotComponent>
