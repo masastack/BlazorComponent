@@ -13,6 +13,9 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
+        [Parameter]
+        public RenderFragment Activator { get; set; }
+
         [Parameter(CaptureUnmatchedValues = true)]
         public Dictionary<string, object> Attributes { get; set; }
 
@@ -45,6 +48,11 @@ namespace BlazorComponent
             }
 
             Attributes.ForEach(attr => builder.AddAttribute(sequence++, attr.Key, attr.Value));
+
+            if (!Description.Properties.ContainsKey(nameof(Activator)) && Activator != null)
+            {
+                builder.AddAttribute(sequence++, nameof(Activator), Activator);
+            }
 
             if (!Description.Properties.ContainsKey(nameof(ChildContent)))
             {
