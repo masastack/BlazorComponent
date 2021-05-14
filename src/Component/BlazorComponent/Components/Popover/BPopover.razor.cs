@@ -16,16 +16,16 @@ namespace BlazorComponent
         public bool OffsetY { get; set; }
 
         [Parameter]
-        public StringOrNumber ClientX { get; set; }
+        public StringNumber ClientX { get; set; }
 
         [Parameter]
-        public StringOrNumber ClientY { get; set; }
+        public StringNumber ClientY { get; set; }
 
         [Parameter]
-        public StringOrNumber MinWidth { get; set; }
+        public StringNumber MinWidth { get; set; }
 
         [Parameter]
-        public StringOrNumber MaxHeight { get; set; }
+        public StringNumber MaxHeight { get; set; }
 
         [Parameter]
         public string Absolute { get; set; }

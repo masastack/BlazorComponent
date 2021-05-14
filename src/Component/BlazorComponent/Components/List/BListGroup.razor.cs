@@ -20,6 +20,7 @@ namespace BlazorComponent
 
         [Parameter]
         public RenderFragment Activator { get; set; }
+
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
