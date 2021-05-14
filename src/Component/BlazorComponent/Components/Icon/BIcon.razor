@@ -10,7 +10,7 @@
                 style="@CssProvider.GetStyle()"
                 id="@Id"
                 @ref="Ref"
-                @onclick="HandleOnClick">
+                @onclick="Click">
             @_icon
         </button>
     }
@@ -20,7 +20,7 @@
            style="@CssProvider.GetStyle()"
            id="@Id"
            @ref="Ref"
-           @onclick="HandleOnClick">
+           @onclick="Click">
             @_icon
         </i>
     }
@@ -34,7 +34,7 @@ else
           style="@CssProvider.GetStyle()"
           id="@Id"
           @ref="Ref"
-          @onclick="HandleOnClick">
+          @onclick="Click">
         @((MarkupString) _icon)
     </span>
 }

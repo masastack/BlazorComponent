@@ -20,7 +20,8 @@ namespace BlazorComponent
             set => _values = value.ToList();
         }
 
-        [Parameter] public EventCallback<IEnumerable<string>> ValuesChanged { get; set; }
+        [Parameter] 
+        public EventCallback<IEnumerable<string>> ValuesChanged { get; set; }
 
         public async Task ToggleSelectAsync(string key)
         {
@@ -43,10 +44,13 @@ namespace BlazorComponent
             await InvokeStateHasChangedAsync();
         }
 
-        [Parameter] public bool Multiple { get; set; }
+        [Parameter] 
+        public bool Multiple { get; set; }
 
-        [Parameter] public string Color { get; set; }
+        [Parameter] 
+        public string Color { get; set; }
 
-        [Parameter] public RenderFragment ChildContent { get; set; }
+        [Parameter] 
+        public RenderFragment ChildContent { get; set; }
     }
 }

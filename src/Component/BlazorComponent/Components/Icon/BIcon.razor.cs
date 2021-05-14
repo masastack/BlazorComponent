@@ -32,14 +32,6 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
-        private async Task HandleOnClick(MouseEventArgs args)
-        {
-            if (Click.HasDelegate)
-            {
-                await Click.InvokeAsync(args);
-            }
-        }
-
         protected override void OnInitialized()
         {
             var builder = new RenderTreeBuilder();

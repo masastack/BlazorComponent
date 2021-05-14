@@ -79,20 +79,12 @@ namespace BlazorComponent
         public EventCallback<MouseEventArgs> Click { get; set; }
 
         [Parameter]
-        public bool ClickStopPropagation { get; set; }
+        public bool StopPropagation { get; set; }
 
         [Parameter]
         public RenderFragment LoadingFragment { get; set; }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
-
-        private async Task HandleOnClick(MouseEventArgs args)
-        {
-            if (Click.HasDelegate)
-            {
-                await Click.InvokeAsync(args);
-            }
-        }
     }
 }
