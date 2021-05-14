@@ -8,8 +8,6 @@ using OneOf;
 
 namespace BlazorComponent
 {
-    using StringNumber = OneOf<string, int>;
-
     public partial class BIcon : BDomComponentBase
     {
         private string _icon;
@@ -24,7 +22,7 @@ namespace BlazorComponent
         public string Color { get; set; }
 
         [Parameter]
-        public StringNumber? Size { get; set; }
+        public StringNumber Size { get; set; }
 
         [Parameter]
         public EventCallback<MouseEventArgs> Click { get; set; }

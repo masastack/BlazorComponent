@@ -4,8 +4,6 @@ using OneOf;
 
 namespace BlazorComponent
 {
-    using StringNumber = OneOf<string, int>;
-
     public class EmbeddedProperty
     {
         public StringNumber Span { get; set; }
@@ -78,7 +76,7 @@ namespace BlazorComponent
 
         private void SetHostFlexStyle()
         {
-            if (this.Flex.Value == null)
+            if (this.Flex == null)
                 return;
 
             this._hostFlexStyle = this.Flex.Match(str =>
@@ -90,7 +88,8 @@ namespace BlazorComponent
 
                     return $"flex: {str}";
                 },
-                num => $"flex: {num} {num} auto");
+                num => $"flex: {num} {num} auto",
+                _ => string.Empty);
         }
 
         protected override void OnInitialized()
