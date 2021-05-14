@@ -1,0 +1,114 @@
+﻿@namespace BlazorComponent
+@using Microsoft.AspNetCore.Components.Forms
+@inherits BDomComponentBase
+
+<InputFile @ref="_uploadElementReference"
+           OnChange="HandleOnChange"
+           multiple="@Multiple"
+           accept="@Accept"
+           hidden />
+
+<div class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)"
+     @onclick="HandleOnClick">
+    @Activator
+</div>
+
+@if (ShowUploadList)
+{
+    if (Chips)
+    {
+        <div style="padding: 8px 0">
+            @foreach (var file in Files)
+            {
+                <SlotComponent Description="SlotProvider.GetSlot<BTooltip>()" Top
+                    Disabled="@string.IsNullOrEmpty(file.Error)">
+                    <Activator>
+                        <SlotComponent Description="SlotProvider.GetSlot<BChip>()"
+                           Style="margin: 0 4px 4px 0"
+                           Close
+                           CloseIconColor="@(file.Uploaded ? "" : "red")"
+                           Click="@(EventCallback.Factory.Create<MouseEventArgs>(this, () => Files.Remove(file)))">
+                            @if (file.IsImage)
+                        {
+                            <SlotComponent Description="SlotProvider.GetSlot<BAvatar>()" Style="margin-right: 4px" Tile>
+                                <img src="@file.Url" alt="@file.FormatedFileName">
+                            </SlotComponent>
+                        }
+
+                        <span style="@(file.Uploaded ? "" : "Color: #F44336")">
+                            @file.FormatedFileName@(ShowSize && file.BrowserFile != null ? $"({FormatSize(file.BrowserFile.Size)})" : "")
+                        </span>
+                    </SlotComponent>
+                </Activator>
+                <ChildContent>
+                    @file.Error
+                </ChildCOntent>
+            </SlotComponent>
+            }
+        </div>
+    }
+    else
+    {
+        <SlotComponent Description="SlotProvider.GetSlot<BList>()"
+               Style="@(!Files.Any() ? "padding:0" :"")"
+               Dense>
+            @foreach (var file in Files)
+            {
+                <SlotComponent Description="SlotProvider.GetSlot<BTooltip>()" Top 
+                    Disabled="@string.IsNullOrEmpty(file.Error)"
+                    ActivatorStyle="display:block">
+                    <Activator>
+                        <SlotComponent Description="SlotProvider.GetSlot<BListItem>()"
+                           Style="@($"border: 1px solid {(file.Uploaded ? "lightgrey" : "#F44336")}; border-radius:4px; margin-top:4px;")">
+                            @if (file.IsImage)
+                        {
+                            <SlotComponent Description="@(SlotProvider.GetSlot<BAvatar>("list-item"))" Tile>
+                                <img src="@file.Url" alt="@file.FormatedFileName">
+                            </SlotComponent>
+                        }
+                        else
+                        {
+                            <SlotComponent Description="SlotProvider.GetSlot<BListItemIcon>()">
+                                <SlotComponent Description="@(SlotProvider.GetSlot<BIcon>())"
+                                   Small Color="@(file.Uploaded ? "" : "red")">
+                                    mdi-paperclip
+                                </SlotComponent>
+                            </SlotComponent>
+                        }
+                        <SlotComponent Description="SlotProvider.GetSlot<BListItemContent>()">
+                            <SlotComponent Description="SlotProvider.GetSlot<BListItemTitle>()" Style="@(file.Uploaded ? "" : "Color: #F44336")">
+                                @file.FormatedFileName@(ShowSize && file.BrowserFile != null ? $"({FormatSize(file.BrowserFile.Size)})" : "")
+                            </SlotComponent>
+                        </SlotComponent>
+                        <SlotComponent Description="SlotProvider.GetSlot<BListItemAction>()"
+                               style="margin: 0px">
+                            <SlotComponent Description="SlotProvider.GetSlot<BButton>()"
+                                   Icon
+                                   Color="@(file.Uploaded ? "" : "red")"
+                                   Click="@(EventCallback.Factory.Create<MouseEventArgs>(this, () => Files.Remove(file)))">
+                                <SlotComponent Description="@(SlotProvider.GetSlot<BIcon>())"
+                                       Small>
+                                    mdi-close
+                                </SlotComponent>
+                            </SlotComponent>
+                        </SlotComponent>
+                    </SlotComponent>
+                </Activator>
+                <ChildContent>
+                    @file.Error
+                </ChildContent>
+            </SlotComponent>
+            }
+        </SlotComponent>
+    }
+}
+
+@ChildContent
+
+@if (Counter && Files.Any())
+{
+    <SlotComponent Description="SlotProvider.GetSlot<BHitMessage>()"
+               Style="text-align: right;">
+        @Files.Count files
+    </SlotComponent>
+}
