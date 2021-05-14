@@ -1,16 +1,17 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
     public partial class BTooltip : BDomComponentBase
     {
         [Parameter]
-        public RenderFragment Activator{ get; set; }
+        public bool Disabled { get; set; }
+
+        [Parameter]
+        public string ActivatorStyle { get; set; }
+
+        [Parameter]
+        public RenderFragment Activator { get; set; }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
@@ -19,5 +20,12 @@ namespace BlazorComponent
         public ElementReference ContentRef { get; set; }
 
         protected bool IsActive { get; set; }
+
+        protected override void SetComponentClass()
+        {
+            CssProvider
+              .AsProvider<BTooltip>()
+              .Apply("activator", styleAction: s => s.Add(ActivatorStyle));
+        }
     }
 }
