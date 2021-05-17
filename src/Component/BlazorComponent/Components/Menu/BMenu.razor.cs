@@ -27,19 +27,19 @@ namespace BlazorComponent
         public bool Right { get; set; }
 
         [Parameter]
-        public StringOrNumber NudgeTop { get; set; }
+        public StringNumber NudgeTop { get; set; }
 
         [Parameter]
-        public StringOrNumber NudgeBottom { get; set; }
+        public StringNumber NudgeBottom { get; set; }
 
         [Parameter]
-        public StringOrNumber NudgeLeft { get; set; }
+        public StringNumber NudgeLeft { get; set; }
 
         [Parameter]
-        public StringOrNumber NudgeRight { get; set; }
+        public StringNumber NudgeRight { get; set; }
 
         [Parameter]
-        public StringOrNumber NudgeWidth { get; set; }
+        public StringNumber NudgeWidth { get; set; }
 
         [Parameter]
         public bool Absolute { get; set; }

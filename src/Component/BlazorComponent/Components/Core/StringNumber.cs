@@ -2,15 +2,15 @@
 
 namespace BlazorComponent
 {
-    public class StringOrNumber : OneOfBase<string, int, double>
+    public class StringNumber : OneOfBase<string, int, double>
     {
-        StringOrNumber(OneOf<string, int, double> _) : base(_) { }
+        StringNumber(OneOf<string, int, double> _) : base(_) { }
 
         // optionally, define implicit conversions
         // you could also make the constructor public
-        public static implicit operator StringOrNumber(string _) => new(_);
-        public static implicit operator StringOrNumber(int _) => new(_);
-        public static implicit operator StringOrNumber(double _) => new(_);
+        public static implicit operator StringNumber(string _) => new(_);
+        public static implicit operator StringNumber(int _) => new(_);
+        public static implicit operator StringNumber(double _) => new(_);
 
         public (bool isNumber, double number) TryGetNumber() =>
             Match(

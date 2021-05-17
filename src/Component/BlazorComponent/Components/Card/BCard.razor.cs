@@ -5,22 +5,22 @@ namespace BlazorComponent
     public abstract partial class BCard : BDomComponentBase
     {
         [Parameter] 
-        public StringOrNumber Height { get; set; }
+        public StringNumber Height { get; set; }
 
         [Parameter] 
-        public StringOrNumber MaxHeight { get; set; }
+        public StringNumber MaxHeight { get; set; }
 
         [Parameter] 
-        public StringOrNumber MinHeight { get; set; }
+        public StringNumber MinHeight { get; set; }
 
         [Parameter] 
-        public StringOrNumber Width { get; set; }
+        public StringNumber Width { get; set; }
 
         [Parameter] 
-        public StringOrNumber MaxWidth { get; set; }
+        public StringNumber MaxWidth { get; set; }
 
         [Parameter] 
-        public StringOrNumber MinWidth { get; set; }
+        public StringNumber MinWidth { get; set; }
 
         [Parameter] 
         public bool Outlined { get; set; }

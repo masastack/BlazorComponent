@@ -11,10 +11,10 @@ namespace BlazorComponent
         public EventCallback<bool> VisibleChanged { get; set; }
 
         [Parameter]
-        public StringOrNumber Width { get; set; }
+        public StringNumber Width { get; set; }
 
         [Parameter]
-        public StringOrNumber MaxWidth { get; set; }
+        public StringNumber MaxWidth { get; set; }
 
         [Parameter]
         public bool Persistent { get; set; }

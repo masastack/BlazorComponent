@@ -5,8 +5,6 @@ using OneOf;
 
 namespace BlazorComponent
 {
-    using StringNumber = OneOf<string, int>;
-
     public abstract partial class BButton : BDomComponentBase
     {
         /// <summary>
@@ -58,22 +56,22 @@ namespace BlazorComponent
         public bool XSmall { get; set; }
 
         [Parameter]
-        public StringNumber? Width { get; set; }
+        public StringNumber Width { get; set; }
 
         [Parameter]
-        public StringNumber? MaxWidth { get; set; }
+        public StringNumber MaxWidth { get; set; }
 
         [Parameter]
-        public StringNumber? MinWidth { get; set; }
+        public StringNumber MinWidth { get; set; }
 
         [Parameter]
-        public StringNumber? Height { get; set; }
+        public StringNumber Height { get; set; }
 
         [Parameter]
-        public StringNumber? MaxHeight { get; set; }
+        public StringNumber MaxHeight { get; set; }
 
         [Parameter]
-        public StringNumber? MinHeight { get; set; }
+        public StringNumber MinHeight { get; set; }
 
         [Parameter]
         public EventCallback<MouseEventArgs> Click { get; set; }

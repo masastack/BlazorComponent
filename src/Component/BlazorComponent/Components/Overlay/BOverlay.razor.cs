@@ -12,7 +12,7 @@ namespace BlazorComponent
         public string Color { get; set; } = "#212121";
 
         [Parameter]
-        public StringOrNumber Opacity { get; set; } = 0.46;
+        public StringNumber Opacity { get; set; } = 0.46;
 
         /// <summary>
         /// Controls whether the component is visible or hidden.
@@ -24,7 +24,7 @@ namespace BlazorComponent
         public EventCallback<bool> ValueChanged { get; set; }
 
         [Parameter]
-        public StringOrNumber ZIndex { get; set; } = 201;
+        public StringNumber ZIndex { get; set; } = 201;
 
         [Parameter]
         public EventCallback<MouseEventArgs> Click { get; set; }

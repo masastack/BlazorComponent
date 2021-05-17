@@ -3,8 +3,6 @@ using OneOf;
 
 namespace BlazorComponent
 {
-    using StringNumber = OneOf<string, int>;
-
     public abstract partial class BProcessCircular : BDomComponentBase
     {
         [Parameter]
@@ -14,10 +12,10 @@ namespace BlazorComponent
         public string Color { get; set; }
 
         [Parameter]
-        public StringNumber? Size { get; set; } = 32;
+        public StringNumber Size { get; set; } = 32;
 
         [Parameter]
-        public StringNumber? Rotate { get; set; } = 0;
+        public StringNumber Rotate { get; set; } = 0;
 
         /// <summary>
         /// TODO: 延迟
