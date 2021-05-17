@@ -114,7 +114,7 @@ namespace BlazorComponent
         public Func<TItem, string> ItemValue { get; set; } = new Func<TItem, string>(u => u.ToString());
 
         [Parameter]
-        public IReadOnlyList<TItem> Items { get; set; }
+        public IReadOnlyList<TItem> Items { get; set; } = new List<TItem>();
 
         protected RenderFragment SelectArrowContent { get; set; }
 
