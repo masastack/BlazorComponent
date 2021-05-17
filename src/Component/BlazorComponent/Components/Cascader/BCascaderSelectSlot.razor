@@ -6,10 +6,10 @@
         <SlotComponent Description="SlotProvider.GetSlot<BListItemGroup>()">
             @foreach (var item in Items)
             {
-                <SlotComponent Description="SlotProvider.GetSlot<BSelectOption<BCascaderNode>>()"
-                           Value="@item"
-                           Key="@item.Value">
-                    @item.Label
+                <SlotComponent Description="SlotProvider.GetSlot<BSelectOption<BCascaderNode, string>>()"
+                           Item="@item"
+                           Value="@item.Value"
+                           Label="@item.Label">
                 </SlotComponent>
             }
         </SlotComponent>

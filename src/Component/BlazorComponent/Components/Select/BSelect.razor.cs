@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BSelect<TItem> : BDomComponentBase
+    public partial class BSelect<TItem, TValue> : BDomComponentBase
     {
         private bool _shouldReformatText = true;
         protected bool _visible;
@@ -49,14 +49,14 @@ namespace BlazorComponent
 
         protected List<string> _text = new();
 
-        protected virtual List<string> FormatText(string value)
+        protected virtual List<string> FormatText(TValue value)
         {
             return Items
-                .Where(u => ItemValue(u) == value)
+                .Where(u => ItemValue(u).Equals(value))
                 .Select(ItemText).ToList();
         }
 
-        protected virtual List<string> FormatText(IEnumerable<string> values)
+        protected virtual List<string> FormatText(IEnumerable<TValue> values)
         {
             return Items
                 .Where(u => values.Contains(ItemValue(u)))
@@ -65,17 +65,17 @@ namespace BlazorComponent
 
         #region Binding
 
-        private string _value;
+        private TValue _value;
 
         [Parameter]
-        public string Value
+        public TValue Value
         {
             get => _value;
             set
             {
                 _value = value;
 
-                if (_shouldReformatText)
+                if (_shouldReformatText && ItemValue != null)
                     _text = FormatText(value);
 
                 _shouldReformatText = true;
@@ -83,19 +83,19 @@ namespace BlazorComponent
         }
 
         [Parameter]
-        public EventCallback<string> ValueChanged { get; set; }
+        public EventCallback<TValue> ValueChanged { get; set; }
 
-        private List<string> _values = new();
+        private List<TValue> _values = new();
 
         [Parameter]
-        public IEnumerable<string> Values
+        public IEnumerable<TValue> Values
         {
             get => _values;
             set
             {
-                _values = value.ToList();
+                _values = value?.ToList() ?? new List<TValue>();
 
-                if (_shouldReformatText)
+                if (_shouldReformatText && ItemValue != null)
                     _text = FormatText(value);
 
                 _shouldReformatText = true;
@@ -103,20 +103,18 @@ namespace BlazorComponent
         }
 
         [Parameter]
-        public EventCallback<IEnumerable<string>> ValuesChanged { get; set; }
+        public EventCallback<IEnumerable<TValue>> ValuesChanged { get; set; }
 
         #endregion
 
         [Parameter]
-        public Func<TItem, string> ItemText { get; set; } = new Func<TItem, string>(u => u.ToString());
+        public Func<TItem, string> ItemText { get; set; } = null!;
 
         [Parameter]
-        public Func<TItem, string> ItemValue { get; set; } = new Func<TItem, string>(u => u.ToString());
+        public Func<TItem, TValue> ItemValue { get; set; } = null!;
 
         [Parameter]
         public IReadOnlyList<TItem> Items { get; set; } = new List<TItem>();
-
-        protected RenderFragment SelectArrowContent { get; set; }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
@@ -142,27 +140,25 @@ namespace BlazorComponent
             InvokeStateHasChanged();
         }
 
-        public async Task SetSelectedAsync(TItem item)
+        public async Task SetSelectedAsync(string text, TValue value)
         {
             //SelectNode = item;
 
             _shouldReformatText = false;
 
-            var v = ItemValue.Invoke(item);
-
             if (Multiple)
             {
-                if (!_values.Contains(v))
+                if (!_values.Contains(value))
                 {
-                    _values.Add(v);
-                    _text.Add(ItemText.Invoke(item));
+                    _values.Add(value);
+                    _text.Add(text);
                 }
             }
             else
             {
-                _value = v;
+                _value = value;
                 _text.Clear();
-                _text.Add(ItemText.Invoke(item));
+                _text.Add(text);
             }
 
             if (ValueChanged.HasDelegate)
@@ -176,24 +172,17 @@ namespace BlazorComponent
             }
         }
 
-        public async Task RemoveSelectedAsync(TItem item)
+        public async Task RemoveSelectedAsync(string text, TValue value)
         {
             _shouldReformatText = false;
 
-            _values.Remove(ItemValue.Invoke(item));
-            _text.Remove(ItemText.Invoke(item));
+            _values.Remove(value);
+            _text.Remove(text);
 
             if (ValuesChanged.HasDelegate)
             {
                 await ValuesChanged.InvokeAsync(_values);
             }
-        }
-
-        private bool IsSelected(TItem item)
-        {
-            var v = ItemValue.Invoke(item);
-
-            return Multiple ? Values.Contains(v) : Value == v;
         }
     }
 }
