@@ -1,10 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
-using Microsoft.AspNetCore.Components.RenderTree;
 
 namespace BlazorComponent
 {
@@ -74,24 +70,6 @@ namespace BlazorComponent
         protected virtual void SetComponentClass()
         {
 
-        }
-
-        /// <summary>
-        /// Gets text in ChildContent.
-        /// </summary>
-        /// <param name="childContent">The child content of <see cref="RenderFragment"/></param>
-        /// <returns>The text.</returns>
-        protected string GetChildContentText(RenderFragment childContent)
-        {
-            var builder = new RenderTreeBuilder();
-            childContent(builder);
-            BuildRenderTree(builder);
-
-            // TODO: will be changed next release version!
-
-            var frame = builder.GetFrames().Array.FirstOrDefault(u => u.FrameType == RenderTreeFrameType.Text);
-
-            return frame.TextContent;
         }
     }
 }
