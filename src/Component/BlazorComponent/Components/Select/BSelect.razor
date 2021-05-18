@@ -1,6 +1,7 @@
 @namespace BlazorComponent
 @inherits BDomComponentBase
 @typeparam TItem
+@typeparam TValue
 
 <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id">
     <div class="@CssProvider.GetClass("control")">
@@ -69,28 +70,36 @@
                     {
                         <SlotComponent Description="SlotProvider.GetSlot<BSelectSlot>()"></SlotComponent>
                     }
-                    else
+                    else if (Items.Any())
                     {
                         <SlotComponent Description="SlotProvider.GetSlot<BList>()">
                             <SlotComponent Description="SlotProvider.GetSlot<BListItemGroup>()">
                                 @foreach (var item in Items)
                                 {
-                                    <SlotComponent Description="SlotProvider.GetSlot<BSelectOption<TItem>>()"
-                                           Value="@item"
-                                           Key="@(ItemValue?.Invoke(item) ?? item.ToString())"
-                                           Checked="@IsSelected(item)">
-                                        @ItemText?.Invoke(item)
-                                    </SlotComponent>
+                                    <SlotComponent Description="SlotProvider.GetSlot<BSelectOption<TItem, TValue>>()"
+                                           Item="@item"
+                                           Value="@ItemValue(item)"
+                                           Label="@ItemText(item)"
+                                           key="@ItemValue(item).ToString()" />
                                 }
+                            </SlotComponent>
+                        </SlotComponent>
+                    }
+                    else
+                    {
+                        <SlotComponent Description="SlotProvider.GetSlot<BList>()">
+                            <SlotComponent Description="SlotProvider.GetSlot<BListItemGroup>()">
+                                @ChildContent
                             </SlotComponent>
                         </SlotComponent>
                     }
                 </SlotComponent>
             </CascadingValue>
         </div>
+
         @if (!Slot)
         {
-            <div class="@CssProvider.GetClass("hit")">
+            <div class="@CssProvider.GetClass("hint")">
                 <SlotComponent Description="SlotProvider.GetSlot<BHitMessage>()">@Hint</SlotComponent>
             </div>
         }

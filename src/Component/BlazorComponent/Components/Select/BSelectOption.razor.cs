@@ -2,22 +2,38 @@
 
 namespace BlazorComponent
 {
-    public partial class BSelectOption<T> : BDomComponentBase
+    public partial class BSelectOption<TItem, TValue> : BDomComponentBase
     {
-        [Parameter]
-        public bool Checked { get; set; }
+        private string _key;
+        protected bool _checked;
 
         [CascadingParameter]
-        protected BSelect<T> SelectWrapper { get; set; }
+        protected BSelect<TItem, TValue> SelectWrapper { get; set; }
 
         [Parameter]
-        public T Value { get; set; }
+        public TItem Item { get; set; }
 
         [Parameter]
-        public string Key { get; set; }
+        public TValue Value { get; set; }
+
+        /// <summary>
+        /// Gets or sets the key, default returns the <see cref="Value"/> if null.
+        /// </summary>
+        [Parameter]
+        public string Key
+        {
+            get
+            {
+                return _key ?? Value.ToString();
+            }
+            set
+            {
+                _key = value;
+            }
+        }
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public string Label { get; set; }
 
         [Parameter]
         public string Icon { get; set; }
