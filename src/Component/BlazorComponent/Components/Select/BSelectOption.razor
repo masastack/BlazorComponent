@@ -1,6 +1,7 @@
 ﻿@namespace BlazorComponent
-@typeparam T
 @inherits BDomComponentBase
+@typeparam TItem
+@typeparam TValue
 
 <SlotComponent Description="SlotProvider.GetSlot<BListItem>()">
     @if (SelectWrapper.Multiple)
@@ -11,7 +12,7 @@
     }
     <SlotComponent Description="SlotProvider.GetSlot<BListItemContent>()">
         <SlotComponent Description="SlotProvider.GetSlot<BListItemTitle>()">
-            @ChildContent
+            @Label
         </SlotComponent>
     </SlotComponent>
     @if (!string.IsNullOrEmpty(Icon))
