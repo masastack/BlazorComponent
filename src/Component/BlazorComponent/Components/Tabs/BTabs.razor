@@ -1,0 +1,34 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<CascadingValue Value="this">
+    <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
+        <SlotComponent Description="SlotProvider.GetSlot<ITabsBar>()">
+            @if (!HideSlider)
+            {
+                <div class="@CssProvider.GetClass("slider-wrap")" style="@CssProvider.GetStyle("slider-wrap")">
+                    @if (SliderContent == default)
+                    {
+                        <SlotComponent Description="SlotProvider.GetSlot<BTabsSlider>()"></SlotComponent>
+                    }
+                    else
+                    {
+                        @SliderContent
+                    }
+                </div>
+            }
+            @TabContent
+        </SlotComponent>
+        @if (ItemsContent == default)
+        {
+            <SlotComponent Description="SlotProvider.GetSlot<ITabsItems>()">
+                @ItemContent
+            </SlotComponent>
+        }
+        else
+        {
+            @ItemsContent
+        }
+    </div>
+</CascadingValue>
+
