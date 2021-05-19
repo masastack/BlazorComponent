@@ -88,12 +88,12 @@ namespace BlazorComponent
         private List<TValue> _values = new();
 
         [Parameter]
-        public IEnumerable<TValue> Values
+        public List<TValue> Values
         {
             get => _values;
             set
             {
-                _values = value?.ToList() ?? new List<TValue>();
+                _values = value ?? new List<TValue>();
 
                 if (_shouldReformatText && ItemValue != null)
                     _text = FormatText(value);
@@ -103,7 +103,7 @@ namespace BlazorComponent
         }
 
         [Parameter]
-        public EventCallback<IEnumerable<TValue>> ValuesChanged { get; set; }
+        public EventCallback<List<TValue>> ValuesChanged { get; set; }
 
         #endregion
 

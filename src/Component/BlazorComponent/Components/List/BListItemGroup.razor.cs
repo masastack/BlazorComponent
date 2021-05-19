@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Components;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
@@ -11,29 +10,22 @@ namespace BlazorComponent
 
         [Parameter] public EventCallback<string> ValueChanged { get; set; }
 
-        private List<string> _values = new List<string>();
-
         [Parameter]
-        public IEnumerable<string> Values
-        {
-            get => _values;
-            set => _values = value.ToList();
-        }
-
-        [Parameter] 
-        public EventCallback<IEnumerable<string>> ValuesChanged { get; set; }
+        public List<string> Values { get; set; }
+        [Parameter]
+        public EventCallback<List<string>> ValuesChanged { get; set; }
 
         public async Task ToggleSelectAsync(string key)
         {
             if (Multiple)
             {
-                if (_values.Contains(key))
+                if (Values.Contains(key))
                 {
-                    _values.Remove(key);
+                    Values.Remove(key);
                 }
                 else
                 {
-                    _values.Add(key);
+                    Values.Add(key);
                 }
             }
             else
@@ -44,13 +36,13 @@ namespace BlazorComponent
             await InvokeStateHasChangedAsync();
         }
 
-        [Parameter] 
+        [Parameter]
         public bool Multiple { get; set; }
 
-        [Parameter] 
+        [Parameter]
         public string Color { get; set; }
 
-        [Parameter] 
+        [Parameter]
         public RenderFragment ChildContent { get; set; }
     }
 }
