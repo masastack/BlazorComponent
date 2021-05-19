@@ -47,6 +47,8 @@ namespace BlazorComponent
         [Parameter]
         public bool PersistentHint { get; set; }
 
+        public ElementReference PopoverRef { get; set; }
+
         protected List<string> _text = new();
 
         protected virtual List<string> FormatText(TValue value)

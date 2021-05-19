@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
@@ -50,9 +50,12 @@ namespace BlazorComponent
 
         protected virtual async Task HandleOnClick(MouseEventArgs args)
         {
-            if (Click.HasDelegate)
+            if (args.Button == 0)
             {
-                await Click.InvokeAsync(args);
+                if (Click.HasDelegate)
+                {
+                    await Click.InvokeAsync(args);
+                }
             }
         }
     }

@@ -64,37 +64,6 @@
                 </div>
                 <input type="hidden" value="@(Multiple ? string.Join(',', Values) : Value)" />
             </div>
-            <CascadingValue Value="this">
-                <SlotComponent Description="SlotProvider.GetSlot<BPopover>()">
-                    @if (Slot)
-                    {
-                        <SlotComponent Description="SlotProvider.GetSlot<BSelectSlot>()"></SlotComponent>
-                    }
-                    else if (Items.Any())
-                    {
-                        <SlotComponent Description="SlotProvider.GetSlot<BList>()">
-                            <SlotComponent Description="SlotProvider.GetSlot<BListItemGroup>()">
-                                @foreach (var item in Items)
-                                {
-                                    <SlotComponent Description="SlotProvider.GetSlot<BSelectOption<TItem, TValue>>()"
-                                           Item="@item"
-                                           Value="@ItemValue(item)"
-                                           Label="@ItemText(item)"
-                                           key="@ItemValue(item).ToString()" />
-                                }
-                            </SlotComponent>
-                        </SlotComponent>
-                    }
-                    else
-                    {
-                        <SlotComponent Description="SlotProvider.GetSlot<BList>()">
-                            <SlotComponent Description="SlotProvider.GetSlot<BListItemGroup>()">
-                                @ChildContent
-                            </SlotComponent>
-                        </SlotComponent>
-                    }
-                </SlotComponent>
-            </CascadingValue>
         </div>
 
         @if (!Slot)
@@ -107,3 +76,37 @@
 </div>
 
 <SlotComponent Description="SlotProvider.GetSlot<BOverlay>()" />
+
+<CascadingValue Value="this">
+    <div @ref="PopoverRef">
+        <SlotComponent Description="SlotProvider.GetSlot<BPopover>()">
+            @if (Slot)
+            {
+                <SlotComponent Description="SlotProvider.GetSlot<BSelectSlot>()"></SlotComponent>
+            }
+            else if (Items.Any())
+            {
+                <SlotComponent Description="SlotProvider.GetSlot<BList>()">
+                    <SlotComponent Description="SlotProvider.GetSlot<BListItemGroup>()">
+                        @foreach (var item in Items)
+                        {
+                            <SlotComponent Description="SlotProvider.GetSlot<BSelectOption<TItem, TValue>>()"
+                                   Item="@item"
+                                   Value="@ItemValue(item)"
+                                   Label="@ItemText(item)"
+                                   key="@ItemValue(item).ToString()" />
+                        }
+                    </SlotComponent>
+                </SlotComponent>
+            }
+            else
+            {
+                <SlotComponent Description="SlotProvider.GetSlot<BList>()">
+                    <SlotComponent Description="SlotProvider.GetSlot<BListItemGroup>()">
+                        @ChildContent
+                    </SlotComponent>
+                </SlotComponent>
+            }
+        </SlotComponent>
+    </div>
+</CascadingValue>
