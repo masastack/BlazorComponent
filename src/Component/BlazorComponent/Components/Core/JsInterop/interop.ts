@@ -28,8 +28,10 @@ export function getDomInfo(element) {
     result["clientHeight"] = dom.clientHeight || 0;
     result["clientWidth"] = dom.clientWidth || 0;
     var absolutePosition = getElementAbsolutePos(dom);
-    result["absoluteTop"] = Math.round(absolutePosition.y);
-    result["absoluteLeft"] = Math.round(absolutePosition.x);
+    result["relativeLeft"] = Math.round(absolutePosition.relativeLeft);
+    result["relativeTop"] = Math.round(absolutePosition.relativeTop);
+    result["absoluteLeft"] = Math.round(absolutePosition.absoluteLeft);
+    result["absoluteTop"] = Math.round(absolutePosition.absoluteTop);
 
     return result;
 }
@@ -44,8 +46,10 @@ function getElementAbsolutePos(element) {
             var scrollLeft = viewportElement.scrollLeft;
             var scrollTop = viewportElement.scrollTop;
 
-            res.x = box.left + scrollLeft;
-            res.y = box.top + scrollTop;
+            res.relativeLeft = box.left;
+            res.relativeTop = box.top;
+            res.absoluteLeft = box.left + scrollLeft;
+            res.absoluteTop = box.top + scrollTop;
         }
     }
     return res;
