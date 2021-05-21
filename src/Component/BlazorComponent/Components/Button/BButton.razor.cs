@@ -1,7 +1,5 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using OneOf;
 
 namespace BlazorComponent
 {
@@ -80,7 +78,7 @@ namespace BlazorComponent
         public bool StopPropagation { get; set; }
 
         [Parameter]
-        public RenderFragment LoadingFragment { get; set; }
+        public RenderFragment Loader { get; set; }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
