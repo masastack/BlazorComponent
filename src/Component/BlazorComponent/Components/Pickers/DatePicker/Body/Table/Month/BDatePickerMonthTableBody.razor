@@ -1,0 +1,20 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+@implements IDatePickerTableBody
+
+<tbody>
+    @for (var i = 0; i < 4; i++)
+    {
+        <tr>
+            @for (var j = 0; j < 3; j++)
+            {
+                var month = i * 3 + j + 1;
+                <td>
+                    <SlotComponent IsActive="@IsSelected(month)" Click="@HandleMonthClick(month)" Description="SlotProvider.GetSlot<BButton>()">
+                        @month
+                    </SlotComponent>
+                </td>
+            }
+        </tr>
+    }
+</tbody>

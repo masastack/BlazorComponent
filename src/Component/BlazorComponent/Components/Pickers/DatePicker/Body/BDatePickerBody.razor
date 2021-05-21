@@ -1,0 +1,22 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+@typeparam TComponent
+
+<div>
+    @if (Component.ActivePicker == "YEAR")
+    {
+        <SlotComponent Description="SlotProvider.GetSlot<BDatePickerYears>()"></SlotComponent>
+    }
+    else
+    {
+        <SlotComponent Description="SlotProvider.GetSlot<BDatePickerHeader>()"></SlotComponent>
+        @if (Component.ActivePicker == "DATE")
+        {
+            <SlotComponent Description="SlotProvider.GetSlot<IDatePickerDateTable>()"></SlotComponent>
+        }
+        else
+        {
+            <SlotComponent Description="SlotProvider.GetSlot<IDatePickerMonthTable>()"></SlotComponent>
+        }
+    }
+</div>

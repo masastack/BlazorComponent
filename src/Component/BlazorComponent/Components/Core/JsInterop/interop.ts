@@ -303,6 +303,15 @@ export function scrollTo(target) {
     }
 }
 
+export function scrollToElement(container, target) {
+    let dom = getDom(container);
+    console.dir(dom);
+    let t: any = getDomInfo(target);
+    console.dir(t);
+    dom.scrollTop = t.offsetTop - dom.offsetHeight / 2 + t.offsetHeight / 2;
+    console.dir(dom);
+}
+
 export function getFirstChildDomInfo(element) {
     var dom = getDom(element);
     if (dom.firstElementChild)

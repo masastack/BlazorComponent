@@ -1,0 +1,37 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
+    <div class="@CssProvider.GetClass("title")" style="@CssProvider.GetStyle("title")">
+        @if (TitleContent != default)
+        {
+
+            @TitleContent
+        }
+        else
+        {
+            @if (!NoTitle)
+            {
+                <SlotComponent Description="SlotProvider.GetSlot<IPickerTitle>()"></SlotComponent>
+            }
+        }
+    </div>
+
+    <div class="@CssProvider.GetClass("body")" style="@CssProvider.GetStyle("body")">
+        @if (ChildContent != default)
+        {
+            @ChildContent
+        }
+        else
+        {
+            <SlotComponent Description="SlotProvider.GetSlot<IPickerBody>()"></SlotComponent>
+        }
+    </div>
+
+    @if (ActionsContent != default)
+    {
+        <div class="@CssProvider.GetClass("actions")" style="@CssProvider.GetStyle("actions")">
+            @ActionsContent
+        </div>
+    }
+</div>

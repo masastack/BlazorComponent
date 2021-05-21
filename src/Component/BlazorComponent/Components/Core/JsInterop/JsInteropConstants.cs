@@ -38,6 +38,8 @@
 
         public static string ScrollTo => $"{Variables.JsInteropFuncNamePrefix}scrollTo";
 
+        public static string ScrollToElement => $"{Variables.JsInteropFuncNamePrefix}scrollToElement";
+
         public static string GetFirstChildDomInfo => $"{Variables.JsInteropFuncNamePrefix}getFirstChildDomInfo";
 
         public static string AddClsToFirstChild => $"{Variables.JsInteropFuncNamePrefix}addClsToFirstChild";
