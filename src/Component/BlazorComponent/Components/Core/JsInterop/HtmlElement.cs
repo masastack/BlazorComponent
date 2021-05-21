@@ -5,28 +5,34 @@ namespace BlazorComponent
     public class HtmlElement
     {
         [JsonPropertyName("absoluteTop")]
-        public int AbsoluteTop { get; set; }
+        public double AbsoluteTop { get; set; }
 
         [JsonPropertyName("absoluteLeft")]
-        public int AbsoluteLeft { get; set; }
+        public double AbsoluteLeft { get; set; }
+
+        [JsonPropertyName("relativeTop")]
+        public double RelativeTop { get; set; }
+
+        [JsonPropertyName("relativeLeft")]
+        public double RelativeLeft { get; set; }
 
         [JsonPropertyName("offsetTop")]
-        public int OffsetTop { get; set; }
+        public double OffsetTop { get; set; }
 
         [JsonPropertyName("offsetLeft")]
-        public int OffsetLeft { get; set; }
+        public double OffsetLeft { get; set; }
 
         [JsonPropertyName("offsetWidth")]
-        public int OffsetWidth { get; set; }
+        public double OffsetWidth { get; set; }
 
         [JsonPropertyName("offsetHeight")]
-        public int OffsetHeight { get; set; }
+        public double OffsetHeight { get; set; }
 
         [JsonPropertyName("scrollHeight")]
-        public int ScrollHeight { get; set; }
+        public double ScrollHeight { get; set; }
 
         [JsonPropertyName("scrollWidth")]
-        public int ScrollWidth { get; set; }
+        public double ScrollWidth { get; set; }
 
         [JsonPropertyName("scrollLeft")]
         public double ScrollLeft { get; set; }
@@ -35,18 +41,18 @@ namespace BlazorComponent
         public double ScrollTop { get; set; }
 
         [JsonPropertyName("clientTop")]
-        public int ClientTop { get; set; }
+        public double ClientTop { get; set; }
 
         [JsonPropertyName("clientLeft")]
-        public int ClientLeft { get; set; }
+        public double ClientLeft { get; set; }
 
         [JsonPropertyName("clientHeight")]
-        public int ClientHeight { get; set; }
+        public double ClientHeight { get; set; }
 
         [JsonPropertyName("clientWidth")]
-        public int ClientWidth { get; set; }
+        public double ClientWidth { get; set; }
 
         [JsonPropertyName("selectionStart")]
-        public int SelectionStart { get; set; }
+        public double SelectionStart { get; set; }
     }
 }

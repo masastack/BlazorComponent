@@ -14,6 +14,9 @@ namespace BlazorComponent
         protected bool _focused;
         protected string _icon;
 
+        [CascadingParameter(Name = "Fixed")]
+        public bool Fixed { get; set; }
+
         // TODO:
         protected virtual string LegendStyle { get; }
 
@@ -130,10 +133,12 @@ namespace BlazorComponent
             _focused = false;
         }
 
-        protected virtual void Click(MouseEventArgs args)
+        protected virtual Task Click(MouseEventArgs args)
         {
             _focused = true;
             _visible = true;
+
+            return Task.CompletedTask;
         }
 
         public void SetVisible(bool visible)
