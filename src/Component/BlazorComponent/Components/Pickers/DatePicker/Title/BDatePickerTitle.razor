@@ -1,0 +1,20 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+@implements IPickerTitle
+
+<div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">
+    <SlotComponent Description="SlotProvider.GetSlot<BDatePickerTitleButton>(YEAR_BTN)">
+        @Year
+        @if (YearIcon != null)
+        {
+            <SlotComponent Description="SlotProvider.GetSlot<BIcon>()">
+                @YearIcon
+            </SlotComponent>
+        }
+    </SlotComponent>
+    <SlotComponent Description="SlotProvider.GetSlot<BDatePickerTitleButton>(TITLE_DATE)">
+        <div>
+            @Date
+        </div>
+    </SlotComponent>
+</div>

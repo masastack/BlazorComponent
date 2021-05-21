@@ -1,4 +1,5 @@
 ﻿using OneOf;
+using System;
 
 namespace BlazorComponent
 {
@@ -18,5 +19,16 @@ namespace BlazorComponent
                 i => (true, i),
                 d => (true, d)
             );
+
+        public int ToInt32() => Match(
+            t0 => Convert.ToInt32(t0),
+            t1 => t1,
+            t2 => Convert.ToInt32(t2)
+            );
+
+        public override string ToString()
+        {
+            return Value?.ToString();
+        }
     }
 }

@@ -1,0 +1,29 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
+    <SlotComponent Click="@PrevClick" Description="SlotProvider.GetSlot<BButton>()">
+        <SlotComponent Description="SlotProvider.GetSlot<BIcon>()">
+            @PrevIcon
+        </SlotComponent>
+    </SlotComponent>
+    <div class="@CssProvider.GetClass("value")">
+        <div class="@CssProvider.GetClass("header")">
+            <button type="button" @onclick="DateClick">
+                @if (ChildContent != default)
+                {
+                    @ChildContent
+                }
+                else
+                {
+                    @Value
+                }
+            </button>
+        </div>
+    </div>
+    <SlotComponent Click="@NextClick" Description="SlotProvider.GetSlot<BButton>()">
+        <SlotComponent Description="SlotProvider.GetSlot<BIcon>()">
+            @NextIcon
+        </SlotComponent>
+    </SlotComponent>
+</div>
