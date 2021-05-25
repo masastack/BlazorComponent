@@ -3,24 +3,24 @@
 @typeparam TItem
 @typeparam TValue
 
-<SlotComponent Description="SlotProvider.GetSlot<BListItem>()">
+<AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItem>()">
     @if (SelectWrapper.Multiple)
     {
-        <SlotComponent Description="SlotProvider.GetSlot<BListItemAction>()">
-            <SlotComponent Description="SlotProvider.GetSlot<BCheckbox>()"></SlotComponent>
-        </SlotComponent>
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemAction>()">
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BCheckbox>()"></AbstractComponent>
+        </AbstractComponent>
     }
-    <SlotComponent Description="SlotProvider.GetSlot<BListItemContent>()">
-        <SlotComponent Description="SlotProvider.GetSlot<BListItemTitle>()">
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemContent>()">
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemTitle>()">
             @Label
-        </SlotComponent>
-    </SlotComponent>
+        </AbstractComponent>
+    </AbstractComponent>
     @if (!string.IsNullOrEmpty(Icon))
     {
-        <SlotComponent Description="SlotProvider.GetSlot<BListItemIcon>()">
-            <SlotComponent Description="SlotProvider.GetSlot<BIcon>()">
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemIcon>()">
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
                 @Icon
-            </SlotComponent>
-        </SlotComponent>
+            </AbstractComponent>
+        </AbstractComponent>
     }
-</SlotComponent>
+</AbstractComponent>

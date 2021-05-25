@@ -10,9 +10,9 @@
             {
                 var month = i * 3 + j + 1;
                 <td>
-                    <SlotComponent IsActive="@IsSelected(month)" Click="@HandleMonthClick(month)" Description="SlotProvider.GetSlot<BButton>()">
+                    <AbstractComponent IsActive="@IsSelected(month)" Click="@HandleMonthClick(month)" Metadata="AbstractProvider.GetMetadata<BButton>()">
                         @month
-                    </SlotComponent>
+                    </AbstractComponent>
                 </td>
             }
         </tr>

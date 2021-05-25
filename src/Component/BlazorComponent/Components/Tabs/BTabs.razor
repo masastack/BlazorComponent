@@ -3,13 +3,13 @@
 
 <CascadingValue Value="this">
     <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
-        <SlotComponent Description="SlotProvider.GetSlot<ITabsBar>()">
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<ITabsBar>()">
             @if (!HideSlider)
             {
                 <div class="@CssProvider.GetClass("slider-wrap")" style="@CssProvider.GetStyle("slider-wrap")">
                     @if (SliderContent == default)
                     {
-                        <SlotComponent Description="SlotProvider.GetSlot<BTabsSlider>()"></SlotComponent>
+                        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BTabsSlider>()"></AbstractComponent>
                     }
                     else
                     {
@@ -18,12 +18,12 @@
                 </div>
             }
             @TabContent
-        </SlotComponent>
+        </AbstractComponent>
         @if (ItemsContent == default)
         {
-            <SlotComponent Description="SlotProvider.GetSlot<ITabsItems>()">
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata<ITabsItems>()">
                 @ItemContent
-            </SlotComponent>
+            </AbstractComponent>
         }
         else
         {

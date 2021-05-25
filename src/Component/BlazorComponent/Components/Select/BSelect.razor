@@ -34,7 +34,7 @@
                     {
                         @foreach (var item in _text)
                         {
-                            <SlotComponent Description="SlotProvider.GetSlot<BChip>()">@item</SlotComponent>
+                            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BChip>()">@item</AbstractComponent>
                         }
                     }
                     else
@@ -57,9 +57,9 @@
                 </div>
                 <div class="@CssProvider.GetClass("select-arrow")">
                     <div class="@CssProvider.GetClass("select-arrow-icon")">
-                        <SlotComponent Description="SlotProvider.GetSlot<BIcon>()">
+                        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
                             @_icon
-                        </SlotComponent>
+                        </AbstractComponent>
                     </div>
                 </div>
                 <input type="hidden" value="@(Multiple ? string.Join(',', Values) : Value)" />
@@ -69,44 +69,44 @@
         @if (!Slot)
         {
             <div class="@CssProvider.GetClass("hint")">
-                <SlotComponent Description="SlotProvider.GetSlot<BHitMessage>()">@Hint</SlotComponent>
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BHitMessage>()">@Hint</AbstractComponent>
             </div>
         }
     </div>
 </div>
 
-<SlotComponent Description="SlotProvider.GetSlot<BOverlay>()" />
+<AbstractComponent Metadata="AbstractProvider.GetMetadata<BOverlay>()" />
 
 <CascadingValue Value="this">
     <div @ref="PopoverRef">
-        <SlotComponent Description="SlotProvider.GetSlot<BPopover>()">
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BPopover>()">
             @if (Slot)
             {
-                <SlotComponent Description="SlotProvider.GetSlot<BSelectSlot>()"></SlotComponent>
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BSelectSlot>()"></AbstractComponent>
             }
             else if (Items.Any())
             {
-                <SlotComponent Description="SlotProvider.GetSlot<BList>()">
-                    <SlotComponent Description="SlotProvider.GetSlot<BListItemGroup>()">
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BList>()">
+                    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemGroup>()">
                         @foreach (var item in Items)
                         {
-                            <SlotComponent Description="SlotProvider.GetSlot<BSelectOption<TItem, TValue>>()"
+                            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BSelectOption<TItem, TValue>>()"
                                    Item="@item"
                                    Value="@ItemValue(item)"
                                    Label="@ItemText(item)"
                                    key="@ItemValue(item).ToString()" />
                         }
-                    </SlotComponent>
-                </SlotComponent>
+                    </AbstractComponent>
+                </AbstractComponent>
             }
             else
             {
-                <SlotComponent Description="SlotProvider.GetSlot<BList>()">
-                    <SlotComponent Description="SlotProvider.GetSlot<BListItemGroup>()">
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BList>()">
+                    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemGroup>()">
                         @ChildContent
-                    </SlotComponent>
-                </SlotComponent>
+                    </AbstractComponent>
+                </AbstractComponent>
             }
-        </SlotComponent>
+        </AbstractComponent>
     </div>
 </CascadingValue>

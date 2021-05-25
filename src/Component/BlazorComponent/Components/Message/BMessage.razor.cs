@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
-    public partial class BMessage
+    public partial class BMessage:BDomComponentBase
     {
         [Parameter]
         public List<string> Value{ get; set; }

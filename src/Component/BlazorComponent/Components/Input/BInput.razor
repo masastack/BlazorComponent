@@ -11,13 +11,13 @@
         }
         <div class="@CssProvider.GetClass( "control")">
             <div class="@CssProvider.GetClass( "input-slot")" style="@CssProvider.GetStyle( "input-slot")">
-                <SlotComponent Description="SlotProvider.GetSlot<BInputSlot>()">
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BInputSlot>()">
                     @ChildContent
-                </SlotComponent>
+                </AbstractComponent>
             </div>
             @if (ShowDetails)
             {
-                <SlotComponent Description="SlotProvider.GetSlot<BMessage>()"></SlotComponent>
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BMessage>()"></AbstractComponent>
             }
         </div>
         @if (Append != default)

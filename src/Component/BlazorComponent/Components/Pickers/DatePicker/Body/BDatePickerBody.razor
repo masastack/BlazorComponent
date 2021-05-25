@@ -5,18 +5,18 @@
 <div>
     @if (Component.ActivePicker == "YEAR")
     {
-        <SlotComponent Description="SlotProvider.GetSlot<BDatePickerYears>()"></SlotComponent>
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BDatePickerYears>()"></AbstractComponent>
     }
     else
     {
-        <SlotComponent Description="SlotProvider.GetSlot<BDatePickerHeader>()"></SlotComponent>
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BDatePickerHeader>()"></AbstractComponent>
         @if (Component.ActivePicker == "DATE")
         {
-            <SlotComponent Description="SlotProvider.GetSlot<IDatePickerDateTable>()"></SlotComponent>
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata<IDatePickerDateTable>()"></AbstractComponent>
         }
         else
         {
-            <SlotComponent Description="SlotProvider.GetSlot<IDatePickerMonthTable>()"></SlotComponent>
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata<IDatePickerMonthTable>()"></AbstractComponent>
         }
     }
 </div>

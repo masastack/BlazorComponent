@@ -12,7 +12,7 @@
         {
             @if (!NoTitle)
             {
-                <SlotComponent Description="SlotProvider.GetSlot<IPickerTitle>()"></SlotComponent>
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<IPickerTitle>()"></AbstractComponent>
             }
         }
     </div>
@@ -24,7 +24,7 @@
         }
         else
         {
-            <SlotComponent Description="SlotProvider.GetSlot<IPickerBody>()"></SlotComponent>
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata<IPickerBody>()"></AbstractComponent>
         }
     </div>
 

@@ -8,7 +8,7 @@
         {
             foreach (var item in DataSource)
             {
-                <SlotComponent DataItem="@item" @key="item.GetHashCode()" Description="SlotProvider.GetSlot<BTreeItem<TItem>>()"></SlotComponent>
+                <AbstractComponent DataItem="@item" @key="item.GetHashCode()" Metadata="AbstractProvider.GetMetadata<BTreeItem<TItem>>()"></AbstractComponent>
             }
         }
         else

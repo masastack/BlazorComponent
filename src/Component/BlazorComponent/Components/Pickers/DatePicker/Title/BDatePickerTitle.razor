@@ -3,18 +3,18 @@
 @implements IPickerTitle
 
 <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">
-    <SlotComponent Description="SlotProvider.GetSlot<BDatePickerTitleButton>(YEAR_BTN)">
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BDatePickerTitleButton>(YEAR_BTN)">
         @Year
         @if (YearIcon != null)
         {
-            <SlotComponent Description="SlotProvider.GetSlot<BIcon>()">
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
                 @YearIcon
-            </SlotComponent>
+            </AbstractComponent>
         }
-    </SlotComponent>
-    <SlotComponent Description="SlotProvider.GetSlot<BDatePickerTitleButton>(TITLE_DATE)">
+    </AbstractComponent>
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BDatePickerTitleButton>(TITLE_DATE)">
         <div>
             @Date
         </div>
-    </SlotComponent>
+    </AbstractComponent>
 </div>
