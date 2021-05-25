@@ -1,6 +1,8 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<form class="@CssProvider.GetClass()" @onsubmit="Submit">
-    @ChildContent
-</form>
+<CascadingValue Value="EditContext">
+    <form class="@CssProvider.GetClass()" @onsubmit="OnSubmit">
+        @ChildContent
+    </form>
+</CascadingValue>
