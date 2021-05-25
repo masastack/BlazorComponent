@@ -16,7 +16,14 @@
     @if (Loading)
     {
         <div class="@CssProvider.GetClass("loader")">
-            @LoadingFragment
+            @if (Loader == null)
+            {
+                <SlotComponent Description="SlotProvider.GetSlot<BProcessCircular>()"></SlotComponent>
+            }
+            else
+            {
+                @Loader
+            }
         </div>
     }
 
