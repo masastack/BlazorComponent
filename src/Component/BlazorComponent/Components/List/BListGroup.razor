@@ -2,19 +2,19 @@
 @inherits BDomComponentBase
 
 <div class="@CssProvider.GetClass()" id="@Id" @ref="Ref">
-    <SlotComponent Description="SlotProvider.GetSlot<BListItem>()">
-        <SlotComponent Description="SlotProvider.GetSlot<BListItemIcon>(PREPEND)">
-            <SlotComponent Description="SlotProvider.GetSlot<BIcon>()">
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItem>()">
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemIcon>(PREPEND)">
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
                 @PrependIcon
-            </SlotComponent>
-        </SlotComponent>
+            </AbstractComponent>
+        </AbstractComponent>
         @Activator
-        <SlotComponent Description="SlotProvider.GetSlot<BListItemIcon>(APPEND)">
-            <SlotComponent Description="SlotProvider.GetSlot<BIcon>()">
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemIcon>(APPEND)">
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
                 @AppendIcon
-            </SlotComponent>
-        </SlotComponent>
-    </SlotComponent>
+            </AbstractComponent>
+        </AbstractComponent>
+    </AbstractComponent>
     <div class="@CssProvider.GetClass("items")" style="@CssProvider.GetStyle("items")">
         @ChildContent
     </div>

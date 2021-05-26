@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public partial class BInputSlot : BDomComponentBase
+    public partial class BInputBody : BDomComponentBase,IInputBody
     {
         [Parameter]
         public bool Outlined { get; set; }
@@ -22,10 +23,10 @@ namespace BlazorComponent
         public string Label { get; set; }
 
         [Parameter]
-        public bool Active { get; set; }
+        public bool IsActive { get; set; }
 
         [Parameter]
-        public EventCallback HandleBlur { get; set; }
+        public EventCallback<FocusEventArgs> OnBlur { get; set; }
 
         [Parameter]
         public string Value { get; set; }
@@ -50,6 +51,8 @@ namespace BlazorComponent
 
         [Parameter]
         public int Rows { get; set; }
+
+        
 
         public async Task HandleChange(ChangeEventArgs args)
         {

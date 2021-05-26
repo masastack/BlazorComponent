@@ -2,23 +2,23 @@
 @inherits BSelectSlot
 
 <div class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)" id="@Id" @ref="Ref">
-    <SlotComponent Description="SlotProvider.GetSlot<BList>()">
-        <SlotComponent Description="SlotProvider.GetSlot<BListItemGroup>()">
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BList>()">
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemGroup>()">
             @foreach (var item in Items)
             {
-                <SlotComponent Description="SlotProvider.GetSlot<BSelectOption<BCascaderNode, string>>()"
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BSelectOption<BCascaderNode, string>>()"
                            Item="@item"
                            Value="@item.Value"
                            Label="@item.Label">
-                </SlotComponent>
+                </AbstractComponent>
             }
-        </SlotComponent>
-    </SlotComponent>
+        </AbstractComponent>
+    </AbstractComponent>
 </div>
 
 @if (ShowSubItems)
 {
-    <SlotComponent Description="SlotProvider.GetSlot<BCascaderSelectSlot>()"></SlotComponent>
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BCascaderSelectSlot>()"></AbstractComponent>
 }
 
 

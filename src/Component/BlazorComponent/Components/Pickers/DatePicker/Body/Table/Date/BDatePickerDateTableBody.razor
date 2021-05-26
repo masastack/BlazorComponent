@@ -36,15 +36,15 @@
                         <td>
                             @if (IsCurrentDay(day))
                             {
-                                <SlotComponent IsActive="@IsSelected(day)" Click="@HandleDayClick(day)" Description="SlotProvider.GetSlot<BButton>(CURRENT_BTN)">
+                                <AbstractComponent IsActive="@IsSelected(day)" Click="@HandleDayClick(day)" Metadata="AbstractProvider.GetMetadata<BButton>(CURRENT_BTN)">
                                     @day
-                                </SlotComponent>
+                                </AbstractComponent>
                             }
                             else
                             {
-                                <SlotComponent IsActive="@IsSelected(day)" Click="@HandleDayClick(day)" Description="SlotProvider.GetSlot<BButton>()">
+                                <AbstractComponent IsActive="@IsSelected(day)" Click="@HandleDayClick(day)" Metadata="AbstractProvider.GetMetadata<BButton>()">
                                     @day
-                                </SlotComponent>
+                                </AbstractComponent>
                             }
                         </td>
                     }

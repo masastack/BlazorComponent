@@ -3,14 +3,14 @@
 
 <CascadingValue Value="true" Name="Fixed">
     <div @ref="Ref">
-        <SlotComponent Description="SlotProvider.GetSlot<BPopover>()">
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BPopover>()">
             <div class="@CssProvider.GetClass()" id="@Id" style="@CssProvider.GetStyle()">
                 <div class="@CssProvider.GetClass("body")" style="@CssProvider.GetStyle("body")">
                     @ChildContent
                 </div>
             </div>
-        </SlotComponent>
+        </AbstractComponent>
 
-        <SlotComponent Description="SlotProvider.GetSlot<BOverlay>()" />
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BOverlay>()" />
     </div>
 </CascadingValue>

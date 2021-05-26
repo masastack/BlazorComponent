@@ -22,7 +22,7 @@ namespace BlazorComponent
         [Parameter]
         public string Label { get; set; }
 
-        public List<string> Messages { get; set; } = new();
+        protected List<string> Messages { get; set; } = new();
 
         protected bool Blur { get; set; }
 

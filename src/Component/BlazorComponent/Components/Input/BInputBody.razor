@@ -1,5 +1,6 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
+@implements IInputBody
 
 @if (Outlined)
 {
@@ -15,16 +16,16 @@
 <div class="@CssProvider.GetClass()">
     @if (ShowLabel)
     {
-        <SlotComponent Description="SlotProvider.GetSlot<BLabel>()"></SlotComponent>
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BLabel>()"></AbstractComponent>
     }
 
     @if (IsTextArea)
     {
-        <textarea rows="@Rows" @onblur="HandleBlur" value="@Value" @onchange="HandleChange"></textarea>
+        <textarea rows="@Rows" @onblur="OnBlur" value="@Value" @onchange="HandleChange"></textarea>
     }
     else if (IsTextField)
     {
-        <input type="@Type" @onblur="HandleBlur" value="@Value" @onchange="HandleChange" placeholder="@PlaceHolder" />
+        <input type="@Type" @onblur="OnBlur" value="@Value" @onchange="HandleChange" placeholder="@PlaceHolder" />
     }
     else
     {

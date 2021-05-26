@@ -16,7 +16,7 @@ namespace BlazorComponent
 
         protected ComponentCssProvider CssProvider { get; } = new();
 
-        protected ComponentSlotProvider SlotProvider { get; } = new();
+        protected ComponentAbstractProvider AbstractProvider { get; } = new();
 
         [Inject]
         public IComponentIdGenerator ComponentIdGenerator { get; set; }

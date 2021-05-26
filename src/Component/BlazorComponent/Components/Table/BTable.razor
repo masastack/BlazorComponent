@@ -8,7 +8,7 @@
         <table>
             @if (Loading)
             {
-                <SlotComponent Description="SlotProvider.GetSlot<BTableLoading>()"></SlotComponent>
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BTableLoading>()"></AbstractComponent>
                 <tbody class="@CssProvider.GetClass("empty")">
                     <tr>
                         <td>Loading... Please wait</td>
@@ -19,7 +19,7 @@
             {
                 if (!HideDefaultHeader)
                 {
-                    <SlotComponent Description="SlotProvider.GetSlot<BTableHeader>()"></SlotComponent>
+                    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BTableHeader>()"></AbstractComponent>
                 }
                 <tbody>
                     @if (Items == null)
@@ -52,7 +52,7 @@
     </div>
     @if (!HideDefaultFooter && Items != null)
     {
-        <SlotComponent Description="SlotProvider.GetSlot<BTableFooter>()"></SlotComponent>
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BTableFooter>()"></AbstractComponent>
     }
     @Bottom
 </div>

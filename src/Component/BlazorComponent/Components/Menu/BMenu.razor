@@ -8,10 +8,10 @@
     @Activator
 </div>
 
-<SlotComponent Description="SlotProvider.GetSlot<BOverlay>()"></SlotComponent>
+<AbstractComponent Metadata="AbstractProvider.GetMetadata<BOverlay>()"></AbstractComponent>
 
 <div @ref="ContentRef" @onmouseover="MouseOver" @onmouseleave="MouseOut">
-    <SlotComponent Description="SlotProvider.GetSlot<BPopover>()">
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BPopover>()">
         @ChildContent
-    </SlotComponent>
+    </AbstractComponent>
 </div>

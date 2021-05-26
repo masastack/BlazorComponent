@@ -9,9 +9,9 @@
         <div class="@CssProvider.GetClass("action")" style="@CssProvider.GetStyle("action")">
             @if (!string.IsNullOrEmpty(Action))
             {
-                <SlotComponent Description="SlotProvider.GetSlot<BButton>()">
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BButton>()">
                     @Action
-                </SlotComponent>
+                </AbstractComponent>
             }
             else
             {

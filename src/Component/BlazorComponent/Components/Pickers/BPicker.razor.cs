@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BPicker
+    public partial class BPicker:BDomComponentBase
     {
         [Parameter]
         public RenderFragment TitleContent { get; set; }

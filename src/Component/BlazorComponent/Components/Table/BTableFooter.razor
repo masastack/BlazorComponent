@@ -3,15 +3,15 @@
 
 <div class="@CssProvider.GetClass()">
     <div class="@CssProvider.GetClass("select")">
-        <SlotComponent Description="SlotProvider.GetSlot<BSelect<string, string>>()"></SlotComponent>
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BSelect<string, string>>()"></AbstractComponent>
     </div>
     <div class="@CssProvider.GetClass("pagination")">
         @PageStart-@PageStop of @TotalCount
     </div>
     <div class="@CssProvider.GetClass("before")">
-        <SlotComponent Description="SlotProvider.GetSlot<BButton>(PREV)"></SlotComponent>
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BButton>(PREV)"></AbstractComponent>
     </div>
     <div class="@CssProvider.GetClass("after")">
-        <SlotComponent Description="SlotProvider.GetSlot<BButton>(NEXT)"></SlotComponent>
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BButton>(NEXT)"></AbstractComponent>
     </div>
 </div>

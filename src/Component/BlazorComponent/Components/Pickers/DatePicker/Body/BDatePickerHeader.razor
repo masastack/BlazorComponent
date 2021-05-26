@@ -2,11 +2,11 @@
 @inherits BDomComponentBase
 
 <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
-    <SlotComponent Click="@PrevClick" Description="SlotProvider.GetSlot<BButton>()">
-        <SlotComponent Description="SlotProvider.GetSlot<BIcon>()">
+    <AbstractComponent Click="@PrevClick" Metadata="AbstractProvider.GetMetadata<BButton>()">
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
             @PrevIcon
-        </SlotComponent>
-    </SlotComponent>
+        </AbstractComponent>
+    </AbstractComponent>
     <div class="@CssProvider.GetClass("value")">
         <div class="@CssProvider.GetClass("header")">
             <button type="button" @onclick="DateClick">
@@ -21,9 +21,9 @@
             </button>
         </div>
     </div>
-    <SlotComponent Click="@NextClick" Description="SlotProvider.GetSlot<BButton>()">
-        <SlotComponent Description="SlotProvider.GetSlot<BIcon>()">
+    <AbstractComponent Click="@NextClick" Metadata="AbstractProvider.GetMetadata<BButton>()">
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
             @NextIcon
-        </SlotComponent>
-    </SlotComponent>
+        </AbstractComponent>
+    </AbstractComponent>
 </div>
