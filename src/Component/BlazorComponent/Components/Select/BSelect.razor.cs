@@ -124,9 +124,7 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
-        protected bool Slot { get; set; }
-
-        protected TItem SelectNode { get; set; }
+        protected bool HasBody { get; set; }
 
         protected virtual void HandleOnBlur(FocusEventArgs args)
         {
@@ -149,8 +147,6 @@ namespace BlazorComponent
 
         public async Task SetSelectedAsync(string text, TValue value)
         {
-            //SelectNode = item;
-
             _shouldReformatText = false;
 
             if (Multiple)

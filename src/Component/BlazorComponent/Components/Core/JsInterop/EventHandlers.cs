@@ -1,10 +1,11 @@
 ﻿using System;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    [EventHandler("onmouseleave", typeof(EventArgs))]
-    [EventHandler("onmouseenter", typeof(EventArgs))]
+    [EventHandler("onmouseleave", typeof(MouseEventArgs), true, true)]
+    [EventHandler("onmouseenter", typeof(MouseEventArgs), true, true)]
     public static class EventHandlers
     {
     }
