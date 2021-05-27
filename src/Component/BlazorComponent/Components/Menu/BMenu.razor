@@ -1,7 +1,7 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div @onclick="Click" @onmouseover="MouseOver"
+<div @onclick="Click" @onmouseenter="MouseEnter"
      @onmouseleave="MouseOut"
      @ref="Ref"
      style="@CssProvider.GetStyle()">
@@ -10,7 +10,7 @@
 
 <AbstractComponent Metadata="AbstractProvider.GetMetadata<BOverlay>()"></AbstractComponent>
 
-<div @ref="ContentRef" @onmouseover="MouseOver" @onmouseleave="MouseOut">
+<div @ref="ContentRef" @onmouseenter="MouseEnter" @onmouseleave="MouseOut">
     <AbstractComponent Metadata="AbstractProvider.GetMetadata<BPopover>()">
         @ChildContent
     </AbstractComponent>

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BCascaderSelectSlot : BSelectSlot
+    public partial class BCascaderSelectBody : BDomComponentBase, ISelectBody
     {
         protected bool ShowSubItems { get; set; }
 

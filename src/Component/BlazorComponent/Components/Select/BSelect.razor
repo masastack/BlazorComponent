@@ -66,7 +66,7 @@
             </div>
         </div>
 
-        @if (!Slot)
+        @if (!HasBody)
         {
             <div class="@CssProvider.GetClass("hint")">
                 <AbstractComponent Metadata="AbstractProvider.GetMetadata<BHitMessage>()">@Hint</AbstractComponent>
@@ -80,9 +80,9 @@
 <CascadingValue Value="this">
     <div @ref="PopoverRef">
         <AbstractComponent Metadata="AbstractProvider.GetMetadata<BPopover>()">
-            @if (Slot)
+            @if (HasBody)
             {
-                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BSelectSlot>()"></AbstractComponent>
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<ISelectBody>()"></AbstractComponent>
             }
             else if (Items.Any())
             {

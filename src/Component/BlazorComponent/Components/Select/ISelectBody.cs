@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BSelectSlot:BDomComponentBase
+    public interface ISelectBody
     {
+
     }
 }
