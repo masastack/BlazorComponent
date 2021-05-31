@@ -17,7 +17,9 @@
             </div>
             @if (ShowDetails)
             {
-                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BMessage>()"></AbstractComponent>
+                <div class="@CssProvider.GetClass("details")">
+                    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BMessage>()"></AbstractComponent>
+                </div>
             }
         </div>
         @if (Append != default)

@@ -8,13 +8,13 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public partial class BInputBody : BDomComponentBase,IInputBody
+    public partial class BInputBody : BDomComponentBase, IInputBody
     {
         [Parameter]
         public bool Outlined { get; set; }
 
         [Parameter]
-        public MarkupString InnerHtml { get; set; }
+        public MarkupString InnerHtml { get; set; } = (MarkupString)"&ZeroWidthSpace;";
 
         [Parameter]
         public bool ShowLabel { get; set; }
@@ -52,7 +52,7 @@ namespace BlazorComponent
         [Parameter]
         public int Rows { get; set; }
 
-        
+
 
         public async Task HandleChange(ChangeEventArgs args)
         {
