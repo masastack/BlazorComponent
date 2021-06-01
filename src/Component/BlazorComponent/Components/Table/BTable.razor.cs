@@ -37,6 +37,14 @@ namespace BlazorComponent
         [Parameter]
         public IEnumerable<TItem> Items { get; set; }
 
+        [Parameter]
+        public string Align { get; set; } = "start";
+
+        [Parameter]
+        public bool Stripe { get; set; }
+
+        public ElementReference WrapRef { get; set; }
+
         protected int PageStart => ((Page - 1) * PageSize) + 1;
 
         protected int PageStop => Page == TotalPage ? TotalCount : Page * PageSize;
@@ -52,5 +60,10 @@ namespace BlazorComponent
         protected bool PrevDisabled => Page <= 1;
 
         protected bool NextDisabled => Page >= TotalPage;
+
+        public virtual Task HandleScrollAsync(EventArgs args)
+        {
+            return Task.CompletedTask;
+        }
     }
 }

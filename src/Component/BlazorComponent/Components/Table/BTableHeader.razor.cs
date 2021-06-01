@@ -11,5 +11,8 @@ namespace BlazorComponent
     {
         [Parameter]
         public List<string> Headers { get; set; }
+
+        [Parameter]
+        public string Align { get; set; }
     }
 }

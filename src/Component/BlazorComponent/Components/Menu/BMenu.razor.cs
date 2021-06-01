@@ -66,7 +66,7 @@ namespace BlazorComponent
 
         protected abstract void Click(MouseEventArgs args);
 
-        protected virtual void MouseOver(MouseEventArgs args)
+        protected virtual void MouseEnter(MouseEventArgs args)
         {
             if (OpenOnHover && !_visible)
             {
@@ -74,7 +74,7 @@ namespace BlazorComponent
             }
         }
 
-        protected virtual void MouseOut(EventArgs args)
+        protected virtual void MouseOut(MouseEventArgs args)
         {
             if (OpenOnHover && _visible)
             {

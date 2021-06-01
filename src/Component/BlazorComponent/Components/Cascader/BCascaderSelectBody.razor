@@ -1,5 +1,6 @@
 ﻿@namespace BlazorComponent
-@inherits BSelectSlot
+@inherits BDomComponentBase
+@implements ISelectBody
 
 <div class="@CssProvider.GetClass(this)" style="@CssProvider.GetStyle(this)" id="@Id" @ref="Ref">
     <AbstractComponent Metadata="AbstractProvider.GetMetadata<BList>()">
@@ -18,7 +19,7 @@
 
 @if (ShowSubItems)
 {
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BCascaderSelectSlot>()"></AbstractComponent>
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BCascaderSelectBody>()"></AbstractComponent>
 }
 
 
