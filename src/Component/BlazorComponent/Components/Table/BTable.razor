@@ -2,58 +2,69 @@
 @inherits BDomComponentBase
 @typeparam TItem
 
-<div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
-    @Top
-    <div class="@CssProvider.GetClass("wrap")">
-        <table>
-            @if (Loading)
-            {
-                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BTableLoading>()"></AbstractComponent>
-                <tbody class="@CssProvider.GetClass("empty")">
-                    <tr>
-                        <td>Loading... Please wait</td>
-                    </tr>
-                </tbody>
-            }
-            else
-            {
-                if (!HideDefaultHeader)
+<CascadingValue Value="Align" Name="TableAlign">
+    <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
+        @Top
+        <div class="@CssProvider.GetClass("wrap")" @ref="WrapRef" @onscroll="HandleScrollAsync">
+            <table style="@CssProvider.GetStyle("table")">
+                @if (Loading)
                 {
-                    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BTableHeader>()"></AbstractComponent>
+                    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BTableLoading>()"></AbstractComponent>
+                    <tbody class="@CssProvider.GetClass("empty")">
+                        <tr>
+                            <td>Loading... Please wait</td>
+                        </tr>
+                    </tbody>
                 }
-                <tbody>
-                    @if (Items == null)
+                else
+                {
+                    if (!HideDefaultHeader)
                     {
-                        if (NoResult != null)
+                        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BTableHeader>()"></AbstractComponent>
+                    }
+                    <tbody>
+                        @if (Items == null)
                         {
-                            @NoResult
+                            if (NoResult != null)
+                            {
+                                @NoResult
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="@Headers.Count" style="text-align:center">No result</td>
+                                </tr>
+                            }
                         }
                         else
                         {
-                            <tr>
-                                <td colspan="@Headers.Count" style="text-align:center">No result</td>
-                            </tr>
+                            var items = Items.Skip(PageStart - 1).Take(PageSize).ToList();
+                            for (var i = 0; i < items.Count; i++)
+                            {
+                                if (Stripe && i % 2 == 1)
+                                {
+                                    <tr class="@CssProvider.GetClass("stripe")">
+                                        @ChildContent(items[i])
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr>
+                                        @ChildContent(items[i])
+                                    </tr>
+                                }
+                            }
                         }
-                    }
-                    else
-                    {
-                        var items = Items.Skip(PageStart - 1).Take(PageSize);
-                        foreach (var item in items)
-                        {
-                            <tr>
-                                @ChildContent(item)
-                            </tr>
-                        }
-                    }
-                </tbody>
+                    </tbody>
 
-            }
-        </table>
+                }
+            </table>
+        </div>
+        @if (!HideDefaultFooter && Items != null)
+        {
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BTableFooter>()"></AbstractComponent>
+        }
+        @Bottom
     </div>
-    @if (!HideDefaultFooter && Items != null)
-    {
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BTableFooter>()"></AbstractComponent>
-    }
-    @Bottom
-</div>
+</CascadingValue>
 
