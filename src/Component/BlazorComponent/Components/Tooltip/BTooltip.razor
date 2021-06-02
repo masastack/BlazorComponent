@@ -4,7 +4,7 @@
 <div class="@CssProvider.GetClass("content")" style="@CssProvider.GetStyle("content")" @ref="ContentRef">
     @ChildContent
 </div>
-<div class="@CssProvider.GetClass("activator")" style="@CssProvider.GetStyle("activator")" @ref="Ref" @onmouseenter="()=>IsActive=true" @onmouseleave="()=>IsActive=false">
+<div class="@CssProvider.GetClass("activator")" style="@CssProvider.GetStyle("activator")" @ref="Ref" @onmouseenter="OnMouseEnter" @onmouseleave="OnMouseLeave">
     @Activator
 </div>
 <span class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">

@@ -1,9 +1,13 @@
 ﻿using Microsoft.AspNetCore.Components;
+using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
     public partial class BTooltip : BDomComponentBase
     {
+        [CascadingParameter(Name = "Fixed")]
+        public bool Fixed { get; set; }
+
         [Parameter]
         public bool Disabled { get; set; }
 
@@ -26,6 +30,18 @@ namespace BlazorComponent
             CssProvider
               .AsProvider<BTooltip>()
               .Apply("activator", styleAction: s => s.Add(ActivatorStyle));
+        }
+
+        protected virtual Task OnMouseEnter()
+        {
+            IsActive = true;
+
+            return Task.CompletedTask;
+        }
+
+        protected virtual void OnMouseLeave()
+        {
+            IsActive = false;
         }
     }
 }
