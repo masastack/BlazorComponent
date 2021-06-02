@@ -30,5 +30,35 @@ namespace BlazorComponent
         {
             return Value?.ToString();
         }
+
+        public static bool operator ==(StringNumber left, StringNumber right)
+        {
+            if (Equals(left, right))
+            {
+                return true;
+            }
+
+            if (left is null || right is null)
+            {
+                return false;
+            }
+
+            return left.Value == right.Value;
+        }
+
+        public static bool operator !=(StringNumber left, StringNumber right)
+        {
+            if (Equals(left, right))
+            {
+                return false;
+            }
+
+            if (left is null || right is null)
+            {
+                return true;
+            }
+
+            return left.Value != right.Value;
+        }
     }
 }
