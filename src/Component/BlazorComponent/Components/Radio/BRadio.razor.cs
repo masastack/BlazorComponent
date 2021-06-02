@@ -50,7 +50,7 @@ namespace BlazorComponent
         [Parameter]
         public bool Ripple { get; set; } = true;
 
-        public EventCallback<BRadio<TValue>> Change { get; set; }
+        public event Func<BRadio<TValue>, Task> NotifyChange;
 
         protected virtual async Task HandleClick(MouseEventArgs args)
         {
@@ -59,27 +59,34 @@ namespace BlazorComponent
                 return;
             }
 
-            IsActive = true;
-
             if (OnChange.HasDelegate)
             {
                 await OnChange.InvokeAsync(new ChangeEventArgs { Value = Value });
             }
 
-            if (Change.HasDelegate)
-            {
-                await Change.InvokeAsync(this);
-            }
+            await NotifyChange?.Invoke(this);
         }
 
         public void Active()
         {
+            if (IsActive)
+            {
+                return;
+            }
+
             IsActive = true;
+            StateHasChanged();
         }
 
         public void DeActive()
         {
+            if (!IsActive)
+            {
+                return;
+            }
+
             IsActive = false;
+            StateHasChanged();
         }
     }
 }
