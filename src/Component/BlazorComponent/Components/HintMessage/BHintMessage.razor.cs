@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
-    public partial class BHitMessage : BDomComponentBase
+    public partial class BHintMessage : BDomComponentBase
     {
         [Parameter]
         public RenderFragment ChildContent { get; set; }
