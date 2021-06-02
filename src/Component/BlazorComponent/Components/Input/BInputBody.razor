@@ -21,11 +21,11 @@
 
     @if (IsTextArea)
     {
-        <textarea rows="@Rows" @onblur="OnBlur" value="@Value" @onchange="HandleChange"></textarea>
+        <textarea rows="@Rows" @onblur="OnBlur" value="@Value" @onchange="HandleChangeAsync" @ref="InputRef"></textarea>
     }
     else if (IsTextField)
     {
-        <input type="@Type" @onblur="OnBlur" value="@Value" @onchange="HandleChange" placeholder="@PlaceHolder" />
+        <input type="@Type" @onblur="OnBlur" value="@Value" @onchange="HandleChangeAsync" placeholder="@PlaceHolder" @ref="InputRef" />
     }
     else
     {
