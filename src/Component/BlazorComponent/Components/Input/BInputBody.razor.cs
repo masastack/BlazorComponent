@@ -32,7 +32,7 @@ namespace BlazorComponent
         public string Value { get; set; }
 
         [Parameter]
-        public EventCallback<string> ValueChanged { get; set; }
+        public InputContext InputContext { get; set; } = new();
 
         [Parameter]
         public string PlaceHolder { get; set; }
@@ -52,13 +52,19 @@ namespace BlazorComponent
         [Parameter]
         public int Rows { get; set; }
 
+        public ElementReference InputRef { get; set; }
 
-
-        public async Task HandleChange(ChangeEventArgs args)
+        public Task HandleChangeAsync(ChangeEventArgs args)
         {
-            if (ValueChanged.HasDelegate)
+            InputContext.NotifyValueChanged(args.Value.ToString());
+            return Task.CompletedTask;
+        }
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            if (firstRender)
             {
-                await ValueChanged.InvokeAsync(args.Value.ToString());
+                InputContext.InputRef = InputRef;
             }
         }
     }

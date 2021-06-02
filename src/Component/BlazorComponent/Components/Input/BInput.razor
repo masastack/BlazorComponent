@@ -2,7 +2,7 @@
 @inherits BDomComponentBase
 
 <CascadingValue Value="this">
-    <div class="@CssProvider.GetClass()" id="@Id" @ref="Ref" @onclick="HandleClick">
+    <div class="@CssProvider.GetClass()" id="@Id" @ref="Ref" @onclick="HandleClickAsync">
         @if (Prepend != default)
         {
             <div class="@CssProvider.GetClass( "prepend")">
