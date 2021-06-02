@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BlazorComponent
@@ -42,7 +38,7 @@ namespace BlazorComponent
         public EventCallback<KeyboardEventArgs> OnKeyDown { get; set; }
 
         [Parameter]
-        public RenderFragment LabelContent { get; set; }
+        public RenderFragment ChildContent { get; set; }
 
         [Parameter]
         public string Label { get; set; }
