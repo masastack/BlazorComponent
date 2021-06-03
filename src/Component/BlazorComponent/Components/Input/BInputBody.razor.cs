@@ -26,6 +26,9 @@ namespace BlazorComponent
         public bool IsActive { get; set; }
 
         [Parameter]
+        public bool IsFocused { get; set; }
+
+        [Parameter]
         public EventCallback<FocusEventArgs> OnBlur { get; set; }
 
         [Parameter]
