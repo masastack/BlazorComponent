@@ -10,11 +10,33 @@
     return element;
 }
 
-export function getDomInfo(element) {
+export function getDomInfo(element, selector = "body") {
     var result = {};
 
     var dom = getDom(element);
 
+    if (dom.style['display'] === 'none') {
+        // clone and set display not none becuase
+        // element with display:none can not get the dom info
+        var cloned = dom.cloneNode(true);
+        cloned.style['display'] = 'inline-block';
+        cloned.style['z-index'] = -1000;
+        document.querySelector(selector).appendChild(cloned);
+
+        result = getDomInfoObj(cloned);
+
+        document.querySelector(selector).removeChild(cloned);
+    }
+    else {
+
+        result = getDomInfoObj(dom);
+    }
+
+    return result;
+}
+
+function getDomInfoObj(dom) {
+    var result = {};
     result["offsetTop"] = dom.offsetTop || 0;
     result["offsetLeft"] = dom.offsetLeft || 0;
     result["offsetWidth"] = dom.offsetWidth || 0;
@@ -27,16 +49,15 @@ export function getDomInfo(element) {
     result["clientLeft"] = dom.clientLeft || 0;
     result["clientHeight"] = dom.clientHeight || 0;
     result["clientWidth"] = dom.clientWidth || 0;
-    var absolutePosition = getElementAbsolutePos(dom);
-    result["relativeLeft"] = Math.round(absolutePosition.relativeLeft);
-    result["relativeTop"] = Math.round(absolutePosition.relativeTop);
-    result["absoluteLeft"] = Math.round(absolutePosition.absoluteLeft);
-    result["absoluteTop"] = Math.round(absolutePosition.absoluteTop);
-
+    var position = getElementPos(dom);
+    result["relativeLeft"] = Math.round(position.relativeLeft);
+    result["relativeTop"] = Math.round(position.relativeTop);
+    result["absoluteLeft"] = Math.round(position.absoluteLeft);
+    result["absoluteTop"] = Math.round(position.absoluteTop);
     return result;
 }
 
-function getElementAbsolutePos(element) {
+function getElementPos(element) {
     var res: any = new Object();
     res.x = 0; res.y = 0;
     if (element !== null) {
@@ -156,18 +177,18 @@ export function getBoundingClientRect(element) {
     return null;
 }
 
-export function getFirstChildBoundingClientRect(element) {
+export function getFirstChildBoundingClientRect(element, selector = "body") {
     let dom = getDom(element);
     if (dom.firstElementChild) {
         if (dom.firstElementChild.style['display'] === 'none') {
             // clone and set display not none becuase
             // element with display:none can not getBoundingClientRect
             var cloned = dom.firstElementChild.cloneNode(true);
-            cloned.style['display'] = 'initial'
+            cloned.style['display'] = 'inline-block'
             cloned.style['z-index'] = -1000
-            document.body.appendChild(cloned);
+            document.querySelector(selector).appendChild(cloned);
             var value = getBoundingClientRect(cloned);
-            document.body.removeChild(cloned);
+            document.querySelector(selector).removeChild(cloned);
             return value;
         }
         else {
@@ -312,11 +333,11 @@ export function scrollToElement(container, target) {
     console.dir(dom);
 }
 
-export function getFirstChildDomInfo(element) {
+export function getFirstChildDomInfo(element, selector = "body") {
     var dom = getDom(element);
     if (dom.firstElementChild)
-        return getDomInfo(dom.firstElementChild);
-    return getDomInfo(dom);
+        return getDomInfo(dom.firstElementChild, selector);
+    return getDomInfo(dom, selector);
 }
 
 export function addClsToFirstChild(element, className) {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using System;
+using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
@@ -64,22 +64,22 @@ namespace BlazorComponent
 
         public ElementReference ContentRef { get; set; }
 
-        protected abstract void Click(MouseEventArgs args);
+        protected abstract Task Click(MouseEventArgs args);
 
-        protected virtual void MouseEnter(MouseEventArgs args)
+        protected virtual Task MouseEnter(MouseEventArgs args)
         {
             if (OpenOnHover && !_visible)
-            {
                 _visible = true;
-            }
+
+            return Task.CompletedTask;
         }
 
-        protected virtual void MouseOut(MouseEventArgs args)
+        protected virtual Task MouseOut(MouseEventArgs args)
         {
             if (OpenOnHover && _visible)
-            {
                 _visible = false;
-            }
+
+            return Task.CompletedTask;
         }
     }
 }
