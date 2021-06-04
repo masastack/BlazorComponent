@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public abstract partial class BButton : BDomComponentBase
+    public abstract partial class BButton : BDomComponentBase, IItem
     {
         /// <summary>
         /// The background color
@@ -82,5 +83,62 @@ namespace BlazorComponent
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
+
+        [CascadingParameter]
+        public BItemGroup ItemGroup { get; set; }
+
+        [Parameter]
+        public bool IsActive { get; set; }
+
+        [Parameter]
+        public string Value { get; set; }
+
+        [Parameter]
+        public bool Dark { get; set; }
+
+        public void Active()
+        {
+            if (IsActive)
+            {
+                return;
+            }
+
+            IsActive = true;
+            StateHasChanged();
+        }
+
+        public void DeActive()
+        {
+            if (!IsActive)
+            {
+                return;
+            }
+
+            IsActive = false;
+            StateHasChanged();
+        }
+
+        protected override void OnInitialized()
+        {
+            if (ItemGroup != null)
+            {
+                ItemGroup.AddItem(this);
+                Dark = ItemGroup.Dark;
+            }
+        }
+
+        protected virtual async Task HandleClickAsync(MouseEventArgs args)
+        {
+            if (ItemGroup != null)
+            {
+                IsActive = !IsActive;
+                ItemGroup.NotifyItemChanged(this);
+            }
+
+            if (Click.HasDelegate)
+            {
+                await Click.InvokeAsync(args);
+            }
+        }
     }
 }

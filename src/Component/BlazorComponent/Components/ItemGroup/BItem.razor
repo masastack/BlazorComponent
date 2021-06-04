@@ -1,0 +1,12 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+@implements IItem
+
+@{
+    var context = new ItemContext
+    {
+        IsActive = IsActive,
+        Toggle = Toggle
+    };
+    @ChildContent(context);
+}
