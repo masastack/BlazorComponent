@@ -16,6 +16,9 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<int> OnMonthSelected { get; set; }
 
+        [Parameter]
+        public string Color { get; set; } = "accent";
+
         public bool IsSelected(int month)
         {
             return Component.DisplayedMonth == month && Component.DisplayedYear == Component.Value.Year;

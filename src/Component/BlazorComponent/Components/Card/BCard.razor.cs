@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
@@ -27,5 +28,8 @@ namespace BlazorComponent
 
         [Parameter] 
         public RenderFragment ChildContent { get; set; }
+
+        [Parameter]
+        public EventCallback<MouseEventArgs> Click{ get; set; }
     }
 }

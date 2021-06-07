@@ -21,6 +21,9 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<int> OnDaySelected { get; set; }
 
+        [Parameter]
+        public string Color { get; set; } = "accent";
+
         protected int DaysInMonth => new DateTime(Component.DisplayedYear, Component.DisplayedMonth, 1).AddMonths(1).AddDays(-1).Day;
 
         protected int WeekDaysBeforeFirstDayOfTheMonth => (int)new DateTime(Component.DisplayedYear, Component.DisplayedMonth, 1).DayOfWeek;
