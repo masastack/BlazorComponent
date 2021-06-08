@@ -17,5 +17,8 @@ namespace BlazorComponent
 
         [Parameter]
         public RenderFragment OppositeContent { get; set; }
+
+        [Parameter]
+        public RenderFragment AvatarContent { get; set; }
     }
 }
