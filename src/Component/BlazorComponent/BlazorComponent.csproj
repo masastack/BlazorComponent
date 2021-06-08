@@ -38,6 +38,8 @@
 		  <Pack>True</Pack>
 		  <PackagePath></PackagePath>
 		</None>
+		<None Include="Components\Timeline\BTimeline.razor" />
+		<None Include="Components\Timeline\BTimelineItem.razor" />
 		<None Include="tsconfig.json" CopyToOutputDirectory="Never"></None>
 	</ItemGroup>
 
