@@ -19,7 +19,7 @@
 
             @if (!isLast)
             {
-                <li class="@CssProvider.GetClass("divider")">@(string.IsNullOrEmpty(Divider)?"/":Divider)</li>
+                <li class="@CssProvider.GetClass("divider")">@(string.IsNullOrEmpty(Divider) ? "/" : Divider)</li>
             }
         }
         @ChildContent
