@@ -1,0 +1,40 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<nav id="@Id" @ref="Ref">
+    <ul class="@CssProvider.GetClass()">
+        <li>
+            <button class="@CssProvider.GetClass("navigation-prev")" type="button" disabled="@PrevDisabled" @onclick="HandlePreviousAsync" @onclick:preventDefault>
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
+                    @PrevIcon
+                </AbstractComponent>
+            </button>
+        </li>
+        @foreach (var item in GetItems())
+        {
+            <li>
+                @if (item.IsT0)
+                {
+                    <span class="@CssProvider.GetClass("more")">
+                        @item
+                    </span>
+                }
+                else
+                {
+                    var isCurrentPage = item.AsT1 == Value;
+                    var itemClass = isCurrentPage ? "current-item" : "item";
+                    <button class="@CssProvider.GetClass(itemClass)" type="button" @onclick="async args=>await HandleItemClickAsync(item)">
+                        @item
+                    </button>
+                }
+            </li>
+        }
+        <li>
+            <button class="@CssProvider.GetClass("navigation-next")" type="button" disabled="@NextDisabled" @onclick="HandleNextAsync" @onclick:preventDefault>
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
+                    @NextIcon
+                </AbstractComponent>
+            </button>
+        </li>
+    </ul>
+</nav>
