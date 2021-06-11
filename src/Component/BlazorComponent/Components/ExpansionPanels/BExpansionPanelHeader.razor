@@ -1,0 +1,11 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<button @onclick="HandleClickAsync" Class="@CssProvider.GetClass()"
+        Style="@CssProvider.GetStyle()">
+    @ChildContent 
+    <div class="@CssProvider.GetClass("headerIcon")">
+        <i class="@CssProvider.GetClass("icons")"></i>
+    </div>
+</button>
+
