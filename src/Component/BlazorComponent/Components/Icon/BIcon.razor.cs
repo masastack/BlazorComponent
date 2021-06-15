@@ -28,7 +28,6 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<MouseEventArgs> Click { get; set; }
 
-
         private RenderFragment _childContent;
         [Parameter]
         public RenderFragment ChildContent
