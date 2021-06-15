@@ -10,6 +10,14 @@ namespace BlazorComponent
 {
     public partial class BItemGroup : BDomComponentBase
     {
+        public string Type { get; set; }
+
+        public void InitType(string type)
+        {
+            Type = type;
+            StateHasChanged();
+        }
+
         protected List<IItem> Items { get; set; } = new();
 
         [Parameter]
@@ -35,6 +43,9 @@ namespace BlazorComponent
 
         [Parameter]
         public bool Dark { get; set; }
+
+        [Parameter]
+        public bool Column { get; set; }
 
         public void AddItem(IItem item)
         {
