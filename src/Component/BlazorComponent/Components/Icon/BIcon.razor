@@ -6,7 +6,7 @@
     if (Click.HasDelegate)
     {
         <button type="button"
-                class="@CssProvider.GetClass()"
+                class="@Css"
                 style="@CssProvider.GetStyle()"
                 id="@Id"
                 @ref="Ref"
@@ -16,7 +16,7 @@
     }
     else
     {
-        <i class="@CssProvider.GetClass()"
+        <i class="@Css"
            style="@CssProvider.GetStyle()"
            id="@Id"
            @ref="Ref"
@@ -30,7 +30,7 @@ else
     // Render SVG
 
     <span role="img"
-          class="@CssProvider.GetClass()"
+          class="@Css"
           style="@CssProvider.GetStyle()"
           id="@Id"
           @ref="Ref"
