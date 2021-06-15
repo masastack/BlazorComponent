@@ -79,7 +79,6 @@ namespace BlazorComponent
             }
         }
 
-
         protected override void OnInitialized()
         {
             base.OnInitialized();
