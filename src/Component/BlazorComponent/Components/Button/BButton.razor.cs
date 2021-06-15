@@ -55,6 +55,21 @@ namespace BlazorComponent
         public bool XSmall { get; set; }
 
         [Parameter]
+        public bool Absolute { get; set; }
+
+        [Parameter]
+        public bool Top { get; set; }
+
+        [Parameter]
+        public bool Bottom { get; set; }
+
+        [Parameter]
+        public bool Left { get; set; }
+
+        [Parameter]
+        public bool Right { get; set; }
+
+        [Parameter]
         public StringNumber Width { get; set; }
 
         [Parameter]
