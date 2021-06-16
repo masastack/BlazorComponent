@@ -2,7 +2,22 @@
 @inherits BDomComponentBase
 
 <CascadingValue Value="this">
-    <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
-        @ChildContent
-    </div>
+    @if (Type == "ChipGroup")
+    {
+        <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
+            <div class="@CssProvider.GetClass("prev")"></div>
+            <div class="@CssProvider.GetClass("wrapper")">
+                <div class="@CssProvider.GetClass("content")">
+                        @ChildContent
+                </div>
+            </div>
+            <div class="@CssProvider.GetClass("next")"></div>
+        </div>
+    }
+    else
+    {
+        <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
+            @ChildContent
+        </div>
+    }
 </CascadingValue>
