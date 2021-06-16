@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
@@ -54,6 +50,12 @@ namespace BlazorComponent
 
         [Parameter]
         public int Rows { get; set; }
+
+        [Parameter]
+        public bool Readonly { get; set; }
+
+        [Parameter]
+        public bool Disabled { get; set; }
 
         public ElementReference InputRef { get; set; }
 
