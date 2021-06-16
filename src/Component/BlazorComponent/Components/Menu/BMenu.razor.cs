@@ -6,7 +6,13 @@ namespace BlazorComponent
 {
     public abstract partial class BMenu : BDomComponentBase
     {
-        protected bool _visible;
+        //protected bool _visible;
+
+        [Parameter]
+        public bool Visible { get; set; }
+
+        [Parameter]
+        public EventCallback<bool> VisibleChanged { get; set; }
 
         [Parameter]
         public bool OffsetX { get; set; }
@@ -42,6 +48,9 @@ namespace BlazorComponent
         public StringNumber NudgeWidth { get; set; }
 
         [Parameter]
+        public StringNumber MinWidth { get; set; }
+
+        [Parameter]
         public bool Absolute { get; set; }
 
         [Parameter]
@@ -60,6 +69,9 @@ namespace BlazorComponent
         public RenderFragment Activator { get; set; }
 
         [Parameter]
+        public string ActivatorStyle { get; set; }
+
+        [Parameter]
         public RenderFragment ChildContent { get; set; }
 
         public ElementReference ContentRef { get; set; }
@@ -68,16 +80,16 @@ namespace BlazorComponent
 
         protected virtual Task MouseEnter(MouseEventArgs args)
         {
-            if (OpenOnHover && !_visible)
-                _visible = true;
+            if (OpenOnHover && !Visible && VisibleChanged.HasDelegate)
+                VisibleChanged.InvokeAsync(true);
 
             return Task.CompletedTask;
         }
 
         protected virtual Task MouseOut(MouseEventArgs args)
         {
-            if (OpenOnHover && _visible)
-                _visible = false;
+            if (OpenOnHover && Visible && VisibleChanged.HasDelegate)
+                VisibleChanged.InvokeAsync(false);
 
             return Task.CompletedTask;
         }
