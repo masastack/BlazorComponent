@@ -326,11 +326,13 @@ export function scrollTo(target) {
 
 export function scrollToElement(container, target) {
     let dom = getDom(container);
-    console.dir(dom);
     let t: any = getDomInfo(target);
-    console.dir(t);
     dom.scrollTop = t.offsetTop - dom.offsetHeight / 2 + t.offsetHeight / 2;
-    console.dir(dom);
+}
+
+export function scrollToPosition(container, position) {
+    var dom = getDom(container);
+    dom.scrollTop = position;
 }
 
 export function getFirstChildDomInfo(element, selector = "body") {
@@ -744,6 +746,15 @@ export function getImageDimensions(src: string) {
                 width: 0,
                 height: 0
             })
+        }
+    })
+}
+
+export function preventDefaultOnArrowUpDown(element) {
+    let dom: Element = getDom(element);
+    dom.addEventListener("keydown", function (e: KeyboardEvent) {
+        if (e.code == "ArrowUp" || e.code == "ArrowDown") {
+            e.preventDefault();
         }
     })
 }

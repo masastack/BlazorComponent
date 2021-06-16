@@ -40,6 +40,8 @@
 
         public static string ScrollToElement => $"{Variables.JsInteropFuncNamePrefix}scrollToElement";
 
+        public static string ScrollToPosition => $"{Variables.JsInteropFuncNamePrefix}scrollToPosition";
+
         public static string GetFirstChildDomInfo => $"{Variables.JsInteropFuncNamePrefix}getFirstChildDomInfo";
 
         public static string AddClsToFirstChild => $"{Variables.JsInteropFuncNamePrefix}addClsToFirstChild";
@@ -103,6 +105,8 @@
         public static string InsertAdjacentHTML => $"{Variables.JsInteropFuncNamePrefix}insertAdjacentHTML";
 
         public static string GetImageDimensions => $"{Variables.JsInteropFuncNamePrefix}getImageDimensions";
+
+        public static string PreventDefaultOnArrowUpDown => $"{Variables.JsInteropFuncNamePrefix}preventDefaultOnArrowUpDown";
 
         #region Draggable Modal
 
