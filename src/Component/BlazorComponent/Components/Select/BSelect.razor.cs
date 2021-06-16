@@ -124,11 +124,32 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
+        [Parameter]
+        public bool Loading { get; set; }
+
         protected bool HasBody { get; set; }
+
+        protected bool IsAutocomplete { get; set; }
+
+        protected string ValueText { get; set; }
+
+        public ElementReference InputRef { get; set; }
+
+        public AbstractComponent BodyRef { get; set; } = new();
 
         protected virtual void HandleOnBlur(FocusEventArgs args)
         {
             _focused = false;
+        }
+
+        protected virtual Task HandleOnInputAsync(ChangeEventArgs args)
+        {
+            return Task.CompletedTask;
+        }
+
+        protected virtual Task HandleOnKeyDownAsync(KeyboardEventArgs args)
+        {
+            return Task.CompletedTask;
         }
 
         protected virtual Task Click(MouseEventArgs args)

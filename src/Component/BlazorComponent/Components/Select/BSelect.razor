@@ -30,30 +30,46 @@
                     }
                 }
                 <div class="@CssProvider.GetClass("selector")">
-                    @if (Chips)
+                    @if (!IsAutocomplete || Multiple)
                     {
-                        @foreach (var item in _text)
+                        if (Chips)
                         {
-                            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BChip>()">@item</AbstractComponent>
+                            foreach (var item in _text)
+                            {
+                                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BChip>()">@item</AbstractComponent>
+                            }
                         }
+                        else
+                        {
+                            for (var i = 0; i < _text.Count(); i++)
+                            {
+                                var item = _text.ElementAt(i);
+                                if (i == _text.Count() - 1)
+                                {
+                                    <div class="@CssProvider.GetClass("selected")">@item</div>
+                                }
+                                else
+                                {
+                                    <div class="@CssProvider.GetClass("selected")">@($"{item}, ")</div>
+                                }
+                            }
+
+                        }
+                    }
+                    @if (IsAutocomplete)
+                    {
+                        <input type="text" autocomplete="off" @ref="InputRef"
+                               value="@ValueText"
+                               @onblur="HandleOnBlur"
+                               @onblur:preventDefault
+                               @oninput="EventCallback.Factory.Create<ChangeEventArgs>(BodyRef,HandleOnInputAsync)"
+                               @onkeydown="EventCallback.Factory.Create<KeyboardEventArgs>(BodyRef,HandleOnKeyDownAsync)" />
                     }
                     else
                     {
-                        @for (var i = 0; i < _text.Count(); i++)
-                        {
-                            var item = _text.ElementAt(i);
-                            if (i == _text.Count() - 1)
-                            {
-                                <div class="@CssProvider.GetClass("selected")">@item</div>
-                            }
-                            else
-                            {
-                                <div class="@CssProvider.GetClass("selected")">@($"{item}, ")</div>
-                            }
-                        }
+                        <input id="input-@Id" type="text" readonly="readonly"
+                               class="@CssProvider.GetClass("select-input")" />
                     }
-                    <input id="input-@Id" type="text" readonly="readonly"
-                           class="@CssProvider.GetClass("select-input")" />
                 </div>
                 <div class="@CssProvider.GetClass("select-arrow")">
                     <div class="@CssProvider.GetClass("select-arrow-icon")">
@@ -64,6 +80,10 @@
                 </div>
                 <input type="hidden" value="@(Multiple ? string.Join(',', Values) : Value)" />
             </div>
+            @if (Loading)
+            {
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BProcessLinear>()"></AbstractComponent>
+            }
         </div>
 
         @if (PersistentHint || !string.IsNullOrEmpty(Hint))
@@ -82,7 +102,7 @@
         <AbstractComponent Metadata="AbstractProvider.GetMetadata<BPopover>()">
             @if (HasBody)
             {
-                <AbstractComponent Metadata="AbstractProvider.GetMetadata<ISelectBody>()"></AbstractComponent>
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<ISelectBody>()" @ref="BodyRef"></AbstractComponent>
             }
             else if (Items.Any())
             {
@@ -91,10 +111,10 @@
                         @foreach (var item in Items)
                         {
                             <AbstractComponent Metadata="AbstractProvider.GetMetadata<BSelectOption<TItem, TValue>>()"
-                                       Item="@item"
-                                       Value="@ItemValue(item)"
-                                       Label="@ItemText(item)"
-                                       key="@ItemValue(item).ToString()" />
+                                               Item="@item"
+                                               Value="@ItemValue(item)"
+                                               Label="@ItemText(item)"
+                                               key="@ItemValue(item).ToString()" />
                         }
                     </AbstractComponent>
                 </AbstractComponent>
