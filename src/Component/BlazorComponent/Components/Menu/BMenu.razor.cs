@@ -6,8 +6,6 @@ namespace BlazorComponent
 {
     public abstract partial class BMenu : BDomComponentBase
     {
-        //protected bool _visible;
-
         [Parameter]
         public bool Visible { get; set; }
 
