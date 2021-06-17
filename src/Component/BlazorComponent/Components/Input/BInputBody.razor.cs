@@ -61,6 +61,7 @@ namespace BlazorComponent
 
         public Task HandleChangeAsync(ChangeEventArgs args)
         {
+            Value = args.Value.ToString();
             InputContext.NotifyValueChanged(args.Value.ToString());
             return Task.CompletedTask;
         }
