@@ -39,6 +39,9 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<MouseEventArgs> Click { get; set; }
 
+        [Parameter]
+        public bool PreventDefault { get; set; }
+
         protected virtual async Task HandleOnClick(MouseEventArgs args)
         {
             if (Click.HasDelegate)
