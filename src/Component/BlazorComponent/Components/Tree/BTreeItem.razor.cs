@@ -614,11 +614,6 @@ namespace BlazorComponent
 
         public async Task HandleItemClickAsync(MouseEventArgs args)
         {
-            if (OnItemClick.HasDelegate)
-            {
-                await OnItemClick.InvokeAsync(DataItem);
-            }
-
             if (Activatable)
             {
                 if (IsActive)
@@ -629,6 +624,11 @@ namespace BlazorComponent
                 {
                     TreeComponent.ActiveItemId = Id;
                 }
+            }
+
+            if (OnItemClick.HasDelegate)
+            {
+                await OnItemClick.InvokeAsync(DataItem);
             }
         }
     }
