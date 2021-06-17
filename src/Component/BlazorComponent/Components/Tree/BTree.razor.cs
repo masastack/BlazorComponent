@@ -362,6 +362,9 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<TreeEventArgs<TItem>> OnSearchValueChanged { get; set; }
 
+        [Parameter]
+        public bool Independent { get; set; }
+
         ///// <summary>
         ///// 开始拖拽时调用
         ///// </summary>
@@ -496,5 +499,26 @@ namespace BlazorComponent
             node.Expand(expanded);
             node.ChildNodes.ForEach(n => Switch(n, expanded));
         }
+
+        private string _activeItemId;
+
+        public string ActiveItemId
+        {
+            get
+            {
+                return _activeItemId;
+            }
+            set
+            {
+                _activeItemId = value;
+                StateHasChanged();
+            }
+        }
+
+        [Parameter]
+        public bool Activatable { get; set; }
+
+        [Parameter]
+        public RenderFragment<TItem> PrependContent { get; set; }
     }
 }
