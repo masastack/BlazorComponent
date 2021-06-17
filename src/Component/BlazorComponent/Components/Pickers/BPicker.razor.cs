@@ -1,13 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BPicker:BDomComponentBase
+    public partial class BPicker : BDomComponentBase
     {
         [Parameter]
         public RenderFragment TitleContent { get; set; }
@@ -25,5 +20,8 @@ namespace BlazorComponent
 
         [Parameter]
         public bool NoTitle { get; set; }
+
+        [Parameter]
+        public string ActionsStyle { get; set; }
     }
 }
