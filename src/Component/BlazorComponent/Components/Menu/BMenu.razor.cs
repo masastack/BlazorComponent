@@ -6,8 +6,13 @@ namespace BlazorComponent
 {
     public abstract partial class BMenu : BDomComponentBase
     {
+        protected bool _visible;
         [Parameter]
-        public bool Visible { get; set; }
+        public bool Visible
+        {
+            get => _visible;
+            set => _visible = value;
+        }
 
         [Parameter]
         public EventCallback<bool> VisibleChanged { get; set; }
@@ -76,20 +81,26 @@ namespace BlazorComponent
 
         protected abstract Task Click(MouseEventArgs args);
 
-        protected virtual Task MouseEnter(MouseEventArgs args)
+        protected virtual async Task MouseEnter(MouseEventArgs args)
         {
-            if (OpenOnHover && !Visible && VisibleChanged.HasDelegate)
-                VisibleChanged.InvokeAsync(true);
-
-            return Task.CompletedTask;
+            if (OpenOnHover && !Visible)
+            {
+                if (VisibleChanged.HasDelegate)
+                    await VisibleChanged.InvokeAsync(true);
+                else
+                    _visible = true;
+            }
         }
 
-        protected virtual Task MouseOut(MouseEventArgs args)
+        protected virtual async Task MouseOut(MouseEventArgs args)
         {
-            if (OpenOnHover && Visible && VisibleChanged.HasDelegate)
-                VisibleChanged.InvokeAsync(false);
-
-            return Task.CompletedTask;
+            if (OpenOnHover && Visible)
+            {
+                if (VisibleChanged.HasDelegate)
+                    await VisibleChanged.InvokeAsync(false);
+                else
+                    _visible = false;
+            }
         }
     }
 }
