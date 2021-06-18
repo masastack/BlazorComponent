@@ -86,7 +86,8 @@ namespace BlazorComponent
 
         protected override bool ShouldRender()
         {
-            if (!_preventRender) return true;
+            if (!_preventRender) 
+                return base.ShouldRender();
 
             _preventRender = false;
             return false;
