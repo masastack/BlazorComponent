@@ -6,7 +6,7 @@
          style="@CssProvider.GetStyle()"
          @onclick="HandleOnClick"
          @onclick:stopPropagation="true"
-         @onmousedown:preventDefault
+         @onmousedown:preventDefault="PreventDefault"
          id="@Id"
          @ref="Ref">
         @ChildContent
