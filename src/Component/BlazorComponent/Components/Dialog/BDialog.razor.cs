@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
+using System;
 
 namespace BlazorComponent
 {
@@ -18,6 +20,9 @@ namespace BlazorComponent
 
         [Parameter]
         public bool Persistent { get; set; }
+
+        [Parameter]
+        public EventCallback<MouseEventArgs> OutsideClick { get;set; }
 
         [Parameter]
         public bool Scrollable { get; set; }
