@@ -14,6 +14,28 @@
                 <AbstractComponent Metadata="AbstractProvider.GetMetadata<IInputBody>()">
                     @ChildContent
                 </AbstractComponent>
+
+                @if (Clearable)
+                {
+                    <div class="@CssProvider.GetClass("append-inner")">
+                        <div class="@CssProvider.GetClass("icon-clearable")">
+                            <AbstractComponent Metadata="@(AbstractProvider.GetMetadata<BIcon>("clearable"))">
+                                mdi-close
+                            </AbstractComponent>
+                        </div>
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(AppendIcon))
+                {
+                    <div class="@CssProvider.GetClass("append-inner")">
+                        <div class="@CssProvider.GetClass("icon")">
+                            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
+                                @AppendIcon
+                            </AbstractComponent>
+                        </div>
+                    </div>
+                }
             </div>
             @if (ShowDetails)
             {

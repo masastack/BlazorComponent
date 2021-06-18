@@ -2,7 +2,10 @@
 {
     public enum IconTag
     {
-        I = 0,
+        None = 0,
+
+        I,
+
         Span,
     }
 }

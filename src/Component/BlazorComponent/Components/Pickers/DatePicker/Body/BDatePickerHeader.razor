@@ -2,7 +2,7 @@
 @inherits BDomComponentBase
 
 <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
-    <AbstractComponent Click="@PrevClick" Metadata="AbstractProvider.GetMetadata<BButton>()">
+    <AbstractComponent Click="@PrevClick" StopPropagation="@true" Metadata="AbstractProvider.GetMetadata<BButton>()">
         <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
             @PrevIcon
         </AbstractComponent>
@@ -21,7 +21,7 @@
             </button>
         </div>
     </div>
-    <AbstractComponent Click="@NextClick" Metadata="AbstractProvider.GetMetadata<BButton>()">
+    <AbstractComponent Click="@NextClick" StopPropagation="@true" Metadata="AbstractProvider.GetMetadata<BButton>()">
         <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
             @NextIcon
         </AbstractComponent>

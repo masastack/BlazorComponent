@@ -1,7 +1,7 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-@if (_tag == IconTag.I)
+@if (Tag == IconTag.I)
 {
     if (Click.HasDelegate)
     {
@@ -10,7 +10,8 @@
                 style="@CssProvider.GetStyle()"
                 id="@Id"
                 @ref="Ref"
-                @onclick="Click">
+                @onclick="Click"
+                @onclick:stopPropagation>
             @_icon
         </button>
     }
@@ -34,7 +35,8 @@ else
           style="@CssProvider.GetStyle()"
           id="@Id"
           @ref="Ref"
-          @onclick="Click">
+          @onclick="Click"
+          @onclick:stopPropagation>
         @((MarkupString) _icon)
     </span>
 }

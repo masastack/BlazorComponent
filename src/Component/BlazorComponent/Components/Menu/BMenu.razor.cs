@@ -66,6 +66,9 @@ namespace BlazorComponent
         public bool CloseOnClick { get; set; } = true;
 
         [Parameter]
+        public EventCallback<MouseEventArgs> OutsideClick { get; set; }
+
+        [Parameter]
         public bool CloseOnContentClick { get; set; } = true;
 
         [Parameter]
