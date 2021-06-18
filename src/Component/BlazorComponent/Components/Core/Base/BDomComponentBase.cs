@@ -69,7 +69,29 @@ namespace BlazorComponent
 
         protected virtual void SetComponentClass()
         {
-
         }
+
+        #region Prevent render before invoking ShouldRender
+        /*
+         * https://github.com/dotnet/aspnetcore/issues/18919
+         * Keep until new api(@onmousemove:preventStateHasChanged) releases
+         */
+
+        private bool _preventRender = false;
+
+        /// <summary>
+        /// Prevent render before invoking ShouldRender
+        /// </summary>
+        protected void PreventRender() => _preventRender = true;
+
+        protected override bool ShouldRender()
+        {
+            if (!_preventRender) return true;
+
+            _preventRender = false;
+            return false;
+        }
+
+        #endregion
     }
 }

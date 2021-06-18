@@ -90,6 +90,10 @@ namespace BlazorComponent
                 else
                     _visible = true;
             }
+            else
+            {
+                PreventRender();
+            }
         }
 
         protected virtual async Task MouseOut(MouseEventArgs args)
@@ -100,6 +104,10 @@ namespace BlazorComponent
                     await VisibleChanged.InvokeAsync(false);
                 else
                     _visible = false;
+            }
+            else
+            {
+                PreventRender();
             }
         }
     }
