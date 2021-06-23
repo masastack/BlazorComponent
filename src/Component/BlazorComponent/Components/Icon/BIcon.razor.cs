@@ -100,7 +100,7 @@ namespace BlazorComponent
 
                 if (frame.FrameType != RenderTreeFrameType.None)
                 {
-                    _tag = frame.FrameType == RenderTreeFrameType.Markup ? IconTag.Span : IconTag.I;
+                    _tag = frame.TextContent.Contains("<svg") ? IconTag.Span : IconTag.I;
                 }
             }
         }
