@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace BlazorComponent
 {
     public class Window
     {
-        public decimal innerHeight { get; set; }
+        [JsonPropertyName("innerHeight")]
+        public double InnerHeight { get; set; }
 
-        public decimal innerWidth { get; set; }
+        [JsonPropertyName("innerWidth")]
+        public double InnerWidth { get; set; }
     }
 }

@@ -758,3 +758,15 @@ export function preventDefaultOnArrowUpDown(element) {
         }
     })
 }
+
+export function observer(element, invoker) {
+    const resizeObserver = new ResizeObserver((entries => {
+        const dimensions = [];
+        for (var entry of entries) {
+            const dimension = entry.contentRect;
+            dimensions.push(dimension);
+        }
+        invoker.invokeMethodAsync('Invoke', dimensions);
+    }));
+    resizeObserver.observe(getDom(element));
+}

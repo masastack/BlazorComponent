@@ -108,6 +108,8 @@
 
         public static string PreventDefaultOnArrowUpDown => $"{Variables.JsInteropFuncNamePrefix}preventDefaultOnArrowUpDown";
 
+        public static string Observer => $"{Variables.JsInteropFuncNamePrefix}observer";
+
         #region Draggable Modal
 
         public static string EnableDraggable => $"{Variables.JsInteropFuncNamePrefix}enableDraggable";

@@ -3,10 +3,7 @@ using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.RenderTree;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
@@ -19,7 +16,7 @@ namespace BlazorComponent
         public RenderFragment ChildContent { get; set; }
 
         [Parameter(CaptureUnmatchedValues = true)]
-        public Dictionary<string, object> AdditionalAttributes { get; set; }
+        public Dictionary<string, object> AdditionalAttributes { get; set; } = new Dictionary<string, object>();
 
 #pragma warning disable BL0006
         protected override void OnParametersSet()
@@ -37,17 +34,22 @@ namespace BlazorComponent
                 var frames = builder.GetFrames().Array;
                 foreach (var frame in frames)
                 {
-                    if (frame.FrameType == RenderTreeFrameType.Component && frame.Component is AbstractContent abstractContent)
+                    if (frame.FrameType == RenderTreeFrameType.Component && frame.ComponentType == typeof(AbstractContent))
                     {
-                        if (abstractContent.Name == nameof(ChildContent))
+                        var nameFrame = frames.First(u => u.Sequence == frame.Sequence + 1);
+
+                        var contentFrame = frames.First(u => u.Sequence == frame.Sequence + 2);
+
+                        if (nameFrame.AttributeValue.ToString() == nameof(AbstractContent.ChildContent))
                         {
-                            //Pass abstract child content to this child content,so we can add with same way
-                            //See BuildRenderTree
-                            ChildContent = abstractContent.ChildContent;
+                            ChildContent = (RenderFragment)contentFrame.AttributeValue;
                         }
                         else
                         {
-                            AdditionalAttributes.Add(abstractContent.Name, abstractContent.ChildContent);
+                            if (!AdditionalAttributes.ContainsKey(nameFrame.AttributeValue.ToString()))
+                            {
+                                AdditionalAttributes.Add(nameFrame.AttributeValue.ToString(), contentFrame.AttributeValue);
+                            }
                         }
                     }
                 }

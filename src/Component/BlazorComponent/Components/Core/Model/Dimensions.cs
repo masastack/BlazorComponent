@@ -1,4 +1,4 @@
-﻿namespace BlazorComponent.Components.Core.Model
+﻿namespace BlazorComponent
 {
     public class Dimensions
     {
