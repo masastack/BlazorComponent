@@ -6,6 +6,9 @@ namespace BlazorComponent
 {
     public abstract partial class BMenu : BDomComponentBase
     {
+        [CascadingParameter(Name = "Fixed")]
+        public bool Fixed { get; set; }
+
         protected bool _visible;
         [Parameter]
         public bool Visible
@@ -51,6 +54,9 @@ namespace BlazorComponent
         public StringNumber NudgeWidth { get; set; }
 
         [Parameter]
+        public StringNumber MaxHeight { get; set; } = 400;
+
+        [Parameter]
         public StringNumber MinWidth { get; set; }
 
         [Parameter]
@@ -76,6 +82,9 @@ namespace BlazorComponent
 
         [Parameter]
         public string ActivatorStyle { get; set; }
+
+        [Parameter]
+        public bool Block { get; set; }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }

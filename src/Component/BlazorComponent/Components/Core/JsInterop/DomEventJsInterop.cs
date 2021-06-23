@@ -96,6 +96,14 @@ namespace BlazorComponent
                 }
             }
         }
+
+        public void ResizeObserver<T>(object dom, Action<T> callback)
+        {
+            _jsRuntime.InvokeAsync<string>(JsInteropConstants.Observer, dom, DotNetObjectReference.Create(new Invoker<T>((p) =>
+            {
+                callback?.Invoke(p);
+            })));
+        }
     }
 
     public class Invoker<T>

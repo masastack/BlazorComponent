@@ -10,12 +10,21 @@ namespace BlazorComponent
     public partial class BSelect<TItem, TValue> : BDomComponentBase
     {
         private bool _shouldReformatText = true;
-        protected bool _visible;
         protected bool _focused;
         protected string _icon;
 
-        [CascadingParameter(Name = "Fixed")]
-        public bool Fixed { get; set; }
+        private bool _visible;
+        protected bool Visible
+        {
+            get => MenuProps == null ? _visible : MenuProps.Visible;
+            set
+            {
+                if (MenuProps == null) 
+                    _visible = value;
+                else 
+                    MenuProps.Visible = value;
+            }
+        }
 
         // TODO:
         protected virtual string LegendStyle { get; }
@@ -49,6 +58,9 @@ namespace BlazorComponent
 
         [Parameter]
         public bool PersistentHint { get; set; }
+
+        [Parameter]
+        public BMenuProps MenuProps { get; set; }
 
         public ElementReference PopoverRef { get; set; }
 
@@ -155,14 +167,13 @@ namespace BlazorComponent
         protected virtual Task Click(MouseEventArgs args)
         {
             _focused = true;
-            _visible = true;
 
             return Task.CompletedTask;
         }
 
         public void SetVisible(bool visible)
         {
-            _visible = visible;
+            Visible = visible;
             InvokeStateHasChanged();
         }
 
