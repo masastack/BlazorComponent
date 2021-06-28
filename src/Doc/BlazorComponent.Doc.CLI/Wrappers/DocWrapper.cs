@@ -253,8 +253,6 @@ namespace BlazorComponent.Doc.CLI.Wrappers
                     {m.Groups["title"]}
                 </h2>");
 
-            html = "<section>" + html + "</section>";
-
             return (order, title, html);
         }
 
