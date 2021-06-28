@@ -253,6 +253,13 @@ namespace BlazorComponent.Doc.CLI.Wrappers
                     {m.Groups["title"]}
                 </h2>");
 
+            //var preClass = "\"app-code overflow-hidden m-sheet m-sheet--outlined theme--light rounded grey lighten-5\"";
+            //html = Regex.Replace(html, "(?<content><pre>[\\s\\S.]*<\\/pre>)", m => $@"
+            //    <div class={preClass}>
+            //        {m.Groups["content"]}
+            //    </div>
+            //");
+
             return (order, title, html);
         }
 
