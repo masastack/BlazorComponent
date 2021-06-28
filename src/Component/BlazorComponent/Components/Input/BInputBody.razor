@@ -2,6 +2,13 @@
 @inherits BDomComponentBase
 @implements IInputBody
 
+@if (PrependInnerContent != null)
+{
+    <div class="@CssProvider.GetClass("prepend-inner")">
+        @PrependInnerContent
+    </div>
+}
+
 @if (Outlined)
 {
     <fieldset>

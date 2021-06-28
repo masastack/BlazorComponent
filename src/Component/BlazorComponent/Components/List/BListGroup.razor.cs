@@ -25,5 +25,10 @@ namespace BlazorComponent
         public RenderFragment ChildContent { get; set; }
 
         protected bool IsActive { get; set; }
+
+        public void DeActive()
+        {
+            IsActive = false;
+        }
     }
 }

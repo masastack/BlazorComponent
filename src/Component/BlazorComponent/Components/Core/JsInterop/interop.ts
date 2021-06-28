@@ -426,7 +426,9 @@ export function focusDialog(selector: string, count: number = 0) {
 export function getWindow() {
     return {
         innerWidth: window.innerWidth,
-        innerHeight: window.innerHeight
+        innerHeight: window.innerHeight,
+        isTop: window.scrollY == 0,
+        isBottom: (window.scrollY + window.innerHeight) == document.body.clientHeight
     };
 }
 
@@ -757,4 +759,21 @@ export function preventDefaultOnArrowUpDown(element) {
             e.preventDefault();
         }
     })
+}
+
+export function getBoundingClientRects(selector) {
+    var elements = document.querySelectorAll(selector);
+
+    var result = [];
+
+    for (var i = 0; i < elements.length; i++) {
+        var e: Element = elements[i];
+        var dom = {
+            id: e.id,
+            rect: e.getBoundingClientRect()
+        };
+        result.push(dom);
+    }
+
+    return result;
 }

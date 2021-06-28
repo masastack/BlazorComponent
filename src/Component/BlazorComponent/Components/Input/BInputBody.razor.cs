@@ -57,6 +57,9 @@ namespace BlazorComponent
         [Parameter]
         public bool Disabled { get; set; }
 
+        [Parameter]
+        public RenderFragment PrependInnerContent { get; set; }
+
         public ElementReference InputRef { get; set; }
 
         public Task HandleChangeAsync(ChangeEventArgs args)

@@ -1,8 +1,10 @@
 ﻿using BlazorComponent.Doc.CLI.Comparers;
+using BlazorComponent.Doc.CLI.Extensions;
 using BlazorComponent.Doc.CLI.Interfaces;
 using BlazorComponent.Doc.CLI.Models;
 using BlazorComponent.Doc.CLI.Wrappers;
 using Microsoft.Extensions.CommandLineUtils;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -158,28 +160,24 @@ namespace BlazorComponent.Doc.CLI.Commands
 
                 var children = docsMenuI18N[lang].OrderBy(x => x.Order).ToArray();
 
-                menus.Add(new DemoMenuItemModel()
-                {
-                    Order = 0,
-                    Title = lang == "zh-CN" ? "文档" : "Docs",
-                    Type = "subMenu",
-                    Url = "docs",
-                    Children = children
-                });
-
                 var categoryComponent = categoryDemoMenuList[lang];
 
+                var componentMenus = new List<DemoMenuItemModel>();
                 foreach (var component in categoryComponent)
                 {
-                    menus.Add(new DemoMenuItemModel()
+                    componentMenus.Add(new DemoMenuItemModel()
                     {
                         Order = Array.IndexOf(ConfigWrapper.Config.GenerateRule.Menus.Select(x => x.Key).ToArray(), component.Key) + 1,
                         Title = ConfigWrapper.Config.GenerateRule.Menus.First(menu => menu.Key == component.Key).Descriptions.First(desc => desc.Lang == lang).Description,
-                        Type = "subMenu",
+                        Type = "component",
                         Url = component.Key.ToLowerInvariant(),
                         Children = component.Value.OrderBy(x => x.Order).ToArray()
                     });
                 }
+
+                //Children 4 will be component menu
+                children[4].Children = componentMenus[0].Children.SelectMany(r => r.Children).ToArray();
+                menus.AddRange(children);
 
                 var json = JsonSerializer.Serialize(menus, jsonOptions);
 
@@ -232,29 +230,31 @@ namespace BlazorComponent.Doc.CLI.Commands
         {
             if (isDocs)
             {
-                foreach (var docItem in directory.GetFileSystemInfos())
+                foreach (var menuDir in directory.GetDirectories())
                 {
-                    if (docItem.Extension != ".md")
-                        continue;
-
-                    var segments = docItem.Name.Split('.');
-                    if (segments.Length != 3)
-                        continue;
-
-                    var language = segments[1];
-                    var content = File.ReadAllText(docItem.FullName);
-                    var docData = DocWrapper.ParseHeader(content);
-
-                    yield return (new Dictionary<string, DemoMenuItemModel>()
+                    foreach (var menuItem in menuDir.GetFileSystemInfos())
                     {
-                        [language] = new DemoMenuItemModel()
+                        if (menuItem.Name == "index.json")
                         {
-                            Order = int.TryParse(docData["order"], out var order) ? order : 0,
-                            Title = docData["title"],
-                            Url = $"docs/{segments[0]}",
-                            Type = "menuItem"
+                            var content = File.ReadAllText(menuItem.FullName, Encoding.UTF8);
+                            var data = JObject.Parse(content);
+                            foreach (var titleItem in data["title"].ToArray())
+                            {
+                                yield return new Dictionary<string, DemoMenuItemModel>
+                                {
+                                    [titleItem["lang"].ToString()] = new DemoMenuItemModel
+                                    {
+                                        Order = data["order"].ToObject<int>(),
+                                        Title = titleItem["content"].ToString(),
+                                        Url = $"docs/{menuDir.Name}",
+                                        Icon = data["icon"].ToString(),
+                                        Type = "menuItem",
+                                        Children = GetSubMenuChildren(menuDir, titleItem["lang"].ToString()).ToArray()
+                                    }
+                                };
+                            }
                         }
-                    });
+                    }
                 }
             }
             else
@@ -277,7 +277,7 @@ namespace BlazorComponent.Doc.CLI.Commands
                                 SubTitle = x.Value.SubTitle,
                                 Url = $"{directory.Name.ToLowerInvariant()}/{x.Value.Title.ToLower()}",
                                 Type = "menuItem",
-                                Cover = x.Value.Cover,
+                                Cover = x.Value.Cover
                             })
                             .OrderBy(x => x.Title, new MenuComparer())
                             .ToArray(),
@@ -285,6 +285,36 @@ namespace BlazorComponent.Doc.CLI.Commands
                     }
 
                     yield return menu;
+                }
+            }
+        }
+
+        private IEnumerable<DemoMenuItemModel> GetSubMenuChildren(DirectoryInfo menuDir, string lang)
+        {
+            foreach (var menuItem in menuDir.GetFileSystemInfos())
+            {
+                if (menuItem.Extension == ".md")
+                {
+                    var args = menuItem.Name.Split('.');
+                    if (args[1] == lang)
+                    {
+                        var content = File.ReadAllText(menuItem.FullName);
+                        var data = DocWrapper.ParseHeader(content);
+                        var titles = DocWrapper.ParseTitle(content);
+
+                        yield return new DemoMenuItemModel
+                        {
+                            Order = Convert.ToInt32(data["order"]),
+                            Title = data["title"],
+                            Url = $"docs/{menuDir.Name}/{args[0]}",
+                            Type = "menuItem",
+                            Contents = titles.Select(r => new ContentsItem
+                            {
+                                Href = $"docs/{menuDir.Name}/{args[0]}/#section-" + HashHelper.Hash(r),
+                                Title = r
+                            }).ToList()
+                        };
+                    }
                 }
             }
         }

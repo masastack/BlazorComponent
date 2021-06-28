@@ -13,6 +13,9 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
+        [Parameter]
+        public RenderFragment PrependContent{ get; set; }
+
         public virtual List<BListItem> ListItems { get; set; }
 
         public virtual void Select(BListItem selectItem)
