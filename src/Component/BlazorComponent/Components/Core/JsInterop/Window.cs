@@ -9,9 +9,11 @@ namespace BlazorComponent
 {
     public class Window
     {
-        public decimal innerHeight { get; set; }
+        [JsonPropertyName("innerHeight")]
+        public double InnerHeight { get; set; }
 
-        public decimal innerWidth { get; set; }
+        [JsonPropertyName("innerWidth")]
+        public double InnerWidth { get; set; }
 
         [JsonPropertyName("pageXOffset")]
         public double PageXOffset { get; set; }

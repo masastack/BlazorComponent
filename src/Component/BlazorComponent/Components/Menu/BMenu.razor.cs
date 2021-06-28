@@ -6,10 +6,16 @@ namespace BlazorComponent
 {
     public abstract partial class BMenu : BDomComponentBase
     {
-        //protected bool _visible;
+        [CascadingParameter(Name = "Fixed")]
+        public bool Fixed { get; set; }
 
+        protected bool _visible;
         [Parameter]
-        public bool Visible { get; set; }
+        public bool Visible
+        {
+            get => _visible;
+            set => _visible = value;
+        }
 
         [Parameter]
         public EventCallback<bool> VisibleChanged { get; set; }
@@ -48,6 +54,9 @@ namespace BlazorComponent
         public StringNumber NudgeWidth { get; set; }
 
         [Parameter]
+        public StringNumber MaxHeight { get; set; } = 400;
+
+        [Parameter]
         public StringNumber MinWidth { get; set; }
 
         [Parameter]
@@ -63,6 +72,9 @@ namespace BlazorComponent
         public bool CloseOnClick { get; set; } = true;
 
         [Parameter]
+        public EventCallback<MouseEventArgs> OutsideClick { get; set; }
+
+        [Parameter]
         public bool CloseOnContentClick { get; set; } = true;
 
         [Parameter]
@@ -72,26 +84,43 @@ namespace BlazorComponent
         public string ActivatorStyle { get; set; }
 
         [Parameter]
+        public bool Block { get; set; }
+
+        [Parameter]
         public RenderFragment ChildContent { get; set; }
 
         public ElementReference ContentRef { get; set; }
 
         protected abstract Task Click(MouseEventArgs args);
 
-        protected virtual Task MouseEnter(MouseEventArgs args)
+        protected virtual async Task MouseEnter(MouseEventArgs args)
         {
-            if (OpenOnHover && !Visible && VisibleChanged.HasDelegate)
-                VisibleChanged.InvokeAsync(true);
-
-            return Task.CompletedTask;
+            if (OpenOnHover && !Visible)
+            {
+                if (VisibleChanged.HasDelegate)
+                    await VisibleChanged.InvokeAsync(true);
+                else
+                    _visible = true;
+            }
+            else
+            {
+                PreventRender();
+            }
         }
 
-        protected virtual Task MouseOut(MouseEventArgs args)
+        protected virtual async Task MouseOut(MouseEventArgs args)
         {
-            if (OpenOnHover && Visible && VisibleChanged.HasDelegate)
-                VisibleChanged.InvokeAsync(false);
-
-            return Task.CompletedTask;
+            if (OpenOnHover && Visible)
+            {
+                if (VisibleChanged.HasDelegate)
+                    await VisibleChanged.InvokeAsync(false);
+                else
+                    _visible = false;
+            }
+            else
+            {
+                PreventRender();
+            }
         }
     }
 }

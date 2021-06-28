@@ -15,7 +15,8 @@ namespace BlazorComponent
 
         protected string _icon;
         protected string _css;
-        protected IconTag _tag = IconTag.I;
+        protected IconTag _tag;
+        private RenderFragment _childContent;
 
         private string Css => CssProvider.GetClass() + " " + _css;
 
@@ -26,9 +27,15 @@ namespace BlazorComponent
         public StringNumber Size { get; set; }
 
         [Parameter]
+        public IconTag Tag
+        {
+            get => _tag == IconTag.None ? IconTag.I : _tag;
+            set => _tag = value;
+        }
+
+        [Parameter]
         public EventCallback<MouseEventArgs> Click { get; set; }
 
-        private RenderFragment _childContent;
         [Parameter]
         public RenderFragment ChildContent
         {
@@ -83,15 +90,18 @@ namespace BlazorComponent
         {
             base.OnInitialized();
 
-            var builder = new RenderTreeBuilder();
-            ChildContent(builder);
-
-            // TODO: will be changed next release version!
-            var frame = builder.GetFrames().Array.FirstOrDefault(u => u.FrameType == RenderTreeFrameType.Text || u.FrameType == RenderTreeFrameType.Markup);
-
-            if (frame.FrameType != RenderTreeFrameType.None)
+            if (_tag == IconTag.None)
             {
-                _tag = frame.FrameType != RenderTreeFrameType.None ? IconTag.Span : IconTag.I;
+                var builder = new RenderTreeBuilder();
+                ChildContent(builder);
+
+                // TODO: will be changed next release version!
+                var frame = builder.GetFrames().Array.FirstOrDefault(u => u.FrameType == RenderTreeFrameType.Text || u.FrameType == RenderTreeFrameType.Markup);
+
+                if (frame.FrameType != RenderTreeFrameType.None)
+                {
+                    _tag = frame.TextContent.Contains("<svg") ? IconTag.Span : IconTag.I;
+                }
             }
         }
     }

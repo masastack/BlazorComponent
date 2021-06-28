@@ -301,11 +301,18 @@ namespace BlazorComponent
             if (Disabled) return;
             this.Checked = check;
             this.Indeterminate = false;
+
+            if (TreeComponent.Independent)
+            {
+                return;
+            }
+
             if (HasChildNodes)
             {
                 foreach (var subnode in ChildNodes)
                     subnode?.SetChecked(check);
             }
+
             if (ParentNode != null)
                 ParentNode.UpdateCheckState();
         }
@@ -577,7 +584,7 @@ namespace BlazorComponent
                 if (DefaultCheckedExpression != default)
                 {
                     Checked = DefaultCheckedExpression.Invoke(DataItem);
-                    SetSelected(Checked);
+                    SetChecked(Checked);
                 }
 
                 Expanded = TreeComponent.Expanded;
@@ -595,7 +602,34 @@ namespace BlazorComponent
             }
         }
 
+        protected bool IsActive => TreeComponent.ActiveItemId == Id;
+
         [Parameter]
-        public EventCallback<TItem> HandleItemClick { get; set; }
+        public EventCallback<TItem> OnItemClick { get; set; }
+
+        [Parameter]
+        public RenderFragment<TItem> PrependContent { get; set; }
+
+        public bool Activatable => TreeComponent.Activatable;
+
+        public async Task HandleItemClickAsync(MouseEventArgs args)
+        {
+            if (Activatable)
+            {
+                if (IsActive)
+                {
+                    TreeComponent.ActiveItemId = null;
+                }
+                else
+                {
+                    TreeComponent.ActiveItemId = Id;
+                }
+            }
+
+            if (OnItemClick.HasDelegate)
+            {
+                await OnItemClick.InvokeAsync(DataItem);
+            }
+        }
     }
 }

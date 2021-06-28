@@ -85,7 +85,7 @@ namespace BlazorComponent
             {
                 var dimensions = await JsInvokeAsync<Window>(JsInteropConstants.GetWindow);
                 DomEventJsInterop.AddEventListener<Window>("window", "resize", OnResize, false);
-                OptimizeSize(dimensions.innerWidth);
+                OptimizeSize(dimensions.InnerWidth);
             }
 
             await base.OnAfterRenderAsync(firstRender);
@@ -93,10 +93,10 @@ namespace BlazorComponent
 
         private async void OnResize(Window window)
         {
-            await Task.Run(() => OptimizeSize(window.innerWidth));
+            await Task.Run(() => OptimizeSize(window.InnerWidth));
         }
 
-        private void OptimizeSize(decimal windowWidth)
+        private void OptimizeSize(double windowWidth)
         {
             BreakpointType actualBreakpoint = _breakpoints[_breakpoints.Length - 1];
             for (int i = 0; i < _breakpoints.Length; i++)

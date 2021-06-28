@@ -3,103 +3,102 @@
 @typeparam TItem
 @typeparam TValue
 
-<div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id">
-    <div class="@CssProvider.GetClass("control")">
-        <div class="@CssProvider.GetClass("slot")"
-             @onclick="Click"
-             @ref="Ref"
-             tabindex="0"
-             style="outline:none"
-             @onblur="HandleOnBlur">
+<AbstractComponent Metadata="AbstractProvider.GetMetadata<BMenu>()">
+    <AbstractContent Name="Activator">
+        <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id">
+            <div class="@CssProvider.GetClass("control")">
+                <div class="@CssProvider.GetClass("slot")"
+                     @onclick="Click"
+                     @ref="Ref"
+                     tabindex="0"
+                     style="outline:none"
+                     @onblur="HandleOnBlur">
 
-            @if (Outlined)
-            {
-                <fieldset>
-                    <legend style="@LegendStyle">
-                        <span>@((MarkupString)"&#8203;")</span>
-                    </legend>
-                </fieldset>
-            }
-
-            <div class="@CssProvider.GetClass("select-slot")">
-                @if (!string.IsNullOrWhiteSpace(Label))
-                {
-                    if (!Solo || Solo && !_text.Any())
+                    @if (Outlined)
                     {
-                        <label class="@CssProvider.GetClass("label")" style="@CssProvider.GetStyle("label")">@Label</label>
+                        <fieldset>
+                            <legend style="@LegendStyle">
+                                <span>@((MarkupString)"&#8203;")</span>
+                            </legend>
+                        </fieldset>
                     }
-                }
-                <div class="@CssProvider.GetClass("selector")">
-                    @if (!IsAutocomplete || Multiple)
-                    {
-                        if (Chips)
+
+                    <div class="@CssProvider.GetClass("select-slot")">
+                        @if (!string.IsNullOrWhiteSpace(Label))
                         {
-                            foreach (var item in _text)
+                            if (!Solo || Solo && !_text.Any())
                             {
-                                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BChip>()">@item</AbstractComponent>
+                                <label class="@CssProvider.GetClass("label")" style="@CssProvider.GetStyle("label")">@Label</label>
                             }
                         }
-                        else
-                        {
-                            for (var i = 0; i < _text.Count(); i++)
+                        <div class="@CssProvider.GetClass("selector")">
+                            @if (!IsAutocomplete || Multiple)
                             {
-                                var item = _text.ElementAt(i);
-                                if (i == _text.Count() - 1)
+                                if (Chips)
                                 {
-                                    <div class="@CssProvider.GetClass("selected")">@item</div>
+                                    foreach (var item in _text)
+                                    {
+                                        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BChip>()">@item</AbstractComponent>
+                                    }
                                 }
                                 else
                                 {
-                                    <div class="@CssProvider.GetClass("selected")">@($"{item}, ")</div>
+                                    for (var i = 0; i < _text.Count(); i++)
+                                    {
+                                        var item = _text.ElementAt(i);
+                                        if (i == _text.Count() - 1)
+                                        {
+                                            <div class="@CssProvider.GetClass("selected")">@item</div>
+                                        }
+                                        else
+                                        {
+                                            <div class="@CssProvider.GetClass("selected")">@($"{item}, ")</div>
+                                        }
+                                    }
+
                                 }
                             }
-
-                        }
-                    }
-                    @if (IsAutocomplete)
-                    {
-                        <input type="text" autocomplete="off" @ref="InputRef"
-                               value="@ValueText"
-                               @onblur="HandleOnBlur"
-                               @onblur:preventDefault
-                               @oninput="EventCallback.Factory.Create<ChangeEventArgs>(BodyRef,HandleOnInputAsync)"
-                               @onkeydown="EventCallback.Factory.Create<KeyboardEventArgs>(BodyRef,HandleOnKeyDownAsync)" />
-                    }
-                    else
-                    {
-                        <input id="input-@Id" type="text" readonly="readonly"
-                               class="@CssProvider.GetClass("select-input")" />
-                    }
-                </div>
-                <div class="@CssProvider.GetClass("select-arrow")">
-                    <div class="@CssProvider.GetClass("select-arrow-icon")">
-                        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
-                            @_icon
-                        </AbstractComponent>
+                            @if (IsAutocomplete)
+                            {
+                                <input type="text" autocomplete="off" @ref="InputRef"
+                                   value="@ValueText"
+                                   @onblur="HandleOnBlur"
+                                   @onblur:preventDefault
+                                   @oninput="EventCallback.Factory.Create<ChangeEventArgs>(BodyRef,HandleOnInputAsync)"
+                                   @onkeydown="EventCallback.Factory.Create<KeyboardEventArgs>(BodyRef,HandleOnKeyDownAsync)" />
+                            }
+                            else
+                            {
+                                <input id="input-@Id" type="text" readonly="readonly"
+                                   class="@CssProvider.GetClass("select-input")" />
+                            }
+                        </div>
+                        <div class="@CssProvider.GetClass("select-arrow")">
+                            <div class="@CssProvider.GetClass("select-arrow-icon")">
+                                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
+                                    @_icon
+                                </AbstractComponent>
+                            </div>
+                        </div>
+                        <input type="hidden" value="@(Multiple ? string.Join(',', Values) : Value)" />
                     </div>
+                    @if (Loading)
+                    {
+                        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BProcessLinear>()"></AbstractComponent>
+                    }
                 </div>
-                <input type="hidden" value="@(Multiple ? string.Join(',', Values) : Value)" />
+
+                @if (PersistentHint || !string.IsNullOrEmpty(Hint))
+                {
+                    <div class="@CssProvider.GetClass("hint")">
+                        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BHintMessage>()">@Hint</AbstractComponent>
+                    </div>
+                }
             </div>
-            @if (Loading)
-            {
-                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BProcessLinear>()"></AbstractComponent>
-            }
         </div>
-
-        @if (PersistentHint || !string.IsNullOrEmpty(Hint))
-        {
-            <div class="@CssProvider.GetClass("hint")">
-                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BHintMessage>()">@Hint</AbstractComponent>
-            </div>
-        }
-    </div>
-</div>
-
-<AbstractComponent Metadata="AbstractProvider.GetMetadata<BOverlay>()" />
-
-<CascadingValue Value="this">
-    <div @ref="PopoverRef">
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BPopover>()">
+    </AbstractContent>
+    <AbstractContent Name="ChildContent">
+        <CascadingValue Value="this">
             @if (HasBody)
             {
                 <AbstractComponent Metadata="AbstractProvider.GetMetadata<ISelectBody>()" @ref="BodyRef"></AbstractComponent>
@@ -111,10 +110,10 @@
                         @foreach (var item in Items)
                         {
                             <AbstractComponent Metadata="AbstractProvider.GetMetadata<BSelectOption<TItem, TValue>>()"
-                                               Item="@item"
-                                               Value="@ItemValue(item)"
-                                               Label="@ItemText(item)"
-                                               key="@ItemValue(item).ToString()" />
+                                       Item="@item"
+                                       Value="@ItemValue(item)"
+                                       Label="@ItemText(item)"
+                                       key="@ItemValue(item).ToString()" />
                         }
                     </AbstractComponent>
                 </AbstractComponent>
@@ -127,6 +126,6 @@
                     </AbstractComponent>
                 </AbstractComponent>
             }
-        </AbstractComponent>
-    </div>
-</CascadingValue>
+        </CascadingValue>
+    </AbstractContent>
+</AbstractComponent>
