@@ -98,6 +98,11 @@ namespace BlazorComponent.Doc.CLI.Commands
                 File.WriteAllText(configFilePath, json);
                 Console.WriteLine("Generate demo file to {0}", configFilePath);
             }
+
+            foreach (var dir in docsDirectoryInfo.GetDirectories())
+            {
+                GenerateFiles(dir.FullName, Path.Combine(output, dir.Name));
+            }
         }
     }
 }

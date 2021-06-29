@@ -20,6 +20,10 @@ namespace BlazorComponent.Doc.CLI.Models
 
         public string Cover { get; set; }
 
+        public string Icon { get; set; }
+
         public DemoMenuItemModel[] Children { get; set; }
+
+        public List<ContentsItem> Contents { get; set; }
     }
 }

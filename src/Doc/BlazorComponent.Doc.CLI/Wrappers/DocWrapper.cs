@@ -1,4 +1,5 @@
-﻿using Markdig;
+﻿using BlazorComponent.Doc.CLI.Extensions;
+using Markdig;
 using Markdig.Extensions.Yaml;
 using Markdig.Renderers;
 using Markdig.Syntax;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -167,6 +169,38 @@ namespace BlazorComponent.Doc.CLI.Wrappers
             return meta;
         }
 
+        public static IEnumerable<string> ParseTitle(string input)
+        {
+            input = input.Trim(' ', '\r', '\n');
+            var pipeline = new MarkdownPipelineBuilder()
+                .UseYamlFrontMatter()
+                .UsePipeTables()
+                .Build();
+
+            StringWriter writer = new StringWriter();
+            var renderer = new HtmlRenderer(writer);
+            pipeline.Setup(renderer);
+
+            MarkdownDocument document = Markdown.Parse(input, pipeline);
+            var yamlBlock = document.Descendants<YamlFrontMatterBlock>().FirstOrDefault();
+            var title = string.Empty;
+            var order = 0;
+            if (yamlBlock != null)
+            {
+                var yaml = input.Substring(yamlBlock.Span.Start, yamlBlock.Span.Length).Trim('-');
+                var meta = new Deserializer().Deserialize<Dictionary<string, string>>(yaml);
+                title = meta["title"];
+                order = int.TryParse(meta["order"], out var o) ? o : 0;
+            }
+
+            renderer.Render(document);
+            writer.Flush();
+            var html = writer.ToString();
+
+            var matches = Regex.Matches(html, "<h2>(?<title>.*)<\\/h2>");
+            return matches.Select(r => r.Groups["title"].ToString());
+        }
+
         public static (int order, string title, string html) ParseDocs(string input)
         {
             input = input.Trim(' ', '\r', '\n');
@@ -195,7 +229,43 @@ namespace BlazorComponent.Doc.CLI.Wrappers
             writer.Flush();
             var html = writer.ToString();
 
+            html = $"<h1>{title}</h1>\n" + html;
+
+            var h1Class = "\"m-heading text-h3 text-sm-h3 mb-2\""; ;
+            var h2Class = "\"m-heading text-h4 text-sm-h4 mb-3\"";
+            var aClass = "\"text-decoration-none text-right text-md-left\"";
+            var divClass = "\"mb-8\"";
+
+            html = Regex.Replace(html, "<h2>(?<title>.*)<\\/h2>", m =>
+            $@"
+            </section><section id={GetSectionId(m.Groups["title"].ToString())}><h2>{m.Groups["title"]}</h2>");
+
+            html = new Regex("<\\/section>").Replace(html, $"<div class={divClass}>&nbsp;</div>", 1);
+
+            html = Regex.Replace(html, "<h(?<n>1|2)>(?<title>.*)<\\/h(1|2)>", m => m.Groups["n"].ToString() == "1" ? $@"
+                <h1 class={h1Class}>
+                    <a class={aClass}>#</a>
+                    {m.Groups["title"]}
+                </h1>" :
+                $@"
+                <h2 class={h2Class}>
+                    <a class={aClass}>#</a>
+                    {m.Groups["title"]}
+                </h2>");
+
+            //var preClass = "\"app-code overflow-hidden m-sheet m-sheet--outlined theme--light rounded grey lighten-5\"";
+            //html = Regex.Replace(html, "(?<content><pre>[\\s\\S.]*<\\/pre>)", m => $@"
+            //    <div class={preClass}>
+            //        {m.Groups["content"]}
+            //    </div>
+            //");
+
             return (order, title, html);
+        }
+
+        private static string GetSectionId(string title)
+        {
+            return $"\"section-{HashHelper.Hash(title)}\"";
         }
     }
 

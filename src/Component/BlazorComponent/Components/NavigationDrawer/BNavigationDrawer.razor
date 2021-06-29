@@ -3,6 +3,12 @@
 
 <CascadingValue Value="this">
     <aside class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @attributes="Attributes">
+        @if (PrependContent != null)
+        {
+            <div class="@CssProvider.GetClass("prepend")">
+                @PrependContent
+            </div>
+        }
         <div class="@CssProvider.GetClass("content")">
             @ChildContent
         </div>

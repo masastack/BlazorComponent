@@ -1,21 +1,24 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div class="@CssProvider.GetClass()" id="@Id" @ref="Ref">
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItem>()">
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemIcon>(PREPEND)">
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
-                @PrependIcon
+<CascadingValue Value="this" IsFixed>
+    <div class="@CssProvider.GetClass()" id="@Id" @ref="Ref">
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItem>()">
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemIcon>(PREPEND)">
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
+                    @PrependIcon
+                </AbstractComponent>
+            </AbstractComponent>
+            @Activator
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemIcon>(APPEND)">
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
+                    @AppendIcon
+                </AbstractComponent>
             </AbstractComponent>
         </AbstractComponent>
-        @Activator
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemIcon>(APPEND)">
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
-                @AppendIcon
-            </AbstractComponent>
-        </AbstractComponent>
-    </AbstractComponent>
-    <div class="@CssProvider.GetClass("items")" style="@CssProvider.GetStyle("items")">
-        @ChildContent
+        <div class="@CssProvider.GetClass("items")" style="@CssProvider.GetStyle("items")">
+            @ChildContent
+        </div>
     </div>
-</div>
+</CascadingValue>
+

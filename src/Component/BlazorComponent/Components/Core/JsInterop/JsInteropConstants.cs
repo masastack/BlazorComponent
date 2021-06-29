@@ -110,6 +110,8 @@
 
         public static string Observer => $"{Variables.JsInteropFuncNamePrefix}observer";
 
+        public static string GetBoundingClientRects => $"{Variables.JsInteropFuncNamePrefix}getBoundingClientRects";
+
         #region Draggable Modal
 
         public static string EnableDraggable => $"{Variables.JsInteropFuncNamePrefix}enableDraggable";
