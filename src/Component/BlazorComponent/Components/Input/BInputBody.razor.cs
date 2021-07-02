@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using System;
 using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BInputBody : BDomComponentBase, IInputBody
+    public partial class BInputBody<TValue> : BDomComponentBase, IInputBody
     {
         [Parameter]
         public bool Outlined { get; set; }
@@ -28,10 +29,10 @@ namespace BlazorComponent
         public EventCallback<FocusEventArgs> OnBlur { get; set; }
 
         [Parameter]
-        public string Value { get; set; }
+        public TValue Value { get; set; }
 
         [Parameter]
-        public InputContext InputContext { get; set; } = new();
+        public InputContext<TValue> InputContext { get; set; } = new();
 
         [Parameter]
         public string PlaceHolder { get; set; }
@@ -62,11 +63,18 @@ namespace BlazorComponent
 
         public ElementReference InputRef { get; set; }
 
-        public Task HandleChangeAsync(ChangeEventArgs args)
+        public async Task HandleChangeAsync(ChangeEventArgs args)
         {
-            Value = args.Value.ToString();
-            InputContext.NotifyValueChanged(args.Value.ToString());
-            return Task.CompletedTask;
+            try
+            {
+                Value = (TValue)Convert.ChangeType(args.Value, typeof(TValue));
+            }
+            catch (Exception)
+            {
+                Value = default;
+            }
+
+            await InputContext.NotifyValueChanged(Value);
         }
 
         protected override void OnAfterRender(bool firstRender)

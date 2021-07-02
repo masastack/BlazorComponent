@@ -58,9 +58,6 @@ namespace BlazorComponent
         [Parameter]
         public OneOf<int, EmbeddedProperty> Xxl { get; set; }
 
-        [CascadingParameter]
-        public BRow Row { get; set; }
-
         private string _hostFlexStyle;
 
         private string GutterStyle { get; set; }
@@ -94,8 +91,6 @@ namespace BlazorComponent
 
         protected override void OnInitialized()
         {
-            this.Row?.Cols.Add(this);
-
             this.SetHostFlexStyle();
 
             base.OnInitialized();
@@ -103,8 +98,6 @@ namespace BlazorComponent
 
         protected override void Dispose(bool disposing)
         {
-            this.Row?.Cols.Remove(this);
-
             base.Dispose(disposing);
         }
     }

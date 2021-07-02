@@ -15,6 +15,9 @@ namespace BlazorComponent
         [Parameter]
         public bool Block { get; set; }
 
+        [Parameter]
+        public string Type { get; set; } = "button";
+
         /// <summary>
         /// Floating
         /// </summary>

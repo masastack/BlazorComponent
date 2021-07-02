@@ -15,7 +15,7 @@ export function getDomInfo(element, selector = "body") {
 
     var dom = getDom(element);
 
-    if (dom.style['display'] === 'none') {
+    if (dom.style && dom.style['display'] === 'none') {
         // clone and set display not none becuase
         // element with display:none can not get the dom info
         var cloned = dom.cloneNode(true);
@@ -50,10 +50,10 @@ function getDomInfoObj(dom) {
     result["clientHeight"] = dom.clientHeight || 0;
     result["clientWidth"] = dom.clientWidth || 0;
     var position = getElementPos(dom);
-    result["relativeLeft"] = Math.round(position.relativeLeft);
-    result["relativeTop"] = Math.round(position.relativeTop);
-    result["absoluteLeft"] = Math.round(position.absoluteLeft);
-    result["absoluteTop"] = Math.round(position.absoluteTop);
+    result["relativeLeft"] = Math.round(position.relativeLeft) || 0;
+    result["relativeTop"] = Math.round(position.relativeTop) || 0;
+    result["absoluteLeft"] = Math.round(position.absoluteLeft) || 0;
+    result["absoluteTop"] = Math.round(position.absoluteTop) || 0;
     return result;
 }
 

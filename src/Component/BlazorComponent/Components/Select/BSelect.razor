@@ -23,7 +23,7 @@
                         </fieldset>
                     }
 
-                    <div class="@CssProvider.GetClass("select-slot")">
+                    <div class="@CssProvider.GetClass("select-slot")" @ref="SelectSoltRef">
                         @if (!string.IsNullOrWhiteSpace(Label))
                         {
                             if (!Solo || Solo && !_text.Any())

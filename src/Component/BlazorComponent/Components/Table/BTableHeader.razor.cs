@@ -10,7 +10,7 @@ namespace BlazorComponent
     public partial class BTableHeader : BDomComponentBase
     {
         [Parameter]
-        public List<string> Headers { get; set; }
+        public List<TableHeaderOptions> Headers { get; set; }
 
         [Parameter]
         public string Align { get; set; }

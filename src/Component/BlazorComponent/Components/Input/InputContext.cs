@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public class InputContext
+    public class InputContext<TValue>
     {
         public ElementReference InputRef { get; set; }
 
-        public event Action<string> OnValueChanged;
+        public event Func<TValue, Task> OnValueChanged;
 
-        public void NotifyValueChanged(string value)
+        public async Task NotifyValueChanged(TValue value)
         {
-            OnValueChanged?.Invoke(value);
+            await OnValueChanged?.Invoke(value);
         }
     }
 }
