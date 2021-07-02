@@ -1,7 +1,9 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div @onclick="Click" @onmouseenter="MouseEnter"
+<div @onclick="Click"
+     @onclick:stopPropagation
+     @onmouseenter="MouseEnter"
      @onmouseleave="MouseOut"
      @ref="Ref"
      style="@CssProvider.GetStyle()">
