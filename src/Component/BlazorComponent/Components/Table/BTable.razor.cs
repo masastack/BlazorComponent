@@ -29,7 +29,7 @@ namespace BlazorComponent
         public bool HideDefaultFooter { get; set; }
 
         [Parameter]
-        public List<string> Headers { get; set; }
+        public List<TableHeaderOptions> Headers { get; set; }
 
         [Parameter]
         public bool Loading { get; set; }

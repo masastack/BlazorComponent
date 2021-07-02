@@ -1,9 +1,7 @@
 @namespace BlazorComponent
 @inherits BDomComponentBase
 
-<CascadingValue Value="this">
-    <div class="@CssProvider.GetClass()" style="@GutterStyle @CssProvider.GetStyle()" id="@Id" @ref="Ref">
-        @ChildContent
-    </div>
-</CascadingValue>
+<div class="@CssProvider.GetClass()" style="@GutterStyle @CssProvider.GetStyle()" id="@Id" @ref="Ref">
+    @ChildContent
+</div>
 

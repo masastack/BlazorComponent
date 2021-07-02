@@ -62,7 +62,7 @@ namespace BlazorComponent
         [Parameter]
         public BMenuProps MenuProps { get; set; }
 
-        public ElementReference PopoverRef { get; set; }
+        protected ElementReference SelectSoltRef { get; set; }
 
         protected List<string> _text = new();
 

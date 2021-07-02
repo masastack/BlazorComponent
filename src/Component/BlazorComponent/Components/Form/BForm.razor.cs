@@ -12,7 +12,7 @@ namespace BlazorComponent
     public partial class BForm : BDomComponentBase
     {
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment<EditContext> ChildContent { get; set; }
 
         [Parameter]
         public EventCallback<EventArgs> OnSubmit { get; set; }
@@ -25,15 +25,14 @@ namespace BlazorComponent
 
         protected EditContext EditContext { get; set; }
 
-        protected override void OnParametersSet()
+        protected override void OnInitialized()
         {
             if (EditContext == null && Model != null)
             {
                 EditContext = new EditContext(Model);
-
                 if (EnableDataAnnotationsValidation)
                 {
-                    EditContext.AddDataAnnotationsValidation();
+                    EditContext.EnableDataAnnotationsValidation();
                 }
             }
         }

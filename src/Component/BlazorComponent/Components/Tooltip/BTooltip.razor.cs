@@ -43,5 +43,10 @@ namespace BlazorComponent
         {
             IsActive = false;
         }
+
+        protected virtual void HandleOnClick()
+        {
+            IsActive = false;
+        }
     }
 }
