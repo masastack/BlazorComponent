@@ -16,7 +16,7 @@ namespace BlazorComponent
         public string PrependIcon { get; set; }
 
         [Parameter]
-        public string AppendIcon { get; set; }
+        public string AppendIcon { get; set; } = "mdi-chevron-down";
 
         [Parameter]
         public RenderFragment Activator { get; set; }
