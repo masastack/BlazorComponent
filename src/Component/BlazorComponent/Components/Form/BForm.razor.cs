@@ -25,6 +25,8 @@ namespace BlazorComponent
 
         protected EditContext EditContext { get; set; }
 
+        public EditContext UseEditContext() => EditContext;
+
         protected override void OnInitialized()
         {
             if (EditContext == null && Model != null)
