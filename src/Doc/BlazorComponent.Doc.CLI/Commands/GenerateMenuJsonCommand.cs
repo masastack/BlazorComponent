@@ -176,7 +176,10 @@ namespace BlazorComponent.Doc.CLI.Commands
                 }
 
                 //Children 4 will be component menu
-                children[4].Children = componentMenus[0].Children.SelectMany(r => r.Children).ToArray();
+                children[4].Children = componentMenus[0].Children.SelectMany(r => r.Children)
+                    .OrderBy(r => r.Order)
+                    .ThenBy(r => r.Title)
+                    .ToArray();
                 menus.AddRange(children);
 
                 var json = JsonSerializer.Serialize(menus, jsonOptions);
@@ -277,6 +280,7 @@ namespace BlazorComponent.Doc.CLI.Commands
                                 SubTitle = x.Value.SubTitle,
                                 Url = $"{directory.Name.ToLowerInvariant()}/{x.Value.Title.ToLower()}",
                                 Type = "menuItem",
+                                Order = x.Value.Order,
                                 Cover = x.Value.Cover
                             })
                             .OrderBy(x => x.Title, new MenuComparer())
@@ -343,10 +347,11 @@ namespace BlazorComponent.Doc.CLI.Commands
                         Title = docData.Meta["title"],
                         SubTitle = docData.Meta.TryGetValue("subtitle", out var subtitle) ? subtitle : null,
                         Type = docData.Meta["type"],
+                        Order = docData.Meta.TryGetValue("order", out var order) ? int.Parse(order) : 0,
                         Desc = docData.Desc,
                         ApiDoc = docData.ApiDoc,
                         Cover = docData.Meta.TryGetValue("cover", out var cover) ? cover : null,
-                    });
+                    }); ;
                 }
 
                 componentList ??= new List<Dictionary<string, DemoComponentModel>>();

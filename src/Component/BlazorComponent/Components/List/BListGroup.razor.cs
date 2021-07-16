@@ -16,15 +16,29 @@ namespace BlazorComponent
         public string PrependIcon { get; set; }
 
         [Parameter]
-        public string AppendIcon { get; set; } = "mdi-chevron-down";
+        public string AppendIcon { get; set; }
 
+        [Obsolete("Use ActivatorContent instead.")]
         [Parameter]
         public RenderFragment Activator { get; set; }
+
+        [Parameter]
+        public RenderFragment ActivatorContent { get; set; }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
         protected bool IsActive { get; set; }
+
+        protected override void OnParametersSet()
+        {
+            base.OnParametersSet();
+
+            if (Activator != null)
+            {
+                ActivatorContent = Activator;
+            }
+        }
 
         public void DeActive()
         {

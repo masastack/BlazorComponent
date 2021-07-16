@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using System;
 using System.Threading.Tasks;
 
 namespace BlazorComponent
@@ -45,16 +46,28 @@ namespace BlazorComponent
             }
         }
 
+        [Obsolete("Use OnClick instead.")]
         [Parameter]
         public EventCallback<MouseEventArgs> Click { get; set; }
+
+        [Parameter]
+        public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+        protected override void OnParametersSet()
+        {
+            if (Click.HasDelegate)
+            {
+                OnClick = Click;
+            }
+        }
 
         protected virtual async Task HandleOnClick(MouseEventArgs args)
         {
             if (args.Button == 0)
             {
-                if (Click.HasDelegate)
+                if (OnClick.HasDelegate)
                 {
-                    await Click.InvokeAsync(args);
+                    await OnClick.InvokeAsync(args);
                 }
             }
         }

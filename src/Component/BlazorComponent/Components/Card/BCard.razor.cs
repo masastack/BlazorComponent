@@ -1,35 +1,48 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using System;
 
 namespace BlazorComponent
 {
     public abstract partial class BCard : BDomComponentBase
     {
-        [Parameter] 
+        [Parameter]
         public StringNumber Height { get; set; }
 
-        [Parameter] 
+        [Parameter]
         public StringNumber MaxHeight { get; set; }
 
-        [Parameter] 
+        [Parameter]
         public StringNumber MinHeight { get; set; }
 
-        [Parameter] 
+        [Parameter]
         public StringNumber Width { get; set; }
 
-        [Parameter] 
+        [Parameter]
         public StringNumber MaxWidth { get; set; }
 
-        [Parameter] 
+        [Parameter]
         public StringNumber MinWidth { get; set; }
 
-        [Parameter] 
+        [Parameter]
         public bool Outlined { get; set; }
 
-        [Parameter] 
+        [Parameter]
         public RenderFragment ChildContent { get; set; }
 
+        [Obsolete("Use OnClick instead.")]
         [Parameter]
-        public EventCallback<MouseEventArgs> Click{ get; set; }
+        public EventCallback<MouseEventArgs> Click { get; set; }
+
+        [Parameter]
+        public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+        protected override void OnParametersSet()
+        {
+            if (Click.HasDelegate)
+            {
+                OnClick = Click;
+            }
+        }
     }
 }

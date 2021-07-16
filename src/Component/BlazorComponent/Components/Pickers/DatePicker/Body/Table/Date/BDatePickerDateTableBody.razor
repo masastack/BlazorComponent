@@ -36,13 +36,13 @@
                         <td>
                             @if (IsCurrentDay(day))
                             {
-                                <AbstractComponent IsActive="@IsSelected(day)" Click="@HandleDayClick(day)" Metadata="AbstractProvider.GetMetadata<BButton>(CURRENT_BTN)">
+                                <AbstractComponent IsActive="@IsSelected(day)" OnClick="@HandleDayClick(day)" Metadata="AbstractProvider.GetMetadata<BButton>(CURRENT_BTN)">
                                     @day
                                 </AbstractComponent>
                             }
                             else
                             {
-                                <AbstractComponent IsActive="@IsSelected(day)" Click="@HandleDayClick(day)" Metadata="AbstractProvider.GetMetadata<BButton>()">
+                                <AbstractComponent IsActive="@IsSelected(day)" OnClick="@HandleDayClick(day)" Metadata="AbstractProvider.GetMetadata<BButton>()">
                                     @day
                                 </AbstractComponent>
                             }

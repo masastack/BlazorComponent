@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using System;
 using System.Threading.Tasks;
 
 namespace BlazorComponent
@@ -71,14 +72,22 @@ namespace BlazorComponent
         [Parameter]
         public bool CloseOnClick { get; set; } = true;
 
+        [Obsolete("Use OnOutsideClick instead.")]
         [Parameter]
         public EventCallback<MouseEventArgs> OutsideClick { get; set; }
 
         [Parameter]
-        public bool CloseOnContentClick { get; set; } = true;
+        public EventCallback<MouseEventArgs> OnOutsideClick { get; set; }
 
         [Parameter]
+        public bool CloseOnContentClick { get; set; } = true;
+
+        [Obsolete("Use ActivatorContent instead.")]
+        [Parameter]
         public RenderFragment Activator { get; set; }
+
+        [Parameter]
+        public RenderFragment ActivatorContent { get; set; }
 
         [Parameter]
         public string ActivatorStyle { get; set; }
@@ -92,6 +101,19 @@ namespace BlazorComponent
         public ElementReference ContentRef { get; set; }
 
         protected abstract Task Click(MouseEventArgs args);
+
+        protected override void OnParametersSet()
+        {
+            if (OutsideClick.HasDelegate)
+            {
+                OnOutsideClick = OutsideClick;
+            }
+
+            if (Activator != null)
+            {
+                ActivatorContent = Activator;
+            }
+        }
 
         protected virtual async Task MouseEnter(MouseEventArgs args)
         {

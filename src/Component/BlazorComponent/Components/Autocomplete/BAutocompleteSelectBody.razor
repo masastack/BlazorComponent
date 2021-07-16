@@ -24,7 +24,7 @@
             {
                 itemClass += SelectedClass;
             }
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItem>()" Class="@itemClass" Click="@HandleClick(item)">
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItem>()" Class="@itemClass" OnClick="@HandleClick(item)">
                 @if (Multiple)
                 {
                     <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemAction>()">

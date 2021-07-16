@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace BlazorComponent.Doc.CLI.Commands
@@ -99,7 +100,7 @@ namespace BlazorComponent.Doc.CLI.Commands
                             SubTitle = docData.Meta.TryGetValue("subtitle", out string subtitle) ? subtitle : null,
                             Type = docData.Meta["type"],
                             Desc = docData.desc,
-                            ApiDoc = docData.apiDoc.Replace("<h2>API</h2>", $"<h2 id=\"API\"><span>API</span><a href=\"{language}/components/{docData.Meta["title"].ToLower()}#API\" class=\"anchor\">#</a></h2>"),
+                            ApiDoc = GetApiDoc(docData.apiDoc),
                             Cols = docData.Meta.TryGetValue("cols", out var cols) ? int.Parse(cols) : (int?)null,
                             Cover = docData.Meta.TryGetValue("cover", out var cover) ? cover : null,
                         });
@@ -202,6 +203,30 @@ namespace BlazorComponent.Doc.CLI.Commands
                 File.Delete(demoFilePath);
             }
             File.WriteAllText(demoFilePath, demoJson);
+        }
+
+        private string GetApiDoc(string apiDoc)
+        {
+            var h1Class = "\"m-heading text-h3 text-sm-h3 mb-2\""; ;
+            var h2Class = "\"m-heading text-h4 text-sm-h4 mb-3\"";
+            var aClass = "\"text-decoration-none text-right text-md-left\"";
+
+            apiDoc = Regex.Replace(apiDoc, "<h(?<n>1|2)>(?<title>.*)<\\/h(1|2)>", m => m.Groups["n"].ToString() == "1" ? $@"
+                <h1 class={h1Class}>
+                    <a class={aClass}>#</a>
+                    {m.Groups["title"]}
+                </h1>" :
+                $@"
+                <h2 class={h2Class}>
+                    <a class={aClass}>#</a>
+                    {m.Groups["title"]}
+                </h2>");
+
+            apiDoc = "<section id=\"api\">" + apiDoc + "</section>";
+
+            apiDoc = Regex.Replace(apiDoc, "<a href", "<a class=\"app-link text-decoration-none primary--text font-weight-medium d-inline-block\" href");
+
+            return apiDoc;
         }
     }
 }

@@ -60,12 +60,19 @@ namespace BlazorComponent
                 if (Tabs[i] == selectedTab)
                 {
                     Tabs[i].Active();
-                    TabItems[i].Active();
+
+                    if (i < TabItems.Count)
+                    {
+                        TabItems[i].Active();
+                    }
                 }
                 else
                 {
                     Tabs[i].DeActive();
-                    TabItems[i].DeActive();
+                    if (i < TabItems.Count)
+                    {
+                        TabItems[i].DeActive();
+                    }
                 }
             }
 

@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
 using OneOf;
 
@@ -25,8 +26,12 @@ namespace BlazorComponent
         [Parameter]
         public StringNumber Flex { get; set; }
 
+        [Obsolete("Use Cols instead.")]
         [Parameter]
         public StringNumber Span { get; set; }
+
+        [Parameter]
+        public StringNumber Cols { get; set; }
 
         [Parameter]
         public StringNumber Order { get; set; }
@@ -68,6 +73,14 @@ namespace BlazorComponent
             if (gutter.horizontalGutter > 0)
             {
                 GutterStyle = $"padding-left: {gutter.horizontalGutter / 2}px; padding-right: {gutter.horizontalGutter / 2}px;";
+            }
+        }
+
+        protected override void OnParametersSet()
+        {
+            if (Span!=null)
+            {
+                Cols = Span;
             }
         }
 

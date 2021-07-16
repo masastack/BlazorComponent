@@ -27,8 +27,12 @@ namespace BlazorComponent
         /// <summary>
         /// 子节点
         /// </summary>
+        [Obsolete("Use NodesContent instead.")]
         [Parameter]
         public RenderFragment Nodes { get; set; }
+
+        [Parameter]
+        public RenderFragment NodesContent { get; set; }
 
         public List<BTreeItem<TItem>> ChildNodes { get; set; } = new List<BTreeItem<TItem>>();
 
@@ -274,8 +278,12 @@ namespace BlazorComponent
         [Parameter]
         public bool Checkable { get; set; }//是否可以选择不受父节点控制
 
+        [Obsolete("Use OnCheckboxClick instead.")]
         [Parameter]
         public EventCallback<TItem> HandleCheckboxClick { get; set; }
+
+        [Parameter]
+        public EventCallback<TItem> OnCheckboxClick { get; set; }
 
         /// <summary>
         /// 当点击选择框是触发
@@ -286,9 +294,9 @@ namespace BlazorComponent
             if (TreeComponent.OnCheckBoxChanged.HasDelegate)
                 await TreeComponent.OnCheckBoxChanged.InvokeAsync(new TreeEventArgs<TItem>(TreeComponent, this, args));
 
-            if (HandleCheckboxClick.HasDelegate)
+            if (OnCheckboxClick.HasDelegate)
             {
-                await HandleCheckboxClick.InvokeAsync(DataItem);
+                await OnCheckboxClick.InvokeAsync(DataItem);
             }
         }
 
@@ -369,6 +377,7 @@ namespace BlazorComponent
 
         #region Title
 
+        [Obsolete]
         [Parameter]
         public bool Draggable { get; set; }
 
@@ -377,6 +386,7 @@ namespace BlazorComponent
         /// <summary>
         /// 节点前的图标，与 `ShowIcon` 组合使用
         /// </summary>
+        [Obsolete]
         [Parameter]
         public string Icon
         {
@@ -572,6 +582,16 @@ namespace BlazorComponent
 
         protected override void OnParametersSet()
         {
+            if (HandleCheckboxClick.HasDelegate)
+            {
+                OnCheckboxClick = HandleCheckboxClick;
+            }
+
+            if (Nodes != null)
+            {
+                NodesContent = Nodes;
+            }
+
             //SetBTreeItemClassMapper();
             base.OnParametersSet();
         }

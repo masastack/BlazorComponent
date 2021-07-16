@@ -35,11 +35,19 @@ namespace BlazorComponent
         [Parameter]
         public string Accept { get; set; }
 
+        [Obsolete("Use OnUpload instead.")]
         [Parameter]
         public EventCallback<UploadFile> Upload { get; set; }
 
         [Parameter]
+        public EventCallback<UploadFile> OnUpload { get; set; }
+
+        [Obsolete("Use ActivatorContent instead.")]
+        [Parameter]
         public RenderFragment Activator { get; set; }
+
+        [Parameter]
+        public RenderFragment ActivatorContent { get; set; }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
@@ -52,9 +60,9 @@ namespace BlazorComponent
                 {
                     var uploadFile = new UploadFile(item);
 
-                    if (Upload.HasDelegate)
+                    if (OnUpload.HasDelegate)
                     {
-                        await Upload.InvokeAsync(uploadFile);
+                        await OnUpload.InvokeAsync(uploadFile);
 
                         if (string.IsNullOrEmpty(uploadFile.Url))
                             await SetDefaultImageUrl(uploadFile);
@@ -74,9 +82,9 @@ namespace BlazorComponent
                 var uploadFile = new UploadFile(args.File);
 
 
-                if (Upload.HasDelegate)
+                if (OnUpload.HasDelegate)
                 {
-                    await Upload.InvokeAsync(uploadFile);
+                    await OnUpload.InvokeAsync(uploadFile);
 
                     if (string.IsNullOrEmpty(uploadFile.Url))
                         await SetDefaultImageUrl(uploadFile);
@@ -90,6 +98,21 @@ namespace BlazorComponent
             }
 
             await InvokeStateHasChangedAsync();
+        }
+
+        protected override void OnParametersSet()
+        {
+            base.OnParametersSet();
+
+            if (Upload.HasDelegate)
+            {
+                OnUpload = Upload;
+            }
+
+            if (Activator!=null)
+            {
+                ActivatorContent = Activator;
+            }
         }
 
         protected virtual async Task HandleOnClick(MouseEventArgs args)

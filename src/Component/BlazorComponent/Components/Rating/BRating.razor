@@ -5,7 +5,7 @@
     @foreach (var i in Enumerable.Range(1, (int)Length))
     {
         <AbstractComponent Metadata="AbstractProvider.GetMetadata<BButton>()"
-                       Click="@(EventCallback.Factory.Create<MouseEventArgs>(this, () => HandleClick(i)))">
+                       OnClick="@(EventCallback.Factory.Create<MouseEventArgs>(this, () => HandleClick(i)))">
             @if (Value < i)
             {
                 <AbstractComponent Metadata="@(AbstractProvider.GetMetadata<BIcon>("star-outline"))">

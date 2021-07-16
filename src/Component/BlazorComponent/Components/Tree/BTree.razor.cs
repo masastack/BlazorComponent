@@ -13,30 +13,35 @@ namespace BlazorComponent
         /// <summary>
         /// 节点前添加展开图标
         /// </summary>
+        [Obsolete]
         [Parameter]
         public bool ShowExpand { get; set; } = true;
 
         /// <summary>
         /// 是否展示连接线
         /// </summary>
+        [Obsolete]
         [Parameter]
         public bool ShowLine { get; set; }
 
         /// <summary>
         /// 是否展示 BTreeItem title 前的图标
         /// </summary>
+        [Obsolete]
         [Parameter]
         public bool ShowIcon { get; set; }
 
         /// <summary>
         /// 是否节点占据一行
         /// </summary>
+        [Obsolete]
         [Parameter]
         public bool BlockNode { get; set; }
 
         /// <summary>
         /// 设置节点可拖拽
         /// </summary>
+        [Obsolete]
         [Parameter]
         public bool Draggable { get; set; }
 
@@ -47,8 +52,12 @@ namespace BlazorComponent
 
         #region Node
 
+        [Obsolete("Use NodesContent instead.")]
         [Parameter]
         public RenderFragment Nodes { get; set; }
+
+        [Parameter]
+        public RenderFragment NodesContent { get; set; }
 
         [Parameter]
         public List<BTreeItem<TItem>> ChildNodes { get; set; } = new List<BTreeItem<TItem>>();
@@ -312,8 +321,12 @@ namespace BlazorComponent
         [Parameter]
         public Func<BTreeItem<TItem>, IList<TItem>> ChildrenExpression { get; set; }
 
+        [Obsolete("Use OnItemClick instead.")]
         [Parameter]
         public EventCallback<TItem> HandleItemClick { get; set; }
+
+        [Parameter]
+        public EventCallback<TItem> OnItemClick { get; set; }
 
         #endregion DataBind
 
@@ -335,12 +348,14 @@ namespace BlazorComponent
         /// <summary>
         /// 双击树节点触发
         /// </summary>
+        [Obsolete]
         [Parameter]
         public EventCallback<TreeEventArgs<TItem>> OnDblClick { get; set; }
 
         /// <summary>
         /// 右键树节点触发
         /// </summary>
+        [Obsolete]
         [Parameter]
         public EventCallback<TreeEventArgs<TItem>> OnContextMenu { get; set; }
 
@@ -395,8 +410,12 @@ namespace BlazorComponent
         ///// </summary>
         //public EventCallback<TreeEventArgs> OnDragEnd { get; set; }
 
+        [Obsolete("Use OnCheckboxClick instead.")]
         [Parameter]
         public EventCallback<TItem> HandleCheckboxClick { get; set; }
+
+        [Parameter]
+        public EventCallback<TItem> OnCheckboxClick { get; set; }
         #endregion Event
 
         #region Template
@@ -404,28 +423,50 @@ namespace BlazorComponent
         /// <summary>
         /// 缩进模板
         /// </summary>
+        [Obsolete]
         [Parameter]
         public RenderFragment<BTreeItem<TItem>> IndentTemplate { get; set; }
 
         /// <summary>
         /// 标题模板
         /// </summary>
+        [Obsolete]
         [Parameter]
         public RenderFragment<BTreeItem<TItem>> TitleTemplate { get; set; }
 
         /// <summary>
         /// 图标模板
         /// </summary>
+        [Obsolete]
         [Parameter]
         public RenderFragment<BTreeItem<TItem>> TitleIconTemplate { get; set; }
 
         /// <summary>
         /// 切换图标模板
         /// </summary>
+        [Obsolete]
         [Parameter]
         public RenderFragment<BTreeItem<TItem>> SwitcherIconTemplate { get; set; }
 
         #endregion Template
+
+        protected override void OnParametersSet()
+        {
+            if (HandleItemClick.HasDelegate)
+            {
+                OnItemClick = HandleItemClick;
+            }
+
+            if (HandleCheckboxClick.HasDelegate)
+            {
+                OnCheckboxClick = HandleCheckboxClick;
+            }
+
+            if (Nodes != null)
+            {
+                NodesContent = Nodes;
+            }
+        }
 
         protected override void OnInitialized()
         {

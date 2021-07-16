@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using System;
 using System.Threading.Tasks;
 
 namespace BlazorComponent
@@ -90,14 +91,22 @@ namespace BlazorComponent
         [Parameter]
         public StringNumber MinHeight { get; set; }
 
+        [Obsolete("Use OnClick instead.")]
         [Parameter]
         public EventCallback<MouseEventArgs> Click { get; set; }
 
         [Parameter]
-        public bool StopPropagation { get; set; }
+        public EventCallback<MouseEventArgs> OnClick { get; set; }
 
         [Parameter]
+        public bool StopPropagation { get; set; }
+
+        [Obsolete("Use LoaderContent instead.")]
+        [Parameter]
         public RenderFragment Loader { get; set; }
+
+        [Parameter]
+        public RenderFragment LoaderContent { get; set; }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
@@ -113,6 +122,19 @@ namespace BlazorComponent
 
         [Parameter]
         public bool Dark { get; set; }
+
+        protected override void OnParametersSet()
+        {
+            if (Click.HasDelegate)
+            {
+                OnClick = Click;
+            }
+
+            if (Loader != null)
+            {
+                LoaderContent = Loader;
+            }
+        }
 
         public void Active()
         {
@@ -153,9 +175,9 @@ namespace BlazorComponent
                 ItemGroup.NotifyItemChanged(this);
             }
 
-            if (Click.HasDelegate)
+            if (OnClick.HasDelegate)
             {
-                await Click.InvokeAsync(args);
+                await OnClick.InvokeAsync(args);
             }
         }
     }

@@ -17,13 +17,13 @@
     @if (Loading)
     {
         <div class="@CssProvider.GetClass("loader")">
-            @if (Loader == null)
+            @if (LoaderContent == null)
             {
                 <AbstractComponent Metadata="AbstractProvider.GetMetadata<BProcessCircular>()"></AbstractComponent>
             }
             else
             {
-                @Loader
+                @LoaderContent
             }
         </div>
     }

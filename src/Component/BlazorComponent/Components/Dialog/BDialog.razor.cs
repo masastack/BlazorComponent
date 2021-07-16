@@ -21,13 +21,25 @@ namespace BlazorComponent
         [Parameter]
         public bool Persistent { get; set; }
 
+        [Obsolete("Use OnOutsideClick instead.")]
         [Parameter]
-        public EventCallback<MouseEventArgs> OutsideClick { get;set; }
+        public EventCallback<MouseEventArgs> OutsideClick { get; set; }
+
+        [Parameter]
+        public EventCallback<MouseEventArgs> OnOutsideClick { get; set; }
 
         [Parameter]
         public bool Scrollable { get; set; }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
+
+        protected override void OnParametersSet()
+        {
+            if (OutsideClick.HasDelegate)
+            {
+                OnOutsideClick = OutsideClick;
+            }
+        }
     }
 }

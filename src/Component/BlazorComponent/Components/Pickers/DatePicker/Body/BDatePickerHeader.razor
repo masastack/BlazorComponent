@@ -2,26 +2,43 @@
 @inherits BDomComponentBase
 
 <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
-    <AbstractComponent Click="@PrevClick" StopPropagation="@true" Metadata="AbstractProvider.GetMetadata<BButton>()">
+    <AbstractComponent OnClick="@OnPrevClick" StopPropagation="@true" Metadata="AbstractProvider.GetMetadata<BButton>()">
         <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
             @PrevIcon
         </AbstractComponent>
     </AbstractComponent>
     <div class="@CssProvider.GetClass("value")">
         <div class="@CssProvider.GetClass("header")">
-            <button type="button" @onclick="DateClick">
-                @if (ChildContent != default)
-                {
-                    @ChildContent
-                }
-                else
-                {
-                    @Value
-                }
-            </button>
+            @if (ActivePicker == "DATE")
+            {
+                // for refresh,this will be change in feature version
+                <button type="button" @onclick="OnDateClick">
+                    @if (ChildContent != default)
+                    {
+                        @ChildContent
+                    }
+                    else
+                    {
+                        @Value
+                    }
+                </button>
+            }
+            else
+            {
+                <button type="button" @onclick="OnDateClick">
+                    @if (ChildContent != default)
+                    {
+                        @ChildContent
+                    }
+                    else
+                    {
+                        @Value
+                    }
+                </button>
+            }
         </div>
     </div>
-    <AbstractComponent Click="@NextClick" StopPropagation="@true" Metadata="AbstractProvider.GetMetadata<BButton>()">
+    <AbstractComponent OnClick="@OnNextClick" StopPropagation="@true" Metadata="AbstractProvider.GetMetadata<BButton>()">
         <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
             @NextIcon
         </AbstractComponent>

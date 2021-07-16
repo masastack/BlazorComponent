@@ -3,14 +3,14 @@
 
 @if (Tag == IconTag.I)
 {
-    if (Click.HasDelegate)
+    if (OnClick.HasDelegate)
     {
         <button type="button"
                 class="@Css"
                 style="@CssProvider.GetStyle()"
                 id="@Id"
                 @ref="Ref"
-                @onclick="Click"
+                @onclick="OnClick"
                 @onclick:stopPropagation>
             @_icon
         </button>
@@ -21,7 +21,7 @@
            style="@CssProvider.GetStyle()"
            id="@Id"
            @ref="Ref"
-           @onclick="Click">
+           @onclick="OnClick">
             @_icon
         </i>
     }
@@ -35,7 +35,7 @@ else
           style="@CssProvider.GetStyle()"
           id="@Id"
           @ref="Ref"
-          @onclick="Click"
+          @onclick="OnClick"
           @onclick:stopPropagation>
         @((MarkupString) _icon)
     </span>

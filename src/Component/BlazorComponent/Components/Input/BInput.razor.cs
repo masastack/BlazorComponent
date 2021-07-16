@@ -10,11 +10,19 @@ namespace BlazorComponent
 {
     public partial class BInput : BDomComponentBase
     {
+        [Obsolete("Use PrependContent instead.")]
         [Parameter]
         public RenderFragment Prepend { get; set; }
 
         [Parameter]
+        public RenderFragment PrependContent { get; set; }
+
+        [Obsolete("Use ApendContent instead.")]
+        [Parameter]
         public RenderFragment Append { get; set; }
+
+        [Parameter]
+        public RenderFragment AppendContent { get; set; }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
@@ -25,8 +33,12 @@ namespace BlazorComponent
         [Parameter]
         public bool Clearable { get; set; }
 
+        [Obsolete("Use OnClearClick instead.")]
         [Parameter]
-        public EventCallback<MouseEventArgs> ClearClick { get;set; }
+        public EventCallback<MouseEventArgs> ClearClick { get; set; }
+
+        [Parameter]
+        public EventCallback<MouseEventArgs> OnClearClick { get; set; }
 
         /// <summary>
         /// 附加图标
@@ -38,7 +50,28 @@ namespace BlazorComponent
 
         protected bool Blur { get; set; }
 
-        protected bool ShowDetails => Messages?.Count > 0;
+        [Parameter]
+        public bool HideDetails { get; set; }
+
+        protected bool ShowDetails => !HideDetails || Messages?.Count > 0;
+
+        protected override void OnParametersSet()
+        {
+            if (ClearClick.HasDelegate)
+            {
+                OnClearClick = ClearClick;
+            }
+
+            if (Prepend != null)
+            {
+                PrependContent = Prepend;
+            }
+
+            if (Append != null)
+            {
+                AppendContent = Append;
+            }
+        }
 
         protected virtual Task HandleClickAsync(MouseEventArgs args)
         {

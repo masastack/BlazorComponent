@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using System;
 using System.Threading.Tasks;
 
 namespace BlazorComponent
@@ -14,16 +15,27 @@ namespace BlazorComponent
         [Parameter]
         public string ActivatorStyle { get; set; }
 
+        [Obsolete("Use ActivatorContent instead.")]
         [Parameter]
         public RenderFragment Activator { get; set; }
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment ActivatorContent { get; set; }
 
         [Parameter]
+        public RenderFragment ChildContent { get; set; }
+
         public ElementReference ContentRef { get; set; }
 
         protected bool IsActive { get; set; }
+
+        protected override void OnParametersSet()
+        {
+            if (Activator != null)
+            {
+                ActivatorContent = Activator;
+            }
+        }
 
         protected override void SetComponentClass()
         {
@@ -35,7 +47,6 @@ namespace BlazorComponent
         protected virtual Task OnMouseEnter()
         {
             IsActive = true;
-
             return Task.CompletedTask;
         }
 

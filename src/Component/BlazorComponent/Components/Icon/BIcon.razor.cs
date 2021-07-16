@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.RenderTree;
 using Microsoft.AspNetCore.Components.Web;
+using System;
 using System.Linq;
 
 namespace BlazorComponent
@@ -33,8 +34,20 @@ namespace BlazorComponent
             set => _tag = value;
         }
 
+        [Obsolete("Use OnClick instead.")]
         [Parameter]
         public EventCallback<MouseEventArgs> Click { get; set; }
+
+        [Parameter]
+        public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+        protected override void OnParametersSet()
+        {
+            if (Click.HasDelegate)
+            {
+                OnClick = Click;
+            }
+        }
 
         [Parameter]
         public RenderFragment ChildContent

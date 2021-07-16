@@ -23,6 +23,7 @@ namespace BlazorComponent.Doc.CLI.Models
         public string Cover { get; set; }
 
         public List<DemoItemModel> DemoList { get; set; }
+        public int Order { get; set; }
     }
 
     public class DemoItemModel

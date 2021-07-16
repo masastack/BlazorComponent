@@ -13,14 +13,26 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment<TItem> ChildContent { get; set; }
 
+        [Obsolete("Use TopContent instead.")]
         [Parameter]
         public RenderFragment Top { get; set; }
 
         [Parameter]
+        public RenderFragment TopContent { get; set; }
+
+        [Obsolete("Use TopContent instead.")]
+        [Parameter]
         public RenderFragment Bottom { get; set; }
 
         [Parameter]
+        public RenderFragment BottomContent { get; set; }
+
+        [Obsolete("Use NoResultContent instead.")]
+        [Parameter]
         public RenderFragment NoResult { get; set; }
+
+        [Parameter]
+        public RenderFragment NoResultContent { get; set; }
 
         [Parameter]
         public bool HideDefaultHeader { get; set; }
@@ -49,9 +61,11 @@ namespace BlazorComponent
 
         protected int PageStop => Page == TotalPage ? TotalCount : Page * PageSize;
 
-        protected int Page { get; set; } = 1;
+        [Parameter]
+        public int Page { get; set; } = 1;
 
-        protected int PageSize { get; set; } = 10;
+        [Parameter]
+        public int PageSize { get; set; } = 10;
 
         protected int TotalPage => Convert.ToInt32(Math.Ceiling(TotalCount / Convert.ToDecimal(PageSize)));
 
@@ -60,6 +74,26 @@ namespace BlazorComponent
         protected bool PrevDisabled => Page <= 1;
 
         protected bool NextDisabled => Page >= TotalPage;
+
+        protected override void OnParametersSet()
+        {
+            base.OnParametersSet();
+
+            if (Top != null)
+            {
+                TopContent = Top;
+            }
+
+            if (Bottom != null)
+            {
+                BottomContent = Bottom;
+            }
+
+            if (NoResult != null)
+            {
+                NoResultContent = NoResult;
+            }
+        }
 
         public virtual Task HandleScrollAsync(EventArgs args)
         {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using System;
 
 namespace BlazorComponent
 {
@@ -26,17 +27,29 @@ namespace BlazorComponent
         [Parameter]
         public StringNumber ZIndex { get; set; } = 201;
 
+        [Obsolete("Use OnClick instead.")]
         [Parameter]
         public EventCallback<MouseEventArgs> Click { get; set; }
 
         [Parameter]
+        public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+        [Parameter]
         public RenderFragment ChildContent { get; set; }
 
-        private void HandleOnClick(MouseEventArgs args)
+        protected override void OnParametersSet()
         {
             if (Click.HasDelegate)
             {
-                Click.InvokeAsync(args);
+                OnClick = Click;
+            }
+        }
+
+        private void HandleOnClick(MouseEventArgs args)
+        {
+            if (OnClick.HasDelegate)
+            {
+                OnClick.InvokeAsync(args);
             }
             else
             {

@@ -3,10 +3,10 @@
 
 <CascadingValue Value="this">
     <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @onclick="HandleClickAsync">
-        @if (Prepend != default)
+        @if (PrependContent != default)
         {
             <div class="@CssProvider.GetClass( "prepend")">
-                @Prepend
+                @PrependContent
             </div>
         }
         <div class="@CssProvider.GetClass( "control")">
@@ -44,10 +44,10 @@
                 </div>
             }
         </div>
-        @if (Append != default)
+        @if (AppendContent != default)
         {
             <div class="@CssProvider.GetClass( "append")">
-                @Append
+                @AppendContent
             </div>
         }
     </div>

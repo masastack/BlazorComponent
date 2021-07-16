@@ -10,7 +10,7 @@
 
 <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()"
      @onclick="HandleOnClick">
-    @Activator
+    @ActivatorContent
 </div>
 
 @if (ShowUploadList)
@@ -81,7 +81,7 @@
                                     <AbstractComponent Metadata="AbstractProvider.GetMetadata<BButton>()"
                                        Icon
                                        Color="@(file.Uploaded ? "" : "red")"
-                                       Click="@(EventCallback.Factory.Create<MouseEventArgs>(this, () => Files.Remove(file)))">
+                                       OnClick="@(EventCallback.Factory.Create<MouseEventArgs>(this, () => Files.Remove(file)))">
                                         <AbstractComponent Metadata="@(AbstractProvider.GetMetadata<BIcon>())"
                                            Small>
                                             mdi-close

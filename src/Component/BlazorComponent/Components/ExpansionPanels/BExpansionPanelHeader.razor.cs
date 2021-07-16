@@ -19,15 +19,27 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
+        [Obsolete("Use OnClick instead.")]
         [Parameter]
         public EventCallback<MouseEventArgs> Click { get; set; }
+
+        [Parameter]
+        public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+        protected override void OnParametersSet()
+        {
+            if (Click.HasDelegate)
+            {
+                OnClick = Click;
+            }
+        }
 
         protected virtual async Task HandleClickAsync(MouseEventArgs args)
         {
             ExpansionPanel.SetIsActive(!ExpansionPanel.Active);
-            if (Click.HasDelegate)
+            if (OnClick.HasDelegate)
             {
-                await Click.InvokeAsync(args);
+                await OnClick.InvokeAsync(args);
             }
         }
     }

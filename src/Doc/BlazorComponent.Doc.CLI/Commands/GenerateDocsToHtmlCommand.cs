@@ -64,7 +64,7 @@ namespace BlazorComponent.Doc.CLI.Commands
 
             foreach (FileSystemInfo docs in docsDirectoryInfo.GetFileSystemInfos())
             {
-                if (docs.Extension != ".md")
+                if (docs.Extension != ".md" || docs.Name.StartsWith("M"))
                     continue;
 
                 var fileName = docs.Name.Replace(docs.Extension, "");
