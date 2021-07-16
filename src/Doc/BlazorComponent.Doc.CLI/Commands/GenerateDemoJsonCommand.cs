@@ -75,7 +75,7 @@ namespace BlazorComponent.Doc.CLI.Commands
             IList<string> demoTypes = null;
 
             var directories = demoDirectoryInfo.GetFileSystemInfos()
-                .SelectMany(x => (x as DirectoryInfo).GetFileSystemInfos());
+                .SelectMany(x => (x as DirectoryInfo).GetFileSystemInfos()).OrderBy(r=>r.Name);
 
             foreach (FileSystemInfo component in directories)
             {
@@ -88,7 +88,7 @@ namespace BlazorComponent.Doc.CLI.Commands
 
                 if (docDir != null && docDir.Exists)
                 {
-                    foreach (FileSystemInfo docItem in (docDir as DirectoryInfo).GetFileSystemInfos())
+                    foreach (FileSystemInfo docItem in (docDir as DirectoryInfo).GetFileSystemInfos().OrderBy(r => r.Name))
                     {
                         string language = docItem.Name.Replace("index.", "").Replace(docItem.Extension, "");
                         string content = File.ReadAllText(docItem.FullName);
@@ -110,7 +110,8 @@ namespace BlazorComponent.Doc.CLI.Commands
                 if (demoDir != null && demoDir.Exists)
                 {
                     foreach (IGrouping<string, FileSystemInfo> demo in (demoDir as DirectoryInfo).GetFileSystemInfos()
-                        .GroupBy(x => x.Name
+                            .OrderBy(r=>r.Name)
+                            .GroupBy(x => x.Name
                             .Replace(x.Extension, "")
                             .Replace("-", "")
                             .Replace("_", "")

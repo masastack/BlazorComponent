@@ -126,7 +126,7 @@ namespace BlazorComponent.Doc.CLI.Commands
             var categoryDemoMenuList = new Dictionary<string, Dictionary<string, IEnumerable<DemoMenuItemModel>>>();
             var allComponentMenuList = new List<Dictionary<string, DemoMenuItemModel>>();
 
-            foreach (var subDemoDirectory in demoDirectoryInfo.GetFileSystemInfos())
+            foreach (var subDemoDirectory in demoDirectoryInfo.GetFileSystemInfos().OrderBy(r=>r.Name))
             {
                 var category = subDemoDirectory.Name;
 
@@ -235,7 +235,7 @@ namespace BlazorComponent.Doc.CLI.Commands
             {
                 foreach (var menuDir in directory.GetDirectories())
                 {
-                    foreach (var menuItem in menuDir.GetFileSystemInfos())
+                    foreach (var menuItem in menuDir.GetFileSystemInfos().OrderBy(r=>r.Name))
                     {
                         if (menuItem.Name == "index.json")
                         {
@@ -252,7 +252,7 @@ namespace BlazorComponent.Doc.CLI.Commands
                                         Url = $"docs/{menuDir.Name}",
                                         Icon = data["icon"].ToString(),
                                         Type = "menuItem",
-                                        Children = GetSubMenuChildren(menuDir, titleItem["lang"].ToString()).ToArray()
+                                        Children = GetSubMenuChildren(menuDir, titleItem["lang"].ToString()).OrderBy(r => r.Order).ThenBy(r => r.Title).ToArray()
                                     }
                                 };
                             }
@@ -295,7 +295,7 @@ namespace BlazorComponent.Doc.CLI.Commands
 
         private IEnumerable<DemoMenuItemModel> GetSubMenuChildren(DirectoryInfo menuDir, string lang)
         {
-            foreach (var menuItem in menuDir.GetFileSystemInfos())
+            foreach (var menuItem in menuDir.GetFileSystemInfos().OrderBy(r=>r.Name))
             {
                 if (menuItem.Extension == ".md")
                 {
@@ -327,7 +327,7 @@ namespace BlazorComponent.Doc.CLI.Commands
         {
             IList<Dictionary<string, DemoComponentModel>> componentList = null;
 
-            foreach (var component in directory.GetFileSystemInfos())
+            foreach (var component in directory.GetFileSystemInfos().OrderBy(r=>r.Name))
             {
                 if (!(component is DirectoryInfo componentDirectory))
                     continue;
@@ -336,7 +336,7 @@ namespace BlazorComponent.Doc.CLI.Commands
 
                 var docDir = componentDirectory.GetFileSystemInfos("doc")[0];
 
-                foreach (FileSystemInfo docItem in (docDir as DirectoryInfo).GetFileSystemInfos())
+                foreach (FileSystemInfo docItem in (docDir as DirectoryInfo).GetFileSystemInfos().OrderBy(r=>r.Name))
                 {
                     string language = docItem.Name.Replace("index.", "").Replace(docItem.Extension, "");
                     string content = File.ReadAllText(docItem.FullName);
