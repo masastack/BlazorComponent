@@ -25,7 +25,7 @@ namespace BlazorComponent
         public EventCallback<bool> ValueChanged { get; set; }
 
         [Parameter]
-        public StringNumber ZIndex { get; set; } = 201;
+        public int ZIndex { get; set; } = 201;
 
         [Obsolete("Use OnClick instead.")]
         [Parameter]

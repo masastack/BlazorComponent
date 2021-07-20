@@ -2,15 +2,15 @@
 @inherits BDomComponentBase
 
 <CascadingValue Value="true" Name="Fixed">
-    <div @ref="Ref">
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BPopover>()">
+    <CascadingValue Value="CascadingZIndex" Name="ZIndex">
+        <div @ref="Ref">
             <div class="@CssProvider.GetClass()" id="@Id" style="@CssProvider.GetStyle()">
                 <div class="@CssProvider.GetClass("body")" style="@CssProvider.GetStyle("body")">
                     @ChildContent
                 </div>
             </div>
-        </AbstractComponent>
 
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BOverlay>()" />
-    </div>
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BOverlay>()" />
+        </div>
+    </CascadingValue>
 </CascadingValue>

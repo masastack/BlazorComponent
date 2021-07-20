@@ -6,6 +6,11 @@ namespace BlazorComponent
 {
     public partial class BDialog : BDomComponentBase
     {
+        private int CascadingZIndex => ZIndex + 2;
+
+        [CascadingParameter(Name = "ZIndex")]
+        public int ZIndex { get; set; } = 202;
+
         [Parameter]
         public bool Visible { get; set; }
 
