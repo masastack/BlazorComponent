@@ -1,9 +1,14 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<button @onclick="HandleClickAsync" Class="@CssProvider.GetClass()"
+<button @ref="Ref"
+        @onclick="HandleClickAsync"
+        @onclick:preventDefault
+        @onmousedown="() => _hasMouseDown = true"
+        @onmouseup="() => _hasMouseDown = false"
+        Class="@CssProvider.GetClass()"
         Style="@CssProvider.GetStyle()">
-    @ChildContent 
+    @ChildContent
     <div class="@CssProvider.GetClass("headerIcon")">
         <i class="@CssProvider.GetClass("icons")"></i>
     </div>
