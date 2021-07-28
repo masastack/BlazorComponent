@@ -11,9 +11,9 @@ namespace BlazorComponent
     {
         public ElementReference InputRef { get; set; }
 
-        public event Func<TValue, Task> OnValueChanged;
+        public event Func<NullableValue<TValue>, Task> OnValueChanged;
 
-        public async Task NotifyValueChanged(TValue value)
+        public async Task NotifyValueChanged(NullableValue<TValue> value)
         {
             await OnValueChanged?.Invoke(value);
         }

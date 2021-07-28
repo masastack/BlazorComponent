@@ -23,13 +23,13 @@ namespace BlazorComponent
         public RenderFragment ChildContent { get; set; }
 
         [Parameter]
-        public StringNumber Value { get; set; }
+        public DateTime Value { get; set; }
 
         [Parameter]
-        public StringNumber Min { get; set; }
+        public DateTime? Min { get; set; }
 
         [Parameter]
-        public StringNumber Max { get; set; }
+        public DateTime? Max { get; set; }
 
         [Obsolete("Use OnPrevClick instead.")]
         [Parameter]
@@ -51,6 +51,12 @@ namespace BlazorComponent
 
         [Parameter]
         public EventCallback<MouseEventArgs> OnDateClick { get; set; }
+
+        public string DisplayValue => ActivePicker == "DATE" ? $"{Value.Year.ToString().PadLeft(4, '0')}-{Value.Month.ToString().PadLeft(2, '0')}" : Value.Year.ToString().PadLeft(4, '0');
+
+        public bool PrevDisabled => Min != null && (ActivePicker == "DATE" ? (Value.Year == Min.Value.Year && Value.Month <= Min.Value.Month) : (Value.Year <= Min.Value.Year));
+
+        public bool NextDisabled => Max != null && (ActivePicker == "DATE" ? (Value.Year == Max.Value.Year && Value.Month >= Max.Value.Month) : (Value.Year >= Max.Value.Year));
 
         protected override void OnParametersSet()
         {

@@ -20,7 +20,7 @@ namespace BlazorComponent
         public string Label { get; set; }
 
         [Parameter]
-        public bool IsActive { get; set; }
+        public bool LabelValue { get; set; }
 
         [Parameter]
         public bool IsFocused { get; set; }
@@ -29,7 +29,7 @@ namespace BlazorComponent
         public EventCallback<FocusEventArgs> OnBlur { get; set; }
 
         [Parameter]
-        public TValue Value { get; set; }
+        public NullableValue<TValue> Value { get; set; }
 
         [Parameter]
         public InputContext<TValue> InputContext { get; set; } = new();

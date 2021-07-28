@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using OneOf;
 
 namespace BlazorComponent
 {
@@ -51,9 +52,11 @@ namespace BlazorComponent
         protected bool Blur { get; set; }
 
         [Parameter]
-        public bool HideDetails { get; set; }
+        public StringBoolean HideDetails { get; set; } = "auto";
 
-        protected bool ShowDetails => !HideDetails || Messages?.Count > 0;
+        public virtual bool HasDetails => Messages?.Count > 0;
+
+        protected bool ShowDetails => HideDetails == false || (HideDetails == "auto" && HasDetails);
 
         protected override void OnParametersSet()
         {

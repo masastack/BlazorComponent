@@ -1,0 +1,8 @@
+﻿@namespace BlazorComponent
+
+@if (Mode == TransitionMode.Show || (Mode == TransitionMode.If && _visible))
+{
+    <div class="@Context.Class" style="@Context.Style" @ref="Ref">
+        @ChildContent
+    </div>
+}

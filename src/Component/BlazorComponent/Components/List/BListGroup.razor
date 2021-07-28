@@ -16,9 +16,9 @@
                 </AbstractComponent>
             </AbstractComponent>
         </AbstractComponent>
-        <div class="@CssProvider.GetClass("items")" style="@CssProvider.GetStyle("items")">
+        <ExpandTransition Class="@CssProvider.GetClass("items")" Style="@CssProvider.GetStyle("items")" Value="IsActive">
             @ChildContent
-        </div>
+        </ExpandTransition>
     </div>
 </CascadingValue>
 

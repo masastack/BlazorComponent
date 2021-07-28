@@ -10,10 +10,10 @@ namespace BlazorComponent
     public partial class BDatePickerYears : BDomComponentBase
     {
         [Parameter]
-        public StringNumber Min { get; set; }
+        public int? Min { get; set; }
 
         [Parameter]
-        public StringNumber Max { get; set; }
+        public int? Max { get; set; }
 
         [Parameter]
         public bool Readonly { get; set; }
@@ -23,9 +23,9 @@ namespace BlazorComponent
 
         protected int SelectedYear => Value != null ? Value.ToInt32() : DateTime.Now.Year;
 
-        protected int MaxYear => Max != null ? Max.ToInt32() : SelectedYear + 100;
+        protected int MaxYear => Max != null ? Max.Value : SelectedYear + 100;
 
-        protected int MinYear => Math.Min(MaxYear, Min != null ? Min.ToInt32() : SelectedYear - 100);
+        protected int MinYear => Math.Min(MaxYear, Min != null ? Min.Value : SelectedYear - 100);
 
         [Parameter]
         public EventCallback<int> OnYearSelected { get; set; }

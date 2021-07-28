@@ -34,6 +34,9 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment NodesContent { get; set; }
 
+        [Parameter]
+        public Func<TItem, bool> ItemDisabled { get; set; }
+
         public List<BTreeItem<TItem>> ChildNodes { get; set; } = new List<BTreeItem<TItem>>();
 
         public bool HasChildNodes => ChildNodes?.Count > 0;
@@ -150,7 +153,7 @@ namespace BlazorComponent
         {
             get
             {
-                return _disabled || (ParentNode?.Disabled ?? false);
+                return _disabled || (ParentNode?.Disabled ?? false) || (ItemDisabled?.Invoke(DataItem) ?? false);
             }//禁用状态受制于父节点
             set
             {
@@ -634,6 +637,11 @@ namespace BlazorComponent
 
         public async Task HandleItemClickAsync(MouseEventArgs args)
         {
+            if (Disabled)
+            {
+                return;
+            }
+
             if (Activatable)
             {
                 if (IsActive)

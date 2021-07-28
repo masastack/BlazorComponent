@@ -62,6 +62,9 @@ namespace BlazorComponent
         [Parameter]
         public List<BTreeItem<TItem>> ChildNodes { get; set; } = new List<BTreeItem<TItem>>();
 
+        [Parameter]
+        public Func<TItem, bool> ItemDisabled { get; set; }
+
         /// <summary>
         /// 添加节点
         /// </summary>

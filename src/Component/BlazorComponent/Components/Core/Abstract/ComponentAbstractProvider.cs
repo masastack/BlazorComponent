@@ -57,6 +57,17 @@ namespace BlazorComponent
             return this;
         }
 
+        public ComponentAbstractProvider Merge<TComponent, TImplementComponent>(Action<Dictionary<string, object>> mergePropertiesAction = null)
+            where TImplementComponent : TComponent
+        {
+            var key = ComponentKey.Get<TComponent>();
+
+            _typeConfig[key] = typeof(TImplementComponent);
+            Merge(key, mergePropertiesAction);
+
+            return this;
+        }
+
         private void Merge(ComponentKey key, Action<Dictionary<string, object>> mergePropertiesAction = null)
         {
             if (mergePropertiesAction != null)

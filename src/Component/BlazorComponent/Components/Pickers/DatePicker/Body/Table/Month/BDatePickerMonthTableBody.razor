@@ -10,7 +10,7 @@
             {
                 var month = i * 3 + j + 1;
                 <td>
-                    <AbstractComponent IsActive="@IsSelected(month)" OnClick="@HandleMonthClick(month)" Metadata="AbstractProvider.GetMetadata<BButton>()">
+                    <AbstractComponent Disabled="@IsDisabled(month)" IsActive="@IsSelected(month)" OnClick="@HandleMonthClick(month)" Metadata="AbstractProvider.GetMetadata<BButton>()">
                         @month
                     </AbstractComponent>
                 </td>

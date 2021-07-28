@@ -112,6 +112,8 @@
 
         public static string GetBoundingClientRects => $"{Variables.JsInteropFuncNamePrefix}getBoundingClientRects";
 
+        public static string GetSize => $"{Variables.JsInteropFuncNamePrefix}getSize";
+
         #region Draggable Modal
 
         public static string EnableDraggable => $"{Variables.JsInteropFuncNamePrefix}enableDraggable";

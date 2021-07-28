@@ -24,6 +24,12 @@ namespace BlazorComponent
         [Parameter]
         public string Color { get; set; } = "accent";
 
+        [Parameter]
+        public DateTime? Min { get; set; }
+
+        [Parameter]
+        public DateTime? Max { get; set; }
+
         protected int DaysInMonth => new DateTime(Component.DisplayedYear, Component.DisplayedMonth, 1).AddMonths(1).AddDays(-1).Day;
 
         protected int WeekDaysBeforeFirstDayOfTheMonth => (int)new DateTime(Component.DisplayedYear, Component.DisplayedMonth, 1).DayOfWeek;
@@ -48,6 +54,12 @@ namespace BlazorComponent
         public bool IsSelected(int day)
         {
             return day == Component.Value.Day && Component.DisplayedMonth == Component.Value.Month && Component.DisplayedYear == Component.Value.Year;
+        }
+
+        public bool IsDisabled(int day)
+        {
+            var current = new DateTime(Component.DisplayedYear, Component.DisplayedMonth, day);
+            return (Min != null && current < Min.Value.Date) || (Max != null && current > Max.Value.Date);
         }
 
         protected virtual EventCallback<MouseEventArgs> HandleDayClick(int day) => EventCallback.Factory.Create<MouseEventArgs>(this, async () =>

@@ -789,3 +789,18 @@ export function getBoundingClientRects(selector) {
 
     return result;
 }
+
+export function getSize(ele: HTMLElement, sizeProp) {
+    var display = ele.style.display;
+    var overflow = ele.style.overflow;
+
+    ele.style.display = "";
+    ele.style.overflow = "hidden";
+
+    var size = ele["offset" + sizeProp] || 0;
+
+    ele.style.display = display;
+    ele.style.overflow = overflow;
+
+    return size;
+}

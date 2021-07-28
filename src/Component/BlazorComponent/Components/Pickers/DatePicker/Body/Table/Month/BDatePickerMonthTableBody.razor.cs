@@ -19,9 +19,20 @@ namespace BlazorComponent
         [Parameter]
         public string Color { get; set; } = "accent";
 
+        [Parameter]
+        public DateTime? Min { get; set; }
+
+        [Parameter]
+        public DateTime? Max { get; set; }
+
         public bool IsSelected(int month)
         {
-            return Component.DisplayedMonth == month && Component.DisplayedYear == Component.Value.Year;
+            return Component.Value.Month == month && Component.DisplayedYear == Component.Value.Year;
+        }
+
+        public bool IsDisabled(int month)
+        {
+            return (Min != null && Component.DisplayedYear == Min.Value.Year && month < Min.Value.Month) || (Max != null && Component.DisplayedYear == Max.Value.Year && month > Max.Value.Month);
         }
 
         protected virtual EventCallback<MouseEventArgs> HandleMonthClick(int month) => EventCallback.Factory.Create<MouseEventArgs>(this, async () =>

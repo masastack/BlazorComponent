@@ -2,7 +2,7 @@
 @inherits BDomComponentBase
 
 <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
-    <AbstractComponent OnClick="@OnPrevClick" StopPropagation="@true" Metadata="AbstractProvider.GetMetadata<BButton>()">
+    <AbstractComponent Disabled="@PrevDisabled" OnClick="@OnPrevClick" StopPropagation="@true" Metadata="AbstractProvider.GetMetadata<BButton>()">
         <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
             @PrevIcon
         </AbstractComponent>
@@ -19,7 +19,7 @@
                     }
                     else
                     {
-                        @Value
+                        @DisplayValue
                     }
                 </button>
             }
@@ -32,13 +32,13 @@
                     }
                     else
                     {
-                        @Value
+                        @DisplayValue
                     }
                 </button>
             }
         </div>
     </div>
-    <AbstractComponent OnClick="@OnNextClick" StopPropagation="@true" Metadata="AbstractProvider.GetMetadata<BButton>()">
+    <AbstractComponent Disabled="@NextDisabled" OnClick="@OnNextClick" StopPropagation="@true" Metadata="AbstractProvider.GetMetadata<BButton>()">
         <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
             @NextIcon
         </AbstractComponent>
