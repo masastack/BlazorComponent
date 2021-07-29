@@ -52,7 +52,7 @@ namespace BlazorComponent
         protected bool Blur { get; set; }
 
         [Parameter]
-        public StringBoolean HideDetails { get; set; } = "auto";
+        public StringBoolean HideDetails { get; set; } = false;
 
         public virtual bool HasDetails => Messages?.Count > 0;
 

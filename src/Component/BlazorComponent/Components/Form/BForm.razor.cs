@@ -11,6 +11,8 @@ namespace BlazorComponent
 {
     public partial class BForm : BDomComponentBase
     {
+        private object _oldModel;
+
         [Parameter]
         public RenderFragment<EditContext> ChildContent { get; set; }
 
@@ -23,19 +25,19 @@ namespace BlazorComponent
         [Parameter]
         public bool EnableDataAnnotationsValidation { get; set; }
 
-        protected EditContext EditContext { get; set; }
+        public EditContext EditContext { get; protected set; }
 
-        public EditContext UseEditContext() => EditContext;
-
-        protected override void OnInitialized()
+        protected override void OnParametersSet()
         {
-            if (EditContext == null && Model != null)
+            if (_oldModel != Model)
             {
                 EditContext = new EditContext(Model);
                 if (EnableDataAnnotationsValidation)
                 {
                     EditContext.EnableDataAnnotationsValidation();
                 }
+
+                _oldModel = Model;
             }
         }
     }

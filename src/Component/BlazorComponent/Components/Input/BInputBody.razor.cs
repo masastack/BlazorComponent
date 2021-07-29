@@ -61,6 +61,12 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment PrependInnerContent { get; set; }
 
+        [Parameter]
+        public string ValidationState { get; set; }
+
+        [Parameter]
+        public bool HasState { get; set; }
+
         public ElementReference InputRef { get; set; }
 
         public async Task HandleChangeAsync(ChangeEventArgs args)
