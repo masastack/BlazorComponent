@@ -61,16 +61,16 @@
                             @if (IsAutocomplete)
                             {
                                 <input type="text" autocomplete="off" @ref="InputRef"
-                                       value="@ValueText"
-                                       @onblur="HandleOnBlur"
-                                       @onblur:stopPropagation
-                                       @oninput="EventCallback.Factory.Create<ChangeEventArgs>(BodyRef,HandleOnInputAsync)"
-                                       @onkeydown="EventCallback.Factory.Create<KeyboardEventArgs>(BodyRef,HandleOnKeyDownAsync)" />
+                                   value="@ValueText"
+                                   @onblur="HandleOnBlur"
+                                   @onblur:stopPropagation
+                                   @oninput="EventCallback.Factory.Create<ChangeEventArgs>(BodyRef,HandleOnInputAsync)"
+                                   @onkeydown="EventCallback.Factory.Create<KeyboardEventArgs>(BodyRef,HandleOnKeyDownAsync)" />
                             }
                             else
                             {
                                 <input id="input-@Id" type="text" readonly="readonly"
-                                       class="@CssProvider.GetClass("select-input")" />
+                                   class="@CssProvider.GetClass("select-input")" />
                             }
                         </div>
                         <div class="@CssProvider.GetClass("select-arrow")">
@@ -106,24 +106,21 @@
             else if (Items.Any())
             {
                 <AbstractComponent Metadata="AbstractProvider.GetMetadata<BList>()">
-                    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemGroup>()">
-                        @foreach (var item in Items)
-                        {
-                            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BSelectOption<TItem, TValue>>()"
-                                               Item="@item"
-                                               Value="@ItemValue(item)"
-                                               Label="@ItemText(item)"
-                                               key="@ItemValue(item).ToString()" />
-                        }
-                    </AbstractComponent>
+                    @foreach (var item in Items)
+                    {
+                        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BSelectOption<TItem, TValue>>()"
+                                   Item="@item"
+                                   Value="@ItemValue(item)"
+                                   Label="@ItemText(item)"
+                                   Disabled="@ItemDisabled(item)"
+                                   key="@ItemValue(item).ToString()" />
+                    }
                 </AbstractComponent>
             }
             else
             {
                 <AbstractComponent Metadata="AbstractProvider.GetMetadata<BList>()">
-                    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemGroup>()">
-                        @ChildContent
-                    </AbstractComponent>
+                    @ChildContent
                 </AbstractComponent>
             }
         </CascadingValue>
