@@ -120,9 +120,6 @@ namespace BlazorComponent
         [Parameter]
         public string Value { get; set; }
 
-        [Parameter]
-        public bool Dark { get; set; }
-
         protected override void OnParametersSet()
         {
             if (Click.HasDelegate)
@@ -163,7 +160,6 @@ namespace BlazorComponent
             if (ItemGroup != null)
             {
                 ItemGroup.AddItem(this);
-                Dark = ItemGroup.Dark;
             }
         }
 
