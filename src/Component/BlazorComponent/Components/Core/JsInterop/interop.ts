@@ -744,7 +744,7 @@ export function getImageDimensions(src: string) {
             })
         }
         img.onerror = function () {
-            reject({
+            resolve({
                 width: 0,
                 height: 0
             })
