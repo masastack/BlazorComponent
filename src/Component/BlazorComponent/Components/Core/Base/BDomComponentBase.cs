@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public abstract class BDomComponentBase : BComponentBase, IMixins
+    public abstract class BDomComponentBase : BComponentBase
     {
         private ElementReference _ref;
 

@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public interface IMixins
+    public interface IThemeable
     {
+        bool IsDark { get; }
     }
 }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public abstract partial class BButton : BDomComponentBase, IItem
+    public abstract partial class BButton : BDomComponentBase, IItem, IThemeable
     {
         /// <summary>
         /// The background color
@@ -119,6 +119,8 @@ namespace BlazorComponent
 
         [Parameter]
         public string Value { get; set; }
+
+        public virtual bool IsDark { get; }
 
         protected override void OnParametersSet()
         {
