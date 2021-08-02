@@ -26,7 +26,7 @@
                         <AbstractComponent Metadata="AbstractProvider.GetMetadata<BChip>()"
                            Close
                            CloseIconColor="@(file.Uploaded ? "" : "red")"
-                           Click="@(EventCallback.Factory.Create<MouseEventArgs>(this, () => Files.Remove(file)))">
+                           CloseClick="@(EventCallback.Factory.Create<MouseEventArgs>(this, () => Files.Remove(file)))">
                             @if (file.IsImage)
                             {
                                 <AbstractComponent Metadata="AbstractProvider.GetMetadata<BAvatar>()" Tile>
