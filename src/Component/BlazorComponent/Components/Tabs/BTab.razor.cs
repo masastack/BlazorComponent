@@ -20,7 +20,7 @@ namespace BlazorComponent
         [Parameter]
         public string Key { get; set; }
 
-        public string ComputedKey => Key ?? (Tabs.Tabs.IndexOf(this) + 1).ToString();
+        public string ComputedKey => Key ?? Tabs.Tabs.IndexOf(this).ToString();
 
         public bool IsActive => Tabs.Value == ComputedKey || (Tabs.Value == null && Tabs.Tabs.IndexOf(this) == 0);
 
