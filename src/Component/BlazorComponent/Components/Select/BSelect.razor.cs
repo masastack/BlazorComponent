@@ -19,9 +19,9 @@ namespace BlazorComponent
             get => MenuProps == null ? _visible : MenuProps.Visible;
             set
             {
-                if (MenuProps == null) 
+                if (MenuProps == null)
                     _visible = value;
-                else 
+                else
                     MenuProps.Visible = value;
             }
         }
@@ -129,6 +129,9 @@ namespace BlazorComponent
 
         [Parameter]
         public Func<TItem, TValue> ItemValue { get; set; } = null!;
+
+        [Parameter]
+        public Func<TItem, bool> ItemDisabled { get; set; } = (item) => false;
 
         [Parameter]
         public IReadOnlyList<TItem> Items { get; set; } = new List<TItem>();

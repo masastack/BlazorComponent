@@ -13,6 +13,9 @@ namespace BlazorComponent
         [Parameter]
         public string Href { get; set; }
 
+        [Parameter]
+        public string Color { get; set; }
+
         [CascadingParameter]
         protected BListItemGroup Group { get; set; }
 

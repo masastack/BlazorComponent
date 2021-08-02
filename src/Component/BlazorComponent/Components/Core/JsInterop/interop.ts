@@ -28,7 +28,7 @@ export function getDomInfo(element, selector = "body") {
         document.querySelector(selector).removeChild(cloned);
     }
     else {
-
+        console.log("dom.offsetWidth",dom.offsetWidth)
         result = getDomInfoObj(dom);
     }
 
@@ -39,8 +39,6 @@ function getDomInfoObj(dom) {
     var result = {};
     result["offsetTop"] = dom.offsetTop || 0;
     result["offsetLeft"] = dom.offsetLeft || 0;
-    result["offsetWidth"] = dom.offsetWidth || 0;
-    result["offsetHeight"] = dom.offsetHeight || 0;
     result["scrollHeight"] = dom.scrollHeight || 0;
     result["scrollWidth"] = dom.scrollWidth || 0;
     result["scrollLeft"] = dom.scrollLeft || 0;
@@ -50,6 +48,8 @@ function getDomInfoObj(dom) {
     result["clientHeight"] = dom.clientHeight || 0;
     result["clientWidth"] = dom.clientWidth || 0;
     var position = getElementPos(dom);
+    result["offsetWidth"] = Math.round(position.offsetWidth) || 0;
+    result["offsetHeight"] = Math.round(position.offsetHeight) || 0;
     result["relativeLeft"] = Math.round(position.relativeLeft) || 0;
     result["relativeTop"] = Math.round(position.relativeTop) || 0;
     result["absoluteLeft"] = Math.round(position.absoluteLeft) || 0;
@@ -67,6 +67,8 @@ function getElementPos(element) {
             var scrollLeft = viewportElement.scrollLeft;
             var scrollTop = viewportElement.scrollTop;
 
+            res.offsetWidth = box.width;
+            res.offsetHeight = box.height;
             res.relativeLeft = box.left;
             res.relativeTop = box.top;
             res.absoluteLeft = box.left + scrollLeft;
@@ -744,7 +746,7 @@ export function getImageDimensions(src: string) {
             })
         }
         img.onerror = function () {
-            reject({
+            resolve({
                 width: 0,
                 height: 0
             })

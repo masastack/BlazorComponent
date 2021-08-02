@@ -5,10 +5,29 @@ namespace BlazorComponent
     public partial class BSelectOption<TItem, TValue> : BDomComponentBase
     {
         private string _key;
-        protected bool _checked;
 
         [CascadingParameter]
         protected BSelect<TItem, TValue> SelectWrapper { get; set; }
+
+        protected bool Selected
+        {
+            get
+            {
+                if (SelectWrapper != null)
+                {
+                    if (SelectWrapper.Multiple && SelectWrapper.Values != null)
+                    {
+                        return SelectWrapper.Values.Contains(Value);
+                    }
+                    else if (SelectWrapper.Value != null)
+                    {
+                        return SelectWrapper.Value.Equals(Value);
+                    }
+                }
+
+                return false;
+            }
+        }
 
         [Parameter]
         public TItem Item { get; set; }
@@ -37,5 +56,8 @@ namespace BlazorComponent
 
         [Parameter]
         public string Icon { get; set; }
+
+        [Parameter]
+        public bool Disabled { get; set; }
     }
 }
