@@ -9,8 +9,6 @@ namespace BlazorComponent
 {
     public partial class BTab : BDomComponentBase
     {
-        protected bool IsActive { get; set; }
-
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
@@ -19,24 +17,21 @@ namespace BlazorComponent
 
         public HtmlElement Rect { get; private set; }
 
+        [Parameter]
+        public string Key { get; set; }
+
+        public string ComputedKey => Key ?? Tabs.Tabs.IndexOf(this).ToString();
+
+        public bool IsActive => Tabs.Value == ComputedKey || (Tabs.Value == null && Tabs.Tabs.IndexOf(this) == 0);
+
         protected override void OnInitialized()
         {
             Tabs.AddTab(this);
         }
 
-        public void HandleClick()
+        public async Task HandleClick()
         {
-            Tabs.SelectTab(this);
-        }
-
-        public void Active()
-        {
-            IsActive = true;
-        }
-
-        public void DeActive()
-        {
-            IsActive = false;
+            await Tabs.SelectTabAsync(this);
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)

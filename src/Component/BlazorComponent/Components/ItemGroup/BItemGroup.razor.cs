@@ -42,9 +42,6 @@ namespace BlazorComponent
         public EventCallback<List<string>> ValuesChanged { get; set; }
 
         [Parameter]
-        public bool Dark { get; set; }
-
-        [Parameter]
         public bool Column { get; set; }
 
         public void AddItem(IItem item)

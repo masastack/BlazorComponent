@@ -1,0 +1,27 @@
+﻿@namespace BlazorComponent
+@inherits BSheetBody
+
+@if (!string.IsNullOrEmpty(Src) || ImgContent != null)
+{
+    <div class="@CssProvider.GetClass("image")">
+        @if (ImgContent != null)
+        {
+            @ImgContent(ImgProps)
+        }
+        else
+        {
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BImage>()"></AbstractComponent>
+        }
+    </div>
+}
+
+<div class="@CssProvider.GetClass("content")" style="@CssProvider.GetStyle("content")">
+    @ChildContent
+</div>
+
+@if (IsExtended)
+{
+    <div class="@CssProvider.GetClass("extension")" style="@CssProvider.GetStyle("extension")">
+        @ExtensionContent
+    </div>
+}

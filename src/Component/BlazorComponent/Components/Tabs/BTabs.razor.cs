@@ -9,11 +9,11 @@ namespace BlazorComponent
 {
     public partial class BTabs : BDomComponentBase
     {
-        protected List<BTab> Tabs { get; set; } = new();
+        public List<BTab> Tabs { get; set; } = new();
 
-        protected List<ITabItem> TabItems { get; set; } = new();
+        public List<ITabItem> TabItems { get; set; } = new();
 
-        protected BTab ActiveTab { get; set; }
+        protected BTab ActiveTab => Tabs.Find(r => r.IsActive);
 
         [Parameter]
         public bool HideSlider { get; set; }
@@ -30,50 +30,28 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment ItemContent { get; set; }
 
+        [Parameter]
+        public string Value { get; set; }
+
+        [Parameter]
+        public EventCallback<string> ValueChanged { get; set; }
+
         public void AddTab(BTab tab)
         {
-            if (Tabs.Count == 0)
-            {
-                ActiveTab = tab;
-                tab.Active();
-            }
-
             Tabs.Add(tab);
         }
 
         public void AddTabItem(ITabItem tabItem)
         {
-            if (TabItems.Count == 0)
-            {
-                tabItem.Active();
-            }
-
             TabItems.Add(tabItem);
         }
 
-        public void SelectTab(BTab selectedTab)
+        public async Task SelectTabAsync(BTab selectedTab)
         {
-            ActiveTab = selectedTab;
-
-            for (int i = 0; i < Tabs.Count; i++)
+            Value = selectedTab.ComputedKey;
+            if (ValueChanged.HasDelegate)
             {
-                if (Tabs[i] == selectedTab)
-                {
-                    Tabs[i].Active();
-
-                    if (i < TabItems.Count)
-                    {
-                        TabItems[i].Active();
-                    }
-                }
-                else
-                {
-                    Tabs[i].DeActive();
-                    if (i < TabItems.Count)
-                    {
-                        TabItems[i].DeActive();
-                    }
-                }
+                await ValueChanged.InvokeAsync(Value);
             }
 
             InvokeStateHasChanged();
