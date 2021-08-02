@@ -7,12 +7,9 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BSheet : BDomComponentBase
+    public partial class BSheetBody
     {
         [Parameter]
         public RenderFragment ChildContent { get; set; }
-
-        [Parameter]
-        public virtual string Tag { get; set; } = "div";
     }
 }

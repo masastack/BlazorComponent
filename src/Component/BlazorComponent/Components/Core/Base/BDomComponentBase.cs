@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public abstract class BDomComponentBase : BComponentBase
+    public abstract class BDomComponentBase : BComponentBase, IMixins
     {
         private ElementReference _ref;
 
@@ -86,7 +86,7 @@ namespace BlazorComponent
 
         protected override bool ShouldRender()
         {
-            if (!_preventRender) 
+            if (!_preventRender)
                 return base.ShouldRender();
 
             _preventRender = false;

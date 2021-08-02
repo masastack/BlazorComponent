@@ -21,7 +21,7 @@ namespace BlazorComponent
             );
 
         public int ToInt32() => Match(
-            t0 => Convert.ToInt32(t0),
+            t0 => int.TryParse(t0, out var val) ? val : 0,
             t1 => t1,
             t2 => Convert.ToInt32(t2)
             );
