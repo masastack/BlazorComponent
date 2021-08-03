@@ -32,6 +32,15 @@ namespace BlazorComponent
         public string Label { get; set; }
 
         [Parameter]
+        public RenderFragment LabelContent { get; set; }
+
+        public bool HasLabel => LabelContent != null || Label != null;
+
+        //TODO:props
+        [Parameter]
+        public RenderFragment MessageContent { get; set; }
+
+        [Parameter]
         public bool Clearable { get; set; }
 
         [Obsolete("Use OnClearClick instead.")]
@@ -47,16 +56,28 @@ namespace BlazorComponent
         [Parameter]
         public string AppendIcon { get; set; }
 
-        protected List<string> Messages { get; set; } = new();
+        [Parameter]
+        public string PrependIcon { get; set; }
 
-        protected bool Blur { get; set; }
+        protected List<string> Messages { get; set; } = new();
 
         [Parameter]
         public StringBoolean HideDetails { get; set; } = false;
 
         public virtual bool HasDetails => Messages?.Count > 0;
 
-        protected bool ShowDetails => HideDetails == false || (HideDetails == "auto" && HasDetails);
+        public bool ShowDetails => HideDetails == false || (HideDetails == "auto" && HasDetails);
+
+        public bool HasMouseDown { get; set; }
+
+        [Parameter]
+        public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+        [Parameter]
+        public EventCallback<MouseEventArgs> OnMouseDown { get; set; }
+
+        [Parameter]
+        public EventCallback<MouseEventArgs> OnMouseUp { get; set; }
 
         protected override void OnParametersSet()
         {
@@ -76,9 +97,30 @@ namespace BlazorComponent
             }
         }
 
-        protected virtual Task HandleClickAsync(MouseEventArgs args)
+        protected virtual async Task HandleOnClick(MouseEventArgs args)
         {
-            return Task.CompletedTask;
+            if (OnClick.HasDelegate)
+            {
+                await OnClick.InvokeAsync(args);
+            }
+        }
+
+        protected virtual async Task HandleOnMouseDown(MouseEventArgs args)
+        {
+            HasMouseDown = true;
+            if (OnMouseDown.HasDelegate)
+            {
+                await OnMouseDown.InvokeAsync(args);
+            }
+        }
+
+        protected virtual async Task HandleOnMouseUp(MouseEventArgs args)
+        {
+            HasMouseDown = false;
+            if (OnMouseUp.HasDelegate)
+            {
+                await OnMouseUp.InvokeAsync(args);
+            }
         }
     }
 }

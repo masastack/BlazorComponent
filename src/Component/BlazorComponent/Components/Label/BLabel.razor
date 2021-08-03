@@ -2,12 +2,5 @@
 @inherits BDomComponentBase
 
 <label class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">
-    @if (ChildContent != default)
-    {
-        @ChildContent
-    }
-    else
-    {
-        @Value
-    }
+    @ChildContent
 </label>

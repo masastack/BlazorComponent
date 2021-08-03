@@ -1,0 +1,19 @@
+﻿@namespace BlazorComponent
+@typeparam TInput
+
+@if (AppendContent != default || AppendIcon != null)
+{
+    <div class="@CssProvider.GetClass( "append-outer")">
+        @AppendContent
+        @if (AppendIcon != null)
+        {
+            //TODO:这里还需要进一步完善
+            var name = "append-outer-icon";
+            <div class="@CssProvider.GetClass("append-outer-icon")">
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>(name)">
+                    @AppendIcon
+                </AbstractComponent>
+            </div>
+        }
+    </div>
+}

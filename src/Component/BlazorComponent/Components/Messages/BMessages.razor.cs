@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
-    public interface IInputBody
+    public partial class BMessages:BDomComponentBase
     {
-
+        [Parameter]
+        public List<string> Value{ get; set; }
     }
 }

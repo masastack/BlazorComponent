@@ -12,6 +12,23 @@ namespace BlazorComponent
         private readonly Dictionary<ComponentKey, Type> _typeConfig = new();
         private readonly Dictionary<ComponentKey, Action<Dictionary<string, object>>> _propertiesConfig = new();
 
+        public ComponentAbstractProvider Apply(Type type, Type iType, Action<Dictionary<string, object>> propertiesAction = null)
+        {
+            var key = new ComponentKey(type);
+            if (_typeConfig.TryAdd(key, iType))
+            {
+                _propertiesConfig[key] = propertiesAction;
+            }
+
+            return this;
+        }
+
+        public ComponentAbstractProvider Apply<TComponent>(Action<Dictionary<string, object>> propertiesAction = null)
+        {
+            var key = ComponentKey.Get<TComponent>();
+            return Apply<TComponent, TComponent>(key, propertiesAction);
+        }
+
         public ComponentAbstractProvider Apply<TComponent, TImplementComponent>(Action<Dictionary<string, object>> propertiesAction = null)
             where TImplementComponent : TComponent
         {
@@ -68,6 +85,16 @@ namespace BlazorComponent
             return this;
         }
 
+        public ComponentAbstractProvider Merge(Type type, Type iType, Action<Dictionary<string, object>> mergePropertiesAction = null)
+        {
+            var key = new ComponentKey(type);
+
+            _typeConfig[key] = iType;
+            Merge(key, mergePropertiesAction);
+
+            return this;
+        }
+
         private void Merge(ComponentKey key, Action<Dictionary<string, object>> mergePropertiesAction = null)
         {
             if (mergePropertiesAction != null)
@@ -101,6 +128,18 @@ namespace BlazorComponent
             Merge(key, mergePropertiesAction);
 
             return this;
+        }
+
+        public AbstractMetadata GetMetadata(Type type)
+        {
+            var key = new ComponentKey(type);
+            var cType = _typeConfig.GetValueOrDefault(key, type);
+
+            var properties = new Dictionary<string, object>();
+            var action = _propertiesConfig.GetValueOrDefault(key);
+            action?.Invoke(properties);
+
+            return new AbstractMetadata(cType, properties);
         }
 
         public AbstractMetadata GetMetadata<TComponent>()

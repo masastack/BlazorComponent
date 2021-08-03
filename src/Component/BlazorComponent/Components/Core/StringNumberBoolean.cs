@@ -7,14 +7,15 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public class StringBoolean : OneOfBase<string, bool>
+    public class StringNumberBoolean : OneOfBase<string, int, bool>
     {
-        StringBoolean(OneOf<string, bool> _) : base(_) { }
+        StringNumberBoolean(OneOf<string, int, bool> _) : base(_) { }
 
-        public static implicit operator StringBoolean(string _) => new(_);
-        public static implicit operator StringBoolean(bool _) => new(_);
+        public static implicit operator StringNumberBoolean(string _) => new(_);
+        public static implicit operator StringNumberBoolean(int _) => new(_);
+        public static implicit operator StringNumberBoolean(bool _) => new(_);
 
-        public static bool operator ==(StringBoolean left, StringBoolean right)
+        public static bool operator ==(StringNumberBoolean left, StringNumberBoolean right)
         {
             if (Equals(left, right))
             {
@@ -29,7 +30,7 @@ namespace BlazorComponent
             return left.Value == right.Value;
         }
 
-        public static bool operator !=(StringBoolean left, StringBoolean right)
+        public static bool operator !=(StringNumberBoolean left, StringNumberBoolean right)
         {
             if (Equals(left, right))
             {

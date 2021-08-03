@@ -31,9 +31,16 @@ namespace BlazorComponent
             {
                 builder.AddMultipleAttributes(sequence++, ExtraAttributes);
             }
-            builder.AddContent(sequence++, ChildContent);
 
-            builder.AddElementReferenceCapture(sequence++, ReferenceCaptureAction);
+            if (ChildContent != null)
+            {
+                builder.AddContent(sequence++, ChildContent);
+            }
+
+            if (ReferenceCaptureAction != null)
+            {
+                builder.AddElementReferenceCapture(sequence++, ReferenceCaptureAction);
+            }
 
             builder.CloseElement();
         }

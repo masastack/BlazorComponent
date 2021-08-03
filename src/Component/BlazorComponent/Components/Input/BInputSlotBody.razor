@@ -1,0 +1,17 @@
+﻿@namespace BlazorComponent
+@typeparam TInput
+
+@if (HasLabel)
+{
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BLabel>()">
+        @if (LabelContent != null)
+        {
+            @LabelContent
+        }
+        else
+        {
+            @Label
+        }
+    </AbstractComponent>
+}
+@InputChildContent

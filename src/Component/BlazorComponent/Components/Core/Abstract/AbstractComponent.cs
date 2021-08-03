@@ -78,7 +78,10 @@ namespace BlazorComponent
             AdditionalAttributes.ForEach(attr => builder.AddAttribute(sequence++, attr.Key, attr.Value));
 
             //Set child content 
-            builder.AddAttribute(sequence++, nameof(ChildContent), ChildContent);
+            if (ChildContent != null)
+            {
+                builder.AddAttribute(sequence++, nameof(ChildContent), ChildContent);
+            }
 
             builder.CloseComponent();
         }
