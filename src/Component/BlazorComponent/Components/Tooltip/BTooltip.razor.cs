@@ -15,6 +15,9 @@ namespace BlazorComponent
         [Parameter]
         public string ActivatorStyle { get; set; }
 
+        [Parameter]
+        public string ActivatorClass { get; set; }
+
         [Obsolete("Use ActivatorContent instead.")]
         [Parameter]
         public RenderFragment Activator { get; set; }
@@ -35,13 +38,6 @@ namespace BlazorComponent
             {
                 ActivatorContent = Activator;
             }
-        }
-
-        protected override void SetComponentClass()
-        {
-            CssProvider
-              .AsProvider<BTooltip>()
-              .Apply("activator", styleAction: s => s.Add(ActivatorStyle));
         }
 
         protected virtual Task OnMouseEnter()
