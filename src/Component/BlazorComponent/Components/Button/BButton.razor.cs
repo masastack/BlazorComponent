@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public abstract partial class BButton : BDomComponentBase, IItem, IThemeable
+    public abstract partial class BButton : BDomComponentBase, IThemeable
     {
         /// <summary>
         /// The background color
@@ -114,11 +114,13 @@ namespace BlazorComponent
         [CascadingParameter]
         public BItemGroup ItemGroup { get; set; }
 
-        [Parameter]
-        public bool IsActive { get; set; }
+        public bool IsActive => ItemGroup != null && ItemGroup.Values.Contains(Value);
 
         [Parameter]
-        public string Value { get; set; }
+        public StringNumber Value { get; set; }
+
+        [Parameter]
+        public bool NoGroup { get; set; }
 
         public virtual bool IsDark { get; }
 
@@ -135,42 +137,21 @@ namespace BlazorComponent
             }
         }
 
-        public void Active()
-        {
-            if (IsActive)
-            {
-                return;
-            }
-
-            IsActive = true;
-            StateHasChanged();
-        }
-
-        public void DeActive()
-        {
-            if (!IsActive)
-            {
-                return;
-            }
-
-            IsActive = false;
-            StateHasChanged();
-        }
-
         protected override void OnInitialized()
         {
-            if (ItemGroup != null)
-            {
-                ItemGroup.AddItem(this);
-            }
+            if (ItemGroup == null) return;
+
+            if (Value == null)
+                Value = ItemGroup.AllKeys.Count;
+
+            ItemGroup.AllKeys.Add(Value);
         }
 
         protected virtual async Task HandleClickAsync(MouseEventArgs args)
         {
-            if (ItemGroup != null)
+            if (!NoGroup && ItemGroup != null)
             {
-                IsActive = !IsActive;
-                ItemGroup.NotifyItemChanged(this);
+                await ItemGroup.TogglePanel(Value);
             }
 
             if (OnClick.HasDelegate)

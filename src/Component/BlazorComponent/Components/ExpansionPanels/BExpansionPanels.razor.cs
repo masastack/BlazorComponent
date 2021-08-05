@@ -1,39 +1,15 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BExpansionPanels : BDomComponentBase
+    public partial class BExpansionPanels : BItemGroup
     {
-        private List<StringNumber> _values = new();
-
         public List<StringNumber> NextActiveKeys { get; set; } = new();
-
-        /// <summary>
-        /// Records the all keys.
-        /// </summary>
-        public List<StringNumber> AllKeys { get; set; } = new();
-
-        [Parameter]
-        public List<StringNumber> Values
-        {
-            get => _values;
-            set => _values = value;
-        }
-
-        [Parameter]
-        public EventCallback<List<StringNumber>> ValuesChanged { get; set; }
-
-        [Parameter]
-        public RenderFragment ChildContent { get; set; }
 
         [Parameter]
         public bool Disabled { get; set; }
-
-        [Parameter]
-        public bool Multiple { get; set; }
 
         [Parameter]
         public bool Accordion { get; set; }
@@ -47,7 +23,7 @@ namespace BlazorComponent
         [Parameter]
         public bool Tile { get; set; }
 
-        public async Task TogglePanel(StringNumber key)
+        public async override Task TogglePanel(StringNumber key)
         {
             if (_values.Contains(key))
             {

@@ -1,13 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BItem : BDomComponentBase, IItem
+    public partial class BItem : BDomComponentBase
     {
         [Parameter]
         public RenderFragment<ItemContext> ChildContent { get; set; }
@@ -15,45 +11,27 @@ namespace BlazorComponent
         [CascadingParameter]
         public BItemGroup ItemGroup { get; set; }
 
-        public bool IsActive { get; set; }
+        public bool IsActive => ItemGroup != null && ItemGroup.Values.Contains(Value);
 
         [Parameter]
-        public string Value { get; set; }
+        public StringNumber Value { get; set; }
 
-        public void Toggle()
+        public async Task Toggle()
         {
-            IsActive = !IsActive;
-            ItemGroup.NotifyItemChanged(this);
-        }
-
-        public void Active()
-        {
-            if (IsActive)
+            if (ItemGroup != null)
             {
-                return;
+                await ItemGroup.TogglePanel(Value);
             }
-
-            IsActive = true;
-            StateHasChanged();
-        }
-
-        public void DeActive()
-        {
-            if (!IsActive)
-            {
-                return;
-            }
-
-            IsActive = false;
-            StateHasChanged();
         }
 
         protected override void OnInitialized()
         {
-            if (ItemGroup != null)
-            {
-                ItemGroup.AddItem(this);
-            }
+            if (ItemGroup == null) return;
+
+            if (Value == null)
+                Value = ItemGroup.AllKeys.Count;
+
+            ItemGroup.AllKeys.Add(Value);
         }
     }
 }
