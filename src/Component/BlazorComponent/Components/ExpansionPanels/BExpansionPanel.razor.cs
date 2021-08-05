@@ -1,48 +1,26 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BExpansionPanel : BDomComponentBase
+    public partial class BExpansionPanel : BGroupItem<BExpansionPanels>
     {
         private bool _disabled;
 
-        public bool Expanded => ExpansionPanels.Values.Contains(Key);
+        public bool Expanded => ItemGroup.Values.Contains(Value);
 
-        public bool NextActive => ExpansionPanels.NextActiveKeys.Contains(Key);
-
-        [CascadingParameter]
-        public BExpansionPanels ExpansionPanels { get; set; }
-
-        [Parameter]
-        public StringNumber Key { get; set; }
-
-        [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public bool NextActive => ItemGroup.NextActiveKeys.Contains(Value);
 
         [Parameter]
         public bool Disabled
         {
-            get => ExpansionPanels.Disabled || _disabled;
+            get => ItemGroup.Disabled || _disabled;
             set => _disabled = value;
         }
 
         public async Task Toggle()
         {
-            await ExpansionPanels.TogglePanel(Key);
-        }
-
-        protected override Task OnInitializedAsync()
-        {
-            // 当没有设置key时自动赋值
-            // TODO: 可能不一定按预期一样顺序赋值
-            if (Key == null)
-                Key = ExpansionPanels.AllKeys.Count;
-
-            ExpansionPanels.AllKeys.Add(Key);
-
-            return base.OnInitializedAsync();
+            await ToggleItem();
         }
     }
 }

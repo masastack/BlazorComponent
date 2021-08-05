@@ -23,7 +23,7 @@ namespace BlazorComponent
         [Parameter]
         public bool Tile { get; set; }
 
-        public async override Task TogglePanel(StringNumber key)
+        public async override Task Toggle(StringNumber key)
         {
             if (_values.Contains(key))
             {

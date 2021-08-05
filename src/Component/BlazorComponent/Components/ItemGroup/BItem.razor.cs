@@ -20,7 +20,7 @@ namespace BlazorComponent
         {
             if (ItemGroup != null)
             {
-                await ItemGroup.TogglePanel(Value);
+                await ItemGroup.Toggle(Value);
             }
         }
 

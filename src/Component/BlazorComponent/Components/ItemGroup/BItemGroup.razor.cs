@@ -5,12 +5,6 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public enum GroupType
-    {
-        ButtonGroup = 1,
-        ChipGroup = 2,
-    }
-
     public partial class BItemGroup : BDomComponentBase
     {
         protected List<StringNumber> _values = new();
@@ -41,7 +35,7 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<List<StringNumber>> ValuesChanged { get; set; }
 
-        public async virtual Task TogglePanel(StringNumber key)
+        public async virtual Task Toggle(StringNumber key)
         {
             if (_values.Contains(key))
             {
