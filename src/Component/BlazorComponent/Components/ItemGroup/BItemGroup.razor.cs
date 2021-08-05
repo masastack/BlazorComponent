@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BlazorComponent
@@ -15,6 +16,20 @@ namespace BlazorComponent
         protected List<StringNumber> _values = new();
 
         public List<StringNumber> AllKeys { get; set; } = new();
+
+        [Parameter]
+        public StringNumber Value
+        {
+            get => _values.LastOrDefault();
+            set
+            {
+                _values.Clear();
+                _values.Add(value);
+            }
+        }
+
+        [Parameter]
+        public EventCallback<StringNumber> ValueChanged { get; set; }
 
         [Parameter]
         public List<StringNumber> Values
@@ -50,6 +65,11 @@ namespace BlazorComponent
             if (ValuesChanged.HasDelegate)
             {
                 await ValuesChanged.InvokeAsync(_values);
+            }
+
+            if (ValueChanged.HasDelegate)
+            {
+                await ValueChanged.InvokeAsync(_values.LastOrDefault());
             }
 
             StateHasChanged();
