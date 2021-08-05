@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public interface IItem
+    public interface IHasProvider
     {
-        string Value { get; set; }
+        ComponentCssProvider CssProvider { get; }
+
+        ComponentAbstractProvider AbstractProvider { get; }
     }
 }

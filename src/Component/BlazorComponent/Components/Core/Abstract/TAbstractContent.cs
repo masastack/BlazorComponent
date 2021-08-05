@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public class AbstractContent : ComponentBase, IAbstractContent
+    public class TAbstractContent<TContext> : ComponentBase, IAbstractContent
     {
         [Parameter]
         public string Name { get; set; }
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment<TContext> ChildContent { get; set; }
 
         protected override void OnParametersSet()
         {

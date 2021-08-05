@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public interface IItem
+    public interface IAbstractContent
     {
-        string Value { get; set; }
+        string Name { get; set; }
     }
 }

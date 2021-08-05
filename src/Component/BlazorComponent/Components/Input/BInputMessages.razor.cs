@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BInputMessages<TInput> where TInput : BInput
+    public partial class BInputMessages<TInput> where TInput : IInput
     {
         [Parameter]
         public TInput Input { get; set; }
@@ -15,5 +15,13 @@ namespace BlazorComponent
         public bool ShowDetails => Input.ShowDetails;
 
         public ComponentAbstractProvider AbstractProvider => Input.AbstractProvider;
+
+        protected override void OnParametersSet()
+        {
+            if (Input == null)
+            {
+                throw new ArgumentNullException(nameof(Input));
+            }
+        }
     }
 }

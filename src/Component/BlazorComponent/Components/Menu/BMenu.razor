@@ -1,16 +1,26 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div @onclick="Click"
-     @onclick:stopPropagation
-     @onmouseenter="MouseEnter"
-     @onmouseleave="MouseOut"
-     @ref="Ref"
-     style="@CssProvider.GetStyle()">
-    @ActivatorContent
-</div>
+@if (Input)
+{
+    @ActivatorContent(new MenuContext { OnClick = Click })
+}
+else
+{
+    <div @onclick="Click"
+         @onclick:stopPropagation
+         @onmouseenter="MouseEnter"
+         @onmouseleave="MouseOut"
+         @ref="Ref"
+         style="@CssProvider.GetStyle()">
+        @ActivatorContent
+    </div>
+}
 
-<AbstractComponent Metadata="AbstractProvider.GetMetadata<BOverlay>()"></AbstractComponent>
+@if (!Input)
+{
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BOverlay>()"></AbstractComponent>
+}
 
 <div @ref="ContentRef" @onmouseenter="MouseEnter" @onmouseleave="MouseOut">
     <AbstractComponent Metadata="AbstractProvider.GetMetadata<BPopover>()">

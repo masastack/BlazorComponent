@@ -1,5 +1,6 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
+@implements IInput
 
 <CascadingValue Value="this">
     <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
@@ -23,7 +24,8 @@
             <div class="@CssProvider.GetClass( "input-slot")" style="@CssProvider.GetStyle( "input-slot")"
                  @onclick="HandleOnClick"
                  @onmousedown="HandleOnMouseDown"
-                 @onmouseup="HandleOnMouseUp">
+                 @onmouseup="HandleOnMouseUp"
+                 @ref="InputSlotRef">
                 <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BInputSlotBody<>))"></AbstractComponent>
             </div>
             <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BInputMessages<>))"></AbstractComponent>

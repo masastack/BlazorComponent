@@ -7,7 +7,7 @@ namespace BlazorComponent
         private string _key;
 
         [CascadingParameter]
-        protected BSelect<TItem, TValue> SelectWrapper { get; set; }
+        protected ISelect<TItem,TValue> SelectWrapper { get; set; }
 
         protected bool Selected
         {

@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public interface IItem
+    public interface ISwitch : IInput
     {
-        string Value { get; set; }
+        bool IsDisabled { get; }
+
+        bool Value { get; }
     }
 }

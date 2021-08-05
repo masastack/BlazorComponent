@@ -114,8 +114,7 @@ namespace BlazorComponent
         [CascadingParameter]
         public BItemGroup ItemGroup { get; set; }
 
-        [Parameter]
-        public bool IsActive { get; set; }
+        public bool IsActive => ItemGroup != null && ItemGroup.Value == Value;
 
         [Parameter]
         public string Value { get; set; }
@@ -135,28 +134,6 @@ namespace BlazorComponent
             }
         }
 
-        public void Active()
-        {
-            if (IsActive)
-            {
-                return;
-            }
-
-            IsActive = true;
-            StateHasChanged();
-        }
-
-        public void DeActive()
-        {
-            if (!IsActive)
-            {
-                return;
-            }
-
-            IsActive = false;
-            StateHasChanged();
-        }
-
         protected override void OnInitialized()
         {
             if (ItemGroup != null)
@@ -169,7 +146,6 @@ namespace BlazorComponent
         {
             if (ItemGroup != null)
             {
-                IsActive = !IsActive;
                 ItemGroup.NotifyItemChanged(this);
             }
 

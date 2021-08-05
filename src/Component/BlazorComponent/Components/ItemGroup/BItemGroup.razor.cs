@@ -47,113 +47,16 @@ namespace BlazorComponent
         public void AddItem(IItem item)
         {
             Items.Add(item);
-            SetActiveItem();
         }
 
         public void NotifyItemChanged(IItem changedItem)
         {
-            if (changedItem.IsActive)
+            Value = changedItem.Value;
+            if (ValueChanged.HasDelegate)
             {
-                if (Multiple)
-                {
-                    AddToValues(changedItem.Value);
-                }
-                else
-                {
-                    SetValue(changedItem.Value);
-                    foreach (var item in Items)
-                    {
-                        if (item != changedItem)
-                        {
-                            item.DeActive();
-                        }
-                    }
-                }
+                ValueChanged.InvokeAsync(Value);
             }
-            else
-            {
-                if (Multiple)
-                {
-                    RemoveFromValues(changedItem.Value);
-                }
-                else
-                {
-                    if (Mandatory && !Items.Any(r => r.IsActive))
-                    {
-                        SetValue(changedItem.Value);
-                        changedItem.Active();
-                    }
-                    else
-                    {
-                        SetValue(null);
-                    }
-                }
-            }
-        }
-
-        private void RemoveFromValues(string value)
-        {
-            if (Values.Contains(value))
-            {
-                Values.Remove(value);
-                if (ValuesChanged.HasDelegate)
-                {
-                    ValuesChanged.InvokeAsync(Values);
-                }
-            }
-        }
-
-        private void SetValue(string value)
-        {
-            if (Value != value)
-            {
-                Value = value;
-                if (ValueChanged.HasDelegate)
-                {
-                    ValueChanged.InvokeAsync(Value);
-                }
-            }
-        }
-
-        private void AddToValues(string value)
-        {
-            if (!Values.Contains(value))
-            {
-                Values.Add(value);
-                if (ValuesChanged.HasDelegate)
-                {
-                    ValuesChanged.InvokeAsync(Values);
-                }
-            }
-        }
-
-        protected override void OnParametersSet()
-        {
-            SetActiveItem();
-        }
-
-        private void SetActiveItem()
-        {
-            foreach (var item in Items)
-            {
-                if (item.Value != null)
-                {
-                    if (Multiple)
-                    {
-                        if (Values.Contains(item.Value))
-                        {
-                            item.Active();
-                        }
-                    }
-                    else
-                    {
-                        if (Value == item.Value)
-                        {
-                            item.Active();
-                        }
-                    }
-                }
-            }
+            StateHasChanged();
         }
     }
 }

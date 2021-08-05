@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BInputSlotBody<TInput> where TInput : BInput
+    public partial class BInputSlotBody<TInput> where TInput : IInput
     {
         [Parameter]
         public TInput Input { get; set; }
@@ -21,5 +21,13 @@ namespace BlazorComponent
         public string Label => Input.Label;
 
         public RenderFragment LabelContent => Input.LabelContent;
+
+        protected override void OnParametersSet()
+        {
+            if (Input == null)
+            {
+                throw new ArgumentNullException(nameof(Input));
+            }
+        }
     }
 }

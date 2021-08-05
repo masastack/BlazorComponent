@@ -1,23 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
 using OneOf;
 
 namespace BlazorComponent
 {
-    public partial class BInput : BDomComponentBase
+    public partial class BInput : BDomComponentBase, IInput
     {
-        [Obsolete("Use PrependContent instead.")]
-        [Parameter]
-        public RenderFragment Prepend { get; set; }
-
-        [Parameter]
-        public RenderFragment PrependContent { get; set; }
-
         [Obsolete("Use ApendContent instead.")]
         [Parameter]
         public RenderFragment Append { get; set; }
@@ -26,49 +21,29 @@ namespace BlazorComponent
         public RenderFragment AppendContent { get; set; }
 
         [Parameter]
+        public string AppendIcon { get; set; }
+
+        [Parameter]
         public RenderFragment ChildContent { get; set; }
 
         [Parameter]
         public string Label { get; set; }
 
         [Parameter]
-        public RenderFragment LabelContent { get; set; }
-
-        public bool HasLabel => LabelContent != null || Label != null;
-
-        //TODO:props
-        [Parameter]
-        public RenderFragment MessageContent { get; set; }
-
-        [Parameter]
-        public bool Clearable { get; set; }
-
-        [Obsolete("Use OnClearClick instead.")]
-        [Parameter]
-        public EventCallback<MouseEventArgs> ClearClick { get; set; }
-
-        [Parameter]
-        public EventCallback<MouseEventArgs> OnClearClick { get; set; }
-
-        /// <summary>
-        /// 附加图标
-        /// </summary>
-        [Parameter]
-        public string AppendIcon { get; set; }
-
-        [Parameter]
         public string PrependIcon { get; set; }
 
-        protected List<string> Messages { get; set; } = new();
+        [Parameter]
+        public RenderFragment LabelContent { get; set; }
+
+        [Obsolete("Use PrependContent instead.")]
+        [Parameter]
+        public RenderFragment Prepend { get; set; }
+
+        [Parameter]
+        public RenderFragment PrependContent { get; set; }
 
         [Parameter]
         public StringBoolean HideDetails { get; set; } = false;
-
-        public virtual bool HasDetails => Messages?.Count > 0;
-
-        public bool ShowDetails => HideDetails == false || (HideDetails == "auto" && HasDetails);
-
-        public bool HasMouseDown { get; set; }
 
         [Parameter]
         public EventCallback<MouseEventArgs> OnClick { get; set; }
@@ -79,13 +54,23 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<MouseEventArgs> OnMouseUp { get; set; }
 
+        protected List<string> Messages { get; set; } = new();
+
+        protected ElementReference InputSlotRef { get; set; }
+
+        //TODO:等待menu重构
+        public Func<MouseEventArgs, Task> OnExtraClick { get; set; }
+
+        protected bool HasMouseDown { get; set; }
+
+        public virtual bool HasLabel => LabelContent != null || Label != null;
+
+        public virtual bool HasDetails => Messages?.Count > 0;
+
+        public virtual bool ShowDetails => HideDetails == false || (HideDetails == "auto" && HasDetails);
+
         protected override void OnParametersSet()
         {
-            if (ClearClick.HasDelegate)
-            {
-                OnClearClick = ClearClick;
-            }
-
             if (Prepend != null)
             {
                 PrependContent = Prepend;
@@ -102,6 +87,12 @@ namespace BlazorComponent
             if (OnClick.HasDelegate)
             {
                 await OnClick.InvokeAsync(args);
+            }
+
+            //TODO:menu的设计需要改进
+            if (OnExtraClick != null)
+            {
+                await OnExtraClick(args);
             }
         }
 
