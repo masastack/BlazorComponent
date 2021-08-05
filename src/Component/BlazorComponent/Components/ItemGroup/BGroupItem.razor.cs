@@ -6,6 +6,11 @@ namespace BlazorComponent
     public abstract class BGroupItem<TGroup> : BDomComponentBase
         where TGroup : BItemGroup
     {
+        /// <summary>
+        /// Set by [Parameter]IsActive if has value.
+        /// </summary>
+        private bool? _isActive;
+
         [CascadingParameter]
         public TGroup ItemGroup { get; set; }
 
@@ -20,7 +25,12 @@ namespace BlazorComponent
 
         public bool Groupable => !NoGroup && ItemGroup != null;
 
-        public bool IsActive => Groupable && ItemGroup.Values.Contains(Value);
+        [Parameter]
+        public bool IsActive
+        {
+            get => _isActive.HasValue ? _isActive.Value : Groupable && ItemGroup.Values.Contains(Value);
+            set => _isActive = value;
+        }
 
         protected override void OnInitialized()
         {
