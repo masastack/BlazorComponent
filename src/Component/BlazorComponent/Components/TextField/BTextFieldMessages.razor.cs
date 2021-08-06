@@ -8,8 +8,6 @@ namespace BlazorComponent
 {
     public partial class BTextFieldMessages<TValue>
     {
-        public ComponentCssProvider CssProvider => Input.CssProvider;
-
-        public bool HasCounter => Input.HasCounter;
+        public bool HasCounter => Component.HasCounter;
     }
 }

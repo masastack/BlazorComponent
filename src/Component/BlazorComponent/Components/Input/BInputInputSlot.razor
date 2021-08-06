@@ -1,0 +1,11 @@
+﻿@namespace BlazorComponent
+@typeparam TInput
+@inherits ComponentAbstractBase<TInput>
+
+<div class="@CssProvider.GetClass( "input-slot")" style="@CssProvider.GetStyle( "input-slot")"
+     @onclick="HandleOnClick"
+     @onmousedown="HandleOnMouseDown"
+     @onmouseup="HandleOnMouseUp"
+     @ref="InputSlotRef">
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BInputDefaultSlot<>))"></AbstractComponent>
+</div>

@@ -29,7 +29,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Components\新文件夹\" />
 		<Folder Include="wwwroot\" />
 	</ItemGroup>
 

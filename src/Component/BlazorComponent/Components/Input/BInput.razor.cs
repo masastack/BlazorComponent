@@ -21,7 +21,7 @@ namespace BlazorComponent
         public RenderFragment AppendContent { get; set; }
 
         [Parameter]
-        public string AppendIcon { get; set; }
+        public virtual string AppendIcon { get; set; }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
@@ -56,12 +56,9 @@ namespace BlazorComponent
 
         protected List<string> Messages { get; set; } = new();
 
-        protected ElementReference InputSlotRef { get; set; }
+        public ElementReference InputSlotRef { get; set; }
 
-        //TODO:等待menu重构
-        public Func<MouseEventArgs, Task> OnExtraClick { get; set; }
-
-        protected bool HasMouseDown { get; set; }
+        public bool HasMouseDown { get; set; }
 
         public virtual bool HasLabel => LabelContent != null || Label != null;
 
@@ -82,21 +79,16 @@ namespace BlazorComponent
             }
         }
 
-        protected virtual async Task HandleOnClick(MouseEventArgs args)
+        public virtual async Task HandleOnClick(MouseEventArgs args)
         {
             if (OnClick.HasDelegate)
             {
                 await OnClick.InvokeAsync(args);
             }
 
-            //TODO:menu的设计需要改进
-            if (OnExtraClick != null)
-            {
-                await OnExtraClick(args);
-            }
         }
 
-        protected virtual async Task HandleOnMouseDown(MouseEventArgs args)
+        public virtual async Task HandleOnMouseDown(MouseEventArgs args)
         {
             HasMouseDown = true;
             if (OnMouseDown.HasDelegate)
@@ -105,7 +97,7 @@ namespace BlazorComponent
             }
         }
 
-        protected virtual async Task HandleOnMouseUp(MouseEventArgs args)
+        public virtual async Task HandleOnMouseUp(MouseEventArgs args)
         {
             HasMouseDown = false;
             if (OnMouseUp.HasDelegate)

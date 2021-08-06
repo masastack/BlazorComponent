@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public interface ISelectBody
+    public partial class BSwitchSwitch<TInput> where TInput : IInput
     {
 
     }

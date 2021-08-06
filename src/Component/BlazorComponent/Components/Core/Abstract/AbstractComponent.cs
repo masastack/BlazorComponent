@@ -64,7 +64,7 @@ namespace BlazorComponent
 
             var sequence = 0;
             builder.OpenComponent(sequence++, type);
-            
+
             //Set props
             if (props != null)
             {

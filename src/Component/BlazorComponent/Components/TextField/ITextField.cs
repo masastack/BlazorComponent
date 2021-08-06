@@ -68,5 +68,17 @@ namespace BlazorComponent
         RenderFragment ProgressContent { get; }
 
         string ClearIcon { get; }
+
+        ElementReference InputRef { get; set; }
+
+        Task HandleOnChange(ChangeEventArgs args);
+
+        Task HandleOnBlur(FocusEventArgs args);
+
+        Task HandleOnInput(ChangeEventArgs args);
+
+        Task HandleOnFocus(FocusEventArgs args);
+
+        Task HandleOnKeyDown(KeyboardEventArgs args);
     }
 }

@@ -1,0 +1,40 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TValue
+@typeparam TInput
+@inherits ComponentAbstractBase<TInput>
+
+<AbstractComponent Metadata="AbstractProvider.GetMetadata<BMenu>()">
+    <TAbstractContent TContext="MenuContext" Name="ActivatorContent">
+        @{
+            //Menu的设计需要改进
+            SetOnExtraClick?.Invoke(context.OnClick);
+        }
+    </TAbstractContent>
+    <AbstractContent Name="ChildContent">
+        @*//这个级联可能需要删除*@
+        <CascadingValue Value="Component">
+            @if (Items.Any())
+            {
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BList>()">
+                    @foreach (var item in Items)
+                    {
+
+                        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BSelectOption<TItem, TValue>>()"
+                                           Item="@item"
+                                           Value="@ItemValue(item)"
+                                           Label="@ItemText(item)"
+                                           Disabled="@ItemDisabled(item)"
+                                           key="@ItemValue(item).ToString()" />
+                    }
+                </AbstractComponent>
+            }
+            else
+            {
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BList>()">
+                    @InputChildContent
+                </AbstractComponent>
+            }
+        </CascadingValue>
+    </AbstractContent>
+</AbstractComponent>

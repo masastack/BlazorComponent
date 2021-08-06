@@ -1,0 +1,7 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TValue
+@typeparam TInput
+@inherits ComponentAbstractBase<TInput>
+
+<input type="hidden" value="@(Multiple ? string.Join(',', Values) : Value)" />

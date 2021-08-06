@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BAutocompleteSelectBody<TItem> : BDomComponentBase, ISelectBody
+    public partial class BAutocompleteSelectBody<TItem> : BDomComponentBase
     {
         private string _queryText;
 

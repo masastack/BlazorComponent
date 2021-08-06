@@ -1,0 +1,15 @@
+﻿@namespace BlazorComponent
+@typeparam TValue
+@typeparam TInput
+@inherits ComponentAbstractBase<TInput>
+@*TODO:attrs*@
+<Element Tag="@InputTag" value="@Value" @onchange="HandleOnChange" autofocus="@Autofocus"
+         disabled="@IsDisabled" placeholder="@Placeholder"
+         readonly="@Readonly"
+         @onblur="HandleOnBlur"
+         @oninput="HandleOnInput"
+         @onfocus="HandleOnFocus"
+         @onkeydown="HandleOnKeyDown"
+         ReferenceCaptureAction="r=>Component.InputRef=r"
+         @attributes="InputAttrs" />
+@*TODO:onresize*@

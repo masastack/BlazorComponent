@@ -1,0 +1,31 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TValue
+@typeparam TInput
+@inherits ComponentAbstractBase<TInput>
+
+<div class="@CssProvider.GetClass("selector")">
+    @if (Chips)
+    {
+        foreach (var item in Text)
+        {
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BChip>()">@item</AbstractComponent>
+        }
+    }
+    else
+    {
+        for (var i = 0; i < Text.Count(); i++)
+        {
+            var item = Text.ElementAt(i);
+            if (i == Text.Count() - 1)
+            {
+                <div class="@CssProvider.GetClass("selected")">@item</div>
+            }
+            else
+            {
+                <div class="@CssProvider.GetClass("selected")">@($"{item}, ")</div>
+            }
+        }
+    }
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTextFieldInput<,>))"></AbstractComponent>
+</div>

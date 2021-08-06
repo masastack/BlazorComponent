@@ -1,0 +1,16 @@
+﻿@namespace BlazorComponent
+@typeparam TValue
+@typeparam TInput
+@inherits ComponentAbstractBase<TInput>
+
+@if (Loading != false)
+{
+    if (ProgressContent != null)
+    {
+        @ProgressContent
+    }
+    else
+    {
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BProcessLinear>()"></AbstractComponent>
+    }
+}

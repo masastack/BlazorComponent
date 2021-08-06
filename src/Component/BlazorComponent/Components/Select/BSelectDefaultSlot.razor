@@ -1,0 +1,27 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TValue
+@inherits BTextFieldDefaultSlot<TValue, ISelect<TItem, TValue>>
+
+<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTextFieldFieldset<,>))"></AbstractComponent>
+<div class="@CssProvider.GetClass("select-slot")">
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BInputLabel<>))"></AbstractComponent>
+    @if (Prefix != null)
+    {
+        <AbstractComponent Type="prefix" Metadata="AbstractProvider.GetMetadata(typeof(BTextFieldAffix<,>))">
+            @Prefix
+        </AbstractComponent>
+    }
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSelectSelections<,,>))"></AbstractComponent>
+    @if (Suffix != null)
+    {
+        <AbstractComponent Type="suffix" Metadata="AbstractProvider.GetMetadata(typeof(BTextFieldAffix<,>))">
+            @Suffix
+        </AbstractComponent>
+    }
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTextFieldClearIcon<,>))"></AbstractComponent>
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTextFieldIconSlot<,>))"></AbstractComponent>
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSelectHiddenInput<,,>))"></AbstractComponent>
+</div>
+<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSelectMenu<,,>))"></AbstractComponent>
+<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTextFieldProgress<,>))"></AbstractComponent>

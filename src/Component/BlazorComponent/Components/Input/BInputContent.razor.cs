@@ -1,4 +1,4 @@
-﻿using BlazorComponent;
+﻿using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BRadioGroupSlotBody<TValue>
+    public partial class BInputContent<TInput> : ComponentAbstractBase<TInput>
+        where TInput : IInput
     {
-        public ComponentCssProvider CssProvider => Input.CssProvider;
     }
 }

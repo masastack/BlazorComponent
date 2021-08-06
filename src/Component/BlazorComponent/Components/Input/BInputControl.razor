@@ -1,0 +1,8 @@
+﻿@namespace BlazorComponent
+@typeparam TInput
+@inherits ComponentAbstractBase<TInput>
+
+<div class="@CssProvider.GetClass( "control")">
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BInputInputSlot<>))"></AbstractComponent>
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BInputMessages<>))"></AbstractComponent>
+</div>

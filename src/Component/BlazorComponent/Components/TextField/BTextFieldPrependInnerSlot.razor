@@ -1,0 +1,19 @@
+﻿@namespace BlazorComponent
+@typeparam TValue
+@typeparam TInput
+@inherits ComponentAbstractBase<TInput>
+
+@if (PrependInnerContent != null || PrependInnerIcon != null)
+{
+    <AbstractComponent Type="prepend" Location="inner" Metadata="AbstractProvider.GetMetadata(typeof(BInputSlot<>))">
+        @if (PrependInnerContent != null)
+        {
+            @PrependInnerContent
+        }
+        else if (PrependInnerIcon != null)
+        {
+            <AbstractComponent Type="prependInner" Metadata="AbstractProvider.GetMetadata(typeof(BInputIcon<>))">
+            </AbstractComponent>
+        }
+    </AbstractComponent>
+}

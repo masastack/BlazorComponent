@@ -14,8 +14,6 @@ namespace BlazorComponent
 
         List<TValue> Values { get; set; }
 
-        Func<MouseEventArgs, Task> OnExtraClick { get; set; }
-
         Task SetSelectedAsync(string label, TValue value);
 
         Task RemoveSelectedAsync(string label, TValue value);
@@ -26,10 +24,6 @@ namespace BlazorComponent
 
         List<string> Text { get; }
 
-        ElementReference InputRef { get; set; }
-
-        string Icon { get; }
-
         IReadOnlyList<TItem> Items { get; }
 
         Func<TItem, TValue> ItemValue { get; }
@@ -37,5 +31,7 @@ namespace BlazorComponent
         Func<TItem, bool> ItemDisabled { get; }
 
         Func<TItem, string> ItemText { get; }
+
+        void SetOnExtraClick(Func<MouseEventArgs, Task> onExtraClick);
     }
 }
