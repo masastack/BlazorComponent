@@ -7,6 +7,18 @@ namespace BlazorComponent
 {
     public partial class BItemGroup : BDomComponentBase
     {
+        internal readonly GroupType _groupType;
+
+        public BItemGroup()
+        {
+            _groupType = GroupType.ItemGroup;
+        }
+
+        public BItemGroup(GroupType groupType)
+        {
+            _groupType = groupType;
+        }
+
         protected List<StringNumber> _values = new();
 
         public List<StringNumber> AllKeys { get; set; } = new();
@@ -66,14 +78,6 @@ namespace BlazorComponent
                 await ValueChanged.InvokeAsync(_values.LastOrDefault());
             }
 
-            StateHasChanged();
-        }
-
-        public GroupType Type { get; set; }
-
-        public void InitType(GroupType type)
-        {
-            Type = type;
             StateHasChanged();
         }
 

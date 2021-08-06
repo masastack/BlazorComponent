@@ -7,6 +7,10 @@ namespace BlazorComponent
 {
     public partial class BChip : BGroupItem<BItemGroup>
     {
+        public BChip() : base(GroupType.ChipGroup)
+        {
+        }
+
         protected bool Show { get; set; } = true;
 
         [Parameter]

@@ -7,6 +7,10 @@ namespace BlazorComponent
 {
     public abstract partial class BButton : BGroupItem<BItemGroup>, IThemeable
     {
+        public BButton() : base(GroupType.ButtonGroup)
+        {
+        }
+
         /// <summary>
         /// The background color
         /// </summary>

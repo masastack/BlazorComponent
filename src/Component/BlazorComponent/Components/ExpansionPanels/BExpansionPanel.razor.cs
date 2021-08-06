@@ -7,6 +7,10 @@ namespace BlazorComponent
     {
         private bool _disabled;
 
+        public BExpansionPanel() : base(GroupType.ExpansionPanels)
+        {
+        }
+
         public bool Expanded => ItemGroup.Values.Contains(Value);
 
         public bool NextActive => ItemGroup.NextActiveKeys.Contains(Value);

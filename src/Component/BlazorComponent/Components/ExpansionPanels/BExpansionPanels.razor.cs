@@ -6,6 +6,10 @@ namespace BlazorComponent
 {
     public partial class BExpansionPanels : BItemGroup
     {
+        public BExpansionPanels(GroupType groupType) : base(groupType)
+        {
+        }
+
         public List<StringNumber> NextActiveKeys { get; set; } = new();
 
         [Parameter]

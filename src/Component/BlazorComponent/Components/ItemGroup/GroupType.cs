@@ -2,7 +2,12 @@
 {
     public enum GroupType
     {
-        ButtonGroup = 1,
-        ChipGroup = 2,
+        ItemGroup = 1,
+
+        ButtonGroup,
+
+        ChipGroup,
+
+        ExpansionPanels
     }
 }

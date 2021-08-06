@@ -11,6 +11,16 @@ namespace BlazorComponent
         /// </summary>
         private bool? _isActive;
 
+        /// <summary>
+        /// Determine the <see cref="GroupType"/> of <see cref="BGroupItem{TGroup}"/>.
+        /// </summary>
+        private readonly GroupType _groupType;
+
+        public BGroupItem(GroupType groupType)
+        {
+            _groupType = groupType;
+        }
+
         [CascadingParameter]
         public TGroup ItemGroup { get; set; }
 
@@ -23,7 +33,11 @@ namespace BlazorComponent
         [Parameter]
         public bool NoGroup { get; set; }
 
-        public bool Groupable => !NoGroup && ItemGroup != null;
+        /// <summary>
+        /// Determine whether the <see cref="BGroupItem{TGroup}"/> can be grouped.
+        /// The <see cref="GroupType.ItemGroup"/> cans group any item of <see cref="GroupType"/>.
+        /// </summary>
+        public bool Groupable => !NoGroup && ItemGroup != null && (ItemGroup._groupType == GroupType.ItemGroup || ItemGroup._groupType == _groupType);
 
         [Parameter]
         public bool IsActive
