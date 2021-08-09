@@ -11,7 +11,7 @@ namespace BlazorComponent
     {
         public bool HasLabel => Component.HasLabel;
 
-        public RenderFragment InputChildContent => Component.ChildContent;
+        public RenderFragment ComponentChildContent => Component.ChildContent;
 
         public string Label => Component.Label;
 

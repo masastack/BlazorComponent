@@ -14,16 +14,19 @@
     }
     else
     {
-        for (var i = 0; i < Text.Count(); i++)
+        if (Multiple)
         {
-            var item = Text.ElementAt(i);
-            if (i == Text.Count() - 1)
+            for (var i = 0; i < Text.Count(); i++)
             {
-                <div class="@CssProvider.GetClass("selected")">@item</div>
-            }
-            else
-            {
-                <div class="@CssProvider.GetClass("selected")">@($"{item}, ")</div>
+                var item = Text.ElementAt(i);
+                if (i == Text.Count() - 1)
+                {
+                    <div class="@CssProvider.GetClass("selected")">@item</div>
+                }
+                else
+                {
+                    <div class="@CssProvider.GetClass("selected")">@($"{item}, ")</div>
+                }
             }
         }
     }

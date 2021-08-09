@@ -11,6 +11,7 @@ namespace BlazorComponent
     public partial class BInputInputSlot<TInput> : ComponentAbstractBase<TInput>
           where TInput : IInput
     {
+        //TODO:refs will change in feature
         public ElementReference InputSlotRef
         {
             get
@@ -23,10 +24,10 @@ namespace BlazorComponent
             }
         }
 
-        public Func<MouseEventArgs, Task> HandleOnClick => Component.HandleOnClick;
+        public EventCallback<MouseEventArgs> HandleOnClick => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnClick);
 
-        public Func<MouseEventArgs, Task> HandleOnMouseDown => Component.HandleOnMouseDown;
+        public EventCallback<MouseEventArgs> HandleOnMouseDown => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnMouseDown);
 
-        protected Func<MouseEventArgs, Task> HandleOnMouseUp => Component.HandleOnMouseDown;
+        protected EventCallback<MouseEventArgs> HandleOnMouseUp => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnMouseDown);
     }
 }

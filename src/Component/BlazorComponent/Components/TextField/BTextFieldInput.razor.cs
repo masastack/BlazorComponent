@@ -10,19 +10,7 @@ namespace BlazorComponent
 {
     public partial class BTextFieldInput<TValue, TInput> where TInput : ITextField<TValue>
     {
-        public TValue Value
-        {
-            get
-            {
-                return Component.Value;
-            }
-            set
-            {
-                Component.Value = value;
-            }
-        }
-
-        public EventCallback<TValue> ValueChanged => Component.ValueChanged;
+        public TValue Value => Component.Value;
 
         public bool Autofocus => Component.Autofocus;
 
@@ -34,36 +22,18 @@ namespace BlazorComponent
 
         public bool Readonly => Component.IsReadonly;
 
-        public bool IsFocused
-        {
-            get
-            {
-                return Component.IsFocused;
-            }
-            set
-            {
-                Component.IsFocused = value;
-            }
-        }
-
         public string InputTag => Component.Tag;
 
-        public Dictionary<string, object> InputAttrs => Component.Attrs;
+        public Dictionary<string, object> InputAttrs => Component.InputAttrs;
 
-        public EventCallback<FocusEventArgs> OnBlur => Component.OnBlur;
+        public EventCallback<ChangeEventArgs> HandleOnChange => EventCallback.Factory.Create<ChangeEventArgs>(Component, Component.HandleOnChange);
 
-        public EventCallback<FocusEventArgs> OnFocus => Component.OnFocus;
+        public EventCallback<FocusEventArgs> HandleOnBlur => EventCallback.Factory.Create<FocusEventArgs>(Component, Component.HandleOnBlur);
 
-        public EventCallback<KeyboardEventArgs> OnKeyDown => Component.OnKeyDown;
+        public EventCallback<ChangeEventArgs> HandleOnInput => EventCallback.Factory.Create<ChangeEventArgs>(Component, Component.HandleOnInput);
 
-        public Func<ChangeEventArgs, Task> HandleOnChange => Component.HandleOnChange;
+        public EventCallback<FocusEventArgs> HandleOnFocus => EventCallback.Factory.Create<FocusEventArgs>(Component, Component.HandleOnFocus);
 
-        public Func<FocusEventArgs, Task> HandleOnBlur => Component.HandleOnBlur;
-
-        public Func<ChangeEventArgs, Task> HandleOnInput => Component.HandleOnInput;
-
-        public Func<FocusEventArgs, Task> HandleOnFocus => Component.HandleOnFocus;
-
-        public Func<KeyboardEventArgs, Task> HandleOnKeyDown => Component.HandleOnKeyDown;
+        public EventCallback<KeyboardEventArgs> HandleOnKeyDown => EventCallback.Factory.Create<KeyboardEventArgs>(Component, Component.HandleOnKeyDown);
     }
 }

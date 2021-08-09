@@ -63,7 +63,10 @@ namespace BlazorComponent
 
         string Tag { get; }
 
-        Dictionary<string, object> Attrs { get; }
+        /// <summary>
+        /// This will pass to input and override default settings
+        /// </summary>
+        Dictionary<string, object> InputAttrs { get; }
 
         RenderFragment ProgressContent { get; }
 

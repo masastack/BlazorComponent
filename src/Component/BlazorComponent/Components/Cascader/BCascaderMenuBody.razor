@@ -1,0 +1,29 @@
+﻿@namespace BlazorComponent
+@typeparam TInput
+@inherits ComponentAbstractBase<TInput>
+
+<div style="@CssProvider.GetStyle("cascader-menu-body")">
+    <div style="@CssProvider.GetStyle("cascader-menu-body-wrap")">
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BList>()">
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemGroup>()">
+                @foreach (var item in Items)
+                {
+                    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BSelectOption<BCascaderNode, string>>()"
+                                       OnItemClick="@HandleOnItemClick"
+                                       Item="@item"
+                                       Value="@item.Value"
+                                       Label="@item.Label">
+                    </AbstractComponent>
+                }
+            </AbstractComponent>
+        </AbstractComponent>
+    </div>
+</div>
+
+@if (ShowSubItems)
+{
+    <AbstractComponent Items="@SubItems" Metadata="AbstractProvider.GetMetadata(typeof(BCascaderMenuBody<>))"></AbstractComponent>
+}
+
+
+

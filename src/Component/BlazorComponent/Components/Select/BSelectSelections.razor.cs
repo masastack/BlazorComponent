@@ -11,5 +11,7 @@ namespace BlazorComponent
         public List<string> Text => Component.Text;
 
         public bool Chips => Component.Chips;
+
+        public bool Multiple => Component.Multiple;
     }
 }

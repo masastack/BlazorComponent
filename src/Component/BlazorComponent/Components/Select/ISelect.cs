@@ -32,6 +32,12 @@ namespace BlazorComponent
 
         Func<TItem, string> ItemText { get; }
 
+        IReadOnlyList<TItem> ComputedItems { get; }
+
+        int HighlightIndex { get; }
+
+        string QueryText { get; }
+
         void SetOnExtraClick(Func<MouseEventArgs, Task> onExtraClick);
     }
 }

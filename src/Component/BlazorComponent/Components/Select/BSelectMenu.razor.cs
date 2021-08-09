@@ -12,7 +12,7 @@ namespace BlazorComponent
     {
         public Action<Func<MouseEventArgs, Task>> SetOnExtraClick => Component.SetOnExtraClick;
 
-        public IReadOnlyList<TItem> Items => Component.Items;
+        public IReadOnlyList<TItem> ComputedItems => Component.ComputedItems;
 
         public Func<TItem, string> ItemText => Component.ItemText;
 
@@ -21,5 +21,7 @@ namespace BlazorComponent
         public Func<TItem, bool> ItemDisabled => Component.ItemDisabled;
 
         public RenderFragment InputChildContent => Component.ChildContent;
+
+        public int HighlightIndex => Component.HighlightIndex;
     }
 }

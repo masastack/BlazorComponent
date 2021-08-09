@@ -4,7 +4,7 @@
 @typeparam TValue
 
 <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItem>()">
-    @if (SelectWrapper.Multiple)
+    @if (Select.Multiple)
     {
         <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemAction>()">
             <AbstractComponent Metadata="AbstractProvider.GetMetadata<BCheckbox>()"></AbstractComponent>
@@ -12,7 +12,25 @@
     }
     <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemContent>()">
         <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemTitle>()">
-            @Label
+            @{
+                var queryText = Select.QueryText;
+                if (!string.IsNullOrEmpty(queryText) && Label.Contains(queryText, StringComparison.OrdinalIgnoreCase) && queryText.Length < Label.Length)
+                {
+                    var index = Label.ToLower().IndexOf(queryText.ToLower());
+                    if (index > 0)
+                    {
+                        @Label.Substring(0, index);
+                    }
+                    <span class="@Select.CssProvider.GetClass("mask")">
+                        @queryText
+                    </span>
+                    @Label.Substring(index + queryText.Length)
+                }
+                else
+                {
+                    @Label
+                }
+            }
         </AbstractComponent>
     </AbstractComponent>
     @if (!string.IsNullOrEmpty(Icon))

@@ -7,21 +7,24 @@ namespace BlazorComponent
         private string _key;
 
         [CascadingParameter]
-        protected ISelect<TItem,TValue> SelectWrapper { get; set; }
+        protected ISelect<TItem,TValue> Select { get; set; }
+
+        [Parameter]
+        public bool Highlighted { get; set; }
 
         protected bool Selected
         {
             get
             {
-                if (SelectWrapper != null)
+                if (Select != null)
                 {
-                    if (SelectWrapper.Multiple && SelectWrapper.Values != null)
+                    if (Select.Multiple && Select.Values != null)
                     {
-                        return SelectWrapper.Values.Contains(Value);
+                        return Select.Values.Contains(Value);
                     }
-                    else if (SelectWrapper.Value != null)
+                    else if (Select.Value != null)
                     {
-                        return SelectWrapper.Value.Equals(Value);
+                        return Select.Value.Equals(Value);
                     }
                 }
 

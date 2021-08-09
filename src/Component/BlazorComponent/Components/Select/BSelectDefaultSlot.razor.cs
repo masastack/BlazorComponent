@@ -14,7 +14,5 @@ namespace BlazorComponent
         public string Prefix => Component.Prefix;
 
         public string Suffix => Component.Prefix;
-
-        
     }
 }
