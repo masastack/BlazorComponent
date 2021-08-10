@@ -5,8 +5,12 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public abstract partial class BButton : BDomComponentBase, IItem, IThemeable
+    public abstract partial class BButton : BGroupItem<BItemGroup>, IThemeable
     {
+        public BButton() : base(GroupType.ButtonGroup)
+        {
+        }
+
         /// <summary>
         /// The background color
         /// </summary>
@@ -108,18 +112,14 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment LoaderContent { get; set; }
 
-        [Parameter]
-        public RenderFragment ChildContent { get; set; }
-
-        [CascadingParameter]
-        public BItemGroup ItemGroup { get; set; }
-
-        public bool IsActive => ItemGroup != null && ItemGroup.Value == Value;
-
+        public virtual bool IsDark { get; }
+        public bool IsActive { get; set; }
         [Parameter]
         public string Value { get; set; }
 
-        public virtual bool IsDark { get; }
+        [Parameter]
+        public bool Dark { get; set; }
+
 
         protected override void OnParametersSet()
         {
@@ -130,22 +130,11 @@ namespace BlazorComponent
 
             if (Loader != null)
             {
-                LoaderContent = Loader;
-            }
         }
 
-        protected override void OnInitialized()
-        {
-            if (ItemGroup != null)
-            {
-                ItemGroup.AddItem(this);
-            }
         }
 
-        protected virtual async Task HandleClickAsync(MouseEventArgs args)
-        {
-            if (ItemGroup != null)
-            {
+            await ToggleItem();
                 ItemGroup.NotifyItemChanged(this);
             }
 

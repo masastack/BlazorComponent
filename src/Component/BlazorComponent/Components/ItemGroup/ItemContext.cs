@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BlazorComponent
@@ -10,6 +7,6 @@ namespace BlazorComponent
     {
         public bool IsActive { get; set; }
 
-        public Action Toggle { get; set; }
+        public Func<Task> Toggle { get; set; }
     }
 }

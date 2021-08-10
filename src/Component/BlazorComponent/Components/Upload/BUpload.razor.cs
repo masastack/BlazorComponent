@@ -3,16 +3,17 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
     public partial class BUpload : BDomComponentBase
     {
-        protected InputFile _uploadElementReference;
+        protected InputFile _inputFileReference;
 
         [Parameter]
-        public IList<UploadFile> Files { get; set; } = new List<UploadFile>();
+        public List<UploadFile> Files { get; set; } = new List<UploadFile>();
 
         [Parameter]
         public EventCallback<IList<UploadFile>> FilesChanged { get; set; }
@@ -33,14 +34,20 @@ namespace BlazorComponent
         public bool Chips { get; set; }
 
         [Parameter]
+        public bool Card { get; set; }
+
+        [Parameter]
+        public StringNumber CardSize { get; set; } = 86;
+
+        [Parameter]
         public string Accept { get; set; }
 
         [Obsolete("Use OnUpload instead.")]
         [Parameter]
-        public EventCallback<UploadFile> Upload { get; set; }
+        public EventCallback<List<UploadFile>> Upload { get; set; }
 
         [Parameter]
-        public EventCallback<UploadFile> OnUpload { get; set; }
+        public EventCallback<List<UploadFile>> OnUpload { get; set; }
 
         [Obsolete("Use ActivatorContent instead.")]
         [Parameter]
@@ -52,52 +59,33 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
+        public ElementReference? Element
+        {
+            get => _inputFileReference.Element;
+        }
+
         protected virtual async Task HandleOnChange(InputFileChangeEventArgs args)
         {
-            if (Multiple)
+            var uploadFiles = Multiple
+                ? args.GetMultipleFiles().Select(file => new UploadFile(file)).ToList()
+                : new List<UploadFile>() { new UploadFile(args.File) };
+
+            if (OnUpload.HasDelegate)
             {
-                foreach (var item in args.GetMultipleFiles())
-                {
-                    var uploadFile = new UploadFile(item);
-
-                    if (OnUpload.HasDelegate)
-                    {
-                        await OnUpload.InvokeAsync(uploadFile);
-
-                        if (string.IsNullOrEmpty(uploadFile.Url))
-                            await SetDefaultImageUrl(uploadFile);
-                    }
-                    else
-                    {
-                        await SetDefaultImageUrl(uploadFile);
-                    }
-
-                    Files.Add(uploadFile);
-                }
+                await OnUpload.InvokeAsync(uploadFiles);
             }
             else
             {
-                Files.Clear();
-
-                var uploadFile = new UploadFile(args.File);
-
-
-                if (OnUpload.HasDelegate)
-                {
-                    await OnUpload.InvokeAsync(uploadFile);
-
-                    if (string.IsNullOrEmpty(uploadFile.Url))
-                        await SetDefaultImageUrl(uploadFile);
-                }
-                else
-                {
-                    await SetDefaultImageUrl(uploadFile);
-                }
-
-                Files.Add(uploadFile);
+                Files.AddRange(uploadFiles);
             }
 
-            await InvokeStateHasChangedAsync();
+            foreach (var file in uploadFiles)
+            {
+                if (file.IsImage)
+                {
+                    await SetDefaultImageUrl(file);
+                }
+            }
         }
 
         protected override void OnParametersSet()
@@ -109,7 +97,7 @@ namespace BlazorComponent
                 OnUpload = Upload;
             }
 
-            if (Activator!=null)
+            if (Activator != null)
             {
                 ActivatorContent = Activator;
             }
@@ -117,7 +105,7 @@ namespace BlazorComponent
 
         protected virtual async Task HandleOnClick(MouseEventArgs args)
         {
-            var uploadRef = _uploadElementReference.Element.Value;
+            var uploadRef = _inputFileReference.Element.Value;
             await JsInvokeAsync(JsInteropConstants.TriggerEvent, uploadRef, "MouseEvents", "click");
         }
 
