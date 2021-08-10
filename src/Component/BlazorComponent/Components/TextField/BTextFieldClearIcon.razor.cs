@@ -28,16 +28,6 @@ namespace BlazorComponent
             }
         }
 
-        public EventCallback<TValue> ValueChanged => Component.ValueChanged;
-
-        public virtual async Task HandleOnClear(MouseEventArgs args)
-        {
-            //TODO:autofocus
-            Value = default;
-            if (ValueChanged.HasDelegate)
-            {
-                await ValueChanged.InvokeAsync(Value);
-            }
-        }
+        public EventCallback<MouseEventArgs> HandleOnClear => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnClear);
     }
 }

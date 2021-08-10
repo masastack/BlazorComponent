@@ -1,0 +1,17 @@
+﻿@namespace BlazorComponent
+@typeparam TValue
+@inherits BInputLabel<ITextField<TValue>>
+
+@if (ShowLabel)
+{
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BLabel>()">
+        @if (LabelContent != null)
+        {
+            @LabelContent
+        }
+        else
+        {
+            @Label
+        }
+    </AbstractComponent>
+}

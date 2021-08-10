@@ -37,6 +37,7 @@ namespace BlazorComponent
 
         bool Autofocus { get; }
 
+
         bool IsDisabled { get; }
 
         bool PersistentPlaceholder { get; }
@@ -83,5 +84,7 @@ namespace BlazorComponent
         Task HandleOnFocus(FocusEventArgs args);
 
         Task HandleOnKeyDown(KeyboardEventArgs args);
+
+        Task HandleOnClear(MouseEventArgs args);
     }
 }
