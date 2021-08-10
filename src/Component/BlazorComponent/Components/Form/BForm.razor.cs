@@ -25,7 +25,13 @@ namespace BlazorComponent
         [Parameter]
         public bool EnableDataAnnotationsValidation { get; set; }
 
+        [Parameter]
+        public bool Disabled { get; set; }
+
         public EditContext EditContext { get; protected set; }
+
+        [Parameter]
+        public bool Readonly { get; set; }
 
         protected override void OnParametersSet()
         {

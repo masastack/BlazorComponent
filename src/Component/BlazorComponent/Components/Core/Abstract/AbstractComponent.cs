@@ -34,7 +34,7 @@ namespace BlazorComponent
                 var frames = builder.GetFrames().Array;
                 foreach (var frame in frames)
                 {
-                    if (frame.FrameType == RenderTreeFrameType.Component && frame.ComponentType == typeof(AbstractContent))
+                    if (frame.FrameType == RenderTreeFrameType.Component && frame.ComponentType.IsAssignableTo(typeof(IAbstractContent)))
                     {
                         var nameFrame = frames.First(u => u.Sequence == frame.Sequence + 1);
 
@@ -78,7 +78,10 @@ namespace BlazorComponent
             AdditionalAttributes.ForEach(attr => builder.AddAttribute(sequence++, attr.Key, attr.Value));
 
             //Set child content 
-            builder.AddAttribute(sequence++, nameof(ChildContent), ChildContent);
+            if (ChildContent != null)
+            {
+                builder.AddAttribute(sequence++, nameof(ChildContent), ChildContent);
+            }
 
             builder.CloseComponent();
         }

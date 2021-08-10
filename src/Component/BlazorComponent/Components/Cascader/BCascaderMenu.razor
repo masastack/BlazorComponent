@@ -1,0 +1,21 @@
+﻿@namespace BlazorComponent
+@typeparam TInput
+@inherits BSelectMenu<BCascaderNode, string, TInput>
+
+<AbstractComponent Metadata="AbstractProvider.GetMetadata<BMenu>()">
+    <TAbstractContent TContext="MenuContext" Name="ActivatorContent">
+        @{
+            //Menu will change
+            SetOnExtraClick?.Invoke(context.OnClick);
+        }
+    </TAbstractContent>
+    <AbstractContent Name="ChildContent">
+        <CascadingValue Value="Component">
+            @if (ComputedItems.Any())
+            {
+                <AbstractComponent Items="@ComputedItems" Metadata="AbstractProvider.GetMetadata(typeof(BCascaderMenuBody<>))">
+                </AbstractComponent>
+            }
+        </CascadingValue>
+    </AbstractContent>
+</AbstractComponent>

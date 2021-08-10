@@ -10,9 +10,6 @@ namespace BlazorComponent
     public partial class BLabel : BDomComponentBase
     {
         [Parameter]
-        public string Value { get; set; }
-
-        [Parameter]
         public RenderFragment ChildContent { get; set; }
     }
 }

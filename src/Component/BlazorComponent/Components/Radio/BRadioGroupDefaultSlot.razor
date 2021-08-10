@@ -1,0 +1,20 @@
+﻿@namespace BlazorComponent
+@typeparam TValue
+@inherits BInputDefaultSlot<IInput>
+
+<div class="@CssProvider.GetClass("radio-group")">
+    @if (HasLabel)
+    {
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BLabel>()">
+            @if (LabelContent != null)
+            {
+                @LabelContent
+            }
+            else
+            {
+                @Label
+            }
+        </AbstractComponent>
+    }
+    @ComponentChildContent
+</div>

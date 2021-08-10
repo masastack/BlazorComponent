@@ -14,9 +14,9 @@ namespace BlazorComponent
             CssProvider.StaticStyleProvider = () => Style;
         }
 
-        protected ComponentCssProvider CssProvider { get; } = new();
+        public ComponentCssProvider CssProvider { get; } = new();
 
-        protected ComponentAbstractProvider AbstractProvider { get; } = new();
+        public ComponentAbstractProvider AbstractProvider { get; } = new();
 
         [Inject]
         public IComponentIdGenerator ComponentIdGenerator { get; set; }

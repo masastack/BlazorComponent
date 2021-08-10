@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public class AbstractContent : ComponentBase
+    public class AbstractContent : ComponentBase, IAbstractContent
     {
         [Parameter]
         public string Name { get; set; }

@@ -1,0 +1,8 @@
+﻿@namespace BlazorComponent
+@typeparam TInput
+@inherits ComponentAbstractBase<TInput>
+
+@if (ShowDetails)
+{
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BMessages>()"></AbstractComponent>
+}

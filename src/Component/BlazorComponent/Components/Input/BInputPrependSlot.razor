@@ -1,0 +1,17 @@
+﻿@namespace BlazorComponent
+@typeparam TInput
+@inherits ComponentAbstractBase<TInput>
+
+@if (PrependContent != null || PrependIcon != null)
+{
+    <AbstractComponent Type="prepend" Location="outer" Metadata="AbstractProvider.GetMetadata(typeof(BInputSlot<>))">
+        @if (PrependContent != null)
+        {
+            @PrependContent
+        }
+        else if (PrependIcon != null)
+        {
+            <AbstractComponent Type="prepend-icon" Icon="@PrependIcon" Metadata="AbstractProvider.GetMetadata(typeof(BInputIcon<>))"></AbstractComponent>
+        }
+    </AbstractComponent>
+}

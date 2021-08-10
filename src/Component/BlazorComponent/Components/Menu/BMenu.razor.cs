@@ -84,10 +84,10 @@ namespace BlazorComponent
 
         [Obsolete("Use ActivatorContent instead.")]
         [Parameter]
-        public RenderFragment Activator { get; set; }
+        public RenderFragment<MenuContext> Activator { get; set; }
 
         [Parameter]
-        public RenderFragment ActivatorContent { get; set; }
+        public RenderFragment<MenuContext> ActivatorContent { get; set; }
 
         [Parameter]
         public string ActivatorStyle { get; set; }
@@ -101,6 +101,10 @@ namespace BlazorComponent
         public ElementReference ContentRef { get; set; }
 
         protected abstract Task Click(MouseEventArgs args);
+
+        //Menu的设计需要改进
+        [Parameter]
+        public bool Input { get; set; }
 
         protected override void OnParametersSet()
         {

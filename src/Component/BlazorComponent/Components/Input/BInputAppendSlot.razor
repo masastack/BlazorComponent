@@ -1,0 +1,18 @@
+﻿@namespace BlazorComponent
+@typeparam TInput
+@inherits ComponentAbstractBase<TInput>
+
+@if (AppendContent != null || AppendIcon != null)
+{
+    <AbstractComponent Type="append" Location="outer" Metadata="AbstractProvider.GetMetadata(typeof(BInputSlot<>))">
+        @if (AppendContent != null)
+        {
+            @AppendContent
+        }
+        else if (AppendIcon != null)
+        {
+            <AbstractComponent Type="append-icon" Icon="@AppendIcon" Metadata="AbstractProvider.GetMetadata(typeof(BInputIcon<>))">
+            </AbstractComponent>
+        }
+    </AbstractComponent>
+}

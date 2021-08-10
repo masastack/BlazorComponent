@@ -53,5 +53,10 @@ namespace BlazorComponent
         {
             return base.GetHashCode();
         }
+
+        public override string ToString()
+        {
+            return Convert.ToString(Value);
+        }
     }
 }

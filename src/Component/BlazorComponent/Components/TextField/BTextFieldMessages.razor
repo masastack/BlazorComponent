@@ -1,0 +1,11 @@
+﻿@namespace BlazorComponent
+@typeparam TValue
+@inherits BInputMessages<ITextField<TValue>>
+
+@if (ShowDetails)
+{
+    <div class="@CssProvider.GetClass("text-field-details")">
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BMessages>()"></AbstractComponent>
+        @*TODO:counter*@
+    </div>
+}

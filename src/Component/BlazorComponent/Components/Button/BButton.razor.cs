@@ -114,6 +114,9 @@ namespace BlazorComponent
 
         public virtual bool IsDark { get; }
 
+        [Parameter]
+        public bool Dark { get; set; }
+
         protected override void OnParametersSet()
         {
             if (Click.HasDelegate)
@@ -125,8 +128,8 @@ namespace BlazorComponent
             {
                 LoaderContent = Loader;
             }
-        }
 
+        }
         protected virtual async Task HandleClickAsync(MouseEventArgs args)
         {
             await ToggleItem();

@@ -757,7 +757,7 @@ export function getImageDimensions(src: string) {
 export function preventDefaultOnArrowUpDown(element) {
     let dom: Element = getDom(element);
     dom.addEventListener("keydown", function (e: KeyboardEvent) {
-        if (e.code == "ArrowUp" || e.code == "ArrowDown") {
+        if (e.code == "ArrowUp" || e.code == "ArrowDown" || e.code == "Enter") {
             e.preventDefault();
         }
     })

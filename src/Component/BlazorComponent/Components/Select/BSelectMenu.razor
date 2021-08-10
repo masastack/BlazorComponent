@@ -1,0 +1,53 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TValue
+@typeparam TInput
+@inherits ComponentAbstractBase<TInput>
+
+<AbstractComponent Metadata="AbstractProvider.GetMetadata<BMenu>()">
+    <TAbstractContent TContext="MenuContext" Name="ActivatorContent">
+        @{
+            //Menu will change
+            SetOnExtraClick?.Invoke(context.OnClick);
+        }
+    </TAbstractContent>
+    <AbstractContent Name="ChildContent">
+        <CascadingValue Value="Component">
+            @if (ComputedItems.Any())
+            {
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BList>()">
+                    @for (int i = 0; i < ComputedItems.Count; i++)
+                    {
+                        var highlighted = HighlightIndex == i;
+                        var item = ComputedItems[i];
+                        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BSelectOption<TItem, TValue>>()"
+                                           Item="@item"
+                                           Highlighted="@highlighted"
+                                           Value="@ItemValue(item)"
+                                           Label="@ItemText(item)"
+                                           Disabled="@ItemDisabled(item)"
+                                           key="@ItemValue(item).ToString()" />
+                    }
+                </AbstractComponent>
+            }
+            else if (InputChildContent != null)
+            {
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BList>()">
+                    @InputChildContent
+                </AbstractComponent>
+            }
+            else
+            {
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BList>()">
+                    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItem>()" Link="@false">
+                        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemContent>()">
+                            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemTitle>()">
+                                No data available
+                            </AbstractComponent>
+                        </AbstractComponent>
+                    </AbstractComponent>
+                </AbstractComponent>
+            }
+        </CascadingValue>
+    </AbstractContent>
+</AbstractComponent>
