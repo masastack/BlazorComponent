@@ -113,13 +113,9 @@ namespace BlazorComponent
         public RenderFragment LoaderContent { get; set; }
 
         public virtual bool IsDark { get; }
-        public bool IsActive { get; set; }
-        [Parameter]
-        public string Value { get; set; }
 
         [Parameter]
         public bool Dark { get; set; }
-
 
         protected override void OnParametersSet()
         {
@@ -130,13 +126,13 @@ namespace BlazorComponent
 
             if (Loader != null)
             {
-        }
-
-        }
-
-            await ToggleItem();
-                ItemGroup.NotifyItemChanged(this);
+                LoaderContent = Loader;
             }
+
+        }
+        protected virtual async Task HandleClickAsync(MouseEventArgs args)
+        {
+            await ToggleItem();
 
             if (OnClick.HasDelegate)
             {

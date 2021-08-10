@@ -1,6 +1,7 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
+@*//TODO:change here*@
 @if (Input)
 {
     @ActivatorContent(new MenuContext { OnClick = Click })
@@ -13,7 +14,7 @@ else
          @onmouseleave="MouseOut"
          @ref="Ref"
          style="@CssProvider.GetStyle()">
-        @ActivatorContent
+        @ActivatorContent(new MenuContext { OnClick = Click })
     </div>
 }
 
