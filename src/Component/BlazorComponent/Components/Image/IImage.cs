@@ -2,7 +2,7 @@
 
 namespace BlazorComponent
 {
-    public partial class BImage : BDomComponentBase, IImage
+    public interface IImage : IAbstractComponent
     {
         public string RespSizerStyle { get; set; }
 
@@ -30,16 +30,15 @@ namespace BlazorComponent
         [Parameter] 
         public StringNumber MinWidth { get; set; }
 
-        [Parameter] 
-        public string Src { get; set; }
-        
         [Parameter]
         public string LazySrc { get; set; }
+        
+        [Parameter] 
+        public string Src { get; set; }
 
         [Parameter] 
         public string Gradient { get; set; }
 
-        [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        RenderFragment ChildContent { get; }
     }
 }
