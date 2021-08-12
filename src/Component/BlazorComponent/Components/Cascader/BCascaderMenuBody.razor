@@ -1,6 +1,8 @@
 ﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TValue
 @typeparam TInput
-@inherits ComponentAbstractBase<TInput>
+@inherits BSelectMenu<TItem, TValue, TInput>
 
 <div style="@CssProvider.GetStyle("cascader-menu-body")">
     <div style="@CssProvider.GetStyle("cascader-menu-body-wrap")">
@@ -8,11 +10,12 @@
             <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemGroup>()">
                 @foreach (var item in Items)
                 {
-                    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BSelectOption<BCascaderNode, string>>()"
-                                       OnItemClick="@HandleOnItemClick"
-                                       Item="@item"
-                                       Value="@item.Value"
-                                       Label="@item.Label">
+                    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BSelectOption<TItem, TValue>>()"
+                                   OnItemClick="@HandleOnItemClick"
+                                   Item="@item"
+                                   Value="@ItemValue(item)"
+                                   Label="@ItemText(item)"
+                                   Children="@ItemChildren(item)">
                     </AbstractComponent>
                 }
             </AbstractComponent>
@@ -20,10 +23,7 @@
     </div>
 </div>
 
-@if (ShowSubItems)
+@if (ShowChildren)
 {
-    <AbstractComponent Items="@SubItems" Metadata="AbstractProvider.GetMetadata(typeof(BCascaderMenuBody<>))"></AbstractComponent>
+    <AbstractComponent Items="@Children" Metadata="AbstractProvider.GetMetadata<BCascaderMenuBody<TItem,TValue,TInput>>()"></AbstractComponent>
 }
-
-
-

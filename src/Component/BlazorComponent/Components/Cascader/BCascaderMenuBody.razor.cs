@@ -1,31 +1,33 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BCascaderMenuBody<TInput> where TInput : ICascader
+    public partial class BCascaderMenuBody<TItem, TValue, TInput> : BSelectMenu<TItem, TValue, TInput>
+        where TInput : ICascader<TItem, TValue>
     {
-        protected bool ShowSubItems { get; set; }
+        protected bool ShowChildren { get; set; }
 
-        protected List<BCascaderNode> SubItems { get; set; }
+        protected List<TItem> Children { get; set; }
+
+        public Func<TItem, List<TItem>> ItemChildren => Component.ItemChildren;
 
         [Parameter]
-        public List<BCascaderNode> Items { get; set; }
+        public List<TItem> Items { get; set; }
 
-        public EventCallback<BCascaderNode> HandleOnItemClick => EventCallback.Factory.Create<BCascaderNode>(this, item =>
+        public EventCallback<TItem> HandleOnItemClick => EventCallback.Factory.Create<TItem>(this, item =>
         {
-            if (item.Children != null && item.Children.Count > 0)
+            var children = ItemChildren(item);
+
+            if (children != null && children.Count > 0)
             {
-                ShowSubItems = true;
-                SubItems = item.Children;
+                ShowChildren = true;
+                Children = children;
             }
             else
             {
-                ShowSubItems = false;
+                ShowChildren = false;
             }
         });
     }

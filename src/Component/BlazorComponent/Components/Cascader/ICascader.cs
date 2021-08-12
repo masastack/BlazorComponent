@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public interface ICascader : ISelect<BCascaderNode, string>
+    public interface ICascader<TItem, TValue> : ISelect<TItem, TValue>
     {
-
+        Func<TItem, List<TItem>> ItemChildren { get; }
     }
 }
