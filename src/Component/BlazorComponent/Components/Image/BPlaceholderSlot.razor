@@ -1,0 +1,10 @@
+﻿@namespace BlazorComponent
+@typeparam TImage
+@inherits ComponentAbstractBase<TImage>
+
+@if (ChildContent != null)
+{
+    <div class="@CssProvider.GetClass("placeholder")">
+        @ChildContent
+    </div>
+}

@@ -1,18 +1,20 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
+@implements IImage
 
 <CascadingValue Value="this">
-    <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id">
-        <div class="@CssProvider.GetClass("resp_sizer")" style="@RespSizerStyle"></div>
-        <div class="@CssProvider.GetClass("image")"
-             style="@CssProvider.GetStyle("image")">
-        </div>
-        @if (ChildContent != null)
-        {
-            <div class="@CssProvider.GetClass("placeholder")">
-                @ChildContent
-            </div>
-        }
-        <div class="@CssProvider.GetClass("resp_content")"></div>
-    </div>
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BResponsive))" 
+                       Class="@CssProvider.GetClass()" 
+                       Style="@CssProvider.GetStyle()" 
+                       Width="@Width" 
+                       MaxWidth="@MaxWidth" 
+                       MinWidth="@MinWidth" 
+                       Height="@Height" 
+                       MaxHeight="@MaxHeight" 
+                       MinHeight="@MinHeight"
+                       Dimensions="@Dimensions"
+                       ContentClass="@ContentClass">
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BImageContent<>))"></AbstractComponent>
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BPlaceholderSlot<>))"></AbstractComponent>
+    </AbstractComponent>
 </CascadingValue>

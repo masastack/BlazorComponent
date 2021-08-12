@@ -2,19 +2,16 @@
 
 namespace BlazorComponent
 {
-    public partial class BImage : BDomComponentBase, IImage
+    public partial class BResponsive : BDomComponentBase, IResponsive
     {
-        [Parameter] 
+        [Parameter]
         public Dimensions Dimensions { get; set; }
 
         [Parameter] 
         public StringNumber AspectRatio { get; set; }
 
-        [Parameter]
-        public string ContentClass { get; set; }
-
         [Parameter] 
-        public bool Contain { get; set; }
+        public string ContentClass { get; set; }
 
         [Parameter] 
         public StringNumber Height { get; set; }
@@ -33,17 +30,8 @@ namespace BlazorComponent
 
         [Parameter] 
         public StringNumber MinWidth { get; set; }
-
-        [Parameter] 
-        public string Src { get; set; }
         
-        [Parameter]
-        public string LazySrc { get; set; }
-
         [Parameter] 
-        public string Gradient { get; set; }
-
-        [Parameter]
         public RenderFragment ChildContent { get; set; }
     }
 }

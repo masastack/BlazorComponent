@@ -44,6 +44,12 @@
 		<None Include="tsconfig.json" CopyToOutputDirectory="Never"></None>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Compile Update="Components\MResponsive\BResponsive.razor.cs">
+	    <DependentUpon>BResponsive.razor</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
 	<Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SolutionDir)node_modules') ">
 		<!-- Ensure Node.js is installed -->
 		<Exec Command="node --version" ContinueOnError="true">
