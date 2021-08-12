@@ -218,7 +218,6 @@ export function addDomEventListener(element, eventName, preventDefault, invoker)
             args.preventDefault();
         }
     };
-
     if (element == 'window') {
         if (eventName == 'resize') {
             window.addEventListener(eventName, debounce(() => callback({ innerWidth: window.innerWidth, innerHeight: window.innerHeight }), 200, false));

@@ -117,6 +117,8 @@ namespace BlazorComponent
         [Parameter]
         public bool Dark { get; set; }
 
+        public bool Light { get; set ; }
+
         protected override void OnParametersSet()
         {
             if (Click.HasDelegate)

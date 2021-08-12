@@ -1,42 +1,41 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
+@implements IIcon
 
-@if (Tag == IconTag.I)
+@if (!Disabled && OnClick.HasDelegate)
 {
-    if (OnClick.HasDelegate)
-    {
-        <button type="button"
-                class="@Css"
-                style="@CssProvider.GetStyle()"
-                id="@Id"
-                @ref="Ref"
-                @onclick="OnClick"
-                @onclick:stopPropagation>
-            @_icon
-        </button>
-    }
-    else
-    {
-        <i class="@Css"
-           style="@CssProvider.GetStyle()"
-           id="@Id"
-           @ref="Ref"
-           @onclick="OnClick">
-            @_icon
-        </i>
-    }
+    <button type="button"
+        class="@Css"
+        style="@CssProvider.GetStyle()"
+        id="@Id"
+        @ref="Ref"
+        @onclick="OnClick"
+        @onclick:stopPropagation>
+        @_icon
+    </button>
+
 }
 else
 {
-    // Render SVG
+    if (Tag == IconTag.I)
+    {
+        <i class="@Css"
+   style="@CssProvider.GetStyle()"
+   id="@Id"
+   @ref="Ref">
+            @_icon
+        </i>
+    }
+    else
+    {
+        // Render SVG
+        <span role="img"
+      class="@Css"
+      style="@CssProvider.GetStyle()"
+      id="@Id"
+      @ref="Ref">
+            @((MarkupString) _icon)
+        </span>
+    }
 
-    <span role="img"
-          class="@Css"
-          style="@CssProvider.GetStyle()"
-          id="@Id"
-          @ref="Ref"
-          @onclick="OnClick"
-          @onclick:stopPropagation>
-        @((MarkupString) _icon)
-    </span>
 }

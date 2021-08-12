@@ -16,5 +16,8 @@ namespace BlazorComponent
         public virtual string Tag { get; set; } = "div";
 
         public virtual bool IsDark { get; }
+
+        public bool Dark { get ; set ; }
+        public bool Light { get ; set ; }
     }
 }

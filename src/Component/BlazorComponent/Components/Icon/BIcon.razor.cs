@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Components.RenderTree;
 using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BIcon : BDomComponentBase
+    public partial class BIcon : BDomComponentBase, IIcon, IThemeable, ISizeable,IColorable
     {
         /// <summary>
         /// Attention! End with a space
@@ -21,11 +22,6 @@ namespace BlazorComponent
 
         private string Css => CssProvider.GetClass() + " " + _css;
 
-        [Parameter]
-        public string Color { get; set; }
-
-        [Parameter]
-        public StringNumber Size { get; set; }
 
         [Parameter]
         public IconTag Tag
@@ -38,8 +34,6 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<MouseEventArgs> Click { get; set; }
 
-        [Parameter]
-        public EventCallback<MouseEventArgs> OnClick { get; set; }
 
         protected override void OnParametersSet()
         {
@@ -99,6 +93,68 @@ namespace BlazorComponent
             }
         }
 
+
+        #region IIcon
+
+        [Parameter]
+        public bool Dense { get; set; }
+
+        [Parameter]
+        public bool Disabled { get; set; }
+
+        [Parameter]
+        public bool Left { get; set; }
+
+        [Parameter]
+        public bool Right { get; set; }
+
+        [Parameter]
+        public StringNumber Size { get; set; }
+
+        [Parameter]
+        public EventCallback<MouseEventArgs> OnClick { get; set; }
+    
+
+        public Task HandleOnClick(MouseEventArgs args)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region ISizeable
+
+        [Parameter]
+        public bool XSmall { get; set; }
+
+        [Parameter]
+        public bool Small { get; set; }
+
+        [Parameter]
+        public bool Large { get; set; }
+
+        [Parameter]
+        public bool XLarge { get; set; }
+
+        #endregion
+
+        #region  IThemeable
+
+        [Parameter]
+        public bool Dark { get; set; }
+
+        [Parameter]
+        public bool Light { get; set; }
+
+        #endregion
+
+        #region IColorable
+
+        [Parameter]
+        public string Color { get; set; }
+
+        #endregion
+
         protected override void OnInitialized()
         {
             base.OnInitialized();
@@ -117,5 +173,14 @@ namespace BlazorComponent
                 }
             }
         }
+
+
+        //protected override void BuildRenderTree(RenderTreeBuilder builder)
+        //{
+        //    //ChildContent?.Invoke(builder);
+
+        //    base.BuildRenderTree(builder);
+        //}
+
     }
 }
