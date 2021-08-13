@@ -226,7 +226,12 @@ export function addDomEventListener(element, eventName, preventDefault, invoker)
         }
     } else {
         let dom = getDom(element);
-        (dom as HTMLElement).addEventListener(eventName, callback);
+        var htmlElement = dom as HTMLElement;
+        if(eventName == 'scroll'){
+            htmlElement.addEventListener(eventName, debounce(() => callback(getDomInfo(dom)), 200, false));
+        }else{
+            htmlElement.addEventListener(eventName, callback);
+        }
     }
 }
 
