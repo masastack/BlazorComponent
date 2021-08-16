@@ -1,0 +1,12 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TKey
+@typeparam TTreeviewNode
+@inherits ComponentAbstractBase<TTreeviewNode>
+
+@if (AppendContent != null)
+{
+    <div class="@CssProvider.GetClass("append")">
+        @AppendContent
+    </div>
+}

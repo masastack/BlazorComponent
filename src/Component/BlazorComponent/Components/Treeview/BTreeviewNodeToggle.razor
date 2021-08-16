@@ -1,0 +1,16 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TKey
+@typeparam TTreeviewNode
+@inherits ComponentAbstractBase<TTreeviewNode>
+
+<AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>(Name)">
+    @if (IsLoading)
+    {
+        @LoadingIcon
+    }
+    else
+    {
+        @ExpandIcon
+    }
+</AbstractComponent>

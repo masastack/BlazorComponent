@@ -1,0 +1,22 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TKey
+@typeparam TTreeviewNode
+@inherits ComponentAbstractBase<TTreeviewNode>
+
+<div class="@CssProvider.GetClass("root")" @onclick="HandleOnClick">
+    <AbstractComponent Level="@Level" Metadata="AbstractProvider.GetMetadata(typeof(BTreeviewNodeLevel<,,>))"></AbstractComponent>
+    @if (HasChildren)
+    {
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTreeviewNodeToggle<,,>))"></AbstractComponent>
+    }
+    else
+    {
+        <AbstractComponent Level="@(1)" Metadata="AbstractProvider.GetMetadata(typeof(BTreeviewNodeLevel<,,>))"></AbstractComponent>
+    }
+    @if (Selectable)
+    {
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTreeviewNodeCheckbox<,,>))"></AbstractComponent>
+    }
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTreeviewNodeContent<,,>))"></AbstractComponent>
+</div>

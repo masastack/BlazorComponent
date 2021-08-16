@@ -1,4 +1,4 @@
-﻿using BlazorComponent.Doc.CLI.Extensions;
+﻿using BlazorComponent.Doc.Extensions;
 using Markdig;
 using Markdig.Extensions.Yaml;
 using Markdig.Renderers;

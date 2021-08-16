@@ -1,0 +1,16 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TKey
+@typeparam TTreeviewNode
+@inherits ComponentAbstractBase<TTreeviewNode>
+
+<div class="@CssProvider.GetClass("label")">
+    @if (LabelContent != null)
+    {
+        @LabelContent
+    }
+    else
+    {
+        @Text
+    }
+</div>

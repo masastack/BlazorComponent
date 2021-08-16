@@ -1,4 +1,4 @@
-﻿using BlazorComponent.Doc.CLI.Models;
+﻿using BlazorComponent.Doc.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;

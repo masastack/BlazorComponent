@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlazorComponent.Doc.CLI.Models
+namespace BlazorComponent.Doc.Models
 {
     public class DemoComponentModel
     {

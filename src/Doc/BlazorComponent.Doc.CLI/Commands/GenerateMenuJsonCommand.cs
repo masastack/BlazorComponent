@@ -1,8 +1,8 @@
 ﻿using BlazorComponent.Doc.CLI.Comparers;
-using BlazorComponent.Doc.CLI.Extensions;
 using BlazorComponent.Doc.CLI.Interfaces;
-using BlazorComponent.Doc.CLI.Models;
 using BlazorComponent.Doc.CLI.Wrappers;
+using BlazorComponent.Doc.Extensions;
+using BlazorComponent.Doc.Models;
 using Microsoft.Extensions.CommandLineUtils;
 using Newtonsoft.Json.Linq;
 using System;

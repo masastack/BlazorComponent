@@ -1,0 +1,13 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TKey
+@typeparam TTreeviewNode
+@inherits ComponentAbstractBase<TTreeviewNode>
+
+@if (PrependContent != null)
+{
+    <div class="@CssProvider.GetClass("prepend")">
+        @(PrependContent(Item))
+    </div>
+}
+

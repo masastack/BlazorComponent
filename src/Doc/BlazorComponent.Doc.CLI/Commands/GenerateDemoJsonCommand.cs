@@ -1,6 +1,6 @@
 ﻿using BlazorComponent.Doc.CLI.Interfaces;
-using BlazorComponent.Doc.CLI.Models;
 using BlazorComponent.Doc.CLI.Wrappers;
+using BlazorComponent.Doc.Models;
 using Microsoft.Extensions.CommandLineUtils;
 using System;
 using System.Collections.Generic;

@@ -1,0 +1,21 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TKey
+@inherits BDomComponentBase
+@implements ITreeview<TItem, TKey>
+
+<CascadingValue Value="this">
+    <div class="@CssProvider.GetClass()">
+        @if (ComputedItems != null && ComputedItems.Any())
+        {
+            foreach (var item in ComputedItems)
+            {
+                <AbstractComponent Item="@item" ParentIsDisabled="@(ItemDisabled?.Invoke(item) ?? false)" Metadata="AbstractProvider.GetMetadata(typeof(BTreeviewNodeChild<,,>))"></AbstractComponent>
+            }
+        }
+        else
+        {
+            @ChildContent
+        }
+    </div>
+</CascadingValue>

@@ -10,7 +10,7 @@ namespace BlazorComponent
     public abstract partial class BBreadcrumbs<TItem> : BDomComponentBase
     {
         [Parameter]
-        public String Divider { get; set; }
+        public string Divider { get; set; }
 
         [Parameter]
         public bool DisabledLast { get; set; }

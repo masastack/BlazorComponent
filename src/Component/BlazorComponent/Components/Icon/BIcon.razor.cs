@@ -41,6 +41,12 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<MouseEventArgs> OnClick { get; set; }
 
+        /// <summary>
+        /// TODO: Disable the input
+        /// </summary>
+        [Parameter]
+        public bool Disabled { get; set; }
+
         protected override void OnParametersSet()
         {
             if (Click.HasDelegate)

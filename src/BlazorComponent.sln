@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31025.218
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31606.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1 - Test", "1 - Test", "{E2FCFCC9-03B4-4881-B272-B374A5CFB9C1}"
 EndProject
@@ -23,6 +23,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorComponent.Doc", "Doc\BlazorComponent.Doc\BlazorComponent.Doc.csproj", "{F0F27A9D-5EA7-4A8B-A0E5-2B658602E38D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorComponent.Test.ServerHost", "Test\BlazorComponent.Test.ServerHost\BlazorComponent.Test.ServerHost.csproj", "{DB36CF9F-D7F9-4F77-A2DF-5F169D4A640A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorComponent.Doc.Models", "Doc\BlazorComponent.Doc.Models\BlazorComponent.Doc.Models.csproj", "{CF9795A7-BECA-48AD-A9AB-7251AA8D64D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,6 +52,10 @@ Global
 		{DB36CF9F-D7F9-4F77-A2DF-5F169D4A640A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB36CF9F-D7F9-4F77-A2DF-5F169D4A640A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB36CF9F-D7F9-4F77-A2DF-5F169D4A640A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF9795A7-BECA-48AD-A9AB-7251AA8D64D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF9795A7-BECA-48AD-A9AB-7251AA8D64D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF9795A7-BECA-48AD-A9AB-7251AA8D64D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF9795A7-BECA-48AD-A9AB-7251AA8D64D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,6 +66,7 @@ Global
 		{4A3BDE5F-D683-4024-AF57-E86FBAA937A5} = {E2FCFCC9-03B4-4881-B272-B374A5CFB9C1}
 		{F0F27A9D-5EA7-4A8B-A0E5-2B658602E38D} = {C001BD36-40F0-42AF-8E27-7A564153F56A}
 		{DB36CF9F-D7F9-4F77-A2DF-5F169D4A640A} = {E2FCFCC9-03B4-4881-B272-B374A5CFB9C1}
+		{CF9795A7-BECA-48AD-A9AB-7251AA8D64D9} = {C001BD36-40F0-42AF-8E27-7A564153F56A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {828BAB6B-B5E2-4244-90AA-0644472A4D55}

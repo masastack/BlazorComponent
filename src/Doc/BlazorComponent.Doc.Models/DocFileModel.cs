@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlazorComponent.Doc.CLI.Models
+namespace BlazorComponent.Doc.Models
 {
-    public class ContentsItem
+    public class DocFileModel
     {
-        public string Href { get; set; }
+        public int Order { get; set; }
 
         public string Title { get; set; }
+
+        public string Html { get; set; }
     }
 }
