@@ -1,0 +1,8 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<CascadingValue Value="this">
+    <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BResponsiveBody<>))"></AbstractComponent>
+    </div>
+</CascadingValue>

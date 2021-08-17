@@ -219,7 +219,6 @@ namespace BlazorComponent
             action?.Invoke(builder);
 
             builder.Add(StaticClassProvider);
-
             return builder.Class;
         }
 

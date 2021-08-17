@@ -33,7 +33,7 @@
                             @if (file.IsImage)
                             {
                                 <AbstractComponent Metadata="AbstractProvider.GetMetadata<BAvatar>()" Tile>
-                                    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BImage>()" Src="@file.Url" />
+                                    <AbstractComponent Metadata="AbstractProvider.GetMetadata<IImage>()" Src="@file.Url" />
                                 </AbstractComponent>
                             }
 
@@ -60,7 +60,7 @@
                             <div @onmouseenter="() => file.Hover = true" @onmouseleave="() => file.Hover = false" class="upload-card-item">
                                 @if (file.IsImage)
                                 {
-                                    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BImage>()" Src="@file.Url" Width="@CardSize" Height="@CardSize"></AbstractComponent>
+                                    <AbstractComponent Metadata="AbstractProvider.GetMetadata<IImage>()" Src="@file.Url" Width="@CardSize" Height="@CardSize"></AbstractComponent>
                                 }
 
                                 <AbstractComponent Metadata="AbstractProvider.GetMetadata<BOverlay>()" Absolute Value="@file.Hover" Opacity="@((StringNumber)0.2)">
@@ -101,7 +101,7 @@
                                 @if (file.IsImage)
                                 {
                                     <AbstractComponent Metadata="@(AbstractProvider.GetMetadata<BAvatar>("list-item"))" Tile>
-                                        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BImage>()" Src="@file.Url" />
+                                        <AbstractComponent Metadata="AbstractProvider.GetMetadata<IImage>()" Src="@file.Url" />
                                     </AbstractComponent>
                                 }
                                 else

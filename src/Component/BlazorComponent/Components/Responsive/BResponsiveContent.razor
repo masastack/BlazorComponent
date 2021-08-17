@@ -1,0 +1,7 @@
+﻿@namespace BlazorComponent
+@typeparam TResponsive
+@inherits ComponentAbstractBase<TResponsive>
+
+<div class="@CssProvider.GetClass("resp_content")">
+    @ComponentChildContent
+</div>
