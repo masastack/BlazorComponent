@@ -85,7 +85,6 @@ namespace BlazorComponent
             {
                 await OnClick.InvokeAsync(args);
             }
-
         }
 
         public virtual async Task HandleOnMouseDown(MouseEventArgs args)

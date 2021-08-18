@@ -1,38 +1,59 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using BlazorComponent.Helpers;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.RenderTree;
 using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BIcon : BDomComponentBase
+    public partial class BIcon : BDomComponentBase, IIcon
     {
-        /// <summary>
-        /// Attention! End with a space
-        /// </summary>
-        private static string[] _arrFa5Prefix = new string[] { "fa ", "fab ", "fal ", "far ", "fas " };
+        [Parameter]
+        public RenderFragment ChildContent { get; set; }
 
-        protected string _icon;
-        protected string _css;
-        protected IconTag _tag;
-        private RenderFragment _childContent;
-
-        private string Css => CssProvider.GetClass() + " " + _css;
+        #region IIcon
 
         [Parameter]
-        public string Color { get; set; }
+        public bool Dense { get; set; }
+
+        [Parameter]
+        public bool Disabled { get; set; }
+
+        [Parameter]
+        public bool Left { get; set; }
+
+        [Parameter]
+        public bool Right { get; set; }
 
         [Parameter]
         public StringNumber Size { get; set; }
 
+        public string Icon { get; set; }
+
         [Parameter]
-        public IconTag Tag
-        {
-            get => _tag == IconTag.None ? IconTag.I : _tag;
-            set => _tag = value;
-        }
+        public string Tag { get; set; } = "i";
+
+        public string NewChildren { get; set; }
+
+        public Dictionary<string, object> SvgAttrs { get; set; }
+
+        #endregion
+
+        #region  IThemeable
+
+        [Parameter]
+        public bool Dark { get; set; }
+
+        [Parameter]
+        public bool Light { get; set; }
+
+        #endregion
+
+        [Parameter]
+        public string Color { get; set; }
 
         [Obsolete("Use OnClick instead.")]
         [Parameter]
@@ -41,11 +62,13 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<MouseEventArgs> OnClick { get; set; }
 
-        /// <summary>
-        /// TODO: Disable the input
-        /// </summary>
-        [Parameter]
-        public bool Disabled { get; set; }
+        public virtual async Task HandleOnClick(MouseEventArgs args)
+        {
+            if (OnClick.HasDelegate)
+            {
+                await OnClick.InvokeAsync(args);
+            }
+        }
 
         protected override void OnParametersSet()
         {
@@ -55,73 +78,25 @@ namespace BlazorComponent
             }
         }
 
-        [Parameter]
-        public RenderFragment ChildContent
-        {
-            get
-            {
-                return _childContent;
-            }
-            set
-            {
-                var builder = new RenderTreeBuilder();
-                value(builder);
-
-                // TODO: will be changed next release version!
-                var frame = builder.GetFrames().Array.FirstOrDefault(u => u.FrameType == RenderTreeFrameType.Text || u.FrameType == RenderTreeFrameType.Markup);
-
-                if (frame.FrameType != RenderTreeFrameType.None)
-                {
-                    if (frame.TextContent.Contains("<svg"))
-                    {
-                        // support SVG
-                        _icon = frame.TextContent;
-                    }
-                    else
-                    {
-                        _icon = frame.TextContent.Trim();
-
-                        // support Font Awesome 5
-                        if (_arrFa5Prefix.Any(prefix => _icon.StartsWith(prefix)))
-                        {
-                            _css = _icon;
-                            _icon = null;
-                        }
-                        // support Material Design Icons
-                        else if (_icon.StartsWith("mdi-"))
-                        {
-                            _css = $"mdi {_icon}";
-                            _icon = null;
-                        }
-                        // support Material Design
-                        else
-                        {
-                            _css = "material-icons";
-                        }
-                    }
-                }
-
-                _childContent = value;
-            }
-        }
-
         protected override void OnInitialized()
         {
             base.OnInitialized();
 
-            if (_tag == IconTag.None)
+            var builder = new RenderTreeBuilder();
+            ChildContent(builder);
+
+            var frames = builder.GetFrames().Array;
+            //todo Array will change
+            var frame = builder.GetFrames().Array.FirstOrDefault(u => u.FrameType == RenderTreeFrameType.Text || u.FrameType == RenderTreeFrameType.Markup);
+
+            char[] charsToTrim = { '\r', ' ', '\n' };
+            Icon = frame.TextContent.Trim(charsToTrim);
+            //is material icons
+            if (Icon.IndexOf("-") <= -1 && !RegexHelper.RegexSvgPath(Icon))
             {
-                var builder = new RenderTreeBuilder();
-                ChildContent(builder);
-
-                // TODO: will be changed next release version!
-                var frame = builder.GetFrames().Array.FirstOrDefault(u => u.FrameType == RenderTreeFrameType.Text || u.FrameType == RenderTreeFrameType.Markup);
-
-                if (frame.FrameType != RenderTreeFrameType.None)
-                {
-                    _tag = frame.TextContent.Contains("<svg") ? IconTag.Span : IconTag.I;
-                }
+                NewChildren = Icon;
             }
         }
+
     }
 }

@@ -69,5 +69,6 @@ namespace BlazorComponent
             builder._mapper.Clear();
             return builder;
         }
+
     }
 }

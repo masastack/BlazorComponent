@@ -1,43 +1,15 @@
 ﻿@namespace BlazorComponent
+@using BlazorComponent.Helpers
 @inherits BDomComponentBase
+@implements IIcon
 
-@if (Tag == IconTag.I)
-{
-    if (OnClick.HasDelegate)
+<CascadingValue Value="this">
+    @if (RegexHelper.RegexSvgPath(Icon))
     {
-        <button type="button"
-                class="@Css"
-                style="@CssProvider.GetStyle()"
-                id="@Id"
-                disabled="@Disabled"
-                @ref="Ref"
-                @onclick="OnClick"
-                @onclick:stopPropagation>
-            @_icon
-        </button>
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSvgIconSlot<>))"></AbstractComponent>
     }
     else
     {
-        <i class="@Css"
-           style="@CssProvider.GetStyle()"
-           id="@Id"
-           @ref="Ref"
-           @onclick="OnClick">
-            @_icon
-        </i>
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BFontIconSlot<>))"></AbstractComponent>
     }
-}
-else
-{
-    // Render SVG
-
-    <span role="img"
-          class="@Css"
-          style="@CssProvider.GetStyle()"
-          id="@Id"
-          @ref="Ref"
-          @onclick="OnClick"
-          @onclick:stopPropagation>
-        @((MarkupString) _icon)
-    </span>
-}
+</CascadingValue>

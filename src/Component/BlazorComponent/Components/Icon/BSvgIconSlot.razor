@@ -1,0 +1,18 @@
+﻿@namespace BlazorComponent
+@typeparam TIcon
+@inherits ComponentAbstractBase<TIcon>
+
+@if (OnClick.HasDelegate && !Disabled)
+{
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BButtonIconSlot<>))"></AbstractComponent>
+}
+else
+{
+    <span role="img" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">
+        <svg @attributes="SvgAttrs" class="@CssProvider.GetClass("m-icon-svg")" xmlns="http://www.w3.org/2000/svg">
+            <path d="@Icon">
+            </path>
+        </svg>
+    </span>
+}
+

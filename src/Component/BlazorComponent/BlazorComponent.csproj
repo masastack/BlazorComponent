@@ -18,13 +18,17 @@
 	  <NoWarn>1701;1702;8632</NoWarn>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <Compile Remove="Components\Icon\BIconSlot.razor.cs" />
+	</ItemGroup>
+
 
 	<ItemGroup>
 		<SupportedPlatform Include="browser" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.0-preview.6.21355.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.0-preview.7.21378.6" />
 		<PackageReference Include="OneOf" Version="3.0.178" />
 	</ItemGroup>
 
@@ -34,6 +38,7 @@
 
 	<ItemGroup>
 		<!-- ignore the tsconfig.json file in package -->
+		<Content Remove="Components\Icon\BIconSlot.razor" />
 		<Content Remove="tsconfig.json" />
 		<None Include="..\..\..\docs\logo_blazorcomponent_32.png">
 		  <Pack>True</Pack>
