@@ -742,13 +742,15 @@ export function getImageDimensions(src: string) {
         img.onload = function () {
             resolve({
                 width: img.width,
-                height: img.height
+                height: img.height,
+                hasError:false
             })
         }
         img.onerror = function () {
             resolve({
                 width: 0,
-                height: 0
+                height: 0,
+                hasError:true
             })
         }
     })
