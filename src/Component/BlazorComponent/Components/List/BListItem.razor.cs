@@ -5,19 +5,18 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BListItem : BDomComponentBase
+    public partial class BListItem : BGroupItem<BItemGroup>
     {
-        [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public BListItem() : base(GroupType.ListItemGroup)
+        {
+
+        }
 
         [Parameter]
         public string Href { get; set; }
 
         [Parameter]
         public string Color { get; set; }
-
-        [CascadingParameter]
-        protected BListItemGroup Group { get; set; }
 
         private bool _link;
 
@@ -26,26 +25,11 @@ namespace BlazorComponent
         {
             get
             {
-                return _link || (Group != null);
+                return _link || (ItemGroup != null);
             }
             set
             {
                 _link = value;
-            }
-        }
-
-        private string _key;
-
-        [Parameter]
-        public string Key
-        {
-            get
-            {
-                return _key == null ? Id : _key;
-            }
-            set
-            {
-                _key = value;
             }
         }
 
@@ -68,6 +52,8 @@ namespace BlazorComponent
         {
             if (args.Button == 0)
             {
+                await ToggleItem();
+
                 if (OnClick.HasDelegate)
                 {
                     await OnClick.InvokeAsync(args);

@@ -7,7 +7,7 @@
 <div style="@CssProvider.GetStyle("cascader-menu-body")">
     <div style="@CssProvider.GetStyle("cascader-menu-body-wrap")">
         <AbstractComponent Metadata="AbstractProvider.GetMetadata<BList>()">
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemGroup>()">
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BItemGroup>()">
                 @foreach (var item in Items)
                 {
                     <AbstractComponent Metadata="AbstractProvider.GetMetadata<BSelectOption<TItem, TValue>>()"

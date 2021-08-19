@@ -8,6 +8,8 @@
 
         ChipGroup,
 
-        ExpansionPanels
+        ExpansionPanels,
+
+        ListItemGroup
     }
 }

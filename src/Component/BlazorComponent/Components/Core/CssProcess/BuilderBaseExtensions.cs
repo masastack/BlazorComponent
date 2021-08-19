@@ -40,7 +40,7 @@ namespace BlazorComponent
         public static TBuilder AddFirstIf<TBuilder>(this TBuilder builder, params (Func<string> funcName, Func<bool> func)[] list)
             where TBuilder : BuilderBase
         {
-            var item = list.LastOrDefault(u => u.func.Invoke());
+            var item = list.FirstOrDefault(u => u.func.Invoke());
 
             if (!item.Equals(default))
             {
