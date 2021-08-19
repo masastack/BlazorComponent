@@ -34,12 +34,12 @@ namespace BlazorComponent
 
             if (ChildContent != null)
             {
-            builder.AddContent(sequence++, ChildContent);
+                builder.AddContent(sequence++, ChildContent);
             }
 
             if (ReferenceCaptureAction != null)
             {
-            builder.AddElementReferenceCapture(sequence++, ReferenceCaptureAction);
+                builder.AddElementReferenceCapture(sequence++, ReferenceCaptureAction);
             }
 
             builder.CloseElement();

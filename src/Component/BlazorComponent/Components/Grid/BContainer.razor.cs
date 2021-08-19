@@ -11,5 +11,8 @@ namespace BlazorComponent
     {
         [Parameter]
         public RenderFragment ChildContent { get; set; }
+        
+        [Parameter]
+        public virtual string Tag { get; set; } = "div";
     }
 }

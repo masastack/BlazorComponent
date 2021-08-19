@@ -16,35 +16,48 @@ namespace BlazorComponent
      * (Dictionary<string, int>, Dictionary<string, int>)   - horizontal gutters for different screen sizes, vertical gutter for different screen sizes
      */
 
-    using GutterType = OneOf<int, Dictionary<string, int>, (int, int), (Dictionary<string, int>, int), (int, Dictionary<string, int>), (Dictionary<string, int>, Dictionary<string, int>)>;
+    using GutterType =
+        OneOf<int, Dictionary<string, int>, (int horizontalGutter, int verticalGutter), (Dictionary<string, int>
+            horizontalGutterSizes, int verticalGutter), (int horizontalGutter, Dictionary<string, int>
+            verticalGutterSizes),
+            (Dictionary<string, int>horizontalGutterSizes, Dictionary<string, int>verticalGutterSizes)>;
 
     public abstract partial class BRow : BDomComponentBase
     {
-        [Parameter]
+        [Parameter] 
         public RenderFragment ChildContent { get; set; }
 
-        [Parameter]
+        [Parameter] 
         public string Type { get; set; }
 
+        [Parameter] 
+        public virtual string Tag { get; set; } = "div";
+
         /// <summary>
-        /// 'start' | 'center' | 'end'
+        /// 'start' | 'center' | 'end' | 'baseline ' | 'stretch '
         /// </summary>
         [Parameter]
-        public string Align { get; set; }
+        public StringEnum<AlignTypes> Align { get; set; }
+
+        /// <summary>
+        /// 'start', 'end', 'center','space-between', 'space-around', 'stretch'
+        /// </summary>
+        [Parameter]
+        public StringEnum<AlignContentTypes> AlignContent { get; set; }
 
         /// <summary>
         /// 'start' | 'end' | 'center' | 'space-around' | 'space-between'
         /// </summary>
         [Parameter]
-        public string Justify { get; set; }
+        public StringEnum<JustifyTypes> Justify { get; set; }
 
-        [Parameter]
+        [Parameter] 
         public bool Wrap { get; set; } = true;
 
-        [Parameter]
+        [Parameter] 
         public GutterType Gutter { get; set; }
 
-        [Parameter]
+        [Parameter] 
         public EventCallback<BreakpointType> OnBreakpoint { get; set; }
 
         /// <summary>
@@ -53,14 +66,15 @@ namespace BlazorComponent
         [Parameter]
         public BreakpointType DefaultBreakpoint { get; set; }
 
-        [Inject]
+        [Inject] 
         public DomEventJsInterop DomEventJsInterop { get; set; }
 
         private string GutterStyle { get; set; }
 
         public IList<BCol> Cols { get; } = new List<BCol>();
 
-        private static BreakpointType[] _breakpoints = new[] {
+        private static BreakpointType[] _breakpoints = new[]
+        {
             BreakpointTypes.Xs,
             BreakpointTypes.Sm,
             BreakpointTypes.Md,
@@ -126,8 +140,10 @@ namespace BlazorComponent
             GutterStyle = "";
             if (gutter.horizontalGutter > 0)
             {
-                GutterStyle = $"margin-left: -{gutter.horizontalGutter / 2}px; margin-right: -{gutter.horizontalGutter / 2}px; ";
+                GutterStyle =
+                    $"margin-left: -{gutter.horizontalGutter / 2}px; margin-right: -{gutter.horizontalGutter / 2}px; ";
             }
+
             GutterStyle += $"row-gap: {gutter.verticalGutter}px; ";
 
             InvokeStateHasChanged();
@@ -143,9 +159,12 @@ namespace BlazorComponent
                 num => (num, 0),
                 dic => breakPoint != null && dic.ContainsKey(breakPoint) ? (dic[breakPoint], 0) : (0, 0),
                 tuple => tuple,
-                tupleDicInt => (tupleDicInt.Item1.ContainsKey(breakPoint) ? tupleDicInt.Item1[breakPoint] : 0, tupleDicInt.Item2),
-                tupleIntDic => (tupleIntDic.Item1, tupleIntDic.Item2.ContainsKey(breakPoint) ? tupleIntDic.Item2[breakPoint] : 0),
-                tupleDicDic => (tupleDicDic.Item1.ContainsKey(breakPoint) ? tupleDicDic.Item1[breakPoint] : 0, tupleDicDic.Item2.ContainsKey(breakPoint) ? tupleDicDic.Item2[breakPoint] : 0)
+                tupleDicInt => (tupleDicInt.horizontalGutterSizes.ContainsKey(breakPoint) ? tupleDicInt.horizontalGutterSizes[breakPoint] : 0,
+                    tupleDicInt.verticalGutter),
+                tupleIntDic => (tupleIntDic.horizontalGutter,
+                    tupleIntDic.verticalGutterSizes.ContainsKey(breakPoint) ? tupleIntDic.verticalGutterSizes[breakPoint] : 0),
+                tupleDicDic => (tupleDicDic.horizontalGutterSizes.ContainsKey(breakPoint) ? tupleDicDic.horizontalGutterSizes[breakPoint] : 0,
+                    tupleDicDic.verticalGutterSizes.ContainsKey(breakPoint) ? tupleDicDic.verticalGutterSizes[breakPoint] : 0)
             );
         }
 
