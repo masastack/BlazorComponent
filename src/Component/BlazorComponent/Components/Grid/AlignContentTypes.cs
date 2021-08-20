@@ -6,7 +6,6 @@
         Start,
         Center,
         End,
-        Baseline,
         SpaceBetween,
         SpaceAround,
         Stretch
