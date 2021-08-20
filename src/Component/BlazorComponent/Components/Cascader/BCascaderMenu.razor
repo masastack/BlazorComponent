@@ -15,7 +15,7 @@
         <CascadingValue Value="Component">
             @if (ComputedItems.Any())
             {
-                <AbstractComponent Items="@ComputedItems" Metadata="AbstractProvider.GetMetadata<BCascaderMenuBody<TItem, TValue, TInput>>()">
+                <AbstractComponent Items="@ComputedItems" Metadata="AbstractProvider.GetMetadata(typeof(BCascaderMenuBody<,,>))">
                 </AbstractComponent>
             }
         </CascadingValue>

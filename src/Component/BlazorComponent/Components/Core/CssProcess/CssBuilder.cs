@@ -9,7 +9,7 @@ namespace BlazorComponent
 
         public override string ToString()
         {
-            return string.Join(" ", _mapper.Where(i => i.Value()).Select(i => i.Key()));
+            return string.Join(" ", _mapper.Where(i => i.Value()).Select(i => i.Key())).Trim();
         }
     }
 }

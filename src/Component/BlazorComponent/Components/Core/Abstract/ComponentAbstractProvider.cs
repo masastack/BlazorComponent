@@ -133,7 +133,12 @@ namespace BlazorComponent
         public AbstractMetadata GetMetadata(Type type)
         {
             var key = new ComponentKey(type);
-            var cType = _typeConfig.GetValueOrDefault(key, type);
+            return GetMetadata(key);
+        }
+
+        private AbstractMetadata GetMetadata(ComponentKey key)
+        {
+            var cType = _typeConfig.GetValueOrDefault(key, typeof(EmptyComponent));
 
             var properties = new Dictionary<string, object>();
             var action = _propertiesConfig.GetValueOrDefault(key);
@@ -144,24 +149,13 @@ namespace BlazorComponent
 
         public AbstractMetadata GetMetadata<TComponent>()
         {
-            var type = _typeConfig.GetValueOrDefault(ComponentKey.Get<TComponent>(), typeof(TComponent));
-
-            var properties = new Dictionary<string, object>();
-            var action = _propertiesConfig.GetValueOrDefault(ComponentKey.Get<TComponent>());
-            action?.Invoke(properties);
-
-            return new AbstractMetadata(type, properties);
+            return GetMetadata(typeof(TComponent));
         }
 
         public AbstractMetadata GetMetadata<TComponent>(string name)
         {
-            var type = _typeConfig.GetValueOrDefault(ComponentKey.Get<TComponent>(name), typeof(TComponent));
-
-            var properties = new Dictionary<string, object>();
-            var action = _propertiesConfig.GetValueOrDefault(ComponentKey.Get<TComponent>(name));
-            action?.Invoke(properties);
-
-            return new AbstractMetadata(type, properties);
+            var key = ComponentKey.Get<TComponent>(name);
+            return GetMetadata(key);
         }
 
         /// <summary>

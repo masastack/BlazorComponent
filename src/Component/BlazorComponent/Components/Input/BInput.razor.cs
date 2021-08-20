@@ -58,7 +58,7 @@ namespace BlazorComponent
 
         public ElementReference InputSlotRef { get; set; }
 
-        public bool HasMouseDown { get; set; }
+        protected bool HasMouseDown { get; set; }
 
         public virtual bool HasLabel => LabelContent != null || Label != null;
 

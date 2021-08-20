@@ -25,5 +25,5 @@
 
 @if (ShowChildren)
 {
-    <AbstractComponent Items="@Children" Metadata="AbstractProvider.GetMetadata<BCascaderMenuBody<TItem,TValue,TInput>>()"></AbstractComponent>
+    <AbstractComponent Items="@Children" Metadata="AbstractProvider.GetMetadata(typeof(BCascaderMenuBody<,,>))"></AbstractComponent>
 }

@@ -30,14 +30,6 @@ namespace BlazorComponent
 
         ElementReference InputSlotRef { get; set; }
 
-        EventCallback<MouseEventArgs> OnClick { get; }
-
-        EventCallback<MouseEventArgs> OnMouseUp { get; }
-
-        EventCallback<MouseEventArgs> OnMouseDown { get; }
-
-        bool HasMouseDown { get; set; }
-
         Task HandleOnClick(MouseEventArgs args);
 
         Task HandleOnMouseDown(MouseEventArgs args);
