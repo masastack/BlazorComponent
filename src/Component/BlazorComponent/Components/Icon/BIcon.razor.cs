@@ -3,10 +3,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.RenderTree;
 using Microsoft.AspNetCore.Components.Web;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
@@ -79,10 +75,14 @@ namespace BlazorComponent
             }
         }
 
-        protected override void OnInitialized()
+        protected override Task OnParametersSetAsync()
         {
-            base.OnInitialized();
+            InitIcon();
+            return base.OnParametersSetAsync();
+        }
 
+        private void InitIcon()
+        {
             var builder = new RenderTreeBuilder();
             ChildContent(builder);
 
@@ -97,7 +97,10 @@ namespace BlazorComponent
             {
                 NewChildren = Icon;
             }
+            else
+            {
+                NewChildren = string.Empty;
+            }
         }
-
     }
 }
