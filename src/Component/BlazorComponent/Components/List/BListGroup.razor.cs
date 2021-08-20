@@ -12,6 +12,39 @@ namespace BlazorComponent
         private const string PREPEND = "prepend";
         private const string APPEND = "append";
 
+        private bool _expanded;
+        /// <summary>
+        /// 控制列表组是否展开
+        /// </summary>
+        protected bool Expanded
+        {
+            get => _expanded;
+            set
+            {
+                _expanded = value;
+                Value = value;
+            }
+        }
+
+        private bool _value;
+        /// <summary>
+        /// 初始化列表组是否展开，后续请使用<see cref="Expanded"/>控制行为和样式
+        /// </summary>
+        [Parameter]
+        public bool Value
+        {
+            get => _value;
+            set
+            {
+                if (value == _value) return;
+                _value = value;
+                ValueChanged.InvokeAsync(_value);
+            }
+        }
+
+        [Parameter]
+        public EventCallback<bool> ValueChanged { get; set; }
+
         [Parameter]
         public string PrependIcon { get; set; }
 
@@ -28,7 +61,10 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
-        protected bool IsActive { get; set; }
+        protected override void OnInitialized()
+        {
+            _expanded = Value;
+        }
 
         protected override void OnParametersSet()
         {
@@ -40,9 +76,17 @@ namespace BlazorComponent
             }
         }
 
-        public void DeActive()
+        protected void ToggleExpansion()
         {
-            IsActive = false;
+            Expanded = !Expanded;
+        }
+
+        public void Contract()
+        {
+            if (Expanded)
+            {
+                Expanded = false;
+            }
         }
     }
 }
