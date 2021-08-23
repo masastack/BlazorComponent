@@ -2,7 +2,7 @@
 @typeparam TIcon
 @inherits ComponentAbstractBase<TIcon>
 
-<button class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" @onclick="OnClick">
+<button class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" @onclick="OnClick" @onclick:stopPropagation>
     @NewChildren
 </button>
 
