@@ -26,7 +26,7 @@ gulp.task('ts', function () {
         .pipe(sourcemaps.init({ loadMaps: true }))
         .pipe(uglify())
         .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('wwwroot/js'));
+        .pipe(gulp.dest('../BlazorComponent/wwwroot/js'));
 });
 
 gulp.task('default', gulp.parallel('ts'), function () { });

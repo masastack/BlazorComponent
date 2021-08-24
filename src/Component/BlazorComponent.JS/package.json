@@ -21,9 +21,16 @@
   "scripts": {
     "gulp:components": "gulp --gulpfile ./gulpfile.js",
     "preinstall": "dotnet tool restore",
-    "changelog": "node ./scripts/print-changelog"
+    "changelog": "node ./scripts/print-changelog",
+    "build": "tsc",
+    "test": "jest",
+    "test-c": "jest --coverage"
   },
   "devDependencies": {
+    "@types/jest": "^27.0.1",
+    "jest": "^27.0.6",
+    "ts-jest": "^27.0.5",
+    "typescript": "^4.3.5",
     "@babel/core": "^7.8.7",
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
@@ -49,7 +56,6 @@
     "open": "^7.0.3",
     "simple-git": "^2.23.0",
     "tsify": "^4.0.2",
-    "typescript": "^4.2.3",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0"
   }

@@ -1,3 +1,4 @@
+using BlazorComponent.Test.Input;
 using Bunit;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -18,6 +19,29 @@ namespace BlazorComponent.Test
 
             // Assert
             cut.MarkupMatches(@"<div class="""" style="""" id:ignore></div>");
+            cut.HasComponent<AbstractComponent>();
+        }
+
+        [TestMethod]
+        public void RenderShowDetailsShouldBeTrue()
+        {
+            // Act
+            var cut = RenderComponent<TestInput>();
+
+            // Assert
+            Assert.IsTrue(cut.Instance.ShowDetails);
+        }
+
+        [TestMethod]
+        public void RenderHideDetailsShowDetailsShouldBeTrue()
+        {
+            // Act
+            var cut = RenderComponent<TestInput>(props=> {
+                props.Add(p=>p.HideDetails,true);
+            });
+
+            // Assert
+            Assert.IsFalse(cut.Instance.ShowDetails);
         }
     }
 }

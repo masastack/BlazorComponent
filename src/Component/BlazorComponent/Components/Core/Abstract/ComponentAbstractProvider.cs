@@ -12,10 +12,10 @@ namespace BlazorComponent
         private readonly Dictionary<ComponentKey, Type> _typeConfig = new();
         private readonly Dictionary<ComponentKey, Action<Dictionary<string, object>>> _propertiesConfig = new();
 
-        public ComponentAbstractProvider Apply(Type type, Type iType, Action<Dictionary<string, object>> propertiesAction = null)
+        public ComponentAbstractProvider Apply(Type type, Type implementType, Action<Dictionary<string, object>> propertiesAction = null)
         {
             var key = new ComponentKey(type);
-            if (_typeConfig.TryAdd(key, iType))
+            if (_typeConfig.TryAdd(key, implementType))
             {
                 _propertiesConfig[key] = propertiesAction;
             }
@@ -85,11 +85,11 @@ namespace BlazorComponent
             return this;
         }
 
-        public ComponentAbstractProvider Merge(Type type, Type iType, Action<Dictionary<string, object>> mergePropertiesAction = null)
+        public ComponentAbstractProvider Merge(Type type, Type implementType, Action<Dictionary<string, object>> mergePropertiesAction = null)
         {
             var key = new ComponentKey(type);
 
-            _typeConfig[key] = iType;
+            _typeConfig[key] = implementType;
             Merge(key, mergePropertiesAction);
 
             return this;
@@ -138,13 +138,13 @@ namespace BlazorComponent
 
         private AbstractMetadata GetMetadata(ComponentKey key)
         {
-            var cType = _typeConfig.GetValueOrDefault(key, typeof(EmptyComponent));
+            var implementType= _typeConfig.GetValueOrDefault(key, typeof(EmptyComponent));
 
             var properties = new Dictionary<string, object>();
             var action = _propertiesConfig.GetValueOrDefault(key);
             action?.Invoke(properties);
 
-            return new AbstractMetadata(cType, properties);
+            return new AbstractMetadata(implementType, properties);
         }
 
         public AbstractMetadata GetMetadata<TComponent>()
