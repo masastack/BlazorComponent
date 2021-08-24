@@ -1,9 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
@@ -17,8 +12,10 @@ namespace BlazorComponent
 
         public virtual bool IsDark { get; }
 
-        public bool Dark { get ; set ; }
+        [Parameter]
+        public bool Dark { get; set; }
 
-        public bool Light { get ; set ; }
+        [Parameter]
+        public bool Light { get; set; }
     }
 }
