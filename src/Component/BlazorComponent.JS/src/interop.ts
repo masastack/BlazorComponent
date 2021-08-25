@@ -3,7 +3,7 @@
         element = document.body;
     } else if (typeof element === 'string') {
         if (element === 'document') {
-            return document;
+            return document.documentElement;
         }
         element = document.querySelector(element);
     }
