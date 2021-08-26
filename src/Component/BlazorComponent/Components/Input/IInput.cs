@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public interface IInput : IAbstractComponent
+    public interface IInput : IHasProviderComponent
     {
         RenderFragment AppendContent { get; }
 

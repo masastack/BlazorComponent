@@ -9,7 +9,7 @@ test('get-dom', () => {
 })
 
 test('get-dom-document', () => {
-    expect(getDom('document')).toBe(document);
+    expect(getDom('document')).toBe(document.documentElement);
 })
 
 test('get-dom-not-exist-element', () => {

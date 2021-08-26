@@ -15,20 +15,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.TryAddScoped<DomEventJsInterop>();
             services.TryAddScoped<HeadJsInterop>();
-            //services.TryAddScoped(sp => new HtmlRenderService(new HtmlRenderer(sp, sp.GetRequiredService<ILoggerFactory>(),
-            //            s => HtmlEncoder.Default.Encode(s)))
-            //);
-
             services.TryAddSingleton<IComponentIdGenerator, GuidComponentIdGenerator>();
-            //services.TryAddScoped<IconService>();
-            //services.TryAddScoped<InteropService>();
-            //services.TryAddScoped<NotificationService>();
-            //services.TryAddScoped<MessageService>();
-            //services.TryAddScoped<ModalService>();
-            //services.TryAddScoped<DrawerService>();
-            //services.TryAddScoped<ConfirmService>();
-            //services.TryAddScoped<ImageService>();
-
             CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CurrentCulture;
 
             return services;

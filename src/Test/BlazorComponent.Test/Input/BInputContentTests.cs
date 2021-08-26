@@ -23,7 +23,7 @@ namespace BlazorComponent.Test.Input
             var cut = RenderComponent<BInputContent<IInput>>(props =>
             {
                 props
-                    .Add(p => p.AbstractComponent, mock.Object);
+                    .Add(p => p.HasProviderComponent, mock.Object);
             });
 
             // Assert

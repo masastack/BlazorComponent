@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public interface IRippleable : IAbstractComponent
+    public interface IRippleable : IHasProviderComponent
     {
         bool? Ripple { get; }
     }

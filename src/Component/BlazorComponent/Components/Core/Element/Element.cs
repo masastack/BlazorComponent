@@ -27,10 +27,7 @@ namespace BlazorComponent
             var sequence = 0;
             builder.OpenElement(sequence++, Tag);
 
-            foreach (var attr in ExtraAttributes)
-            {
-                builder.AddMultipleAttributes(sequence++, ExtraAttributes);
-            }
+            builder.AddMultipleAttributes(sequence++, ExtraAttributes);
 
             if (ChildContent != null)
             {

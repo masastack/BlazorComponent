@@ -24,7 +24,7 @@ namespace BlazorComponent.Test.Input
             var cut = RenderComponent<BInputPrependSlot<IInput>>(props =>
             {
                 props
-                    .Add(p => p.AbstractComponent, mock.Object);
+                    .Add(p => p.HasProviderComponent, mock.Object);
             });
 
             // Assert

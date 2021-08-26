@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public interface IIcon : IAbstractComponent
+    public interface IIcon : IHasProviderComponent
     {
         bool Dense { get; set; }
 

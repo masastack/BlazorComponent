@@ -25,7 +25,7 @@ namespace BlazorComponent.Test.Input
             var cut = RenderComponent<BInputLabel<IInput>>(props =>
             {
                 props
-                    .Add(p => p.AbstractComponent, mock.Object);
+                    .Add(p => p.HasProviderComponent, mock.Object);
             });
             var component = cut.FindComponent<EmptyComponent>();
             var attrs = component.Instance.Attrs;

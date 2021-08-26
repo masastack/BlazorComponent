@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public class ComponentAbstractBase<TComponent> : ComponentBase where TComponent : IAbstractComponent
+    public class ComponentAbstractBase<TComponent> : ComponentBase where TComponent : IHasProviderComponent
     {
         [CascadingParameter]
-        public IAbstractComponent AbstractComponent { get; set; }
+        public IHasProviderComponent HasProviderComponent { get; set; }
 
-        public TComponent Component => (TComponent)AbstractComponent;
+        public TComponent Component => (TComponent)HasProviderComponent;
 
         public ComponentCssProvider CssProvider => Component.CssProvider;
 
@@ -21,9 +21,9 @@ namespace BlazorComponent
 
         protected override void OnParametersSet()
         {
-            if (AbstractComponent == null || AbstractComponent is not TComponent)
+            if (HasProviderComponent == null || HasProviderComponent is not TComponent)
             {
-                throw new ArgumentException(nameof(AbstractComponent));
+                throw new ArgumentException(nameof(HasProviderComponent));
             }
         }
     }

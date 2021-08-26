@@ -37,11 +37,11 @@ namespace BlazorComponent
                     if (frame.FrameType == RenderTreeFrameType.Component && frame.ComponentType.IsAssignableTo(typeof(IAbstractContent)))
                     {
                         var nameFrame = frames.First(u => u.Sequence == frame.Sequence + 1);
-
                         var contentFrame = frames.First(u => u.Sequence == frame.Sequence + 2);
 
                         if (nameFrame.AttributeValue.ToString() == nameof(AbstractContent.ChildContent))
                         {
+                            //Here may cause a bug
                             ChildContent = (RenderFragment)contentFrame.AttributeValue;
                         }
                         else

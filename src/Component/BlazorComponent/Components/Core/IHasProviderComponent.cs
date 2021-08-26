@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public interface IAbstractComponent : IComponent
+    public interface IHasProviderComponent : IComponent
     {
         ComponentCssProvider CssProvider { get; }
 

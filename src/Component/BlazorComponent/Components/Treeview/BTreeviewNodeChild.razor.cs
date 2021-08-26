@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BTreeviewNodeChild<TItem, TKey, TComponent> where TComponent : IAbstractComponent
+    public partial class BTreeviewNodeChild<TItem, TKey, TComponent> where TComponent : IHasProviderComponent
     {
         [Parameter]
         public TItem Item { get; set; }

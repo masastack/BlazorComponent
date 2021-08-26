@@ -18,7 +18,7 @@ namespace BlazorComponent.Test
             var cut = RenderComponent<BInput>();
 
             // Assert
-            cut.MarkupMatches(@"<div class="""" style="""" id:ignore></div>");
+            cut.MarkupMatches(@"<div id:ignore></div>");
             cut.HasComponent<AbstractComponent>();
         }
 

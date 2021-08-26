@@ -9,15 +9,14 @@ namespace BlazorComponent
 
         public override string ToString()
         {
-            var separator = "; ";
-            var style = string.Join(separator, _mapper.Where(i => i.Value()).Select(i => i.Key()));
-
-            if (!string.IsNullOrWhiteSpace(style) && style.StartsWith(separator))
+            var styleList = _mapper.Where(i => i.Value() && !string.IsNullOrWhiteSpace(i.Key())).Select(i => i.Key().Trim().Trim(';'));
+            if (!styleList.Any())
             {
-                style = style[separator.Length..];
+                //In this case,style will never render as style="" but nothing
+                return null;
             }
 
-            return style;
+            return string.Join(";", styleList);
         }
     }
 }

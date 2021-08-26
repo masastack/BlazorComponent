@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public interface ITreeviewNode<TItem, TKey> : IAbstractComponent
+    public interface ITreeviewNode<TItem, TKey> : IHasProviderComponent
     {
         RenderFragment<TItem> PrependContent { get; }
 

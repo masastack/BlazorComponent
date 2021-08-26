@@ -25,6 +25,7 @@ namespace BlazorComponent
         }
 
         public Type Type { get; }
+
         public string Name { get; }
 
         public override int GetHashCode()

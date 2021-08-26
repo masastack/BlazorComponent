@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public interface ITreeview<TItem, TKey> : IAbstractComponent
+    public interface ITreeview<TItem, TKey> : IHasProviderComponent
     {
         bool OpenAll { get; }
 

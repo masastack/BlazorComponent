@@ -25,7 +25,7 @@ namespace BlazorComponent.Test.Input
             // Act & Assert
             Assert.ThrowsException<ArgumentNullException>(() => RenderComponent<BInputIcon<IInput>>(props =>
             {
-                props.Add(p => p.AbstractComponent, mock.Object);
+                props.Add(p => p.HasProviderComponent, mock.Object);
             }));
         }
 
@@ -40,7 +40,7 @@ namespace BlazorComponent.Test.Input
             // Act & Assert
             Assert.ThrowsException<ArgumentNullException>(() => RenderComponent<BInputIcon<IInput>>(props =>
             {
-                props.Add(p => p.AbstractComponent, mock.Object);
+                props.Add(p => p.HasProviderComponent, mock.Object);
                 props.Add(p => p.Icon, "mdi-clear");
             }));
         }
@@ -64,7 +64,7 @@ namespace BlazorComponent.Test.Input
             // Act
             var cut = RenderComponent<BInputIcon<IInput>>(props =>
              {
-                 props.Add(p => p.AbstractComponent, mock.Object);
+                 props.Add(p => p.HasProviderComponent, mock.Object);
                  props.Add(p => p.Icon, "mdi-clear");
                  props.Add(p => p.Type, "test-type");
              });
@@ -91,7 +91,7 @@ namespace BlazorComponent.Test.Input
 
             var cut = RenderComponent<BInputIcon<IInput>>(props =>
             {
-                props.Add(p => p.AbstractComponent, input.Object);
+                props.Add(p => p.HasProviderComponent, input.Object);
                 props.Add(p => p.Icon, "mdi-clear");
                 props.Add(p => p.Type, "test-type");
                 props.Add(p => p.OnClick, EventCallback.Factory.Create<MouseEventArgs>(receiver.Object, () => { }));

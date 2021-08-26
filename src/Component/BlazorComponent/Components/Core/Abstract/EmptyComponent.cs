@@ -13,13 +13,5 @@ namespace BlazorComponent
         //Avoid exception
         [Parameter(CaptureUnmatchedValues = true)]
         public Dictionary<string, object> Attrs { get; set; }
-
-        //TODO:Waiting AbstractComponent change
-        //protected override void BuildRenderTree(RenderTreeBuilder builder)
-        //{
-        //    var sequence = 0;
-        //    builder.OpenElement(sequence++, "div");
-        //    builder.CloseComponent();
-        //}
     }
 }

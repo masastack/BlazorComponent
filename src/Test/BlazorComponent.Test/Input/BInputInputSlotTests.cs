@@ -25,7 +25,7 @@ namespace BlazorComponent.Test.Input
             var cut = RenderComponent<BInputInputSlot<IInput>>(props =>
             {
                 props
-                    .Add(p => p.AbstractComponent, mock.Object);
+                    .Add(p => p.HasProviderComponent, mock.Object);
             });
             var div = cut.Find("div:first-child");
 

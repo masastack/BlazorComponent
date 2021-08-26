@@ -2,7 +2,7 @@
 
 namespace BlazorComponent
 {
-    public interface IResponsive : IAbstractComponent
+    public interface IResponsive : IHasProviderComponent
     {
         StringNumber AspectRatio { get; }
 
