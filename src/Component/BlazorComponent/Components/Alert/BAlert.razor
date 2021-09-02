@@ -1,16 +1,8 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div role="alert" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
-    <div class="@CssProvider.GetClass("wrap")">
-        @IconContent
-        <div class="@CssProvider.GetClass("content")" style="@CssProvider.GetStyle("content")">
-            @ChildContent
-        </div>
-        @if (Border.HasValue)
-        {
-            <div class="@CssProvider.GetClass("border")" style="@CssProvider.GetStyle("border")"></div>
-        }
-        @DismissibleButtonContent
-    </div>
-</div>
+<CascadingValue Value="this">
+    <Element Tag="@Tag" role="alert" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id">
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BAlertWrapper<>))"></AbstractComponent>
+    </Element>
+</CascadingValue>

@@ -1,0 +1,22 @@
+﻿@namespace BlazorComponent
+@typeparam TAlert
+@inherits ComponentAbstractBase<TAlert>
+
+<div class="@CssProvider.GetClass("wrapper")" style="@CssProvider.GetStyle("wrapper")">
+    @if (IsShowIcon)
+    {
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BAlertIcon<>))"></AbstractComponent>
+    }
+
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BAlertContent<>))"></AbstractComponent>
+
+    @if (Border != Borders.None)
+    {
+        <div class="@CssProvider.GetClass("border")" style="@CssProvider.GetStyle("border")"></div>
+    }
+
+    @if (Dismissible)
+    {
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BAlertDismissButton<>))"></AbstractComponent>
+    }
+</div>

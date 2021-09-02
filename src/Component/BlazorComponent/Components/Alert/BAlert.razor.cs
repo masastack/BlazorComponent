@@ -1,47 +1,60 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public abstract partial class BAlert : BDomComponentBase
+    public partial class BAlert : BDomComponentBase, IAlert
     {
-        [Parameter]
-        public bool Dense { get; set; }
+        public RenderFragment IconContent { get; protected set; }
+
+        public bool IsShowIcon { get; protected set; }
 
         [Parameter]
-        public bool Prominent { get; set; }
-
-        [Parameter]
-        public bool Outlined { get; set; }
-
-        [Parameter]
-        public bool Text { get; set; }
-
-        [Parameter]
-        public bool Dismissible { get; set; }
-
-        protected RenderFragment DismissibleButtonContent { get; set; }
-
-        [Parameter]
-        public AlertBorder? Border { get; set; }
-
-        [Parameter]
-        public bool ColoredBorder { get; set; }
-
-        [Parameter]
-        public string Color { get; set; }
-
-        [Parameter]
-        public string Icon { get; set; }
-
-        protected RenderFragment IconContent { get; set; }
+        public Borders Border { get; set; }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
         [Parameter]
-        public bool Visible { get; set; } = true;
+        public string CloseIcon { get; set; } = "mdi-close-circle";
 
         [Parameter]
-        public EventCallback<bool> VisibleChanged { get; set; }
+        public virtual string CloseLabel { get; set; } = "Close";
+
+        [Parameter]
+        public string Color { get; set; }
+
+        [Parameter]
+        public virtual bool Dismissible { get; set; }
+        
+        [Parameter]
+        public string Tag { get; set; } = "div";
+        
+        [Parameter]
+        public AlertTypes Type { get; set; }
+
+        private bool _value = true;
+
+        [Parameter]
+        public bool Value
+        {
+            get => _value;
+            set
+            {
+                if (value == _value) return;
+                _value = value;
+                ValueChanged.InvokeAsync(_value);
+            }
+        }
+
+        [Parameter]
+        public EventCallback<bool> ValueChanged { get; set; }
+        
+        public Task HandleOnDismiss(MouseEventArgs args)
+        {
+            Value = false;
+            return Task.CompletedTask;
+        }
     }
 }

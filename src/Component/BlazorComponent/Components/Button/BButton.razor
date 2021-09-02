@@ -9,7 +9,8 @@
             disabled="@Disabled"
             @ref="Ref"
             @onclick="HandleClickAsync"
-            @onclick:stopPropagation="StopPropagation" onfocus="this.blur()">
+            @onclick:stopPropagation="StopPropagation" onfocus="this.blur()"
+            @attributes="Attributes">
 
         <div class="@CssProvider.GetClass("content")">
             @ChildContent

@@ -1,6 +1,6 @@
 ﻿namespace BlazorComponent
 {
-    public enum AlertBorder
+    public enum Borders
     {
         None = 0,
         Left,
