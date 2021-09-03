@@ -6,11 +6,11 @@ namespace BlazorComponent
     public partial class BAlertDismissButton<TAlert> : ComponentAbstractBase<TAlert>
         where TAlert : IAlert
     {
-        private string CloseIcon => Component.CloseIcon;
+        protected string CloseIcon => Component.CloseIcon;
 
-        private string CloseLabel => Component.CloseLabel;
+        protected string CloseLabel => Component.CloseLabel;
 
-        private EventCallback<MouseEventArgs> HandleOnDismiss =>
+        protected EventCallback<MouseEventArgs> HandleOnDismiss =>
             EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnDismiss);
     }
 }
