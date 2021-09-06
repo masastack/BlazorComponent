@@ -1,17 +1,17 @@
 ﻿@namespace BlazorComponent
 @typeparam TValue
-@inherits BInputAppendSlot<ITextField<TValue>>
+@inherits BInputAppendSlot<TValue,ITextField<TValue>>
 
 @if (AppendOuterContent != null || AppendOuterIcon != null)
 {
-    <AbstractComponent Type="append" Location="outer" Metadata="AbstractProvider.GetMetadata(typeof(BInputSlot<>))">
+    <AbstractComponent Type="append" Location="outer" Metadata="AbstractProvider.GetMetadata(typeof(BInputSlot<,>))">
         @if (AppendOuterContent != null)
         {
             @AppendOuterContent
         }
         else if (AppendOuterIcon != null)
         {
-            <AbstractComponent Type="append-outer-icon" Icon="@AppendOuterIcon" Metadata="AbstractProvider.GetMetadata(typeof(BInputIcon<>))">
+            <AbstractComponent Type="append-outer-icon" Icon="@AppendOuterIcon" Metadata="AbstractProvider.GetMetadata(typeof(BInputIcon<,>))">
             </AbstractComponent>
         }
     </AbstractComponent>

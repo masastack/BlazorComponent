@@ -23,6 +23,17 @@ namespace BlazorComponent
             return this;
         }
 
+        public ComponentAbstractProvider Apply(Type type, Type implementType, string name, Action<Dictionary<string, object>> propertiesAction = null)
+        {
+            var key = new ComponentKey(type, name);
+            if (_typeConfig.TryAdd(key, implementType))
+            {
+                _propertiesConfig[key] = propertiesAction;
+            }
+
+            return this;
+        }
+
         public ComponentAbstractProvider Apply<TComponent>(Action<Dictionary<string, object>> propertiesAction = null)
         {
             var key = ComponentKey.Get<TComponent>();
@@ -138,7 +149,7 @@ namespace BlazorComponent
 
         private AbstractMetadata GetMetadata(ComponentKey key)
         {
-            var implementType= _typeConfig.GetValueOrDefault(key, typeof(EmptyComponent));
+            var implementType = _typeConfig.GetValueOrDefault(key, typeof(EmptyComponent));
 
             var properties = new Dictionary<string, object>();
             var action = _propertiesConfig.GetValueOrDefault(key);

@@ -5,7 +5,7 @@
 
 @if (Clearable)
 {
-    <AbstractComponent Type="append" Location="inner" Metadata="AbstractProvider.GetMetadata(typeof(BInputSlot<>))">
+    <AbstractComponent Type="append" Location="inner" Metadata="AbstractProvider.GetMetadata(typeof(BInputSlot<,>))">
         @if (!IsDirty)
         {
             <div></div>
@@ -14,7 +14,7 @@
         {
             <AbstractComponent Icon="@ClearIcon" Type="clear-icon"
                                @onclick="HandleOnClear"
-                               Metadata="AbstractProvider.GetMetadata(typeof(BInputIcon<>))">
+                               Metadata="AbstractProvider.GetMetadata(typeof(BInputIcon<,>))">
             </AbstractComponent>
         }
     </AbstractComponent>

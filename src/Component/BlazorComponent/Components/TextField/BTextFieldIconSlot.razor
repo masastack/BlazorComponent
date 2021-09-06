@@ -5,14 +5,14 @@
 
 @if (AppendContent != null || AppendIcon != null)
 {
-    <AbstractComponent Type="append" Location="inner" Metadata="AbstractProvider.GetMetadata(typeof(BInputSlot<>))">
+    <AbstractComponent Type="append" Location="inner" Metadata="AbstractProvider.GetMetadata(typeof(BInputSlot<,>))">
         @if (AppendContent != null)
         {
             @AppendContent
         }
         else if (AppendIcon != null)
         {
-            <AbstractComponent Type="append-icon" Icon="@AppendIcon" Metadata="AbstractProvider.GetMetadata(typeof(BInputIcon<>))">
+            <AbstractComponent Type="append-icon" Icon="@AppendIcon" Metadata="AbstractProvider.GetMetadata(typeof(BInputIcon<,>))">
             </AbstractComponent>
         }
     </AbstractComponent>

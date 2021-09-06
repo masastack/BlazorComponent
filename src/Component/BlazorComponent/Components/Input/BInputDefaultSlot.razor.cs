@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BInputDefaultSlot<TInput> where TInput : IInput
+    public partial class BInputDefaultSlot<TValue, TInput> : ComponentAbstractBase<TInput>
+        where TInput : IInput<TValue>
     {
         public bool HasLabel => Component.HasLabel;
 

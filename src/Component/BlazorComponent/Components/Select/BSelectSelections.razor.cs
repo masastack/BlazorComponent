@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BSelectSelections<TItem, TValue, TInput> where TInput : ISelect<TItem, TValue>
+    public partial class BSelectSelections<TItem, TItemValue, TValue, TInput> where TInput : ISelect<TItem, TItemValue, TValue>
     {
         public List<string> Text => Component.Text;
 

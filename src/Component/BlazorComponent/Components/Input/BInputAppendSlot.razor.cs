@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BInputAppendSlot<TInput> where TInput : IInput
+    public partial class BInputAppendSlot<TValue,TInput> where TInput : IInput<TValue>
     {
         public string AppendIcon => Component.AppendIcon;
 

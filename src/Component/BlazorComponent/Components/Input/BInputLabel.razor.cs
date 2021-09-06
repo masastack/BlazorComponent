@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BInputLabel<TInput> : ComponentAbstractBase<TInput>
-          where TInput : IInput
+    public partial class BInputLabel<TValue, TInput> : ComponentAbstractBase<TInput>
+        where TInput : IInput<TValue>
     {
         public bool HasLabel => Component.HasLabel;
 

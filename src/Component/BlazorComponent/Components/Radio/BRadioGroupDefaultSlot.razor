@@ -1,6 +1,6 @@
 ﻿@namespace BlazorComponent
 @typeparam TValue
-@inherits BInputDefaultSlot<IInput>
+@inherits BInputDefaultSlot<TValue,IInput<TValue>>
 
 <div class="@CssProvider.GetClass("radio-group")">
     @if (HasLabel)

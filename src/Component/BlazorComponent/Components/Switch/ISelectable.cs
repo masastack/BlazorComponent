@@ -8,11 +8,9 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public interface ISelectable : IInput
+    public interface ISelectable : IInput<bool>, IRippleable
     {
         bool IsDisabled { get; }
-
-        bool Value { get; }
 
         Dictionary<string, object> InputAttrs { get; }
 

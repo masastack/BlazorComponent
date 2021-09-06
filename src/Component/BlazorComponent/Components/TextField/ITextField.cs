@@ -9,82 +9,173 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public interface ITextField<TValue> : IInput
+    public interface ITextField<TValue> : IInput<TValue>
     {
-        string AppendOuterIcon { get; }
+        string AppendOuterIcon
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
-        RenderFragment AppendOuterContent { get; }
+        RenderFragment AppendOuterContent
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
-        bool HasCounter { get; }
+        bool HasCounter => false;
 
-        string PrependInnerIcon { get; }
+        string PrependInnerIcon
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
-        RenderFragment PrependInnerContent { get; }
+        RenderFragment PrependInnerContent
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
-        bool Outlined { get; }
+        bool Outlined => false;
 
-        string LegendInnerHTML { get; }
+        string LegendInnerHTML
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
-        bool ShowLabel { get; }
+        bool ShowLabel => false;
 
-        string Prefix { get; }
+        string Prefix => null;
 
-        string Suffix { get; }
+        string Suffix => null;
 
-        TValue Value { get; set; }
+        bool Autofocus => false;
 
-        EventCallback<TValue> ValueChanged { get; }
+        bool IsFocused => false;
 
-        bool Autofocus { get; }
+        bool IsDisabled => false;
 
+        bool PersistentPlaceholder => false;
 
-        bool IsDisabled { get; }
+        string Placeholder => null;
 
-        bool PersistentPlaceholder { get; }
+        bool IsReadonly => false;
 
-        bool IsFocused { get; set; }
+        string Type => "text";
 
-        string Placeholder { get; }
+        EventCallback<FocusEventArgs> OnBlur
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
-        bool IsReadonly { get; }
+        EventCallback<FocusEventArgs> OnFocus
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
-        string Type { get; }
+        EventCallback<KeyboardEventArgs> OnKeyDown
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
-        EventCallback<FocusEventArgs> OnBlur { get; }
+        bool Clearable => false;
 
-        EventCallback<FocusEventArgs> OnFocus { get; }
+        bool IsDirty => false;
 
-        EventCallback<KeyboardEventArgs> OnKeyDown { get; }
+        StringBoolean Loading => false;
 
-        bool Clearable { get; }
-
-        bool IsDirty { get; }
-
-        StringBoolean Loading { get; }
-
-        string Tag { get; }
+        string Tag => "input";
 
         /// <summary>
         /// This will pass to input and override default settings
         /// </summary>
-        Dictionary<string, object> InputAttrs { get; }
+        Dictionary<string, object> InputAttrs => new();
 
-        RenderFragment ProgressContent { get; }
+        RenderFragment ProgressContent
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
-        string ClearIcon { get; }
+        string ClearIcon
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
-        ElementReference InputRef { get; set; }
+        ElementReference InputRef
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                //default todo nothing
+            }
+        }
 
-        Task HandleOnChange(ChangeEventArgs args);
+        RenderFragment CounterContent
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
-        Task HandleOnBlur(FocusEventArgs args);
+        Task HandleOnChange(ChangeEventArgs args)
+        {
+            return Task.CompletedTask;
+        }
 
-        Task HandleOnInput(ChangeEventArgs args);
+        Task HandleOnBlur(FocusEventArgs args)
+        {
+            return Task.CompletedTask;
+        }
 
-        Task HandleOnFocus(FocusEventArgs args);
+        Task HandleOnInput(ChangeEventArgs args)
+        {
+            return Task.CompletedTask;
+        }
 
-        Task HandleOnKeyDown(KeyboardEventArgs args);
+        Task HandleOnFocus(FocusEventArgs args)
+        {
+            return Task.CompletedTask;
+        }
 
-        Task HandleOnClear(MouseEventArgs args);
+        Task HandleOnKeyDown(KeyboardEventArgs args)
+        {
+            return Task.CompletedTask;
+        }
+
+        Task HandleOnClear(MouseEventArgs args)
+        {
+            return Task.CompletedTask;
+        }
     }
 }

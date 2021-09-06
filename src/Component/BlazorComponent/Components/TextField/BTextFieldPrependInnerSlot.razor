@@ -5,14 +5,14 @@
 
 @if (PrependInnerContent != null || PrependInnerIcon != null)
 {
-    <AbstractComponent Type="prepend" Location="inner" Metadata="AbstractProvider.GetMetadata(typeof(BInputSlot<>))">
+    <AbstractComponent Type="prepend" Location="inner" Metadata="AbstractProvider.GetMetadata(typeof(BInputSlot<,>))">
         @if (PrependInnerContent != null)
         {
             @PrependInnerContent
         }
         else if (PrependInnerIcon != null)
         {
-            <AbstractComponent Type="prepend-inner-icon" Icon="@PrependInnerIcon" Metadata="AbstractProvider.GetMetadata(typeof(BInputIcon<>))">
+            <AbstractComponent Type="prepend-inner-icon" Icon="@PrependInnerIcon" Metadata="AbstractProvider.GetMetadata(typeof(BInputIcon<,>))">
             </AbstractComponent>
         }
     </AbstractComponent>

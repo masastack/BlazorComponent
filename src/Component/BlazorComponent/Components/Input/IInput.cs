@@ -8,32 +8,77 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public interface IInput : IHasProviderComponent
+    public interface IInput<TValue> : IHasProviderComponent
     {
-        RenderFragment AppendContent { get; }
+        TValue Value { get; }
 
-        string AppendIcon { get; }
+        RenderFragment AppendContent
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        string AppendIcon
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
         RenderFragment ChildContent { get; }
 
-        string Label { get; }
+        string Label => null;
 
-        RenderFragment LabelContent { get; }
+        RenderFragment LabelContent => null;
 
-        bool HasLabel { get; }
+        bool HasLabel => false;
 
-        bool ShowDetails { get; }
+        bool ShowDetails => false;
 
-        RenderFragment PrependContent { get; }
+        RenderFragment PrependContent
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
-        string PrependIcon { get; }
+        string PrependIcon
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
-        ElementReference InputSlotRef { get; set; }
+        ElementReference InputSlotRef
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                //default todo nothing
+            }
+        }
 
-        Task HandleOnClick(MouseEventArgs args);
+        Task HandleOnClick(MouseEventArgs args)
+        {
+            return Task.CompletedTask;
+        }
 
-        Task HandleOnMouseDown(MouseEventArgs args);
+        Task HandleOnMouseDown(MouseEventArgs args)
+        {
+            return Task.CompletedTask;
+        }
 
-        Task HandleOnMouseUp(MouseEventArgs args);
+        Task HandleOnMouseUp(MouseEventArgs args)
+        {
+            return Task.CompletedTask;
+        }
     }
 }

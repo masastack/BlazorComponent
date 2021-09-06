@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BSwitchDefaultSlot : BInputDefaultSlot<ISwitch>
+    public partial class BSwitchDefaultSlot : BInputDefaultSlot<bool,ISwitch>
     {
     }
 }

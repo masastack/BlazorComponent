@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BInputIcon<TInput> : ComponentAbstractBase<TInput>
-        where TInput : IInput
+    public partial class BInputIcon<TValue, TInput> : ComponentAbstractBase<TInput>
+        where TInput : IInput<TValue>
     {
         [Parameter]
         public string Icon { get; set; }

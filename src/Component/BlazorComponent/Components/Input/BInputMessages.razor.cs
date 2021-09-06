@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BInputMessages<TInput> where TInput : IInput
+    public partial class BInputMessages<TValue, TInput> : ComponentAbstractBase<TInput>
+        where TInput : IInput<TValue>
     {
         public bool ShowDetails => Component.ShowDetails;
     }

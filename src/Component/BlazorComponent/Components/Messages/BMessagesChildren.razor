@@ -1,0 +1,14 @@
+﻿@namespace BlazorComponent
+@typeparam TMessages
+@inherits ComponentAbstractBase<TMessages>
+
+<div class="@CssProvider.GetClass("wrap")">
+    @if (Value != null)
+    {
+        foreach (var message in Value)
+        {
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BMessagesMessage<>))" Message="@message">
+            </AbstractComponent>
+        }
+    }
+</div>

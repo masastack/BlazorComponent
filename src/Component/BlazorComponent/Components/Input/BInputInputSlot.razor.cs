@@ -8,10 +8,9 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BInputInputSlot<TInput> : ComponentAbstractBase<TInput>
-          where TInput : IInput
+    public partial class BInputInputSlot<TValue, TInput> : ComponentAbstractBase<TInput>
+        where TInput : IInput<TValue>
     {
-        //TODO:refs will change in feature
         public ElementReference InputSlotRef
         {
             get

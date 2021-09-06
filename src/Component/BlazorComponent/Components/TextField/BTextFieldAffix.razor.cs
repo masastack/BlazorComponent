@@ -7,6 +7,13 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
+    /// <summary>
+    /// &lt;div class="@CssProvider.GetClass(ComputedType)"&gt;<br/>
+    /// --@ChildContent<br/>
+    /// &lt;/div"&gt;
+    /// </summary>
+    /// <typeparam name="TValue"></typeparam>
+    /// <typeparam name="TInput"></typeparam>
     public partial class BTextFieldAffix<TValue, TInput> where TInput : ITextField<TValue>
     {
         [Parameter]

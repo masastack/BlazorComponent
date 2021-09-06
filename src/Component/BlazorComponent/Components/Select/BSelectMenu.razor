@@ -1,5 +1,6 @@
 ﻿@namespace BlazorComponent
 @typeparam TItem
+@typeparam TItemValue
 @typeparam TValue
 @typeparam TInput
 @inherits ComponentAbstractBase<TInput>
@@ -20,13 +21,13 @@
                     {
                         var highlighted = HighlightIndex == i;
                         var item = ComputedItems[i];
-                        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BSelectOption<TItem, TValue>>()"
-                                           Item="@item"
-                                           Highlighted="@highlighted"
-                                           Value="@ItemValue(item)"
-                                           Label="@ItemText(item)"
-                                           Disabled="@ItemDisabled(item)"
-                                           key="@ItemValue(item).ToString()" />
+                        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSelectOption<,,>))"
+                                   Item="@item"
+                                   Highlighted="@highlighted"
+                                   Value="@ItemValue(item)"
+                                   Label="@ItemText(item)"
+                                   Disabled="@ItemDisabled(item)"
+                                   key="@ItemValue(item).ToString()" />
                     }
                 </AbstractComponent>
             }

@@ -14,9 +14,9 @@ namespace BlazorComponent
         private readonly Dictionary<string, Action<CssBuilder>> _cssConfig = new();
         private readonly Dictionary<string, Action<StyleBuilder>> _styleConfig = new();
 
-        internal Func<string> StaticClassProvider { get; set; }
+        internal Func<string> StaticClass { get; set; } = () => string.Empty;
 
-        internal Func<string> StaticStyleProvider { get; set; }
+        internal Func<string> StaticStyle { get; set; } = () => string.Empty;
 
         /// <summary>
         /// Apply css to default element
@@ -128,7 +128,7 @@ namespace BlazorComponent
 
             if (name == "default")
             {
-                builder.Add(StaticClassProvider);
+                builder.Add(StaticClass);
             }
 
             return builder.Class;
@@ -148,7 +148,7 @@ namespace BlazorComponent
 
             if (name == "default")
             {
-                builder.Add(StaticStyleProvider);
+                builder.Add(StaticStyle);
             }
 
             return builder.Style;

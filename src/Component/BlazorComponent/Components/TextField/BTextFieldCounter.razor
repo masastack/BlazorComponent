@@ -2,3 +2,15 @@
 @typeparam TValue
 @typeparam TInput
 @inherits ComponentAbstractBase<TInput>
+
+@if (HasCounter)
+{
+    if (CounterContent != null)
+    {
+        @CounterContent
+    }
+    else
+    {
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BCounter))"></AbstractComponent>
+    }
+}

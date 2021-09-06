@@ -1,16 +1,9 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div class="@CssProvider.GetClass()">
-    <div class="@CssProvider.GetClass("wrap")">
-        @if (Value != null)
-        {
-            foreach (var message in Value)
-            {
-                <div class="@CssProvider.GetClass("message")">
-                    @message
-                </div>
-            }
-        }
+<CascadingValue Value="this">
+    <div class="@CssProvider.GetClass()">
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BMessagesChildren<>))"></AbstractComponent>
     </div>
-</div>
+</CascadingValue>
+

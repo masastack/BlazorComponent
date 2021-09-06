@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace BlazorComponent
 {
-    public partial class BCascaderMenuBody<TItem, TValue, TInput> : BSelectMenu<TItem, TValue, TInput>
+    public partial class BCascaderMenuBody<TItem, TValue, TInput> : BSelectMenu<TItem, TValue, TValue, TInput>
         where TInput : ICascader<TItem, TValue>
     {
         protected bool ShowChildren { get; set; }

@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BInputContent<TInput> : ComponentAbstractBase<TInput>
-        where TInput : IInput
+    public partial class BInputContent<TValue, TInput> : ComponentAbstractBase<TInput>
+        where TInput : IInput<TValue>
     {
     }
 }

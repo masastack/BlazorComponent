@@ -2,12 +2,12 @@
 
 namespace BlazorComponent
 {
-    public partial class BSelectOption<TItem, TValue> : BDomComponentBase
+    public partial class BSelectOption<TItem, TItemValue, TValue> : BDomComponentBase
     {
         private string _key;
 
         [CascadingParameter]
-        protected ISelect<TItem,TValue> Select { get; set; }
+        protected ISelect<TItem, TItemValue, TValue> Select { get; set; }
 
         [Parameter]
         public bool Highlighted { get; set; }
@@ -18,7 +18,7 @@ namespace BlazorComponent
             {
                 if (Select != null)
                 {
-                    if (Select.Multiple && Select.Values != null)
+                    if (Select.Multiple)
                     {
                         return Select.Values.Contains(Value);
                     }
@@ -36,7 +36,7 @@ namespace BlazorComponent
         public TItem Item { get; set; }
 
         [Parameter]
-        public TValue Value { get; set; }
+        public TItemValue Value { get; set; }
 
         /// <summary>
         /// Gets or sets the key, default returns the <see cref="Value"/> if null.

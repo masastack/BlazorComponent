@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public interface ISwitch : IInput, ISelectable,IRippleable
+    public interface ISwitch : IInput<bool>, ISelectable, IRippleable
     {
     }
 }

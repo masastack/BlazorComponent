@@ -10,8 +10,8 @@ namespace BlazorComponent
 
         public BDomComponentBase()
         {
-            CssProvider.StaticClassProvider = () => Class;
-            CssProvider.StaticStyleProvider = () => Style;
+            CssProvider.StaticClass = () => Class;
+            CssProvider.StaticStyle = () => Style;
         }
 
         public ComponentCssProvider CssProvider { get; } = new();

@@ -1,13 +1,14 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 @typeparam TItem
+@typeparam TItemValue
 @typeparam TValue
 
 <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItem>()">
     @if (Select.Multiple)
     {
         <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemAction>()">
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BCheckbox>()"></AbstractComponent>
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata<ICheckbox>()"></AbstractComponent>
         </AbstractComponent>
     }
     <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemContent>()">

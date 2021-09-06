@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BSelectMenu<TItem, TValue, TInput> where TInput : ISelect<TItem, TValue>
+    public partial class BSelectMenu<TItem, TItemValue, TValue, TInput> where TInput : ISelect<TItem, TItemValue, TValue>
     {
         public Action<Func<MouseEventArgs, Task>> SetOnExtraClick => Component.SetOnExtraClick;
 
@@ -16,7 +16,7 @@ namespace BlazorComponent
 
         public Func<TItem, string> ItemText => Component.ItemText;
 
-        public Func<TItem, TValue> ItemValue => Component.ItemValue;
+        public Func<TItem, TItemValue> ItemValue => Component.ItemValue;
 
         public Func<TItem, bool> ItemDisabled => Component.ItemDisabled;
 

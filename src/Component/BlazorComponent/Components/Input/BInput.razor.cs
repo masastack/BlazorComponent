@@ -11,7 +11,16 @@ using OneOf;
 
 namespace BlazorComponent
 {
-    public partial class BInput : BDomComponentBase, IInput
+    /// <summary>
+    ///  &lt;AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(CascadingValue&lt;&gt;))"&gt;<br/>
+    ///  --&lt;div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref"&gt;<br/>
+    ///  ----&lt;AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BInputContent&lt;,&gt;))"&gt;<br/>
+    ///  ----&lt;/AbstractComponent&gt;<br/>
+    ///  --&lt;/div&gt;<br/>
+    ///  &lt;/AbstractComponent&gt;
+    /// </summary>
+    /// <typeparam name="TValue"></typeparam>
+    public partial class BInput<TValue> : BDomComponentBase, IInput<TValue>
     {
         [Obsolete("Use ApendContent instead.")]
         [Parameter]
@@ -46,6 +55,18 @@ namespace BlazorComponent
         public StringBoolean HideDetails { get; set; } = false;
 
         [Parameter]
+        public string Hint { get; set; }
+
+        [Parameter]
+        public bool PersistentHint { get; set; }
+
+        [Parameter]
+        public StringBoolean Loading { get; set; } = false;
+
+        [Parameter]
+        public RenderFragment<string> MessageContent { get; set; }
+
+        [Parameter]
         public EventCallback<MouseEventArgs> OnClick { get; set; }
 
         [Parameter]
@@ -54,28 +75,31 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<MouseEventArgs> OnMouseUp { get; set; }
 
-        protected List<string> Messages { get; set; } = new();
-
         public ElementReference InputSlotRef { get; set; }
 
         protected bool HasMouseDown { get; set; }
 
         public virtual bool HasLabel => LabelContent != null || Label != null;
 
-        public virtual bool HasDetails => Messages?.Count > 0;
+        public virtual bool HasDetails => MessagesToDisplay.Count > 0;
 
         public virtual bool ShowDetails => HideDetails == false || (HideDetails == "auto" && HasDetails);
 
-        protected override void OnParametersSet()
-        {
-            if (Prepend != null)
-            {
-                PrependContent = Prepend;
-            }
+        public virtual bool HasHint => !HasError && !string.IsNullOrEmpty(Hint) && (PersistentHint || IsFocused);
 
-            if (Append != null)
+        public virtual List<string> MessagesToDisplay
+        {
+            get
             {
-                AppendContent = Append;
+                if (HasHint)
+                {
+                    return new List<string>
+                    {
+                        Hint
+                    };
+                }
+
+                return ErrorMessages;
             }
         }
 
@@ -103,6 +127,15 @@ namespace BlazorComponent
             {
                 await OnMouseUp.InvokeAsync(args);
             }
+        }
+
+        protected override void SetComponentClass()
+        {
+            AbstractProvider
+                .Apply(typeof(CascadingValue<>), typeof(CascadingValue<BInput<TValue>>), props =>
+                 {
+                     props[nameof(CascadingValue<BInput<TValue>>.Value)] = this;
+                 });
         }
     }
 }

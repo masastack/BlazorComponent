@@ -4,7 +4,7 @@
 @inherits ComponentAbstractBase<TInput>
 
 <div class="@CssProvider.GetClass("text-field-slot")">
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BInputLabel<>))"></AbstractComponent>
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BInputLabel<,>))"></AbstractComponent>
     @if (Prefix != null)
     {
         <AbstractComponent Type="prefix" Metadata="AbstractProvider.GetMetadata(typeof(BTextFieldAffix<,>))">

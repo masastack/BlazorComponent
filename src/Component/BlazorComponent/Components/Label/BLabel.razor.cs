@@ -11,5 +11,11 @@ namespace BlazorComponent
     {
         [Parameter]
         public RenderFragment ChildContent { get; set; }
+
+        [Parameter]
+        public string For { get; set; }
+
+        [Parameter]
+        public bool Required{ get; set; }
     }
 }

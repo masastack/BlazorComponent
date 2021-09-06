@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BSelectDefaultSlot<TItem, TValue>
+    public partial class BSelectDefaultSlot<TItem, TItemValue, TValue>
     {
         public string Prefix => Component.Prefix;
 

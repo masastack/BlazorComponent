@@ -8,15 +8,14 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public interface ISelect<TItem, TValue> : ITextField<TValue>
+    public interface ISelect<TItem, TItemValue, TValue> : ITextField<TValue>
     {
-        bool Multiple { get; set; }
+        bool Multiple { get; }
 
-        List<TValue> Values { get; set; }
+        IList<TItemValue> Values { get; }
+        Task SetSelectedAsync(string label, TItemValue value);
 
-        Task SetSelectedAsync(string label, TValue value);
-
-        Task RemoveSelectedAsync(string label, TValue value);
+        Task RemoveSelectedAsync(string label, TItemValue value);
 
         void SetVisible(bool v);
 
@@ -26,7 +25,7 @@ namespace BlazorComponent
 
         IReadOnlyList<TItem> Items { get; }
 
-        Func<TItem, TValue> ItemValue { get; }
+        Func<TItem, TItemValue> ItemValue { get; }
 
         Func<TItem, bool> ItemDisabled { get; }
 

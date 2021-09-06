@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BSelectHiddenInput<TItem, TValue, TInput> where TInput : ISelect<TItem, TValue>
+    public partial class BSelectHiddenInput<TItem, TItemValue, TValue, TInput> where TInput : ISelect<TItem, TItemValue, TValue>
     {
         public bool Multiple => Component.Multiple;
 
-        public List<TValue> Values => Component.Values;
+        public IList<TItemValue> Values => Component.Values;
 
         public TValue Value => Component.Value;
     }

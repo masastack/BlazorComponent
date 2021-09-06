@@ -45,6 +45,12 @@ namespace BlazorComponent
             return left.Value != right.Value;
         }
 
+        public int ToInt32() => Match(
+            t0 => Convert.ToInt32(t0),
+            t1 => t1,
+            t2 => 0
+            );
+
         public override bool Equals(object obj)
         {
             return base.Equals(obj);

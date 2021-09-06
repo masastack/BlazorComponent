@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BInputPrependSlot<TInput> where TInput : IInput
+    public partial class BInputPrependSlot<TValue, TInput> : ComponentAbstractBase<TInput>
+        where TInput : IInput<TValue>
     {
         public RenderFragment PrependContent => Component.PrependContent;
 

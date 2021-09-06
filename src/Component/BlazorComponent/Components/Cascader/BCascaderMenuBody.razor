@@ -2,7 +2,7 @@
 @typeparam TItem
 @typeparam TValue
 @typeparam TInput
-@inherits BSelectMenu<TItem, TValue, TInput>
+@inherits BSelectMenu<TItem, TValue,TValue, TInput>
 
 <div style="@CssProvider.GetStyle("cascader-menu-body")">
     <div style="@CssProvider.GetStyle("cascader-menu-body-wrap")">
@@ -10,7 +10,7 @@
             <AbstractComponent Metadata="AbstractProvider.GetMetadata<BItemGroup>()">
                 @foreach (var item in Items)
                 {
-                    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BSelectOption<TItem, TValue>>()"
+                    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSelectOption<,,>))"
                                    OnItemClick="@HandleOnItemClick"
                                    Item="@item"
                                    Value="@ItemValue(item)"

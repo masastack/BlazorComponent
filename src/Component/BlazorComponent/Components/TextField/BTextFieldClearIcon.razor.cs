@@ -16,18 +16,6 @@ namespace BlazorComponent
 
         public virtual string ClearIcon => Component.ClearIcon;
 
-        public TValue Value
-        {
-            get
-            {
-                return Component.Value;
-            }
-            set
-            {
-                Component.Value = value;
-            }
-        }
-
         public EventCallback<MouseEventArgs> HandleOnClear => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnClear);
     }
 }

@@ -1,0 +1,11 @@
+﻿@namespace BlazorComponent
+@inherits BInputDefaultSlot<bool,ICheckbox>
+
+<div class="@CssProvider.GetClass("checkbox-input")">
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BIcon))">
+        @ComputedIcon
+    </AbstractComponent>
+    <AbstractComponent Type="checkbox" Metadata="AbstractProvider.GetMetadata(typeof(BSelectableInput<>))"></AbstractComponent>
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BRippleableRipple<>))"></AbstractComponent>
+</div>
+

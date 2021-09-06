@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BInputSlot<TInput> where TInput : IInput
+    public partial class BInputSlot<TValue, TInput> : ComponentAbstractBase<TInput>
+        where TInput : IInput<TValue>
     {
         [Parameter]
         public string Type { get; set; }
