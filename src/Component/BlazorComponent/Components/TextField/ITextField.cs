@@ -15,7 +15,7 @@ namespace BlazorComponent
         {
             get
             {
-                throw new NotImplementedException();
+                return default;
             }
         }
 
@@ -23,17 +23,22 @@ namespace BlazorComponent
         {
             get
             {
-                throw new NotImplementedException();
+                return default;
             }
         }
 
-        bool HasCounter => false;
+        bool HasCounter => default;
+
+        Task HandleOnPrependInnerClickAsync(MouseEventArgs args)
+        {
+            return Task.CompletedTask;
+        }
 
         string PrependInnerIcon
         {
             get
             {
-                throw new NotImplementedException();
+                return default;
             }
         }
 
@@ -41,37 +46,37 @@ namespace BlazorComponent
         {
             get
             {
-                throw new NotImplementedException();
+                return default;
             }
         }
 
-        bool Outlined => false;
+        bool Outlined => default;
 
         string LegendInnerHTML
         {
             get
             {
-                throw new NotImplementedException();
+                return default;
             }
         }
 
-        bool ShowLabel => false;
+        bool ShowLabel => default;
 
-        string Prefix => null;
+        string Prefix => default;
 
-        string Suffix => null;
+        string Suffix => default;
 
-        bool Autofocus => false;
+        bool Autofocus => default;
 
-        bool IsFocused => false;
+        bool IsFocused => default;
 
-        bool IsDisabled => false;
+        bool IsDisabled => default;
 
-        bool PersistentPlaceholder => false;
+        bool PersistentPlaceholder => default;
 
-        string Placeholder => null;
+        string Placeholder => default;
 
-        bool IsReadonly => false;
+        bool IsReadonly => default;
 
         string Type => "text";
 
@@ -79,7 +84,7 @@ namespace BlazorComponent
         {
             get
             {
-                throw new NotImplementedException();
+                return default;
             }
         }
 
@@ -87,7 +92,7 @@ namespace BlazorComponent
         {
             get
             {
-                throw new NotImplementedException();
+                return default;
             }
         }
 
@@ -95,15 +100,15 @@ namespace BlazorComponent
         {
             get
             {
-                throw new NotImplementedException();
+                return default;
             }
         }
 
-        bool Clearable => false;
+        bool Clearable => default;
 
-        bool IsDirty => false;
+        bool IsDirty => default;
 
-        StringBoolean Loading => false;
+        StringBoolean Loading => default;
 
         string Tag => "input";
 
@@ -116,7 +121,7 @@ namespace BlazorComponent
         {
             get
             {
-                throw new NotImplementedException();
+                return default;
             }
         }
 
@@ -124,7 +129,7 @@ namespace BlazorComponent
         {
             get
             {
-                throw new NotImplementedException();
+                return default;
             }
         }
 
@@ -132,7 +137,7 @@ namespace BlazorComponent
         {
             get
             {
-                throw new NotImplementedException();
+                return default;
             }
             set
             {
@@ -144,8 +149,13 @@ namespace BlazorComponent
         {
             get
             {
-                throw new NotImplementedException();
+                return default;
             }
+        }
+
+        Task HandleOnAppendOuterClickAsync(MouseEventArgs args)
+        {
+            return Task.CompletedTask;
         }
 
         Task HandleOnChange(ChangeEventArgs args)
@@ -173,7 +183,7 @@ namespace BlazorComponent
             return Task.CompletedTask;
         }
 
-        Task HandleOnClear(MouseEventArgs args)
+        Task HandleOnClearClickAsync(MouseEventArgs args)
         {
             return Task.CompletedTask;
         }

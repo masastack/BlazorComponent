@@ -16,7 +16,7 @@ namespace BlazorComponent
         {
             get
             {
-                throw new NotImplementedException();
+                return default;
             }
         }
 
@@ -24,25 +24,37 @@ namespace BlazorComponent
         {
             get
             {
-                throw new NotImplementedException();
+                return default;
             }
         }
 
         RenderFragment ChildContent { get; }
 
-        string Label => null;
+        Task HandleOnPrependClickAsync(MouseEventArgs args)
+        {
+            return Task.CompletedTask;
+        }
 
-        RenderFragment LabelContent => null;
+        Task HandleOnAppendClickAsync(MouseEventArgs args)
+        {
+            return Task.CompletedTask;
+        }
 
-        bool HasLabel => false;
+        
 
-        bool ShowDetails => false;
+        string Label => default;
+
+        RenderFragment LabelContent => default;
+
+        bool HasLabel => default;
+
+        bool ShowDetails => default;
 
         RenderFragment PrependContent
         {
             get
             {
-                throw new NotImplementedException();
+                return default;
             }
         }
 
@@ -50,7 +62,7 @@ namespace BlazorComponent
         {
             get
             {
-                throw new NotImplementedException();
+                return default;
             }
         }
 
@@ -58,7 +70,7 @@ namespace BlazorComponent
         {
             get
             {
-                throw new NotImplementedException();
+                return default;
             }
             set
             {
@@ -66,17 +78,17 @@ namespace BlazorComponent
             }
         }
 
-        Task HandleOnClick(MouseEventArgs args)
+        Task HandleOnClickAsync(MouseEventArgs args)
         {
             return Task.CompletedTask;
         }
 
-        Task HandleOnMouseDown(MouseEventArgs args)
+        Task HandleOnMouseDownAsync(MouseEventArgs args)
         {
             return Task.CompletedTask;
         }
 
-        Task HandleOnMouseUp(MouseEventArgs args)
+        Task HandleOnMouseUpAsync(MouseEventArgs args)
         {
             return Task.CompletedTask;
         }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,7 @@ namespace BlazorComponent
         public string AppendOuterIcon => Component.AppendOuterIcon;
 
         public RenderFragment AppendOuterContent => Component.AppendOuterContent;
+
+        public EventCallback<MouseEventArgs> HandleOnAppendOuterClickAsync => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnAppendOuterClickAsync);
     }
 }

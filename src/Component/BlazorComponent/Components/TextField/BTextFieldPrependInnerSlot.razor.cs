@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,7 @@ namespace BlazorComponent
         public RenderFragment PrependInnerContent => Component.PrependInnerContent;
 
         public string PrependInnerIcon => Component.PrependInnerIcon;
+
+        public EventCallback<MouseEventArgs> HandleOnPrependInnerClickAsync => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnPrependInnerClickAsync);
     }
 }

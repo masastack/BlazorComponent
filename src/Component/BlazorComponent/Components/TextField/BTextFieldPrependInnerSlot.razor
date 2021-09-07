@@ -12,7 +12,7 @@
         }
         else if (PrependInnerIcon != null)
         {
-            <AbstractComponent Type="prepend-inner-icon" Icon="@PrependInnerIcon" Metadata="AbstractProvider.GetMetadata(typeof(BInputIcon<,>))">
+            <AbstractComponent @onclick="HandleOnPrependInnerClickAsync" Type="prepend-inner-icon" Icon="@PrependInnerIcon" Metadata="AbstractProvider.GetMetadata(typeof(BInputIcon<,>))">
             </AbstractComponent>
         }
     </AbstractComponent>

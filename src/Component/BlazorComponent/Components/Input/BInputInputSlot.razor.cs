@@ -23,10 +23,10 @@ namespace BlazorComponent
             }
         }
 
-        public EventCallback<MouseEventArgs> HandleOnClick => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnClick);
+        public EventCallback<MouseEventArgs> HandleOnClickAsync => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnClickAsync);
 
-        public EventCallback<MouseEventArgs> HandleOnMouseDown => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnMouseDown);
+        public EventCallback<MouseEventArgs> HandleOnMouseDownAsync => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnMouseDownAsync);
 
-        protected EventCallback<MouseEventArgs> HandleOnMouseUp => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnMouseDown);
+        protected EventCallback<MouseEventArgs> HandleOnMouseUpAsync => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnMouseUpAsync);
     }
 }

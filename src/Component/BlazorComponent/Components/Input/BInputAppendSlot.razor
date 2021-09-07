@@ -12,7 +12,7 @@
         }
         else if (AppendIcon != null)
         {
-            <AbstractComponent Type="append-icon" Icon="@AppendIcon" Metadata="AbstractProvider.GetMetadata(typeof(BInputIcon<,>))">
+            <AbstractComponent @onclick="HandleOnAppendClickAsync" Type="append-icon" Icon="@AppendIcon" Metadata="AbstractProvider.GetMetadata(typeof(BInputIcon<,>))">
             </AbstractComponent>
         }
     </AbstractComponent>

@@ -75,6 +75,12 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<MouseEventArgs> OnMouseUp { get; set; }
 
+        [Parameter]
+        public EventCallback<MouseEventArgs> OnPrependClick { get; set; }
+
+        [Parameter]
+        public EventCallback<MouseEventArgs> OnAppendClick { get; set; }
+
         public ElementReference InputSlotRef { get; set; }
 
         protected bool HasMouseDown { get; set; }
@@ -103,7 +109,23 @@ namespace BlazorComponent
             }
         }
 
-        public virtual async Task HandleOnClick(MouseEventArgs args)
+        public virtual async Task HandleOnPrependClickAsync(MouseEventArgs args)
+        {
+            if (OnPrependClick.HasDelegate)
+            {
+                await OnPrependClick.InvokeAsync(args);
+            }
+        }
+
+        public virtual async Task HandleOnAppendClickAsync(MouseEventArgs args)
+        {
+            if (OnAppendClick.HasDelegate)
+            {
+                await OnAppendClick.InvokeAsync(args);
+            }
+        }
+
+        public virtual async Task HandleOnClickAsync(MouseEventArgs args)
         {
             if (OnClick.HasDelegate)
             {
@@ -111,7 +133,7 @@ namespace BlazorComponent
             }
         }
 
-        public virtual async Task HandleOnMouseDown(MouseEventArgs args)
+        public virtual async Task HandleOnMouseDownAsync(MouseEventArgs args)
         {
             HasMouseDown = true;
             if (OnMouseDown.HasDelegate)
@@ -120,7 +142,7 @@ namespace BlazorComponent
             }
         }
 
-        public virtual async Task HandleOnMouseUp(MouseEventArgs args)
+        public virtual async Task HandleOnMouseUpAsync(MouseEventArgs args)
         {
             HasMouseDown = false;
             if (OnMouseUp.HasDelegate)

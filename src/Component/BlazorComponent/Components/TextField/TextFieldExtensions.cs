@@ -11,7 +11,7 @@ namespace BlazorComponent
         public static ComponentAbstractProvider ApplyTextFieldDefault<TValue>(this ComponentAbstractProvider abstractProvider)
         {
             return abstractProvider
-                .ApplyTextFieldDefault<TValue>()
+                .ApplyInputDefault<TValue>()
                 .Apply(typeof(BTextFieldAffix<,>), typeof(BTextFieldAffix<TValue, ITextField<TValue>>))
                 .Merge(typeof(BInputAppendSlot<,>), typeof(BTextFieldAppendSlot<TValue>))
                 .Apply(typeof(BTextFieldClearIcon<,>), typeof(BTextFieldClearIcon<TValue, ITextField<TValue>>))

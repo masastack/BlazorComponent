@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
@@ -13,5 +14,9 @@ namespace BlazorComponent
         public bool Chips => Component.Chips;
 
         public bool Multiple => Component.Multiple;
+
+        public RenderFragment<int> SelectionContent => Component.SelectionContent;
+
+        public IList<TItem> SelectedItems => Component.SelectedItems;
     }
 }

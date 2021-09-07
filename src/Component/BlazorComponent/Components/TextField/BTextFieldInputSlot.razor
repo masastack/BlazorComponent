@@ -3,9 +3,9 @@
 @inherits BInputInputSlot<TValue,ITextField<TValue>>
 
 <div class="@CssProvider.GetClass("input-slot")" style="@CssProvider.GetStyle("input-slot")"
-     @onclick="HandleOnClick"
-     @onmousedown="HandleOnMouseDown"
-     @onmouseup="HandleOnMouseUp"
+     @onclick="HandleOnClickAsync"
+     @onmousedown="HandleOnMouseDownAsync"
+     @onmouseup="HandleOnMouseUpAsync"
      @ref="InputSlotRef">
     <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTextFieldPrependInnerSlot<,>))"></AbstractComponent>
     <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BInputDefaultSlot<,>))"></AbstractComponent>

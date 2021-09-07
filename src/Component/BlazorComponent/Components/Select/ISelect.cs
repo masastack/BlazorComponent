@@ -37,6 +37,14 @@ namespace BlazorComponent
 
         string QueryText { get; }
 
+        RenderFragment PrependItemContent => default;
+
+        RenderFragment AppendItemContent => default;
+
+        RenderFragment<int> SelectionContent => default;
+
+        IList<TItem> SelectedItems { get; }
+
         void SetOnExtraClick(Func<MouseEventArgs, Task> onExtraClick);
     }
 }

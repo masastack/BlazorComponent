@@ -3,7 +3,7 @@
 @inherits ComponentAbstractBase<TIcon>
 
 @*//this will change*@
-<button type="button" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" @onclick="OnClick" @onclick:stopPropagation>
+<button type="button" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" @onclick="OnClick" @onclick:stopPropagation @onclick:preventDefault>
     @NewChildren
 </button>
 

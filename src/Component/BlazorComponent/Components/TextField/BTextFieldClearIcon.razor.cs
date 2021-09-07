@@ -16,6 +16,6 @@ namespace BlazorComponent
 
         public virtual string ClearIcon => Component.ClearIcon;
 
-        public EventCallback<MouseEventArgs> HandleOnClear => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnClear);
+        public EventCallback<MouseEventArgs> HandleOnClearClickAsync => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnClearClickAsync);
     }
 }

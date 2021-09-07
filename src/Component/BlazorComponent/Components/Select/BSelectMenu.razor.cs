@@ -23,5 +23,9 @@ namespace BlazorComponent
         public RenderFragment InputChildContent => Component.ChildContent;
 
         public int HighlightIndex => Component.HighlightIndex;
+
+        public RenderFragment PrependItemContent => Component.PrependItemContent;
+
+        public RenderFragment AppendItemContent => Component.AppendItemContent;
     }
 }

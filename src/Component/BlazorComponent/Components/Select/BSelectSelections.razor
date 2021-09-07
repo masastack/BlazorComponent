@@ -6,7 +6,14 @@
 @inherits ComponentAbstractBase<TInput>
 
 <div class="@CssProvider.GetClass("selector")">
-    @if (Chips)
+    @if (SelectionContent != null)
+    {
+        for (var i = 0; i < SelectedItems.Count; i++)
+        {
+            @SelectionContent(i)
+        }
+    }
+    else if (Chips)
     {
         foreach (var item in Text)
         {
