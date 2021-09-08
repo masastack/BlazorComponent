@@ -66,6 +66,9 @@ namespace BlazorComponent
             {
                 _lazyValue = value;
                 HasInput = true;
+
+                //REVIEW:Is this ok?
+                _ = ValueChanged.InvokeAsync(_lazyValue);
                 if (!ValidateOnBlur) Validate();
             }
         }
