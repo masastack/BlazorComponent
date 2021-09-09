@@ -1,0 +1,16 @@
+﻿@namespace BlazorComponent
+@typeparam TValue
+@typeparam TInput
+@inherits ComponentAbstractBase<TInput>
+
+@if (IsDirty)
+{
+    for (var i = 0; i < Text.Count; i++)
+    {
+        //TODO:Close
+        var text = Text[i];
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BChip))">
+            @text
+        </AbstractComponent>
+    }
+}

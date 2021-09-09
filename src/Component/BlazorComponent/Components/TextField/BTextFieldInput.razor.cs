@@ -14,7 +14,7 @@ namespace BlazorComponent
 
         public bool Autofocus => Component.Autofocus;
 
-        public bool IsDisabled => Component.IsDisabled;
+        public bool Disabled => Component.IsDisabled;
 
         public bool HasLabel => Component.HasLabel;
 
@@ -26,14 +26,14 @@ namespace BlazorComponent
 
         public Dictionary<string, object> InputAttrs => Component.InputAttrs;
 
-        public EventCallback<ChangeEventArgs> HandleOnChange => EventCallback.Factory.Create<ChangeEventArgs>(Component, Component.HandleOnChange);
+        public EventCallback<ChangeEventArgs> HandleOnChange => EventCallback.Factory.Create<ChangeEventArgs>(Component, Component.HandleOnChangeAsync);
 
-        public EventCallback<FocusEventArgs> HandleOnBlur => EventCallback.Factory.Create<FocusEventArgs>(Component, Component.HandleOnBlur);
+        public EventCallback<FocusEventArgs> HandleOnBlur => EventCallback.Factory.Create<FocusEventArgs>(Component, Component.HandleOnBlurAsync);
 
-        public EventCallback<ChangeEventArgs> HandleOnInput => EventCallback.Factory.Create<ChangeEventArgs>(Component, Component.HandleOnInput);
+        public EventCallback<ChangeEventArgs> HandleOnInput => EventCallback.Factory.Create<ChangeEventArgs>(Component, Component.HandleOnInputAsync);
 
-        public EventCallback<FocusEventArgs> HandleOnFocus => EventCallback.Factory.Create<FocusEventArgs>(Component, Component.HandleOnFocus);
+        public EventCallback<FocusEventArgs> HandleOnFocus => EventCallback.Factory.Create<FocusEventArgs>(Component, Component.HandleOnFocusAsync);
 
-        public EventCallback<KeyboardEventArgs> HandleOnKeyDown => EventCallback.Factory.Create<KeyboardEventArgs>(Component, Component.HandleOnKeyDown);
+        public EventCallback<KeyboardEventArgs> HandleOnKeyDown => EventCallback.Factory.Create<KeyboardEventArgs>(Component, Component.HandleOnKeyDownAsync);
     }
 }

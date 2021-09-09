@@ -164,11 +164,21 @@ export function uploadFile(element, index, data, headers, fileId, url, name, ins
     req.send(formData)
 }
 
-export function triggerEvent(element, eventType, eventName) {
+export function triggerEvent(element, eventType, eventName,stopPropagation) {
     var dom = element as HTMLInputElement;
     var evt = document.createEvent(eventType);
     evt.initEvent(eventName);
+
+    if (stopPropagation) {
+        evt.stopPropagation();
+    }
+
     return dom.dispatchEvent(evt);
+}
+
+export function setProperty(element, name, value) {
+    var dom = element as Element;
+    dom[name]=value;
 }
 
 export function getBoundingClientRect(element) {

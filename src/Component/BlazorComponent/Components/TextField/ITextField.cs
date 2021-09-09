@@ -29,6 +29,8 @@ namespace BlazorComponent
 
         bool HasCounter => default;
 
+        StringNumberBoolean Counter => default;
+
         Task HandleOnPrependInnerClickAsync(MouseEventArgs args)
         {
             return Task.CompletedTask;
@@ -133,7 +135,7 @@ namespace BlazorComponent
             }
         }
 
-        ElementReference InputRef
+        ElementReference InputElement
         {
             get
             {
@@ -158,27 +160,27 @@ namespace BlazorComponent
             return Task.CompletedTask;
         }
 
-        Task HandleOnChange(ChangeEventArgs args)
+        Task HandleOnChangeAsync(ChangeEventArgs args)
         {
             return Task.CompletedTask;
         }
 
-        Task HandleOnBlur(FocusEventArgs args)
+        Task HandleOnBlurAsync(FocusEventArgs args)
         {
             return Task.CompletedTask;
         }
 
-        Task HandleOnInput(ChangeEventArgs args)
+        Task HandleOnInputAsync(ChangeEventArgs args)
         {
             return Task.CompletedTask;
         }
 
-        Task HandleOnFocus(FocusEventArgs args)
+        Task HandleOnFocusAsync(FocusEventArgs args)
         {
             return Task.CompletedTask;
         }
 
-        Task HandleOnKeyDown(KeyboardEventArgs args)
+        Task HandleOnKeyDownAsync(KeyboardEventArgs args)
         {
             return Task.CompletedTask;
         }

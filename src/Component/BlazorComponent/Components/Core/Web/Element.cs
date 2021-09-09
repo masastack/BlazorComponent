@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace BlazorComponent
+namespace BlazorComponent.Web
 {
-    public class HtmlElement
+    public class Element
     {
         [JsonPropertyName("absoluteTop")]
         public double AbsoluteTop { get; set; }

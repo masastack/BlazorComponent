@@ -39,7 +39,7 @@ namespace BlazorComponent
         public string Label { get; set; }
 
         [Parameter]
-        public string PrependIcon { get; set; }
+        public virtual string PrependIcon { get; set; }
 
         [Parameter]
         public RenderFragment LabelContent { get; set; }
@@ -75,13 +75,14 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<MouseEventArgs> OnMouseUp { get; set; }
 
+        public ElementReference InputSlotElement { get; set; }
+
         [Parameter]
         public EventCallback<MouseEventArgs> OnPrependClick { get; set; }
 
         [Parameter]
         public EventCallback<MouseEventArgs> OnAppendClick { get; set; }
 
-        public ElementReference InputSlotRef { get; set; }
 
         protected bool HasMouseDown { get; set; }
 

@@ -122,6 +122,8 @@
 
         public static string ResetModalPosition => $"{Variables.JsInteropFuncNamePrefix}resetModalPosition";
 
+        public static string SetProperty => $"{Variables.JsInteropFuncNamePrefix}setProperty";
+
         #endregion Draggable Modal
     }
 }

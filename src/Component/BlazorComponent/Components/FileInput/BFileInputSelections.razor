@@ -1,0 +1,26 @@
+﻿@namespace BlazorComponent
+@typeparam TValue
+@typeparam TInput
+@inherits ComponentAbstractBase<TInput>
+
+<div class="@CssProvider.GetClass("file-input-text")">
+    @if (IsDirty && SelectionContent != null)
+    {
+        for (var i = 0; i < Files.Count; i++)
+        {
+            @SelectionContent(i)
+        }
+    }
+    else
+    {
+        if (HasChips && IsDirty)
+        {
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BFileInputChips<,>))"></AbstractComponent>
+        }
+        else
+        {
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BFileInputSelectionText<,>))"></AbstractComponent>
+        }
+    }
+</div>
+

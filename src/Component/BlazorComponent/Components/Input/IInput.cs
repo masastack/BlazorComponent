@@ -66,7 +66,7 @@ namespace BlazorComponent
             }
         }
 
-        ElementReference InputSlotRef
+        ElementReference InputSlotElement
         {
             get
             {

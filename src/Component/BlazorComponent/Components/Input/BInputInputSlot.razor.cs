@@ -15,11 +15,11 @@ namespace BlazorComponent
         {
             get
             {
-                return Component.InputSlotRef;
+                return Component.InputSlotElement;
             }
             set
             {
-                Component.InputSlotRef = value;
+                Component.InputSlotElement = value;
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using BlazorComponent;
+using BlazorComponent.Web;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.TryAddScoped<DomEventJsInterop>();
             services.TryAddScoped<HeadJsInterop>();
+            services.TryAddScoped<JsObjectFactory>();
             services.TryAddSingleton<IComponentIdGenerator, GuidComponentIdGenerator>();
             CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CurrentCulture;
 

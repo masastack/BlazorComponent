@@ -1,0 +1,17 @@
+﻿@namespace BlazorComponent
+@using Microsoft.AspNetCore.Components.Forms
+@typeparam TValue
+@typeparam TInput
+@inherits BTextFieldInput<TValue,TInput>
+
+<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BFileInputSelections<,>))"></AbstractComponent>
+<InputFile autofocus="@Autofocus"
+           disabled="@Disabled" placeholder="@Placeholder"
+           readonly="@Readonly"
+           multiple="@Multiple"
+           OnChange="HandleOnFileChange"
+           @onblur="HandleOnBlur"
+           @onfocus="HandleOnFocus"
+           @onkeydown="HandleOnKeyDown"
+           @ref="InputFile"
+           @attributes="InputAttrs"></InputFile>

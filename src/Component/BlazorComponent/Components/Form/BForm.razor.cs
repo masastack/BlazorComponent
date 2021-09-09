@@ -28,10 +28,10 @@ namespace BlazorComponent
         [Parameter]
         public bool Disabled { get; set; }
 
-        public EditContext EditContext { get; protected set; }
-
         [Parameter]
         public bool Readonly { get; set; }
+
+        public EditContext EditContext { get; protected set; }
 
         protected override void OnParametersSet()
         {

@@ -15,7 +15,7 @@ namespace BlazorComponent
         [CascadingParameter]
         public BTabs Tabs { get; set; }
 
-        public HtmlElement Rect { get; private set; }
+        public Web.Element Rect { get; private set; }
 
         [Parameter]
         public string Key { get; set; }
@@ -38,7 +38,7 @@ namespace BlazorComponent
         {
             if (firstRender)
             {
-                Rect = await JsInvokeAsync<HtmlElement>(JsInteropConstants.GetDomInfo, Ref);
+                Rect = await JsInvokeAsync<Web.Element>(JsInteropConstants.GetDomInfo, Ref);
                 Tabs.Refresh();
             }
         }
