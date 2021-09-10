@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
-using OneOf;
 
 namespace BlazorComponent
 {
-    public abstract partial class BProcessCircular : BDomComponentBase
+    public partial class BProgressCircular : BDomComponentBase, IProgressCircular
     {
         [Parameter]
         public bool Indeterminate { get; set; }
@@ -17,21 +16,12 @@ namespace BlazorComponent
         [Parameter]
         public StringNumber Rotate { get; set; } = 0;
 
-        /// <summary>
-        /// TODO: 延迟
-        /// </summary>
         [Parameter]
-        public int Delay { get; set; }
+        public StringNumber Width { get; set; } = 4;
 
-        /// <summary>
-        /// TODO: 自定义描述文案
-        /// </summary>
         [Parameter]
-        public string Tip { get; set; }
+        public StringNumber Value { get; set; } = 0;
 
-        /// <summary>
-        /// 加载指示符
-        /// </summary>
         [Parameter]
         public RenderFragment ChildContent { get; set; }
     }

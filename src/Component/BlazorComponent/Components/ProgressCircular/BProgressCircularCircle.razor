@@ -1,0 +1,5 @@
+﻿@namespace BlazorComponent
+@typeparam TProgressCircular
+@inherits ComponentAbstractBase<TProgressCircular>
+
+<circle class="@CssProvider.GetClass($"{Name}-circle")" r="" stroke-dashoffset="@Offset" @attributes="CircleAttributes"></circle>

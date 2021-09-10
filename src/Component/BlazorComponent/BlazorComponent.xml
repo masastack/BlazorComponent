@@ -69,17 +69,7 @@
             Used to set gutter during pre-rendering
             </summary>
         </member>
-        <member name="P:BlazorComponent.BProcessCircular.Delay">
-            <summary>
-            TODO: 延迟
-            </summary>
-        </member>
-        <member name="P:BlazorComponent.BProcessCircular.Tip">
-            <summary>
-            TODO: 自定义描述文案
-            </summary>
-        </member>
-        <member name="P:BlazorComponent.BProcessCircular.ChildContent">
+        <member name="P:BlazorComponent.BProgressCircular.ChildContent">
             <summary>
             加载指示符
             </summary>

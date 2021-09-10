@@ -1,0 +1,9 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<CascadingValue Value="this">
+    <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BProgressCircularSvg<>))"></AbstractComponent>
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BProgressCircularInfo<>))"></AbstractComponent>
+    </div>
+</CascadingValue>
