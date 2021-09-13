@@ -11,15 +11,6 @@ using OneOf;
 
 namespace BlazorComponent
 {
-    /// <summary>
-    ///  &lt;AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(CascadingValue&lt;&gt;))"&gt;<br/>
-    ///  --&lt;div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref"&gt;<br/>
-    ///  ----&lt;AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BInputContent&lt;,&gt;))"&gt;<br/>
-    ///  ----&lt;/AbstractComponent&gt;<br/>
-    ///  --&lt;/div&gt;<br/>
-    ///  &lt;/AbstractComponent&gt;
-    /// </summary>
-    /// <typeparam name="TValue"></typeparam>
     public partial class BInput<TValue> : BDomComponentBase, IInput<TValue>
     {
         [Obsolete("Use ApendContent instead.")]
@@ -106,7 +97,12 @@ namespace BlazorComponent
                     };
                 }
 
-                return ErrorMessages;
+                if (!HasMessages)
+                {
+                    return new List<string>();
+                }
+
+                return ValidationTarget.Take(ErrorCount).ToList();
             }
         }
 

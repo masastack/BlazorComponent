@@ -14,24 +14,33 @@ namespace BlazorComponent
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             var result = new EnumerableValidationResult();
+
             if (value is IEnumerable enumerable)
             {
+                var hasError = false;
+
                 foreach (var item in enumerable)
                 {
                     var context = new ValidationContext(item);
                     var validationResults = new List<ValidationResult>();
-                    Validator.TryValidateObject(item, context, validationResults, true);
+
+                    var success = Validator.TryValidateObject(item, context, validationResults, true);
+                    if (!success)
+                    {
+                        hasError = true;
+                    }
 
                     var descriptor = new ValidationResultDescriptor(item, validationResults);
                     result.Descriptors.Add(descriptor);
                 }
 
-                return result;
+                if (hasError)
+                {
+                    return result;
+                }
             }
-            else
-            {
-                throw new InvalidOperationException();
-            }
+
+            return ValidationResult.Success;
         }
     }
 }

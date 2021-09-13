@@ -48,6 +48,24 @@ namespace BlazorComponent
         [CascadingParameter]
         public EditContext EditContext { get; set; }
 
+        [Parameter]
+        public bool Error { get; set; }
+
+        [Parameter]
+        public int ErrorCount { get; set; } = 1;
+
+        [Parameter]
+        public List<string> ErrorMessages { get; set; } = new();
+
+        [Parameter]
+        public List<string> Messages { get; set; } = new();
+
+        [Parameter]
+        public bool Success { get; set; }
+
+        [Parameter]
+        public List<string> SuccessMessages { get; set; }
+
         protected EditContext OldEditContext { get; set; }
 
         protected FieldIdentifier ValueIdentifier { get; set; }
@@ -91,9 +109,11 @@ namespace BlazorComponent
             }
         }
 
-        public List<string> ErrorMessages { get; protected set; } = new();
+        public List<string> ErrorBucket { get; protected set; } = new();
 
-        public virtual bool HasError => ErrorMessages.Count > 0;
+        public virtual bool HasError => (ErrorMessages != null && ErrorMessages.Count > 0) || ErrorBucket.Count > 0 || Error;
+
+        public virtual bool HasSuccess => (SuccessMessages != null && SuccessMessages.Count > 0) || Success;
 
         public virtual bool HasState
         {
@@ -104,7 +124,39 @@ namespace BlazorComponent
                     return false;
                 }
 
-                return HasError;
+                return HasSuccess || (ShouldValidate && HasError);
+            }
+        }
+
+        public bool IsInteractive => !IsDisabled && !IsReadonly;
+
+        public virtual bool HasMessages => ValidationTarget.Count > 0;
+
+        public List<string> ValidationTarget
+        {
+            get
+            {
+                if (ErrorMessages.Count > 0)
+                {
+                    return ErrorMessages;
+                }
+
+                if (SuccessMessages != null && SuccessMessages.Count > 0)
+                {
+                    return SuccessMessages;
+                }
+
+                if (Messages != null && Messages.Count > 0)
+                {
+                    return Messages;
+                }
+
+                if (ShouldValidate)
+                {
+                    return ErrorBucket;
+                }
+
+                return new List<string>();
             }
         }
 
@@ -116,6 +168,11 @@ namespace BlazorComponent
         {
             get
             {
+                if (ExternalError)
+                {
+                    return true;
+                }
+
                 if (ValidateOnBlur)
                 {
                     return HasFocused && !IsFocused;
@@ -124,6 +181,8 @@ namespace BlazorComponent
                 return HasInput || HasFocused;
             }
         }
+
+        public virtual bool ExternalError => ErrorMessages.Count > 0 || Error;
 
         protected override void OnParametersSet()
         {
@@ -175,7 +234,7 @@ namespace BlazorComponent
 
         protected virtual void HandleOnValidationStateChanged(object sender, ValidationStateChangedEventArgs e)
         {
-            ErrorMessages = EditContext.GetValidationMessages(ValueIdentifier).ToList();
+            ErrorBucket = EditContext.GetValidationMessages(ValueIdentifier).ToList();
             StateHasChanged();
         }
 
