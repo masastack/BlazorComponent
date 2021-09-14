@@ -1,27 +1,18 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
-@typeparam TItem
 
-<div>
-    <ul class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
-
-        @foreach (var item in Items)
+<CascadingValue Value="this" IsFixed>
+    <Element Tag="@Tag" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id">
+        @if (ChildContent == null)
         {
-            var isLast = Items.Last().Equals(item);
-
-            var disabled = DisabledLast ? isLast : ItemValue(item) == DisabledValue;
-
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BBreadcrumbsItem>()"
-                           Href="@ItemValue(item)"
-                           Disabled="@disabled"
-                           Text="@ItemText(item)">
-            </AbstractComponent>
-
-            @if (!isLast)
+            @foreach (var item in Items)
             {
-                <li class="@CssProvider.GetClass("divider")">@(string.IsNullOrEmpty(Divider) ? "/" : Divider)</li>
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BBreadcrumbsItemGroup<>))" Item="@item"></AbstractComponent>
             }
         }
-        @ChildContent
-    </ul>
-</div>
+        else
+        {
+            @ChildContent
+        }
+    </Element>
+</CascadingValue>

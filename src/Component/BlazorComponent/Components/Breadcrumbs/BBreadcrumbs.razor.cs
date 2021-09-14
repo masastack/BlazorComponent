@@ -1,34 +1,41 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public abstract partial class BBreadcrumbs<TItem> : BDomComponentBase
+    public partial class BBreadcrumbs : BDomComponentBase, IBreadcrumbs, IBreadcrumbsDivider
     {
-        [Parameter]
-        public string Divider { get; set; }
+        protected string Tag { get; init; } = "ul";
+
+        public bool RenderDivider { get; protected set; } = true;
 
         [Parameter]
-        public bool DisabledLast { get; set; }
+        public string Divider { get; set; } = "/";
 
         [Parameter]
-        public Func<TItem, string> ItemText { get; set; } = null!;
-         
-        [Parameter]
-        public Func<TItem, string> ItemValue { get; set; } = null!;
+        public RenderFragment DividerContent { get; set; }
 
         [Parameter]
-        public string DisabledValue { get; set; } = null!;
+        public IReadOnlyList<BreadcrumbItem> Items { get; set; } = new List<BreadcrumbItem>();
 
         [Parameter]
-        public IReadOnlyList<TItem> Items { get; set; } = new List<TItem>();
+        public RenderFragment<BreadcrumbItem> ItemContent { get; set; }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
+        #region When using razor definition without Items parameter
+
+        internal List<BBreadcrumbsItem> SubBreadcrumbsItems { get; } = new();
+
+        internal void AddSubBreadcrumbsItem(BBreadcrumbsItem item)
+        {
+            if (!SubBreadcrumbsItems.Contains(item))
+            {
+                SubBreadcrumbsItems.Add(item);
+            }
+        }
+
+        #endregion
     }
 }

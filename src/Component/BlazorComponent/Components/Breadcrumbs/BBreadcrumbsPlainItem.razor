@@ -1,0 +1,7 @@
+﻿@namespace BlazorComponent
+@typeparam TBreadcrumbsItem
+@inherits ComponentAbstractBase<TBreadcrumbsItem>
+
+<Element Tag="@Tag" class="@CssProvider.GetClass("plain")" style="@CssProvider.GetStyle("plain")">
+    @ChildContent
+</Element>

@@ -1,6 +1,22 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<li>
-    <a href="@Href" style="@CssProvider.GetStyle()" class="@CssProvider.GetClass()" id="@Id" @ref="Ref">@Text</a>
-</li>
+<CascadingValue Value="this" IsFixed>
+    <Element Tag="@Tag" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">
+        @if (IsLink)
+        {
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BBreadcrumbsLinkItem<>))"></AbstractComponent>
+        }
+        else
+        {
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BBreadcrumbsPlainItem<>))"></AbstractComponent>
+        }
+
+    </Element>
+
+    <!--When using razor definition without `Items` parameter-->
+    @if (Breadcrumbs.ChildContent != null && !IsLast)
+    {
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BBreadcrumbsDivider>()" Divider="@Breadcrumbs.Divider" DividerContent="@Breadcrumbs.DividerContent"></AbstractComponent>
+    }
+</CascadingValue>
