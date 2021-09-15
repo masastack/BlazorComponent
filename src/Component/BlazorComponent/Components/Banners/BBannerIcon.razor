@@ -1,0 +1,17 @@
+﻿@namespace BlazorComponent
+@typeparam TBanner
+@inherits ComponentAbstractBase<TBanner>
+
+@if(HasIcon)
+{
+   <AbstractComponent Metadata="AbstractProvider.GetMetadata<BAvatar>()">
+        @if (Icon != null)
+        {
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">@Icon</AbstractComponent>
+        }
+        else
+        {
+            @IconContent
+        }
+    </AbstractComponent>
+}

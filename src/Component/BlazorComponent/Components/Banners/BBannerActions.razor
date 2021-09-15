@@ -1,0 +1,7 @@
+﻿@namespace BlazorComponent
+@typeparam TBanner
+@inherits ComponentAbstractBase<TBanner>
+
+<div class="@CssProvider.GetClass("actions")">
+    @ComputedActionsContent
+</div>

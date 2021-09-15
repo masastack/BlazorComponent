@@ -1,0 +1,11 @@
+﻿@namespace BlazorComponent
+@typeparam TBanner
+@inherits ComponentAbstractBase<TBanner>
+
+<div class="@CssProvider.GetClass("wrapper")">
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BBannerContent<>))"></AbstractComponent>
+    @if(ComputedActionsContent != null)
+    {
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BBannerActions<>))"></AbstractComponent>
+    }
+</div>
