@@ -27,10 +27,10 @@ namespace BlazorComponent
 
         [Parameter]
         public virtual bool Dismissible { get; set; }
-        
+
         [Parameter]
         public string Tag { get; set; } = "div";
-        
+
         [Parameter]
         public AlertTypes Type { get; set; }
 
@@ -50,11 +50,17 @@ namespace BlazorComponent
 
         [Parameter]
         public EventCallback<bool> ValueChanged { get; set; }
-        
+
         public Task HandleOnDismiss(MouseEventArgs args)
         {
             Value = false;
             return Task.CompletedTask;
+        }
+
+        protected override void SetComponentClass()
+        {
+            AbstractProvider.Apply(typeof(CascadingValue<>), typeof(CascadingValue<BAlert>),
+                props => { props[nameof(CascadingValue<BAlert>.Value)] = this; });
         }
     }
 }
