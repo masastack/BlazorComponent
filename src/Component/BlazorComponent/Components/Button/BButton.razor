@@ -1,33 +1,22 @@
 ﻿@namespace BlazorComponent
 @inherits BGroupItem<BItemGroup>
 
-<CascadingValue Value="this">
-    <button type="@Type"
+<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(CascadingValue<>))">
+    <button type="@TypeAttribute"
             class="@CssProvider.GetClass()"
             style="@CssProvider.GetStyle()"
             id="@Id"
             disabled="@Disabled"
             @ref="Ref"
-            @onclick="HandleClickAsync"
-            @onclick:stopPropagation="StopPropagation" onfocus="this.blur()"
+            @onclick="HandleOnClick"
+            @onclick:stopPropagation="StopPropagation"
             @attributes="Attributes">
 
-        <div class="@CssProvider.GetClass("content")">
-            @ChildContent
-        </div>
-
-        @if (Loading)
+        @if (HasLoader)
         {
-            <div class="@CssProvider.GetClass("loader")">
-                @if (LoaderContent == null)
-                {
-                    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BProgressCircular>()"></AbstractComponent>
-                }
-                else
-                {
-                    @LoaderContent
-                }
-            </div>
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BButtonLoader<>))"></AbstractComponent>
         }
+
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BButtonContent<>))"></AbstractComponent>
     </button>
-</CascadingValue>
+</AbstractComponent>

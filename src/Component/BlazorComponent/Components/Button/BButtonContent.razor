@@ -1,0 +1,7 @@
+﻿@namespace BlazorComponent
+@typeparam TButton
+@inherits ComponentAbstractBase<TButton>
+
+<span class="@CssProvider.GetClass("content")" style="@CssProvider.GetStyle("content")">
+    @ChildContent
+</span>

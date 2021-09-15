@@ -1,0 +1,17 @@
+﻿@namespace BlazorComponent
+@typeparam TButton
+@inherits ComponentAbstractBase<TButton>
+
+@if (Loading)
+{
+    <div class="@CssProvider.GetClass("loader")" style="@CssProvider.GetStyle("loader")">
+        @if (LoaderContent == null)
+        {
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BProgressCircular>()"></AbstractComponent>
+        }
+        else
+        {
+            @LoaderContent
+        }
+    </div>
+}

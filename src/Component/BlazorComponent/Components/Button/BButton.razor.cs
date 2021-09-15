@@ -2,98 +2,61 @@
 using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Threading.Tasks;
+using Microsoft.JSInterop;
 
 namespace BlazorComponent
 {
-    public abstract partial class BButton : BGroupItem<BItemGroup>, IThemeable
+    public abstract partial class BButton : BGroupItem<BItemGroup>, IThemeable, IButton
     {
-        public BButton() : base(GroupType.ButtonGroup)
+        protected BButton() : base(GroupType.ButtonGroup)
         {
         }
 
         /// <summary>
-        /// The background color
+        /// Determine whether rendering a loader component
         /// </summary>
-        [Parameter]
-        public string Color { get; set; }
+        protected bool HasLoader { get; set; }
+
+        /// <summary>
+        /// Set the button's type attribute
+        /// </summary>
+        protected string TypeAttribute { get; set; } = "button";
 
         [Parameter]
         public bool Block { get; set; }
 
         [Parameter]
-        public string Type { get; set; } = "button";
-
-        /// <summary>
-        /// Floating
-        /// </summary>
-        [Parameter]
-        public bool Fab { get; set; }
-
-        [Parameter]
-        public bool Icon { get; set; }
-
-        [Parameter]
-        public bool Plain { get; set; }
-
-        [Parameter]
-        public bool Text { get; set; }
-
-        [Parameter]
-        public bool Tile { get; set; }
-
-        [Parameter]
-        public bool Loading { get; set; }
+        public string Color { get; set; }
 
         [Parameter]
         public bool Disabled { get; set; }
 
         [Parameter]
-        public bool Rounded { get; set; }
-
-        [Parameter]
-        public bool Large { get; set; }
-
-        [Parameter]
-        public bool Small { get; set; }
-
-        [Parameter]
-        public bool XLarge { get; set; }
-
-        [Parameter]
-        public bool XSmall { get; set; }
-
-        [Parameter]
-        public bool Absolute { get; set; }
-
-        [Parameter]
-        public bool Top { get; set; }
-
-        [Parameter]
-        public bool Bottom { get; set; }
-
-        [Parameter]
-        public bool Left { get; set; }
-
-        [Parameter]
-        public bool Right { get; set; }
-
-        [Parameter]
-        public StringNumber Width { get; set; }
-
-        [Parameter]
-        public StringNumber MaxWidth { get; set; }
-
-        [Parameter]
-        public StringNumber MinWidth { get; set; }
-
-        [Parameter]
         public StringNumber Height { get; set; }
+
+        [Parameter]
+        public RenderFragment LoaderContent { get; set; }
+
+        [Parameter]
+        public virtual bool Loading { get; set; }
 
         [Parameter]
         public StringNumber MaxHeight { get; set; }
 
         [Parameter]
+        public StringNumber MaxWidth { get; set; }
+
+        [Parameter]
         public StringNumber MinHeight { get; set; }
+
+        [Parameter]
+        public StringNumber MinWidth { get; set; }
+
+        [Parameter]
+        public bool Outlined { get; set; }
+
+        [Parameter]
+        public StringNumber Width { get; set; }
 
         [Obsolete("Use OnClick instead.")]
         [Parameter]
@@ -105,20 +68,13 @@ namespace BlazorComponent
         [Parameter]
         public bool StopPropagation { get; set; }
 
-        [Obsolete("Use LoaderContent instead.")]
-        [Parameter]
-        public RenderFragment Loader { get; set; }
-
-        [Parameter]
-        public RenderFragment LoaderContent { get; set; }
-
         public virtual bool IsDark { get; }
 
         [Parameter]
         public bool Dark { get; set; }
 
         [Parameter]
-        public bool Light { get; set ; }
+        public bool Light { get; set; }
 
         protected override void OnParametersSet()
         {
@@ -126,21 +82,19 @@ namespace BlazorComponent
             {
                 OnClick = Click;
             }
-
-            if (Loader != null)
-            {
-                LoaderContent = Loader;
-            }
-
         }
-        protected virtual async Task HandleClickAsync(MouseEventArgs args)
-        {
-            await ToggleItem();
 
-            if (OnClick.HasDelegate)
-            {
-                await OnClick.InvokeAsync(args);
-            }
+        protected override void SetComponentClass()
+        {
+            AbstractProvider.Apply(typeof(CascadingValue<>), typeof(CascadingValue<BButton>),
+                props => { props[nameof(CascadingValue<BButton>.Value)] = this; });
+        }
+
+        protected virtual async Task HandleOnClick(MouseEventArgs args)
+        {
+            await OnClick.InvokeAsync(args);
+
+            await ToggleItem();
         }
     }
 }
