@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using BlazorComponent.Components.Core.CssProcess;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
-    public partial class BTable<TItem> : BDomComponentBase
+    public partial class BTable<TItem> : BDomComponentBase, ITable
     {
+        [Parameter]
+        public string Align { get; set; } = "start";
+
         [Parameter]
         public RenderFragment<TItem> ChildContent { get; set; }
 
@@ -50,10 +51,10 @@ namespace BlazorComponent
         public IEnumerable<TItem> Items { get; set; }
 
         [Parameter]
-        public string Align { get; set; } = "start";
+        public bool Stripe { get; set; }
 
         [Parameter]
-        public bool Stripe { get; set; }
+        public string TableLayout { get; set; } = "auto";
 
         public ElementReference WrapRef { get; set; }
 
@@ -98,6 +99,12 @@ namespace BlazorComponent
         public virtual Task HandleScrollAsync(EventArgs args)
         {
             return Task.CompletedTask;
+        }
+
+        void ITable.SetTableLayoutFixed()
+        {
+            TableLayout = "fixed";
+            StateHasChanged();
         }
     }
 }
