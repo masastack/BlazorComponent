@@ -1,4 +1,6 @@
-﻿namespace BlazorComponent
+﻿using System.Collections.Generic;
+
+namespace BlazorComponent
 {
     public partial class BProgressCircularSvg<TProgressCircular> where TProgressCircular : IProgressCircular
     {

@@ -164,6 +164,8 @@ namespace BlazorComponent
 
         public virtual bool IsReadonly => Readonly || (Form != null && Form.Readonly);
 
+        protected bool FirstValidate { get; set; } = true;
+
         public virtual bool ShouldValidate
         {
             get
@@ -178,7 +180,7 @@ namespace BlazorComponent
                     return HasFocused && !IsFocused;
                 }
 
-                return HasInput || HasFocused;
+                return HasInput || HasFocused || FirstValidate;
             }
         }
 
@@ -201,6 +203,11 @@ namespace BlazorComponent
 
         protected virtual void Validate()
         {
+            if (FirstValidate)
+            {
+                FirstValidate = false;
+            }
+
             if (EditContext != null && ValueExpression != null)
             {
                 EditContext.NotifyFieldChanged(ValueIdentifier);
