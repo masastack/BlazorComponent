@@ -1,0 +1,19 @@
+﻿@namespace BlazorComponent
+@typeparam TBadge
+@inherits ComponentAbstractBase<TBadge>
+
+@if(!Dot)
+{
+    if(BadgeContent != null)
+    {
+        @BadgeContent
+    }
+    if (Content != null)
+    {
+        @Content
+    }
+    if(!string.IsNullOrWhiteSpace(Icon))
+    {
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">@Icon</AbstractComponent>
+    }
+}

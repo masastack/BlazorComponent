@@ -1,0 +1,17 @@
+﻿@namespace BlazorComponent
+@typeparam TBadge
+@inherits ComponentAbstractBase<TBadge>
+
+@if(string.IsNullOrWhiteSpace(Transition))
+{
+    <span class="@CssProvider.GetClass("badge")" style="@CssProvider.GetStyle("badge")">
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BBadgeContent<>))"></AbstractComponent>
+    </span>
+}
+else
+{
+    //TODO:transition
+    <span class="@CssProvider.GetClass("badge")" style="@CssProvider.GetStyle("badge")">
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BBadgeContent<>))"></AbstractComponent>
+    </span>
+}
