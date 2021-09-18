@@ -1,37 +1,30 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components.Rendering;
 
 namespace BlazorComponent
 {
-    public partial class BItem : BDomComponentBase
+    public partial class BItem : BItemBase<BItemGroup>
     {
+        public BItem(GroupType groupType) : base(groupType)
+        {
+        }
+
         [Parameter]
         public RenderFragment<ItemContext> ChildContent { get; set; }
 
-        [CascadingParameter]
-        public BItemGroup ItemGroup { get; set; }
-
-        public bool IsActive => ItemGroup != null && ItemGroup.Values.Contains(Value);
-
-        [Parameter]
-        public StringNumber Value { get; set; }
-
-        public async Task Toggle()
+        public override bool IsActive
         {
-            if (ItemGroup != null)
-            {
-                await ItemGroup.Toggle(Value);
-            }
+            get => _isActive ?? Groupable && ItemGroup.Values.Contains(Value);
+            set => _isActive = value;
         }
 
-        protected override void OnInitialized()
+        protected override void OnAfterRender(bool firstRender)
         {
-            if (ItemGroup == null) return;
-
-            if (Value == null)
-                Value = ItemGroup.AllKeys.Count;
-
-            ItemGroup.AllKeys.Add(Value);
+            if (firstRender)
+            {
+                Ref = RefBack.Current;
+            }
         }
     }
 }

@@ -10,6 +10,8 @@
 
         ExpansionPanels,
 
-        ListItemGroup
+        ListItemGroup,
+        
+        SlideGroup
     }
 }

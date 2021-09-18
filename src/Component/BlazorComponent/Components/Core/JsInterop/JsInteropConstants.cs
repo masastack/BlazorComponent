@@ -113,6 +113,10 @@
         public static string GetBoundingClientRects => $"{Variables.JsInteropFuncNamePrefix}getBoundingClientRects";
 
         public static string GetSize => $"{Variables.JsInteropFuncNamePrefix}getSize";
+        
+        public static string IsMobile => $"{Variables.JsInteropFuncNamePrefix}isMobile";
+        
+        public static string SetStyle => $"{Variables.JsInteropFuncNamePrefix}css";
 
         #region Draggable Modal
 

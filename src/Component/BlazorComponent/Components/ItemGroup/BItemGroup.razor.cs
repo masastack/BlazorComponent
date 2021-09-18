@@ -23,6 +23,11 @@ namespace BlazorComponent
 
         public List<StringNumber> AllKeys { get; set; } = new();
 
+        public List<BItemBase<BItemGroup>> Items { get; set; } = new();
+
+        [Parameter]
+        public StringNumber Max { get; set; }
+
         [Parameter]
         public StringNumber Value
         {
@@ -60,7 +65,10 @@ namespace BlazorComponent
                     _values.Clear();
                 }
 
-                _values.Add(key);
+                if (Max == null || _values.Count < Max.TryGetNumber().number)
+                {
+                    _values.Add(key);
+                }
             }
 
             if (Mandatory && _values.Count == 0)

@@ -1,0 +1,7 @@
+﻿@namespace BlazorComponent
+@typeparam TSlideGroup
+@inherits ComponentAbstractBase<TSlideGroup>
+
+<div class="@CssProvider.GetClass("prev")" style="@CssProvider.GetStyle("prev")" @onclick="HandleOnClick">
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()" Disabled="@(!Active)">@Icon</AbstractComponent>
+</div>

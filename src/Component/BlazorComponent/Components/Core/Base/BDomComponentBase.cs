@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
-    public abstract class BDomComponentBase : BComponentBase
+    public abstract class BDomComponentBase : BComponentBase, IHasProviderComponent
     {
         private ElementReference _ref;
 
@@ -72,6 +72,7 @@ namespace BlazorComponent
         }
 
         #region Prevent render before invoking ShouldRender
+
         /*
          * https://github.com/dotnet/aspnetcore/issues/18919
          * Keep until new api(@onmousemove:preventStateHasChanged) releases
