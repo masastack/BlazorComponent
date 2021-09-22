@@ -1,7 +1,6 @@
 ﻿@namespace BlazorComponent
-@typeparam TValue
-@typeparam TInput
-@inherits ComponentAbstractBase<TInput>
+@typeparam TComponent
+@inherits ComponentAbstractBase<TComponent>
 
 @if (Loading != false)
 {
@@ -14,3 +13,4 @@
         <AbstractComponent Metadata="AbstractProvider.GetMetadata<BProcessLinear>()"></AbstractComponent>
     }
 }
+

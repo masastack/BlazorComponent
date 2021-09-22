@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Microsoft.AspNetCore.Components;
+using System.Text.Json.Serialization;
 
 namespace BlazorComponent.Web
 {

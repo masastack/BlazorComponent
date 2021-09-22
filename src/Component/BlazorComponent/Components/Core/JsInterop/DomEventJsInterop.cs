@@ -109,16 +109,29 @@ namespace BlazorComponent
     public class Invoker<T>
     {
         private Action<T> _action;
+        private Func<T, Task> _func;
 
-        public Invoker(Action<T> invoker)
+        public Invoker(Action<T> action)
         {
-            _action = invoker;
+            _action = action;
+        }
+
+        public Invoker(Func<T, Task> func)
+        {
+            _func = func;
         }
 
         [JSInvokable]
-        public void Invoke(T param)
+        public async Task Invoke(T param)
         {
-            _action.Invoke(param);
+            if (_action != null)
+            {
+                _action.Invoke(param);
+            }
+            else if (_func != null)
+            {
+                await _func(param);
+            }
         }
     }
 }

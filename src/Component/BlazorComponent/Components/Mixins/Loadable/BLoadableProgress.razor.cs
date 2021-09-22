@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BTextFieldProgress<TValue, TInput> where TInput : ITextField<TValue>
+    public partial class BLoadableProgress<TComponent> where TComponent : ILoadable
     {
         public StringBoolean Loading => Component.Loading;
 

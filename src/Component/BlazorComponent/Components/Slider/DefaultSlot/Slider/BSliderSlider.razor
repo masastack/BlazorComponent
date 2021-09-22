@@ -1,0 +1,10 @@
+﻿@namespace BlazorComponent
+@typeparam TInput
+@inherits ComponentAbstractBase<TInput>
+
+<div class="@CssProvider.GetClass("slider")"
+     @onclick="HandleOnSliderClickAsync"
+     @onexmousedown="HandleOnSliderMouseDownAsync"
+     @onexmousedown:preventDefault>
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSliderChildren<>))"></AbstractComponent>
+</div>

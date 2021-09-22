@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public interface ITextField<TValue> : IInput<TValue>
+    public interface ITextField<TValue> : IInput<TValue>, ILoadable
     {
         string AppendOuterIcon
         {
@@ -110,22 +110,12 @@ namespace BlazorComponent
 
         bool IsDirty => default;
 
-        StringBoolean Loading => default;
-
         string Tag => "input";
 
         /// <summary>
         /// This will pass to input and override default settings
         /// </summary>
         Dictionary<string, object> InputAttrs => new();
-
-        RenderFragment ProgressContent
-        {
-            get
-            {
-                return default;
-            }
-        }
 
         string ClearIcon
         {

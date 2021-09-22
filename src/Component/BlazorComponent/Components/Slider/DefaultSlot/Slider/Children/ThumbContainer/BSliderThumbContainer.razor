@@ -1,0 +1,16 @@
+﻿@namespace BlazorComponent
+@typeparam TInput
+@inherits ComponentAbstractBase<TInput>
+
+<div class="@CssProvider.GetClass("thumb-container")" style="@CssProvider.GetStyle("thumb-container")"
+     @ref="ThumbElement" @attributes="ThumbAttrs"
+     @onfocus="HandleOnFocusAsync"
+     @onblur="HandleOnBlurAsync"
+     @onkeydown="HandleOnKeyDownAsync"
+     @onkeydown:preventDefault>
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSliderThumb<>))"></AbstractComponent>
+    @if (ShowThumbLabel)
+    {
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSliderThumbLabel<>))"></AbstractComponent>
+    }
+</div>

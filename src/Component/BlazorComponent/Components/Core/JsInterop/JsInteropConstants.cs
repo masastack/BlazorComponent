@@ -24,6 +24,10 @@
 
         public static string AddDomEventListener => $"{Variables.JsInteropFuncNamePrefix}addDomEventListener";
 
+        public static string AddHtmlElementEventListener => $"{Variables.JsInteropFuncNamePrefix}addHtmlElementEventListener";
+
+        public static string RemoveHtmlElementEventListener => $"{Variables.JsInteropFuncNamePrefix}removeHtmlElementEventListener";
+
         public static string MatchMedia => $"{Variables.JsInteropFuncNamePrefix}matchMedia";
 
         public static string Copy => $"{Variables.JsInteropFuncNamePrefix}copy";

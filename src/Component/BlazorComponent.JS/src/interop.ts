@@ -28,7 +28,7 @@ export function getDomInfo(element, selector = "body") {
         document.querySelector(selector).removeChild(cloned);
     }
     else {
-        console.log("dom.offsetWidth",dom.offsetWidth)
+        console.log("dom.offsetWidth", dom.offsetWidth)
         result = getDomInfoObj(dom);
     }
 
@@ -164,8 +164,8 @@ export function uploadFile(element, index, data, headers, fileId, url, name, ins
     req.send(formData)
 }
 
-export function triggerEvent(element, eventType, eventName,stopPropagation) {
-    var dom = element as HTMLInputElement;
+export function triggerEvent(element, eventType, eventName, stopPropagation) {
+    var dom = getDom(element);
     var evt = document.createEvent(eventType);
     evt.initEvent(eventName);
 
@@ -177,8 +177,8 @@ export function triggerEvent(element, eventType, eventName,stopPropagation) {
 }
 
 export function setProperty(element, name, value) {
-    var dom = element as Element;
-    dom[name]=value;
+    var dom = getDom(element);
+    dom[name] = value;
 }
 
 export function getBoundingClientRect(element) {
@@ -237,12 +237,58 @@ export function addDomEventListener(element, eventName, preventDefault, invoker)
     } else {
         let dom = getDom(element);
         var htmlElement = dom as HTMLElement;
-        if(eventName == 'scroll'){
+        if (eventName == 'scroll') {
             htmlElement.addEventListener(eventName, debounce(() => callback(getDomInfo(dom)), 200, false));
-        }else{
+        } else {
             htmlElement.addEventListener(eventName, callback);
         }
     }
+}
+
+var htmlElementEventListennerConfigs = new Array();
+
+export function addHtmlElementEventListener(selectors, type, invoker, options) {
+    let htmlElement: HTMLElement = document.querySelector(selectors);
+    var key=selectors + type;
+
+    //save for remove
+    var config = {};
+    config["listenner"] = function (args) {
+        const obj = {};
+
+        for (var k in args) {
+            if (typeof args[k] == 'string' || typeof args[k] == 'number') {
+                obj[k] = args[k];
+            }
+            else if (k == 'target') {
+                var target = {
+                    attributes: {
+                    }
+                };
+
+                for (let index = 0; index < args.target.attributes.length; index++) {
+                    const attr = args.target.attributes[index];
+                    target.attributes[attr.name] = attr.value;
+                }
+                obj[k] = target;
+            }
+        }
+
+        invoker.invokeMethodAsync('Invoke', obj);
+    };
+    config['options'] = options;
+
+    htmlElementEventListennerConfigs[key] = config;
+
+    htmlElement.addEventListener(type, config["listenner"], options);
+}
+
+export function removeHtmlElementEventListener(selectors, type) {
+    let htmlElement: HTMLElement = document.querySelector(selectors);
+    var key=selectors + type;
+
+    var config = htmlElementEventListennerConfigs[key];
+    htmlElement.removeEventListener(type, config["listenner"], config['options']);
 }
 
 export function matchMedia(query) {
@@ -757,14 +803,14 @@ export function getImageDimensions(src: string) {
             resolve({
                 width: img.width,
                 height: img.height,
-                hasError:false
+                hasError: false
             })
         }
         img.onerror = function () {
             resolve({
                 width: 0,
                 height: 0,
-                hasError:true
+                hasError: true
             })
         }
     })
@@ -821,6 +867,42 @@ export function getSize(ele: HTMLElement, sizeProp) {
     ele.style.overflow = overflow;
 
     return size;
+}
+
+//register custom events
+window.onload = function () {
+    registerExmousedown();
+}
+
+function registerExmousedown() {
+    if (Blazor) {
+        Blazor.registerCustomEventType("exmousedown", {
+            browserEventName: 'mousedown',
+            createEventArgs: args => {
+                var e = {};
+
+                for (var k in args) {
+                    if (typeof args[k] == 'string' || typeof args[k] == 'number') {
+                        e[k] = args[k];
+                    }
+                    else if (k == 'target') {
+                        var target = {
+                            attributes: {
+                            }
+                        };
+        
+                        for (let index = 0; index < args.target.attributes.length; index++) {
+                            const attr = args.target.attributes[index];
+                            target.attributes[attr.name] = attr.value;
+                        }
+                        e[k] = target;
+                    }
+                }
+
+                return e;
+            }
+        })
+    }
 }
 
 export function isMobile(){

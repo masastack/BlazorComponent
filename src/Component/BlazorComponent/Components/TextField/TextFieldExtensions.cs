@@ -24,7 +24,7 @@ namespace BlazorComponent
                 .Apply(typeof(BTextFieldLegend<,>), typeof(BTextFieldLegend<TValue, ITextField<TValue>>))
                 .Merge(typeof(BInputMessages<,>), typeof(BTextFieldMessages<TValue>))
                 .Apply(typeof(BTextFieldPrependInnerSlot<,>), typeof(BTextFieldPrependInnerSlot<TValue, ITextField<TValue>>))
-                .Apply(typeof(BTextFieldProgress<,>), typeof(BTextFieldProgress<TValue, ITextField<TValue>>))
+                .Apply(typeof(BLoadableProgress<>), typeof(BLoadableProgress<ITextField<TValue>>))
                 .Apply(typeof(BTextFieldTextFieldSlot<,>), typeof(BTextFieldTextFieldSlot<TValue, ITextField<TValue>>))
                 .Merge(typeof(BInputLabel<,>), typeof(BTextFieldLabel<TValue>));
         }

@@ -12,11 +12,11 @@ namespace BlazorComponent
         [JsonPropertyName("bottom")]
         public double Bottom { get; set; }
 
-        [JsonPropertyName("height")]
-        public double Height { get; set; }
-
         [JsonPropertyName("left")]
         public double Left { get; set; }
+
+        [JsonPropertyName("height")]
+        public double Height { get; set; }
 
         [JsonPropertyName("right")]
         public double Right { get; set; }
@@ -32,5 +32,11 @@ namespace BlazorComponent
 
         [JsonPropertyName("y")]
         public double Y { get; set; }
+
+        [JsonPropertyName("clientY")]
+        public double ClientY { get; set; }
+
+        [JsonPropertyName("clientX")]
+        public double ClientX { get; set; }
     }
 }
