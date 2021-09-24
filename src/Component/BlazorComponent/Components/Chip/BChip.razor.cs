@@ -13,12 +13,6 @@ namespace BlazorComponent
 
         protected bool Show { get; set; } = true;
 
-        [Parameter]
-        public bool Close { get; set; }
-
-        [Parameter]
-        public string CloseIcon { get; set; }
-
         [Obsolete("Use OnClick instead.")]
         [Parameter]
         public EventCallback<MouseEventArgs> Click { get; set; }
@@ -42,6 +36,15 @@ namespace BlazorComponent
             {
                 await OnClick.InvokeAsync();
             }
+        }
+
+        protected override void SetComponentClass()
+        {
+            AbstractProvider
+                .Apply(typeof(CascadingValue<>), typeof(CascadingValue<BChip>), props =>
+                {
+                    props[nameof(CascadingValue<BChip>.Value)] = this;
+                });
         }
     }
 }

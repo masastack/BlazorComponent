@@ -1,0 +1,15 @@
+﻿@namespace BlazorComponent
+@typeparam TChip
+@inherits ComponentAbstractBase<TChip>
+
+@if (Filter)
+{
+    @*<ExpandTransition X>*@
+    @if (InputValue)
+    {
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
+            @FilterIcon
+        </AbstractComponent>
+    }
+    @*</ExpandTransition>*@
+}

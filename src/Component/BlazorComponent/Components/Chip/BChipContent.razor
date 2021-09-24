@@ -1,0 +1,9 @@
+﻿@namespace BlazorComponent
+@typeparam TChip
+@inherits ComponentAbstractBase<TChip>
+
+<span class="@CssProvider.GetClass("content")">
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BChipFilter<>))"></AbstractComponent>
+    @ComponentChildContent
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BChipClose<>))"></AbstractComponent>
+</span>

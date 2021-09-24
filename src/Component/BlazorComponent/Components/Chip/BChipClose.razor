@@ -1,0 +1,10 @@
+﻿@namespace BlazorComponent
+@typeparam TChip
+@inherits ComponentAbstractBase<TChip>
+
+@if (Close)
+{
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
+        @CloseIcon
+    </AbstractComponent>
+}
