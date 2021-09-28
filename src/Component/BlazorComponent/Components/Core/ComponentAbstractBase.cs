@@ -1,10 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
@@ -12,8 +7,9 @@ namespace BlazorComponent
     {
         [CascadingParameter]
         public IHasProviderComponent HasProviderComponent { get; set; }
-
-        public TComponent Component => (TComponent)HasProviderComponent;
+        
+        [CascadingParameter]
+        public TComponent Component { get; set; }
 
         public ComponentCssProvider CssProvider => Component.CssProvider;
 
@@ -21,9 +17,17 @@ namespace BlazorComponent
 
         protected override void OnParametersSet()
         {
-            if (HasProviderComponent == null || HasProviderComponent is not TComponent)
+            if (Component==null)
             {
-                throw new ArgumentException(nameof(HasProviderComponent));
+                if (HasProviderComponent is TComponent component)
+                {
+                    Component = component;
+                }
+                else
+                {
+                    throw new ArgumentException(nameof(Component));
+                }
+                
             }
         }
     }
