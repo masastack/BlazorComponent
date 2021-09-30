@@ -6,11 +6,5 @@ namespace BlazorComponent
     {
         [Parameter]
         public RenderFragment ChildContent { get; set; }
-
-        [Parameter]
-        public string Action { get; set; }
-
-        [Parameter]
-        public RenderFragment ActionContent { get; set; }
     }
 }

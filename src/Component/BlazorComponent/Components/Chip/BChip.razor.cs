@@ -37,14 +37,5 @@ namespace BlazorComponent
                 await OnClick.InvokeAsync();
             }
         }
-
-        protected override void SetComponentClass()
-        {
-            AbstractProvider
-                .Apply(typeof(CascadingValue<>), typeof(CascadingValue<BChip>), props =>
-                {
-                    props[nameof(CascadingValue<BChip>.Value)] = this;
-                });
-        }
     }
 }

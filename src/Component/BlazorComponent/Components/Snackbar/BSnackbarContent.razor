@@ -1,0 +1,7 @@
+﻿@namespace BlazorComponent
+@typeparam TSnackbar
+@inherits ComponentAbstractBase<TSnackbar>
+
+<div class="@CssProvider.GetClass("content")" style="@CssProvider.GetStyle("content")">
+    @ComponentChildContent
+</div>

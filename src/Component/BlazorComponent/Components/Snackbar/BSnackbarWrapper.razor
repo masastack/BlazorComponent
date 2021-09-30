@@ -1,0 +1,8 @@
+﻿@namespace BlazorComponent
+@typeparam TSnackbar
+@inherits ComponentAbstractBase<TSnackbar>
+
+<div class="@CssProvider.GetClass("wrap")" style="@CssProvider.GetStyle("wrap")">
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSnackbarContent<>))"></AbstractComponent>
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSnackbarAction<>))"></AbstractComponent>
+</div>
