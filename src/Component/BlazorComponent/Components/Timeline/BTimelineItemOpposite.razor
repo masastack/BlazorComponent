@@ -1,0 +1,10 @@
+﻿@namespace BlazorComponent
+@typeparam TTimelineItem
+@inherits ComponentAbstractBase<TTimelineItem>
+
+@if (OppositeContent != null)
+{
+    <div class="@CssProvider.GetClass("opposite")">
+        @OppositeContent
+    </div>
+}

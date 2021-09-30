@@ -1,0 +1,7 @@
+﻿@namespace BlazorComponent
+@typeparam TTimelineItem
+@inherits ComponentAbstractBase<TTimelineItem>
+
+<div class="@CssProvider.GetClass("inner-dot")">
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTimelineItemIcon<>))"></AbstractComponent>
+</div>
