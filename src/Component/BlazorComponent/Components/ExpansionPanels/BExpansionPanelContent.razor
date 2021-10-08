@@ -1,9 +1,11 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<ExpandTransition Class="@CssProvider.GetClass()" Style="@CssProvider.GetStyle()" Value="ExpansionPanel.Expanded">
-    <div class="@CssProvider.GetClass("wrap")">
-        @ChildContent
-    </div>
+<ExpandTransition>
+    <Element Show="ExpansionPanel.Expanded" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">
+        <div class="@CssProvider.GetClass("wrap")">
+            @ChildContent
+        </div>
+    </Element>
 </ExpandTransition>
 

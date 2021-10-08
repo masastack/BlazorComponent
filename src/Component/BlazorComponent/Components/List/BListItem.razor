@@ -1,7 +1,8 @@
 ﻿@namespace BlazorComponent
 @inherits BGroupItem<BItemGroup>
 
-<div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @onmousedown="HandleOnClick">
+<div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @onmousedown="HandleOnClick"
+    @attributes="Attributes">
     @ChildContent
 </div>
 

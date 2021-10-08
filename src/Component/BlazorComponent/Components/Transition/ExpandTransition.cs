@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using BlazorComponent.Web;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
@@ -11,18 +12,15 @@ namespace BlazorComponent
     {
         private double _size;
 
-        [Inject]
-        public IJSRuntime Js { get; set; }
+        protected virtual bool X { get; }
 
-        [Parameter]
-        public bool X { get; set; }
+        protected string SizeProp => X ? "width" : "height";
 
-        public string SizeProp => X ? "width" : "height";
-
-        public ExpandTransition()
-            : base()
+        protected override void OnInitialized()
         {
-            Context.StyleBuilder
+            base.OnInitialized();
+
+            StyleBuilder
                 .AddIf(() => $"{SizeProp}:0px", () => State == TransitionState.Enter || State == TransitionState.LeaveTo)
                 .AddIf("overflow:hidden", () => State != TransitionState.None)
                 .AddIf(() => $"{SizeProp}:{_size}px", () => State == TransitionState.EnterTo || State == TransitionState.Leave);
@@ -36,7 +34,7 @@ namespace BlazorComponent
         protected override async Task OnEnterAsync()
         {
             var prop = SizeProp.Substring(0, 1).ToUpper() + SizeProp[1..];
-            _size = await Js.InvokeAsync<double>(JsInteropConstants.GetSize, Ref, prop);
+            _size = await Element.GetSizeAsync(prop);
 
             await base.OnEnterAsync();
         }
@@ -44,7 +42,7 @@ namespace BlazorComponent
         protected override async Task OnLeaveAsync()
         {
             var prop = SizeProp.Substring(0, 1).ToUpper() + SizeProp[1..];
-            _size = await Js.InvokeAsync<double>(JsInteropConstants.GetSize, Ref, prop);
+            _size = await Element.GetSizeAsync(prop);
 
             await base.OnEnterAsync();
         }

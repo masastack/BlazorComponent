@@ -1,0 +1,16 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BlazorComponent
+{
+    public class CarouselReverseTransition : Transition
+    {
+        protected override void OnParametersSet()
+        {
+            Name = "carousel-reverse-transition";
+        }
+    }
+}

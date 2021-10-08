@@ -16,8 +16,10 @@
                 </AbstractComponent>
             </AbstractComponent>
         </AbstractComponent>
-        <ExpandTransition Class="@CssProvider.GetClass("items")" Style="@CssProvider.GetStyle("items")" Value="Expanded">
-            @ChildContent
+        <ExpandTransition>
+            <Element Show="Expanded" Class="@CssProvider.GetClass("items")" Style="@CssProvider.GetStyle("items")">
+                @ChildContent
+            </Element>
         </ExpandTransition>
     </div>
 </CascadingValue>

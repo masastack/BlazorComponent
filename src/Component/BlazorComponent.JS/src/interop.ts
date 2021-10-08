@@ -1,4 +1,6 @@
-﻿export function getDom(element) {
+﻿import registerDirective from './directive/index'
+
+export function getDom(element) {
     if (!element) {
         element = document.body;
     } else if (typeof element === 'string') {
@@ -854,17 +856,19 @@ export function getBoundingClientRects(selector) {
     return result;
 }
 
-export function getSize(ele: HTMLElement, sizeProp) {
-    var display = ele.style.display;
-    var overflow = ele.style.overflow;
+export function getSize(selectors, sizeProp) {
+    var el=getDom(selectors);
 
-    ele.style.display = "";
-    ele.style.overflow = "hidden";
+    var display = el.style.display;
+    var overflow = el.style.overflow;
 
-    var size = ele["offset" + sizeProp] || 0;
+    el.style.display = "";
+    el.style.overflow = "hidden";
 
-    ele.style.display = display;
-    ele.style.overflow = overflow;
+    var size = el["offset" + sizeProp] || 0;
+
+    el.style.display = display;
+    el.style.overflow = overflow;
 
     return size;
 }
@@ -872,6 +876,7 @@ export function getSize(ele: HTMLElement, sizeProp) {
 //register custom events
 window.onload = function () {
     registerExmousedown();
+    registerDirective();
 }
 
 function registerExmousedown() {
