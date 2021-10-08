@@ -26,6 +26,12 @@ namespace BlazorComponent
             t2 => Convert.ToInt32(t2)
             );
 
+        public double ToDouble() => Match(
+            t0 => double.TryParse(t0, out var val) ? val : 0D,
+            t1 => Convert.ToDouble(t1),
+            t2 => t2
+            );
+
         public override string ToString()
         {
             return Value?.ToString();

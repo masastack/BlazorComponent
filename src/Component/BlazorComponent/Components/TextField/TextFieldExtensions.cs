@@ -62,7 +62,7 @@ namespace BlazorComponent
         public static ComponentAbstractProvider ApplyTextFieldProcessLinear(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>> propertiesAction = null)
         {
             return abstractProvider
-                .Apply(typeof(BProcessLinear), type, propertiesAction);
+                .Apply(typeof(BProgressLinear), type, propertiesAction);
         }
 
         public static ComponentAbstractProvider ApplyTextFieldClearIcon(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>> propertiesAction = null)

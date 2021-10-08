@@ -1,0 +1,10 @@
+﻿@namespace BlazorComponent
+@typeparam TProgressLinear
+@inherits ComponentAbstractBase<TProgressLinear>
+
+<div class="@CssProvider.GetClass("indeterminate")">
+	<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BProgressLinearLong<>))"></AbstractComponent>
+
+	<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BProgressLinearShort<>))"></AbstractComponent>
+</div>
+
