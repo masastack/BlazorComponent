@@ -29,6 +29,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.0-preview.7.21378.6" />
+		<PackageReference Include="Microsoft.Extensions.Localization" Version="6.0.0-preview.7.21378.6" />
 		<PackageReference Include="OneOf" Version="3.0.178" />
 	</ItemGroup>
 
@@ -38,12 +39,102 @@
 
 	<ItemGroup>
 		<!-- ignore the tsconfig.json file in package -->
+		<Content Remove="Components\I18n\Locales\af-AZ.json" />
+		<Content Remove="Components\I18n\Locales\ar-EG.json" />
+		<Content Remove="Components\I18n\Locales\az.json" />
+		<Content Remove="Components\I18n\Locales\bg-BG.json" />
+		<Content Remove="Components\I18n\Locales\ca-ES.json" />
+		<Content Remove="Components\I18n\Locales\ckb.json" />
+		<Content Remove="Components\I18n\Locales\cs-CZ.json" />
+		<Content Remove="Components\I18n\Locales\de-DE.json" />
+		<Content Remove="Components\I18n\Locales\el-GR.json" />
+		<Content Remove="Components\I18n\Locales\en-GB.json" />
+		<Content Remove="Components\I18n\Locales\en-US.json" />
+		<Content Remove="Components\I18n\Locales\es-ES.json" />
+		<Content Remove="Components\I18n\Locales\et-EE.json" />
+		<Content Remove="Components\I18n\Locales\fa-IR.json" />
+		<Content Remove="Components\I18n\Locales\fi-FI.json" />
+		<Content Remove="Components\I18n\Locales\fr-BE.json" />
+		<Content Remove="Components\I18n\Locales\fr-FR.json" />
+		<Content Remove="Components\I18n\Locales\he-IL.json" />
+		<Content Remove="Components\I18n\Locales\hr-HR.json" />
+		<Content Remove="Components\I18n\Locales\hu-HU.json" />
+		<Content Remove="Components\I18n\Locales\id-ID.json" />
+		<Content Remove="Components\I18n\Locales\it-IT.json" />
+		<Content Remove="Components\I18n\Locales\ja-JP.json" />
+		<Content Remove="Components\I18n\Locales\ko-KR.json" />
+		<Content Remove="Components\I18n\Locales\lt.json" />
+		<Content Remove="Components\I18n\Locales\lv-LV.json" />
+		<Content Remove="Components\I18n\Locales\nb-NO.json" />
+		<Content Remove="Components\I18n\Locales\nl-BE.json" />
+		<Content Remove="Components\I18n\Locales\nl-NL.json" />
+		<Content Remove="Components\I18n\Locales\pl-PLl.json" />
+		<Content Remove="Components\I18n\Locales\pt-BR.json" />
+		<Content Remove="Components\I18n\Locales\pt-PT.json" />
+		<Content Remove="Components\I18n\Locales\ro-RO.json" />
+		<Content Remove="Components\I18n\Locales\ru-RU.json" />
+		<Content Remove="Components\I18n\Locales\sk-SK.json" />
+		<Content Remove="Components\I18n\Locales\sl-SI.json" />
+		<Content Remove="Components\I18n\Locales\sr-Cyrl-CS.json" />
+		<Content Remove="Components\I18n\Locales\sr-Latn-CS.json" />
+		<Content Remove="Components\I18n\Locales\sv-SE.json" />
+		<Content Remove="Components\I18n\Locales\th-TH.json" />
+		<Content Remove="Components\I18n\Locales\tr-TR.json" />
+		<Content Remove="Components\I18n\Locales\uk-UA.json" />
+		<Content Remove="Components\I18n\Locales\vi-VN.json" />
+		<Content Remove="Components\I18n\Locales\zh-CN.json" />
+		<Content Remove="Components\I18n\Locales\zh-TW.json" />
 		<Content Remove="Components\Icon\BIconSlot.razor" />
 		<Content Remove="tsconfig.json" />
 		<None Include="..\..\..\docs\logo_blazorcomponent_32.png">
 		  <Pack>True</Pack>
 		  <PackagePath></PackagePath>
 		</None>
+		<None Include="Components\I18n\Locales\af-AZ.json" />
+		<None Include="Components\I18n\Locales\ar-EG.json" />
+		<None Include="Components\I18n\Locales\az.json" />
+		<None Include="Components\I18n\Locales\bg-BG.json" />
+		<None Include="Components\I18n\Locales\ca-ES.json" />
+		<None Include="Components\I18n\Locales\ckb.json" />
+		<None Include="Components\I18n\Locales\cs-CZ.json" />
+		<None Include="Components\I18n\Locales\de-DE.json" />
+		<None Include="Components\I18n\Locales\el-GR.json" />
+		<None Include="Components\I18n\Locales\en-GB.json" />
+		<None Include="Components\I18n\Locales\en-US.json" />
+		<None Include="Components\I18n\Locales\es-ES.json" />
+		<None Include="Components\I18n\Locales\et-EE.json" />
+		<None Include="Components\I18n\Locales\fa-IR.json" />
+		<None Include="Components\I18n\Locales\fi-FI.json" />
+		<None Include="Components\I18n\Locales\fr-BE.json" />
+		<None Include="Components\I18n\Locales\fr-FR.json" />
+		<None Include="Components\I18n\Locales\he-IL.json" />
+		<None Include="Components\I18n\Locales\hr-HR.json" />
+		<None Include="Components\I18n\Locales\hu-HU.json" />
+		<None Include="Components\I18n\Locales\id-ID.json" />
+		<None Include="Components\I18n\Locales\it-IT.json" />
+		<None Include="Components\I18n\Locales\ja-JP.json" />
+		<None Include="Components\I18n\Locales\ko-KR.json" />
+		<None Include="Components\I18n\Locales\lt.json" />
+		<None Include="Components\I18n\Locales\lv-LV.json" />
+		<None Include="Components\I18n\Locales\nl-BE.json" />
+		<None Include="Components\I18n\Locales\nl-NL.json" />
+		<None Include="Components\I18n\Locales\nb-NO.json" />
+		<None Include="Components\I18n\Locales\pl-PLl.json" />
+		<None Include="Components\I18n\Locales\pt-BR.json" />
+		<None Include="Components\I18n\Locales\pt-PT.json" />
+		<None Include="Components\I18n\Locales\ro-RO.json" />
+		<None Include="Components\I18n\Locales\ru-RU.json" />
+		<None Include="Components\I18n\Locales\sk-SK.json" />
+		<None Include="Components\I18n\Locales\sl-SI.json" />
+		<None Include="Components\I18n\Locales\sr-Cyrl-CS.json" />
+		<None Include="Components\I18n\Locales\sr-Latn-CS.json" />
+		<None Include="Components\I18n\Locales\sv-SE.json" />
+		<None Include="Components\I18n\Locales\th-TH.json" />
+		<None Include="Components\I18n\Locales\tr-TR.json" />
+		<None Include="Components\I18n\Locales\uk-UA.json" />
+		<None Include="Components\I18n\Locales\vi-VN.json" />
+		<None Include="Components\I18n\Locales\zh-CN.json" />
+		<None Include="Components\I18n\Locales\zh-TW.json" />
 		<None Include="Components\Timeline\BTimeline.razor" />
 		<None Include="Components\Timeline\BTimelineItem.razor" />
 	</ItemGroup>
