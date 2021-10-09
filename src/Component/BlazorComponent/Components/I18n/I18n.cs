@@ -30,14 +30,11 @@ namespace BlazorComponent.Components
             CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo(cultureName);
         }
 
-        public static void AddLang(string cultureName, Dictionary<string, string>[] langs)
+        public static void AddLang(string cultureName, Dictionary<string, string> langs)
         {
             if (langs is null) return;
 
-            foreach (var lang in langs)
-            {
-                _i18nCache.AddOrUpdate(cultureName, lang, (name, original) => lang);
-            }
+            _i18nCache.AddOrUpdate(cultureName, langs, (name, original) => langs);
         }
 
         public static string T(string key)
