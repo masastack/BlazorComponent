@@ -30,7 +30,10 @@ namespace BlazorComponent
             {
                 _scrollOffset = value;
 
-                JsInvokeAsync(JsInteropConstants.SetStyle, ContentRef, "transform", $"translateX(-{value}px)");
+                if (ContentRef.Context != null)
+                {
+                    JsInvokeAsync(JsInteropConstants.SetStyle, ContentRef, "transform", $"translateX(-{value}px)");
+                }
             }
         }
 
@@ -54,6 +57,8 @@ namespace BlazorComponent
         [Parameter]
         public string PrevIcon { get; set; }
 
+        protected bool _render = false;
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
@@ -61,10 +66,13 @@ namespace BlazorComponent
                 IsMobile = await JsInvokeAsync<bool>(JsInteropConstants.IsMobile);
             }
 
-            await SetWidths(firstRender);
+            if (!_render)
+            {
+                await SetWidths();
+            }
         }
 
-        protected async Task SetWidths(bool firstRender)
+        public async Task SetWidths()
         {
             var wrapperElement = await JsInvokeAsync<Web.Element>(JsInteropConstants.GetDomInfo, WrapperRef);
             WrapperWidth = wrapperElement?.ClientWidth ?? 0;
@@ -75,17 +83,15 @@ namespace BlazorComponent
 
             await ScrollToView();
 
-            if (firstRender)
-            {
-                StateHasChanged();
-            }
+            _render = true;
+
+            StateHasChanged();
         }
 
         protected override void SetComponentClass()
         {
-            AbstractProvider
-                .Apply(typeof(CascadingValue<>), typeof(CascadingValue<BSlideGroup>),
-                    props => { props[nameof(CascadingValue<BInput<BSlideGroup>>.Value)] = this; });
+            AbstractProvider.Apply(typeof(CascadingValue<ISlideGroup>), typeof(CascadingValue<BSlideGroup>),
+                props => props[nameof(CascadingValue<BSlideGroup>.Value)] = this);
         }
 
         public bool IsOverflowing { get; protected set; }

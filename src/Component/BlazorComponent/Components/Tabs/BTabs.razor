@@ -1,34 +1,61 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<CascadingValue Value="this">
+<BCascadingValue Value="this">
     <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata<ITabsBar>()">
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BSlideGroup>()"
+                           Mandatory
+                           NextIcon="@NextIcon"
+                           PrevIcon="@PrevIcon"
+                           ShowArrows="@ShowArrows"
+                           Value="@Value"
+                           ValueChanged="@ValueChanged"
+                           Color="@Color"
+                           @ref="TabsBarRef">
+
+            <CascadingValue Value="true" Name="DISPLAY:NONE" IsFixed="true">
+                <div style="display:none">@ChildContent</div>
+            </CascadingValue>
+
             @if (!HideSlider)
             {
-                <div class="@CssProvider.GetClass("slider-wrap")" style="@CssProvider.GetStyle("slider-wrap")">
-                    @if (SliderContent == default)
-                    {
-                        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BTabsSlider>()"></AbstractComponent>
-                    }
-                    else
-                    {
-                        @SliderContent
-                    }
-                </div>
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTabsSlider<>))"></AbstractComponent>
             }
-            @TabContent
+
+            @if (ChildContentInitialized)
+            {
+                var index = 0;
+                foreach (var tab in Tabs)
+                {
+                    if (_otherSlots.TryGetValue(index++, out var slot)) {
+                        @slot
+                    }
+
+                    <AbstractTemplateComponent Metadata="AbstractProvider.GetMetadata<BItem>()" Value="@tab.Value" TItem="@ItemContext">
+                        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BTab>()" id="@tab.Id" CreatedBySystem="@true" IsActive="@context.IsActive" RefBack="@context.Ref" @onclick="@(() => Active(context.Toggle))">
+                            @tab.ChildContent
+                        </AbstractComponent>
+                    </AbstractTemplateComponent>
+                }
+
+                if (Tabs.Count == index) {
+                    if (_otherSlots.TryGetValue(index++, out var slot)) {
+                        @slot
+                    }
+                }
+            }
+
         </AbstractComponent>
-        @if (ItemsContent == default)
+
+        @if (ChildContentInitialized)
         {
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata<ITabsItems>()">
-                @ItemContent
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BWindow>()" Value="@Value">
+                @foreach (var tabItem in TabItems)
+                {
+                    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BWindowItem>()" Value="@tabItem.Value">@tabItem.ChildContent</AbstractComponent>
+                }
             </AbstractComponent>
         }
-        else
-        {
-            @ItemsContent
-        }
-    </div>
-</CascadingValue>
 
+    </div>
+</BCascadingValue>

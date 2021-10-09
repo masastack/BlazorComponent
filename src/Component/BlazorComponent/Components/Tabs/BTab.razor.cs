@@ -1,45 +1,49 @@
-﻿using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Components;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public partial class BTab : BDomComponentBase
+    public partial class BTab : BGroupItem<BItemGroup>
     {
-        [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public BTab() : base(GroupType.SlideGroup)
+        {
+        }
 
         [CascadingParameter]
         public BTabs Tabs { get; set; }
 
-        public Web.Element Rect { get; private set; }
+        [CascadingParameter(Name = "DISPLAY:NONE")]
+        public bool IsDisplayNone { get; set; }
 
         [Parameter]
-        public string Key { get; set; }
-
-        public string ComputedKey => Key ?? Tabs.Tabs.IndexOf(this).ToString();
-
-        public bool IsActive => Tabs.Value == ComputedKey || (Tabs.Value == null && Tabs.Tabs.IndexOf(this) == 0);
+        public EventCallback<MouseEventArgs> OnClick { get; set; }
 
         protected override void OnInitialized()
         {
+            if (!Groupable || !IsDisplayNone) return;
+
+            if (Value == null)
+                Value = Tabs.Tabs.Count;
+
+            if (Tabs.Tabs.Any(tab => tab.Value?.ToString() == Value?.ToString())) return;
+
             Tabs.AddTab(this);
         }
 
-        public async Task HandleClick()
+        public async Task HandleClick(MouseEventArgs args)
         {
-            await Tabs.SelectTabAsync(this);
+            await OnClick.InvokeAsync(args);
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
+            if (IsDisplayNone) return;
+            
             if (firstRender)
             {
-                Rect = await JsInvokeAsync<Web.Element>(JsInteropConstants.GetDomInfo, Ref);
-                Tabs.Refresh();
+                await Tabs.CallSlider();
             }
         }
     }

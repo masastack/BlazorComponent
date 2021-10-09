@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 
@@ -28,17 +29,25 @@ namespace BlazorComponent
         [Parameter]
         public string ActiveClass { get; set; }
 
-        [Parameter]
-        public StringNumber Value { get; set; }
+        private StringNumber _value;
 
         [Parameter]
-        public bool NoGroup { get; set; }
+        public StringNumber Value
+        {
+            get => _value;
+            set
+            {
+                if (value == null) return;
+
+                _value = value;
+            }
+        }
 
         /// <summary>
         /// Determine whether the <see cref="BGroupItem{TGroup}"/> can be grouped.
         /// The <see cref="GroupType.ItemGroup"/> cans group any item of <see cref="GroupType"/>.
         /// </summary>
-        public bool Groupable => !NoGroup && ItemGroup != null && (ItemGroup._groupType == GroupType.ItemGroup || ItemGroup._groupType == _groupType);
+        public bool Groupable => ItemGroup != null && (ItemGroup._groupType == _groupType);
 
         [Parameter]
         public virtual bool IsActive
@@ -49,6 +58,8 @@ namespace BlazorComponent
 
         protected override void OnInitialized()
         {
+            base.OnInitialized();
+
             if (!Groupable) return;
 
             if (Value == null)
@@ -56,7 +67,13 @@ namespace BlazorComponent
 
             ItemGroup.AllKeys.Add(Value);
 
-            ItemGroup.Items.Add(this as BItemBase<BItemGroup>);
+            if (ItemGroup.Items.All(item => item.Value?.ToString() != Value.ToString()))
+            {
+                if (this is BItemBase<BItemGroup> item)
+                {
+                    ItemGroup.Items.Add(item);
+                }
+            }
 
             if (ItemGroup.Mandatory && ItemGroup.Value == null)
             {

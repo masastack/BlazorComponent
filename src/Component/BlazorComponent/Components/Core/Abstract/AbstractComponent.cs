@@ -17,6 +17,8 @@ namespace BlazorComponent
 
         [Parameter(CaptureUnmatchedValues = true)]
         public Dictionary<string, object> AdditionalAttributes { get; set; } = new Dictionary<string, object>();
+        
+        public object? Instance { get; private set; }
 
 #pragma warning disable BL0006
         protected override void OnParametersSet()
@@ -82,6 +84,8 @@ namespace BlazorComponent
             {
                 builder.AddAttribute(sequence++, nameof(ChildContent), ChildContent);
             }
+            
+            builder.AddComponentReferenceCapture(sequence++, component => Instance = component);
 
             builder.CloseComponent();
         }

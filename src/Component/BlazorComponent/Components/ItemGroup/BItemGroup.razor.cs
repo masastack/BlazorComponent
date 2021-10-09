@@ -9,11 +9,6 @@ namespace BlazorComponent
     {
         internal readonly GroupType _groupType;
 
-        public BItemGroup()
-        {
-            _groupType = GroupType.ItemGroup;
-        }
-
         public BItemGroup(GroupType groupType)
         {
             _groupType = groupType;
@@ -52,6 +47,15 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<List<StringNumber>> ValuesChanged { get; set; }
 
+        [Parameter]
+        public bool Mandatory { get; set; }
+
+        [Parameter]
+        public bool Multiple { get; set; }
+
+        [Parameter]
+        public RenderFragment ChildContent { get; set; }
+        
         public async virtual Task Toggle(StringNumber key)
         {
             if (_values.Contains(key))
@@ -88,14 +92,5 @@ namespace BlazorComponent
 
             StateHasChanged();
         }
-
-        [Parameter]
-        public bool Mandatory { get; set; }
-
-        [Parameter]
-        public bool Multiple { get; set; }
-
-        [Parameter]
-        public RenderFragment ChildContent { get; set; }
     }
 }

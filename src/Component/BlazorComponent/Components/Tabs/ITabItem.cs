@@ -6,9 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public interface ITabItem
+    public interface ITabItem : IItem
     {
-        void Active();
-        void DeActive();
     }
 }

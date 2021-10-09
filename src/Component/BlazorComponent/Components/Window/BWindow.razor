@@ -1,0 +1,45 @@
+﻿@namespace BlazorComponent
+@inherits BItemGroup
+
+<CascadingValue Value="this">
+    <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
+        <div class="@CssProvider.GetClass("container")" style="@CssProvider.GetStyle("container")">
+            @ChildContent
+
+            @if (ArrowsVisible)
+            {
+                if (HasPrev)
+                {
+                    <div class="@CssProvider.GetClass("prev")">
+                        @if (PrevContent != null)
+                        {
+                            @PrevContent(Prev)
+                        }
+                        else
+                        {
+                            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BButton>()" Icon @onclick="Prev">
+                                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">@PrevIcon</AbstractComponent>
+                            </AbstractComponent>
+                        }
+                    </div>
+                }
+
+                if (HasNext)
+                {
+                    <div class="@CssProvider.GetClass("next")">
+                        @if (NextContent != null)
+                        {
+                            @NextContent(Next)
+                        }
+                        else
+                        {
+                            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BButton>()" Icon @onclick="Next">
+                                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">@NextIcon</AbstractComponent>
+                            </AbstractComponent>
+                        }
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</CascadingValue>

@@ -11,5 +11,7 @@ namespace BlazorComponent
         public Func<Task> Toggle { get; init; }
 
         public ForwardRef Ref { get; set; }
+        
+        public StringNumber Value { get; set; }
     }
 }
