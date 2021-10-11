@@ -3,7 +3,7 @@
 @inherits BDomComponentBase
 @implements IIcon
 
-<CascadingValue Value="this">
+<BCascadingValue Value="this">
     @if (RegexHelper.RegexSvgPath(Icon))
     {
         <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSvgIconSlot<>))"></AbstractComponent>
@@ -12,4 +12,4 @@
     {
         <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BFontIconSlot<>))"></AbstractComponent>
     }
-</CascadingValue>
+</BCascadingValue>

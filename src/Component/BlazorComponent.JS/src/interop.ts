@@ -875,14 +875,18 @@ export function getSize(selectors, sizeProp) {
 
 //register custom events
 window.onload = function () {
-    registerExmousedown();
+    registerCustomEvent("exmousedown","mousedown");
+    registerCustomEvent("exclick","click");
+    registerCustomEvent("exmouseleave","mouseleave");
+    registerCustomEvent("exmouseenter","mouseenter");
+    registerCustomEvent("exmousemove","mousemove");
     registerDirective();
 }
 
-function registerExmousedown() {
+function registerCustomEvent(eventType, eventName) {
     if (Blazor) {
-        Blazor.registerCustomEventType("exmousedown", {
-            browserEventName: 'mousedown',
+        Blazor.registerCustomEventType(eventType, {
+            browserEventName: eventName,
             createEventArgs: args => {
                 var e = {};
 

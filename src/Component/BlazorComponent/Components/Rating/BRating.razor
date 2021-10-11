@@ -1,23 +1,12 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
-    @foreach (var i in Enumerable.Range(1, (int)Length))
-    {
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BButton>()"
-                       OnClick="@(EventCallback.Factory.Create<MouseEventArgs>(this, () => HandleClick(i)))">
-            @if (Value < i)
-            {
-                <AbstractComponent Metadata="@(AbstractProvider.GetMetadata<BIcon>("star-outline"))">
-                    @EmptyIcon
-                </AbstractComponent>
-            }
-            else
-            {
-                <AbstractComponent Metadata="@(AbstractProvider.GetMetadata<BIcon>("star"))">
-                    @FullIcon
-                </AbstractComponent>
-            }
-        </AbstractComponent>
-    }
-</div>
+<BCascadingValue Value="this">
+    <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
+        @for(var i = 0; i < Length.ToInt32(); i++)
+        {
+            var index = i;
+            <AbstractComponent @key="index" Metadata="AbstractProvider.GetMetadata(typeof(BRatingItem<>))" ItemIndex="@index"></AbstractComponent>
+        }
+    </div>
+</BCascadingValue>

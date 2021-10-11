@@ -1,7 +1,7 @@
 ﻿@namespace BlazorComponent
 @inherits BGroupItem<BItemGroup>
 
-<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(CascadingValue<>))">
+<BCascadingValue Value="this">
     <button type="@TypeAttribute"
             class="@CssProvider.GetClass()"
             style="@CssProvider.GetStyle()"
@@ -19,4 +19,4 @@
 
         <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BButtonContent<>))"></AbstractComponent>
     </button>
-</AbstractComponent>
+</BCascadingValue>

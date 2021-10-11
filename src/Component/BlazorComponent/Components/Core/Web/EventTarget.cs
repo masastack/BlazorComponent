@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BlazorComponent.Web;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,20 @@ namespace Microsoft.AspNetCore.Components.Web
         public string Class => GetAttribute("class");
 
         public string Style => GetAttribute("style");
+
+        public ElementReference ElementReference
+        {
+            get
+            {
+                if (Attributes != null)
+                {
+                    var identify = Attributes.FirstOrDefault(attr => attr.Key.StartsWith("_bl_"));
+                    return new ElementReference(identify.Key?[4..]);
+                }
+
+                return default;
+            }
+        }
 
         public Dictionary<string, string> Attributes { get; set; }
     }

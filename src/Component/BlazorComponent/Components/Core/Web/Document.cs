@@ -26,5 +26,11 @@ namespace BlazorComponent.Web
         {
             return new HtmlElement(_js, $"[_bl_{elementReference.Id}]");
         }
+
+        public async Task<string> ExecCommandAsync(string commandId, bool? showUI, object value)
+        {
+            var result = await _js.InvokeAsync<string>("document.execCommand", commandId, showUI, value);
+            return result;
+        }
     }
 }

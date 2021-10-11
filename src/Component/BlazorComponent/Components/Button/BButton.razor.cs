@@ -84,12 +84,6 @@ namespace BlazorComponent
             }
         }
 
-        protected override void SetComponentClass()
-        {
-            AbstractProvider.Apply(typeof(CascadingValue<>), typeof(CascadingValue<BButton>),
-                props => { props[nameof(CascadingValue<BButton>.Value)] = this; });
-        }
-
         protected virtual async Task HandleOnClick(MouseEventArgs args)
         {
             await OnClick.InvokeAsync(args);

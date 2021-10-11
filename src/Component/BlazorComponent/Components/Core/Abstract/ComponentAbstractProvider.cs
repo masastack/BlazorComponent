@@ -147,11 +147,11 @@ namespace BlazorComponent
             return GetMetadata(key);
         }
 
-        private AbstractMetadata GetMetadata(ComponentKey key)
+        private AbstractMetadata GetMetadata(ComponentKey key, Dictionary<string, object> dic = null)
         {
             var implementType = _typeConfig.GetValueOrDefault(key, typeof(EmptyComponent));
 
-            var properties = new Dictionary<string, object>();
+            var properties = dic ?? new Dictionary<string, object>();
             var action = _propertiesConfig.GetValueOrDefault(key);
             action?.Invoke(properties);
 
@@ -177,6 +177,16 @@ namespace BlazorComponent
         public AbstractMetadata GetMetadata(string name)
         {
             return GetMetadata<IComponent>(name);
+        }
+
+        public AbstractMetadata GetMetadata<TComponent>(int index)
+        {
+            var key = new ComponentKey(typeof(TComponent));
+
+            return GetMetadata(key, new Dictionary<string, object>
+            {
+                { "ItemIndex", index }
+            });
         }
     }
 }
