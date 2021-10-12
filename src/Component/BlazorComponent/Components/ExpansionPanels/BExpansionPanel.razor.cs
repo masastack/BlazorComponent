@@ -16,7 +16,7 @@ namespace BlazorComponent
         public bool NextActive => ItemGroup.NextActiveKeys.Contains(Value);
 
         [Parameter]
-        public bool Disabled
+        public override bool Disabled
         {
             get => ItemGroup.Disabled || _disabled;
             set => _disabled = value;

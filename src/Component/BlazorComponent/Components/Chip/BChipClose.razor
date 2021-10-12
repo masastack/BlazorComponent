@@ -4,7 +4,7 @@
 
 @if (Close)
 {
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
+    <AbstractComponent Metadata="@(AbstractProvider.GetMetadata<BIcon>("close"))">
         @CloseIcon
     </AbstractComponent>
 }

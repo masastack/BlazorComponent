@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public abstract class BGroupItem<TGroup> : BItemBase<TGroup>
-        where TGroup : BItemGroup
+    public abstract class BGroupItem<TGroup> : Groupable<TGroup>
+        where TGroup : ItemGroupBase
     {
         protected BGroupItem(GroupType groupType) : base(groupType)
         {

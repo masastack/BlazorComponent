@@ -30,7 +30,6 @@ export function getDomInfo(element, selector = "body") {
         document.querySelector(selector).removeChild(cloned);
     }
     else {
-        console.log("dom.offsetWidth", dom.offsetWidth)
         result = getDomInfoObj(dom);
     }
 

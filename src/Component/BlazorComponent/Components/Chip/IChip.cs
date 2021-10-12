@@ -15,7 +15,7 @@ namespace BlazorComponent
 
         string FilterIcon => default;
 
-        bool InputValue => default;
+        bool IsActive => default;
 
         bool Close => default;
 

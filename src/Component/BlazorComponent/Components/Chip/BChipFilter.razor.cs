@@ -8,6 +8,6 @@ namespace BlazorComponent
 
         string FilterIcon => Component.FilterIcon;
 
-        public bool InputValue => Component.InputValue;
+        public bool IsActive => Component.IsActive;
     }
 }

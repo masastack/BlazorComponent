@@ -5,62 +5,24 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BItemGroup : BDomComponentBase
+    public partial class BItemGroup : ItemGroupBase
     {
-        internal readonly GroupType _groupType;
-
-        public BItemGroup(GroupType groupType)
+        public BItemGroup() : base(GroupType.ItemGroup)
         {
-            _groupType = groupType;
         }
 
-        protected List<StringNumber> _values = new();
-
-        public List<StringNumber> AllKeys { get; set; } = new();
-
-        public List<BItemBase<BItemGroup>> Items { get; set; } = new();
+        public BItemGroup(GroupType groupType) : base(groupType)
+        {
+        }
 
         [Parameter]
         public StringNumber Max { get; set; }
 
-        [Parameter]
-        public StringNumber Value
+        public async virtual Task Toggle(StringNumber value)
         {
-            get => _values.LastOrDefault();
-            set
+            if (_values.Contains(value))
             {
-                _values.Clear();
-                _values.Add(value);
-            }
-        }
-
-        [Parameter]
-        public EventCallback<StringNumber> ValueChanged { get; set; }
-
-        [Parameter]
-        public List<StringNumber> Values
-        {
-            get => _values;
-            set => _values = value;
-        }
-
-        [Parameter]
-        public EventCallback<List<StringNumber>> ValuesChanged { get; set; }
-
-        [Parameter]
-        public bool Mandatory { get; set; }
-
-        [Parameter]
-        public bool Multiple { get; set; }
-
-        [Parameter]
-        public RenderFragment ChildContent { get; set; }
-        
-        public async virtual Task Toggle(StringNumber key)
-        {
-            if (_values.Contains(key))
-            {
-                _values.Remove(key);
+                _values.Remove(value);
             }
             else
             {
@@ -71,13 +33,13 @@ namespace BlazorComponent
 
                 if (Max == null || _values.Count < Max.TryGetNumber().number)
                 {
-                    _values.Add(key);
+                    _values.Add(value);
                 }
             }
 
             if (Mandatory && _values.Count == 0)
             {
-                _values.Add(key);
+                _values.Add(value);
             }
 
             if (ValuesChanged.HasDelegate)

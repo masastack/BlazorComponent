@@ -1,11 +1,12 @@
 ﻿using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public partial class BTab : BGroupItem<BItemGroup>
+    public partial class BTab : BGroupItem<ItemGroupBase>
     {
         public BTab() : base(GroupType.SlideGroup)
         {
@@ -22,7 +23,7 @@ namespace BlazorComponent
 
         protected override void OnInitialized()
         {
-            if (!Groupable || !IsDisplayNone) return;
+            if (!Matched || !IsDisplayNone) return;
 
             if (Value == null)
                 Value = Tabs.Tabs.Count;
@@ -40,7 +41,7 @@ namespace BlazorComponent
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (IsDisplayNone) return;
-            
+
             if (firstRender)
             {
                 await Tabs.CallSlider();

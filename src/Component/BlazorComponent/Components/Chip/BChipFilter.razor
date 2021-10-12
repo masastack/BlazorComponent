@@ -5,9 +5,9 @@
 @if (Filter)
 {
     @*<ExpandTransition X>*@
-    @if (InputValue)
+    @if (IsActive)
     {
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
+        <AbstractComponent Metadata="@(AbstractProvider.GetMetadata<BIcon>("filter"))">
             @FilterIcon
         </AbstractComponent>
     }

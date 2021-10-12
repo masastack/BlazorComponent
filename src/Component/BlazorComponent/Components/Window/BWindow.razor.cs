@@ -14,9 +14,6 @@ namespace BlazorComponent
         public bool ArrowsVisible { get; set; }
 
         [Parameter]
-        public string ActiveClass { get; set; }
-
-        [Parameter]
         public bool Continuous { get; set; }
 
         [Parameter]
@@ -51,7 +48,7 @@ namespace BlazorComponent
 
         public int InternalIndex => Items.FindIndex(item => item.Value == Value);
 
-        public bool HasActiveItems => Items.Any(item => !(item as BWindowItem).Disabled);
+        public bool HasActiveItems => Items.Any(item => !item.Disabled);
 
         public bool HasNext => Continuous || InternalIndex < Items.Count - 1;
 
@@ -105,7 +102,7 @@ namespace BlazorComponent
         protected int GetNextIndex(int currentIndex)
         {
             var nextIndex = (currentIndex + 1) % Items.Count;
-            var nextItem = Items[nextIndex] as BWindowItem;
+            var nextItem = Items[nextIndex];
 
             if (nextItem.Disabled) return GetNextIndex(nextIndex);
 
@@ -115,7 +112,7 @@ namespace BlazorComponent
         protected int GetPrevIndex(int currentIndex)
         {
             var prevIndex = (currentIndex + Items.Count - 1) % Items.Count;
-            var prevItem = Items[prevIndex] as BWindowItem;
+            var prevItem = Items[prevIndex];
 
             if (prevItem.Disabled) return GetPrevIndex(prevIndex);
 

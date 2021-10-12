@@ -2,13 +2,10 @@
 
 namespace BlazorComponent
 {
-    public partial class BWindowItem : BGroupItem<BItemGroup>
+    public partial class BWindowItem : BGroupItem<ItemGroupBase>
     {
         public BWindowItem() : base(GroupType.Window)
         {
         }
-
-        [Parameter]
-        public bool Disabled { get; set; }
     }
 }

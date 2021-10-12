@@ -11,6 +11,10 @@ namespace BlazorComponent
         {
         }
 
+        public BSlideGroup(GroupType groupType) : base(groupType)
+        {
+        }
+
         protected bool IsMobile { get; set; }
 
         protected ElementReference WrapperRef { get; set; }
@@ -41,9 +45,6 @@ namespace BlazorComponent
 
         [CascadingParameter(Name = "rtl")]
         public bool Rtl { get; set; }
-
-        [Parameter]
-        public string ActiveClass { get; set; }
 
         [Parameter]
         public bool CenterActive { get; set; }

@@ -6,7 +6,7 @@ using Microsoft.JSInterop;
 
 namespace BlazorComponent
 {
-    public abstract partial class BButton : BGroupItem<BItemGroup>, IThemeable, IButton
+    public abstract partial class BButton : BGroupItem<ItemGroupBase>, IThemeable, IButton
     {
         protected BButton() : base(GroupType.ButtonGroup)
         {
@@ -27,9 +27,6 @@ namespace BlazorComponent
 
         [Parameter]
         public string Color { get; set; }
-
-        [Parameter]
-        public bool Disabled { get; set; }
 
         [Parameter]
         public StringNumber Height { get; set; }

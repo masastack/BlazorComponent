@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BExpansionPanels : BItemGroup
+    public partial class BExpansionPanels
     {
         public BExpansionPanels(GroupType groupType) : base(groupType)
         {
@@ -27,16 +27,16 @@ namespace BlazorComponent
         [Parameter]
         public bool Tile { get; set; }
 
-        public async override Task Toggle(StringNumber key)
+        public async override Task Toggle(StringNumber value)
         {
-            if (_values.Contains(key))
+            if (_values.Contains(value))
             {
-                _values.Remove(key);
+                _values.Remove(value);
 
-                var index = AllKeys.IndexOf(key);
+                var index = AllValues.IndexOf(value);
                 if (index > 1)
                 {
-                    NextActiveKeys.Remove(AllKeys[index - 1]);
+                    NextActiveKeys.Remove(AllValues[index - 1]);
                 }
             }
             else
@@ -47,12 +47,12 @@ namespace BlazorComponent
                     NextActiveKeys.Clear();
                 }
 
-                _values.Add(key);
+                _values.Add(value);
 
-                var index = AllKeys.IndexOf(key);
+                var index = AllValues.IndexOf(value);
                 if (index > 1)
                 {
-                    NextActiveKeys.Add(AllKeys[index - 1]);
+                    NextActiveKeys.Add(AllValues[index - 1]);
                 }
             }
 

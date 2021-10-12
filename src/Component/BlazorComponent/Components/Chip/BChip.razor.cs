@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BChip : BGroupItem<BItemGroup>
+    public partial class BChip
     {
         public BChip() : base(GroupType.ChipGroup)
         {
@@ -13,23 +13,16 @@ namespace BlazorComponent
 
         protected bool Show { get; set; } = true;
 
-        [Obsolete("Use OnClick instead.")]
-        [Parameter]
-        public EventCallback<MouseEventArgs> Click { get; set; }
-
         [Parameter]
         public EventCallback<MouseEventArgs> OnClick { get; set; }
 
-        protected override void OnParametersSet()
-        {
-            if (Click.HasDelegate)
-            {
-                OnClick = Click;
-            }
-        }
-
         protected async Task HandleOnClick(MouseEventArgs args)
         {
+            if (Matched)
+            {
+                (ItemGroup as BSlideGroup).SetWidths();
+            }
+            
             await ToggleItem();
 
             if (OnClick.HasDelegate)

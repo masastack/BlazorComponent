@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BListItem : BGroupItem<BItemGroup>
+    public partial class BListItem : BGroupItem<ItemGroupBase>
     {
         public BListItem() : base(GroupType.ListItemGroup)
         {
