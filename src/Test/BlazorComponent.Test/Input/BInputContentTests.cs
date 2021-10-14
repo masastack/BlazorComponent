@@ -16,11 +16,11 @@ namespace BlazorComponent.Test.Input
         public void RenderShouldBe3AbstractComponent()
         {
             // Arrange
-            var mock = new Mock<IInput>();
+            var mock = new Mock<IInput<string>>();
             mock.Setup(r => r.AbstractProvider).Returns(new ComponentAbstractProvider());
 
             // Act
-            var cut = RenderComponent<BInputContent<IInput>>(props =>
+            var cut = RenderComponent<BInputContent<string,IInput<string>>>(props =>
             {
                 props
                     .Add(p => p.HasProviderComponent, mock.Object);

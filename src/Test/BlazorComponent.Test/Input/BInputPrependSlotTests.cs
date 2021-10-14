@@ -16,12 +16,12 @@ namespace BlazorComponent.Test.Input
         public void RenderShouldHasAsbstractComponent()
         {
             // Arrange
-            var mock = new Mock<IInput>();
+            var mock = new Mock<IInput<string>>();
             mock.Setup(r => r.PrependIcon).Returns("mdi-clear");
             mock.Setup(r => r.AbstractProvider).Returns(new ComponentAbstractProvider());
 
             // Act
-            var cut = RenderComponent<BInputPrependSlot<IInput>>(props =>
+            var cut = RenderComponent<BInputPrependSlot<string,IInput<string>>>(props =>
             {
                 props
                     .Add(p => p.HasProviderComponent, mock.Object);

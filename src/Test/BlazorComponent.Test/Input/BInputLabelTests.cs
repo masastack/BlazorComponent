@@ -16,13 +16,13 @@ namespace BlazorComponent.Test.Input
         public void RenderWithLabelContent()
         {
             // Arrange
-            var mock = new Mock<IInput>();
+            var mock = new Mock<IInput<string>>();
             mock.Setup(r => r.HasLabel).Returns(true);
             mock.Setup(r => r.LabelContent).Returns(r => r.AddContent(0, "Hello world!"));
             mock.Setup(r => r.AbstractProvider).Returns(new ComponentAbstractProvider());
 
             // Act
-            var cut = RenderComponent<BInputLabel<IInput>>(props =>
+            var cut = RenderComponent<BInputLabel<string, IInput<string>>>(props =>
             {
                 props
                     .Add(p => p.HasProviderComponent, mock.Object);

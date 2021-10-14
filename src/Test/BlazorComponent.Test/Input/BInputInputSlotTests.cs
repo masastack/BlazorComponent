@@ -17,15 +17,15 @@ namespace BlazorComponent.Test.Input
         public void ClickDivHandleOnClickShouldBeCalled()
         {
             // Arrange
-            var mock = new Mock<IInput>();
-            mock.Setup(r => r.HandleOnClick(It.IsAny<MouseEventArgs>())).Returns(Task.CompletedTask);
+            var mock = new Mock<MockInput>();
+            mock.Setup(r => r.HandleOnClickAsync(It.IsAny<MouseEventArgs>())).Returns(Task.CompletedTask);
             mock.Setup(r => r.AbstractProvider).Returns(new ComponentAbstractProvider());
             mock.Setup(r => r.CssProvider).Returns(new ComponentCssProvider());
 
-            var cut = RenderComponent<BInputInputSlot<IInput>>(props =>
+            var cut = RenderComponent<BInputInputSlot<string, IInput<string>>>(props =>
             {
                 props
-                    .Add(p => p.HasProviderComponent, mock.Object);
+                    .Add(p => p.Component, mock.Object);
             });
             var div = cut.Find("div:first-child");
 
@@ -33,7 +33,7 @@ namespace BlazorComponent.Test.Input
             div.Click();
 
             // Assert
-            mock.Verify(r => r.HandleOnClick(It.IsAny<MouseEventArgs>()), Times.Once());
+            mock.Verify(r => r.HandleOnClickAsync(It.IsAny<MouseEventArgs>()), Times.Once());
         }
     }
 }

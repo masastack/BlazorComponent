@@ -18,38 +18,38 @@ namespace BlazorComponent.Test.Input
         public void RenderWithoutIconShouldThrowException()
         {
             // Arrange
-            var mock = new Mock<IInput>();
+            var mock = new Mock<IInput<string>>();
             mock.Setup(r => r.AbstractProvider).Returns(new ComponentAbstractProvider());
             mock.Setup(r => r.CssProvider).Returns(new ComponentCssProvider());
 
             // Act & Assert
-            Assert.ThrowsException<ArgumentNullException>(() => RenderComponent<BInputIcon<IInput>>(props =>
-            {
-                props.Add(p => p.HasProviderComponent, mock.Object);
-            }));
+            Assert.ThrowsException<ArgumentNullException>(() => RenderComponent<BInputIcon<string, IInput<string>>>(props =>
+             {
+                 props.Add(p => p.HasProviderComponent, mock.Object);
+             }));
         }
 
         [TestMethod]
         public void RenderWithoutTypeShouldThrowException()
         {
             // Arrange
-            var mock = new Mock<IInput>();
+            var mock = new Mock<IInput<string>>();
             mock.Setup(r => r.AbstractProvider).Returns(new ComponentAbstractProvider());
             mock.Setup(r => r.CssProvider).Returns(new ComponentCssProvider());
 
             // Act & Assert
-            Assert.ThrowsException<ArgumentNullException>(() => RenderComponent<BInputIcon<IInput>>(props =>
-            {
-                props.Add(p => p.HasProviderComponent, mock.Object);
-                props.Add(p => p.Icon, "mdi-clear");
-            }));
+            Assert.ThrowsException<ArgumentNullException>(() => RenderComponent<BInputIcon<string, IInput<string>>>(props =>
+             {
+                 props.Add(p => p.HasProviderComponent, mock.Object);
+                 props.Add(p => p.Icon, "mdi-clear");
+             }));
         }
 
         [TestMethod]
         public void RenderWithIconAndType()
         {
             // Arrange
-            var mock = new Mock<IInput>();
+            var mock = new Mock<IInput<string>>();
             mock.Setup(r => r.AbstractProvider).Returns(new ComponentAbstractProvider());
 
             var cssProvider = new ComponentCssProvider();
@@ -62,7 +62,7 @@ namespace BlazorComponent.Test.Input
             mock.Setup(r => r.CssProvider).Returns(cssProvider);
 
             // Act
-            var cut = RenderComponent<BInputIcon<IInput>>(props =>
+            var cut = RenderComponent<BInputIcon<string,IInput<string>>>(props =>
              {
                  props.Add(p => p.HasProviderComponent, mock.Object);
                  props.Add(p => p.Icon, "mdi-clear");
@@ -82,14 +82,14 @@ namespace BlazorComponent.Test.Input
         public void RenderWithOnClickShouldBePassedToTargetComponent()
         {
             // Arrange
-            var input = new Mock<IInput>();
+            var input = new Mock<IInput<string>>();
             input.Setup(r => r.AbstractProvider).Returns(new ComponentAbstractProvider());
             input.Setup(r => r.CssProvider).Returns(new ComponentCssProvider());
 
             var receiver = new Mock<IHandleEvent>();
             receiver.Setup(r => r.HandleEventAsync(It.IsAny<EventCallbackWorkItem>(), It.IsAny<object?>())).Returns(Task.CompletedTask);
 
-            var cut = RenderComponent<BInputIcon<IInput>>(props =>
+            var cut = RenderComponent<BInputIcon<string,IInput<string>>>(props =>
             {
                 props.Add(p => p.HasProviderComponent, input.Object);
                 props.Add(p => p.Icon, "mdi-clear");

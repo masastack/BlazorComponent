@@ -15,7 +15,7 @@ namespace BlazorComponent.Test
         public void RenderShouldBeADiv()
         {
             // Act
-            var cut = RenderComponent<BInput>();
+            var cut = RenderComponent<BInput<string>>();
 
             // Assert
             cut.MarkupMatches(@"<div id:ignore></div>");
