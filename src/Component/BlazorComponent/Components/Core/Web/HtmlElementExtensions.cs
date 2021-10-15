@@ -14,5 +14,11 @@ namespace BlazorComponent.Web
             var size = await htmlElement.JS.InvokeAsync<double>(JsInteropConstants.GetSize, htmlElement.Selectors, prop);
             return size;
         }
+
+        public static async Task<TProp> GetPropAsync<TProp>(this HtmlElement htmlElement, string name)
+        {
+            var prop = await htmlElement.JS.InvokeAsync<TProp>(JsInteropConstants.GetProp, htmlElement.Selectors, name);
+            return prop;
+        }
     }
 }

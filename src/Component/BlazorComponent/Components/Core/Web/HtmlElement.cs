@@ -25,6 +25,8 @@ namespace BlazorComponent.Web
 
         public string Selectors { get; internal set; }
 
+        public HtmlElement ParentElement => new HtmlElement(JS, $"{Selectors}.parentElement");
+
         public async Task DispatchEventAsync(Event @event)
         {
             await JS.InvokeVoidAsync(JsInteropConstants.TriggerEvent, Selectors, @event.Type, @event.Name, @event.ShouldStopPropagation);

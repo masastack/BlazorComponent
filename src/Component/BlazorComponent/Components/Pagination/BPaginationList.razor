@@ -1,0 +1,9 @@
+﻿@namespace BlazorComponent
+@typeparam TPagination
+@inherits ComponentAbstractBase<TPagination>
+
+<ul class="@CssProvider.GetClass("list")">
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BPaginationIcon<>))" ItemIndex="@((int)PaginationIconTypes.First)"></AbstractComponent>
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BPaginationItems<>))"></AbstractComponent>
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BPaginationIcon<>))" ItemIndex="@((int)PaginationIconTypes.Second)"></AbstractComponent>
+</ul>
