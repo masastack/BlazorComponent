@@ -1,0 +1,32 @@
+﻿using Microsoft.AspNetCore.Components.Forms;
+using OneOf;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BlazorComponent
+{
+    public class DataTableHeader<TItem> : DataTableHeader
+    {
+        private ItemValue<TItem> _itemValue;
+
+        public ItemValue<TItem> ItemValue
+        {
+            get
+            {
+                if (_itemValue == null)
+                {
+                    _itemValue = new ItemValue<TItem>(Value);
+                }
+
+                return _itemValue;
+            }
+        }
+
+        public Func<object, string, TItem, bool> Filter { get; set; }
+
+        public bool Filterable { get; set; } = true;
+    }
+}

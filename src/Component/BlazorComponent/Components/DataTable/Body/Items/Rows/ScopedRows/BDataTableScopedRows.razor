@@ -1,0 +1,15 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TDataTable
+@inherits ComponentAbstractBase<TDataTable>
+
+@for (var i = 0; i < ComputedItems.Count; i++)
+{
+    var item = ComputedItems[i];
+    @ItemContent((i,item))
+
+    if (IsExpanded(item))
+    {
+        @ExpandedItemContent
+    }
+}

@@ -48,10 +48,8 @@ namespace BlazorComponent
                         }
                         else
                         {
-                            if (!AdditionalAttributes.ContainsKey(nameFrame.AttributeValue.ToString()))
-                            {
-                                AdditionalAttributes.Add(nameFrame.AttributeValue.ToString(), contentFrame.AttributeValue);
-                            }
+                            //Whatever exist,replace
+                            AdditionalAttributes[nameFrame.AttributeValue.ToString()] = contentFrame.AttributeValue;
                         }
                     }
                 }

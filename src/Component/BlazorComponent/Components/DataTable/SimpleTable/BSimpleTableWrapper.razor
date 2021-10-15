@@ -1,0 +1,17 @@
+﻿@namespace BlazorComponent
+@typeparam TComponent
+@inherits ComponentAbstractBase<TComponent>
+
+@if (WrapperContent != null)
+{
+    @WrapperContent
+}
+else
+{
+    <div class="@CssProvider.GetClass("wrapper")" style="@CssProvider.GetStyle("wrapper")" @onscroll="HandleOnScrollAsync" @ref="WrapperElement">
+        <table class="@CssProvider.GetClass("table")" style="@CssProvider.GetStyle("table")">
+            @ComponentChildContent
+        </table>
+    </div>
+}
+

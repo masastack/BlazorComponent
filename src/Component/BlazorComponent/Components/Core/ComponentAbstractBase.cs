@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System;
+using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
@@ -7,7 +8,7 @@ namespace BlazorComponent
     {
         [CascadingParameter]
         public IHasProviderComponent HasProviderComponent { get; set; }
-        
+
         [CascadingParameter]
         public TComponent Component { get; set; }
 
@@ -17,7 +18,7 @@ namespace BlazorComponent
 
         protected override void OnParametersSet()
         {
-            if (Component==null)
+            if (Component == null)
             {
                 if (HasProviderComponent is TComponent component)
                 {
@@ -27,8 +28,13 @@ namespace BlazorComponent
                 {
                     throw new ArgumentException(nameof(Component));
                 }
-                
+
             }
+        }
+
+        public EventCallback<TValue> CreateEventCallback<TValue>(Func<TValue, Task> callback)
+        {
+            return EventCallback.Factory.Create(Component, callback);
         }
     }
 }

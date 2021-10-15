@@ -1,0 +1,10 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TDataTable
+@inherits ComponentAbstractBase<TDataTable>
+
+<tbody>
+    @BodyPrependContent
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataTableItems<,>))"></AbstractComponent>
+    @BodyAppendContent
+</tbody>

@@ -1,0 +1,37 @@
+﻿@namespace BlazorComponent
+@typeparam TComponent
+@inherits ComponentAbstractBase<TComponent>
+
+<div class="@CssProvider.GetClass("icons-before")">
+    @if (ShowFirstLastPage)
+    {
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataFooterIcon<>))"
+                       OnClick="@HandleOnFirstPageAsync"
+                       Disabled="@(Options.Page==1)"
+                       Icon="@(RTL?LastIcon:FirstIcon)"></AbstractComponent>
+    }
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataFooterIcon<>))"
+                       OnClick="@HandleOnPreviousPageAsync"
+                       Disabled="@(Options.Page==1)"
+                       Icon="@(RTL?NextIcon:PrevIcon)"></AbstractComponent>
+</div>
+@if (ShowCurrentPage)
+{
+    <span>
+        @Options.Page
+    </span>
+}
+<div class="@CssProvider.GetClass("icons-after")">
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataFooterIcon<>))"
+                       OnClick="@HandleOnNextPageAsync"
+                       Disabled="@DisableNextPageIcon"
+                       Icon="@(RTL?PrevIcon:NextIcon)"></AbstractComponent>
+    @if (ShowFirstLastPage)
+    {
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataFooterIcon<>))"
+                       OnClick="@HandleOnLastPageAsync"
+                       Disabled="@(Options.Page>=Pagination.PageCount||Options.ItemsPerPage==-1)"
+                       Icon="@(RTL?FirstIcon:LastIcon)"></AbstractComponent>
+    }
+</div>
+

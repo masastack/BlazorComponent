@@ -1,0 +1,15 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TDataTable
+@inherits ComponentAbstractBase<TDataTable>
+
+@HeaderContent
+@if (!HideDefaultHeader)
+{
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataTableHeader))"></AbstractComponent>
+}
+@if (Loading == true)
+{
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataTableLoading<,>))"></AbstractComponent>
+}
+

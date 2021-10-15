@@ -9,10 +9,10 @@ namespace BlazorComponent
 {
     public interface ILoadable : IHasProviderComponent
     {
-        public StringBoolean Loading => false;
+        public StringBoolean Loading { get; }
 
-        public StringNumber LoaderHeight => 2;
+        public StringNumber LoaderHeight { get; }
 
-        public RenderFragment ProgressContent => default;
+        public RenderFragment ProgressContent { get; }
     }
 }

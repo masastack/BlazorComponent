@@ -1,0 +1,22 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TDataTable
+@inherits ComponentAbstractBase<TDataTable>
+
+@foreach (var group in GroupedItems)
+{
+    if (!OpenCache.TryGetValue(group.Key, out var isOpen))
+    {
+        OpenCache[group.Key] = true;
+    }
+
+    //TODO:props
+    @if (GroupContent != null)
+    {
+        @GroupContent
+    }
+    else
+    {
+        <AbstractComponent Group="@group" Metadata="AbstractProvider.GetMetadata(typeof(BDataTableDefaultGroupedRow<,>))"></AbstractComponent>
+    }
+}

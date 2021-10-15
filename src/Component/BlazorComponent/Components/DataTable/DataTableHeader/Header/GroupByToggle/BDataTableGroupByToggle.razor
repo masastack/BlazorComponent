@@ -1,0 +1,8 @@
+﻿@namespace BlazorComponent
+@typeparam TDataTableHeader
+@inherits ComponentAbstractBase<TDataTableHeader>
+
+<span @onclick="HandleOnGroup" @onclick:stopPropagation>
+    @("group")
+</span>
+

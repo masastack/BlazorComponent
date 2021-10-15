@@ -1,0 +1,13 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+@implements IHasProviderComponent
+
+<BCascadingValue Value="this">
+    <div class="@CssProvider.GetClass()">
+        @TopContent
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSimpleTableWrapper<>))"></AbstractComponent>
+        @BottomContent
+    </div>
+</BCascadingValue>
+
+

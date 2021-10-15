@@ -1,0 +1,10 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TComponent
+@inherits ComponentAbstractBase<TComponent>
+
+@if (!HideDefaultFooter)
+{
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataFooter))"></AbstractComponent>
+}
+

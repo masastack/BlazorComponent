@@ -1,0 +1,15 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TDataTable
+@inherits ComponentAbstractBase<TDataTable>
+
+@if (ItemContent != null)
+{
+    //TODO:scoped rows
+    @ItemContent
+}
+else
+{
+    <AbstractComponent Items="@Items" Metadata="AbstractProvider.GetMetadata(typeof(BDataTableDefaultRows<,>))"></AbstractComponent>
+}
+

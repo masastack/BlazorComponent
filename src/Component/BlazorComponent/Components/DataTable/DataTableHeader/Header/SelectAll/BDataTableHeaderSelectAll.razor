@@ -1,0 +1,13 @@
+﻿@namespace BlazorComponent
+@typeparam TDataTableHeader
+@inherits ComponentAbstractBase<TDataTableHeader>
+
+@if (DataTableSelectContent != null)
+{
+    @DataTableSelectContent
+}
+else
+{
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSimpleCheckbox))"></AbstractComponent>
+}
+

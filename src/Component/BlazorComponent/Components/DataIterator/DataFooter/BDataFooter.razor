@@ -1,0 +1,14 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+@implements IHasProviderComponent
+
+<CascadingValue Value="this">
+    <div class="@CssProvider.GetClass()">
+        @PrependContent
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataFooterItemsPerPageSelect<>))"></AbstractComponent>
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataFooterPaginationInfo<>))"></AbstractComponent>
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataFooterIcons<>))"></AbstractComponent>
+    </div>
+</CascadingValue>
+
+

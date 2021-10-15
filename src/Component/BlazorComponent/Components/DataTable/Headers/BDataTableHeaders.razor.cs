@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BLoadableProgress<TComponent> where TComponent : ILoadable
+    public partial class BDataTableHeaders<TItem, TDataTable> where TDataTable : IDataTable<TItem>
     {
+        public RenderFragment HeaderContent => Component.HeaderContent;
+
+        public bool HideDefaultHeader => Component.HideDefaultHeader;
+
         public StringBoolean Loading => Component.Loading;
-        
-        public RenderFragment ProgressContent => Component.ProgressContent;
     }
 }

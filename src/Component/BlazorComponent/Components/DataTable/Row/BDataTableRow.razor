@@ -1,0 +1,29 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@inherits BDomComponentBase
+
+<BCascadingValue Value="this">
+    <tr class="@CssProvider.GetClass()" @attributes="Attributes">
+        @foreach (var header in Headers)
+        {
+            <td class="@CssProvider.GetClass("cell",data:header)">
+                @if (ItemColContent != null)
+                {
+                    var prop = new ItemColProps<TItem>
+                        {
+                            Header = header,
+                            Item = Item
+                        };
+                    @ItemColContent(prop)
+                }
+                else
+                {
+                    var value = header.ItemValue?.Invoke(Item);
+                    @value
+                }
+            </td>
+        }
+    </tr>
+</BCascadingValue>
+
+

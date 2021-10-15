@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using BlazorComponent.Components;
 using Microsoft.AspNetCore.Components;
@@ -13,11 +16,34 @@ namespace BlazorComponent
         {
             CssProvider.StaticClass = () => Class;
             CssProvider.StaticStyle = () => Style;
+            Watcher = new PropertyWatcher(GetType());
         }
 
         public ComponentCssProvider CssProvider { get; } = new();
 
         public ComponentAbstractProvider AbstractProvider { get; } = new();
+
+        public PropertyWatcher Watcher { get; }
+
+        protected TValue GetValue<TValue>(TValue @default = default, [CallerMemberName] string name = null)
+        {
+            return Watcher.GetValue(@default, name);
+        }
+
+        protected TValue GetComputedValue<TValue>(Expression<Func<TValue>> valueExpression, [CallerMemberName] string name = null)
+        {
+            return Watcher.GetComputedValue(valueExpression, name);
+        }
+
+        protected TValue GetComputedValue<TValue>(Func<TValue> valueFactory, string[] dependencyProperties, [CallerMemberName] string name = null)
+        {
+            return Watcher.GetComputedValue(valueFactory,dependencyProperties, name);
+        }
+
+        protected void SetValue<TValue>(TValue value, [CallerMemberName] string name = null)
+        {
+            Watcher.SetValue(value, name);
+        }
 
         [Inject]
         public IComponentIdGenerator ComponentIdGenerator { get; set; }

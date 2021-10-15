@@ -1,0 +1,12 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TDataIterator
+@inherits ComponentAbstractBase<TDataIterator>
+
+<div class="@CssProvider.GetClass()">
+        @HeaderContent
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataIteratorItems<,>))"></AbstractComponent>
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataIteratorFooter<,>))"></AbstractComponent>
+        @FooterContent
+    </div>
+

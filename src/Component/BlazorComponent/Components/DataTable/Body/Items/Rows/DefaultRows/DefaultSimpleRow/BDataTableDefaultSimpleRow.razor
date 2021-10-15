@@ -1,0 +1,52 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TDataTable
+@inherits ComponentAbstractBase<TDataTable>
+
+<AbstractComponent @key="ItemKey?.Invoke(Item)"
+                   @onclick="HandleOnRowClickAsync"
+                   @oncontextmenu="HandleOnRowContextMenuAsync"
+                   @ondblclick="HandleOnRowDbClickAsync"
+                   Index="@Index"
+                   Item="@Item"
+                   Metadata="AbstractProvider.GetMetadata(typeof(BDataTableRow<>))">
+    @*Since no dynamic slots,this will be confused*@
+    @if (ShowExpand || ShowSelect)
+    {
+        <TAbstractContent Name="ItemColContent" TContext="ItemColProps<TItem>">
+            @if (context.Header.Value == "data-table-expand" && ShowExpand)
+            {
+                if (ItemDataTableExpandContent != null)
+                {
+                    @ItemDataTableExpandContent
+                }
+                else
+                {
+                    <AbstractComponent Metadata="@(AbstractProvider.GetMetadata(typeof(BIcon),"expand-icon",Item))">
+                        @ExpandIcon
+                    </AbstractComponent>
+                }
+            }
+            else if (context.Header.Value == "data-table-select" && ShowSelect)
+            {
+                if (ItemDataTableSelectContent != null)
+                {
+                    @ItemDataTableSelectContent
+                }
+                else
+                {
+                    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSimpleCheckbox),Item)"></AbstractComponent>
+                }
+            }
+            else if (ItemColContent != null)
+            {
+                @ItemColContent(context)
+            }
+            else
+            {
+                @context.Value
+            }
+        </TAbstractContent>
+    }
+</AbstractComponent>
+

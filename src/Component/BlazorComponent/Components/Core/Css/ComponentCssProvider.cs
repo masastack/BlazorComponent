@@ -119,13 +119,13 @@ namespace BlazorComponent
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public string GetClass(string name = "default", int index = 0)
+        public string GetClass(string name = "default", int index = 0, object data = null)
         {
             var action = _cssConfig.GetValueOrDefault(name);
 
             var builder = new CssBuilder
             {
-                Index = index
+                Context = new BuilderContext(index, data)
             };
             action?.Invoke(builder);
 
@@ -142,13 +142,13 @@ namespace BlazorComponent
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public string GetStyle(string name = "default", int index = 0)
+        public string GetStyle(string name = "default", int index = 0, object data = null)
         {
             var action = _styleConfig.GetValueOrDefault(name);
 
             var builder = new StyleBuilder
             {
-                Index = index
+                Context = new BuilderContext(index, data)
             };
             action?.Invoke(builder);
 

@@ -185,7 +185,29 @@ namespace BlazorComponent
 
             return GetMetadata(key, new Dictionary<string, object>
             {
+                //TODO:rename this
                 { "ItemIndex", index }
+            });
+        }
+
+        public AbstractMetadata GetMetadata(Type type, object data = null)
+        {
+            var key = new ComponentKey(type);
+
+            return GetMetadata(key, new Dictionary<string, object>
+            {
+                { "_data",data }
+            });
+        }
+
+        public AbstractMetadata GetMetadata(Type type, string name, object data = null)
+        {
+            var key = new ComponentKey(type, name);
+
+            //TODO:change Dictionary to something like builder?
+            return GetMetadata(key, new Dictionary<string, object>
+            {
+                { "_data",data}
             });
         }
     }

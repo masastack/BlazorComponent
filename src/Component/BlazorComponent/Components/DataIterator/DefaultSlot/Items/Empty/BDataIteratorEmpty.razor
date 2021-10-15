@@ -1,0 +1,45 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TComponent
+@inherits ComponentAbstractBase<TComponent>
+
+@if (!Items.Any() && Loading == true)
+{
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataIteratorEmptyWrapper))">
+        @if (LoadingContent != null)
+        {
+            @LoadingContent
+        }
+        else
+        {
+            @LoadingText
+        }
+    </AbstractComponent>
+}
+else if (!Items.Any())
+{
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataIteratorEmptyWrapper))">
+        @if (NoDataContent != null)
+        {
+            @NoDataContent
+        }
+        else
+        {
+            @NoDataText
+        }
+    </AbstractComponent>
+}
+else if (Pagination.ItemsLength == 0)
+{
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataIteratorEmptyWrapper))">
+        @if (NoResultsContent != null)
+        {
+            @NoResultsContent
+        }
+        else
+        {
+            @NoResultsText
+        }
+    </AbstractComponent>
+}
+

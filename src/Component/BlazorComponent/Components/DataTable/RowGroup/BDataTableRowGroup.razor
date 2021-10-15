@@ -1,0 +1,17 @@
+﻿@namespace BlazorComponent
+
+@if (ColumnHeaderContent != null)
+{
+    <tr class="@HeaderClass">
+        @ColumnHeaderContent
+    </tr>
+}
+@if (RowHeaderContent != null)
+{
+    @RowHeaderContent
+}
+@if (RowContentContent != null && Value)
+{
+    @RowContentContent
+}
+

@@ -1,0 +1,11 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TDataTable
+@inherits ComponentAbstractBase<TDataTable>
+
+<tr class="@CssProvider.GetClass("empty-wrapper")">
+    <td @attributes="ColspanAttrs">
+        @ChildContent
+    </td>
+</tr>
+

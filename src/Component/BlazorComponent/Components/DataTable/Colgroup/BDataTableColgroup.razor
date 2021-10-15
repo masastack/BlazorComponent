@@ -1,0 +1,12 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TDataTable
+@inherits ComponentAbstractBase<TDataTable>
+
+<colgroup>
+    @foreach (var header in ComputedHeaders)
+    {
+        <col class="@(header.Divider?"divider":null)" />
+    }
+</colgroup>
+
