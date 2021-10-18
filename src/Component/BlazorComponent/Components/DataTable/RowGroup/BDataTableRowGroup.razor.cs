@@ -24,6 +24,6 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
-        public virtual string HeaderClass { get; }
+        protected virtual string HeaderClass { get; }
     }
 }

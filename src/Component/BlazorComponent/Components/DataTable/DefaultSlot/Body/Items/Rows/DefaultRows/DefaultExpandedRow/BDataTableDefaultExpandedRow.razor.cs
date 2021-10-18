@@ -17,8 +17,8 @@ namespace BlazorComponent
 
         public bool IsExpanded => Component.IsExpanded(Item);
 
-        public RenderFragment<(List<DataTableHeader<TItem>> Headers, TItem Item)> ExpandedItemContent => Component.ExpandedItemContent;
+        public RenderFragment<(IEnumerable<DataTableHeader<TItem>> Headers, TItem Item)> ExpandedItemContent => Component.ExpandedItemContent;
 
-        public (List<DataTableHeader<TItem>> Headers, TItem Item) Props => (Component.ComputedHeaders, Item);
+        public (IEnumerable<DataTableHeader<TItem>> Headers, TItem Item) Props => (Component.ComputedHeaders, Item);
     }
 }

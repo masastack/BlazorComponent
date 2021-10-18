@@ -2,7 +2,7 @@
 @typeparam TComponent
 @inherits ComponentAbstractBase<TComponent>
 
-@if (ComputedDataItemsPerPageOptions.Count > 1)
+@if (ComputedDataItemsPerPageOptions.Count() > 1)
 {
     <div class="@CssProvider.GetClass("select")">
         @ItemsPerPageText

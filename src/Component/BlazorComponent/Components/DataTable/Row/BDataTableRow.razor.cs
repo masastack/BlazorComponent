@@ -20,5 +20,8 @@ namespace BlazorComponent
 
         [Parameter]
         public int Index { get; set; }
+
+        [Parameter]
+        public RenderFragment ChildContent { get; set; }
     }
 }

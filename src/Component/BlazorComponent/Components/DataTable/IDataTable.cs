@@ -12,7 +12,7 @@ namespace BlazorComponent
 
         RenderFragment CaptionContent { get; }
 
-        List<DataTableHeader<TItem>> ComputedHeaders { get; }
+        IEnumerable<DataTableHeader<TItem>> ComputedHeaders { get; }
 
         RenderFragment TopContent { get; }
 
@@ -38,7 +38,7 @@ namespace BlazorComponent
 
         Task HandleOnRowDbClickAsync(MouseEventArgs arg);
 
-        RenderFragment<(List<DataTableHeader<TItem>> Headers, TItem Item)> ExpandedItemContent { get; }
+        RenderFragment<(IEnumerable<DataTableHeader<TItem>> Headers, TItem Item)> ExpandedItemContent { get; }
 
         Func<TItem, string> ItemKey { get; }
 

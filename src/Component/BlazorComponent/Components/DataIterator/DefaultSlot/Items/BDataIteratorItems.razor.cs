@@ -15,6 +15,6 @@ namespace BlazorComponent
 
         public RenderFragment<(int Index, TItem Item)> ItemContent => Component.ItemContent;
 
-        public List<TItem> ComputedItems { get; set; }
+        public IEnumerable<TItem> ComputedItems =>Component.ComputedItems;
     }
 }

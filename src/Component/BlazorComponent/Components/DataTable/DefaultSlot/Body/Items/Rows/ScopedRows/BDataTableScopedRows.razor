@@ -3,9 +3,9 @@
 @typeparam TDataTable
 @inherits ComponentAbstractBase<TDataTable>
 
-@for (var i = 0; i < ComputedItems.Count; i++)
+@for (var i = 0; i < ComputedItems.Count(); i++)
 {
-    var item = ComputedItems[i];
+    var item = ComputedItems.ElementAt(i);
     @ItemContent((i,item))
 
     if (IsExpanded(item))

@@ -8,6 +8,6 @@ namespace BlazorComponent
 {
     public partial class BDataTableColgroup<TItem, TDataTable> where TDataTable : IDataTable<TItem>
     {
-        public List<DataTableHeader<TItem>> ComputedHeaders=>Component.ComputedHeaders;
+        public IEnumerable<DataTableHeader<TItem>> ComputedHeaders=>Component.ComputedHeaders;
     }
 }

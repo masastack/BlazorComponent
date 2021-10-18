@@ -11,7 +11,7 @@ namespace BlazorComponent
 {
     public interface IDataFooter : IHasProviderComponent
     {
-        List<DataItemsPerPageOption> ComputedDataItemsPerPageOptions { get; }
+        IEnumerable<DataItemsPerPageOption> ComputedDataItemsPerPageOptions { get; }
 
         string ItemsPerPageText { get; }
 

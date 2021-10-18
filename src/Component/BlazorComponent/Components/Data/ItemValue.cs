@@ -26,7 +26,6 @@ namespace BlazorComponent
                 {
                     try
                     {
-
                         var parameterExpression = Expression.Parameter(typeof(TItem), "item");
                         var propertyExpression = Expression.Property(parameterExpression, Name);
                         var valueExpression = Expression.Convert(propertyExpression, typeof(object));
@@ -36,7 +35,7 @@ namespace BlazorComponent
                     }
                     catch (Exception ex)
                     {
-                        //REVIEW:is this ok?
+                        //REVIEW:Is this ok?
                         throw new InvalidOperationException($"Can not access property {Name} of {typeof(TItem).Name}", ex);
                     }
                 }

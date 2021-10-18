@@ -37,7 +37,7 @@ namespace BlazorComponent
         {
             get
             {
-                return GetValue<IList<bool>>();
+                return GetValue<IList<bool>>(new List<bool>());
             }
             set
             {
@@ -49,7 +49,7 @@ namespace BlazorComponent
         {
             get
             {
-                return GetValue<IList<bool>>();
+                return GetValue<IList<bool>>(new List<bool>());
             }
             set
             {
@@ -85,7 +85,7 @@ namespace BlazorComponent
         {
             get
             {
-                return GetValue<IList<string>>();
+                return GetValue<IList<string>>(new List<string>());
             }
             set
             {
@@ -97,7 +97,7 @@ namespace BlazorComponent
         {
             get
             {
-                return GetValue<IList<string>>();
+                return GetValue<IList<string>>(new List<string>());
             }
             set
             {

@@ -13,7 +13,7 @@ namespace BlazorComponent
 
         RenderFragment<(int Index, TItem Item)> ItemContent { get; }
 
-        List<TItem> ComputedItems { get; }
+        IEnumerable<TItem> ComputedItems { get; }
 
         bool HideDefaultFooter { get; }
 

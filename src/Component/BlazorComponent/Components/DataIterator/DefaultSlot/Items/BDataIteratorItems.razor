@@ -14,9 +14,9 @@ else if (ComponentChildContent != null)
 else if (ItemContent != null)
 {
     var items = ComputedItems;
-    for (var i = 0; i < items.Count; i++)
+    for (var i = 0; i < items.Count(); i++)
     {
-        var item = items[i];
+        var item = items.ElementAt(i);
         @ItemContent((i,item))
     }
 }
