@@ -21,9 +21,12 @@ namespace BlazorComponent.Doc.Models
         public int? Cols { get; set; }
 
         public string Cover { get; set; }
-
-        public List<DemoItemModel> DemoList { get; set; }
+        
         public int Order { get; set; }
+
+        public List<DemoItemModel> DemoList { get; set; } = new List<DemoItemModel>();
+
+        public List<DemoComponentModel> Children { get; set; } = new List<DemoComponentModel>();
     }
 
     public class DemoItemModel

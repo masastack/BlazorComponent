@@ -12,24 +12,14 @@ namespace BlazorComponent
         private const string PREPEND = "prepend";
         private const string APPEND = "append";
 
-        private bool _expanded;
-        /// <summary>
-        /// 控制列表组是否展开
-        /// </summary>
-        protected bool Expanded
-        {
-            get => _expanded;
-            set
-            {
-                _expanded = value;
-                Value = value;
-            }
-        }
+        [CascadingParameter]
+        public BList List { get; set; }
+
+        [Parameter]
+        public bool Disabled { get; set; }
 
         private bool _value;
-        /// <summary>
-        /// 初始化列表组是否展开，后续请使用<see cref="Expanded"/>控制行为和样式
-        /// </summary>
+
         [Parameter]
         public bool Value
         {
@@ -51,42 +41,60 @@ namespace BlazorComponent
         [Parameter]
         public string AppendIcon { get; set; }
 
-        [Obsolete("Use ActivatorContent instead.")]
-        [Parameter]
-        public RenderFragment Activator { get; set; }
-
         [Parameter]
         public RenderFragment ActivatorContent { get; set; }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
+        [Parameter]
+        public bool SubGroup { get; set; }
+
         protected override void OnInitialized()
         {
-            _expanded = Value;
+            base.OnInitialized();
+
+            List?.Register(this);
+
+            _isActive = Value;
         }
 
-        protected override void OnParametersSet()
-        {
-            base.OnParametersSet();
+        private bool _isActive;
+        private bool _isActiveUpdated;
 
-            if (Activator != null)
+        public bool IsActive
+        {
+            get => _isActive;
+            set
             {
-                ActivatorContent = Activator;
+                if (!SubGroup && value && !_isActiveUpdated)
+                {
+                    List?.ListClick(Id);
+                }
+
+                _isActive = value;
             }
         }
 
-        protected void ToggleExpansion()
+        public void Toggle(string id)
         {
-            Expanded = !Expanded;
+            _isActiveUpdated = true;
+            IsActive = Id == id;
         }
 
-        public void Contract()
+        public void HandleOnClick(EventArgs args)
         {
-            if (Expanded)
-            {
-                Expanded = false;
-            }
+            if (Disabled) return;
+
+            _isActiveUpdated = false;
+            IsActive = !IsActive;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            List?.Unregister(this);
+
+            base.Dispose(disposing);
         }
     }
 }

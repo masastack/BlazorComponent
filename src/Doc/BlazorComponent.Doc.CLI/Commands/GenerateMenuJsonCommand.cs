@@ -126,7 +126,7 @@ namespace BlazorComponent.Doc.CLI.Commands
             var categoryDemoMenuList = new Dictionary<string, Dictionary<string, IEnumerable<DemoMenuItemModel>>>();
             var allComponentMenuList = new List<Dictionary<string, DemoMenuItemModel>>();
 
-            foreach (var subDemoDirectory in demoDirectoryInfo.GetFileSystemInfos().OrderBy(r=>r.Name))
+            foreach (var subDemoDirectory in demoDirectoryInfo.GetFileSystemInfos().OrderBy(r => r.Name))
             {
                 var category = subDemoDirectory.Name;
 
@@ -145,6 +145,7 @@ namespace BlazorComponent.Doc.CLI.Commands
                     {
                         categoryDemoMenuList[component.Key] = new Dictionary<string, IEnumerable<DemoMenuItemModel>>();
                     }
+
                     categoryDemoMenuList[component.Key].Add(category, component.Value);
                 }
             }
@@ -154,7 +155,7 @@ namespace BlazorComponent.Doc.CLI.Commands
                 .GroupBy(x => x.Key)
                 .ToDictionary(x => x.Key, x => x.Select(x => x.Value));
 
-            foreach (var lang in new[] { "zh-CN", "en-US" })
+            foreach (var lang in new[] {"zh-CN", "en-US"})
             {
                 var menus = new List<DemoMenuItemModel>();
 
@@ -168,7 +169,8 @@ namespace BlazorComponent.Doc.CLI.Commands
                     componentMenus.Add(new DemoMenuItemModel()
                     {
                         Order = Array.IndexOf(ConfigWrapper.Config.GenerateRule.Menus.Select(x => x.Key).ToArray(), component.Key) + 1,
-                        Title = ConfigWrapper.Config.GenerateRule.Menus.First(menu => menu.Key == component.Key).Descriptions.First(desc => desc.Lang == lang).Description,
+                        Title = ConfigWrapper.Config.GenerateRule.Menus.First(menu => menu.Key == component.Key).Descriptions
+                            .First(desc => desc.Lang == lang).Description,
                         Type = "component",
                         Url = component.Key.ToLowerInvariant(),
                         Children = component.Value.OrderBy(x => x.Order).ToArray()
@@ -229,13 +231,15 @@ namespace BlazorComponent.Doc.CLI.Commands
             }
         }
 
-        private IEnumerable<Dictionary<string, DemoMenuItemModel>> GetSubMenuList(DirectoryInfo directory, bool isDocs)
+        private IEnumerable<Dictionary<string, DemoMenuItemModel>> GetSubMenuList(DirectoryInfo directory, bool isTopMenu)
         {
-            if (isDocs)
+            if (isTopMenu)
             {
+                // 设置文档首页一级导航
+
                 foreach (var menuDir in directory.GetDirectories())
                 {
-                    foreach (var menuItem in menuDir.GetFileSystemInfos().OrderBy(r=>r.Name))
+                    foreach (var menuItem in menuDir.GetFileSystemInfos().OrderBy(r => r.Name))
                     {
                         if (menuItem.Name == "index.json")
                         {
@@ -252,7 +256,8 @@ namespace BlazorComponent.Doc.CLI.Commands
                                         Url = $"docs/{menuDir.Name}",
                                         Icon = data["icon"].ToString(),
                                         Type = "menuItem",
-                                        Children = GetSubMenuChildren(menuDir, titleItem["lang"].ToString()).OrderBy(r => r.Order).ThenBy(r => r.Title).ToArray()
+                                        Children = GetSubMenuChildren(menuDir, titleItem["lang"].ToString()).OrderBy(r => r.Order)
+                                            .ThenBy(r => r.Title).ToArray()
                                     }
                                 };
                             }
@@ -262,6 +267,8 @@ namespace BlazorComponent.Doc.CLI.Commands
             }
             else
             {
+                // 设置首页文档名为UI组件的一级导航的二级导航列表
+
                 var componentI18N = GetComponentI18N(directory);
                 foreach (var group in componentI18N.GroupBy(x => x.Value.Type))
                 {
@@ -272,19 +279,28 @@ namespace BlazorComponent.Doc.CLI.Commands
                         menu.Add(component.Key, new DemoMenuItemModel()
                         {
                             Order = ConfigWrapper.DocsNavOrder[group.Key],
-                            Title = group.Key,
+                            Title = group.Key, // TODO: 似乎无用处
                             Type = "itemGroup",
                             Children = group.Select(x => new DemoMenuItemModel()
-                            {
-                                Title = x.Value.Title,
-                                SubTitle = x.Value.SubTitle,
-                                Url = $"{directory.Name.ToLowerInvariant()}/{x.Value.Title.ToLower()}",
-                                Type = "menuItem",
-                                Order = x.Value.Order,
-                                Cover = x.Value.Cover
-                            })
-                            .OrderBy(x => x.Title, new MenuComparer())
-                            .ToArray(),
+                                {
+                                    Title = x.Value.Title,
+                                    SubTitle = x.Value.SubTitle,
+                                    Url = $"{directory.Name.ToLowerInvariant()}/{x.Value.Title.ToLower()}",
+                                    Type = "menuItem",
+                                    Order = x.Value.Order,
+                                    Cover = x.Value.Cover,
+                                    Children = x.Value.Children.Select(y => new DemoMenuItemModel()
+                                    {
+                                        Title = y.Title,
+                                        SubTitle = y.SubTitle,
+                                        Url = $"{directory.Name.ToLowerInvariant()}/{y.Title.ToLower()}",
+                                        Type = "menuItem",
+                                        Order = y.Order,
+                                        Cover = y.Cover,
+                                    }).ToArray()
+                                })
+                                .OrderBy(x => x.Title, new MenuComparer())
+                                .ToArray(),
                         });
                     }
 
@@ -293,9 +309,15 @@ namespace BlazorComponent.Doc.CLI.Commands
             }
         }
 
+        /// <summary>
+        /// 设置docs/xxx/下非index的项，表现在文档首页二级导航（不包括UI组件）
+        /// </summary>
+        /// <param name="menuDir"></param>
+        /// <param name="lang"></param>
+        /// <returns></returns>
         private IEnumerable<DemoMenuItemModel> GetSubMenuChildren(DirectoryInfo menuDir, string lang)
         {
-            foreach (var menuItem in menuDir.GetFileSystemInfos().OrderBy(r=>r.Name))
+            foreach (var menuItem in menuDir.GetFileSystemInfos().OrderBy(r => r.Name))
             {
                 if (menuItem.Extension == ".md")
                 {
@@ -327,31 +349,32 @@ namespace BlazorComponent.Doc.CLI.Commands
         {
             IList<Dictionary<string, DemoComponentModel>> componentList = null;
 
-            foreach (var component in directory.GetFileSystemInfos().OrderBy(r=>r.Name))
+            foreach (var component in directory.GetFileSystemInfos().OrderBy(r => r.Name))
             {
                 if (!(component is DirectoryInfo componentDirectory))
                     continue;
 
-                var componentDic = new Dictionary<string, DemoComponentModel>();
+                var componentDic = FormatDocDir(componentDirectory);
 
-                var docDir = componentDirectory.GetFileSystemInfos("doc")[0];
+                var childrenDir = componentDirectory.GetFileSystemInfos("children")?.FirstOrDefault();
 
-                foreach (FileSystemInfo docItem in (docDir as DirectoryInfo).GetFileSystemInfos().OrderBy(r=>r.Name))
+                if (childrenDir != null && childrenDir.Exists)
                 {
-                    string language = docItem.Name.Replace("index.", "").Replace(docItem.Extension, "");
-                    string content = File.ReadAllText(docItem.FullName);
-                    (Dictionary<string, string> Meta, string Desc, string ApiDoc) docData = DocWrapper.ParseDemoDoc(content);
+                    var subDemoDirectoryInfo = (childrenDir as DirectoryInfo);
 
-                    componentDic.Add(language, new DemoComponentModel()
+                    var subDirectories = subDemoDirectoryInfo.GetFileSystemInfos().OrderBy(r => r.Name);
+
+                    foreach (var subComponent in subDirectories)
                     {
-                        Title = docData.Meta["title"],
-                        SubTitle = docData.Meta.TryGetValue("subtitle", out var subtitle) ? subtitle : null,
-                        Type = docData.Meta["type"],
-                        Order = docData.Meta.TryGetValue("order", out var order) ? int.Parse(order) : 0,
-                        Desc = docData.Desc,
-                        ApiDoc = docData.ApiDoc,
-                        Cover = docData.Meta.TryGetValue("cover", out var cover) ? cover : null,
-                    }); ;
+                        if (!(subComponent is DirectoryInfo subComponentDirectory)) continue;
+
+                        var subComponentDic = FormatDocDir(subComponentDirectory);
+
+                        foreach (var (language, subComponentModel) in subComponentDic)
+                        {
+                            componentDic[language].Children.Add(subComponentModel);
+                        }
+                    }
                 }
 
                 componentList ??= new List<Dictionary<string, DemoComponentModel>>();
@@ -365,6 +388,38 @@ namespace BlazorComponent.Doc.CLI.Commands
                 .SelectMany(x => x).OrderBy(x => ConfigWrapper.DocsNavOrder[x.Value.Type]);
 
             return componentI18N;
+        }
+
+        private Dictionary<string, DemoComponentModel> FormatDocDir(DirectoryInfo componentDirectory)
+        {
+            Dictionary<string, DemoComponentModel> dict = new();
+
+            FileSystemInfo docDir = componentDirectory.GetFileSystemInfos("doc")?.FirstOrDefault();
+
+            if (docDir != null && docDir.Exists)
+            {
+                foreach (FileSystemInfo docItem in (docDir as DirectoryInfo).GetFileSystemInfos().OrderBy(r => r.Name))
+                {
+                    var language = docItem.Name.Replace("index.", "").Replace(docItem.Extension, "");
+                    string content = File.ReadAllText(docItem.FullName);
+                    (Dictionary<string, string> meta, string desc, string apiDoc) docData = DocWrapper.ParseDemoDoc(content);
+
+                    var model = new DemoComponentModel()
+                    {
+                        Title = docData.meta["title"],
+                        SubTitle = docData.meta.TryGetValue("subtitle", out string subtitle) ? subtitle : null,
+                        Type = docData.meta["type"],
+                        Desc = docData.desc,
+                        ApiDoc = docData.apiDoc,
+                        Cols = docData.meta.TryGetValue("cols", out var cols) ? int.Parse(cols) : (int?)null,
+                        Cover = docData.meta.TryGetValue("cover", out var cover) ? cover : null,
+                    };
+
+                    dict[language] = model;
+                }
+            }
+
+            return dict;
         }
     }
 }

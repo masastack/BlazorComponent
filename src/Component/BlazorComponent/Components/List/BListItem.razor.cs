@@ -9,8 +9,22 @@ namespace BlazorComponent
     {
         public BListItem() : base(GroupType.ListItemGroup)
         {
-
         }
+
+        [CascadingParameter(Name = "IsInGroup")]
+        public bool IsInGroup { get; set; }
+
+        [CascadingParameter(Name = "IsInMenu")]
+        public bool IsInMenu { get; set; }
+
+        [CascadingParameter(Name = "IsInList")]
+        public bool IsInList { get; set; }
+
+        [CascadingParameter(Name = "IsInNav")]
+        public bool IsInNav { get; set; }
+        
+        [Parameter]
+        public RenderFragment<ItemContext> ItemContent { get; set; }
 
         [Parameter]
         public string Href { get; set; }
@@ -18,33 +32,59 @@ namespace BlazorComponent
         [Parameter]
         public string Color { get; set; }
 
-        private bool _link;
-
         [Parameter]
-        public bool Link
-        {
-            get
-            {
-                return _link || (ItemGroup != null);
-            }
-            set
-            {
-                _link = value;
-            }
-        }
-
-        [Obsolete("Use OnClick instead.")]
-        [Parameter]
-        public EventCallback<MouseEventArgs> Click { get; set; }
+        public bool Link { get; set; }
 
         [Parameter]
         public EventCallback<MouseEventArgs> OnClick { get; set; }
 
+        public bool IsLink => Href != null || Link;
+
+        public bool IsClickable
+        {
+            get
+            {
+                if (Disabled) return false;
+
+                if (ItemGroup != null) return true;
+
+                return IsLink || OnClick.HasDelegate || (Attributes.TryGetValue("tabindex", out var tabIndex) && Convert.ToInt32(tabIndex) > -1);
+            }
+        }
+
         protected override void OnParametersSet()
         {
-            if (Click.HasDelegate)
+            base.OnParametersSet();
+            
+            SetAttrs();
+        }
+
+        private void SetAttrs()
+        {
+            Attributes["aria-disabled"] = Disabled ? true : null;
+            Attributes["tabindex"] = IsClickable ? 0 : -1;
+
+            if (Attributes.ContainsKey("role"))
             {
-                OnClick = Click;
+                // do nothing, role already provided
+            }
+            else if (IsInNav)
+            {
+                // do nothing, role is inherit (TODO:check)
+            }
+            else if (IsInGroup)
+            {
+                Attributes["role"] = "option";
+                Attributes["aria-selected"] = IsActive.ToString();
+            }
+            else if (IsInMenu)
+            {
+                Attributes["role"] = IsClickable ? "menuitem" : null;
+                Attributes["id"] = Id ?? $"list-item-{Id}"; // TODO:check
+            }
+            else if (IsInList)
+            {
+                Attributes["role"] = "listitem";
             }
         }
 

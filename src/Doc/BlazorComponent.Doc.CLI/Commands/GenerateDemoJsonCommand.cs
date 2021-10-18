@@ -4,8 +4,10 @@ using BlazorComponent.Doc.Models;
 using Microsoft.Extensions.CommandLineUtils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.SymbolStore;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -71,93 +73,64 @@ namespace BlazorComponent.Doc.CLI.Commands
                 return;
             }
 
-            IList<Dictionary<string, DemoComponentModel>> componentList = null;
-            IList<string> demoTypes = null;
+            List<Dictionary<string, DemoComponentModel>> componentList = new();
+            List<string> demoTypes = new();
 
             var directories = demoDirectoryInfo.GetFileSystemInfos()
-                .SelectMany(x => (x as DirectoryInfo).GetFileSystemInfos()).OrderBy(r=>r.Name);
+                .SelectMany(x => (x as DirectoryInfo).GetFileSystemInfos()).OrderBy(r => r.Name);
 
             foreach (FileSystemInfo component in directories)
             {
                 if (!(component is DirectoryInfo componentDirectory)) continue;
 
-                FileSystemInfo docDir = componentDirectory.GetFileSystemInfos("doc")?.FirstOrDefault();
-                FileSystemInfo demoDir = componentDirectory.GetFileSystemInfos("demo")?.FirstOrDefault();
+                Dictionary<string, DemoComponentModel> componentDic = new();
+                Dictionary<string, List<DemoItemModel>> demoDic = new();
 
-                Dictionary<string, DemoComponentModel> componentDic = new Dictionary<string, DemoComponentModel>();
-
-                if (docDir != null && docDir.Exists)
+                var childrenDir = componentDirectory.GetFileSystemInfos("children")?.FirstOrDefault();
+                if (childrenDir != null && childrenDir.Exists)
                 {
-                    foreach (FileSystemInfo docItem in (docDir as DirectoryInfo).GetFileSystemInfos().OrderBy(r => r.Name))
+                    var subDemoDirectoryInfo = (childrenDir as DirectoryInfo);
+
+                    var subDirectories = subDemoDirectoryInfo.GetFileSystemInfos().OrderBy(r => r.Name);
+
+                    foreach (var subComponent in subDirectories)
                     {
-                        string language = docItem.Name.Replace("index.", "").Replace(docItem.Extension, "");
-                        string content = File.ReadAllText(docItem.FullName);
-                        (Dictionary<string, string> Meta, string desc, string apiDoc) docData = DocWrapper.ParseDemoDoc(content);
+                        // TODO: check
+                        
+                        if (!(subComponent is DirectoryInfo subComponentDirectory)) continue;
 
-                        componentDic.Add(language, new DemoComponentModel()
+                        var subComponentDic = FormatDocDir(subComponentDirectory);
+                        
+                        (demoDic, var subTypes) = FormatDemoDir(subComponentDirectory, demoDirectoryInfo);
+
+                        demoTypes.AddRange(subTypes);
+                        
+                        foreach (var (language, demoItems) in demoDic)
                         {
-                            Title = docData.Meta["title"],
-                            SubTitle = docData.Meta.TryGetValue("subtitle", out string subtitle) ? subtitle : null,
-                            Type = docData.Meta["type"],
-                            Desc = docData.desc,
-                            ApiDoc = GetApiDoc(docData.apiDoc),
-                            Cols = docData.Meta.TryGetValue("cols", out var cols) ? int.Parse(cols) : (int?)null,
-                            Cover = docData.Meta.TryGetValue("cover", out var cover) ? cover : null,
-                        });
-                    }
-                }
+                            if (!subComponentDic.ContainsKey(language)) continue;
 
-                if (demoDir != null && demoDir.Exists)
-                {
-                    foreach (IGrouping<string, FileSystemInfo> demo in (demoDir as DirectoryInfo).GetFileSystemInfos()
-                            .OrderBy(r=>r.Name)
-                            .GroupBy(x => x.Name
-                            .Replace(x.Extension, "")
-                            .Replace("-", "")
-                            .Replace("_", "")
-                            .Replace("Demo", "")
-                            .ToLower()))
-                    {
-                        List<FileSystemInfo> showCaseFiles = demo.ToList();
-                        FileSystemInfo razorFile = showCaseFiles.FirstOrDefault(x => x.Extension == ".razor");
-                        FileSystemInfo descriptionFile = showCaseFiles.FirstOrDefault(x => x.Extension == ".md");
-                        string code = razorFile != null ? File.ReadAllText(razorFile.FullName) : null;
-
-                        string demoType = $"{demoDirectoryInfo.Name}{razorFile.FullName.Replace(demoDirectoryInfo.FullName, "").Replace("/", ".").Replace("\\", ".").Replace(razorFile.Extension, "")}";
-
-                        (DescriptionYaml Meta, string Style, Dictionary<string, string> Descriptions) descriptionContent = descriptionFile != null ? DocWrapper.ParseDescription(File.ReadAllText(descriptionFile.FullName)) : default;
-
-                        demoTypes ??= new List<string>();
-                        demoTypes.Add(demoType);
-
-                        foreach (KeyValuePair<string, string> title in descriptionContent.Meta.Title)
-                        {
-                            string language = title.Key;
-                            List<DemoItemModel> list = componentDic[language].DemoList ??= new List<DemoItemModel>();
-
-                            list.Add(new DemoItemModel()
-                            {
-                                Title = title.Value,
-                                Order = descriptionContent.Meta.Order,
-                                Iframe = descriptionContent.Meta.Iframe,
-                                Code = code,
-                                Description = descriptionContent.Descriptions[title.Key],
-                                Name = descriptionFile?.Name.Replace(".md", ""),
-                                Style = descriptionContent.Style,
-                                Debug = descriptionContent.Meta.Debug,
-                                Docs = descriptionContent.Meta.Docs,
-                                Type = demoType
-                            });
+                            subComponentDic[language].DemoList.AddRange(demoItems);
                         }
+
+                        componentList.Add(subComponentDic);
                     }
                 }
+                else
+                {
+                    componentDic = FormatDocDir(componentDirectory);
+                    (demoDic, var types) = FormatDemoDir(componentDirectory, demoDirectoryInfo);
+                    demoTypes.AddRange(types);
+                    
+                    foreach (var (language, demoItems) in demoDic)
+                    {
+                        if (!componentDic.ContainsKey(language)) continue;
 
-                componentList ??= new List<Dictionary<string, DemoComponentModel>>();
-                componentList.Add(componentDic);
+                        componentDic[language].DemoList.AddRange(demoItems);
+                    }
+
+                    componentList.Add(componentDic);
+                }
             }
-
-            if (componentList == null)
-                return;
 
             string configFileDirectory = Path.Combine(Directory.GetCurrentDirectory(), output);
 
@@ -203,21 +176,116 @@ namespace BlazorComponent.Doc.CLI.Commands
             {
                 File.Delete(demoFilePath);
             }
+
             File.WriteAllText(demoFilePath, demoJson);
+        }
+
+        private Dictionary<string, DemoComponentModel> FormatDocDir(DirectoryInfo componentDirectory)
+        {
+            Dictionary<string, DemoComponentModel> dict = new();
+
+            FileSystemInfo docDir = componentDirectory.GetFileSystemInfos("doc")?.FirstOrDefault();
+
+            if (docDir != null && docDir.Exists)
+            {
+                foreach (FileSystemInfo docItem in (docDir as DirectoryInfo).GetFileSystemInfos().OrderBy(r => r.Name))
+                {
+                    var language = docItem.Name.Replace("index.", "").Replace(docItem.Extension, "");
+                    string content = File.ReadAllText(docItem.FullName);
+                    (Dictionary<string, string> meta, string desc, string apiDoc) docData = DocWrapper.ParseDemoDoc(content);
+
+                    var model = new DemoComponentModel()
+                    {
+                        Title = docData.meta["title"],
+                        SubTitle = docData.meta.TryGetValue("subtitle", out string subtitle) ? subtitle : null,
+                        Type = docData.meta["type"],
+                        Desc = docData.desc,
+                        ApiDoc = GetApiDoc(docData.apiDoc),
+                        Cols = docData.meta.TryGetValue("cols", out var cols) ? int.Parse(cols) : (int?)null,
+                        Cover = docData.meta.TryGetValue("cover", out var cover) ? cover : null,
+                    };
+
+                    dict[language] = model;
+                }
+            }
+
+            return dict;
+        }
+
+        private(Dictionary<string, List<DemoItemModel>>, List<string> demoTypes) FormatDemoDir(DirectoryInfo componentDirectory,
+            DirectoryInfo demosDirectory)
+        {
+            List<string> demoTypes = new();
+            Dictionary<string, List<DemoItemModel>> dict = new();
+
+            FileSystemInfo demoDir = componentDirectory.GetFileSystemInfos("demo")?.FirstOrDefault();
+
+            if (demoDir != null && demoDir.Exists)
+            {
+                foreach (IGrouping<string, FileSystemInfo> demo in (demoDir as DirectoryInfo).GetFileSystemInfos()
+                    .OrderBy(r => r.Name)
+                    .GroupBy(x => x.Name
+                        .Replace(x.Extension, "")
+                        .Replace("-", "")
+                        .Replace("_", "")
+                        .Replace("Demo", "")
+                        .ToLower()))
+                {
+                    List<FileSystemInfo> showCaseFiles = demo.ToList();
+                    FileSystemInfo razorFile = showCaseFiles.FirstOrDefault(x => x.Extension == ".razor");
+                    FileSystemInfo descriptionFile = showCaseFiles.FirstOrDefault(x => x.Extension == ".md");
+                    string code = razorFile != null ? File.ReadAllText(razorFile.FullName) : null;
+
+                    string demoType =
+                        $"{demosDirectory.Name}{razorFile.FullName.Replace(demosDirectory.FullName, "").Replace("/", ".").Replace("\\", ".").Replace(razorFile.Extension, "")}";
+                    demoTypes.Add(demoType);
+
+                    (DescriptionYaml meta, string style, Dictionary<string, string> descriptions) descriptionContent =
+                        descriptionFile != null ? DocWrapper.ParseDescription(File.ReadAllText(descriptionFile.FullName)) : default;
+
+                    foreach (var (language, value) in descriptionContent.meta.Title)
+                    {
+                        var model = new DemoItemModel()
+                        {
+                            Title = value,
+                            Order = descriptionContent.meta.Order,
+                            Iframe = descriptionContent.meta.Iframe,
+                            Code = code,
+                            Description = descriptionContent.descriptions[language],
+                            Name = descriptionFile?.Name.Replace(".md", ""),
+                            Style = descriptionContent.style,
+                            Debug = descriptionContent.meta.Debug,
+                            Docs = descriptionContent.meta.Docs,
+                            Type = demoType
+                        };
+
+                        if (!dict.ContainsKey(language))
+                        {
+                            dict[language] = new List<DemoItemModel>();
+                        }
+
+                        dict[language].Add(model);
+                    }
+                }
+            }
+
+            return (dict, demoTypes);
         }
 
         private string GetApiDoc(string apiDoc)
         {
-            var h1Class = "\"m-heading text-h3 text-sm-h3 mb-2\""; ;
+            var h1Class = "\"m-heading text-h3 text-sm-h3 mb-2\"";
+            ;
             var h2Class = "\"m-heading text-h4 text-sm-h4 mb-3\"";
             var aClass = "\"text-decoration-none text-right text-md-left\"";
 
-            apiDoc = Regex.Replace(apiDoc, "<h(?<n>1|2)>(?<title>.*)<\\/h(1|2)>", m => m.Groups["n"].ToString() == "1" ? $@"
+            apiDoc = Regex.Replace(apiDoc, "<h(?<n>1|2)>(?<title>.*)<\\/h(1|2)>", m => m.Groups["n"].ToString() == "1"
+                ? $@"
                 <h1 class={h1Class}>
                     <a class={aClass}>#</a>
                     {m.Groups["title"]}
-                </h1>" :
-                $@"
+                </h1>"
+                : $@"
                 <h2 class={h2Class}>
                     <a class={aClass}>#</a>
                     {m.Groups["title"]}
@@ -225,7 +293,8 @@ namespace BlazorComponent.Doc.CLI.Commands
 
             apiDoc = "<section id=\"api\">" + apiDoc + "</section>";
 
-            apiDoc = Regex.Replace(apiDoc, "<a href", "<a class=\"app-link text-decoration-none primary--text font-weight-medium d-inline-block\" href");
+            apiDoc = Regex.Replace(apiDoc, "<a href",
+                "<a class=\"app-link text-decoration-none primary--text font-weight-medium d-inline-block\" href");
 
             return apiDoc;
         }

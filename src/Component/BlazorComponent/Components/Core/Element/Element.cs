@@ -14,7 +14,7 @@ namespace BlazorComponent
         public string Tag { get; set; } = "div";
 
         [Parameter(CaptureUnmatchedValues = true)]
-        public Dictionary<string, object> ExtraAttributes { get; set; }
+        public IDictionary<string, object> ExtraAttributes { get; set; }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }

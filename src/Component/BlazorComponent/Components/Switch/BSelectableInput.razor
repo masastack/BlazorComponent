@@ -8,6 +8,7 @@
        value="@Value"
        checked="@IsActive"
        @onclick:preventDefault
+       @onclick:stopPropagation
        @onblur="HandleOnBlur"
        @onchange="HandleOnChange"
        @onfocus="HandleOnFocus"

@@ -1,23 +1,26 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<CascadingValue Value="this" IsFixed>
+<CascadingValue Value="this">
     <div class="@CssProvider.GetClass()" id="@Id" @ref="Ref">
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItem>()">
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItem>()" @onclick="@HandleOnClick">
             <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemIcon>(PREPEND)">
                 <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
                     @PrependIcon
                 </AbstractComponent>
             </AbstractComponent>
+            
             @ActivatorContent
+            
             <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemIcon>(APPEND)">
                 <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
                     @AppendIcon
                 </AbstractComponent>
             </AbstractComponent>
         </AbstractComponent>
+        
         <ExpandTransition>
-            <Element Show="Expanded" Class="@CssProvider.GetClass("items")" Style="@CssProvider.GetStyle("items")">
+            <Element Show="IsActive" Class="@CssProvider.GetClass("items")" Style="@CssProvider.GetStyle("items")">
                 @ChildContent
             </Element>
         </ExpandTransition>
