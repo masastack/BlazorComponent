@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BIcon : BDomComponentBase, IIcon
+    public partial class BIcon
     {
         [Parameter]
         public RenderFragment ChildContent { get; set; }

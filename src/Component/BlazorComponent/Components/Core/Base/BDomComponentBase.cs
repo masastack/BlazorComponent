@@ -98,6 +98,11 @@ namespace BlazorComponent
         {
         }
 
+        public EventCallback<TValue> CreateEventCallback<TValue>(Func<TValue, Task> callback)
+        {
+            return EventCallback.Factory.Create(this, callback);
+        }
+
         #region Prevent render before invoking ShouldRender
 
         /*

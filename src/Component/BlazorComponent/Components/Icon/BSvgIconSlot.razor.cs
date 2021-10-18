@@ -16,5 +16,7 @@ namespace BlazorComponent
         public Dictionary<string, object> SvgAttrs => Component.SvgAttrs;
 
         public EventCallback<MouseEventArgs> OnClick => Component.OnClick;
+
+        public IDictionary<string, object> Attrs => Component.Attrs;
     }
 }

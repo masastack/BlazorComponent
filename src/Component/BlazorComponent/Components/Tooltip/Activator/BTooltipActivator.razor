@@ -1,0 +1,12 @@
+﻿@namespace BlazorComponent
+@typeparam TTooltip
+@inherits ComponentAbstractBase<ITooltip>
+
+@{
+    @if (ActivatorContent != null)
+    {
+        var props = new ActivatorProps(ActivatorAttrs);
+        @ActivatorContent(props);
+    }
+}
+

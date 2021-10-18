@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Web;
+using System.Collections.Generic;
 
 namespace BlazorComponent
 {
@@ -9,5 +10,7 @@ namespace BlazorComponent
         public string NewChildren => Component.NewChildren;
 
         public EventCallback<MouseEventArgs> OnClick => Component.OnClick;
+
+        public IDictionary<string, object> Attrs => Component.Attrs;
     }
 }

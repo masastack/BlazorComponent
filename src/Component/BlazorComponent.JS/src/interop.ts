@@ -28,6 +28,8 @@ export function getDomInfo(element, selector = "body") {
 
     var dom = getDom(element);
 
+    if (!Boolean(dom)) return;
+
     if (dom.style && dom.style['display'] === 'none') {
         // clone and set display not none becuase
         // element with display:none can not get the dom info

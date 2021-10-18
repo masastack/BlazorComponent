@@ -1,0 +1,9 @@
+﻿@namespace BlazorComponent
+@typeparam TTooltip
+@inherits ComponentAbstractBase<ITooltip>
+
+<Transition Name="@TransitionName">
+	<Element Show="Value" class="@CssProvider.GetClass("content")" style="@CssProvider.GetStyle("content")" ReferenceCaptureAction="elmentRference=> ContentRef=elmentRference">
+		@ComponentChildContent
+	</Element>
+</Transition>

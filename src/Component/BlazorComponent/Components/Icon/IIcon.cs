@@ -28,5 +28,7 @@ namespace BlazorComponent
         EventCallback<MouseEventArgs> OnClick { get; set; }
 
         Task HandleOnClick(MouseEventArgs args);
+
+        IDictionary<string, object> Attrs { get; }
     }
 }

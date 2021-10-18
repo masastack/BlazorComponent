@@ -1,11 +1,13 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div class="@CssProvider.GetClass("content")" style="@CssProvider.GetStyle("content")" @ref="ContentRef">
-    @ChildContent
-</div>
-<div class="@CssProvider.GetClass("activator")" style="@CssProvider.GetStyle("activator")" @ref="Ref" @onmouseenter="OnMouseEnter" @onmouseleave="OnMouseLeave" @onclick="HandleOnClick">
-    @ActivatorContent
-</div>
-<span class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">
-</span>
+<BCascadingValue Value="this">
+
+	<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTooltipContent<>))"></AbstractComponent>
+
+	<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTooltipActivator<>))"></AbstractComponent>
+
+	<Element Tag="@Tag" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" ReferenceCaptureAction="elmentRference=> Ref=elmentRference">
+	</Element>
+
+</BCascadingValue>

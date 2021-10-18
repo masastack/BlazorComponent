@@ -27,6 +27,8 @@ namespace BlazorComponent.Web
 
         public HtmlElement ParentElement => new HtmlElement(JS, $"{Selectors}.parentElement");
 
+        public HtmlElement OffsetParent => new HtmlElement(JS, $"{Selectors}.offsetParent");
+
         public async Task DispatchEventAsync(Event @event)
         {
             await JS.InvokeVoidAsync(JsInteropConstants.TriggerEvent, Selectors, @event.Type, @event.Name, @event.ShouldStopPropagation);

@@ -22,14 +22,14 @@
         <div class="@CssProvider.GetClass("chips-wrapper")" style="@CssProvider.GetStyle("chips-wrapper")">
             @foreach (var file in Files)
             {
-                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BTooltip>()" Top
-                       Disabled="@string.IsNullOrEmpty(file.Error)">
-                    <AbstractContent Name="Activator">
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BTooltip>()" Top Disabled="@string.IsNullOrEmpty(file.Error)">
+                    <TAbstractContent TContext="ActivatorProps" Name="ActivatorContent">
                         <AbstractComponent Metadata="AbstractProvider.GetMetadata<BChip>()"
                                Class="upload-item"
                                Close
                                CloseIconColor="@(file.Uploaded ? "" : "red")"
-                               CloseClick="@(EventCallback.Factory.Create<MouseEventArgs>(this, () => Files.Remove(file)))">
+                               CloseClick="@(EventCallback.Factory.Create<MouseEventArgs>(this, () => Files.Remove(file)))"
+                               @attributes="context.Attrs">
                             @if (file.IsImage)
                             {
                                 <AbstractComponent Metadata="AbstractProvider.GetMetadata<BAvatar>()" Tile>
@@ -41,7 +41,7 @@
                                 @file.FileName@(ShowSize && file.BrowserFile != null ? $"({FormatSize(file.BrowserFile.Size)})" : "")
                             </span>
                         </AbstractComponent>
-                    </AbstractContent>
+                    </TAbstractContent>
                     <AbstractContent Name="ChildContent">
                         @file.Error
                     </AbstractContent>
@@ -54,10 +54,10 @@
         <div class="upload-cards">
             @foreach (var file in Files)
             {
-                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BTooltip>()" Top Disabled="@string.IsNullOrEmpty(file.Error)" ActivatorClass="upload-item">
-                    <AbstractContent Name="Activator">
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BTooltip>()" Top Disabled="@string.IsNullOrEmpty(file.Error)">
+                    <TAbstractContent TContext="ActivatorProps" Name="ActivatorContent">
                         <AbstractComponent Metadata="AbstractProvider.GetMetadata<BCard>()" Outlined Style="@GetListItemStyle(file.Uploaded)" Class="upload-card upload-card--fix">
-                            <div @onmouseenter="() => file.Hover = true" @onmouseleave="() => file.Hover = false" class="upload-card-item">
+                            <div @onmouseenter="() => file.Hover = true" @onmouseleave="() => file.Hover = false" class="upload-card-item" @attributes="context.Attrs">
                                 @if (file.IsImage)
                                 {
                                     <AbstractComponent Metadata="AbstractProvider.GetMetadata<IImage>()" Src="@file.Url" Width="@CardSize" Height="@CardSize"></AbstractComponent>
@@ -75,7 +75,7 @@
                                 </AbstractComponent>
                             </div>
                         </AbstractComponent>
-                    </AbstractContent>
+                    </TAbstractContent>
                     <AbstractContent Name="ChildContent">
                         @file.Error
                     </AbstractContent>
@@ -92,11 +92,9 @@
         <AbstractComponent Metadata="AbstractProvider.GetMetadata<BList>()">
             @foreach (var file in Files)
             {
-                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BTooltip>()" Top
-                       Disabled="@string.IsNullOrEmpty(file.Error)"
-                       ActivatorStyle="display:block">
-                    <AbstractContent Name="Activator">
-                        <div style="@GetListItemStyle(file.Uploaded)" class="upload-item">
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BTooltip>()" Top Disabled="@string.IsNullOrEmpty(file.Error)">
+                    <TAbstractContent TContext="ActivatorProps" Name="ActivatorContent">
+                        <div style="@GetListItemStyle(file.Uploaded)" class="upload-item" @attributes="context.Attrs">
                             <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItem>()">
                                 @if (file.IsImage)
                                 {
@@ -131,7 +129,7 @@
                                 </AbstractComponent>
                             </AbstractComponent>
                         </div>
-                    </AbstractContent>
+                    </TAbstractContent>
                     <AbstractContent Name="ChildContent">
                         @file.Error
                     </AbstractContent>
