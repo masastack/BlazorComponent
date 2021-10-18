@@ -74,6 +74,15 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<List<TKey>> OpenChanged { get; set; }
 
+        [Parameter]
+        public EventCallback<List<TItem>> OnInput { get; set; }
+
+        [Parameter]
+        public EventCallback<List<TItem>> OnActiveUpdate { get; set; }
+
+        [Parameter]
+        public EventCallback<List<TItem>> OnOpenUpdate { get; set; }
+
         public List<TItem> ComputedItems
         {
             get
@@ -201,13 +210,20 @@ namespace BlazorComponent
         public async Task EmitActiveAsync()
         {
             _oldActive = Nodes.Values.Where(r => r.IsActive).Select(r => ItemKey(r.Item)).ToList();
-            if (_oldActive == Active)
+            if (ListComparer.Equals(_oldActive, Active))
             {
                 //nothing change
                 return;
             }
 
             Active = _oldActive;
+
+            if (OnActiveUpdate.HasDelegate)
+            {
+                var active = Nodes.Values.Where(r => r.IsActive).Select(r => r.Item).ToList();
+                _ = OnActiveUpdate.InvokeAsync(active);
+            }
+
             if (ActiveChanged.HasDelegate)
             {
                 await ActiveChanged.InvokeAsync(Active);
@@ -229,13 +245,20 @@ namespace BlazorComponent
         public async Task EmitOpenAsync()
         {
             _oldOpen = Nodes.Values.Where(r => r.IsOpen).Select(r => ItemKey(r.Item)).ToList();
-            if (_oldOpen == Open)
+            if (ListComparer.Equals(_oldOpen, Open))
             {
                 //nothing change
                 return;
             }
 
             Open = _oldOpen;
+
+            if (OnOpenUpdate.HasDelegate)
+            {
+                var open = Nodes.Values.Where(r => r.IsOpen).Select(r => r.Item).ToList();
+                _ = OnOpenUpdate.InvokeAsync(open);
+            }
+
             if (OpenChanged.HasDelegate)
             {
                 await OpenChanged.InvokeAsync(Open);
@@ -265,13 +288,20 @@ namespace BlazorComponent
         public async Task EmitSelectedAsync()
         {
             _oldValue = Nodes.Values.Where(r => r.IsSelected).Select(r => ItemKey(r.Item)).ToList();
-            if (_oldValue == Value)
+            if (ListComparer.Equals(_oldValue, Value))
             {
                 //nothing change
                 return;
             }
 
             Value = _oldValue;
+
+            if (OnInput.HasDelegate)
+            {
+                var value = Nodes.Values.Where(r => r.IsSelected).Select(r => r.Item).ToList();
+                _ = OnInput.InvokeAsync(value);
+            }
+
             if (ValueChanged.HasDelegate)
             {
                 await ValueChanged.InvokeAsync(Value);
@@ -391,7 +421,7 @@ namespace BlazorComponent
                 throw new ArgumentNullException(nameof(ItemText));
             }
 
-            if (_oldItems != Items)
+            if (!ListComparer.Equals(_oldItems, Items))
             {
                 Nodes.Clear();
                 BuildTree(Items, default);
@@ -399,19 +429,19 @@ namespace BlazorComponent
                 _oldItems = Items;
             }
 
-            if (_oldValue != Value)
+            if (!ListComparer.Equals(_oldValue, Value))
             {
                 UpdateSelected();
                 _oldValue = Value;
             }
 
-            if (_oldActive != Active)
+            if (!ListComparer.Equals(_oldActive, Active))
             {
                 UpdateActive();
                 _oldActive = Active;
             }
 
-            if (_oldOpen != Open)
+            if (!ListComparer.Equals(_oldOpen, Open))
             {
                 UpdateOpen();
                 _oldOpen = Open;
