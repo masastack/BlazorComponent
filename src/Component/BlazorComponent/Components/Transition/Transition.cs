@@ -74,7 +74,7 @@ namespace BlazorComponent
                 .AddIf(() => $"{Name}-leave-active {Name}-leave-to", () => State == TransitionState.LeaveTo);
 
             StyleBuilder
-                .AddIf("display:none", () => !_visible && Mode == TransitionMode.Show);
+                .AddIf("display:none !important", () => !_visible && Mode == TransitionMode.Show);
 
             Id = "_tr_" + Guid.NewGuid().ToString();
 
