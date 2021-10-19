@@ -32,7 +32,7 @@
                     }
 
                     <AbstractTemplateComponent Metadata="AbstractProvider.GetMetadata<BItem>()" Value="@tab.Value" TItem="@ItemContext">
-                        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BTab>()" id="@tab.Id" CreatedBySystem="@true" IsActive="@context.IsActive" RefBack="@context.Ref" @onclick="@(() => Active(context.Toggle))">
+                        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BTab>()" Class="@tab.Class" Style="@tab.Style" id="@tab.Id" CreatedBySystem="@true" IsActive="@context.IsActive" RefBack="@context.Ref" @onclick="@(() => Active(context.Toggle))">
                             @tab.ChildContent
                         </AbstractComponent>
                     </AbstractTemplateComponent>

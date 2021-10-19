@@ -199,14 +199,14 @@ namespace BlazorComponent
         public void AddTab(BTab tab)
         {
             if (ChildContentInitialized && !_childContentChanged) return;
-            
+
             Tabs.Add(tab);
         }
 
         public void AddTabItem(ITabItem tabItem)
         {
             if (ChildContentInitialized && !_childContentChanged) return;
-            
+
             TabItems.Add(tabItem);
 
             StateHasChanged();
@@ -235,12 +235,7 @@ namespace BlazorComponent
 
             Instance?.SetWidths();
 
-            PreventRender();
-
-            if (!firstRender)
-            {
-                StateHasChanged();
-            }
+            StateHasChanged();
         }
 
         private async Task Active(Func<Task> action)
