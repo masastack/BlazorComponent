@@ -293,8 +293,10 @@ export function addHtmlElementEventListener(selectors, type, invoker, options) {
     config['options'] = options;
 
     htmlElementEventListennerConfigs[key] = config;
-
-    htmlElement.addEventListener(type, config["listenner"], options);
+    
+    if (htmlElement) {
+      htmlElement.addEventListener(type, config["listenner"], options);
+    }
 }
 
 export function removeHtmlElementEventListener(selectors, type) {
