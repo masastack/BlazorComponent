@@ -8,9 +8,7 @@
 }
 else
 {
-    <AbstractComponent @key="ItemIndex" Metadata="AbstractProvider.GetMetadata<BButton>(ItemIndex)">
-        <AbstractComponent Metadata="@(AbstractProvider.GetMetadata<BIcon>())">
-            @GetIconName(Item)
-        </AbstractComponent>
+    <AbstractComponent Metadata="@(AbstractProvider.GetMetadata<BIcon>(ItemIndex))">
+        @GetIconName(Item)
     </AbstractComponent>
 }
