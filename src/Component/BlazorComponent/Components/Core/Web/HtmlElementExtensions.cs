@@ -20,5 +20,11 @@ namespace BlazorComponent.Web
             var prop = await htmlElement.JS.InvokeAsync<TProp>(JsInteropConstants.GetProp, htmlElement.Selectors, name);
             return prop;
         }
+
+        public static async Task<double> GetScrollHeightWithoutHeight(this HtmlElement htmlElement)
+        {
+            var scrollHeight = await htmlElement.JS.InvokeAsync<double>(JsInteropConstants.ScrollHeightWithoutHeight, htmlElement.Selectors);
+            return scrollHeight;
+        }
     }
 }

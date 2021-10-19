@@ -121,7 +121,7 @@
         public static string GetProp => $"{Variables.JsInteropFuncNamePrefix}getProp";
 
         public static string IsMobile => $"{Variables.JsInteropFuncNamePrefix}isMobile";
-        
+
         public static string SetStyle => $"{Variables.JsInteropFuncNamePrefix}css";
 
         #region Draggable Modal
@@ -133,6 +133,8 @@
         public static string ResetModalPosition => $"{Variables.JsInteropFuncNamePrefix}resetModalPosition";
 
         public static string SetProperty => $"{Variables.JsInteropFuncNamePrefix}setProperty";
+
+        public static string ScrollHeightWithoutHeight => $"{Variables.JsInteropFuncNamePrefix}getScrollHeightWithoutHeight";
 
         #endregion Draggable Modal
     }

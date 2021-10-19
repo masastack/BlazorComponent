@@ -896,6 +896,20 @@ export function getProp(selectors, name) {
     return el[name];
 }
 
+export function getScrollHeightWithoutHeight(selectors){
+    var el:HTMLElement=getDom(selectors);
+    if(!el){
+        return 0;
+    } 
+
+    var height=el.style.height;
+    el.style.height = '0'
+    var scrollHeight= el.scrollHeight;
+    el.style.height=height;
+
+    return scrollHeight;
+}
+
 //register custom events
 window.onload = function () {
     registerCustomEvent("exmousedown", "mousedown");
