@@ -2,7 +2,7 @@
 
 namespace BlazorComponent
 {
-    public partial class BSelectOption<TItem, TItemValue, TValue> : BDomComponentBase
+    public partial class BSelectList<TItem, TItemValue, TValue> : BDomComponentBase
     {
         private string _key;
 

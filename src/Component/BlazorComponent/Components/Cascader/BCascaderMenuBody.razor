@@ -10,7 +10,7 @@
             <AbstractComponent Metadata="AbstractProvider.GetMetadata<BItemGroup>()">
                 @foreach (var item in Items)
                 {
-                    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSelectOption<,,>))"
+                    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSelectList<,,>))"
                                    OnItemClick="@HandleOnItemClick"
                                    Item="@item"
                                    Value="@ItemValue(item)"
