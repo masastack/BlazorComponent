@@ -4,10 +4,16 @@ namespace BlazorComponent
 {
     public interface IGroupable
     {
-        StringNumber Value { get; set; }
+        string ActiveClass { get; set; }
         
         bool Disabled { get; set; }
+
+        StringNumber Value { get; set; }
         
         ElementReference Ref { get; set; }
+        
+        string Class { get; set; }
+        
+        string Style { get; set; }
     }
 }

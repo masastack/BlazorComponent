@@ -45,8 +45,6 @@ namespace BlazorComponent
         internal void Unregister(BListGroup listGroup)
         {
             Groups.Remove(listGroup);
-
-            StateHasChanged();
         }
 
         internal void ListClick(string id)

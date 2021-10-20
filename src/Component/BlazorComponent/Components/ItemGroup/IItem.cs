@@ -2,10 +2,8 @@
 
 namespace BlazorComponent
 {
-    public interface IItem
+    public interface IItem : IGroupable
     {
-        StringNumber Value { get; }
-
-        RenderFragment ChildContent { get; }
+        RenderFragment ChildContent { get; set; }
     }
 }

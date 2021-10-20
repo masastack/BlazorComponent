@@ -11,15 +11,13 @@ namespace BlazorComponent
 {
     public partial class BTabs : BDomComponentBase, ITabs
     {
-        protected bool ChildContentInitialized;
-
-        protected AbstractComponent TabsBarRef { get; set; }
+        public AbstractComponent TabsBarRef { get; set; }
 
         protected(StringNumber height, StringNumber left, StringNumber right, StringNumber top, StringNumber width) Slider { get; set; }
 
         public List<BTab> Tabs { get; } = new();
 
-        public List<ITabItem> TabItems { get; } = new();
+        public List<ITabItem> TabItems { get; set; }
 
         [CascadingParameter(Name = "rtl")]
         public bool Rtl { get; set; }
@@ -182,11 +180,6 @@ namespace BlazorComponent
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (firstRender)
-            {
-                ChildContentInitialized = true;
-            }
-
             await CallSlider(firstRender);
 
             _childContentChanged = false;
@@ -196,20 +189,24 @@ namespace BlazorComponent
 
         public BSlideGroup Instance => TabsBarRef?.Instance as BSlideGroup;
 
-        public void AddTab(BTab tab)
+        public void RegisterTabItem(ITabItem tabItem)
         {
-            if (ChildContentInitialized && !_childContentChanged) return;
+            if (!_childContentChanged) return;
 
-            Tabs.Add(tab);
-        }
+            TabItems ??= new List<ITabItem>();
 
-        public void AddTabItem(ITabItem tabItem)
-        {
-            if (ChildContentInitialized && !_childContentChanged) return;
+            tabItem.Value ??= TabItems.Count;
+
+            if (TabItems.Any(item => item.Value.Equals(tabItem.Value))) return;
 
             TabItems.Add(tabItem);
 
             StateHasChanged();
+        }
+
+        public void UnregisterTabItem(ITabItem tabItem)
+        {
+            TabItems.Remove(tabItem);
         }
 
         public async Task CallSlider(bool firstRender = false)
@@ -235,7 +232,10 @@ namespace BlazorComponent
 
             Instance?.SetWidths();
 
-            StateHasChanged();
+            if (firstRender)
+            {
+                StateHasChanged();
+            }
         }
 
         private async Task Active(Func<Task> action)
