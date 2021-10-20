@@ -1,18 +1,17 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<CascadingValue Value="this">
-    <aside class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @attributes="Attributes">
-        @if (PrependContent != null)
+<BCascadingValue Value="this">
+    <aside class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @attributes="Attributes" 
+        @onmouseenter="MouseEnter" @onmouseleave="MouseLeave" @onclick="Click"> 
+        @if (Src.Match(t0 => !string.IsNullOrWhiteSpace(t0), t1 => t1 != null) || ImgContent != null)
         {
-            <div class="@CssProvider.GetClass("prepend")">
-                @PrependContent
-            </div>
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BNavigationDrawerBackground<>))"></AbstractComponent>
         }
-        <div class="@CssProvider.GetClass("content")">
-            @ChildContent
-        </div>
-        <div class="@CssProvider.GetClass("border")"></div>
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BNavigationDrawerPosition<>))" ClassName="prepend"></AbstractComponent>
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BNavigationDrawerContent<>))"></AbstractComponent>
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BNavigationDrawerPosition<>))" ClassName="append"></AbstractComponent>
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BNavigationDrawerBorder<>))"></AbstractComponent>
     </aside>
-</CascadingValue>
+</BCascadingValue>
 

@@ -1,0 +1,14 @@
+﻿@namespace BlazorComponent
+@typeparam TNavigationDrawer
+@inherits ComponentAbstractBase<TNavigationDrawer>
+
+<div class="@CssProvider.GetClass("image")">
+    @if (ImgContent != null)
+    {
+        ImgContent(Props);
+    }
+    else
+    {
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(IImage))"></AbstractComponent>
+    }
+</div>
