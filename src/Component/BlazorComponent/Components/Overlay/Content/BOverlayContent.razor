@@ -1,0 +1,10 @@
+﻿@namespace BlazorComponent
+@typeparam TOverlay
+@inherits ComponentAbstractBase<TOverlay>
+
+@if (Value)
+{
+    <div class="@CssProvider.GetClass("content")">
+        @ComponentChildContent
+    </div>
+}

@@ -124,6 +124,10 @@
 
         public static string SetStyle => $"{Variables.JsInteropFuncNamePrefix}css";
 
+        public static string GetZIndex => $"{Variables.JsInteropFuncNamePrefix}getZIndex";
+
+        public static string GetMenuOrDialogMaxZIndex => $"{Variables.JsInteropFuncNamePrefix}getMenuOrDialogMaxZIndex";
+
         #region Draggable Modal
 
         public static string EnableDraggable => $"{Variables.JsInteropFuncNamePrefix}enableDraggable";

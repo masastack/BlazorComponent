@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BDialog
+    public partial class BOverlayScrim<TOverlay> where TOverlay : IOverlay
     {
     }
 }

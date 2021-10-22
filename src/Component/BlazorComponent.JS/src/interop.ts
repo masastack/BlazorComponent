@@ -1,5 +1,14 @@
 ﻿import registerDirective from './directive/index'
 
+export function getZIndex(el?: Element | null): number {
+    if (!el || el.nodeType !== Node.ELEMENT_NODE) return 0
+
+    const index = +window.getComputedStyle(el).getPropertyValue('z-index')
+
+    if (!index) return getZIndex(el.parentNode as Element)
+    return index
+}
+
 export function getDom(element) {
     if (!element) {
         element = document.body;
@@ -624,6 +633,27 @@ export function getScroll() {
 export function getInnerText(element) {
     let dom = getDom(element);
     return dom.innerText;
+}
+
+export function getMenuOrDialogMaxZIndex(exclude: Element[] = [], element: Element) {
+    const base = getDom(element);
+    // Start with lowest allowed z-index or z-index of
+    // base component's element, whichever is greater
+    const zis = [getZIndex(base)]
+
+    const activeElements = [
+        ...document.getElementsByClassName('m-menu__content--active'),
+        ...document.getElementsByClassName('m-dialog__content--active'),
+    ]
+
+    // Get z-index for all active dialogs
+    for (let index = 0; index < activeElements.length; index++) {
+        if (!exclude.includes(activeElements[index])) {
+            zis.push(getZIndex(activeElements[index]))
+        }
+    }
+
+    return Math.max(...zis)
 }
 
 export function getMaxZIndex() {

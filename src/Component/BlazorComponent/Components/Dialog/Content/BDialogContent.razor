@@ -1,0 +1,7 @@
+﻿@namespace BlazorComponent
+@typeparam TDialog
+@inherits ComponentAbstractBase<TDialog>
+
+<div class="@CssProvider.GetClass("content")" style="@CssProvider.GetStyle("content")" @ref="ContentRef" @attributes="ContentAttrs">
+      <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDialogInnerContent<>))"></AbstractComponent>
+</div>

@@ -6,26 +6,11 @@ namespace BlazorComponent
 {
     public partial class BOverlay : BDomComponentBase
     {
-        [Parameter]
-        public bool Absolute { get; set; }
-
-        [Parameter]
-        public string Color { get; set; } = "#212121";
-
-        [Parameter]
-        public StringNumber Opacity { get; set; } = 0.46;
-
         /// <summary>
         /// Controls whether the component is visible or hidden.
         /// </summary>
         [Parameter]
         public bool Value { get; set; }
-
-        [Parameter]
-        public EventCallback<bool> ValueChanged { get; set; }
-
-        [Parameter]
-        public int ZIndex { get; set; } = 201;
 
         [Obsolete("Use OnClick instead.")]
         [Parameter]
@@ -33,9 +18,6 @@ namespace BlazorComponent
 
         [Parameter]
         public EventCallback<MouseEventArgs> OnClick { get; set; }
-
-        [Parameter]
-        public RenderFragment ChildContent { get; set; }
 
         protected override void OnParametersSet()
         {
@@ -50,10 +32,6 @@ namespace BlazorComponent
             if (OnClick.HasDelegate)
             {
                 OnClick.InvokeAsync(args);
-            }
-            else
-            {
-                ValueChanged.InvokeAsync(false);
             }
         }
     }

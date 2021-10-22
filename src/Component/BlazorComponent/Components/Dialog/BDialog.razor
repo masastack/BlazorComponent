@@ -1,16 +1,15 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<CascadingValue Value="true" Name="Fixed">
-    <CascadingValue Value="CascadingZIndex" Name="ZIndex">
-        <div @ref="Ref">
-            <div class="@CssProvider.GetClass()" id="@Id" style="@CssProvider.GetStyle()">
-                <div class="@CssProvider.GetClass("body")" style="@CssProvider.GetStyle("body")">
-                    @ChildContent
-                </div>
-            </div>
+<BCascadingValue Value="this">
 
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BOverlay>()" />
-        </div>
-    </CascadingValue>
-</CascadingValue>
+    <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" role="dialog">
+    </div>
+
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDialogActivator<>))"></AbstractComponent>
+
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDialogContent<>))"></AbstractComponent>
+
+</BCascadingValue>
+
+<AbstractComponent Metadata="AbstractProvider.GetMetadata<BOverlay>()"></AbstractComponent>
