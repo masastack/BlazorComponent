@@ -1,7 +1,7 @@
 ﻿@namespace BlazorComponent
 @inherits BItemGroup
 
-<CascadingValue Value="this">
+<BCascadingValue Value="this">
     <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
         <div class="@CssProvider.GetClass("container")" style="@CssProvider.GetStyle("container")">
             @ChildContent
@@ -42,4 +42,4 @@
             }
         </div>
     </div>
-</CascadingValue>
+</BCascadingValue>

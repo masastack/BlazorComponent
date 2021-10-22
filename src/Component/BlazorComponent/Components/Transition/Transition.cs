@@ -17,6 +17,7 @@ namespace BlazorComponent
         private bool _firstRender = true;
         private bool _visible;
         private bool _value;
+        private CancellationTokenSource _cancellationTokenSource;
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
@@ -26,6 +27,24 @@ namespace BlazorComponent
 
         [Inject]
         public Document Document { get; set; }
+
+        [Parameter]
+        public Func<Task> OnBeforeEnter { get; set; }
+
+        [Parameter]
+        public Func<Task> OnAfterEnter { get; set; }
+
+        [Parameter]
+        public Func<Task> OnBeforeLeave { get; set; }
+
+        [Parameter]
+        public Func<Task> OnAfterLeave { get; set; }
+
+        [Parameter]
+        public Func<Task> OnEnterCancelled { get; set; }
+
+        [Parameter]
+        public Func<Task> OnLeaveCancelled { get; set; }
 
         internal TransitionMode Mode { get; set; }
 
@@ -113,9 +132,13 @@ namespace BlazorComponent
 
         private void RunTransition()
         {
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource = new CancellationTokenSource();
+
             if (State != TransitionState.None)
             {
-                return;
+                State = TransitionState.None;
+                StateHasChanged();
             }
 
             _ = Task.Run(async () =>
@@ -123,38 +146,60 @@ namespace BlazorComponent
                   var value = _value;
                   if (_value)
                   {
+                      State = TransitionState.BeforeEnter;
+                      if (OnBeforeEnter != null)
+                      {
+                          await OnBeforeEnter?.Invoke();
+                      }
+
                       State = TransitionState.Enter;
                       await OnEnterAsync();
                       await InvokeAsync(StateHasChanged);
 
-                      await Task.Delay(16);
+                      await Task.Delay(16, _cancellationTokenSource.Token);
                       _visible = true;
                       await InvokeAsync(StateHasChanged);
 
-                      await Task.Delay(16);
+                      await Task.Delay(16, _cancellationTokenSource.Token);
                       State = TransitionState.EnterTo;
                       await OnEnterToAsync();
                       await InvokeAsync(StateHasChanged);
 
-                      await Task.Delay(300);
+                      await Task.Delay(300, _cancellationTokenSource.Token);
                       State = TransitionState.None;
                       await InvokeAsync(StateHasChanged);
+
+                      if (OnAfterEnter != null)
+                      {
+                          await OnAfterEnter?.Invoke();
+                      }
                   }
                   else
                   {
+                      State = TransitionState.BeforeLeave;
+                      if (OnBeforeLeave != null)
+                      {
+                          await OnBeforeLeave?.Invoke();
+                      }
+
                       State = TransitionState.Leave;
                       await OnLeaveAsync();
                       await InvokeAsync(StateHasChanged);
 
-                      await Task.Delay(16);
+                      await Task.Delay(16, _cancellationTokenSource.Token);
                       State = TransitionState.LeaveTo;
                       await OnLeaveToAsync();
                       await InvokeAsync(StateHasChanged);
 
-                      await Task.Delay(300);
+                      await Task.Delay(300, _cancellationTokenSource.Token);
                       State = TransitionState.None;
                       _visible = false;
                       await InvokeAsync(StateHasChanged);
+
+                      if (OnAfterLeave != null)
+                      {
+                          await OnAfterLeave?.Invoke();
+                      }
                   }
 
                   if (_value != value)

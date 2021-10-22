@@ -293,9 +293,9 @@ export function addHtmlElementEventListener(selectors, type, invoker, options) {
     config['options'] = options;
 
     htmlElementEventListennerConfigs[key] = config;
-    
+
     if (htmlElement) {
-      htmlElement.addEventListener(type, config["listenner"], options);
+        htmlElement.addEventListener(type, config["listenner"], options);
     }
 }
 
@@ -896,16 +896,30 @@ export function getProp(selectors, name) {
     return el[name];
 }
 
-export function getScrollHeightWithoutHeight(selectors){
-    var el:HTMLElement=getDom(selectors);
-    if(!el){
-        return 0;
-    } 
+export function updateWindowTransition(selectors, isActive) {
+    var el: HTMLElement = getDom(selectors);
+    var container: HTMLElement = el.querySelector('.m-window__container');
 
-    var height=el.style.height;
+    if (isActive) {
+        container.classList.add('m-window__container--is-active');
+        container.style.height = el.clientHeight + 'px';
+    }
+    else {
+        container.style.height = '';
+        container.classList.remove('m-window__container--is-active');
+    }
+}
+
+export function getScrollHeightWithoutHeight(selectors) {
+    var el: HTMLElement = getDom(selectors);
+    if (!el) {
+        return 0;
+    }
+
+    var height = el.style.height;
     el.style.height = '0'
-    var scrollHeight= el.scrollHeight;
-    el.style.height=height;
+    var scrollHeight = el.scrollHeight;
+    el.style.height = height;
 
     return scrollHeight;
 }

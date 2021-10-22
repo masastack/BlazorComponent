@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
@@ -6,6 +8,18 @@ namespace BlazorComponent
     {
         public BWindowItem() : base(GroupType.Window)
         {
+        }
+
+        protected virtual string ComputedTransition { get; }
+
+        protected virtual Task OnBeforeTransition()
+        {
+            return Task.CompletedTask;
+        }
+
+        protected virtual Task OnAfterTransition()
+        {
+            return Task.CompletedTask;
         }
     }
 }

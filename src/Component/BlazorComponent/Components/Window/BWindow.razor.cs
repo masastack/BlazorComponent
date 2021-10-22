@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
+using BlazorComponent.Web;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
@@ -42,7 +44,12 @@ namespace BlazorComponent
         [Parameter]
         public bool Vertical { get; set; }
 
-        protected int TransitionCount = 0;
+        [Inject]
+        public Document Document { get; set; }
+
+        public int TransitionCount { get; set; }
+
+        public StringNumber TransitionHeight { get; set; }
 
         public bool IsActive => TransitionCount > 0;
 

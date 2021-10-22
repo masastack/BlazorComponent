@@ -136,6 +136,8 @@
 
         public static string ScrollHeightWithoutHeight => $"{Variables.JsInteropFuncNamePrefix}getScrollHeightWithoutHeight";
 
+        public static string UpdateWindowTransition => $"{Variables.JsInteropFuncNamePrefix}updateWindowTransition";
+
         #endregion Draggable Modal
     }
 }

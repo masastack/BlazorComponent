@@ -26,5 +26,10 @@ namespace BlazorComponent.Web
             var scrollHeight = await htmlElement.JS.InvokeAsync<double>(JsInteropConstants.ScrollHeightWithoutHeight, htmlElement.Selectors);
             return scrollHeight;
         }
+
+        public static async Task UpdateWindowTransitionAsync(this HtmlElement htmlElement, bool isActive)
+        {
+            await htmlElement.JS.InvokeVoidAsync(JsInteropConstants.UpdateWindowTransition, htmlElement.Selectors, isActive);
+        }
     }
 }
