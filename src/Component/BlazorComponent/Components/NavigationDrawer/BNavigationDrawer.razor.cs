@@ -42,6 +42,12 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<bool> MiniVariantChanged { get; set; }
 
+        /// <summary>
+        /// A temporary drawer sits above its application and uses a scrim (overlay) to darken the background
+        /// </summary>
+        [Parameter]
+        public bool Temporary { get; set; }
+
         protected bool _isMouseover { get; set; }
 
         protected bool _isMiniVariant => 
