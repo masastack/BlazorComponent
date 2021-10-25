@@ -75,28 +75,12 @@ namespace BlazorComponent
 
         protected async Task<T> JsInvokeAsync<T>(string code, params object[] args)
         {
-            try
-            {
-                return await Js.InvokeAsync<T>(code, args);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            return await Js.InvokeAsync<T>(code, args);
         }
 
         protected async Task JsInvokeAsync(string code, params object[] args)
         {
-            try
-            {
-                await Js.InvokeVoidAsync(code, args);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            await Js.InvokeVoidAsync(code, args);
         }
 
         #region Dispose

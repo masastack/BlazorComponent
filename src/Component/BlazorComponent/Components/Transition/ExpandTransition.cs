@@ -10,9 +10,12 @@ namespace BlazorComponent
 {
     public class ExpandTransition : Transition
     {
-        private double _size;
+        [Inject]
+        public Document Document { get; set; }
 
         protected virtual bool X { get; }
+
+        protected double Size { get; set; }
 
         protected string SizeProp => X ? "width" : "height";
 
@@ -23,7 +26,7 @@ namespace BlazorComponent
             StyleBuilder
                 .AddIf(() => $"{SizeProp}:0px", () => State == TransitionState.Enter || State == TransitionState.LeaveTo)
                 .AddIf("overflow:hidden", () => State != TransitionState.None)
-                .AddIf(() => $"{SizeProp}:{_size}px", () => State == TransitionState.EnterTo || State == TransitionState.Leave);
+                .AddIf(() => $"{SizeProp}:{Size}px", () => State == TransitionState.EnterTo || State == TransitionState.Leave);
         }
 
         protected override void OnParametersSet()
@@ -31,20 +34,22 @@ namespace BlazorComponent
             Name = X ? "expand-x-transition" : "expand-transition";
         }
 
-        protected override async Task OnEnterAsync()
+        protected override async Task OnBeforeEnterAsync()
         {
             var prop = SizeProp.Substring(0, 1).ToUpper() + SizeProp[1..];
-            _size = await Element.GetSizeAsync(prop);
+            var el = Document.QuerySelector(FirstElement.Reference);
+            Size = await el.GetSizeAsync(prop);
 
-            await base.OnEnterAsync();
+            await base.OnBeforeEnterAsync();
         }
 
-        protected override async Task OnLeaveAsync()
+        protected override async Task OnBeforeLeaveAsync()
         {
             var prop = SizeProp.Substring(0, 1).ToUpper() + SizeProp[1..];
-            _size = await Element.GetSizeAsync(prop);
+            var el = Document.QuerySelector(FirstElement.Reference);
+            Size = await el.GetSizeAsync(prop);
 
-            await base.OnEnterAsync();
+            await base.OnBeforeLeaveAsync();
         }
     }
 }

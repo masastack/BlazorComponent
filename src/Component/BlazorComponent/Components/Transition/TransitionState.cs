@@ -12,8 +12,6 @@ namespace BlazorComponent
         Enter,
         EnterTo,
         Leave,
-        LeaveTo,
-        BeforeEnter,
-        BeforeLeave
+        LeaveTo
     }
 }

@@ -25,6 +25,12 @@
             return new ContentsItem(title, "#examples", 2);
         }
 
+        public static ContentsItem GenerateApi(string lang)
+        {
+            var title = lang == "zh-CN" ? "API" : "API";
+            return new ContentsItem(title, "#api", 1);
+        }
+
         public static ContentsItem GenerateProps(string lang)
         {
             var title = lang == "zh-CN" ? "属性" : "Props";

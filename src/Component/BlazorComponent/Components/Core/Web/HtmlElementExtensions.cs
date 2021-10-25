@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
+using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent.Web
 {
@@ -27,9 +28,9 @@ namespace BlazorComponent.Web
             return scrollHeight;
         }
 
-        public static async Task UpdateWindowTransitionAsync(this HtmlElement htmlElement, bool isActive)
+        public static async Task UpdateWindowTransitionAsync(this HtmlElement htmlElement, bool isActive, ElementReference? item = null)
         {
-            await htmlElement.JS.InvokeVoidAsync(JsInteropConstants.UpdateWindowTransition, htmlElement.Selectors, isActive);
+            await htmlElement.JS.InvokeVoidAsync(JsInteropConstants.UpdateWindowTransition, htmlElement.Selectors, isActive, item);
         }
     }
 }

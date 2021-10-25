@@ -926,9 +926,15 @@ export function getProp(selectors, name) {
     return el[name];
 }
 
-export function updateWindowTransition(selectors, isActive) {
+export function updateWindowTransition(selectors, isActive, item) {
     var el: HTMLElement = getDom(selectors);
     var container: HTMLElement = el.querySelector('.m-window__container');
+
+    if (item) {
+        var itemEl: HTMLElement = getDom(item);
+        container.style.height = itemEl.clientHeight + 'px';
+        return;
+    }
 
     if (isActive) {
         container.classList.add('m-window__container--is-active');

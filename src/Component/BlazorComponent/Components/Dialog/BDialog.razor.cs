@@ -8,5 +8,6 @@ namespace BlazorComponent
 {
     public partial class BDialog
     {
+        public AbstractComponent Overlay { get; set; }
     }
 }

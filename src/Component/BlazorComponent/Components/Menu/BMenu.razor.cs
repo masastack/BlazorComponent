@@ -98,6 +98,9 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
+        //This just a temp way
+        protected virtual IThemeable Themeable { get; }
+
         public ElementReference ContentRef { get; set; }
 
         protected abstract Task Click(MouseEventArgs args);

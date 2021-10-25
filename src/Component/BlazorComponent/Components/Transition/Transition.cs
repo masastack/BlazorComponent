@@ -14,19 +14,16 @@ namespace BlazorComponent
 {
     public partial class Transition : ComponentBase
     {
-        private bool _firstRender = true;
-        private bool _visible;
-        private bool _value;
         private CancellationTokenSource _cancellationTokenSource;
+
+        [Parameter]
+        public string Name { get; set; } = "m";
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
         [Parameter]
-        public string Name { get; set; } = "m";
-
-        [Inject]
-        public Document Document { get; set; }
+        public Func<Task> OnEnterTo { get; set; }
 
         [Parameter]
         public Func<Task> OnBeforeEnter { get; set; }
@@ -40,35 +37,9 @@ namespace BlazorComponent
         [Parameter]
         public Func<Task> OnAfterLeave { get; set; }
 
-        [Parameter]
-        public Func<Task> OnEnterCancelled { get; set; }
+        protected bool Show { get; set; }
 
-        [Parameter]
-        public Func<Task> OnLeaveCancelled { get; set; }
-
-        internal TransitionMode Mode { get; set; }
-
-        internal bool Value
-        {
-            get
-            {
-                return _value;
-            }
-            set
-            {
-                if (_value == value)
-                {
-                    return;
-                }
-
-                _value = value;
-
-                if (!_firstRender || Mode == TransitionMode.If)
-                {
-                    RunTransition();
-                }
-            }
-        }
+        public bool If { get; protected set; } = true;
 
         protected TransitionState State { get; private set; }
 
@@ -76,13 +47,11 @@ namespace BlazorComponent
 
         protected StyleBuilder StyleBuilder { get; set; } = new();
 
-        public HtmlElement Element { get; private set; }
+        protected Element FirstElement { get; set; }
 
         public string Class => CssBuilder.Class;
 
         public string Style => StyleBuilder.Style;
-
-        public string Id { get; private set; }
 
         protected override void OnInitialized()
         {
@@ -93,120 +62,89 @@ namespace BlazorComponent
                 .AddIf(() => $"{Name}-leave-active {Name}-leave-to", () => State == TransitionState.LeaveTo);
 
             StyleBuilder
-                .AddIf("display:none !important", () => !_visible && Mode == TransitionMode.Show);
-
-            Id = "_tr_" + Guid.NewGuid().ToString();
-
-            Element = Document.QuerySelector($"[{Id}]");
+                .AddIf("display:none!important", () => !Show);
         }
 
-        protected override Task OnAfterRenderAsync(bool firstRender)
+        public bool Register(Element element)
         {
-            if (firstRender)
+            if (FirstElement == null)
             {
-                _firstRender = false;
-
-                if (Value)
-                {
-                    _visible = true;
-                    StateHasChanged();
-                }
+                FirstElement = element;
+                return true;
             }
 
-            return Task.CompletedTask;
+            return false;
         }
 
-        protected override void BuildRenderTree(RenderTreeBuilder builder)
-        {
-            var sequence = 0;
-            builder.OpenComponent<CascadingValue<Transition>>(sequence++);
-            builder.AddAttribute(sequence++, "Value", this);
-
-            if (Mode == TransitionMode.Show || (Mode == TransitionMode.If && _visible))
-            {
-                builder.AddAttribute(sequence++, "ChildContent", ChildContent);
-            }
-
-            builder.CloseComponent();
-        }
-
-        private void RunTransition()
+        public void RunTransition(TransitionMode mode, bool value)
         {
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource = new CancellationTokenSource();
 
-            if (State != TransitionState.None)
-            {
-                State = TransitionState.None;
-                StateHasChanged();
-            }
-
             _ = Task.Run(async () =>
               {
-                  var value = _value;
-                  if (_value)
+                  if (value)
                   {
-                      State = TransitionState.BeforeEnter;
-                      if (OnBeforeEnter != null)
+                      if (mode == TransitionMode.If && !If)
                       {
-                          await OnBeforeEnter?.Invoke();
+                          If = true;
+                          await FirstElement.UpdateViewAsync();
                       }
+                      await OnBeforeEnterAsync();
 
                       State = TransitionState.Enter;
                       await OnEnterAsync();
-                      await InvokeAsync(StateHasChanged);
+                      await FirstElement.UpdateViewAsync();
 
                       await Task.Delay(16, _cancellationTokenSource.Token);
-                      _visible = true;
-                      await InvokeAsync(StateHasChanged);
+                      Show = true;
+                      await FirstElement.UpdateViewAsync();
 
                       await Task.Delay(16, _cancellationTokenSource.Token);
                       State = TransitionState.EnterTo;
                       await OnEnterToAsync();
-                      await InvokeAsync(StateHasChanged);
+                      await FirstElement.UpdateViewAsync();
 
                       await Task.Delay(300, _cancellationTokenSource.Token);
                       State = TransitionState.None;
-                      await InvokeAsync(StateHasChanged);
+                      await FirstElement.UpdateViewAsync();
 
-                      if (OnAfterEnter != null)
-                      {
-                          await OnAfterEnter?.Invoke();
-                      }
+                      await OnAfterEnterAsync();
                   }
                   else
                   {
-                      State = TransitionState.BeforeLeave;
-                      if (OnBeforeLeave != null)
-                      {
-                          await OnBeforeLeave?.Invoke();
-                      }
+                      await OnBeforeLeaveAsync();
 
                       State = TransitionState.Leave;
                       await OnLeaveAsync();
-                      await InvokeAsync(StateHasChanged);
+                      await FirstElement.UpdateViewAsync();
 
                       await Task.Delay(16, _cancellationTokenSource.Token);
                       State = TransitionState.LeaveTo;
                       await OnLeaveToAsync();
-                      await InvokeAsync(StateHasChanged);
+                      await FirstElement.UpdateViewAsync();
 
                       await Task.Delay(300, _cancellationTokenSource.Token);
+                      Show = false;
                       State = TransitionState.None;
-                      _visible = false;
-                      await InvokeAsync(StateHasChanged);
+                      await FirstElement.UpdateViewAsync();
 
-                      if (OnAfterLeave != null)
+                      await OnAfterLeaveAsync();
+                      if (mode == TransitionMode.If && If)
                       {
-                          await OnAfterLeave?.Invoke();
+                          If = false;
+                          await FirstElement.UpdateViewAsync();
                       }
                   }
-
-                  if (_value != value)
-                  {
-                      RunTransition();
-                  }
               });
+        }
+
+        protected virtual async Task OnBeforeEnterAsync()
+        {
+            if (OnBeforeEnter != null)
+            {
+                await OnBeforeEnter?.Invoke();
+            }
         }
 
         protected virtual Task OnEnterAsync()
@@ -214,9 +152,28 @@ namespace BlazorComponent
             return Task.CompletedTask;
         }
 
-        protected virtual Task OnEnterToAsync()
+        protected virtual async Task OnAfterEnterAsync()
         {
-            return Task.CompletedTask;
+            if (OnAfterEnter != null)
+            {
+                await OnAfterEnter?.Invoke();
+            }
+        }
+
+        protected virtual async Task OnEnterToAsync()
+        {
+            if (OnEnterTo != null)
+            {
+                await OnEnterTo?.Invoke();
+            }
+        }
+
+        protected virtual async Task OnBeforeLeaveAsync()
+        {
+            if (OnBeforeLeave != null)
+            {
+                await OnBeforeLeave?.Invoke();
+            }
         }
 
         protected virtual Task OnLeaveAsync()
@@ -224,9 +181,45 @@ namespace BlazorComponent
             return Task.CompletedTask;
         }
 
+        protected virtual async Task OnAfterLeaveAsync()
+        {
+            if (OnAfterLeave != null)
+            {
+                await OnAfterLeave?.Invoke();
+            }
+        }
+
         protected virtual Task OnLeaveToAsync()
         {
             return Task.CompletedTask;
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                if (FirstElement.Show)
+                {
+                    Show = true;
+                    await FirstElement.UpdateViewAsync();
+                }
+                else if (FirstElement.If)
+                {
+                    RunTransition(TransitionMode.If, true);
+                }
+            }
+        }
+
+        protected override void BuildRenderTree(RenderTreeBuilder builder)
+        {
+            var sequence = 0;
+            builder.OpenComponent<CascadingValue<Transition>>(sequence++);
+
+            builder.AddAttribute(sequence++, "Value", this);
+            builder.AddAttribute(sequence++, "IsFixed", true);
+            builder.AddAttribute(sequence++, "ChildContent", ChildContent);
+
+            builder.CloseComponent();
         }
     }
 }

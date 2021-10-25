@@ -21,5 +21,10 @@ namespace BlazorComponent
         {
             return Task.CompletedTask;
         }
+
+        protected virtual Task OnEnterTo()
+        {
+            return Task.CompletedTask;
+        }
     }
 }

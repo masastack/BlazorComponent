@@ -20,17 +20,17 @@ namespace BlazorComponent
         OneOf<int, Dictionary<string, int>, (int horizontalGutter, int verticalGutter), (Dictionary<string, int>
             horizontalGutterSizes, int verticalGutter), (int horizontalGutter, Dictionary<string, int>
             verticalGutterSizes),
-            (Dictionary<string, int>horizontalGutterSizes, Dictionary<string, int>verticalGutterSizes)>;
+            (Dictionary<string, int> horizontalGutterSizes, Dictionary<string, int> verticalGutterSizes)>;
 
     public abstract partial class BRow : BDomComponentBase
     {
-        [Parameter] 
+        [Parameter]
         public RenderFragment ChildContent { get; set; }
 
-        [Parameter] 
+        [Parameter]
         public string Type { get; set; }
 
-        [Parameter] 
+        [Parameter]
         public virtual string Tag { get; set; } = "div";
 
         /// <summary>
@@ -51,13 +51,13 @@ namespace BlazorComponent
         [Parameter]
         public StringEnum<JustifyTypes> Justify { get; set; }
 
-        [Parameter] 
+        [Parameter]
         public bool Wrap { get; set; } = true;
 
-        [Parameter] 
+        [Parameter]
         public GutterType Gutter { get; set; }
 
-        [Parameter] 
+        [Parameter]
         public EventCallback<BreakpointType> OnBreakpoint { get; set; }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace BlazorComponent
         [Parameter]
         public BreakpointType DefaultBreakpoint { get; set; }
 
-        [Inject] 
+        [Inject]
         public DomEventJsInterop DomEventJsInterop { get; set; }
 
         private string GutterStyle { get; set; }
@@ -105,9 +105,9 @@ namespace BlazorComponent
             await base.OnAfterRenderAsync(firstRender);
         }
 
-        private async void OnResize(Window window)
+        private void OnResize(Window window)
         {
-            await Task.Run(() => OptimizeSize(window.InnerWidth));
+            _ = Task.Run(() => OptimizeSize(window.InnerWidth));
         }
 
         private void OptimizeSize(double windowWidth)
