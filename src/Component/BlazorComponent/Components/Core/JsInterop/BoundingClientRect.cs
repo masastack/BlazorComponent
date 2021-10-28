@@ -32,11 +32,5 @@ namespace BlazorComponent
 
         [JsonPropertyName("y")]
         public double Y { get; set; }
-
-        [JsonPropertyName("clientY")]
-        public double ClientY { get; set; }
-
-        [JsonPropertyName("clientX")]
-        public double ClientX { get; set; }
     }
 }

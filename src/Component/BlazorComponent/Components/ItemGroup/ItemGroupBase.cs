@@ -71,7 +71,7 @@ namespace BlazorComponent
             }
         }
 
-        public void Unregister(Groupable<ItemGroupBase> item)
+        public void Unregister(BGroupable<ItemGroupBase> item)
         {
             Items.Remove(item);
 

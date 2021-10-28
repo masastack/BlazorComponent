@@ -4,14 +4,14 @@ using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
-    public abstract class Groupable<TGroup> : BDomComponentBase, IGroupable
+    public abstract class BGroupable<TGroup> : BDomComponentBase, IGroupable
         where TGroup : ItemGroupBase
     {
         protected bool? _isActive;
 
         private readonly GroupType _groupType;
 
-        public Groupable(GroupType groupType)
+        public BGroupable(GroupType groupType)
         {
             _groupType = groupType;
         }
@@ -71,7 +71,7 @@ namespace BlazorComponent
 
         protected override void Dispose(bool disposing)
         {
-            if (Matched && this is Groupable<ItemGroupBase> item)
+            if (Matched && this is BGroupable<ItemGroupBase> item)
             {
                 ItemGroup.Unregister(item);
             }

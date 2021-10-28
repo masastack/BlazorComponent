@@ -24,33 +24,24 @@ namespace BlazorComponent
         {
             if (!_domEventListeners.ContainsKey(FormatKey(dom, eventName)))
             {
-                _jsRuntime.InvokeAsync<string>(JsInteropConstants.AddDomEventListenerToFirstChild, dom, eventName, preventDefault, DotNetObjectReference.Create(new Invoker<T>((p) =>
-                {
-                    callback?.Invoke(p);
-                })));
+                _jsRuntime.InvokeAsync<string>(JsInteropConstants.AddDomEventListenerToFirstChild, dom, eventName, preventDefault,
+                    DotNetObjectReference.Create(new Invoker<T>((p) => { callback?.Invoke(p); })));
             }
         }
 
-        public void AddEventListener(object dom, string eventName, Action<JsonElement> callback, bool exclusive = true, bool preventDefault = false)
+        public void AddEventListener(object dom, string eventName, Action<JsonElement> callback, bool preventDefault = false)
         {
-            AddEventListener<JsonElement>(dom, eventName, callback, exclusive, preventDefault);
+            AddEventListener<JsonElement>(dom, eventName, callback, preventDefault);
         }
 
-        public virtual void AddEventListener<T>(object dom, string eventName, Action<T> callback, bool exclusive = true, bool preventDefault = false)
+        public virtual void AddEventListener<T>(object dom, string eventName, Action<T> callback, bool preventDefault = false)
         {
-            if (exclusive)
+            string key = FormatKey(dom, eventName);
+            
+            if (!_domEventListeners.ContainsKey(key) && _domEventListeners.TryAdd(key, new List<DomEventSub>()))
             {
-                _jsRuntime.InvokeAsync<string>(JsInteropConstants.AddDomEventListener, dom, eventName, preventDefault, DotNetObjectReference.Create(new Invoker<T>((p) =>
-                {
-                    callback(p);
-                })));
-            }
-            else
-            {
-                string key = FormatKey(dom, eventName);
-                if (!_domEventListeners.ContainsKey(key) && _domEventListeners.TryAdd(key, new List<DomEventSub>()))
-                {
-                    _jsRuntime.InvokeAsync<string>(JsInteropConstants.AddDomEventListener, dom, eventName, preventDefault, DotNetObjectReference.Create(new Invoker<string>((p) =>
+                _jsRuntime.InvokeAsync<string>(JsInteropConstants.AddDomEventListener, dom, eventName, preventDefault, DotNetObjectReference.Create(
+                    new Invoker<string>((p) =>
                     {
                         for (var i = 0; i < _domEventListeners[key].Count; i++)
                         {
@@ -59,9 +50,9 @@ namespace BlazorComponent
                             sub.Delegate.DynamicInvoke(args);
                         }
                     })));
-                }
-                _domEventListeners[key].Add(new DomEventSub(callback, typeof(T)));
             }
+
+            _domEventListeners[key].Add(new DomEventSub(callback, typeof(T)));
         }
 
         public void AddEventListenerToFirstChild(object dom, string eventName, Action<JsonElement> callback, bool preventDefault = false)
@@ -84,9 +75,10 @@ namespace BlazorComponent
 
         private static string FormatKey(object dom, string eventName) => $"{dom}-{eventName}";
 
-        public void RemoveEventListerner<T>(object dom, string eventName, Action<T> callback)
+        public void RemoveEventListener<T>(object dom, string eventName, Action<T> callback)
         {
             string key = FormatKey(dom, eventName);
+            
             if (_domEventListeners.ContainsKey(key))
             {
                 var subscription = _domEventListeners[key].SingleOrDefault(s => s.Delegate == (Delegate)callback);
@@ -99,10 +91,8 @@ namespace BlazorComponent
 
         public void ResizeObserver<T>(object dom, Action<T> callback)
         {
-            _jsRuntime.InvokeAsync<string>(JsInteropConstants.Observer, dom, DotNetObjectReference.Create(new Invoker<T>((p) =>
-            {
-                callback?.Invoke(p);
-            })));
+            _jsRuntime.InvokeAsync<string>(JsInteropConstants.Observer, dom,
+                DotNetObjectReference.Create(new Invoker<T>((p) => { callback?.Invoke(p); })));
         }
     }
 

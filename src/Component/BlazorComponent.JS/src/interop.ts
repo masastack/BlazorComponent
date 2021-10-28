@@ -15,8 +15,7 @@ export function getDom(element) {
     } else if (typeof element === 'string') {
         if (element === 'document') {
             return document.documentElement;
-        }
-        else if (element.indexOf('.') > 0) {
+        } else if (element.indexOf('.') > 0) {
             let array = element.split('.');
             let el = document.querySelector(array[0]);
             if (!el) {
@@ -24,8 +23,7 @@ export function getDom(element) {
             }
 
             element = el[array[1]];
-        }
-        else {
+        } else {
             element = document.querySelector(element);
         }
     }
@@ -37,22 +35,21 @@ export function getDomInfo(element, selector = "body") {
 
     var dom = getDom(element);
 
-    if (!Boolean(dom)) return;
+    if (dom) {
+        if (dom.style && dom.style['display'] === 'none') {
+            // clone and set display not none becuase
+            // element with display:none can not get the dom info
+            var cloned = dom.cloneNode(true);
+            cloned.style['display'] = 'inline-block';
+            cloned.style['z-index'] = -1000;
+            document.querySelector(selector).appendChild(cloned);
 
-    if (dom.style && dom.style['display'] === 'none') {
-        // clone and set display not none becuase
-        // element with display:none can not get the dom info
-        var cloned = dom.cloneNode(true);
-        cloned.style['display'] = 'inline-block';
-        cloned.style['z-index'] = -1000;
-        document.querySelector(selector).appendChild(cloned);
+            result = getDomInfoObj(cloned);
 
-        result = getDomInfoObj(cloned);
-
-        document.querySelector(selector).removeChild(cloned);
-    }
-    else {
-        result = getDomInfoObj(dom);
+            document.querySelector(selector).removeChild(cloned);
+        } else {
+            result = getDomInfoObj(dom);
+        }
     }
 
     return result;
@@ -73,8 +70,10 @@ function getDomInfoObj(dom) {
     var position = getElementPos(dom);
     result["offsetWidth"] = Math.round(position.offsetWidth) || 0;
     result["offsetHeight"] = Math.round(position.offsetHeight) || 0;
-    result["relativeLeft"] = Math.round(position.relativeLeft) || 0;
     result["relativeTop"] = Math.round(position.relativeTop) || 0;
+    result["relativeBottom"] = Math.round(position.relativeBottom) || 0;
+    result["relativeLeft"] = Math.round(position.relativeLeft) || 0;
+    result["relativeRight"] = Math.round(position.relativeRight) || 0;
     result["absoluteLeft"] = Math.round(position.absoluteLeft) || 0;
     result["absoluteTop"] = Math.round(position.absoluteTop) || 0;
     return result;
@@ -82,7 +81,8 @@ function getDomInfoObj(dom) {
 
 function getElementPos(element) {
     var res: any = new Object();
-    res.x = 0; res.y = 0;
+    res.x = 0;
+    res.y = 0;
     if (element !== null) {
         if (element.getBoundingClientRect) {
             var viewportElement = document.documentElement;
@@ -92,8 +92,10 @@ function getElementPos(element) {
 
             res.offsetWidth = box.width;
             res.offsetHeight = box.height;
-            res.relativeLeft = box.left;
             res.relativeTop = box.top;
+            res.relativeBottom = box.bottom;
+            res.relativeLeft = box.left;
+            res.relativeRight = box.right;
             res.absoluteLeft = box.left + scrollLeft;
             res.absoluteTop = box.top + scrollTop;
         }
@@ -204,12 +206,27 @@ export function setProperty(element, name, value) {
     dom[name] = value;
 }
 
-export function getBoundingClientRect(element) {
+export function getBoundingClientRect(element, attach = "body") {
     let dom = getDom(element);
+
+    var result = {}
+
     if (dom && dom.getBoundingClientRect) {
-        return dom.getBoundingClientRect();
+        if (dom.style && dom.style['display'] === 'none') {
+            var cloned = dom.cloneNode(true);
+            cloned.style['display'] = 'inline-block';
+            cloned.style['z-index'] = -1000;
+            document.querySelector(attach)?.appendChild(cloned);
+
+            result = cloned.getBoundingClientRect();
+
+            document.querySelector(attach)?.removeChild(cloned);
+        } else {
+            result = dom.getBoundingClientRect()
+        }
     }
-    return null;
+
+    return result;
 }
 
 export function getFirstChildBoundingClientRect(element, selector = "body") {
@@ -225,8 +242,7 @@ export function getFirstChildBoundingClientRect(element, selector = "body") {
             var value = getBoundingClientRect(cloned);
             document.querySelector(selector).removeChild(cloned);
             return value;
-        }
-        else {
+        } else {
             return getBoundingClientRect(dom.firstElementChild);
         }
     }
@@ -251,9 +267,13 @@ export function addDomEventListener(element, eventName, preventDefault, invoker)
             args.preventDefault();
         }
     };
+
     if (element == 'window') {
         if (eventName == 'resize') {
-            window.addEventListener(eventName, debounce(() => callback({ innerWidth: window.innerWidth, innerHeight: window.innerHeight }), 200, false));
+            window.addEventListener(eventName, debounce(() => callback({
+                innerWidth: window.innerWidth,
+                innerHeight: window.innerHeight
+            }), 200, false));
         } else {
             window.addEventListener(eventName, callback);
         }
@@ -268,25 +288,77 @@ export function addDomEventListener(element, eventName, preventDefault, invoker)
     }
 }
 
-var htmlElementEventListennerConfigs = new Array();
+var outsideClickListenerCaches: { [key: string]: any } = {}
 
-export function addHtmlElementEventListener(selectors, type, invoker, options) {
-    let htmlElement: HTMLElement = document.querySelector(selectors);
-    var key = selectors + type;
+export function addOutsideClickEventListener(invoker, insideSelectors: string[]) {
+    if (!insideSelectors) return;
+
+    var listener = function (args) {
+        args.preventDefault();
+        var insideClicked = insideSelectors.some(s => document.querySelector(s)?.contains(args.target));
+        if (insideClicked) return;
+        invoker.invokeMethodAsync("Invoke", {});
+    }
+
+    document.addEventListener("click", listener, {capture: true});
+
+    var key = `(${insideSelectors.join(',')})document:click`
+
+    outsideClickListenerCaches[key] = listener;
+}
+
+export function removeOutsideClickEventListener(insideSelectors: string[]) {
+    if (!insideSelectors) return;
+
+    var key = `(${insideSelectors.join(',')})document:click`
+
+    if (outsideClickListenerCaches[key]) {
+        document.removeEventListener('click', outsideClickListenerCaches[key], {capture: true});
+        outsideClickListenerCaches[key] = undefined
+    }
+}
+
+export function addMouseleaveEventListener(selector) {
+    var htmlElement = document.querySelector(selector);
+    if (htmlElement) {
+        htmlElement.addEventListener()
+    }
+}
+
+var htmlElementEventListennerConfigs: { [prop: string]: any[] } = {}
+
+export function addHtmlElementEventListener(selector, type, invoker, options, actions) {
+    let htmlElement: HTMLElement
+
+    if (selector == "document") {
+        htmlElement = document.documentElement;
+    } else {
+        htmlElement = document.querySelector(selector);
+    }
+
+    var key = `${selector}:${type}`;
 
     //save for remove
     var config = {};
-    config["listenner"] = function (args) {
-        const obj = {};
+
+    config["listener"] = function (args) {
+        if (actions?.stopPropagation) {
+            args.stopPropagation();
+        }
+
+        // mouseleave relatedTarget
+        if (actions?.relatedTarget && document.querySelector(actions.relatedTarget)?.contains(args.relatedTarget)) {
+            return;
+        }
+
+        const obj = {}
 
         for (var k in args) {
             if (typeof args[k] == 'string' || typeof args[k] == 'number') {
                 obj[k] = args[k];
-            }
-            else if (k == 'target') {
+            } else if (k == 'target') {
                 var target = {
-                    attributes: {
-                    }
+                    attributes: {}
                 };
 
                 for (let index = 0; index < args.target.attributes.length; index++) {
@@ -299,21 +371,40 @@ export function addHtmlElementEventListener(selectors, type, invoker, options) {
 
         invoker.invokeMethodAsync('Invoke', obj);
     };
+
     config['options'] = options;
 
-    htmlElementEventListennerConfigs[key] = config;
+    if (htmlElementEventListennerConfigs[key]) {
+        htmlElementEventListennerConfigs[key].push(config);
+    } else {
+        htmlElementEventListennerConfigs[key] = [config]
+    }
 
     if (htmlElement) {
-        htmlElement.addEventListener(type, config["listenner"], options);
+        htmlElement.addEventListener(type, config["listener"], options);
     }
 }
 
-export function removeHtmlElementEventListener(selectors, type) {
-    let htmlElement: HTMLElement = document.querySelector(selectors);
-    var key = selectors + type;
+export function removeHtmlElementEventListener(selector, type) {
+    let htmlElement: HTMLElement
 
-    var config = htmlElementEventListennerConfigs[key];
-    htmlElement.removeEventListener(type, config["listenner"], config['options']);
+    if (selector == "document") {
+        htmlElement = document.documentElement;
+    } else {
+        htmlElement = document.querySelector(selector);
+    }
+
+    var key = `${selector}:${type}`;
+
+    var configs = htmlElementEventListennerConfigs[key];
+    
+    if (configs) {
+        configs.forEach(item => {
+            htmlElement?.removeEventListener(type, item["listener"], item['options']);
+        });
+
+        htmlElementEventListennerConfigs[key] = []
+    }
 }
 
 export function matchMedia(query) {
@@ -343,6 +434,7 @@ function fallbackCopyTextToClipboard(text) {
 
     document.body.removeChild(textArea);
 }
+
 export function copy(text) {
     if (!navigator.clipboard) {
         fallbackCopyTextToClipboard(text);
@@ -514,6 +606,8 @@ export function getWindow() {
     return {
         innerWidth: window.innerWidth,
         innerHeight: window.innerHeight,
+        pageXOffset: window.pageXOffset,
+        pageYOffset: window.pageYOffset,
         isTop: window.scrollY == 0,
         isBottom: (window.scrollY + window.innerHeight) == document.body.clientHeight
     };
@@ -572,7 +666,7 @@ export function elementScrollIntoView(selector: Element | string) {
     if (!element)
         return;
 
-    element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    element.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'start'});
 }
 
 const oldBodyCacheStack = [];
@@ -627,7 +721,7 @@ export function createIconFromfontCN(scriptUrl) {
 }
 
 export function getScroll() {
-    return { x: window.pageXOffset, y: window.pageYOffset };
+    return {x: window.pageXOffset, y: window.pageYOffset};
 }
 
 export function getInnerText(element) {
@@ -661,10 +755,13 @@ export function getMaxZIndex() {
 }
 
 export function getStyle(element, styleProp) {
-    if (element.currentStyle)
+    element = getDom(element);
+
+    if (element.currentStyle) {
         return element.currentStyle[styleProp];
-    else if (window.getComputedStyle)
+    } else if (window.getComputedStyle) {
         return document.defaultView.getComputedStyle(element, null).getPropertyValue(styleProp);
+    }
 }
 
 export function getTextAreaInfo(element) {
@@ -678,8 +775,7 @@ export function getTextAreaInfo(element) {
         result["paddingBottom"] = parseFloat(element.currentStyle["padding-bottom"]);
         result["borderBottom"] = parseFloat(element.currentStyle["border-bottom"]);
         result["borderTop"] = parseFloat(element.currentStyle["border-top"]);
-    }
-    else if (window.getComputedStyle) {
+    } else if (window.getComputedStyle) {
         result["lineHeight"] = parseFloat(document.defaultView.getComputedStyle(element, null).getPropertyValue("line-height"));
         result["paddingTop"] = parseFloat(document.defaultView.getComputedStyle(element, null).getPropertyValue("padding-top"));
         result["paddingBottom"] = parseFloat(document.defaultView.getComputedStyle(element, null).getPropertyValue("padding-bottom"));
@@ -699,10 +795,11 @@ const funcDict = {};
 export function registerResizeTextArea(element, minRows, maxRows, objReference) {
     if (!objReference) {
         disposeResizeTextArea(element);
-    }
-    else {
+    } else {
         objReferenceDict[element.id] = objReference;
-        funcDict[element.id + "input"] = function () { resizeTextArea(element, minRows, maxRows); }
+        funcDict[element.id + "input"] = function () {
+            resizeTextArea(element, minRows, maxRows);
+        }
         element.addEventListener("input", funcDict[element.id + "input"]);
         return getTextAreaInfo(element);
     }
@@ -732,8 +829,7 @@ export function resizeTextArea(element, minRows, maxRows) {
         newHeight = (rows * rowHeight + offsetHeight);
         element.style.height = newHeight + "px";
         element.style.overflowY = "visible";
-    }
-    else {
+    } else {
         newHeight = rows * rowHeight + offsetHeight;
         element.style.height = newHeight + "px";
         element.style.overflowY = "hidden";
@@ -745,8 +841,8 @@ export function resizeTextArea(element, minRows, maxRows) {
 }
 
 
-
 const objReferenceDict = {};
+
 export function disposeObj(objReferenceName) {
     delete objReferenceDict[objReferenceName];
 }
@@ -775,7 +871,7 @@ function mentionsOnWindowClick(e) {
 
 //#endregion
 
-export { disableDraggable, enableDraggable, resetModalPosition } from "./modules/dragHelper";
+export {disableDraggable, enableDraggable, resetModalPosition} from "./modules/dragHelper";
 
 export function bindTableHeaderAndBodyScroll(bodyRef, headerRef) {
     bodyRef.bindScrollLeftToHeader = () => {
@@ -800,7 +896,9 @@ function preventKeys(e, keys: string[]) {
 export function addPreventKeys(inputElement, keys: string[]) {
     if (inputElement) {
         let dom = getDom(inputElement);
-        keys = keys.map(function (x) { return x.toUpperCase(); })
+        keys = keys.map(function (x) {
+            return x.toUpperCase();
+        })
         funcDict[inputElement.id + "keydown"] = (e) => preventKeys(e, keys);
         (dom as HTMLElement).addEventListener("keydown", funcDict[inputElement.id + "keydown"], false);
     }
@@ -939,8 +1037,7 @@ export function updateWindowTransition(selectors, isActive, item) {
     if (isActive) {
         container.classList.add('m-window__container--is-active');
         container.style.height = el.clientHeight + 'px';
-    }
-    else {
+    } else {
         container.style.height = '';
         container.classList.remove('m-window__container--is-active');
     }
@@ -980,11 +1077,9 @@ function registerCustomEvent(eventType, eventName) {
                 for (var k in args) {
                     if (typeof args[k] == 'string' || typeof args[k] == 'number') {
                         e[k] = args[k];
-                    }
-                    else if (k == 'target') {
+                    } else if (k == 'target') {
                         var target = {
-                            attributes: {
-                            }
+                            attributes: {}
                         };
 
                         for (let index = 0; index < args.target.attributes.length; index++) {
@@ -1004,4 +1099,17 @@ function registerCustomEvent(eventType, eventName) {
 export function isMobile() {
     return /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|ipad|iris|kindle|Android|Silk|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(navigator.userAgent)
         || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(navigator.userAgent.substr(0, 4));
+}
+
+export function checkElementFixed(selector) {
+    let el = document.querySelector(selector);
+    while (el) {
+        if (window.getComputedStyle(el).position === 'fixed') {
+            return true;
+        }
+
+        el = el.offsetParent as HTMLElement;
+    }
+
+    return false;
 }

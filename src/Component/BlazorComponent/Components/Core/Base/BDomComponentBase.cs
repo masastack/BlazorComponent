@@ -37,7 +37,7 @@ namespace BlazorComponent
 
         protected TValue GetComputedValue<TValue>(Func<TValue> valueFactory, string[] dependencyProperties, [CallerMemberName] string name = null)
         {
-            return Watcher.GetComputedValue(valueFactory,dependencyProperties, name);
+            return Watcher.GetComputedValue(valueFactory, dependencyProperties, name);
         }
 
         protected void SetValue<TValue>(TValue value, [CallerMemberName] string name = null)
@@ -99,6 +99,21 @@ namespace BlazorComponent
         }
 
         public EventCallback<TValue> CreateEventCallback<TValue>(Func<TValue, Task> callback)
+        {
+            return EventCallback.Factory.Create(this, callback);
+        }
+
+        public EventCallback CreateEventCallback(Func<Task> callback)
+        {
+            return EventCallback.Factory.Create(this, callback);
+        }
+
+        public EventCallback<TValue> CreateEventCallback<TValue>(Action<TValue> callback)
+        {
+            return EventCallback.Factory.Create(this, callback);
+        }
+
+        public EventCallback CreateEventCallback(Action callback)
         {
             return EventCallback.Factory.Create(this, callback);
         }

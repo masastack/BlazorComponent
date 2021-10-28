@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using System;
+using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
@@ -36,6 +37,17 @@ namespace BlazorComponent
 
         [Parameter]
         public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+        [Parameter]
+        public EventCallback<MouseEventArgs> OnContextmenu { get; set; }
+
+        protected virtual async Task HandleOnContextmenu(MouseEventArgs args)
+        {
+            if (OnContextmenu.HasDelegate)
+            {
+                await OnContextmenu.InvokeAsync(args);
+            }
+        }
 
         protected override void OnParametersSet()
         {

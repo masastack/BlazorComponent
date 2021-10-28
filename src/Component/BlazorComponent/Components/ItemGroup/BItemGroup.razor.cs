@@ -18,7 +18,7 @@ namespace BlazorComponent
         [Parameter]
         public StringNumber Max { get; set; }
 
-        public async virtual Task Toggle(StringNumber value)
+        public async override Task Toggle(StringNumber value)
         {
             if (_values.Contains(value))
             {

@@ -44,7 +44,7 @@ namespace BlazorComponent
         RenderFragment<int> SelectionContent => default;
 
         IList<TItem> SelectedItems { get; }
-
-        void SetOnExtraClick(Func<MouseEventArgs, Task> onExtraClick);
+        
+        AbstractComponent Menu { set; }
     }
 }

@@ -11,10 +11,7 @@ namespace BlazorComponent
     {
         public ElementReference ContentRef
         {
-            set
-            {
-                Component.ContentRef = value;
-            }
+            set { Component.ContentRef = value; }
         }
 
         protected string TransitionName

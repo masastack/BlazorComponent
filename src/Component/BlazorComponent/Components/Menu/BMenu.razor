@@ -1,36 +1,22 @@
 ﻿@namespace BlazorComponent
-@inherits BDomComponentBase
+@inherits BMenuable
 
-<BCascadingValue Value="this">
-    @*//TODO:change here*@
-    @if (Input)
-    {
-        @ActivatorContent(new MenuContext { OnClick = Click })
-    }
-    else
-    {
-        <div @onclick="Click"
-         @onclick:stopPropagation
-         @onmouseenter="MouseEnter"
-         @onmouseleave="MouseOut"
-         @ref="Ref"
-         style="@CssProvider.GetStyle()">
-            @ActivatorContent(new MenuContext { OnClick = Click })
-        </div>
-    }
+@if (ActivatorContent != null)
+{
+    @ComputedActivatorContent
+}
 
-    @*TODO: ThemeProvider*@
-    <CascadingValue Value="Themeable">
-        @if (!Input)
-        {
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BOverlay>()"></AbstractComponent>
-        }
-
-        <div @ref="ContentRef" @onmouseenter="MouseEnter" @onmouseleave="MouseOut">
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BPopover>()">
-                @ChildContent
-            </AbstractComponent>
-        </div>
-    </CascadingValue>
-</BCascadingValue>
-
+<div style="@CssProvider.GetStyle()" class="@CssProvider.GetClass()" @ref="Ref">
+    <Transition Name="@Transition">
+        <Element Show="Value"
+                 style="@CssProvider.GetStyle("content")"
+                 class="@CssProvider.GetClass("content")"
+                 @onclick="OnContentClick"
+                 @onmouseenter="OnContentMouseenter"
+                 @onmouseleave="OnContentMouseleave"
+                 @attributes="@Attributes"
+                 ReferenceCaptureAction="r => ContentRef = r">
+            @ChildContent
+        </Element>
+    </Transition>
+</div>

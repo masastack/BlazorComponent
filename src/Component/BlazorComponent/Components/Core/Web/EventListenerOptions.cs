@@ -1,17 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace BlazorComponent;
 
-namespace BlazorComponent
+public class EventListenerOptions
 {
-    public class EventListenerOptions
+    public bool Capture { get; set; }
+
+    public bool Once { get; set; }
+
+    public bool Passive { get; set; }
+}
+
+public class EventListenerActions
+{
+    public bool StopPropagation { get; set; }
+
+    public string RelatedTarget { get; set; }
+
+    public EventListenerActions()
     {
-        public bool Capture { get; set; }
+    }
 
-        public bool Once { get; set; }
+    public EventListenerActions(bool stopPropagation)
+    {
+        StopPropagation = stopPropagation;
+    }
 
-        public bool Passive { get; set; }
+    public EventListenerActions(string relatedTarget)
+    {
+        RelatedTarget = relatedTarget;
     }
 }

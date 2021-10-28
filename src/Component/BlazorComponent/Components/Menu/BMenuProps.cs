@@ -4,8 +4,6 @@
     {
         public bool Visible { get; set; }
 
-        public bool Block { get; set; }
-
         public bool OffsetX { get; set; }
 
         public bool OffsetY { get; set; }

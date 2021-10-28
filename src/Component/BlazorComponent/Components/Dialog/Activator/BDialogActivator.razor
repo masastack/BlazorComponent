@@ -2,8 +2,4 @@
 @typeparam TDialog
 @inherits ComponentAbstractBase<TDialog>
 
-@if (ActivatorContent != null)
-{
-    var props = new ActivatorProps(ActivatorAttrs);
-    @ActivatorContent(props);
-}
+@ComputedActivatorContent

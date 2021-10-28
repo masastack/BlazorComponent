@@ -10,8 +10,6 @@ namespace BlazorComponent
 {
     public partial class BSelectMenu<TItem, TItemValue, TValue, TInput> where TInput : ISelect<TItem, TItemValue, TValue>
     {
-        public Action<Func<MouseEventArgs, Task>> SetOnExtraClick => Component.SetOnExtraClick;
-
         public IReadOnlyList<TItem> ComputedItems => Component.ComputedItems;
 
         public Func<TItem, string> ItemText => Component.ItemText;
@@ -27,5 +25,12 @@ namespace BlazorComponent
         public RenderFragment PrependItemContent => Component.PrependItemContent;
 
         public RenderFragment AppendItemContent => Component.AppendItemContent;
+        
+        public AbstractComponent Menu {
+            set
+            {
+                Component.Menu = value;
+            }
+        }
     }
 }

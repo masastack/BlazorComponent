@@ -2,7 +2,7 @@
 
 namespace BlazorComponent
 {
-    public partial class BItem : Groupable<ItemGroupBase>
+    public partial class BItem : BGroupable<ItemGroupBase>
     {
         public BItem(GroupType groupType) : base(groupType)
         {

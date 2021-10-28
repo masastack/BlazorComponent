@@ -14,8 +14,14 @@ namespace BlazorComponent.Web
         [JsonPropertyName("relativeTop")]
         public double RelativeTop { get; set; }
 
+        [JsonPropertyName("relativeBottom")]
+        public double RelativeBottom { get; set; }
+
         [JsonPropertyName("relativeLeft")]
         public double RelativeLeft { get; set; }
+
+        [JsonPropertyName("relativeRight")]
+        public double RelativeRight { get; set; }
 
         [JsonPropertyName("offsetTop")]
         public double OffsetTop { get; set; }

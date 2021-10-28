@@ -12,25 +12,25 @@ namespace BlazorComponent.Web
     {
         public static async Task<double> GetSizeAsync(this HtmlElement htmlElement, string prop)
         {
-            var size = await htmlElement.JS.InvokeAsync<double>(JsInteropConstants.GetSize, htmlElement.Selectors, prop);
+            var size = await htmlElement.JS.InvokeAsync<double>(JsInteropConstants.GetSize, htmlElement.Selector, prop);
             return size;
         }
 
         public static async Task<TProp> GetPropAsync<TProp>(this HtmlElement htmlElement, string name)
         {
-            var prop = await htmlElement.JS.InvokeAsync<TProp>(JsInteropConstants.GetProp, htmlElement.Selectors, name);
+            var prop = await htmlElement.JS.InvokeAsync<TProp>(JsInteropConstants.GetProp, htmlElement.Selector, name);
             return prop;
         }
 
         public static async Task<double> GetScrollHeightWithoutHeight(this HtmlElement htmlElement)
         {
-            var scrollHeight = await htmlElement.JS.InvokeAsync<double>(JsInteropConstants.ScrollHeightWithoutHeight, htmlElement.Selectors);
+            var scrollHeight = await htmlElement.JS.InvokeAsync<double>(JsInteropConstants.ScrollHeightWithoutHeight, htmlElement.Selector);
             return scrollHeight;
         }
 
         public static async Task UpdateWindowTransitionAsync(this HtmlElement htmlElement, bool isActive, ElementReference? item = null)
         {
-            await htmlElement.JS.InvokeVoidAsync(JsInteropConstants.UpdateWindowTransition, htmlElement.Selectors, isActive, item);
+            await htmlElement.JS.InvokeVoidAsync(JsInteropConstants.UpdateWindowTransition, htmlElement.Selector, isActive, item);
         }
     }
 }

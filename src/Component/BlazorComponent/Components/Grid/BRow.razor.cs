@@ -172,7 +172,7 @@ namespace BlazorComponent
         {
             base.Dispose(disposing);
 
-            DomEventJsInterop.RemoveEventListerner<Window>("window", "resize", OnResize);
+            DomEventJsInterop.RemoveEventListener<Window>("window", "resize", OnResize);
         }
     }
 }
