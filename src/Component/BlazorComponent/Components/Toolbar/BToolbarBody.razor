@@ -1,5 +1,6 @@
 ﻿@namespace BlazorComponent
-@inherits BSheetBody
+@typeparam TToolbar
+@inherits BSheetBody<TToolbar>
 
 @if (!string.IsNullOrEmpty(Src) || ImgContent != null)
 {
@@ -16,7 +17,7 @@
 }
 
 <div class="@CssProvider.GetClass("content")" style="@CssProvider.GetStyle("content")">
-    @ChildContent
+    @ComponentChildContent
 </div>
 
 @if (IsExtended)

@@ -2,7 +2,7 @@
 
 namespace BlazorComponent
 {
-    public partial class BToolbarSheetBody
+    public partial class BToolbarBody<TToolbar> where TToolbar : IToolbar
     {
         [Parameter]
         public string Src { get; set; }

@@ -56,7 +56,7 @@
             {
                 <AbstractComponent Metadata="AbstractProvider.GetMetadata<BTooltip>()" Top Disabled="@string.IsNullOrEmpty(file.Error)">
                     <TAbstractContent TContext="ActivatorProps" Name="ActivatorContent">
-                        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BCard>()" Outlined Style="@GetListItemStyle(file.Uploaded)" Class="upload-card upload-card--fix">
+                        <AbstractComponent Metadata="AbstractProvider.GetMetadata<ICard>()" Outlined Style="@GetListItemStyle(file.Uploaded)" Class="upload-card upload-card--fix">
                             <div @onmouseenter="() => file.Hover = true" @onmouseleave="() => file.Hover = false" class="upload-card-item" @attributes="context.Attrs">
                                 @if (file.IsImage)
                                 {

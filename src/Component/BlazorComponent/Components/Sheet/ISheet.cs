@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BSheetBody<TSheet> where TSheet : ISheet
+    public interface ISheet : IHasProviderComponent
     {
-        public RenderFragment ComponentChildContent => Component.ChildContent;
+        RenderFragment ChildContent { get; }
     }
 }

@@ -2,7 +2,7 @@
 @typeparam TComponent
 @inherits ComponentAbstractBase<TComponent>
 
-@if (Loading != false)
+@if (Loading is not null && Loading != false)
 {
     if (ProgressContent != null)
     {

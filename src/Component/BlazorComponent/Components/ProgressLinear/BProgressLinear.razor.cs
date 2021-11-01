@@ -10,6 +10,9 @@ namespace BlazorComponent
 {
     public partial class BProgressLinear : BDomComponentBase
     {
+        /// <summary>
+        /// 使用 indeterminate 属性，BProgressLinear 会保持动画状态。
+        /// </summary>
         [Parameter]
         public bool Indeterminate { get; set; }
 
