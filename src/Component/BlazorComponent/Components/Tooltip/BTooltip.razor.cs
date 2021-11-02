@@ -100,20 +100,5 @@ namespace BlazorComponent
         {
             await UpdateDimensions(lazySetter);
         }
-
-        protected override async Task Open()
-        {
-            Value = true;
-        }
-
-        protected override async Task Close()
-        {
-            Value = false;
-        }
-
-        protected override async Task Toggle()
-        {
-            Value = !Value;
-        }
     }
 }

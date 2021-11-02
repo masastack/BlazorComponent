@@ -154,21 +154,6 @@ namespace BlazorComponent
             return listeners;
         }
 
-        protected override async Task Open()
-        {
-            Value = true;
-        }
-
-        protected override async Task Close()
-        {
-            Value = false;
-        }
-
-        protected override async Task Toggle()
-        {
-            Value = !Value;
-        }
-
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);

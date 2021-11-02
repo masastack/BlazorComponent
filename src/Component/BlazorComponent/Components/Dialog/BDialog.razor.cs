@@ -78,26 +78,11 @@ namespace BlazorComponent
             return zIndex;
         }
 
-        protected override async Task Close()
-        {
-            Value = false;
-        }
-
         private async Task<int> GetMaxZIndex()
         {
             var maxZindex = await JsInvokeAsync<int>(JsInteropConstants.GetMenuOrDialogMaxZIndex, new List<ElementReference> {ContentRef}, Ref);
 
             return maxZindex > _stackMinZIndex ? maxZindex : _stackMinZIndex;
-        }
-
-        protected override async Task Open()
-        {
-            Value = true;
-        }
-
-        protected override async Task Toggle()
-        {
-            Value = !Value;
         }
     }
 }

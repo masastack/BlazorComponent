@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using BlazorComponent.Web;
 using Microsoft.AspNetCore.Components;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent;
 
-public abstract class BActivatable : BDomComponentBase, IActivatable
+public abstract class BActivatable : BDelayable, IActivatable
 {
     private readonly string _activatorId;
 
@@ -48,7 +49,7 @@ public abstract class BActivatable : BDomComponentBase, IActivatable
             return null;
         }
     }
-    
+
     protected virtual bool IsActive
     {
         get => _isActive;
@@ -92,7 +93,7 @@ public abstract class BActivatable : BDomComponentBase, IActivatable
         set
         {
             if (value == IsActive) return;
-            
+
             IsActive = value;
             ValueChanged.InvokeAsync(value);
         }
@@ -110,11 +111,28 @@ public abstract class BActivatable : BDomComponentBase, IActivatable
         }
     }
 
-    protected abstract Task Open();
+    protected virtual async Task Open()
+    {
+        await RunOpenDelay(() =>
+        {
+            Value = true;
+            return Task.CompletedTask;
+        });
+    }
 
-    protected abstract Task Close();
+    protected virtual async Task Close()
+    {
+        await RunCloseDelay(() =>
+        {
+            Value = false;
+            return Task.CompletedTask;
+        });
+    }
 
-    protected abstract Task Toggle();
+    protected virtual async Task Toggle()
+    {
+        Value = !Value;
+    }
 
     private async Task AddActivatorEvents()
     {
