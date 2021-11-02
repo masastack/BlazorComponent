@@ -4,13 +4,28 @@
 <button @ref="Ref"
         @onclick="HandleClickAsync"
         @onclick:preventDefault
-        @onmousedown="() => _hasMouseDown = true"
-        @onmouseup="() => _hasMouseDown = false"
+        @onmousedown="() => HasMouseDown = true"
+        @onmouseup="() => HasMouseDown = false"
         Class="@CssProvider.GetClass()"
-        Style="@CssProvider.GetStyle()">
-    @ChildContent
-    <div class="@CssProvider.GetClass("headerIcon")">
-        <i class="@CssProvider.GetClass("icons")"></i>
-    </div>
-</button>
+        Style="@CssProvider.GetStyle()"
+        @attributes="@Attributes">
 
+    @ChildContent(IsActive)
+
+    @if (!HideActions)
+    {
+        <FadeTransition>
+            <Element Tag="div" Show="!IsDisabled" Class="@CssProvider.GetClass("headerIcon")">
+                @if (ActionsContent != null)
+                {
+                    @ActionsContent
+                }
+                else
+                {
+                    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">@ExpandIcon</AbstractComponent>
+                }
+            </Element>
+        </FadeTransition>
+    }
+
+</button>

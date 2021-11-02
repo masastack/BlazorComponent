@@ -1,44 +1,57 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
     public partial class BExpansionPanelHeader : BDomComponentBase
     {
-        protected bool _hasMouseDown = false;
+        protected bool HasMouseDown;
+
+        protected bool IsActive => ExpansionPanel?.IsActive ?? false;
+
+        protected bool IsDisabled => ExpansionPanel?.IsDisabled ?? false;
+
+        protected bool IsReadonly => ExpansionPanel?.IsReadonly ?? false;
 
         [CascadingParameter]
         public BExpansionPanel ExpansionPanel { get; set; }
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment ActionsContent { get; set; }
 
-        [Obsolete("Use OnClick instead.")]
         [Parameter]
-        public EventCallback<MouseEventArgs> Click { get; set; }
+        public RenderFragment<bool> ChildContent { get; set; }
+
+        [Parameter]
+        public string Color { get; set; }
+
+        [Parameter]
+        public bool DisableIconRotate { get; set; }
+
+        [Parameter]
+        public string ExpandIcon { get; set; }
+
+        [Parameter]
+        public bool HideActions { get; set; }
 
         [Parameter]
         public EventCallback<MouseEventArgs> OnClick { get; set; }
-
-        protected override void OnParametersSet()
-        {
-            if (Click.HasDelegate)
-            {
-                OnClick = Click;
-            }
-        }
 
         protected virtual async Task HandleClickAsync(MouseEventArgs args)
         {
             await JsInvokeAsync(JsInteropConstants.Blur, Ref);
 
-            await ExpansionPanel.Toggle();
-
             if (OnClick.HasDelegate)
             {
                 await OnClick.InvokeAsync(args);
+            }
+
+            if (!(IsReadonly || IsDisabled))
+            {
+                await ExpansionPanel.Toggle();
             }
         }
     }

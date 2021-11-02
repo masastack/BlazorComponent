@@ -5,22 +5,20 @@ namespace BlazorComponent
 {
     public partial class BExpansionPanel : BGroupItem<BExpansionPanels>
     {
-        private bool _disabled;
-
         public BExpansionPanel() : base(GroupType.ExpansionPanels)
         {
         }
+
+        [Parameter]
+        public bool Readonly { get; set; }
 
         public bool Expanded => ItemGroup.Values.Contains(Value);
 
         public bool NextActive => ItemGroup.NextActiveKeys.Contains(Value);
 
-        [Parameter]
-        public override bool Disabled
-        {
-            get => ItemGroup.Disabled || _disabled;
-            set => _disabled = value;
-        }
+        public bool IsDisabled => ItemGroup.Disabled || Disabled;
+
+        public bool IsReadonly => ItemGroup.Readonly || Readonly;
 
         public async Task Toggle()
         {

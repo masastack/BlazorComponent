@@ -4,25 +4,37 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BExpansionPanels
+    public partial class BExpansionPanels : ItemGroupBase
     {
-        public BExpansionPanels(GroupType groupType) : base(groupType)
+        public BExpansionPanels() : base(GroupType.ExpansionPanels)
         {
         }
 
         public List<StringNumber> NextActiveKeys { get; set; } = new();
 
         [Parameter]
-        public bool Disabled { get; set; }
+        public bool Accordion { get; set; }
 
         [Parameter]
-        public bool Accordion { get; set; }
+        public bool Disabled { get; set; }
 
         [Parameter]
         public bool Focusable { get; set; }
 
         [Parameter]
         public bool Flat { get; set; }
+
+        [Parameter]
+        public bool Hover { get; set; }
+
+        [Parameter]
+        public bool Inset { get; set; }
+
+        [Parameter]
+        public bool Popout { get; set; }
+
+        [Parameter]
+        public bool Readonly { get; set; }
 
         [Parameter]
         public bool Tile { get; set; }
