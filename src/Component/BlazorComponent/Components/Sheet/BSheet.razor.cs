@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Threading.Tasks;
+using BlazorComponent.Web;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
@@ -17,5 +20,8 @@ namespace BlazorComponent
 
         [Parameter]
         public bool Light { get; set; }
+
+        [Parameter]
+        public bool OnContextmenuPreventDefault { get; set; }
     }
 }
