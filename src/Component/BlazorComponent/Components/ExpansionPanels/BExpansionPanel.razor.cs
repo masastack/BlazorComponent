@@ -12,8 +12,6 @@ namespace BlazorComponent
         [Parameter]
         public bool Readonly { get; set; }
 
-        public bool Expanded => ItemGroup.Values.Contains(Value);
-
         public bool NextActive => ItemGroup.NextActiveKeys.Contains(Value);
 
         public bool IsDisabled => ItemGroup.Disabled || Disabled;

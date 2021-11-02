@@ -1,16 +1,17 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BExpansionPanels : ItemGroupBase
+    public partial class BExpansionPanels : BItemGroup
     {
         public BExpansionPanels() : base(GroupType.ExpansionPanels)
         {
         }
 
-        public List<StringNumber> NextActiveKeys { get; set; } = new();
+        public List<StringNumber> NextActiveKeys { get; } = new();
 
         [Parameter]
         public bool Accordion { get; set; }
@@ -43,13 +44,7 @@ namespace BlazorComponent
         {
             if (_values.Contains(value))
             {
-                _values.Remove(value);
-
-                var index = AllValues.IndexOf(value);
-                if (index > 1)
-                {
-                    NextActiveKeys.Remove(AllValues[index - 1]);
-                }
+                Remove(value);
             }
             else
             {
@@ -59,13 +54,20 @@ namespace BlazorComponent
                     NextActiveKeys.Clear();
                 }
 
-                _values.Add(value);
-
-                var index = AllValues.IndexOf(value);
-                if (index > 1)
+                if (Max == null || _values.Count < Max.TryGetNumber().number)
                 {
-                    NextActiveKeys.Add(AllValues[index - 1]);
+                    Add(value);
                 }
+            }
+
+            if (Mandatory && _values.Count == 0)
+            {
+                Add(value);
+            }
+
+            if (ValueChanged.HasDelegate)
+            {
+                await ValueChanged.InvokeAsync(_values.LastOrDefault());
             }
 
             if (ValuesChanged.HasDelegate)
@@ -74,6 +76,29 @@ namespace BlazorComponent
             }
 
             StateHasChanged();
+        }
+
+
+        private void Add(StringNumber value)
+        {
+            _values.Add(value);
+
+            var index = AllValues.IndexOf(value);
+            if (index > 1)
+            {
+                NextActiveKeys.Add(AllValues[index - 1]);
+            }
+        }
+
+        private void Remove(StringNumber value)
+        {
+            _values.Remove(value);
+
+            var index = AllValues.IndexOf(value);
+            if (index > 1)
+            {
+                NextActiveKeys.Remove(AllValues[index - 1]);
+            }
         }
     }
 }
