@@ -2,10 +2,11 @@
 @inherits BGroupItem<ItemGroupBase>
 
 <BCascadingValue Value="this">
-    @if (Show)
-    {
-        <span class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @onclick="HandleOnClick" @onclick:stopPropagation @attributes="Attributes">
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BChipContent<>))"></AbstractComponent>
-        </span>
-    }
+    <Element Tag="@Tag"
+             Class="@CssProvider.GetClass()"
+             Style="@CssProvider.GetStyle()"
+             @onclick="HandleOnClick"
+             @attributes="Attributes">
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BChipContent<>))"></AbstractComponent>
+    </Element>
 </BCascadingValue>

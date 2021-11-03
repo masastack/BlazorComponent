@@ -11,10 +11,26 @@ namespace BlazorComponent
         {
         }
 
-        protected bool Show { get; set; } = true;
+        [Parameter]
+        public bool Active { get; set; } = true;
+
+        [Parameter]
+        public bool Close { get; set; }
+
+        [Parameter]
+        public string CloseIcon { get; set; }
+
+        [Parameter]
+        public string CloseLabel { get; set; } = "Close";
 
         [Parameter]
         public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+        [Parameter]
+        public EventCallback<MouseEventArgs> OnCloseClick { get; set; }
+
+        [Parameter]
+        public string Tag { get; set; } = "span";
 
         protected async Task HandleOnClick(MouseEventArgs args)
         {
@@ -27,7 +43,7 @@ namespace BlazorComponent
 
             if (OnClick.HasDelegate)
             {
-                await OnClick.InvokeAsync();
+                await OnClick.InvokeAsync(args);
             }
         }
     }

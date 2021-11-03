@@ -4,12 +4,11 @@
 
 @if (Filter)
 {
-    @*<ExpandTransition X>*@
-    @if (IsActive)
-    {
-        <AbstractComponent Metadata="@(AbstractProvider.GetMetadata<BIcon>("filter"))">
-            @FilterIcon
-        </AbstractComponent>
-    }
-    @*</ExpandTransition>*@
+    <ExpandXTransition>
+        <Element Show="IsActive"> @* TODO: may need an AbstractComponentElement? *@
+            <AbstractComponent Metadata="@(AbstractProvider.GetMetadata<BIcon>("filter"))">
+                @FilterIcon
+            </AbstractComponent>
+        </Element>
+    </ExpandXTransition>
 }

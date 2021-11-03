@@ -168,6 +168,10 @@ namespace BlazorComponent
             {
                 Value = false;
             }
+            else
+            {
+                PreventRender();
+            }
         }
 
         protected virtual void OnContentMouseenter(MouseEventArgs args)
@@ -178,6 +182,10 @@ namespace BlazorComponent
 
                 Value = true;
             }
+            else
+            {
+                PreventRender();
+            }
         }
 
         protected virtual void OnContentMouseleave(MouseEventArgs args)
@@ -185,6 +193,10 @@ namespace BlazorComponent
             if (OpenOnHover)
             {
                 Value = false;
+            }
+            else
+            {
+                PreventRender();
             }
         }
 

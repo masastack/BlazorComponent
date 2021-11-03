@@ -10,6 +10,16 @@ public class Delayer : IDelayable
 
     private CancellationTokenSource _cancellationTokenSource;
 
+    public Delayer()
+    {
+    }
+
+    public Delayer(IDelayable delayable)
+    {
+        OpenDelay = delayable.OpenDelay;
+        CloseDelay = delayable.CloseDelay;
+    }
+
     public int OpenDelay { get; set; }
 
     public int CloseDelay { get; set; }

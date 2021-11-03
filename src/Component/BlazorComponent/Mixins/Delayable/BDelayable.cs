@@ -6,7 +6,7 @@ namespace BlazorComponent;
 
 public class BDelayable : BDomComponentBase, IDelayable
 {
-    private Delayer _delayer;
+    private IDelayable _delayer;
 
     [Parameter]
     public virtual int OpenDelay { get; set; }
@@ -18,11 +18,7 @@ public class BDelayable : BDomComponentBase, IDelayable
     {
         base.OnParametersSet();
 
-        _delayer = new Delayer()
-        {
-            OpenDelay = OpenDelay,
-            CloseDelay = CloseDelay
-        };
+        _delayer = new Delayer(this);
     }
 
     public Task RunOpenDelay(Func<Task> cb = null) => _delayer.RunOpenDelay(cb);
