@@ -4,5 +4,8 @@
 @inherits ComponentAbstractBase<TSlideGroup>
 
 <div class="@CssProvider.GetClass("next")" style="@CssProvider.GetStyle("next")" @onclick="HandleOnClick">
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()" Disabled="@(!Active)">@Icon</AbstractComponent>
+    @if (Visible)
+    {
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()" Disabled="@(!Active)">@Icon</AbstractComponent>
+    }
 </div>

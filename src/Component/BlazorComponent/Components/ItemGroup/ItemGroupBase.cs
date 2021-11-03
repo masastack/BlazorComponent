@@ -106,12 +106,7 @@ namespace BlazorComponent
                     _values.Clear();
                 }
 
-                // TODO: Max
                 _values.Add(key);
-                // if (Max == null || _values.Count < Max.TryGetNumber().number)
-                // {
-                //     _values.Add(key);
-                // }
             }
 
             if (Mandatory && _values.Count == 0)

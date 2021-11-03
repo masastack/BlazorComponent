@@ -5,6 +5,7 @@
     <Element Tag="@Tag"
              Class="@CssProvider.GetClass()"
              Style="@CssProvider.GetStyle()"
+             ReferenceCaptureAction="_ => Ref = _"
              @onclick="HandleOnClick"
              @attributes="Attributes">
         <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BChipContent<>))"></AbstractComponent>

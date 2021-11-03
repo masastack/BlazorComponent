@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -236,13 +235,6 @@ namespace BlazorComponent
             {
                 StateHasChanged();
             }
-        }
-
-        private async Task Active(Func<Task> action)
-        {
-            await action();
-
-            StateHasChanged();
         }
     }
 }
