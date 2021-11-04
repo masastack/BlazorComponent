@@ -4,7 +4,8 @@
 @{
     var context = new ItemContext
     {
-        IsActive = IsActive,
+        Active = IsActive,
+        ActiveClass = IsActive ? ComputedActiveClass : "",
         Toggle = ToggleItem,
         Ref = RefBack,
         Value = Value

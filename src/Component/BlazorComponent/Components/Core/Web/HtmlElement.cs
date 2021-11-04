@@ -30,6 +30,11 @@ namespace BlazorComponent.Web
 
         public HtmlElement OffsetParent => new HtmlElement(JS, $"{Selector}.offsetParent");
 
+        public async Task AddClass(string className)
+        {
+            await JS.InvokeVoidAsync(JsInteropConstants.AddCls, Selector, className);
+        }
+
         public async Task DispatchEventAsync(Event @event)
         {
             await JS.InvokeVoidAsync(JsInteropConstants.TriggerEvent, Selector, @event.Type, @event.Name, @event.ShouldStopPropagation);
@@ -94,6 +99,11 @@ namespace BlazorComponent.Web
                             await listener.InvokeAsync(p);
                         }
                     })), options.Value, actions);
+        }
+
+        public async Task RemoveClass(string className)
+        {
+            await JS.InvokeVoidAsync(JsInteropConstants.RemoveCls, Selector, className);
         }
 
         public async Task RemoveEventListenerAsync(string type)
