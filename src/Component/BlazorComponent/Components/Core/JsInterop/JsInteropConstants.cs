@@ -27,9 +27,9 @@
         public static string AddHtmlElementEventListener => $"{Variables.JsInteropFuncNamePrefix}addHtmlElementEventListener";
 
         public static string RemoveHtmlElementEventListener => $"{Variables.JsInteropFuncNamePrefix}removeHtmlElementEventListener";
-        
+
         public static string AddOutsideClickEventListener => $"{Variables.JsInteropFuncNamePrefix}addOutsideClickEventListener";
-        
+
         public static string RemoveOutsideClickEventListener => $"{Variables.JsInteropFuncNamePrefix}removeOutsideClickEventListener";
 
         public static string MatchMedia => $"{Variables.JsInteropFuncNamePrefix}matchMedia";
@@ -46,7 +46,7 @@
 
         public static string ScrollTo => $"{Variables.JsInteropFuncNamePrefix}scrollTo";
 
-        public static string ScrollToElement => $"{Variables.JsInteropFuncNamePrefix}scrollToElement";
+        public static string ScrollToActiveElement => $"{Variables.JsInteropFuncNamePrefix}scrollToActiveElement";
 
         public static string ScrollToPosition => $"{Variables.JsInteropFuncNamePrefix}scrollToPosition";
 
@@ -149,8 +149,10 @@
         public static string ScrollHeightWithoutHeight => $"{Variables.JsInteropFuncNamePrefix}getScrollHeightWithoutHeight";
 
         public static string UpdateWindowTransition => $"{Variables.JsInteropFuncNamePrefix}updateWindowTransition";
-        
+
         public static string CheckElementFixed => $"{Variables.JsInteropFuncNamePrefix}checkElementFixed";
+
+        public static string InsertToFirst => $"{Variables.JsInteropFuncNamePrefix}insertToFirst";
 
         #endregion Draggable Modal
     }

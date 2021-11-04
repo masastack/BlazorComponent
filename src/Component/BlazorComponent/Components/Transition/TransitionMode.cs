@@ -8,6 +8,7 @@ namespace BlazorComponent
     public enum TransitionMode
     {
         Show = 0,
-        If = 1
+        If = 1,
+        Key = 2
     }
 }

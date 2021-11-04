@@ -8,6 +8,8 @@ namespace BlazorComponent.Components.Core.CssProcess
     {
         internal readonly Dictionary<Func<string>, Func<bool>> _mapper = new();
 
-        public BuilderContext Context { get; internal set; }
+        public int Index { get; internal set; }
+
+        public object Data { get; internal set; }
     }
 }

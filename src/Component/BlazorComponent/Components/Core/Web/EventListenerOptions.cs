@@ -15,6 +15,8 @@ public class EventListenerActions
 
     public string RelatedTarget { get; set; }
 
+    public bool PreventDefault { get; set; }
+
     public EventListenerActions()
     {
     }

@@ -1,0 +1,41 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<BCascadingValue Value="this">
+    <AbstractComponent Class="@CssProvider.GetClass()" Metadata="AbstractProvider.GetMetadata(typeof(BPicker))">
+        @if (!NoTitle)
+        {
+            <AbstractContent Name="TitleContent">
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerTitle))"></AbstractComponent>
+            </AbstractContent>
+        }
+        <AbstractContent Name="ChildContent">
+            <GroupElement Key="InternalActivePicker">
+                @if (InternalActivePicker == DatePickerType.Year)
+                {
+                    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerYears<>))"></AbstractComponent>
+                }
+                else
+                {
+                    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerTableHeader<>))"></AbstractComponent>
+                    if (InternalActivePicker == DatePickerType.Date)
+                    {
+                        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerDateTable<>))"></AbstractComponent>
+                    }
+                    else
+                    {
+                        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerMonthTable<>))"></AbstractComponent>
+                    }
+                }
+            </GroupElement>
+        </AbstractContent>
+        @if (ChildContent != null)
+        {
+            <AbstractContent Name="ActionsContent">
+                @*//TODO: save,cancel*@
+                @ChildContent
+            </AbstractContent>
+        }
+    </AbstractComponent>
+</BCascadingValue>
+

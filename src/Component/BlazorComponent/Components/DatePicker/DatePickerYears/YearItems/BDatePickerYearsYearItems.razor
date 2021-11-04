@@ -1,0 +1,15 @@
+﻿@namespace BlazorComponent
+@typeparam TDatePickerYears
+@inherits ComponentAbstractBase<TDatePickerYears>
+
+    @{
+    var selectedYear = Value > 0 ? Value : DateTime.Now.Year;
+    var maxYear = Max != null ? Max.Value.Year : (selectedYear + 100);
+    var minYear = Math.Min(maxYear, Min != null ? Min.Value.Year : (selectedYear - 100));
+
+    for (var year = maxYear; year >= minYear; year--)
+    {
+        <AbstractComponent Year="@year" Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerYearsYearItem<>))"></AbstractComponent>
+    }
+}
+

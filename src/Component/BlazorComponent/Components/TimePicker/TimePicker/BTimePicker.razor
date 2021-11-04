@@ -1,0 +1,24 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+
+<BCascadingValue Value="this">
+    <AbstractComponent Class="@CssProvider.GetClass()" Metadata="AbstractProvider.GetMetadata(typeof(BPicker))">
+        @if (!NoTitle)
+        {
+            <AbstractContent Name="TitleContent">
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTimePickerTitle))"></AbstractComponent>
+            </AbstractContent>
+        }
+        <AbstractContent Name="ChildContent">
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTimePickerPickerBody<>))"></AbstractComponent>
+        </AbstractContent>
+        @if (ChildContent != null)
+        {
+            <AbstractContent Name="ActionsContent">
+                @ChildContent
+            </AbstractContent>
+        }
+    </AbstractComponent>
+</BCascadingValue>
+

@@ -1,0 +1,37 @@
+﻿@namespace BlazorComponent
+@typeparam TDatePickerDateTable
+@inherits ComponentAbstractBase<TDatePickerDateTable>
+
+<tbody>
+    @foreach (var child in Children)
+    {
+        var childDatas = child;
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerDateTableTR<>))">
+            @foreach (var data in childDatas)
+            {
+                var rowData = data;
+                if (rowData.Type == "WeekNumber")
+                {
+                    <AbstractComponent @attributes="rowData.Attrs" Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerDateTableWeekNumber<>))"></AbstractComponent>
+                }
+                else if (rowData.Type == "ShowAdjacentMonthsButton")
+                {
+                    <td>
+                        @if (ShowAdjacentMonths)
+                        {
+                            <AbstractComponent @attributes="rowData.Attrs" Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerTableButton<>))"></AbstractComponent>
+                        }
+                    </td>
+                }
+                else if (rowData.Type == "Button")
+                {
+                    <td>
+                        <AbstractComponent @attributes="rowData.Attrs" Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerTableButton<>))"></AbstractComponent>
+                    </td>
+                }
+            }
+        </AbstractComponent>
+    }
+</tbody>
+
+

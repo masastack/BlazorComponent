@@ -43,7 +43,7 @@ namespace BlazorComponent
                     _value = value;
                     _hasValue = true;
 
-                    NotifyChange(oldValue, value);
+                    NotifyChange(value, oldValue);
 
                     //Deep watch,is this ok?
                     if (_value is INotifyPropertyChanged notify)
@@ -66,9 +66,9 @@ namespace BlazorComponent
 
         public event Action<TValue, TValue> OnValueChange;
 
-        public void NotifyChange(TValue oldValue, TValue newValue)
+        public void NotifyChange(TValue newValue, TValue oldValue)
         {
-            OnValueChange?.Invoke(oldValue, newValue);
+            OnValueChange?.Invoke(newValue, oldValue);
             _internalProperty?.NotifyChange();
         }
     }

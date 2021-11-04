@@ -9,7 +9,7 @@ namespace BlazorComponent
 
         public override string ToString()
         {
-            var classList = _mapper.Where(i => i.Value() && !string.IsNullOrWhiteSpace(i.Key())).Select(i => i.Key().Trim());
+            var classList = _mapper.Where(i => i.Value() && !string.IsNullOrWhiteSpace(i.Key())).Select(i => i.Key()?.Trim());
             if (!classList.Any())
             {
                 //In this case,style will never render as class="" but nothing

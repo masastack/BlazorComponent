@@ -1,0 +1,19 @@
+﻿@namespace BlazorComponent
+@typeparam TTimePickerTitle
+@inherits ComponentAbstractBase<TTimePickerTitle>
+
+<div class="@CssProvider.GetClass("ampm")">
+    @if (!AmPmReadonly || Period == TimePeriod.Am)
+    {
+        <AbstractComponent Name="picker-button-am" OnClick="@OnAmClick" Metadata="AbstractProvider.GetMetadata(typeof(BPickerTitlePickerButton<>))">
+            AM
+        </AbstractComponent>
+    }
+    @if (!AmPmReadonly || Period == TimePeriod.Pm)
+    {
+        <AbstractComponent Name="picker-button-pm" OnClick="@OnPmClick" Metadata="AbstractProvider.GetMetadata(typeof(BPickerTitlePickerButton<>))">
+            PM
+        </AbstractComponent>
+    }
+</div>
+

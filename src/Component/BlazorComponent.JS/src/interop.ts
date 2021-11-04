@@ -300,7 +300,7 @@ export function addOutsideClickEventListener(invoker, insideSelectors: string[])
         invoker.invokeMethodAsync("Invoke", {});
     }
 
-    document.addEventListener("click", listener, {capture: true});
+    document.addEventListener("click", listener, { capture: true });
 
     var key = `(${insideSelectors.join(',')})document:click`
 
@@ -313,7 +313,7 @@ export function removeOutsideClickEventListener(insideSelectors: string[]) {
     var key = `(${insideSelectors.join(',')})document:click`
 
     if (outsideClickListenerCaches[key]) {
-        document.removeEventListener('click', outsideClickListenerCaches[key], {capture: true});
+        document.removeEventListener('click', outsideClickListenerCaches[key], { capture: true });
         outsideClickListenerCaches[key] = undefined
     }
 }
@@ -344,6 +344,10 @@ export function addHtmlElementEventListener(selector, type, invoker, options, ac
     config["listener"] = function (args) {
         if (actions?.stopPropagation) {
             args.stopPropagation();
+        }
+
+        if (actions?.preventDefault) {
+            args.preventDefault();
         }
 
         // mouseleave relatedTarget
@@ -397,7 +401,7 @@ export function removeHtmlElementEventListener(selector, type) {
     var key = `${selector}:${type}`;
 
     var configs = htmlElementEventListennerConfigs[key];
-    
+
     if (configs) {
         configs.forEach(item => {
             htmlElement?.removeEventListener(type, item["listener"], item['options']);
@@ -503,10 +507,15 @@ export function scrollTo(target) {
     }
 }
 
-export function scrollToElement(container, target) {
-    let dom = getDom(container);
-    let t: any = getDomInfo(target);
-    dom.scrollTop = t.offsetTop - dom.offsetHeight / 2 + t.offsetHeight / 2;
+export function scrollToActiveElement(container, target) {
+    let dom: HTMLElement = getDom(container);
+
+    target = dom.querySelector('.active') as HTMLElement;
+    if (!target) {
+        return;
+    }
+
+    dom.scrollTop = target.offsetTop - dom.offsetHeight / 2 + target.offsetHeight / 2;
 }
 
 export function scrollToPosition(container, position) {
@@ -666,7 +675,7 @@ export function elementScrollIntoView(selector: Element | string) {
     if (!element)
         return;
 
-    element.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'start'});
+    element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
 }
 
 const oldBodyCacheStack = [];
@@ -721,7 +730,7 @@ export function createIconFromfontCN(scriptUrl) {
 }
 
 export function getScroll() {
-    return {x: window.pageXOffset, y: window.pageYOffset};
+    return { x: window.pageXOffset, y: window.pageYOffset };
 }
 
 export function getInnerText(element) {
@@ -871,7 +880,7 @@ function mentionsOnWindowClick(e) {
 
 //#endregion
 
-export {disableDraggable, enableDraggable, resetModalPosition} from "./modules/dragHelper";
+export { disableDraggable, enableDraggable, resetModalPosition } from "./modules/dragHelper";
 
 export function bindTableHeaderAndBodyScroll(bodyRef, headerRef) {
     bodyRef.bindScrollLeftToHeader = () => {
@@ -1055,6 +1064,10 @@ export function getScrollHeightWithoutHeight(selectors) {
     el.style.height = height;
 
     return scrollHeight;
+}
+
+export function insertToFirst(element: HTMLElement) {
+    element.parentElement.insertBefore(element, element.parentElement.firstChild);
 }
 
 //register custom events

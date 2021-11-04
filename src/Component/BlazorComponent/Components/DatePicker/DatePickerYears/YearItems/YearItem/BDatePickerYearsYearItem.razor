@@ -1,0 +1,11 @@
+﻿@namespace BlazorComponent
+@typeparam TDatePickerYears
+@inherits ComponentAbstractBase<TDatePickerYears>
+
+    @{
+    var active = Value == Year;
+    <li @key="Year" class="@CssProvider.GetClass("year-item",data:active)" @onclick="HandleOnYearItemClick">
+        @Formatter(Year)
+    </li>
+}
+

@@ -1,0 +1,13 @@
+﻿@namespace BlazorComponent
+@typeparam TTimePicker
+@inherits ComponentAbstractBase<TTimePicker>
+
+<div class="@CssProvider.GetClass("ampm")">
+    <AbstractComponent Name="picker-button-am" OnClick="@OnAmClick" Metadata="AbstractProvider.GetMetadata(typeof(BPickerTitlePickerButton<>))">
+        AM
+    </AbstractComponent>
+    <AbstractComponent Name="picker-button-pm" OnClick="@OnPmClick" Metadata="AbstractProvider.GetMetadata(typeof(BPickerTitlePickerButton<>))">
+        PM
+    </AbstractComponent>
+</div>
+

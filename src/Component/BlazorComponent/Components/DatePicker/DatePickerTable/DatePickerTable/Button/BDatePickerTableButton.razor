@@ -1,0 +1,11 @@
+﻿@namespace BlazorComponent
+@typeparam TDatePickerTable
+@inherits ComponentAbstractBase<TDatePickerTable>
+
+<button class="@CssProvider.GetClass("btn",data:(Date,IsFloating,IsOtherMonth))"
+        style="@CssProvider.GetStyle("btn",data:(Date,IsFloating,IsOtherMonth))" @attributes="GetButtonAttrs(Date)">
+    <div class="@CssProvider.GetClass("btn-content")">
+        @Formatter(Date)
+    </div>
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerTableEvents<>))"></AbstractComponent>
+</button>

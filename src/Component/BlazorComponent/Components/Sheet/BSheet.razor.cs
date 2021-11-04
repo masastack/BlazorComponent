@@ -21,6 +21,7 @@ namespace BlazorComponent
         [Parameter]
         public bool Light { get; set; }
 
+        //REVIEW: What's this?
         [Parameter]
         public bool OnContextmenuPreventDefault { get; set; }
 

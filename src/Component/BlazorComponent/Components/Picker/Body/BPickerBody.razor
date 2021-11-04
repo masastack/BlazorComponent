@@ -1,0 +1,8 @@
+﻿@namespace BlazorComponent
+@typeparam TPicker
+@inherits ComponentAbstractBase<TPicker>
+
+<div class="@CssProvider.GetClass("body")" style="@CssProvider.GetStyle("body")">
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BPickerBodyTransition<>))"></AbstractComponent>
+</div>
+

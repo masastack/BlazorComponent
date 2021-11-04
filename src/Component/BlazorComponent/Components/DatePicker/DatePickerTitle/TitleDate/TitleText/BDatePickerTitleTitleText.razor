@@ -1,0 +1,10 @@
+﻿@namespace BlazorComponent
+@typeparam TDatePickerTitle
+@inherits ComponentAbstractBase<TDatePickerTitle>
+
+<Transition Name="@ComputedTransition">
+    <GroupElement Key="Value" Vertical>
+        @((MarkupString)(Date??"&nbsp;"))
+    </GroupElement>
+</Transition>
+

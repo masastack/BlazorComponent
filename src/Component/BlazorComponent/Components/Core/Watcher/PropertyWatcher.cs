@@ -105,12 +105,12 @@ namespace BlazorComponent
 
         public PropertyWatcher Watch<TValue>(string name, Action changeCallback)
         {
-            return Watch<TValue>(name, (oldValue, newValue) => changeCallback?.Invoke());
+            return Watch<TValue>(name, (newValue, oldValue) => changeCallback?.Invoke());
         }
 
         public PropertyWatcher Watch<TValue>(string name, Action<TValue> changeCallback)
         {
-            return Watch<TValue>(name, (oldValue, newValue) => changeCallback?.Invoke(newValue));
+            return Watch<TValue>(name, (newValue, oldValue) => changeCallback?.Invoke(newValue));
         }
 
         public PropertyWatcher Watch<TValue>(string name, Action<TValue, TValue> changeCallback)

@@ -1,0 +1,17 @@
+﻿@namespace BlazorComponent
+@typeparam TDatePickerDateTable
+@inherits ComponentAbstractBase<TDatePickerDateTable>
+
+<thead>
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerDateTableTR<>))">
+        @if (ShowWeek)
+        {
+            <th></th>
+        }
+        @foreach (var day in WeekDays)
+        {
+            <th>@day</th>
+        }
+    </AbstractComponent>
+</thead>
+

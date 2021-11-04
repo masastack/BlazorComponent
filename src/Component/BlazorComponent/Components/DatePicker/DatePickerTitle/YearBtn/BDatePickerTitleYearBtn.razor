@@ -1,0 +1,12 @@
+﻿@namespace BlazorComponent
+@typeparam TDatePickerTitle
+@inherits ComponentAbstractBase<TDatePickerTitle>
+
+<AbstractComponent Name="year-btn" OnClick="@OnYearBtnClick" Metadata="AbstractProvider.GetMetadata(typeof(BPickerTitlePickerButton<>))">
+    @Year
+    @if (YearIcon != null)
+    {
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerTitleYearIcon<>))"></AbstractComponent>
+    }
+</AbstractComponent>
+

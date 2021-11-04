@@ -125,7 +125,8 @@ namespace BlazorComponent
 
             var builder = new CssBuilder
             {
-                Context = new BuilderContext(index, data)
+                Index = index,
+                Data = data
             };
             action?.Invoke(builder);
 
@@ -148,7 +149,8 @@ namespace BlazorComponent
 
             var builder = new StyleBuilder
             {
-                Context = new BuilderContext(index, data)
+                Index = index,
+                Data = data
             };
             action?.Invoke(builder);
 
