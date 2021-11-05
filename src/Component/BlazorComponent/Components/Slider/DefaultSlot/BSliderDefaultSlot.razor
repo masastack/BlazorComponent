@@ -1,12 +1,13 @@
 ﻿@namespace BlazorComponent
+@typeparam TValue
 @typeparam TInput
-@inherits BInputDefaultSlot<double,TInput>
+@inherits BInputDefaultSlot<TValue,TInput>
 
 @if (!InverseLabel)
 {
     <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BInputLabel<,>))"></AbstractComponent>
 }
-<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSliderSlider<>))"></AbstractComponent>
+<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSliderSlider<,>))"></AbstractComponent>
 @if (InverseLabel)
 {
     <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BInputLabel<,>))"></AbstractComponent>

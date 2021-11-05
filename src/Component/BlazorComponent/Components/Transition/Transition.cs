@@ -40,6 +40,9 @@ namespace BlazorComponent
         [CascadingParameter]
         public Transition CascadingTransition { get; set; }
 
+        [Parameter]
+        public string Origin { get; set; }
+
         protected bool? Show { get; set; } = false;
 
         public bool? If { get; protected set; } = true;
@@ -93,7 +96,8 @@ namespace BlazorComponent
                 .AddIf(() => $"{ComputedName}-leave-active {ComputedName}-leave-to", () => State == TransitionState.LeaveTo);
 
             StyleBuilder
-                .AddIf("display:none", () => Show == false);
+                .AddIf("display:none", () => Show == false)
+                .AddIf(() => $"transform-origin:{Origin}", () => !string.IsNullOrEmpty(Origin) && State != TransitionState.None);
         }
 
         public bool Register(Element element)

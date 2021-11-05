@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public static class InputExtensions
+    public static class InputAbstractProviderExtensions
     {
         public static ComponentAbstractProvider ApplyInputDefault<TValue>(this ComponentAbstractProvider abstractProvider)
         {

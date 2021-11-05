@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BSliderSteps<TInput> where TInput : ISlider
+    public partial class BSliderSteps<TValue,TInput> where TInput : ISlider<TValue>
     {
         public double Step => Component.Step;
 

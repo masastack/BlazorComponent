@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BSliderTrackContainer<TInput> where TInput : ISlider
+    public partial class BSliderTrackContainer<TValue,TInput> where TInput : ISlider<TValue>
     {
         public ElementReference TrackElement
         {

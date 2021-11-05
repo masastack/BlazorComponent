@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BSliderSlider<TInput> where TInput : ISlider
+    public partial class BSliderSlider<TValue,TInput> where TInput : ISlider<TValue>
     {
         public EventCallback<MouseEventArgs> HandleOnSliderClickAsync => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnSliderClickAsync);
 

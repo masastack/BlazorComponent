@@ -1,4 +1,5 @@
 ﻿@namespace BlazorComponent
+@typeparam TValue
 @typeparam TInput
 @inherits ComponentAbstractBase<TInput>
 
@@ -6,5 +7,5 @@
      @onclick="HandleOnSliderClickAsync"
      @onexmousedown="HandleOnSliderMouseDownAsync"
      @onexmousedown:preventDefault>
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSliderChildren<>))"></AbstractComponent>
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSliderChildren<,>))"></AbstractComponent>
 </div>

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BSliderThumbContainer<TInput> where TInput : ISlider
+    public partial class BSliderThumbContainer<TValue, TInput> where TInput : ISlider<TValue>
     {
         public ElementReference ThumbElement
         {
@@ -20,11 +20,11 @@ namespace BlazorComponent
 
         public Dictionary<string, object> ThumbAttrs => Component.ThumbAttrs;
 
-        public EventCallback<FocusEventArgs> HandleOnFocusAsync => EventCallback.Factory.Create<FocusEventArgs>(Component, Component.HandleOnFocusAsync);
+        public EventCallback<FocusEventArgs> OnFocus => EventCallback.Factory.Create<FocusEventArgs>(Component, Component.HandleOnFocusAsync);
 
-        public EventCallback<FocusEventArgs> HandleOnBlurAsync => EventCallback.Factory.Create<FocusEventArgs>(Component, Component.HandleOnBlurAsync);
+        public EventCallback<FocusEventArgs> OnBlur => EventCallback.Factory.Create<FocusEventArgs>(Component, Component.HandleOnBlurAsync);
 
-        public EventCallback<KeyboardEventArgs> HandleOnKeyDownAsync => EventCallback.Factory.Create<KeyboardEventArgs>(Component, Component.HandleOnKeyDownAsync);
+        public EventCallback<KeyboardEventArgs> OnKeyDown => EventCallback.Factory.Create<KeyboardEventArgs>(Component, Component.HandleOnKeyDownAsync);
 
         public bool ShowThumbLabel => Component.ShowThumbLabel;
     }

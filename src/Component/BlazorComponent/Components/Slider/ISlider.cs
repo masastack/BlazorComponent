@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public interface ISlider : IInput<double>, ILoadable
+    public interface ISlider<TValue> : IInput<TValue>, ILoadable
     {
         bool InverseLabel => default;
 
@@ -38,9 +38,11 @@ namespace BlazorComponent
 
         bool ShowThumbLabel { get; }
 
-        RenderFragment ThumbLabelContent { get; }
+        bool ShowThumbLabelContainer { get; }
 
-        double InternalValue { get; }
+        RenderFragment<int> ThumbLabelContent { get; }
+
+        TValue InternalValue { get; }
 
         Task HandleOnSliderClickAsync(MouseEventArgs args)
         {

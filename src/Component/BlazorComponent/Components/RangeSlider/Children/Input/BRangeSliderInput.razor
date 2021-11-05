@@ -1,0 +1,11 @@
+﻿@namespace BlazorComponent
+@typeparam TValue
+@typeparam TRangeSlider
+@inherits ComponentAbstractBase<TRangeSlider>
+
+    @for (var i = 0; i < 2; i++)
+    {
+        var index = i;
+        <input value="@InternalValue[index]" disabled readonly tabindex="-1" @attributes="InputAttrs" />
+    }
+

@@ -1,11 +1,14 @@
 ﻿@namespace BlazorComponent
+@typeparam TValue
 @typeparam TInput
 @inherits ComponentAbstractBase<TInput>
 
-@*TODO:transition*@
-<div class="@CssProvider.GetClass("thumb-label-container")" style="@CssProvider.GetStyle("thumb-label-container")">
-    <div class="@CssProvider.GetClass("thumb-label")">
-        <div>@ThumbLabelContent</div>
-    </div>
-</div>
+<ScaleTransition Origin="bottom center">
+    <Element Show="ShowThumbLabelContainer" class="@CssProvider.GetClass("thumb-label-container")" style="@CssProvider.GetStyle("thumb-label-container")">
+        <div class="@CssProvider.GetClass("thumb-label")">
+            <div>@ThumbLabelContent(Index)</div>
+        </div>
+    </Element>
+</ScaleTransition>
+
 

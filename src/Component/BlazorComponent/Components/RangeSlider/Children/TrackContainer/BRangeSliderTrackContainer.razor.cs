@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BSliderDefaultSlot<TValue,TInput> where TInput : ISlider<TValue>
+    public partial class BRangeSliderTrackContainer<TValue, TRangeSlider> where TRangeSlider : IRangeSlider<TValue>
     {
-        public bool InverseLabel => Component.InverseLabel;
     }
 }

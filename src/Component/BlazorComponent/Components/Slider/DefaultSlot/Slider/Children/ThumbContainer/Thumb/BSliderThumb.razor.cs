@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BSliderThumb<TInput> where TInput : ISlider
+    public partial class BSliderThumb<TValue, TInput> where TInput : ISlider<TValue>
     {
     }
 }
