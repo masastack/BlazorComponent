@@ -22,21 +22,23 @@ namespace BlazorComponent
 
         [CascadingParameter(Name = "IsInNav")]
         public bool IsInNav { get; set; }
-        
-        [Parameter]
-        public RenderFragment<ItemContext> ItemContent { get; set; }
-
-        [Parameter]
-        public string Href { get; set; }
 
         [Parameter]
         public string Color { get; set; }
+
+        [Parameter]
+        public string Href { get; set; }
+        
+        [Parameter]
+        public RenderFragment<ItemContext> ItemContent { get; set; }
 
         [Parameter]
         public bool Link { get; set; }
 
         [Parameter]
         public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+        protected RenderFragment ComputedItemContent => ItemContent(GenItemContext());
 
         public bool IsLink => Href != null || Link;
 
@@ -57,6 +59,19 @@ namespace BlazorComponent
             base.OnParametersSet();
             
             SetAttrs();
+        }
+        
+        protected virtual async Task HandleOnClick(MouseEventArgs args)
+        {
+            if (args.Button == 0)
+            {
+                await ToggleItem();
+
+                if (OnClick.HasDelegate)
+                {
+                    await OnClick.InvokeAsync(args);
+                }
+            }
         }
 
         private void SetAttrs()
@@ -88,17 +103,16 @@ namespace BlazorComponent
             }
         }
 
-        protected virtual async Task HandleOnClick(MouseEventArgs args)
+        private ItemContext GenItemContext()
         {
-            if (args.Button == 0)
+            return new ItemContext()
             {
-                await ToggleItem();
-
-                if (OnClick.HasDelegate)
-                {
-                    await OnClick.InvokeAsync(args);
-                }
-            }
+                Active = IsActive,
+                ActiveClass = IsActive ? ComputedActiveClass : "",
+                Toggle = ToggleItem,
+                Ref = RefBack,
+                Value = Value
+            };
         }
     }
 }

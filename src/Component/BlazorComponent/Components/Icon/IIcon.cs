@@ -13,6 +13,8 @@ namespace BlazorComponent
 
         bool Left { get; set; }
 
+        ElementReference Ref { get; set; }
+
         bool Right { get; set; }
 
         StringNumber Size { get; set; }

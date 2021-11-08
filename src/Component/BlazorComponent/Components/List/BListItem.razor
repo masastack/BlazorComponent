@@ -7,15 +7,14 @@
      @ref="Ref"
      @onclick="HandleOnClick"
      @attributes="Attributes">
+
     @if (ItemContent != null)
     {
-        @ItemContent(new ItemContext()
-        {
-            Active = IsActive
-        });
+        @ComputedItemContent
     }
     else
     {
         @ChildContent
     }
+
 </div>

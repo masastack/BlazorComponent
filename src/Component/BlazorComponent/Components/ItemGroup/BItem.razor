@@ -1,15 +1,4 @@
 ﻿@namespace BlazorComponent
 @inherits BGroupable<ItemGroupBase>
 
-@{
-    var context = new ItemContext
-    {
-        Active = IsActive,
-        ActiveClass = IsActive ? ComputedActiveClass : "",
-        Toggle = ToggleItem,
-        Ref = RefBack,
-        Value = Value
-    };
-
-    @ChildContent(context)
-}
+@ComputedChildContent

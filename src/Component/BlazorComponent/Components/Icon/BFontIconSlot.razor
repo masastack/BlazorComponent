@@ -8,6 +8,6 @@
 }
 else
 {
-    <Element Tag="@Tag" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" @attributes="Attrs">@NewChildren</Element>
+    <Element Tag="@Tag" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" ReferenceCaptureAction="_ => Ref = _" @attributes="Attrs">@NewChildren</Element>
 }
 

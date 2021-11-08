@@ -11,6 +11,12 @@ namespace BlazorComponent
 
         public EventCallback<MouseEventArgs> OnClick => Component.OnClick;
 
+        public ElementReference Ref
+        {
+            get => Ref;
+            set => Component.Ref = value;
+        }
+
         public IDictionary<string, object> Attrs => Component.Attrs;
     }
 }

@@ -56,10 +56,6 @@ namespace BlazorComponent
         [Parameter]
         public string Color { get; set; }
 
-        [Obsolete("Use OnClick instead.")]
-        [Parameter]
-        public EventCallback<MouseEventArgs> Click { get; set; }
-
         [Parameter]
         public EventCallback<MouseEventArgs> OnClick { get; set; }
 
@@ -68,14 +64,6 @@ namespace BlazorComponent
             if (OnClick.HasDelegate)
             {
                 await OnClick.InvokeAsync(args);
-            }
-        }
-
-        protected override void OnParametersSet()
-        {
-            if (Click.HasDelegate)
-            {
-                OnClick = Click;
             }
         }
 

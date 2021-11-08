@@ -11,6 +11,12 @@ namespace BlazorComponent
 
         public bool Disabled => Component.Disabled;
 
+        public ElementReference Ref
+        {
+            get => Ref;
+            set => Component.Ref = value;
+        }
+
         public string Tag => Component.Tag;
 
         public Dictionary<string, object> SvgAttrs => Component.SvgAttrs;
