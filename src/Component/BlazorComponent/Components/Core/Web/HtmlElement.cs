@@ -101,6 +101,15 @@ namespace BlazorComponent.Web
                     })), options.Value, actions);
         }
 
+        public async Task AddEventListenerAsync<T>(string type, Func<T, Task> listener, OneOf<EventListenerOptions, bool> options)
+            where T : EventArgs
+        {
+            await JS.InvokeVoidAsync(JsInteropConstants.AddHtmlElementEventListener, Selector, type, DotNetObjectReference.Create(new Invoker<T>(async (p) =>
+            {
+                listener?.Invoke(p);
+            })), options.Value);
+        }
+
         public async Task RemoveClass(string className)
         {
             await JS.InvokeVoidAsync(JsInteropConstants.RemoveCls, Selector, className);

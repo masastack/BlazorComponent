@@ -136,6 +136,12 @@
 
         public static string GetMenuOrDialogMaxZIndex => $"{Variables.JsInteropFuncNamePrefix}getMenuOrDialogMaxZIndex";
 
+        public static string AddStepperEventListener => $"{Variables.JsInteropFuncNamePrefix}addStepperEventListener";
+
+        public static string RemoveStepperEventListener => $"{Variables.JsInteropFuncNamePrefix}removeStepperEventListener";
+
+        public static string InitStepperWrapper => $"{Variables.JsInteropFuncNamePrefix}initStepperWrapper";
+
         #region Draggable Modal
 
         public static string EnableDraggable => $"{Variables.JsInteropFuncNamePrefix}enableDraggable";

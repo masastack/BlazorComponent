@@ -9,6 +9,78 @@ export function getZIndex(el?: Element | null): number {
     return index
 }
 
+export function addStepperEventListener(element: HTMLElement, isActive: Boolean) {
+    element.addEventListener(
+        'transitionend',
+        e => onTransition(e, isActive, element),
+        false
+    );
+}
+
+export function removeStepperEventListener(element: HTMLElement, isActive: Boolean) {
+    element.removeEventListener(
+        'transitionend',
+        e => onTransition(e, isActive, element),
+        false
+    );
+}
+
+export function initStepperWrapper(element: HTMLElement) {
+    if (!element.classList.contains('active')) {
+        element.style.display='none';
+    }
+
+    var observer = new MutationObserver(function (mutationsList) {
+        for (let mutation of mutationsList) {
+            if (mutation.type === 'attributes') {
+                if (mutation.attributeName == 'class') {
+                    var target: HTMLElement = mutation.target as HTMLElement;
+                    if (target.classList.contains('active')) {
+                        target.style.display='';
+                        enter(target,true);
+                    }
+                    else{
+                        leave(target);
+                        setTimeout(() => {
+                            target.style.display='none';
+                        }, 300);
+                    }
+                }
+            }
+        }
+    });
+
+    observer.observe(element, { attributes: true, attributeFilter: ['class'] });
+}
+
+function onTransition(e: TransitionEvent, isActive: Boolean, element: HTMLElement) {
+    if (!isActive ||
+        e.propertyName !== 'height'
+    ) return
+
+    element.style.height = 'auto';
+}
+
+function enter(element: HTMLElement, isActive: Boolean) {
+    let scrollHeight = 0
+
+    // Render bug with height
+    requestAnimationFrame(() => {
+        scrollHeight = element.scrollHeight;
+    });
+
+    element.style.height = 0 + 'px';
+    // Give the collapsing element time to collapse
+    setTimeout(() => isActive && (element.style.height = (scrollHeight + 'px' || 'auto')), 450)
+}
+
+function leave(element: HTMLElement) {
+    element.style.height = element.clientHeight + 'px';
+    setTimeout(() => {
+        element.style.height = 0 + 'px';
+    }, 10)
+}
+
 export function getDom(element) {
     if (!element) {
         element = document.body;

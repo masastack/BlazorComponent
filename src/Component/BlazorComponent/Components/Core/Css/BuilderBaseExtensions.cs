@@ -12,28 +12,28 @@ namespace BlazorComponent
         public static TBuilder Add<TBuilder>(this TBuilder builder,string name)
             where TBuilder:BuilderBase
         {
-            builder._mapper.Add(() => name, () => true);
+            builder._mapper.TryAdd(() => name, () => true);
             return builder;
         }
 
         public static TBuilder Add<TBuilder>(this TBuilder builder,Func<string> funcName)
             where TBuilder : BuilderBase
         {
-            builder._mapper.Add(funcName, () => true);
+            builder._mapper.TryAdd(funcName, () => true);
             return builder;
         }
 
         public static TBuilder AddIf<TBuilder>(this TBuilder builder,Func<string> funcName, Func<bool> func)
             where TBuilder : BuilderBase
         {
-            builder._mapper.Add(funcName, func);
+            builder._mapper.TryAdd(funcName, func);
             return builder;
         }
 
         public static TBuilder AddIf<TBuilder>(this TBuilder builder,string name, Func<bool> func)
             where TBuilder : BuilderBase
         {
-            builder._mapper.Add(() => name, func);
+            builder._mapper.TryAdd(() => name, func);
             return builder;
         }
 
@@ -44,7 +44,7 @@ namespace BlazorComponent
 
             if (!item.Equals(default))
             {
-                builder._mapper.Add(item.funcName, item.func);
+                builder._mapper.TryAdd(item.funcName, item.func);
             }
 
             return builder;
@@ -57,7 +57,7 @@ namespace BlazorComponent
 
             if (!item.Equals(default))
             {
-                builder._mapper.Add(() => item.name, item.func);
+                builder._mapper.TryAdd(() => item.name, item.func);
             }
 
             return builder;
