@@ -1,0 +1,12 @@
+﻿@namespace BlazorComponent
+@typeparam TColorPickerPreview
+@inherits ComponentAbstractBase<TColorPickerPreview>
+
+<div class="@CssProvider.GetClass("sliders")">
+    <AbstractComponent Metadata=@(AbstractProvider.GetMetadata(typeof(BColorPickerHue<>)))></AbstractComponent>
+    @if (!HideAlpha)
+    {
+        <AbstractComponent Metadata=@(AbstractProvider.GetMetadata(typeof(BColorPickerAlpha<>)))></AbstractComponent>
+    }
+</div>
+

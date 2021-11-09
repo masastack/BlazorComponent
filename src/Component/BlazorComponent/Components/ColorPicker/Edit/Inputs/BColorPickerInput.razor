@@ -1,0 +1,8 @@
+﻿@namespace BlazorComponent
+@typeparam TColorPickerEdit
+@inherits ComponentAbstractBase<TColorPickerEdit>
+
+<div class="@CssProvider.GetClass("input")">
+    <input @key="Target" @attributes="Attrs" />
+    <span>@Target</span>
+</div>

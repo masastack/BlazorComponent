@@ -1,0 +1,67 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<BCascadingValue Value="this">
+    <div class="@CssProvider.GetClass("edit")">
+        @if (Mode == ColorTypes.HEX || Mode == ColorTypes.HEXA)
+        {
+            var hex = Color.Hexa;
+            var value = HideAlpha && hex.EndsWith("FF") ? hex.Substring(0, 7) : hex;
+            EventCallback<ChangeEventArgs> onChange = CreateEventCallback<ChangeEventArgs>(HandleOnChange);
+            Attrs = new Dictionary<string, object>{
+                { "maxlength", HideAlpha ? 7 : 9 },
+                { "disabled", Disabled },
+                { "value", value },
+                { "onchange", onChange }
+            };
+
+            <AbstractComponent Target="HEX" Attrs="@Attrs" Metadata="AbstractProvider.GetMetadata(typeof(BColorPickerInput<>))"></AbstractComponent>
+        }
+        else
+        {
+            if (HideAlpha)
+            {
+                CurrentMode.RemoveAt(2);
+            }
+
+            List<(string Target, int Value, string Type)> inputs = CurrentMode;
+            Dictionary<string, double> valuePairs = new Dictionary<string, double>();
+
+            if (Mode == ColorTypes.RGBA)
+            {
+                valuePairs = Color.Rgba.GetType().GetProperties().ToDictionary(k => k.Name, v => (double)v.GetValue(Color.Rgba));
+            }
+            else if (Mode == ColorTypes.HSLA)
+            {
+                valuePairs = Color.Hsla.GetType().GetProperties().ToDictionary(k => k.Name, v => (double)v.GetValue(Color.Hsla));
+            }
+
+            foreach (var m in inputs)
+            {
+                EventCallback<ChangeEventArgs> onInput = CreateEventCallback<ChangeEventArgs>(args => HandleOnInput(args, m.Target, m.Type));
+
+                Attrs = new Dictionary<string, object>{
+                    { "type", "number" },
+                    { "min", 0 },
+                    { "disabled", Disabled },
+                    { "max", m.Value },
+                    { "oninput", onInput}
+                };
+
+                var value = GetValue(valuePairs[m.Target], m.Type);
+                Attrs.Add("value", value);
+
+                if (m.Type == "float")
+                {
+                    Attrs.Add("step", "0.01");
+                }
+                else if (m.Type == "int")
+                {
+                    Attrs.Add("step", "1");
+                }
+
+                <AbstractComponent Target="@m.Target" Attrs="@Attrs" Metadata="AbstractProvider.GetMetadata(typeof(BColorPickerInput<>))"></AbstractComponent>
+            }
+        }
+    </div>
+</BCascadingValue>

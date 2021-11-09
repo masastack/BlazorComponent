@@ -1,0 +1,9 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<BCascadingValue Value="this">
+    <div class="@CssProvider.GetClass("canvas")" style="@CssProvider.GetStyle("canvas")" @onclick="HandleOnClickAsync" @onmousedown="HandleOnMouseDownAsync" @onmousedown:preventDefault @ref="Ref">
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BColorPickerCanvasCanvas<>))"></AbstractComponent>
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BColorPickerCanvasDot<>))"></AbstractComponent>
+    </div>
+</BCascadingValue>

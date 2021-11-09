@@ -1,0 +1,15 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<BCascadingValue Value="this">
+    <AbstractComponent Metadata="@(AbstractProvider.GetMetadata<BSheet>())">
+        @if (!HideCanvas)
+        {
+            <AbstractComponent Metadata="@(AbstractProvider.GetMetadata<BColorPickerCanvas>())"></AbstractComponent>
+        }
+        @if (!HideSliders || !HideInputs)
+        {
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BColorPickerControls<>))"></AbstractComponent>
+        }
+    </AbstractComponent>
+</BCascadingValue>

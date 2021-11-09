@@ -1,0 +1,10 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<BCascadingValue Value="this">
+    <div class="@CssProvider.GetClass("preview")">
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BColorPickerDot<>))"></AbstractComponent>
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BColorPickerSliders<>))"></AbstractComponent>
+    </div>
+</BCascadingValue>
+

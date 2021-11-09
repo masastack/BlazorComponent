@@ -21,14 +21,21 @@ namespace BlazorComponent
             );
 
         public int ToInt32() => Match(
-            //TODO:Substring 'px'
-            t0 => int.TryParse(t0, out var val) ? val : 0,
+            t0 =>
+            {
+                string[] strs = t0.Split("px");
+                return int.TryParse(strs[0], out var val) ? val : 0;
+            },
             t1 => t1,
             t2 => Convert.ToInt32(t2)
             );
 
         public double ToDouble() => Match(
-            t0 => double.TryParse(t0, out var val) ? val : 0D,
+            t0 =>
+            {
+                string[] strs = t0.Split("px");
+                return double.TryParse(strs[0], out var val) ? val : 0D;
+            },
             t1 => Convert.ToDouble(t1),
             t2 => t2
             );

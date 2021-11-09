@@ -1,5 +1,24 @@
 ﻿import registerDirective from './directive/index'
 
+export function updateCanvas(element, hue: number) {
+    const canvas = element as HTMLCanvasElement
+    const ctx = canvas.getContext('2d')
+
+    if (!ctx) return
+
+    const saturationGradient = ctx.createLinearGradient(0, 0, canvas.width, 0)
+    saturationGradient.addColorStop(0, 'hsla(0, 0%, 100%, 1)') // white
+    saturationGradient.addColorStop(1, `hsla(${hue}, 100%, 50%, 1)`)
+    ctx.fillStyle = saturationGradient
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    const valueGradient = ctx.createLinearGradient(0, 0, 0, canvas.height)
+    valueGradient.addColorStop(0, 'hsla(0, 0%, 100%, 0)') // transparent
+    valueGradient.addColorStop(1, 'hsla(0, 0%, 0%, 1)') // black
+    ctx.fillStyle = valueGradient
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+}
+
 export function getZIndex(el?: Element | null): number {
     if (!el || el.nodeType !== Node.ELEMENT_NODE) return 0
 
@@ -360,49 +379,15 @@ export function addDomEventListener(element, eventName, preventDefault, invoker)
     }
 }
 
-var outsideClickListenerCaches: { [key: string]: any } = {}
-
-export function addOutsideClickEventListener(invoker, insideSelectors: string[]) {
-    if (!insideSelectors) return;
-
-    var listener = function (args) {
-        args.preventDefault();
-        var insideClicked = insideSelectors.some(s => document.querySelector(s)?.contains(args.target));
-        if (insideClicked) return;
-        invoker.invokeMethodAsync("Invoke", {});
-    }
-
-    document.addEventListener("click", listener, { capture: true });
-
-    var key = `(${insideSelectors.join(',')})document:click`
-
-    outsideClickListenerCaches[key] = listener;
-}
-
-export function removeOutsideClickEventListener(insideSelectors: string[]) {
-    if (!insideSelectors) return;
-
-    var key = `(${insideSelectors.join(',')})document:click`
-
-    if (outsideClickListenerCaches[key]) {
-        document.removeEventListener('click', outsideClickListenerCaches[key], { capture: true });
-        outsideClickListenerCaches[key] = undefined
-    }
-}
-
-export function addMouseleaveEventListener(selector) {
-    var htmlElement = document.querySelector(selector);
-    if (htmlElement) {
-        htmlElement.addEventListener()
-    }
-}
-
 var htmlElementEventListennerConfigs: { [prop: string]: any[] } = {}
 
 export function addHtmlElementEventListener(selector, type, invoker, options, actions) {
-    let htmlElement: HTMLElement
+    let htmlElement: any
 
-    if (selector == "document") {
+    if (selector == "window") {
+        htmlElement = window;
+    }
+    else if (selector == "document") {
         htmlElement = document.documentElement;
     } else {
         htmlElement = document.querySelector(selector);
@@ -416,10 +401,6 @@ export function addHtmlElementEventListener(selector, type, invoker, options, ac
     config["listener"] = function (args) {
         if (actions?.stopPropagation) {
             args.stopPropagation();
-        }
-
-        if (actions?.preventDefault) {
-            args.preventDefault();
         }
 
         // mouseleave relatedTarget
@@ -461,10 +442,14 @@ export function addHtmlElementEventListener(selector, type, invoker, options, ac
     }
 }
 
-export function removeHtmlElementEventListener(selector, type) {
-    let htmlElement: HTMLElement
 
-    if (selector == "document") {
+export function removeHtmlElementEventListener(selector, type) {
+    let htmlElement: any
+
+    if (selector == "window") {
+        htmlElement = window;
+    }
+    else if (selector == "document") {
         htmlElement = document.documentElement;
     } else {
         htmlElement = document.querySelector(selector);
@@ -480,6 +465,43 @@ export function removeHtmlElementEventListener(selector, type) {
         });
 
         htmlElementEventListennerConfigs[key] = []
+    }
+}
+
+var outsideClickListenerCaches: { [key: string]: any } = {}
+
+export function addOutsideClickEventListener(invoker, insideSelectors: string[]) {
+    if (!insideSelectors) return;
+
+    var listener = function (args) {
+        args.preventDefault();
+        var insideClicked = insideSelectors.some(s => document.querySelector(s)?.contains(args.target));
+        if (insideClicked) return;
+        invoker.invokeMethodAsync("Invoke", {});
+    }
+
+    document.addEventListener("click", listener, { capture: true });
+
+    var key = `(${insideSelectors.join(',')})document:click`
+
+    outsideClickListenerCaches[key] = listener;
+}
+
+export function removeOutsideClickEventListener(insideSelectors: string[]) {
+    if (!insideSelectors) return;
+
+    var key = `(${insideSelectors.join(',')})document:click`
+
+    if (outsideClickListenerCaches[key]) {
+        document.removeEventListener('click', outsideClickListenerCaches[key], { capture: true });
+        outsideClickListenerCaches[key] = undefined
+    }
+}
+
+export function addMouseleaveEventListener(selector) {
+    var htmlElement = document.querySelector(selector);
+    if (htmlElement) {
+        htmlElement.addEventListener()
     }
 }
 

@@ -142,6 +142,8 @@
 
         public static string InitStepperWrapper => $"{Variables.JsInteropFuncNamePrefix}initStepperWrapper";
 
+        public static string UpdateCanvas => $"{Variables.JsInteropFuncNamePrefix}updateCanvas";
+
         #region Draggable Modal
 
         public static string EnableDraggable => $"{Variables.JsInteropFuncNamePrefix}enableDraggable";
