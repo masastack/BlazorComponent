@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using BlazorComponent.Web;
 using Microsoft.AspNetCore.Components;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent;
 
-public abstract class BMenuable : BActivatable
+public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
 {
     private readonly int _stackMinZIndex = 6;
 
@@ -21,7 +22,7 @@ public abstract class BMenuable : BActivatable
     private bool _hasWindow;
     private Window _window;
 
-    protected(Position activator, Position content) Dimensions = new(new Position(), new Position());
+    protected (Position activator, Position content) Dimensions = new(new Position(), new Position());
 
     protected bool ActivatorFixed { get; set; }
 
@@ -134,6 +135,8 @@ public abstract class BMenuable : BActivatable
 
     public ElementReference ContentRef { get; set; }
 
+    public bool ShowContent { get; set; }
+
     [Inject]
     public DomEventJsInterop DomEventJsInterop { get; set; }
 
@@ -198,22 +201,6 @@ public abstract class BMenuable : BActivatable
     public bool Top { get; set; }
 
     [Parameter]
-    public override bool Value
-    {
-        get => IsActive;
-        set
-        {
-            var lastActive = _isActive;
-
-            IsActive = value;
-
-            if (value == lastActive) return;
-
-            ValueChanged.InvokeAsync(value);
-        }
-    }
-
-    [Parameter]
     public StringNumber ZIndex { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -229,13 +216,28 @@ public abstract class BMenuable : BActivatable
             {
                 DomEventJsInterop.AddEventListener<Window>("window", "resize", OnResize, false);
             }
+        }
+
+        if (!ShowContent && Value)
+        {
+            ShowContent = true;
+            Value = false;
+
+            StateHasChanged();
+            await AfterShowContent();
+
+            Value = true;
 
             await MoveContentTo();
-
             await UpdateDimensions();
         }
 
         await base.OnAfterRenderAsync(firstRender);
+    }
+
+    protected virtual Task AfterShowContent()
+    {
+        return Task.CompletedTask;
     }
 
     protected abstract Task MoveContentTo();
@@ -246,6 +248,8 @@ public abstract class BMenuable : BActivatable
 
         return Task.CompletedTask;
     }
+
+    public virtual string AttachedSelector => Attach;
 
     protected string CalcLeft(double menuWidth)
     {
@@ -503,19 +507,40 @@ public abstract class BMenuable : BActivatable
 
     private async Task<int> GetMaxZIndex()
     {
-        var maxZindex = await JsInvokeAsync<int>(JsInteropConstants.GetMenuOrDialogMaxZIndex, new List<ElementReference> {ContentRef}, Ref);
+        var maxZindex = await JsInvokeAsync<int>(JsInteropConstants.GetMenuOrDialogMaxZIndex, new List<ElementReference> { ContentRef }, Ref);
 
         return maxZindex > _stackMinZIndex ? maxZindex : _stackMinZIndex;
     }
 
-    protected override void Dispose(bool disposing)
-    {
-        base.Dispose(disposing);
+    private HtmlElement GetContent() => Document.QuerySelector(ContentRef);
 
+    protected async Task DelContentFrom()
+    {
+        if (ContentRef.Context != null)
+        {
+            await JsInvokeAsync(JsInteropConstants.DelElementFrom, ContentRef, AttachedSelector);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
         if (_hasWindow)
         {
             DomEventJsInterop.RemoveEventListener<Window>("window", "resize", OnResize);
         }
+
+        if (ContentRef.Context != null)
+        {
+            object selectors = new[]
+            {
+                GetContent().Selector,
+                ActivatorSelector
+            };
+
+            await JsInvokeAsync(JsInteropConstants.RemoveOutsideClickEventListener, selectors);
+        }
+
+        await DelContentFrom();
     }
 
     protected class Position : BoundingClientRect

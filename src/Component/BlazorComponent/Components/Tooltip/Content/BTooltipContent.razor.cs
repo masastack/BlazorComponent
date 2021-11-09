@@ -31,6 +31,8 @@ namespace BlazorComponent
 
         public bool Value => Component.Value;
 
+        public bool ShowContent => Component.ShowContent;
+
         public string Transition => Component.Transition;
 
         public RenderFragment ComponentChildContent => Component.ChildContent;

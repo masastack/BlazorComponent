@@ -90,13 +90,7 @@ public abstract class BActivatable : BDelayable, IActivatable
     public virtual bool Value
     {
         get => IsActive;
-        set
-        {
-            if (value == IsActive) return;
-
-            IsActive = value;
-            ValueChanged.InvokeAsync(value);
-        }
+        set => IsActive = value;
     }
 
     [Parameter]
@@ -113,25 +107,29 @@ public abstract class BActivatable : BDelayable, IActivatable
 
     protected virtual async Task Open()
     {
-        await RunOpenDelay(() =>
-        {
-            Value = true;
-            return Task.CompletedTask;
-        });
+        await RunOpenDelay(() => UpdateValue(true));
     }
 
     protected virtual async Task Close()
     {
-        await RunCloseDelay(() =>
-        {
-            Value = false;
-            return Task.CompletedTask;
-        });
+        await RunCloseDelay(() => UpdateValue(false));
     }
 
-    protected virtual async Task Toggle()
+    protected virtual Task Toggle()
     {
-        Value = !Value;
+        return UpdateValue(!Value);
+    }
+
+    protected async Task UpdateValue(bool value)
+    {
+        if (ValueChanged.HasDelegate)
+        {
+            await ValueChanged.InvokeAsync(value);
+        }
+        else
+        {
+            Value = value;
+        }
     }
 
     private async Task AddActivatorEvents()
@@ -179,9 +177,9 @@ public abstract class BActivatable : BDelayable, IActivatable
 
         if (OpenOnHover)
         {
-            listeners.Add("mouseenter", (CreateEventCallback<MouseEventArgs>(async _ => await Open()), null));
+            listeners.Add("mouseenter", (CreateEventCallback<MouseEventArgs>(_ => Open()), null));
 
-            listeners.Add("mouseleave", (CreateEventCallback<MouseEventArgs>(async _ => await Close()), null));
+            listeners.Add("mouseleave", (CreateEventCallback<MouseEventArgs>(_ => Close()), null));
         }
         else
         {
@@ -201,9 +199,9 @@ public abstract class BActivatable : BDelayable, IActivatable
 
         if (Disabled || !OpenOnFocus) return listeners;
 
-        listeners.Add("focus", CreateEventCallback<FocusEventArgs>(async _ => await Open()));
+        listeners.Add("focus", CreateEventCallback<FocusEventArgs>(_ => Open()));
 
-        listeners.Add("blur", CreateEventCallback<FocusEventArgs>(async _ => await Close()));
+        listeners.Add("blur", CreateEventCallback<FocusEventArgs>(_ => Close()));
 
         return listeners;
     }

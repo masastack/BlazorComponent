@@ -2,7 +2,7 @@
 
 namespace BlazorComponent
 {
-    public interface ITooltip : IHasProviderComponent, IActivatable
+    public interface ITooltip : IHasProviderComponent, IActivatable, IMenuable
     {
         ElementReference ContentRef { set; }
 

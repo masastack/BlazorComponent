@@ -13,8 +13,6 @@ namespace BlazorComponent
     {
         private readonly int _defaultOffset = 8;
 
-        private string _initialAbsoluteUri;
-
         protected string CalculatedLeft
         {
             get
@@ -108,13 +106,6 @@ namespace BlazorComponent
         [Parameter]
         public string Transition { get; set; }
 
-        protected override async Task OnInitializedAsync()
-        {
-            await base.OnInitializedAsync();
-
-            NavigationManager.LocationChanged += OnLocationChanged;
-        }
-
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
@@ -122,19 +113,17 @@ namespace BlazorComponent
             if (firstRender)
             {
                 DomEventJsInterop.ResizeObserver<Dimensions[]>(ActivatorSelector, ObserveSizeChange);
-
-                if (!OpenOnHover)
-                {
-                    await JsInvokeAsync(JsInteropConstants.AddOutsideClickEventListener,
-                        DotNetObjectReference.Create(new Invoker<object>(OutsideClick)),
-                        new[] {GetContent().Selector, ActivatorSelector});
-                }
             }
         }
 
-        protected virtual Task DelContentFrom()
+        protected override async Task AfterShowContent()
         {
-            return Task.CompletedTask;
+            if (!OpenOnHover)
+            {
+                await JsInvokeAsync(JsInteropConstants.AddOutsideClickEventListener,
+                    DotNetObjectReference.Create(new Invoker<object>(OutsideClick)),
+                    new[] { Document.QuerySelector(ContentRef).Selector, ActivatorSelector });
+            }
         }
 
         protected override Task Activate(Action lazySetter)
@@ -154,19 +143,12 @@ namespace BlazorComponent
             return listeners;
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-
-            NavigationManager.LocationChanged -= OnLocationChanged;
-        }
-
-        protected virtual void OnContentClick(MouseEventArgs args)
+        protected virtual async void OnContentClick(MouseEventArgs args)
         {
             // TODO: if clicked element attribute contains 'disabled', return
             if (CloseOnContentClick)
             {
-                Value = false;
+                await UpdateValue(false);
             }
             else
             {
@@ -174,13 +156,13 @@ namespace BlazorComponent
             }
         }
 
-        protected virtual void OnContentMouseenter(MouseEventArgs args)
+        protected virtual async void OnContentMouseenter(MouseEventArgs args)
         {
             if (!Disabled && OpenOnHover)
             {
-                if (Value) return;
+                if (Value) await Task.CompletedTask;
 
-                Value = true;
+                await UpdateValue(true);
             }
             else
             {
@@ -188,11 +170,11 @@ namespace BlazorComponent
             }
         }
 
-        protected virtual void OnContentMouseleave(MouseEventArgs args)
+        protected virtual async void OnContentMouseleave(MouseEventArgs args)
         {
             if (OpenOnHover)
             {
-                Value = false;
+                await UpdateValue(false);
             }
             else
             {
@@ -217,35 +199,9 @@ namespace BlazorComponent
             return Dimensions.activator.Left - _defaultOffset * 2;
         }
 
-        private HtmlElement GetContent() => Document.QuerySelector(ContentRef);
-
         private void ObserveSizeChange(Dimensions[] _)
         {
             UpdateDimensions();
-        }
-
-        private void OnLocationChanged(object sender, LocationChangedEventArgs e)
-        {
-            if (_initialAbsoluteUri == null)
-            {
-                _initialAbsoluteUri = new Uri(e.Location).AbsolutePath;
-            }
-            else
-            {
-                var absolutePath = new Uri(e.Location).AbsolutePath;
-
-                if (absolutePath == _initialAbsoluteUri) return;
-
-                object selectors = new[]
-                {
-                    GetContent().Selector,
-                    ActivatorSelector
-                };
-
-                JsInvokeAsync(JsInteropConstants.RemoveOutsideClickEventListener, selectors);
-
-                DelContentFrom();
-            }
         }
 
         private async Task OutsideClick(object _)
@@ -257,7 +213,7 @@ namespace BlazorComponent
 
             if (CloseOnClick)
             {
-                Value = false;
+                await UpdateValue(false);
             }
 
             await InvokeStateHasChangedAsync();

@@ -7,8 +7,10 @@
 }
 
 <div style="@CssProvider.GetStyle()" class="@CssProvider.GetClass()" @ref="Ref">
-    <Transition Name="@Transition">
-        <Element Show="Value"
+    @if (ShowContent)
+    {
+        <Transition Name="@Transition">
+            <Element Show="Value"
                  style="@CssProvider.GetStyle("content")"
                  class="@CssProvider.GetClass("content")"
                  @onclick="OnContentClick"
@@ -16,7 +18,8 @@
                  @onmouseleave="OnContentMouseleave"
                  @attributes="@Attributes"
                  ReferenceCaptureAction="r => ContentRef = r">
-            @ChildContent
-        </Element>
-    </Transition>
+                @ChildContent
+            </Element>
+        </Transition>
+    }
 </div>
