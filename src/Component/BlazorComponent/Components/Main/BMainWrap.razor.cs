@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public abstract partial class BMain : BDomComponentBase
+    public partial class BMainWrap<TMain> where TMain : IMain
     {
-
+        public RenderFragment ComponentChildContent => Component.ChildContent;
     }
 }

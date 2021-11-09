@@ -1,8 +1,8 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<main class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @attributes="Attributes">
-    <div class="@CssProvider.GetClass("wrap")">
-        @ChildContent
-    </div>
-</main>
+<BCascadingValue Value="this">
+    <main class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @attributes="Attributes">
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BMainWrap<>))"></AbstractComponent>
+    </main>
+</BCascadingValue>

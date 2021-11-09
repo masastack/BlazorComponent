@@ -1,0 +1,7 @@
+﻿@namespace BlazorComponent
+@typeparam TMain
+@inherits ComponentAbstractBase<TMain>
+
+<div class="@CssProvider.GetClass("wrap")">
+    @ComponentChildContent
+</div>

@@ -11,7 +11,7 @@ namespace BlazorComponent
 {
     public abstract partial class BNavigationDrawer : BDomComponentBase
     {
-        private bool _miniVariant = false;
+        protected bool _miniVariant = false;
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
@@ -28,20 +28,6 @@ namespace BlazorComponent
         [Parameter]
         public bool ExpandOnHover { get; set; }
 
-        [Parameter]
-        public bool MiniVariant
-        {
-            get => _miniVariant;
-            set
-            {
-                if (value == _miniVariant) return;
-                _miniVariant = value;
-            }
-        }
-
-        [Parameter]
-        public EventCallback<bool> MiniVariantChanged { get; set; }
-
         /// <summary>
         /// A temporary drawer sits above its application and uses a scrim (overlay) to darken the background
         /// </summary>
@@ -50,16 +36,9 @@ namespace BlazorComponent
 
         protected bool _isMouseover { get; set; }
 
-        protected bool _isMiniVariant => 
-            (!ExpandOnHover && MiniVariant) || (ExpandOnHover && !_isMouseover);
-
-        public virtual async Task Click(MouseEventArgs e)
+        public virtual Task Click(MouseEventArgs e)
         {
-            if (MiniVariant)
-            {
-                MiniVariant = false;
-                await MiniVariantChanged.InvokeAsync(_miniVariant);
-            }
+            return Task.CompletedTask;
         }
 
         public virtual Task MouseEnter(MouseEventArgs e)
