@@ -27,10 +27,14 @@ namespace BlazorComponent.Web
             return new HtmlElement(_js, $"[_bl_{elementReference.Id}]");
         }
 
-        public async Task<string> ExecCommandAsync(string commandId, bool? showUI, object value)
+        public async Task<T> ExecCommandAsync<T>(string commandId, bool? showUI, object value = null)
         {
-            var result = await _js.InvokeAsync<string>("document.execCommand", commandId, showUI, value);
-            return result;
+            return await _js.InvokeAsync<T>("document.execCommand", commandId, showUI, value);
+        }
+
+        public async Task ExecCommandAsync(string commandId, bool? showUI, object value = null)
+        {
+            await _js.InvokeVoidAsync("document.execCommand", commandId, showUI, value);
         }
     }
 }
