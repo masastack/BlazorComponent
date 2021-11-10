@@ -541,6 +541,8 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
         }
 
         await DelContentFrom();
+
+        GC.SuppressFinalize(this);
     }
 
     protected class Position : BoundingClientRect

@@ -106,16 +106,6 @@ namespace BlazorComponent
         [Parameter]
         public string Transition { get; set; }
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            await base.OnAfterRenderAsync(firstRender);
-
-            if (firstRender)
-            {
-                DomEventJsInterop.ResizeObserver<Dimensions[]>(ActivatorSelector, ObserveSizeChange);
-            }
-        }
-
         protected override async Task AfterShowContent()
         {
             if (!OpenOnHover)

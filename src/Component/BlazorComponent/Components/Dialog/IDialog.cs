@@ -14,5 +14,7 @@ namespace BlazorComponent
         RenderFragment ChildContent { get; }
 
         Dictionary<string, object> ContentAttrs { get; }
+
+        bool ShowContent { get; }
     }
 }

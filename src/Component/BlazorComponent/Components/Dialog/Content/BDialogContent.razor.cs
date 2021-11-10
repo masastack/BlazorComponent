@@ -15,5 +15,9 @@ namespace BlazorComponent
         }
 
         public Dictionary<string, object> ContentAttrs => Component.ContentAttrs;
+
+        public bool ShowContent => Component.ShowContent;
+
+        public bool Value => Component.Value;
     }
 }
