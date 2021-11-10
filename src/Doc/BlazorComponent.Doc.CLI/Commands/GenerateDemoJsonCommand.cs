@@ -286,8 +286,9 @@ namespace BlazorComponent.Doc.CLI.Commands
 
         private string GetApiDoc(string apiDoc)
         {
+            if (string.IsNullOrEmpty(apiDoc)) return "";
+
             var h1Class = "\"m-heading text-h3 text-sm-h3 mb-2\"";
-            ;
             var h2Class = "\"m-heading text-h4 text-sm-h4 mb-3\"";
             var aClass = "\"text-decoration-none text-right text-md-left\"";
 

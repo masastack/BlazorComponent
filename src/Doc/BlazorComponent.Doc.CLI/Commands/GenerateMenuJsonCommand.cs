@@ -7,13 +7,13 @@ using Microsoft.Extensions.CommandLineUtils;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace BlazorComponent.Doc.CLI.Commands
 {
@@ -63,6 +63,9 @@ namespace BlazorComponent.Doc.CLI.Commands
             var docsDirArgument = command.Argument(
                 "docsDir", "[Required] The directory of docs files.");
 
+            var styleDirArgument = command.Argument(
+                "styleDir", "[Required] The directory of style files.");
+
             var outputArgument = command.Argument(
                 "output", "[Required] The directory where the json file to output");
 
@@ -70,6 +73,7 @@ namespace BlazorComponent.Doc.CLI.Commands
             {
                 string demoDir = demoDirArgument.Value;
                 string docsDir = docsDirArgument.Value;
+                string styleDir = styleDirArgument.Value;
                 string output = outputArgument.Value;
 
                 if (string.IsNullOrEmpty(demoDir) || !Directory.Exists(demoDir))
@@ -84,6 +88,12 @@ namespace BlazorComponent.Doc.CLI.Commands
                     return 1;
                 }
 
+                if (string.IsNullOrEmpty(styleDir) || !Directory.Exists(styleDir))
+                {
+                    Console.WriteLine("Invalid demoDir.");
+                    return 1;
+                }
+
                 if (string.IsNullOrEmpty(output))
                 {
                     output = "./";
@@ -91,14 +101,15 @@ namespace BlazorComponent.Doc.CLI.Commands
 
                 string demoDirectory = Path.Combine(Directory.GetCurrentDirectory(), demoDir);
                 string docsDirectory = Path.Combine(Directory.GetCurrentDirectory(), docsDir);
+                string styleDirectory = Path.Combine(Directory.GetCurrentDirectory(), styleDir);
 
-                GenerateFiles(demoDirectory, docsDirectory, output);
+                GenerateFiles(demoDirectory, docsDirectory, styleDirectory, output);
 
                 return 0;
             });
         }
 
-        private void GenerateFiles(string demoDirectory, string docsDirectory, string output)
+        private void GenerateFiles(string demoDirectory, string docsDirectory, string styleDirectory, string output)
         {
             var demoDirectoryInfo = new DirectoryInfo(demoDirectory);
             if (!demoDirectoryInfo.Exists)
@@ -111,6 +122,13 @@ namespace BlazorComponent.Doc.CLI.Commands
             if (!docsDirectoryInfo.Exists)
             {
                 Console.WriteLine("{0} is not a directory", docsDirectory);
+                return;
+            }
+
+            var styleDirectoryInfo = new DirectoryInfo(styleDirectory);
+            if (!styleDirectoryInfo.Exists)
+            {
+                Console.WriteLine("{0} is not a directory", styleDirectory);
                 return;
             }
 
@@ -150,20 +168,50 @@ namespace BlazorComponent.Doc.CLI.Commands
                 }
             }
 
+            var categoryStyleMenuList = new Dictionary<string, Dictionary<string, IEnumerable<DemoMenuItemModel>>>();
+            var allStyleMenuList = new List<Dictionary<string, DemoMenuItemModel>>();
+
+            foreach (var subStyleDirectory in styleDirectoryInfo.GetFileSystemInfos().OrderBy(r => r.Name))
+            {
+                var category = subStyleDirectory.Name;
+
+                var styleMenuList = GetSubMenuList(subStyleDirectory as DirectoryInfo, false).ToList();
+
+                allStyleMenuList.AddRange(styleMenuList);
+
+                var styleMenuI18N = styleMenuList
+                    .SelectMany(x => x)
+                    .GroupBy(x => x.Key)
+                    .ToDictionary(x => x.Key, x => x.Select(o => o.Value));
+
+                foreach (var style in styleMenuI18N)
+                {
+                    if (!categoryStyleMenuList.ContainsKey(style.Key))
+                    {
+                        categoryStyleMenuList[style.Key] = new Dictionary<string, IEnumerable<DemoMenuItemModel>>();
+                    }
+
+                    categoryStyleMenuList[style.Key].Add(category, style.Value);
+                }
+            }
+
             var docsMenuI18N = docsMenuList
                 .SelectMany(x => x)
                 .GroupBy(x => x.Key)
                 .ToDictionary(x => x.Key, x => x.Select(x => x.Value));
 
-            foreach (var lang in new[] {"zh-CN", "en-US"})
+            foreach (var lang in new[] { "zh-CN", "en-US" })
             {
                 var menus = new List<DemoMenuItemModel>();
 
                 var children = docsMenuI18N[lang].OrderBy(x => x.Order).ToArray();
 
                 var categoryComponent = categoryDemoMenuList[lang];
+                var categoryStyle = categoryStyleMenuList[lang];
+
 
                 var componentMenus = new List<DemoMenuItemModel>();
+
                 foreach (var component in categoryComponent)
                 {
                     componentMenus.Add(new DemoMenuItemModel()
@@ -177,11 +225,33 @@ namespace BlazorComponent.Doc.CLI.Commands
                     });
                 }
 
+                var styleMenus = new List<DemoMenuItemModel>();
+
+                foreach (var style in categoryStyle)
+                {
+                    styleMenus.Add(new DemoMenuItemModel()
+                    {
+                        Order = Array.IndexOf(ConfigWrapper.Config.GenerateRule.Menus.Select(x => x.Key).ToArray(), style.Key) + 1,
+                        Title = ConfigWrapper.Config.GenerateRule.Menus.First(menu => menu.Key == style.Key).Descriptions
+                            .First(desc => desc.Lang == lang).Description,
+                        Type = "component",
+                        Url = style.Key.ToLowerInvariant(),
+                        Children = style.Value.OrderBy(x => x.Order).ToArray()
+                    });
+                }
+
                 //Children 4 will be component menu
                 children[4].Children = componentMenus[0].Children.SelectMany(r => r.Children)
                     .OrderBy(r => r.Order)
                     .ThenBy(r => r.Title)
                     .ToArray();
+
+                //Children 3 will be style menu
+                children[3].Children = styleMenus[0].Children.SelectMany(r => r.Children)
+                    .OrderBy(r => r.Order)
+                    .ThenBy(r => r.Title)
+                    .ToArray();
+
                 menus.AddRange(children);
 
                 var json = JsonSerializer.Serialize(menus, jsonOptions);
@@ -282,23 +352,23 @@ namespace BlazorComponent.Doc.CLI.Commands
                             Title = group.Key, // TODO: 似乎无用处
                             Type = "itemGroup",
                             Children = group.Select(x => new DemoMenuItemModel()
+                            {
+                                Title = x.Value.Title,
+                                SubTitle = x.Value.SubTitle,
+                                Url = $"{directory.Name.ToLowerInvariant()}/{x.Value.Title.ToLower()}",
+                                Type = "menuItem",
+                                Order = x.Value.Order,
+                                Cover = x.Value.Cover,
+                                Children = x.Value.Children.Select(y => new DemoMenuItemModel()
                                 {
-                                    Title = x.Value.Title,
-                                    SubTitle = x.Value.SubTitle,
-                                    Url = $"{directory.Name.ToLowerInvariant()}/{x.Value.Title.ToLower()}",
+                                    Title = y.Title,
+                                    SubTitle = y.SubTitle,
+                                    Url = $"{directory.Name.ToLowerInvariant()}/{y.Title.ToLower()}",
                                     Type = "menuItem",
-                                    Order = x.Value.Order,
-                                    Cover = x.Value.Cover,
-                                    Children = x.Value.Children.Select(y => new DemoMenuItemModel()
-                                    {
-                                        Title = y.Title,
-                                        SubTitle = y.SubTitle,
-                                        Url = $"{directory.Name.ToLowerInvariant()}/{y.Title.ToLower()}",
-                                        Type = "menuItem",
-                                        Order = y.Order,
-                                        Cover = y.Cover,
-                                    }).ToArray()
-                                })
+                                    Order = y.Order,
+                                    Cover = y.Cover,
+                                }).ToArray()
+                            })
                                 .OrderBy(x => x.Title, new MenuComparer())
                                 .ToArray(),
                         });

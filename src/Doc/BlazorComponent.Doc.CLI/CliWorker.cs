@@ -37,6 +37,7 @@ namespace BlazorComponent.Doc.CLI
                 new GenerateDocsToHtmlCommand(),
                 new GenerateIconsToJsonCommand(),
                 new GenerateMenuJsonCommand(),
+                new GenerateApiJsonCommand(),
             }
             .ToList()
             .ForEach(cmd =>
