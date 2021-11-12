@@ -5,14 +5,12 @@ namespace BlazorComponent
     /// <summary>
     /// The component that is used to separate the <see cref="BBreadcrumbsItem"/>s.
     /// </summary>
-    public partial class BBreadcrumbsDivider : BDomComponentBase, IBreadcrumbsDivider
+    public partial class BBreadcrumbsDivider
     {
-        protected string Tag { get; init; } = "li";
+        [Parameter]
+        public virtual string Tag { get; set; } = "li";
 
         [Parameter]
-        public string Divider { get; set; } = "/";
-
-        [Parameter]
-        public RenderFragment DividerContent { get; set; }
+        public RenderFragment ChildContent { get; set; }
     }
 }

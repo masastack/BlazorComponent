@@ -1,13 +1,6 @@
 ﻿@namespace BlazorComponent
-@inherits BDomComponentBase
+@inherits  BDomComponentBase
 
-<Element Tag="@Tag" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">
-    @if (DividerContent != null)
-    {
-        @DividerContent
-    }
-    else
-    {
-        @Divider
-    }
+<Element Tag="@Tag" class="@CssProvider.GetClass(nameof(BBreadcrumbsDivider))" style="@CssProvider.GetStyle(nameof(BBreadcrumbsDivider))">
+    @ChildContent
 </Element>

@@ -3,14 +3,16 @@ using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
-    public interface IBreadcrumbs : IHasProviderComponent
-    {
-        bool RenderDivider { get; }
+    public interface IBreadcrumbs<TItem> : IHasProviderComponent where TItem : BreadcrumbItem
+    {    
+        string Divider { get; }
 
-        IReadOnlyList<BreadcrumbItem> Items { get; }
+        IReadOnlyList<TItem> Items { get; }
 
-        RenderFragment<BreadcrumbItem> ItemContent { get; }
-        
+        RenderFragment DividerContent { get; }
+
         RenderFragment ChildContent { get; }
+
+        RenderFragment<TItem> ItemContent { get; }
     }
 }

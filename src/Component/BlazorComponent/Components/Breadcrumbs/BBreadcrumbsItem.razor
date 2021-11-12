@@ -1,22 +1,16 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<BCascadingValue Value="this">
-    <Element Tag="@Tag" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">
-        @if (IsLink)
-        {
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BBreadcrumbsLinkItem<>))"></AbstractComponent>
+<CascadingValue Value="this" IsFixed>
+
+    <Element Tag="@Tag" class="@CssProvider.GetClass(nameof(BBreadcrumbsItem))" style="@CssProvider.GetStyle(nameof(BBreadcrumbsItem))">
+        @{
+            var (tag, props) = ChildProps;
         }
-        else
-        {
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BBreadcrumbsPlainItem<>))"></AbstractComponent>
-        }
+        <Element Tag="@tag" ExtraAttributes=props>
+            @ChildContent
+        </Element>
 
     </Element>
 
-    <!--When using razor definition without `Items` parameter-->
-    @if (Breadcrumbs.ChildContent != null && !IsLast)
-    {
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BBreadcrumbsDivider>()" Divider="@Breadcrumbs.Divider" DividerContent="@Breadcrumbs.DividerContent"></AbstractComponent>
-    }
-</BCascadingValue>
+</CascadingValue>
