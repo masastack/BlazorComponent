@@ -25,8 +25,9 @@ namespace BlazorComponent
         public RenderFragment PrependItemContent => Component.PrependItemContent;
 
         public RenderFragment AppendItemContent => Component.AppendItemContent;
-        
-        public AbstractComponent Menu {
+
+        public object Menu
+        {
             set
             {
                 Component.Menu = value;

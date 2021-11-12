@@ -17,7 +17,7 @@ else if (ItemContent != null)
     for (var i = 0; i < items.Count(); i++)
     {
         var item = items.ElementAt(i);
-        @ItemContent((i,item))
+        @ItemContent(new ItemProps<TItem>(i, item))
     }
 }
 

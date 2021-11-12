@@ -4,7 +4,7 @@
 @inherits BDomComponentBase
 @implements ITreeview<TItem, TKey>
 
-<CascadingValue Value="this">
+<BCascadingValue Value="this">
     <div class="@CssProvider.GetClass()">
         @if (ComputedItems != null && ComputedItems.Any())
         {
@@ -18,4 +18,4 @@
             @ChildContent
         }
     </div>
-</CascadingValue>
+</BCascadingValue>

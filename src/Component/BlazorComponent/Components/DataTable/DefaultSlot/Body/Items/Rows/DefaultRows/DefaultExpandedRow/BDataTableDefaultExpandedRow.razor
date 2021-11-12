@@ -3,14 +3,16 @@
 @typeparam TDataTable
 @inherits ComponentAbstractBase<TDataTable>
 
-<AbstractComponent Value="@IsExpanded" Metadata="AbstractProvider.GetMetadata(typeof(BDataTableRowGroup))">
-    <AbstractContent Name="RowHeaderContent">
-        <AbstractComponent Index="@Index" Item="@Item" Metadata="AbstractProvider.GetMetadata(typeof(BDataTableDefaultSimpleRow<,>))"></AbstractComponent>
-    </AbstractContent>
-    <AbstractContent Name="RowContentContent">
-        <tr class="@CssProvider.GetClass("expanded-content")">
+@Render(typeof(BDataTableRowGroup), props => {
+    props
+        .Add("Value",IsExpanded)
+        .AddContent("RowHeaderContent", Render(typeof(BDataTableDefaultSimpleRow<,>), rowProps => {
+            rowProps
+                .Add("Index",Index)
+                .Add("Item",Item);
+        }))
+        .AddContent("RowContentContent",@<tr class="@CssProvider.GetClass("expanded-content")">
             @ExpandedItemContent(Props)
-        </tr>
-    </AbstractContent>
-</AbstractComponent>
+        </tr>);
+})
 

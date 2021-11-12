@@ -9,9 +9,12 @@ namespace BlazorComponent
 {
     public partial class BDataTableScopedRows<TItem, TDataTable> where TDataTable : IDataTable<TItem>
     {
-        public IEnumerable<TItem> ComputedItems => Component.ComputedItems;
+        [Parameter]
+        public IEnumerable<TItem> Items { get; set; }
 
-        public RenderFragment<(int Index, TItem Item)> ItemContent => Component.ItemContent;
+        public IEnumerable<DataTableHeader<TItem>> ComputedHeaders => Component.ComputedHeaders;
+
+        public RenderFragment<ItemProps<TItem>> ItemContent => Component.ItemContent;
 
         public Func<TItem, bool> IsExpanded => Component.IsExpanded;
 

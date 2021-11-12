@@ -158,9 +158,8 @@ namespace BlazorComponent
 
                       await Task.Delay(300, _cancellationTokenSource.Token);
                       State = TransitionState.None;
-                      await FirstElement.UpdateViewAsync();
-
                       await OnAfterEnterAsync();
+                      await FirstElement.UpdateViewAsync();
                   }
                   else
                   {

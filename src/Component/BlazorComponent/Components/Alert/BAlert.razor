@@ -1,8 +1,19 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(CascadingValue<>))">
-    <Element Tag="@Tag" role="alert" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id">
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BAlertWrapper<>))"></AbstractComponent>
-    </Element>
-</AbstractComponent>
+<BCascadingValue Value="this">
+    @if (Transition != null)
+    {
+        <Transition Name="@Transition">
+            <Element Show="Value" Tag="@Tag" role="alert" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id">
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BAlertWrapper<>))"></AbstractComponent>
+            </Element>
+        </Transition>
+    }
+    else
+    {
+        <Element Show="Value" Tag="@Tag" role="alert" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id">
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BAlertWrapper<>))"></AbstractComponent>
+        </Element>
+    }
+</BCascadingValue>

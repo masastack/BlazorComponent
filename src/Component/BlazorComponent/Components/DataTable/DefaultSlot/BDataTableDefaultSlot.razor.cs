@@ -11,5 +11,9 @@ namespace BlazorComponent
         public bool HasTop=>Component.HasTop;
 
         public bool HasBottom=>Component.HasBottom;
+
+        public IEnumerable<TItem> Items => Component.ComputedItems;
+
+        public IEnumerable<DataTableHeader<TItem>> Headers=> Component.ComputedHeaders;
     }
 }

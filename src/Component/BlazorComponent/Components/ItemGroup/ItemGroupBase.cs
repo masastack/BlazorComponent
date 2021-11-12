@@ -67,7 +67,7 @@ namespace BlazorComponent
             // assign first registered item
             if (Mandatory && Value == null)
             {
-                UpdateMandatory();
+                _ = UpdateMandatory();
             }
         }
 

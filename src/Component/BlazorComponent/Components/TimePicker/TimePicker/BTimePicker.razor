@@ -3,22 +3,20 @@
 
 
 <BCascadingValue Value="this">
-    <AbstractComponent Class="@CssProvider.GetClass()" Metadata="AbstractProvider.GetMetadata(typeof(BPicker))">
-        @if (!NoTitle)
+    @Render(typeof(BPicker), props => {
+        props.Add("class",CssProvider.GetClass());
+
+        if (!NoTitle)
         {
-            <AbstractContent Name="TitleContent">
-                <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTimePickerTitle))"></AbstractComponent>
-            </AbstractContent>
+            props.AddContent("TitleContent",@<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTimePickerTitle))"></AbstractComponent>);
         }
-        <AbstractContent Name="ChildContent">
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTimePickerPickerBody<>))"></AbstractComponent>
-        </AbstractContent>
-        @if (ChildContent != null)
+
+        props.AddChildContent(@<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTimePickerPickerBody<>))"></AbstractComponent>);
+
+        if (ChildContent!=null)
         {
-            <AbstractContent Name="ActionsContent">
-                @ChildContent
-            </AbstractContent>
+            props.AddContent("ActionsContent",ChildContent);
         }
-    </AbstractComponent>
+    })
 </BCascadingValue>
 

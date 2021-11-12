@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -43,6 +44,38 @@ namespace BlazorComponent
         protected void SetValue<TValue>(TValue value, [CallerMemberName] string name = null)
         {
             Watcher.SetValue(value, name);
+        }
+
+        protected RenderFragment Render(Type type, Action<PropsBuilder> propsBuilderAction = null, object key = null, object data = null, Action<object> referenceCapture = null)
+        {
+            var metadata = AbstractProvider.GetMetadata(type, data);
+            return builder =>
+            {
+                var sequence = 0;
+                builder.OpenComponent(sequence++, metadata.Type);
+
+                builder.AddMultipleAttributes(sequence++, metadata.Properties);
+
+                if (propsBuilderAction != null)
+                {
+                    var propsBuilder = new PropsBuilder();
+                    propsBuilderAction.Invoke(propsBuilder);
+
+                    builder.AddMultipleAttributes(sequence++, propsBuilder.Props);
+                }
+
+                if (key != null)
+                {
+                    builder.SetKey(key);
+                }
+
+                if (referenceCapture != null)
+                {
+                    builder.AddComponentReferenceCapture(sequence++, referenceCapture);
+                }
+
+                builder.CloseComponent();
+            };
         }
 
         [Inject]

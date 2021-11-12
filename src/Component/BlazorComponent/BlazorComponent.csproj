@@ -11,6 +11,7 @@
 		<Description>BlazorComponent</Description>
 		<PackageReleaseNotes />
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

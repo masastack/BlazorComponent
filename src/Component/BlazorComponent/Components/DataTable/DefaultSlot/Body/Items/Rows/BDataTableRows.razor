@@ -5,8 +5,7 @@
 
 @if (ItemContent != null)
 {
-    //TODO:scoped rows
-    @ItemContent
+    <AbstractComponent Items="@Items" Metadata="AbstractProvider.GetMetadata(typeof(BDataTableScopedRows<,>))"></AbstractComponent>
 }
 else
 {

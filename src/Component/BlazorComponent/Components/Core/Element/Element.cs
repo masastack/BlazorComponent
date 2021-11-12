@@ -129,7 +129,8 @@ namespace BlazorComponent
 
             StyleBuilder
                 .Add(() => Style)
-                .AddIf(() => Transition.Style, () => Transition != null && _firstElement);
+                .AddIf(() => Transition.Style, () => Transition != null && _firstElement)
+                .AddIf("display:none", () => Transition == null && Show == false);
 
             if (Transition != null)
             {

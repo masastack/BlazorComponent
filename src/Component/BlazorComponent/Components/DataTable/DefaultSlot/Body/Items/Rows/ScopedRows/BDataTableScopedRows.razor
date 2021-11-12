@@ -3,13 +3,13 @@
 @typeparam TDataTable
 @inherits ComponentAbstractBase<TDataTable>
 
-@for (var i = 0; i < ComputedItems.Count(); i++)
+@for (var i = 0; i < Items.Count(); i++)
 {
-    var item = ComputedItems.ElementAt(i);
-    @ItemContent((i,item))
+    var item = Items.ElementAt(i);
+    @ItemContent(new ItemProps<TItem>(i, item))
 
     if (IsExpanded(item))
     {
-        @ExpandedItemContent
+        @ExpandedItemContent((ComputedHeaders,item))
     }
 }

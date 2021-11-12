@@ -2,15 +2,17 @@
 @inherits BDomComponentBase
 
 <BCascadingValue Value="this">
-    <AbstractComponent Class="@CssProvider.GetClass()" Metadata="AbstractProvider.GetMetadata(typeof(BPicker))">
-        @if (!NoTitle)
+    @Render(typeof(BPicker), props => {
+        props
+            .Add("class",CssProvider.GetClass());
+
+        if (!NoTitle)
         {
-            <AbstractContent Name="TitleContent">
-                <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerTitle))"></AbstractComponent>
-            </AbstractContent>
+            props
+                .AddContent("TitleContent",@<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerTitle))"></AbstractComponent>);
         }
-        <AbstractContent Name="ChildContent">
-            <GroupElement Key="InternalActivePicker">
+
+        props.AddChildContent(@<GroupElement Key="InternalActivePicker">
                 @if (InternalActivePicker == DatePickerType.Year)
                 {
                     <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerYears<>))"></AbstractComponent>
@@ -27,15 +29,12 @@
                         <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerMonthTable<>))"></AbstractComponent>
                     }
                 }
-            </GroupElement>
-        </AbstractContent>
-        @if (ChildContent != null)
+            </GroupElement>);
+
+        if (ChildContent != null)
         {
-            <AbstractContent Name="ActionsContent">
-                @*//TODO: save,cancel*@
-                @ChildContent
-            </AbstractContent>
+            props.AddContent("ActionsContent",ChildContent);
         }
-    </AbstractComponent>
+    })
 </BCascadingValue>
 

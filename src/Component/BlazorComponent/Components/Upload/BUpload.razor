@@ -22,9 +22,11 @@
         <div class="@CssProvider.GetClass("chips-wrapper")" style="@CssProvider.GetStyle("chips-wrapper")">
             @foreach (var file in Files)
             {
-                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BTooltip>()" Top Disabled="@string.IsNullOrEmpty(file.Error)">
-                    <TAbstractContent TContext="ActivatorProps" Name="ActivatorContent">
-                        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BChip>()"
+                @Render(typeof(BTooltip), props => {
+                    props
+                        .Add("Top",true)
+                        .Add("Disabled",string.IsNullOrEmpty(file.Error))
+                        .AddContent<ActivatorProps>("ActivatorContent",context=>@<AbstractComponent Metadata="AbstractProvider.GetMetadata<BChip>()"
                                Class="upload-item"
                                Close
                                CloseIconColor="@(file.Uploaded ? "" : "red")"
@@ -40,12 +42,9 @@
                             <span class="@GetColorCss(file.Uploaded)">
                                 @file.FileName@(ShowSize && file.BrowserFile != null ? $"({FormatSize(file.BrowserFile.Size)})" : "")
                             </span>
-                        </AbstractComponent>
-                    </TAbstractContent>
-                    <AbstractContent Name="ChildContent">
-                        @file.Error
-                    </AbstractContent>
-                </AbstractComponent>
+                        </AbstractComponent>)
+                        .AddChildContent(file.Error);
+                })
             }
         </div>
     }
@@ -54,9 +53,11 @@
         <div class="upload-cards">
             @foreach (var file in Files)
             {
-                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BTooltip>()" Top Disabled="@string.IsNullOrEmpty(file.Error)">
-                    <TAbstractContent TContext="ActivatorProps" Name="ActivatorContent">
-                        <AbstractComponent Metadata="AbstractProvider.GetMetadata<ICard>()" Outlined Style="@GetListItemStyle(file.Uploaded)" Class="upload-card upload-card--fix">
+                @Render(typeof(BTooltip), props => {
+                    props
+                        .Add("Top",true)
+                        .Add("Disabled",string.IsNullOrEmpty(file.Error))
+                        .AddContent<ActivatorProps>("ActivatorContent",context=>@<AbstractComponent Metadata="AbstractProvider.GetMetadata<ICard>()" Outlined Style="@GetListItemStyle(file.Uploaded)" Class="upload-card upload-card--fix">
                             <div @onmouseenter="() => file.Hover = true" @onmouseleave="() => file.Hover = false" class="upload-card-item" @attributes="context.Attrs">
                                 @if (file.IsImage)
                                 {
@@ -74,12 +75,9 @@
                                     </AbstractComponent>
                                 </AbstractComponent>
                             </div>
-                        </AbstractComponent>
-                    </TAbstractContent>
-                    <AbstractContent Name="ChildContent">
-                        @file.Error
-                    </AbstractContent>
-                </AbstractComponent>
+                        </AbstractComponent>)
+                        .AddChildContent(file.Error);
+                })
             }
 
             <div class="upload-item @CssProvider.GetClass()" style="@CssProvider.GetStyle()" @onclick="HandleOnClick">
@@ -92,9 +90,11 @@
         <AbstractComponent Metadata="AbstractProvider.GetMetadata<BList>()">
             @foreach (var file in Files)
             {
-                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BTooltip>()" Top Disabled="@string.IsNullOrEmpty(file.Error)">
-                    <TAbstractContent TContext="ActivatorProps" Name="ActivatorContent">
-                        <div style="@GetListItemStyle(file.Uploaded)" class="upload-item" @attributes="context.Attrs">
+                @Render(typeof(BTooltip), props => {
+                    props
+                        .Add("Top",true)
+                        .Add("Disabled",string.IsNullOrEmpty(file.Error))
+                        .AddContent<ActivatorProps>("ActivatorContent",context=>@<div style="@GetListItemStyle(file.Uploaded)" class="upload-item" @attributes="context.Attrs">
                             <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItem>()">
                                 @if (file.IsImage)
                                 {
@@ -128,12 +128,9 @@
                                     </AbstractComponent>
                                 </AbstractComponent>
                             </AbstractComponent>
-                        </div>
-                    </TAbstractContent>
-                    <AbstractContent Name="ChildContent">
-                        @file.Error
-                    </AbstractContent>
-                </AbstractComponent>
+                        </div>)
+                        .AddChildContent(file.Error);
+                })
             }
         </AbstractComponent>
     }
@@ -143,9 +140,9 @@
 
 @if (Counter && Files.Any())
 {
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BHintMessage>()">
-        @Files.Count files
-    </AbstractComponent>
+    @Render(typeof(BMessages), props => {
+        props.AddContent<string>("ChildContent",context=>builder=>builder.AddContent(0,$"{Files.Count} files"));
+    })
 }
 
 <style>

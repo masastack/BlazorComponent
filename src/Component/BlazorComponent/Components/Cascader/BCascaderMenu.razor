@@ -4,14 +4,12 @@
 @typeparam TInput
 @inherits BSelectMenu<TItem, TValue,TValue, TInput>
 
-<AbstractComponent Metadata="AbstractProvider.GetMetadata<BMenu>()" @ref="Menu">
-    <AbstractContent Name="ChildContent">
-        <CascadingValue Value="Component">
-            @if (ComputedItems.Any())
-            {
-                <AbstractComponent Items="@ComputedItems" Metadata="AbstractProvider.GetMetadata(typeof(BCascaderMenuBody<,,>))">
-                </AbstractComponent>
-            }
-        </CascadingValue>
-    </AbstractContent>
-</AbstractComponent>
+@Render(typeof(BMenu), props => {
+    props.AddChildContent(@<CascadingValue Value="Component">
+        @if (ComputedItems.Any())
+    {
+        <AbstractComponent Items="@ComputedItems" Metadata="AbstractProvider.GetMetadata(typeof(BCascaderMenuBody<,,>))">
+        </AbstractComponent>
+    }
+    </CascadingValue>);
+}, referenceCapture: menu => Menu=menu)

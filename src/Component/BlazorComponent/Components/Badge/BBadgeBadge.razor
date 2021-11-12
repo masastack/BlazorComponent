@@ -2,16 +2,17 @@
 @typeparam TBadge
 @inherits ComponentAbstractBase<TBadge>
 
-@if(string.IsNullOrWhiteSpace(Transition))
+@if (Transition != null)
 {
-    <span class="@CssProvider.GetClass("badge")" style="@CssProvider.GetStyle("badge")">
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BBadgeContent<>))"></AbstractComponent>
-    </span>
+    <Transition Name="@Transition">
+        <Element Tag="span" Show="Value" class="@CssProvider.GetClass("badge")" style="@CssProvider.GetStyle("badge")">
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BBadgeContent<>))"></AbstractComponent>
+        </Element>
+    </Transition>
 }
 else
 {
-    //TODO:transition
-    <span class="@CssProvider.GetClass("badge")" style="@CssProvider.GetStyle("badge")">
+    <Element Tag="span" Show="Value" class="@CssProvider.GetClass("badge")" style="@CssProvider.GetStyle("badge")">
         <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BBadgeContent<>))"></AbstractComponent>
-    </span>
+    </Element>
 }

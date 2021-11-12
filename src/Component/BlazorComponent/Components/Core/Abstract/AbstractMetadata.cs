@@ -12,16 +12,6 @@ namespace BlazorComponent
         public AbstractMetadata(Type type)
         {
             Type = type ?? throw new ArgumentNullException(nameof(type));
-
-            if (!type.IsAssignableTo(typeof(IComponent)))
-            {
-                throw new ArgumentException("Type should be a component type.");
-            }
-
-            if (type.IsAbstract || type.IsInterface || !type.IsClass)
-            {
-                throw new InvalidOperationException("Type should be a nonabstract class.");
-            }
         }
 
         public AbstractMetadata(Type type, Dictionary<string, object> properties)

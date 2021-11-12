@@ -11,6 +11,9 @@ namespace BlazorComponent
         public bool IsShowIcon { get; protected set; }
 
         [Parameter]
+        public string Transition { get; set; }
+
+        [Parameter]
         public Borders Border { get; set; }
 
         [Parameter]

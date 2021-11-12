@@ -13,5 +13,7 @@ namespace BlazorComponent
         StringNumber Content => default;
 
         string Icon => default;
+
+        bool Value => default;
     }
 }

@@ -7,6 +7,9 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
+        [Parameter]
+        public bool Value { get; set; } = true;
+
         protected override void SetComponentClass()
         {
             AbstractProvider

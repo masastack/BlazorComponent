@@ -3,24 +3,16 @@
 @typeparam TDataTable
 @inherits ComponentAbstractBase<TDataTable>
 
-<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSimpleTable))">
-    @if (HasTop)
-    {
-        <AbstractContent Name="TopContent">
-            @TopContent
-        </AbstractContent>
-    }
-    <AbstractContent Name="ChildContent">
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataTableCaption<,>))"></AbstractComponent>
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataTableColgroup<,>))"></AbstractComponent>
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataTableHeaders<,>))"></AbstractComponent>
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataTableBody<,>))"></AbstractComponent>
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataTableFoot<,>))"></AbstractComponent>
-    </AbstractContent>
-    @if (HasBottom)
-    {
-        <AbstractContent Name="BottomContent">
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataTableFooters<,>))"></AbstractComponent>
-        </AbstractContent>
-    }
-</AbstractComponent>
+@Render(typeof(BSimpleTable), props => {
+        if (HasTop)
+        {
+            props.Add("TopContent", TopContent);
+        }
+
+        props.AddChildContents(Render(typeof(BDataTableCaption<,>)), Render(typeof(BDataTableColgroup<,>)), Render(typeof(BDataTableHeaders<,>)), Render(typeof(BDataTableBody<,>)), Render(typeof(BDataTableFoot<,>)));
+
+        if (HasBottom)
+        {
+            props.Add("BottomContent", Render(typeof(BDataTableFooters<,>)));
+        }
+})

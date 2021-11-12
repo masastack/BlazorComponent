@@ -11,7 +11,7 @@ namespace BlazorComponent
 
         RenderFragment ChildContent { get; }
 
-        RenderFragment<(int Index, TItem Item)> ItemContent { get; }
+        RenderFragment<ItemProps<TItem>> ItemContent { get; }
 
         IEnumerable<TItem> ComputedItems { get; }
 

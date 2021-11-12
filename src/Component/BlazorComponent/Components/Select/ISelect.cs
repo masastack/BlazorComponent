@@ -45,6 +45,6 @@ namespace BlazorComponent
 
         IList<TItem> SelectedItems { get; }
         
-        AbstractComponent Menu { set; }
+        object Menu { set; }
     }
 }

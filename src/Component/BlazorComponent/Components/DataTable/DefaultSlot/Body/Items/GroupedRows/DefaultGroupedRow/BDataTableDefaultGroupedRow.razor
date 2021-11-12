@@ -3,32 +3,32 @@
 @typeparam TDataTable
 @inherits ComponentAbstractBase<TDataTable>
 
-<AbstractComponent Value="@IsOpen" Metadata="AbstractProvider.GetMetadata(typeof(BDataTableRowGroup))">
-    <AbstractContent Name="ColumnHeaderContent">
-        @if (GroupHeaderContent != null)
-        {
-            @GroupHeaderContent
-        }
-        else
-        {
-            <td class="@CssProvider.GetClass("group-header")" @attributes="ColspanAttrs">
-                <AbstractComponent Metadata="@(AbstractProvider.GetMetadata(typeof(BButton),"group-toggle",data:Group.Key))">
-                    <AbstractComponent Metadata="@(AbstractProvider.GetMetadata(typeof(BIcon),"group-toggle-icon"))">
-                        @(IsOpen?GroupMinusIcon:GroupPlusIcon)
-                    </AbstractComponent>
-                </AbstractComponent>
-                @($"{Options.GroupBy[0]}: {Group.Key}")
-                <AbstractComponent Metadata="@(AbstractProvider.GetMetadata(typeof(BButton),"group-remove"))">
-                    <AbstractComponent Metadata="@(AbstractProvider.GetMetadata(typeof(BIcon),"group-remove-icon"))">
-                        @GroupCloseIcon
-                    </AbstractComponent>
-                </AbstractComponent>
-            </td>
-        }
-    </AbstractContent>
-    <AbstractContent Name="RowContentContent">
-        <AbstractComponent Items="@Group" Metadata="AbstractProvider.GetMetadata(typeof(BDataTableRows<,>))">
+@Render(typeof(BDataTableRowGroup), props => {
+    props
+        .Add("Value",IsOpen);
+
+    if(GroupHeaderContent!=null)
+    {
+         props.AddContent("ColumnHeaderContent",GroupHeaderContent);
+    }
+    else
+    {
+        props.AddContent("ColumnHeaderContent",@<td class="@CssProvider.GetClass("group-header")" @attributes="ColspanAttrs">
+        <AbstractComponent Metadata="@(AbstractProvider.GetMetadata(typeof(BButton),"group-toggle",data:Group.Key))">
+            <AbstractComponent Metadata="@(AbstractProvider.GetMetadata(typeof(BIcon),"group-toggle-icon"))">
+                @(IsOpen?GroupMinusIcon:GroupPlusIcon)
+            </AbstractComponent>
         </AbstractComponent>
-    </AbstractContent>
-</AbstractComponent>
+        @($"{Options.GroupBy[0]}: {Group.Key}")
+        <AbstractComponent Metadata="@(AbstractProvider.GetMetadata(typeof(BButton),"group-remove"))">
+            <AbstractComponent Metadata="@(AbstractProvider.GetMetadata(typeof(BIcon),"group-remove-icon"))">
+                @GroupCloseIcon
+            </AbstractComponent>
+        </AbstractComponent>
+    </td>);
+    }
+
+    props.AddContent("RowContentContent",@<AbstractComponent Items="@Group" Metadata="AbstractProvider.GetMetadata(typeof(BDataTableRows<,>))">
+    </AbstractComponent>);
+})
 

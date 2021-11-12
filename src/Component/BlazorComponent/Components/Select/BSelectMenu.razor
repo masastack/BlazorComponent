@@ -5,9 +5,8 @@
 @typeparam TInput
 @inherits ComponentAbstractBase<TInput>
 
-<AbstractComponent Metadata="AbstractProvider.GetMetadata<BMenu>()" @ref="Menu">
-    <AbstractContent Name="ChildContent">
-        <CascadingValue Value="Component">
+@Render(typeof(BMenu), props => {
+    props.AddChildContent(@<CascadingValue Value="Component">
             @if (ComputedItems.Any())
             {
                 <AbstractComponent Metadata="AbstractProvider.GetMetadata<BList>()">
@@ -51,6 +50,5 @@
                     </AbstractComponent>
                 </AbstractComponent>
             }
-        </CascadingValue>
-    </AbstractContent>
-</AbstractComponent>
+        </CascadingValue>);
+}, referenceCapture: menu => Menu=menu)

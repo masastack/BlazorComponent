@@ -1,7 +1,7 @@
 ﻿@namespace BlazorComponent
 @inherits BItemGroup
 
-<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(CascadingValue<ISlideGroup>))">
+<BCascadingValue Value="this">
     <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id">
 
         <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSlideGroupPrev<>))"></AbstractComponent>
@@ -15,4 +15,4 @@
         <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSlideGroupNext<>))"></AbstractComponent>
 
     </div>
-</AbstractComponent>
+</BCascadingValue>

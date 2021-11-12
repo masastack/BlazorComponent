@@ -14,8 +14,8 @@ namespace BlazorComponent
         [Parameter]
         public bool Disabled { get; set; }
 
-        protected bool _isActive { get; set; }
+        protected virtual bool IsActive { get; }
 
-        protected HoverProps Props => new(CssProvider.GetClass(), CssProvider.GetStyle(), $"_b_{Id}", _isActive);
+        protected HoverProps Props => new(CssProvider.GetClass(), CssProvider.GetStyle(), $"_b_{Id}", IsActive);
     }
 }
