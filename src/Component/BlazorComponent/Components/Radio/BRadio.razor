@@ -18,7 +18,7 @@
         }
 
         <input disabled="@IsDisabled" role="radio" type="radio" checked="@IsActive" value="@Value"
-               @onblur="OnBlur" @onchange="OnChange" @onfocus="OnFocus" @onkeydown="OnKeyDown" @onclick="HandleClick" @onclick:stopPropagation />
+               @onblur="OnBlur" @onchange="OnChange" @onfocus="OnFocus" @onkeydown="OnKeyDown" @onclick="HandleClick" @onclick:stopPropagation/>
 
         @if (Ripple)
         {
@@ -26,9 +26,9 @@
         }
     </div>
     <AbstractComponent Metadata="AbstractProvider.GetMetadata<BLabel>()">
-        @if (ChildContent != default)
+        @if (LabelContent != default)
         {
-            @ChildContent
+            @LabelContent
         }
         else
         {

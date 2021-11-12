@@ -8,7 +8,7 @@
     {
         for (var i = 0; i < Files.Count; i++)
         {
-            @SelectionContent(i)
+            @SelectionContent((i, Files[i].Name))
         }
     }
     else
@@ -23,4 +23,3 @@
         }
     }
 </div>
-

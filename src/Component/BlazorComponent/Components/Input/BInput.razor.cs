@@ -73,13 +73,14 @@ namespace BlazorComponent
 
         [Parameter]
         public EventCallback<MouseEventArgs> OnAppendClick { get; set; }
-
-
+        
         protected bool HasMouseDown { get; set; }
 
         public virtual bool HasLabel => LabelContent != null || Label != null;
 
         public virtual bool HasDetails => MessagesToDisplay.Count > 0;
+
+        public bool IsLoading => Loading != null && Loading != false;
 
         public virtual bool ShowDetails => HideDetails == false || (HideDetails == "auto" && HasDetails);
 

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
@@ -16,6 +11,9 @@ namespace BlazorComponent
         public string For { get; set; }
 
         [Parameter]
-        public bool Required{ get; set; }
+        public bool Required { get; set; }
+
+        [Parameter]
+        public string Tag { get; set; } = "label";
     }
 }

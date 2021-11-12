@@ -8,5 +8,6 @@ namespace BlazorComponent
 {
     public interface ISwitch : IInput<bool>, ISelectable, IRippleable
     {
+        public bool IsLoading { get; }
     }
 }

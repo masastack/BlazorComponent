@@ -1,4 +1,8 @@
 ﻿@namespace BlazorComponent
 @typeparam TInput
 @inherits ComponentAbstractBase<TInput>
-@*//TODO:*@
+
+@if (Visible)
+{
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BProgressCircular>()"></AbstractComponent>
+}

@@ -10,7 +10,7 @@ namespace BlazorComponent
 {
     public interface IFileInput<TValue> : ITextField<TValue>
     {
-        RenderFragment<int> SelectionContent { get; }
+        RenderFragment<(int index, string text)> SelectionContent { get; }
 
         IList<string> Text { get; }
 

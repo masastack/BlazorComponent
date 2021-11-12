@@ -21,6 +21,9 @@ namespace BlazorComponent
 
         [Parameter]
         public bool IsReadonly { get; set; }
+        
+        [Parameter]
+        public RenderFragment LabelContent { get; set; }
 
         [Parameter]
         public TValue Value { get; set; }
@@ -36,9 +39,6 @@ namespace BlazorComponent
 
         [Parameter]
         public EventCallback<KeyboardEventArgs> OnKeyDown { get; set; }
-
-        [Parameter]
-        public RenderFragment ChildContent { get; set; }
 
         [Parameter]
         public string Label { get; set; }
