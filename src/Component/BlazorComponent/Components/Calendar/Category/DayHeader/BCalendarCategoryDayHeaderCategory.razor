@@ -1,0 +1,15 @@
+﻿@namespace BlazorComponent
+@typeparam TCalendarCategory
+@inherits BCalendarDailyDayHeader<TCalendarCategory>
+
+<div class="@CssProvider.GetClass("columnHeader")" style="@CssProvider.GetStyle("columnHeader")">
+    @if (CategoryContent != null)
+    {
+        CategoryContent(Scpoe);
+    }
+    else
+    {
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BCalendarCategoryDayHeaderCategoryTitle<>))" HeaderTitle="@HeaderTitle" />
+    }
+    @DayHeaderContent(DayHeaderScpoe);
+</div>

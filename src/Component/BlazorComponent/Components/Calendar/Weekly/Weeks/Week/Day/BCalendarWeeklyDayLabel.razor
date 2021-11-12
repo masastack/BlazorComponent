@@ -1,0 +1,16 @@
+﻿@namespace BlazorComponent
+@typeparam TCalendarWeekly
+@inherits ComponentAbstractBase<TCalendarWeekly>
+
+<div class="@CssProvider.GetClass("dayLabel")">
+    @if (DayLabelContent != null)
+    {
+        DayLabelContent(Day);
+    }
+    else
+    {
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BButton>(Index)">
+            @ButtonName
+        </AbstractComponent>
+    }
+</div>

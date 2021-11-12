@@ -1,0 +1,12 @@
+﻿@namespace BlazorComponent
+@inherits BCalendarBase
+
+<BCascadingValue Value="this">
+    <div class="@CssProvider.GetClass()">
+        @if (!HideHeader)
+        {
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BCalendarWeeklyHead<>))"></AbstractComponent>
+        }
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BCalendarWeeklyWeeks<>))"></AbstractComponent>
+    </div>
+</BCascadingValue>

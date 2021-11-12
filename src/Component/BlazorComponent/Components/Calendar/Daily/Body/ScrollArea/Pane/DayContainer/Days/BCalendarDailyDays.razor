@@ -1,0 +1,10 @@
+﻿@namespace BlazorComponent
+@typeparam TCalendarDaily
+@inherits ComponentAbstractBase<TCalendarDaily>
+
+@for (var i = 0; i < Days.Count(); i++)
+{
+    var index = i;
+    var day = Days[index];
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BCalendarDailyDay<>))" Index="@index" Day="@day"></AbstractComponent>
+}

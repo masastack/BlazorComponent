@@ -1,0 +1,8 @@
+﻿@namespace BlazorComponent
+@typeparam TCalendarDaily
+@inherits ComponentAbstractBase<TCalendarDaily>
+
+@if (DayBodyContent != null)
+{
+    @DayBodyContent(GetSlotScope)
+}

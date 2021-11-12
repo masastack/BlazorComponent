@@ -1,0 +1,8 @@
+﻿@namespace BlazorComponent
+@typeparam TCalendarWithEvents
+@inherits ComponentAbstractBase<TCalendarWithEvents>
+
+<div class="@CssProvider.GetClass("timedContainer")">
+    <AbstractComponent Day="@Day" Getter="@Getter" Mapper="@Mapper" Timed="@Timed" Mode="@Mode" CategoryMode="@CategoryMode" 
+    Metadata="AbstractProvider.GetMetadata(typeof(BCalendarWithEventsSlotChildrenDayBody<>))"></AbstractComponent>
+</div>

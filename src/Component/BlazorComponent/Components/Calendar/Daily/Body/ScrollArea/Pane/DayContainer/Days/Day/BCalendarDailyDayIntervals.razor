@@ -1,0 +1,14 @@
+﻿@namespace BlazorComponent
+@typeparam TCalendarDaily
+@inherits ComponentAbstractBase<TCalendarDaily>
+
+@for (var i = 0; i < Intervals.Count(); i++)
+{
+    var interval = Intervals[i];
+    <div class="@CssProvider.GetClass("dayIntervals", Index, interval)" style="@CssProvider.GetStyle("dayIntervals", Index, interval)">
+        @if (IntervalContent != null)
+        {
+            @IntervalContent(GetSlotScope(interval))
+        }
+    </div>
+}

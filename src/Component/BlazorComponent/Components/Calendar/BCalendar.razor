@@ -1,0 +1,56 @@
+﻿@namespace BlazorComponent
+@inherits BCalendarEvents
+
+<BCascadingValue Value="this">
+    @{
+        var attrs = new Dictionary<string, object>();
+        var slotDay = Props.ContainsKey("DayContent");
+        RenderFragment<CalendarDaySlotScope> outdayContent = !slotDay ? null :
+            (RenderFragment<CalendarDaySlotScope>)Props["DayContent"];
+        RenderFragment<CalendarDaySlotScope> dayContent = context => builder =>
+        {
+            if(slotDay)
+                builder.AddContent(0, outdayContent);
+
+            builder.AddContent(1,
+                @<AbstractComponent Day="@context" Getter="@GetEventsForDay" 
+                Mapper="@GenDayEvent" Timed="@false" Mode="@Mode" CategoryMode="@CategoryMode"
+                Metadata="AbstractProvider.GetMetadata(typeof(BCalendarWithEventsSlotChildren<>))"></AbstractComponent>);
+
+            builder.AddContent(2, @<AbstractComponent Day="@context" 
+                Metadata="AbstractProvider.GetMetadata(typeof(BCalendarWithEventsMore<>))"></AbstractComponent>);
+        };
+        attrs["DayContent"] = dayContent;
+
+        var slotDayHeader = Props.ContainsKey("DayHeaderContent");
+        RenderFragment<CalendarDaySlotScope> outdayHeaderContent = !slotDayHeader ? null :
+            (RenderFragment<CalendarDaySlotScope>)Props["DayHeaderContent"];
+        RenderFragment<CalendarDaySlotScope> dayHeaderContent = context => builder =>
+        {
+            if(slotDayHeader)
+                builder.AddContent(0, outdayHeaderContent);
+
+            builder.AddContent(1,
+                @<AbstractComponent Day="@context" Getter="@GetEventsForDayAll" 
+                Mapper="@GenDayEvent" Timed="@false" Mode="@Mode" CategoryMode="@CategoryMode"
+                Metadata="AbstractProvider.GetMetadata(typeof(BCalendarWithEventsSlotChildren<>))"></AbstractComponent>);
+        };
+        attrs["DayHeaderContent"] = dayHeaderContent;
+
+        var slotDayBody = Props.ContainsKey("DayBodyContent");
+        RenderFragment<CalendarDayBodySlotScope> outdayBodyContent = !slotDayBody ? null :
+            (RenderFragment<CalendarDayBodySlotScope>)Props["DayBodyContent"];
+        RenderFragment<CalendarDayBodySlotScope> dayBodyContent = context => builder =>
+        {
+            if(slotDayBody)
+                builder.AddContent(0, outdayBodyContent);
+
+            builder.AddContent(1,
+                @<AbstractComponent Day="@context" Getter="@GetEventsForDayTimed" 
+                Mapper="@GenTimedEvent" Timed="@true" Mode="@Mode" CategoryMode="@CategoryMode"
+                Metadata="AbstractProvider.GetMetadata(typeof(BCalendarWithEventsTimedContainer<>))"></AbstractComponent>);
+        };
+        attrs["DayBodyContent"] = dayBodyContent;
+    }
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(RenderProps.Component)" @attributes="attrs" class="@CssProvider.GetClass()"></AbstractComponent>
+</BCascadingValue>

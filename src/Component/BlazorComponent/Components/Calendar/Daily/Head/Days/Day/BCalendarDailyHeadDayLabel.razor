@@ -1,0 +1,16 @@
+﻿@namespace BlazorComponent
+@typeparam TCalendarDaily
+@inherits ComponentAbstractBase<TCalendarDaily>
+
+<div class="@CssProvider.GetClass("headDayLabel")">
+    @if (DayLabelHeaderContent != null)
+    {
+        @DayLabelHeaderContent(Day)
+    }
+    else
+    {
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BButton>(Index)">
+            @DayFormatter
+        </AbstractComponent>
+    }
+</div>

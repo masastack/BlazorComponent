@@ -58,5 +58,10 @@ namespace BlazorComponent
         {
             return Convert.ToString(Value);
         }
+
+        public bool IsString() => Match(
+                t0 => true,
+                t1 => false
+                );
     }
 }

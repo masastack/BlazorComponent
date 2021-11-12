@@ -1,0 +1,7 @@
+﻿@namespace BlazorComponent
+@typeparam TCalendarWithEvents
+@inherits ComponentAbstractBase<TCalendarWithEvents>
+
+<div class="@CssProvider.GetClass("placeholder")" style="@CssProvider.GetStyle("placeholder")">
+    @Day.Date
+</div>

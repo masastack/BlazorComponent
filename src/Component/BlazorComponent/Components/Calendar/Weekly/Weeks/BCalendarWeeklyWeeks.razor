@@ -1,0 +1,11 @@
+﻿@namespace BlazorComponent
+@typeparam TCalendarWeekly
+@inherits ComponentAbstractBase<TCalendarWeekly>
+
+@for (var i = 0; i < Day.Count; i += WeekDays)
+{
+    var index = i;
+    var weekNumber = GetWeekNumber(Day[index]);
+    var week = Day.Skip(index).Take(index + WeekDays - 1).ToList();
+    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BCalendarWeeklyWeek<>))" Week="@week" WeekNumber="@weekNumber"></AbstractComponent>
+}

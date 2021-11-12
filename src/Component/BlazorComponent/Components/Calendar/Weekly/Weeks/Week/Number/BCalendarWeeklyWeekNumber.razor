@@ -1,0 +1,7 @@
+﻿@namespace BlazorComponent
+@typeparam TCalendarWeekly
+@inherits ComponentAbstractBase<TCalendarWeekly>
+
+<div class="@CssProvider.GetClass("weeknumber")">
+    <small>@WeekNumber</small>
+</div>

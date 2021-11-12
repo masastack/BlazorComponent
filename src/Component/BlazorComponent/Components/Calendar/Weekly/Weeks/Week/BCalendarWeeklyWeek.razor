@@ -1,0 +1,16 @@
+﻿@namespace BlazorComponent
+@typeparam TCalendarWeekly
+@inherits ComponentAbstractBase<TCalendarWeekly>
+
+<div class="@CssProvider.GetClass("week")">
+    @if (ShowWeek)
+    {
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BCalendarWeeklyWeekNumber<>))" WeekNumber="@WeekNumber"></AbstractComponent>
+    }
+    @for (var i = 0; i < Week.Count(); i++)
+    {
+        var index = i;
+        var day = Week[i];
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BCalendarWeeklyDay<>))" Day="@day" Index="@index" Week="@Week"></AbstractComponent>
+    }
+</div>

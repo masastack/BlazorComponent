@@ -1,0 +1,7 @@
+﻿@namespace BlazorComponent
+@typeparam TCalendarDaily
+@inherits ComponentAbstractBase<TCalendarDaily>
+
+<div class="@CssProvider.GetClass("intervals")" style="@CssProvider.GetStyle("intervals")">
+    @IntervalHeaderContent
+</div>
