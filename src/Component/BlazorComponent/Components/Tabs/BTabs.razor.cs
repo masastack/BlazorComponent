@@ -1,17 +1,14 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components.Rendering;
-using Microsoft.AspNetCore.Components.RenderTree;
 
 namespace BlazorComponent
 {
     public partial class BTabs : BDomComponentBase, ITabs
     {
+        private bool _isModified;
+        private StringNumber _value;
+
         private List<ITabItem> TabItems { get; set; }
-        
+
         private AbstractComponent TabsBarRef { get; set; }
 
         protected(StringNumber height, StringNumber left, StringNumber right, StringNumber top, StringNumber width) Slider { get; set; }
@@ -35,7 +32,19 @@ namespace BlazorComponent
         public StringNumber SliderSize { get; set; } = 2;
 
         [Parameter]
-        public StringNumber Value { get; set; }
+        public StringNumber Value
+        {
+            get => _value;
+            set
+            {
+                if (_value != value)
+                {
+                    _isModified = true;
+                }
+
+                _value = value;
+            }
+        }
 
         private EventCallback<StringNumber>? _valueChanged;
 
@@ -69,7 +78,6 @@ namespace BlazorComponent
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await CallSlider(firstRender);
-
         }
 
         public bool IsReversed => Rtl && Vertical;
@@ -117,9 +125,11 @@ namespace BlazorComponent
 
             Instance?.SetWidths();
 
-            if (firstRender)
+            if (firstRender || _isModified)
             {
                 StateHasChanged();
+
+                _isModified = false;
             }
         }
     }

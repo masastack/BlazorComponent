@@ -1,7 +1,7 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(CascadingValue<>))">
+<BCascadingValue Value="this">
     @if (Transition != null)
     {
         <Transition Name="@Transition">
@@ -16,4 +16,4 @@
             <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BAlertWrapper<>))"></AbstractComponent>
         </Element>
     }
-</AbstractComponent>
+</BCascadingValue>
