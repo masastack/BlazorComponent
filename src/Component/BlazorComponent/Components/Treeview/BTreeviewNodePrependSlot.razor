@@ -7,7 +7,6 @@
 @if (PrependContent != null)
 {
     <div class="@CssProvider.GetClass("prepend")">
-        @(PrependContent(Item))
+        @ComputedPrependContent
     </div>
 }
-

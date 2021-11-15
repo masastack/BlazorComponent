@@ -11,20 +11,20 @@ namespace BlazorComponent
 {
     public interface ITreeviewNode<TItem, TKey> : IHasProviderComponent
     {
-        RenderFragment<TItem> PrependContent { get; }
+        RenderFragment<TreeviewItem<TItem>> PrependContent { get; }
 
-        RenderFragment LabelContent { get; }
+        RenderFragment<TreeviewItem<TItem>> LabelContent { get; }
 
         string Text { get; }
 
-        RenderFragment AppendContent { get; }
+        RenderFragment<TreeviewItem<TItem>> AppendContent { get; }
 
         bool Selectable { get; }
 
         string ComputedIcon { get; }
 
         bool HasChildren { get; }
-
+        
         bool IsLoading { get; }
 
         string LoadingIcon { get; }
@@ -42,6 +42,10 @@ namespace BlazorComponent
         Task HandleOnClick(MouseEventArgs args);
 
         TKey Key { get; }
+        
+        bool IsLeaf { get; }
+
+        bool IsActive { get; }
 
         bool IsSelected { get; }
 

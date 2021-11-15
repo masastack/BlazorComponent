@@ -25,12 +25,11 @@ namespace BlazorComponent
         [Parameter]
         public string Search { get; set; }
 
-        //TODO:props
         [Parameter]
-        public RenderFragment<TItem> PrependContent { get; set; }
+        public RenderFragment<TreeviewItem<TItem>> PrependContent { get; set; }
 
         [Parameter]
-        public RenderFragment LabelContent { get; set; }
+        public RenderFragment<TreeviewItem<TItem>> LabelContent { get; set; }
 
         [Parameter]
         public Func<TItem, string> ItemText { get; set; }
@@ -103,9 +102,11 @@ namespace BlazorComponent
         //TODO:
         public bool IsLoading { get; }
 
-        public string LoadingIcon { get; }
+        [Parameter]
+        public string LoadingIcon { get; set; } = "mdi-cached";
 
-        public string ExpandIcon { get; } = "mdi-menu-down";
+        [Parameter]
+        public string ExpandIcon { get; set; } = "mdi-menu-down";
 
         public TKey ActiveKey { get; private set; }
 

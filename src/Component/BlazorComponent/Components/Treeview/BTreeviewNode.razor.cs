@@ -25,12 +25,14 @@ namespace BlazorComponent
         [Parameter]
         public Func<TItem, bool> ItemDisabled { get; set; }
 
-        //TODO:props
         [Parameter]
-        public RenderFragment<TItem> PrependContent { get; set; }
+        public RenderFragment<TreeviewItem<TItem>> PrependContent { get; set; }
 
         [Parameter]
-        public RenderFragment LabelContent { get; set; }
+        public RenderFragment<TreeviewItem<TItem>> LabelContent { get; set; }
+
+        [Parameter]
+        public Func<TItem, Task> LoadChildren { get; set; }
 
         [Parameter]
         public Func<TItem, string> ItemText { get; set; }
@@ -39,7 +41,7 @@ namespace BlazorComponent
         public bool ParentIsDisabled { get; set; }
 
         [Parameter]
-        public RenderFragment AppendContent { get; set; }
+        public RenderFragment<TreeviewItem<TItem>> AppendContent { get; set; }
 
         [Parameter]
         public bool Selectable { get; set; }
@@ -88,17 +90,19 @@ namespace BlazorComponent
         public List<TItem> Children => ItemChildren?.Invoke(Item);
 
         //TODO:load
-        public bool HasChildren => Children != null && Children.Count > 0;
+        public bool HasChildren => Children != null && (Children.Count > 0 || LoadChildren != null);
 
         public bool Disabled => (ItemDisabled != null && ItemDisabled.Invoke(Item)) || (ParentIsDisabled && SelectionType == SelectionType.Leaf);
-
-        protected bool IsActive => Key != null && Treeview.IsActive(Key);
-
-        public string Text => ItemText?.Invoke(Item);
+        
+        public bool IsActive => Key != null && Treeview.IsActive(Key);
 
         public bool IsIndeterminate => Treeview.IsIndeterminate(Key);
 
+        public bool IsLeaf => Children != null;
+
         public bool IsSelected => Treeview.IsSelected(Key);
+        
+        public string Text => ItemText?.Invoke(Item);
 
         public string ComputedIcon
         {
@@ -127,6 +131,7 @@ namespace BlazorComponent
         {
             if (OpenOnClick && HasChildren)
             {
+                await CheckChildren();
                 await OpenAsync();
             }
             else if (Activatable && !Disabled)
@@ -136,9 +141,23 @@ namespace BlazorComponent
             }
         }
 
-        public void CheckChildren()
+        private bool _hasLoaded;
+
+        public async Task CheckChildren()
         {
-            //TODO:loading
+            if (Children == null || Children.Any() || LoadChildren == null || _hasLoaded) return;
+
+            IsLoading = true;
+
+            try
+            {
+                await LoadChildren(Item);
+            }
+            finally
+            {
+                IsLoading = false;
+                _hasLoaded = true;
+            }
         }
 
         public async Task OpenAsync()
