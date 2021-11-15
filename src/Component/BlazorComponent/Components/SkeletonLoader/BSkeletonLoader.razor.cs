@@ -11,5 +11,7 @@ namespace BlazorComponent
     {
         [Parameter]
         public RenderFragment ChildContent { get; set; }
+
+        public RenderFragment SkeletonLoaderContent { get; set; }
     }
 }
