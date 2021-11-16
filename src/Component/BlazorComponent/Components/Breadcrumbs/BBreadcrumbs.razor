@@ -1,41 +1,13 @@
 ﻿@namespace BlazorComponent
-@typeparam TItem
 @inherits BDomComponentBase
 
 <BCascadingValue Value="this" IsFixed>
     <Element Tag="@Tag" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id">
         @if (ChildContent == null)
         {
-            var count = Items.Count();
-            for (var i = 0; i < count; i++)
+            @foreach (var item in Items)
             {
-                var item = Items[i];
-
-                if (ItemContent != null)
-                {
-                    @ItemContent(item)
-                }
-                else
-                {
-                    var text = @item.Text;
-                    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BBreadcrumbsItem>()" 
-                        To="@item.To" Link="@item.Link" Exact="@item.Exact" Href="@item.Href" Disabled="@item.Disabled">
-                        @text
-                    </AbstractComponent>
-                }
-                if (i < count - 1)
-                {
-                    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BBreadcrumbsDivider>()">
-                        @if (DividerContent == null)
-                        {
-                            @Divider
-                        }
-                        else
-                        {
-                            @DividerContent
-                        }
-                    </AbstractComponent>
-                }
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BBreadcrumbsItemGroup<>))" Item="@item"></AbstractComponent>
             }
         }
         else
