@@ -1,45 +1,121 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
 
 namespace BlazorComponent.Components
 {
     public class I18n
     {
-        private static readonly ConcurrentDictionary<string, Dictionary<string, string>> _i18nCache = new ConcurrentDictionary<string, Dictionary<string, string>>();
+        private static ConcurrentDictionary<string, Dictionary<string, Dictionary<string, string>>> _i18nCache;
 
-        public static string CurrentCulture => GetCurrentCulture();
-
-        public static Dictionary<string, string> CurrentLang => _i18nCache.GetValueOrDefault(CurrentCulture);
-
-        public static string DefaultLanguage { get; set; } = "en-US";
-
-        public static string GetCurrentCulture()
+        static I18n()
         {
-            var currentCulture = CultureInfo.CurrentUICulture?.Name;
-            if (string.IsNullOrWhiteSpace(currentCulture) || !_i18nCache.ContainsKey(currentCulture))
+            _i18nCache = new ConcurrentDictionary<string, Dictionary<string, Dictionary<string, string>>>();
+        }
+
+        private static string? _defaultLanguage;
+
+        private static string DefaultLanguage
+        {
+            get
             {
-                currentCulture = DefaultLanguage;
+                return _defaultLanguage ?? _i18nCache.Keys.FirstOrDefault() ?? throw new Exception("Please add Language !");
+            }
+            set
+            {
+                _defaultLanguage = value;
+            }
+        }
+
+        public static void AddLang(string language, Dictionary<string, Dictionary<string, string>>? langMap, bool isDefaultLanguage = false)
+        {
+            if (langMap is null) return;
+
+            if (isDefaultLanguage) DefaultLanguage = language;
+
+            _i18nCache.AddOrUpdate(language, langMap, (name, original) => langMap);
+        }
+
+        public static void AddLang(string languageSettingsFile)
+        {
+            var languageSettings = JsonSerializer.Deserialize<LanguageSettings>(File.ReadAllText(languageSettingsFile));
+            if (languageSettings is not null)
+            {
+                DefaultLanguage = languageSettings.DefaultLanguage;
+                foreach (var setting in languageSettings.Settings)
+                {
+                    AddLang(setting.Language, JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(File.ReadAllText(setting.FilePath)));
+                }
+            }
+        }
+
+        public static IReadOnlyDictionary<string, Dictionary<string, string>>? GetLang(string language)
+        {
+            return _i18nCache.GetValueOrDefault(language);
+        }
+
+        public I18n(string? language = null) => SetLang(language ?? DefaultLanguage);
+
+        private string? _CurrentLanguage;
+
+        public string CurrentLanguage
+        {
+            get
+            {
+                return _CurrentLanguage ?? DefaultLanguage;
+            }
+            private set
+            {
+                _CurrentLanguage = value;
+                _languageMap = GetLang(value);
+            }
+        }
+
+        public IReadOnlyDictionary<string, Dictionary<string, string>>? _languageMap;
+
+        public IReadOnlyDictionary<string, Dictionary<string, string>> LanguageMap
+        {
+            get
+            {
+                return _languageMap ?? throw new Exception($"Not has {CurrentLanguage} language !");
+            }
+            private set
+            {
+                _languageMap = value;
+            }
+        }
+
+        public void SetLang(string language) => CurrentLanguage = language;
+    }
+
+    internal class LanguageSettings
+    {
+        public LanguageSettings(string defaultLanguage, Setting[] settings)
+        {
+            DefaultLanguage = defaultLanguage;
+            Settings = settings;
+        }
+
+        public string DefaultLanguage { get; set; }
+
+        public Setting[] Settings { get; set; }
+
+        public class Setting
+        {
+            public Setting(string language, string filePath)
+            {
+                Language = language;
+                FilePath = filePath;
             }
 
-            return currentCulture;
-        }
+            public string Language { get; set; }
 
-        public static void SetLang(string cultureName)
-        {
-            CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo(cultureName);
-        }
-
-        public static void AddLang(string cultureName, Dictionary<string, string> langs)
-        {
-            if (langs is null) return;
-
-            _i18nCache.AddOrUpdate(cultureName, langs, (name, original) => langs);
-        }
-
-        public static string T(string key)
-        {
-            return _i18nCache.GetValueOrDefault(CurrentCulture).GetValueOrDefault(key);
+            public string FilePath { get; set; }
         }
     }
 }
