@@ -18,19 +18,8 @@ namespace BlazorComponent
         [Parameter]
         public bool Disabled { get; set; }
 
-        private bool _value;
-
         [Parameter]
-        public bool Value
-        {
-            get => _value;
-            set
-            {
-                if (value == _value) return;
-                _value = value;
-                ValueChanged.InvokeAsync(_value);
-            }
-        }
+        public bool Value { get; set; }
 
         [Parameter]
         public EventCallback<bool> ValueChanged { get; set; }

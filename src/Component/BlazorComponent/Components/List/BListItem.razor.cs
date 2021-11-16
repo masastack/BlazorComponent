@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BListItem : BGroupItem<ItemGroupBase>
+    public partial class BListItem : BGroupItem<ItemGroupBase>, IRoutable
     {
+        private IRoutable _router;
+
         public BListItem() : base(GroupType.ListItemGroup)
         {
         }
@@ -28,7 +30,7 @@ namespace BlazorComponent
 
         [Parameter]
         public string Href { get; set; }
-        
+
         [Parameter]
         public RenderFragment<ItemContext> ItemContent { get; set; }
 
@@ -38,29 +40,28 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<MouseEventArgs> OnClick { get; set; }
 
+        [Parameter]
+        public string Tag { get; set; } = "div";
+
+        [Parameter]
+        public string Target { get; set; }
+
         protected RenderFragment ComputedItemContent => ItemContent(GenItemContext());
 
-        public bool IsLink => Href != null || Link;
+        public bool IsLink => _router.IsLink;
 
-        public bool IsClickable
-        {
-            get
-            {
-                if (Disabled) return false;
-
-                if (ItemGroup != null) return true;
-
-                return IsLink || OnClick.HasDelegate || (Attributes.TryGetValue("tabindex", out var tabIndex) && Convert.ToInt32(tabIndex) > -1);
-            }
-        }
+        public bool IsClickable => _router.IsClickable || ItemGroup != null;
 
         protected override void OnParametersSet()
         {
             base.OnParametersSet();
-            
+
+            _router = new Router(this);
+            (Tag, Attributes) = _router.GenerateRouteLink();
+
             SetAttrs();
         }
-        
+
         protected virtual async Task HandleOnClick(MouseEventArgs args)
         {
             if (args.Button == 0)

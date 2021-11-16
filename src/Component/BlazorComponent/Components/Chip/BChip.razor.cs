@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using System;
-using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BChip
+    public partial class BChip : BGroupItem<ItemGroupBase>, IRoutable
     {
+        protected IRoutable _router;
+
         public BChip() : base(GroupType.ChipGroup)
         {
         }
@@ -24,6 +24,12 @@ namespace BlazorComponent
         public string CloseLabel { get; set; } = "Close";
 
         [Parameter]
+        public string Href { get; set; }
+
+        [Parameter]
+        public bool Link { get; set; }
+
+        [Parameter]
         public EventCallback<MouseEventArgs> OnClick { get; set; }
 
         [Parameter]
@@ -32,13 +38,25 @@ namespace BlazorComponent
         [Parameter]
         public string Tag { get; set; } = "span";
 
+        [Parameter]
+        public string Target { get; set; }
+
+        protected override void OnParametersSet()
+        {
+            base.OnParametersSet();
+
+            _router = new Router(this);
+
+            (Tag, Attributes) = _router.GenerateRouteLink();
+        }
+
         protected async Task HandleOnClick(MouseEventArgs args)
         {
             if (Matched)
             {
                 (ItemGroup as BSlideGroup).SetWidths();
             }
-            
+
             await ToggleItem();
 
             if (OnClick.HasDelegate)

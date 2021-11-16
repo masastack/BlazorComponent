@@ -1,13 +1,12 @@
 ﻿@namespace BlazorComponent
 @inherits BGroupItem<ItemGroupBase>
 
-<div class="@CssProvider.GetClass()"
-     style="@CssProvider.GetStyle()"
-     id="@Id"
-     @ref="Ref"
-     @onclick="HandleOnClick"
-     @attributes="Attributes">
-
+<Element Class="@CssProvider.GetClass()"
+         Style="@CssProvider.GetStyle()"
+         Tag="@Tag"
+         ReferenceCaptureAction="_ => Ref = _"
+         @onclick="HandleOnClick"
+         @attributes="Attributes">
     @if (ItemContent != null)
     {
         @ComputedItemContent
@@ -16,5 +15,4 @@
     {
         @ChildContent
     }
-
-</div>
+</Element>

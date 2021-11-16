@@ -1,19 +1,27 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
     /// <summary>
     /// The component that can be rendered with <see cref="BBreadcrumbsLinkItem"/> or <see cref="BBreadcrumbsPlainItem"/>.
     /// </summary>
-    public abstract partial class BBreadcrumbsItem : BDomComponentBase, IBreadcrumbsItem, IBreadcrumbsDivider
+    public abstract partial class BBreadcrumbsItem : BDomComponentBase, IBreadcrumbsItem, IBreadcrumbsDivider, IRoutable
     {
-        protected string WrappedTag { get; init; } = "li";
+        private IRoutable _router;
+
+        protected string WrappedTag { get; set; } = "li";
 
         [Parameter]
         public bool Disabled { get; set; }
 
         [Parameter]
         public string Href { get; set; }
+
+        [Parameter]
+        public bool Link { get; set; }
+
+        public EventCallback<MouseEventArgs> OnClick { get; set; }
 
         [Parameter]
         public string Tag { get; set; } = "div";
@@ -27,15 +35,11 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
-        protected bool IsLink => Href != null;
-
         protected override void OnParametersSet()
         {
-            if (Href != null)
-            {
-                Tag = "a";
-                Attributes["href"] = Href;
-            }
+            _router = new Router(this);
+
+            (Tag, Attributes) = _router.GenerateRouteLink();
         }
 
         #region When using razor definition without `Items` parameter

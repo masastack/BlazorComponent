@@ -113,7 +113,7 @@ namespace BlazorComponent
         /// Custom attributes
         /// </summary>
         [Parameter(CaptureUnmatchedValues = true)]
-        public IDictionary<string, object> Attributes { get; set; } = new Dictionary<string, object>();
+        public virtual IDictionary<string, object> Attributes { get; set; } = new Dictionary<string, object>();
 
         protected override void OnInitialized()
         {
