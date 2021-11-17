@@ -22,7 +22,7 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
     private bool _hasWindow;
     private Window _window;
 
-    protected (Position activator, Position content) Dimensions = new(new Position(), new Position());
+    protected(Position activator, Position content) Dimensions = new(new Position(), new Position());
 
     protected bool ActivatorFixed { get; set; }
 
@@ -361,10 +361,18 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
 
         if (listeners.ContainsKey("mouseleave"))
         {
-            listeners["mouseleave"] = (
-                listeners["mouseleave"].listener,
-                new EventListenerActions(Document.QuerySelector(ContentRef).Selector)
-            );
+            // ShowLazyContent
+            if (ContentRef.Context != null)
+            {
+                listeners["mouseleave"] = (
+                    listeners["mouseleave"].listener,
+                    new EventListenerActions(Document.QuerySelector(ContentRef).Selector)
+                );
+            }
+            else
+            {
+                listeners.Remove("mouseleave");
+            }
         }
 
         return listeners;
@@ -507,7 +515,7 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
 
     private async Task<int> GetMaxZIndex()
     {
-        var maxZindex = await JsInvokeAsync<int>(JsInteropConstants.GetMenuOrDialogMaxZIndex, new List<ElementReference> { ContentRef }, Ref);
+        var maxZindex = await JsInvokeAsync<int>(JsInteropConstants.GetMenuOrDialogMaxZIndex, new List<ElementReference> {ContentRef}, Ref);
 
         return maxZindex > _stackMinZIndex ? maxZindex : _stackMinZIndex;
     }

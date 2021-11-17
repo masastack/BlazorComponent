@@ -112,7 +112,15 @@ namespace BlazorComponent
             {
                 await JsInvokeAsync(JsInteropConstants.AddOutsideClickEventListener,
                     DotNetObjectReference.Create(new Invoker<object>(OutsideClick)),
-                    new[] { Document.QuerySelector(ContentRef).Selector, ActivatorSelector });
+                    new[] {Document.QuerySelector(ContentRef).Selector, ActivatorSelector});
+            }
+            else
+            {
+                await ActivatorElement.AddEventListenerAsync(
+                    "mouseleave",
+                    CreateEventCallback<MouseEventArgs>(_ => Close()),
+                    false,
+                    new EventListenerActions(Document.QuerySelector(ContentRef).Selector));
             }
         }
 

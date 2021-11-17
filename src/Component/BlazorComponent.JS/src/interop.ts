@@ -474,7 +474,6 @@ export function addOutsideClickEventListener(invoker, insideSelectors: string[])
     if (!insideSelectors) return;
 
     var listener = function (args) {
-        args.preventDefault();
         var insideClicked = insideSelectors.some(s => document.querySelector(s)?.contains(args.target));
         if (insideClicked) return;
         invoker.invokeMethodAsync("Invoke", {});

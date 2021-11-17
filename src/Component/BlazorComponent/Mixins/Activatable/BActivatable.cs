@@ -15,7 +15,6 @@ public abstract class BActivatable : BDelayable, IActivatable
 
     private bool _isActive;
 
-    private HtmlElement _activatorElement;
     private ElementReference? _externalActivatorRef;
 
     private RenderFragment<ActivatorProps> _activatorContent;
@@ -36,19 +35,7 @@ public abstract class BActivatable : BDelayable, IActivatable
         ? Document.QuerySelector(_externalActivatorRef.Value).Selector
         : InternalActivatorSelector;
 
-    public RenderFragment ComputedActivatorContent
-    {
-        get
-        {
-            if (ActivatorContent != null)
-            {
-                var props = new ActivatorProps(GenActivatorAttributes());
-                return ActivatorContent(props);
-            }
-
-            return null;
-        }
-    }
+    protected HtmlElement ActivatorElement { get; private set; }
 
     protected virtual bool IsActive
     {
@@ -62,6 +49,20 @@ public abstract class BActivatable : BDelayable, IActivatable
     }
 
     protected bool HasActivator => ActivatorContent != null || _externalActivatorRef != null;
+    
+    public RenderFragment ComputedActivatorContent
+    {
+        get
+        {
+            if (ActivatorContent != null)
+            {
+                var props = new ActivatorProps(GenActivatorAttributes());
+                return ActivatorContent(props);
+            }
+
+            return null;
+        }
+    }
 
     [Inject]
     public Document Document { get; set; }
@@ -144,17 +145,17 @@ public abstract class BActivatable : BDelayable, IActivatable
 
         foreach (var (key, (listener, actions)) in _mouseListeners)
         {
-            await _activatorElement.AddEventListenerAsync(key, listener, false, actions);
+            await ActivatorElement.AddEventListenerAsync(key, listener, false, actions);
         }
 
         foreach (var (key, value) in _focusListeners)
         {
-            await _activatorElement.AddEventListenerAsync(key, value, false);
+            await ActivatorElement.AddEventListenerAsync(key, value, false);
         }
 
         foreach (var (key, value) in _keyboardListeners)
         {
-            await _activatorElement.AddEventListenerAsync(key, value, false);
+            await ActivatorElement.AddEventListenerAsync(key, value, false);
         }
     }
 
@@ -225,37 +226,37 @@ public abstract class BActivatable : BDelayable, IActivatable
 
     protected HtmlElement GetActivator()
     {
-        if (_activatorElement != null) return _activatorElement;
+        if (ActivatorElement != null) return ActivatorElement;
 
         if (ActivatorContent != null)
         {
-            _activatorElement = Document.QuerySelector(InternalActivatorSelector);
+            ActivatorElement = Document.QuerySelector(InternalActivatorSelector);
         }
         else if (_externalActivatorRef != null)
         {
-            _activatorElement = Document.QuerySelector(_externalActivatorRef.Value);
+            ActivatorElement = Document.QuerySelector(_externalActivatorRef.Value);
         }
 
-        return _activatorElement;
+        return ActivatorElement;
     }
 
     private async Task RemoveActivatorEvents()
     {
-        if (_activatorElement == null) return;
+        if (ActivatorElement == null) return;
 
         foreach (var (key, _) in _mouseListeners)
         {
-            await _activatorElement.RemoveEventListenerAsync(key);
+            await ActivatorElement.RemoveEventListenerAsync(key);
         }
 
         foreach (var (key, _) in _focusListeners)
         {
-            await _activatorElement.RemoveEventListenerAsync(key);
+            await ActivatorElement.RemoveEventListenerAsync(key);
         }
 
         foreach (var (key, _) in _keyboardListeners)
         {
-            await _activatorElement.RemoveEventListenerAsync(key);
+            await ActivatorElement.RemoveEventListenerAsync(key);
         }
 
         _mouseListeners.Clear();
@@ -272,7 +273,7 @@ public abstract class BActivatable : BDelayable, IActivatable
     private async Task ResetActivator()
     {
         await RemoveActivatorEvents();
-        _activatorElement = null;
+        ActivatorElement = null;
         GetActivator();
         await AddActivatorEvents();
     }
