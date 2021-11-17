@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
@@ -42,6 +43,7 @@ namespace BlazorComponent
         public StringNumber Width { get; set; }
 
         private bool _isHasOverlayElement;
+
         public override bool Value
         {
             get => base.Value;
@@ -78,6 +80,13 @@ namespace BlazorComponent
             await ShowLazyContent();
         }
 
+        protected override async Task Close()
+        {
+            if (Persistent) return;
+
+            await base.Close();
+        }
+
         private async Task<int> ActiveZIndex()
         {
             int zIndex;
@@ -95,7 +104,7 @@ namespace BlazorComponent
 
         private async Task<int> GetMaxZIndex()
         {
-            var maxZindex = await JsInvokeAsync<int>(JsInteropConstants.GetMenuOrDialogMaxZIndex, new List<ElementReference> { ContentRef }, Ref);
+            var maxZindex = await JsInvokeAsync<int>(JsInteropConstants.GetMenuOrDialogMaxZIndex, new List<ElementReference> {ContentRef}, Ref);
 
             return maxZindex > _stackMinZIndex ? maxZindex : _stackMinZIndex;
         }
