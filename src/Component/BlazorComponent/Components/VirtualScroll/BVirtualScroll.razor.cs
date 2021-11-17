@@ -12,23 +12,15 @@ namespace BlazorComponent
     public abstract partial class BVirtualScroll<TItem>
     {
         [Parameter]
-        public IReadOnlyList<TItem> Items { get; set; }
+        public ICollection<TItem> Items { get; set; }
 
         [Parameter]
         public RenderFragment<TItem> ItemContent { get; set; }
 
-        protected abstract int FirstToRender { get; }
+        [Parameter]
+        public float ItemSize { get; set; } = 50;
 
-        protected abstract int LastToRender { get; }
-
-        protected abstract void OnRenderItem(int index,TItem item);
-
-        protected abstract void OnScroll(int scrollTop);
-
-        private async Task OnScroll(EventArgs args)
-        {
-            var scrollTop = await JsInvokeAsync<int>("eval", $"document.getElementById('{Id}').scrollTop");
-            OnScroll(scrollTop); 
-        }
+        [Parameter]
+        public int OverscanCount { get; set; } = 3;
     }
 }
