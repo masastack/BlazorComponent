@@ -19,20 +19,5 @@ namespace BlazorComponent
 
         [Parameter]
         public EventCallback<MouseEventArgs> OnClick { get; set; }
-
-        protected override void OnParametersSet()
-        {
-            base.OnParametersSet();
-
-            if (Icon == null)
-            {
-                throw new ArgumentNullException(nameof(Icon));
-            }
-
-            if (Type == null)
-            {
-                throw new ArgumentNullException(nameof(Type));
-            }
-        }
     }
 }

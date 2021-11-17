@@ -4,26 +4,15 @@ namespace BlazorComponent
 {
     public partial class BToolbarBody<TToolbar> where TToolbar : IToolbar
     {
-        [Parameter]
-        public string Src { get; set; }
+        public string Src => Component.Src;
 
-        [Parameter]
-        public RenderFragment<ImgProps> ImgContent { get; set; }
+        public RenderFragment<ImgProps> ImgContent => Component.ImgContent;
 
-        [Parameter]
-        public ComponentCssProvider CssProvider { get; set; }
+        public StringNumber Height => Component.Height;
 
-        [Parameter]
-        public ComponentAbstractProvider AbstractProvider { get; set; }
+        public bool IsExtended => Component.IsExtended;
 
-        [Parameter]
-        public StringNumber Height { get; set; }
-
-        [Parameter]
-        public bool IsExtended { get; set; }
-
-        [Parameter]
-        public RenderFragment ExtensionContent { get; set; }
+        public RenderFragment ExtensionContent => Component.ExtensionContent;
 
         public ImgProps ImgProps => new()
         {
