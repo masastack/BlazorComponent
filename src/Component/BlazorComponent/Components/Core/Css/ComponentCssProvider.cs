@@ -95,6 +95,21 @@ namespace BlazorComponent
         }
 
         /// <summary>
+        /// remove css 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="mergeCssAction"></param>
+        /// <param name="mergeStyleAction"></param>
+        /// <returns></returns>
+        public ComponentCssProvider Remove(string name)
+        {
+            _cssConfig.Remove(name);
+            _styleConfig.Remove(name);
+
+            return this;
+        }
+
+        /// <summary>
         /// Get class of default element
         /// </summary>
         /// <param name="name"></param>
