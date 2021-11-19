@@ -137,9 +137,9 @@ public abstract class BActivatable : BDelayable, IActivatable
     {
         if (Disabled || GetActivator() == null) return;
 
-        _mouseListeners = GenActivatorMouseListeners();
-
         _focusListeners = GenActivatorFocusListeners();
+
+        _mouseListeners = GenActivatorMouseListeners();
 
         _keyboardListeners = GenActivatorKeyboardListeners();
 

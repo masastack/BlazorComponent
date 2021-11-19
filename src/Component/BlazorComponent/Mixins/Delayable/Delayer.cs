@@ -1,13 +1,7 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace BlazorComponent;
+﻿namespace BlazorComponent;
 
 public class Delayer : IDelayable
 {
-    private const int MinDelay = 100;
-
     private CancellationTokenSource _cancellationTokenSource;
 
     public Delayer()
@@ -29,8 +23,7 @@ public class Delayer : IDelayable
         _cancellationTokenSource?.Cancel();
         _cancellationTokenSource = new CancellationTokenSource();
 
-        var delay = MinDelay + OpenDelay;
-        await Task.Delay(delay, _cancellationTokenSource.Token);
+        await Task.Delay(OpenDelay, _cancellationTokenSource.Token);
 
         if (cb != null)
         {
@@ -43,8 +36,7 @@ public class Delayer : IDelayable
         _cancellationTokenSource?.Cancel();
         _cancellationTokenSource = new CancellationTokenSource();
 
-        var delay = MinDelay + CloseDelay;
-        await Task.Delay(delay, _cancellationTokenSource.Token);
+        await Task.Delay(CloseDelay, _cancellationTokenSource.Token);
 
         if (cb != null)
         {

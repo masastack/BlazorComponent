@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-using BlazorComponent.Web;
+﻿using BlazorComponent.Web;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -12,9 +7,9 @@ namespace BlazorComponent;
 public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
 {
     private const int BROWSER_RENDER_INTERVAL = 16;
+    
     private readonly int _stackMinZIndex = 6;
 
-    private bool _isActive;
     private bool _delayIsActive;
 
     private double _absoluteX;
@@ -23,7 +18,7 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
     private bool _hasWindow;
     private Window _window;
 
-    protected (Position activator, Position content) Dimensions = new(new Position(), new Position());
+    protected(Position activator, Position content) Dimensions = new(new Position(), new Position());
 
     protected bool ActivatorFixed { get; set; }
 
@@ -117,14 +112,14 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
         {
             if (Disabled) return;
 
+            if (_delayIsActive == value) return;
+
             if (value)
             {
-                _isActive = true;
                 CallActivate(() => _delayIsActive = true);
             }
             else
             {
-                _isActive = false;
                 CallDeactivate(() => _delayIsActive = false);
             }
         }
@@ -517,7 +512,7 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
 
     private async Task<int> GetMaxZIndex()
     {
-        var maxZindex = await JsInvokeAsync<int>(JsInteropConstants.GetMenuOrDialogMaxZIndex, new List<ElementReference> { ContentRef }, Ref);
+        var maxZindex = await JsInvokeAsync<int>(JsInteropConstants.GetMenuOrDialogMaxZIndex, new List<ElementReference> {ContentRef}, Ref);
 
         return maxZindex > _stackMinZIndex ? maxZindex : _stackMinZIndex;
     }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace BlazorComponent
@@ -96,9 +97,41 @@ namespace BlazorComponent
         [Parameter]
         public string Transition { get; set; }
 
+        protected override async Task AfterShowContent()
+        {
+            await ActivatorElement.AddEventListenerAsync(
+                "mouseleave",
+                CreateEventCallback<MouseEventArgs>(_ => Close()),
+                false,
+                new EventListenerActions(Document.QuerySelector(ContentRef).Selector));
+        }
+
         protected override async Task Activate(Action lazySetter)
         {
             await UpdateDimensions(lazySetter);
+        }
+
+        protected override Dictionary<string, (EventCallback<MouseEventArgs>, EventListenerActions)> GenActivatorMouseListeners()
+        {
+            var listeners = base.GenActivatorMouseListeners();
+
+            if (listeners.ContainsKey("click"))
+            {
+                listeners.Remove("click");
+            }
+
+            return listeners;
+        }
+
+        protected override Dictionary<string, EventCallback<FocusEventArgs>> GenActivatorFocusListeners()
+        {
+            var listeners = base.GenActivatorFocusListeners();
+
+            listeners.Add("focus", CreateEventCallback<FocusEventArgs>(_ => Open()));
+
+            listeners.Add("blur", CreateEventCallback<FocusEventArgs>(_ => Close()));
+
+            return listeners;
         }
     }
 }
