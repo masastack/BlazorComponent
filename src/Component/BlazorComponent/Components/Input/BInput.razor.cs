@@ -13,10 +13,6 @@ namespace BlazorComponent
 {
     public partial class BInput<TValue> : BDomComponentBase, IInput<TValue>
     {
-        [Obsolete("Use ApendContent instead.")]
-        [Parameter]
-        public RenderFragment Append { get; set; }
-
         [Parameter]
         public RenderFragment AppendContent { get; set; }
 
@@ -34,10 +30,6 @@ namespace BlazorComponent
 
         [Parameter]
         public RenderFragment LabelContent { get; set; }
-
-        [Obsolete("Use PrependContent instead.")]
-        [Parameter]
-        public RenderFragment Prepend { get; set; }
 
         [Parameter]
         public RenderFragment PrependContent { get; set; }

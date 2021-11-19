@@ -37,23 +37,11 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
-        [Obsolete("Use OnClick instead.")]
-        [Parameter]
-        public EventCallback<MouseEventArgs> Click { get; set; }
-
         [Parameter]
         public EventCallback<MouseEventArgs> OnClick { get; set; }
 
         [Parameter]
         public bool PreventDefault { get; set; }
-
-        protected override void OnParametersSet()
-        {
-            if (Click.HasDelegate)
-            {
-                OnClick = Click;
-            }
-        }
 
         protected virtual async Task HandleOnClick(MouseEventArgs args)
         {

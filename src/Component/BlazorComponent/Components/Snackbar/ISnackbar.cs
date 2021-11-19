@@ -9,5 +9,7 @@ namespace BlazorComponent
         string Action => default;
 
         RenderFragment ActionContent { get; }
+
+        bool Value { get; }
     }
 }

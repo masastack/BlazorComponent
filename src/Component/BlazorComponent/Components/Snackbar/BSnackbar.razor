@@ -3,6 +3,8 @@
 
 <BCascadingValue Value="this">
     <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSnackbarWrapper<>))"></AbstractComponent>
+        <Transition Name="@Transition">
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSnackbarWrapper<>))"></AbstractComponent>
+        </Transition>
     </div>
 </BCascadingValue>

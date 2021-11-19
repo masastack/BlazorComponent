@@ -112,7 +112,7 @@ namespace BlazorComponent
             {
                 await JsInvokeAsync(JsInteropConstants.AddOutsideClickEventListener,
                     DotNetObjectReference.Create(new Invoker<object>(OutsideClick)),
-                    new[] {Document.QuerySelector(ContentRef).Selector, ActivatorSelector});
+                    new[] { Document.QuerySelector(ContentRef).Selector, ActivatorSelector });
             }
             else
             {
@@ -195,11 +195,6 @@ namespace BlazorComponent
         private double CalcLeftAuto()
         {
             return Dimensions.activator.Left - _defaultOffset * 2;
-        }
-
-        private void ObserveSizeChange(Dimensions[] _)
-        {
-            UpdateDimensions();
         }
 
         private async Task OutsideClick(object _)

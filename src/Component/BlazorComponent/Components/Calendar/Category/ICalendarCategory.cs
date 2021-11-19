@@ -17,8 +17,6 @@ namespace BlazorComponent
         CategoryContentProps GetCategoryScope(CategoryContentProps scope,
             OneOf<string, Dictionary<string, object>> category);
 
-        List<List<CalendarTimestamp>> Intervals() => default;
-        
         CalendarDayBodySlotScope GetSlotScope(CalendarTimestamp timestamp) => default;
     }
 }

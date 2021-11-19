@@ -12,20 +12,8 @@ namespace BlazorComponent
         [Parameter]
         public bool Value { get; set; }
 
-        [Obsolete("Use OnClick instead.")]
-        [Parameter]
-        public EventCallback<MouseEventArgs> Click { get; set; }
-
         [Parameter]
         public EventCallback<MouseEventArgs> OnClick { get; set; }
-
-        protected override void OnParametersSet()
-        {
-            if (Click.HasDelegate)
-            {
-                OnClick = Click;
-            }
-        }
 
         private void HandleOnClick(MouseEventArgs args)
         {

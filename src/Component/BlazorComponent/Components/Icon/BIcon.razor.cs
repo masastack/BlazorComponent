@@ -1,4 +1,5 @@
 ﻿using BlazorComponent.Helpers;
+using BlazorComponent.Web;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.RenderTree;
@@ -59,6 +60,9 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<MouseEventArgs> OnClick { get; set; }
 
+        [Inject]
+        public Document Document { get; set; }
+
         public virtual async Task HandleOnClick(MouseEventArgs args)
         {
             if (OnClick.HasDelegate)
@@ -78,6 +82,7 @@ namespace BlazorComponent
             var builder = new RenderTreeBuilder();
             ChildContent(builder);
 
+#pragma warning disable BL0006 // Do not use RenderTree types
             var frames = builder.GetFrames().Array;
             //todo Array will change
             var frame = builder.GetFrames().Array.FirstOrDefault(u => u.FrameType == RenderTreeFrameType.Text || u.FrameType == RenderTreeFrameType.Markup);
@@ -92,6 +97,22 @@ namespace BlazorComponent
             else
             {
                 NewChildren = string.Empty;
+            }
+#pragma warning restore BL0006 // Do not use RenderTree types
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            await base.OnAfterRenderAsync(firstRender);
+
+            if (firstRender && OnClick.HasDelegate)
+            {
+                var button = Document.QuerySelector(Ref);
+                await button.AddEventListenerAsync("click", CreateEventCallback<MouseEventArgs>(HandleOnClick), false, new EventListenerActions
+                {
+                    PreventDefault = true,
+                    StopPropagation = true
+                });
             }
         }
     }

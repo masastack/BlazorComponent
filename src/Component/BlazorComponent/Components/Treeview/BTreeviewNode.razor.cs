@@ -131,7 +131,7 @@ namespace BlazorComponent
         {
             if (OpenOnClick && HasChildren)
             {
-                await CheckChildren();
+                await CheckChildrenAsync();
                 await OpenAsync();
             }
             else if (Activatable && !Disabled)
@@ -143,7 +143,7 @@ namespace BlazorComponent
 
         private bool _hasLoaded;
 
-        public async Task CheckChildren()
+        public async Task CheckChildrenAsync()
         {
             if (Children == null || Children.Any() || LoadChildren == null || _hasLoaded) return;
 

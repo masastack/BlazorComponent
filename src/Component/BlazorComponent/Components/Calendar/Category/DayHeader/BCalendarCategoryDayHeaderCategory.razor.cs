@@ -11,17 +11,9 @@ namespace BlazorComponent
     public partial class BCalendarCategoryDayHeaderCategory<TCalendarCategory> where TCalendarCategory : ICalendarCategory
     {
         [Parameter]
-        public CalendarTimestamp Day { get; set; }
-
-        [Parameter]
-        public int Index { get; set; }
-
-        [Parameter]
         public CategoryContentProps Scpoe { get; set; }
 
         public RenderFragment<CategoryContentProps> CategoryContent => Component.CategoryContent;
-
-        public RenderFragment<CalendarDaySlotScope> DayHeaderContent => Component.DayHeaderContent;
 
         public CalendarDaySlotScope DayHeaderScpoe => new CalendarDaySlotScope(false, Index, Scpoe.Week, Day);
 

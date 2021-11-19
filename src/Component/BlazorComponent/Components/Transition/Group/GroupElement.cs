@@ -35,10 +35,12 @@ namespace BlazorComponent
             var sequence = 0;
 
             builder.OpenComponent<Transition>(sequence++);
+            builder.AddAttribute(sequence++, nameof(Transition.Name), Transition.Name);
             builder.AddAttribute(sequence++, nameof(ChildContent), CreateElement(true));
             builder.CloseComponent();
 
             builder.OpenComponent<Transition>(sequence++);
+            builder.AddAttribute(sequence++, nameof(Transition.Name), Transition.Name);
             builder.AddAttribute(sequence++, nameof(Transition.OnAfterEnter), (Func<Task>)OnTransition);
             builder.AddAttribute(sequence++, nameof(ChildContent), CreateElement(false));
             builder.CloseComponent();

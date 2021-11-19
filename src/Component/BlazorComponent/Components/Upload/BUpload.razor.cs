@@ -42,16 +42,8 @@ namespace BlazorComponent
         [Parameter]
         public string Accept { get; set; }
 
-        [Obsolete("Use OnUpload instead.")]
-        [Parameter]
-        public EventCallback<List<UploadFile>> Upload { get; set; }
-
         [Parameter]
         public EventCallback<List<UploadFile>> OnUpload { get; set; }
-
-        [Obsolete("Use ActivatorContent instead.")]
-        [Parameter]
-        public RenderFragment Activator { get; set; }
 
         [Parameter]
         public RenderFragment ActivatorContent { get; set; }
@@ -85,21 +77,6 @@ namespace BlazorComponent
                 {
                     await SetDefaultImageUrl(file);
                 }
-            }
-        }
-
-        protected override void OnParametersSet()
-        {
-            base.OnParametersSet();
-
-            if (Upload.HasDelegate)
-            {
-                OnUpload = Upload;
-            }
-
-            if (Activator != null)
-            {
-                ActivatorContent = Activator;
             }
         }
 

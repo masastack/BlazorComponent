@@ -5,10 +5,8 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public class ComponentAbstractBase<TComponent> : IComponent where TComponent : IHasProviderComponent
+    public class ComponentAbstractBase<TComponent> : ComponentBase where TComponent : IHasProviderComponent
     {
-        private RenderHandle _renderHandle;
-
         [CascadingParameter]
         public TComponent Component { get; set; }
 
@@ -88,26 +86,6 @@ namespace BlazorComponent
         protected EventCallback<TValue> CreateEventCallback<TValue>(Func<TValue, Task> callback)
         {
             return EventCallback.Factory.Create(Component, callback);
-        }
-
-        protected virtual void BuildRenderTree(RenderTreeBuilder builder)
-        {
-        }
-
-        void IComponent.Attach(RenderHandle renderHandle)
-        {
-            _renderHandle = renderHandle;
-        }
-
-        Task IComponent.SetParametersAsync(ParameterView parameters)
-        {
-            //We will remove this when PropertyWatcher supported
-            parameters.SetParameterProperties(this);
-
-            //Add to render queue
-            _renderHandle.Render(BuildRenderTree);
-
-            return Task.CompletedTask;
         }
     }
 }

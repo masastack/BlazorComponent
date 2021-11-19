@@ -26,6 +26,9 @@ namespace BlazorComponent
         public Func<Task> OnEnterTo { get; set; }
 
         [Parameter]
+        public Func<Task> OnLeaveTo { get; set; }
+
+        [Parameter]
         public Func<Task> OnBeforeEnter { get; set; }
 
         [Parameter]
@@ -37,13 +40,10 @@ namespace BlazorComponent
         [Parameter]
         public Func<Task> OnAfterLeave { get; set; }
 
-        [CascadingParameter]
-        public Transition CascadingTransition { get; set; }
-
         [Parameter]
         public string Origin { get; set; }
 
-        protected bool? Show { get; set; } = false;
+        public bool? Show { get; set; } = false;
 
         public bool? If { get; protected set; } = true;
 
@@ -59,41 +59,15 @@ namespace BlazorComponent
 
         public string Style => StyleBuilder.Style;
 
-        protected string ComputedName
-        {
-            get
-            {
-                if (CascadingTransition != null && CascadingTransition.ComputedState != TransitionState.None)
-                {
-                    return CascadingTransition.ComputedName;
-                }
-
-                return Name;
-            }
-        }
-
-        protected TransitionState ComputedState
-        {
-            get
-            {
-                if (CascadingTransition != null && CascadingTransition.ComputedState != TransitionState.None)
-                {
-                    return CascadingTransition.ComputedState;
-                }
-
-                return State;
-            }
-        }
-
         protected TransitionMode Mode { get; private set; }
 
         protected override void OnInitialized()
         {
             CssBuilder
-                .AddIf(() => $"{ComputedName}-enter {ComputedName}-enter-active", () => State == TransitionState.Enter)
-                .AddIf(() => $"{ComputedName}-enter-active {ComputedName}-enter-to", () => State == TransitionState.EnterTo)
-                .AddIf(() => $"{ComputedName}-leave {ComputedName}-leave-active", () => State == TransitionState.Leave)
-                .AddIf(() => $"{ComputedName}-leave-active {ComputedName}-leave-to", () => State == TransitionState.LeaveTo);
+                .AddIf(() => $"{Name}-enter {Name}-enter-active", () => State == TransitionState.Enter)
+                .AddIf(() => $"{Name}-enter-active {Name}-enter-to", () => State == TransitionState.EnterTo)
+                .AddIf(() => $"{Name}-leave {Name}-leave-active", () => State == TransitionState.Leave)
+                .AddIf(() => $"{Name}-leave-active {Name}-leave-to", () => State == TransitionState.LeaveTo);
 
             StyleBuilder
                 .AddIf("display:none", () => Show == false)
@@ -134,20 +108,17 @@ namespace BlazorComponent
 
                   if (value)
                   {
-                      if (mode == TransitionMode.If)
-                      {
-                          //TODO: We need fix here
-                          If = true;
-                      }
-
                       await OnBeforeEnterAsync();
 
-                      if (mode == TransitionMode.Show)
+                      State = TransitionState.Enter;
+                      if (mode == TransitionMode.If)
+                      {
+                          If = true;
+                      }
+                      else if (mode == TransitionMode.Show)
                       {
                           Show = true;
                       }
-
-                      State = TransitionState.Enter;
                       await OnEnterAsync();
                       await FirstElement.UpdateViewAsync();
 
@@ -158,8 +129,9 @@ namespace BlazorComponent
 
                       await Task.Delay(300, _cancellationTokenSource.Token);
                       State = TransitionState.None;
-                      await OnAfterEnterAsync();
                       await FirstElement.UpdateViewAsync();
+
+                      await OnAfterEnterAsync();
                   }
                   else
                   {
@@ -175,18 +147,18 @@ namespace BlazorComponent
                       await FirstElement.UpdateViewAsync();
 
                       await Task.Delay(300, _cancellationTokenSource.Token);
-                      if (mode == TransitionMode.Show)
-                      {
-                          Show = false;
-                      }
                       State = TransitionState.None;
-                      await OnAfterLeaveAsync();
-
                       if (mode == TransitionMode.If)
                       {
                           If = false;
                       }
+                      else if (mode == TransitionMode.Show)
+                      {
+                          Show = false;
+                      }
                       await FirstElement.UpdateViewAsync();
+
+                      await OnAfterLeaveAsync();
                   }
               });
         }
@@ -255,9 +227,12 @@ namespace BlazorComponent
             }
         }
 
-        protected virtual Task OnLeaveToAsync()
+        protected virtual async Task OnLeaveToAsync()
         {
-            return Task.CompletedTask;
+            if (OnLeaveTo != null)
+            {
+                await OnLeaveTo?.Invoke();
+            }
         }
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)

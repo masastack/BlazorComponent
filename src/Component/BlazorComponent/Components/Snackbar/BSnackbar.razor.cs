@@ -6,5 +6,8 @@ namespace BlazorComponent
     {
         [Parameter]
         public RenderFragment ChildContent { get; set; }
+
+        [Parameter]
+        public string Transition { get; set; }
     }
 }

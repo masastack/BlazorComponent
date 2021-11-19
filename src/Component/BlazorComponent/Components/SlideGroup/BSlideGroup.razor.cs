@@ -36,7 +36,7 @@ namespace BlazorComponent
 
                 if (ContentRef.Context != null)
                 {
-                    JsInvokeAsync(JsInteropConstants.SetStyle, ContentRef, "transform", $"translateX(-{value}px)");
+                    _ = JsInvokeAsync(JsInteropConstants.SetStyle, ContentRef, "transform", $"translateX(-{value}px)");
                 }
             }
         }

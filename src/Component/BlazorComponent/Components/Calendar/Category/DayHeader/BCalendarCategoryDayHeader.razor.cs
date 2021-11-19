@@ -10,15 +10,6 @@ namespace BlazorComponent
 {
     public partial class BCalendarCategoryDayHeader<TCalendarCategory> where TCalendarCategory : ICalendarCategory
     {
-        [Parameter]
-        public CalendarTimestamp Day { get; set; }
-
-        [Parameter]
-        public int Index { get; set; }
-
-        [Parameter]
-        public RenderFragment<CalendarDaySlotScope> DayHeaderContent { get; set; }
-
         public List<OneOf<string, Dictionary<string, object>>> ParsedCategories => Component.ParsedCategories();
 
         public CategoryContentProps Scpoe => new(Component.Days, Day);

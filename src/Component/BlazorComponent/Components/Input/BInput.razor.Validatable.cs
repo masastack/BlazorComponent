@@ -188,16 +188,6 @@ namespace BlazorComponent
 
         protected override void OnParametersSet()
         {
-            if (Prepend != null)
-            {
-                PrependContent = Prepend;
-            }
-
-            if (Append != null)
-            {
-                AppendContent = Append;
-            }
-
             SubscribeValidationStateChanged();
         }
 

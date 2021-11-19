@@ -63,7 +63,7 @@ namespace BlazorComponent.Web
             return styles;
         }
 
-        public async Task SetStylesAsync(params(string name, string value)[] styles)
+        public async Task SetStylesAsync(params (string name, string value)[] styles)
         {
             await JS.InvokeAsync<string>(JsInteropConstants.SetStyle, styles.ToDictionary(s => s.name, s => s.value));
         }
@@ -104,7 +104,7 @@ namespace BlazorComponent.Web
         public async Task AddEventListenerAsync<T>(string type, Func<T, Task> listener, OneOf<EventListenerOptions, bool> options)
             where T : EventArgs
         {
-            await JS.InvokeVoidAsync(JsInteropConstants.AddHtmlElementEventListener, Selector, type, DotNetObjectReference.Create(new Invoker<T>(async (p) =>
+            await JS.InvokeVoidAsync(JsInteropConstants.AddHtmlElementEventListener, Selector, type, DotNetObjectReference.Create(new Invoker<T>((p) =>
             {
                 listener?.Invoke(p);
             })), options.Value);

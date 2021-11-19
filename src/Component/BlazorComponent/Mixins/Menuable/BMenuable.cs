@@ -116,11 +116,11 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
 
             if (value)
             {
-                CallActivate(() => _delayIsActive = true);
+                _ = CallActivate(() => _delayIsActive = true);
             }
             else
             {
-                CallDeactivate(() => _delayIsActive = false);
+                _ = CallDeactivate(() => _delayIsActive = false);
             }
         }
     }

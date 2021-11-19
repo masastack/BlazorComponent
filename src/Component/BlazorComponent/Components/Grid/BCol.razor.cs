@@ -8,10 +8,6 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
-        [Obsolete("Use Cols instead.")]
-        [Parameter]
-        public StringNumber Span { get; set; }
-
         [Parameter]
         public StringNumber Cols { get; set; }
 
@@ -23,7 +19,7 @@ namespace BlazorComponent
 
         [Parameter]
         public virtual string Tag { get; set; } = "div";
-        
+
         private string GutterStyle { get; set; }
 
         internal void RowGutterChanged((int horizontalGutter, int verticalGutter) gutter)
@@ -32,14 +28,6 @@ namespace BlazorComponent
             if (gutter.horizontalGutter > 0)
             {
                 GutterStyle = $"padding-left: {gutter.horizontalGutter / 2}px; padding-right: {gutter.horizontalGutter / 2}px;";
-            }
-        }
-
-        protected override void OnParametersSet()
-        {
-            if (Span != null)
-            {
-                Cols = Span;
             }
         }
 
