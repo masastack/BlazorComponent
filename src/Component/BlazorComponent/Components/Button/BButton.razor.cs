@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public abstract partial class BButton : BGroupItem<ItemGroupBase>, IThemeable, IButton
+    public abstract partial class BButton : BGroupItem<ItemGroupBase>, IThemeable, IButton, IRoutable
     {
         protected BButton() : base(GroupType.ButtonGroup)
         {
@@ -53,7 +53,19 @@ namespace BlazorComponent
         public StringNumber Width { get; set; }
 
         [Parameter]
+        public string Href { get; set; }
+
+        [Parameter]
+        public bool Link { get; set; }
+
+        [Parameter]
         public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+        [Parameter]
+        public string Tag { get; set; } = "button";
+
+        [Parameter]
+        public string Target { get; set; }
 
         [Parameter]
         public bool StopPropagation { get; set; }
@@ -65,6 +77,15 @@ namespace BlazorComponent
 
         [Parameter]
         public bool Light { get; set; }
+
+        protected override void OnParametersSet()
+        {
+            base.OnParametersSet();
+
+            IRoutable router = new Router(this);
+
+            (Tag, Attributes) = router.GenerateRouteLink();
+        }
 
         protected virtual async Task HandleOnClick(MouseEventArgs args)
         {
