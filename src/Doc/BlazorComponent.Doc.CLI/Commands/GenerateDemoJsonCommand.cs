@@ -4,12 +4,14 @@ using BlazorComponent.Doc.Models;
 using Microsoft.Extensions.CommandLineUtils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using BlazorComponent.Doc.CLI.Helpers;
 
 namespace BlazorComponent.Doc.CLI.Commands
 {
@@ -196,7 +198,7 @@ namespace BlazorComponent.Doc.CLI.Commands
                         SubTitle = docData.meta.TryGetValue("subtitle", out string subtitle) ? subtitle : null,
                         Type = docData.meta["type"],
                         Desc = docData.desc,
-                        ApiDoc = GetApiDoc(docData.apiDoc),
+                        Apis = ApiHelper.GetApiDoc(docData.apiDoc),
                         Cols = docData.meta.TryGetValue("cols", out var cols) ? int.Parse(cols) : (int?)null,
                         Cover = docData.meta.TryGetValue("cover", out var cover) ? cover : null,
                     };
@@ -238,12 +240,12 @@ namespace BlazorComponent.Doc.CLI.Commands
             if (dir == null || !dir.Exists) return;
 
             foreach (IGrouping<string, FileSystemInfo> demo in (dir as DirectoryInfo).GetFileSystemInfos()
-                .OrderBy(r => r.Name)
-                .GroupBy(x => x.Name.Replace(x.Extension, "")
-                    .Replace("-", "")
-                    .Replace("_", "")
-                    .Replace("Demo", "")
-                    .ToLower()))
+                     .OrderBy(r => r.Name)
+                     .GroupBy(x => x.Name.Replace(x.Extension, "")
+                         .Replace("-", "")
+                         .Replace("_", "")
+                         .Replace("Demo", "")
+                         .ToLower()))
             {
                 List<FileSystemInfo> showCaseFiles = demo.ToList();
                 FileSystemInfo razorFile = showCaseFiles.FirstOrDefault(x => x.Extension == ".razor");
@@ -282,34 +284,6 @@ namespace BlazorComponent.Doc.CLI.Commands
                     dict[language].Add(model);
                 }
             }
-        }
-
-        private string GetApiDoc(string apiDoc)
-        {
-            if (string.IsNullOrEmpty(apiDoc)) return "";
-
-            var h1Class = "\"m-heading text-h3 text-sm-h3 mb-2\"";
-            var h2Class = "\"m-heading text-h4 text-sm-h4 mb-3\"";
-            var aClass = "\"text-decoration-none text-right text-md-left\"";
-
-            apiDoc = Regex.Replace(apiDoc, "<h(?<n>1|2)>(?<title>.*)<\\/h(1|2)>", m => m.Groups["n"].ToString() == "1"
-                ? $@"
-                <h1 class={h1Class}>
-                    <a class={aClass}>#</a>
-                    {m.Groups["title"]}
-                </h1>"
-                : $@"
-                <h2 class={h2Class}>
-                    <a id=""#api"" class={aClass}>#</a>
-                    {m.Groups["title"]}
-                </h2>");
-
-            apiDoc = "<section id=\"api\">" + apiDoc + "</section>";
-
-            apiDoc = Regex.Replace(apiDoc, "<a href",
-                "<a class=\"app-link text-decoration-none primary--text font-weight-medium d-inline-block\" href");
-
-            return apiDoc;
         }
     }
 }

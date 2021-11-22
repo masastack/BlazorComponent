@@ -12,7 +12,7 @@ namespace BlazorComponent.Doc.Models
 
         public string Desc { get; set; }
 
-        public string ApiDoc { get; set; }
+        public List<ApiItem> Apis { get; set; }
 
         public int? Cols { get; set; }
 
@@ -110,5 +110,21 @@ namespace BlazorComponent.Doc.Models
         /// 使用
         /// </summary>
         Usage
+    }
+
+    public class ApiItem
+    {
+        public string Name { get; set; }
+        public string Href { get; set; }
+
+        public ApiItem()
+        {
+        }
+
+        public ApiItem(string name, string href)
+        {
+            Name = name;
+            Href = href;
+        }
     }
 }

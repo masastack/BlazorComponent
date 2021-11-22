@@ -14,6 +14,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using BlazorComponent.Doc.CLI.Helpers;
 
 namespace BlazorComponent.Doc.CLI.Commands
 {
@@ -200,7 +201,7 @@ namespace BlazorComponent.Doc.CLI.Commands
                 .GroupBy(x => x.Key)
                 .ToDictionary(x => x.Key, x => x.Select(x => x.Value));
 
-            foreach (var lang in new[] { "zh-CN", "en-US" })
+            foreach (var lang in new[] {"zh-CN", "en-US"})
             {
                 var menus = new List<DemoMenuItemModel>();
 
@@ -352,23 +353,23 @@ namespace BlazorComponent.Doc.CLI.Commands
                             Title = group.Key, // TODO: 似乎无用处
                             Type = "itemGroup",
                             Children = group.Select(x => new DemoMenuItemModel()
-                            {
-                                Title = x.Value.Title,
-                                SubTitle = x.Value.SubTitle,
-                                Url = $"{directory.Name.ToLowerInvariant()}/{x.Value.Title.ToLower()}",
-                                Type = "menuItem",
-                                Order = x.Value.Order,
-                                Cover = x.Value.Cover,
-                                Children = x.Value.Children.Select(y => new DemoMenuItemModel()
                                 {
-                                    Title = y.Title,
-                                    SubTitle = y.SubTitle,
-                                    Url = $"{directory.Name.ToLowerInvariant()}/{y.Title.ToLower()}",
+                                    Title = x.Value.Title,
+                                    SubTitle = x.Value.SubTitle,
+                                    Url = $"{directory.Name.ToLowerInvariant()}/{x.Value.Title.ToLower()}",
                                     Type = "menuItem",
-                                    Order = y.Order,
-                                    Cover = y.Cover,
-                                }).ToArray()
-                            })
+                                    Order = x.Value.Order,
+                                    Cover = x.Value.Cover,
+                                    Children = x.Value.Children.Select(y => new DemoMenuItemModel()
+                                    {
+                                        Title = y.Title,
+                                        SubTitle = y.SubTitle,
+                                        Url = $"{directory.Name.ToLowerInvariant()}/{y.Title.ToLower()}",
+                                        Type = "menuItem",
+                                        Order = y.Order,
+                                        Cover = y.Cover,
+                                    }).ToArray()
+                                })
                                 .OrderBy(x => x.Title, new MenuComparer())
                                 .ToArray(),
                         });
@@ -480,7 +481,7 @@ namespace BlazorComponent.Doc.CLI.Commands
                         SubTitle = docData.meta.TryGetValue("subtitle", out string subtitle) ? subtitle : null,
                         Type = docData.meta["type"],
                         Desc = docData.desc,
-                        ApiDoc = docData.apiDoc,
+                        Apis = ApiHelper.GetApiDoc(docData.apiDoc),
                         Cols = docData.meta.TryGetValue("cols", out var cols) ? int.Parse(cols) : (int?)null,
                         Cover = docData.meta.TryGetValue("cover", out var cover) ? cover : null,
                     };
