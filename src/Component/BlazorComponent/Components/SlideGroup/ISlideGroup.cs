@@ -1,4 +1,6 @@
-﻿namespace BlazorComponent
+﻿using Microsoft.AspNetCore.Components;
+
+namespace BlazorComponent
 {
     public interface ISlideGroup : IHasProviderComponent
     {
@@ -13,8 +15,12 @@
         bool Multiple { get; }
 
         string NextIcon { get; }
+        
+        RenderFragment NextContent { get; set; }
 
         string PrevIcon { get; }
+        
+        RenderFragment PrevContent { get; set; }
 
         internal void OnAffixClick(string direction);
 

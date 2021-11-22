@@ -54,9 +54,15 @@ namespace BlazorComponent
 
         [Parameter]
         public string NextIcon { get; set; }
+        
+        [Parameter]
+        public RenderFragment NextContent { get; set; }
 
         [Parameter]
         public string PrevIcon { get; set; }
+        
+        [Parameter]
+        public RenderFragment PrevContent { get; set; }
 
         protected bool _render = false;
 

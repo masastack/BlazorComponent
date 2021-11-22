@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Web;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
@@ -8,6 +9,8 @@ namespace BlazorComponent
         protected bool Active => Component.HasPrev;
 
         protected string Icon => Component.PrevIcon;
+        
+        protected RenderFragment IconContent => Component.PrevContent;
 
         protected bool Visible => !(Component.ShowArrows == null && !Active);
 
