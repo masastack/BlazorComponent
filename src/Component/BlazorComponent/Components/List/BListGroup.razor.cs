@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components.Routing;
 
 namespace BlazorComponent
 {
@@ -12,6 +13,13 @@ namespace BlazorComponent
         private const string PREPEND = "prepend";
         private const string APPEND = "append";
 
+        private bool _isActive;
+        private bool _isActiveUpdated;
+        private bool _value;
+
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
+
         [CascadingParameter]
         public BList List { get; set; }
 
@@ -19,10 +27,33 @@ namespace BlazorComponent
         public bool Disabled { get; set; }
 
         [Parameter]
-        public bool Value { get; set; }
+        public string Group { get; set; }
+
+        [Parameter]
+        public bool Value
+        {
+            get => _value;
+            set
+            {
+                _value = value;
+                _isActive = value;
+            }
+        }
 
         [Parameter]
         public EventCallback<bool> ValueChanged { get; set; }
+
+        private async Task UpdateValue(bool value)
+        {
+            if (ValueChanged.HasDelegate)
+            {
+                await ValueChanged.InvokeAsync(value);
+            }
+            else
+            {
+                Value = value;
+            }
+        }
 
         [Parameter]
         public string PrependIcon { get; set; }
@@ -39,18 +70,6 @@ namespace BlazorComponent
         [Parameter]
         public bool SubGroup { get; set; }
 
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
-
-            List?.Register(this);
-
-            _isActive = Value;
-        }
-
-        private bool _isActive;
-        private bool _isActiveUpdated;
-
         public bool IsActive
         {
             get => _isActive;
@@ -65,10 +84,40 @@ namespace BlazorComponent
             }
         }
 
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+
+            List?.Register(this);
+
+            if (Group != null)
+            {
+                IsActive = MatchRoute(NavigationManager.Uri);
+            }
+
+            NavigationManager.LocationChanged += OnLocationChanged;
+        }
+
+        private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+        {
+            if (Group == null) return;
+
+            IsActive = MatchRoute(e.Location);
+        }
+
+        private bool MatchRoute(string path)
+        {
+            var relativePath = NavigationManager.ToBaseRelativePath(path);
+            return Group.Contains(relativePath, StringComparison.OrdinalIgnoreCase);
+        }
+
         public void Toggle(string id)
         {
             _isActiveUpdated = true;
+
             IsActive = Id == id;
+
+            _ = UpdateValue(IsActive);
         }
 
         public void HandleOnClick(EventArgs args)
@@ -76,12 +125,20 @@ namespace BlazorComponent
             if (Disabled) return;
 
             _isActiveUpdated = false;
+
             IsActive = !IsActive;
+
+            _ = UpdateValue(IsActive);
         }
 
         protected override void Dispose(bool disposing)
         {
             List?.Unregister(this);
+
+            if (NavigationManager != null)
+            {
+                NavigationManager.LocationChanged -= OnLocationChanged;
+            }
 
             base.Dispose(disposing);
         }

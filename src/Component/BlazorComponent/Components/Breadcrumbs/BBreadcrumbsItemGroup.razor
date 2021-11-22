@@ -16,7 +16,8 @@ else
     <AbstractComponent Metadata="AbstractProvider.GetMetadata<BBreadcrumbsItem>()"
                        Text="@Item.Text"
                        Href="@Item.Href"
-                       Disabled="@Item.Disabled"/>
+                       Disabled="@Item.Disabled"
+                       Linkage="@Item.Linkage"/>
 
     @if (RenderDivider && !IsLast)
     {

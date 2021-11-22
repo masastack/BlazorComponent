@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BListItem : BGroupItem<ItemGroupBase>, IRoutable
+    public partial class BListItem : BGroupItem<ItemGroupBase>, IRoutable, ILinkable
     {
         private IRoutable _router;
 
@@ -36,6 +36,9 @@ namespace BlazorComponent
 
         [Parameter]
         public bool Link { get; set; }
+        
+        [Parameter]
+        public bool Linkage { get; set; }
 
         [Parameter]
         public EventCallback<MouseEventArgs> OnClick { get; set; }
@@ -51,7 +54,7 @@ namespace BlazorComponent
         public bool IsLink => _router.IsLink;
 
         public bool IsClickable => _router.IsClickable || ItemGroup != null;
-
+        
         protected override void OnParametersSet()
         {
             base.OnParametersSet();

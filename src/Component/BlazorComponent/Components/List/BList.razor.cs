@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
-    public abstract partial class BList : BDomComponentBase
+    public abstract partial class BList : BDomComponentBase, ILinkable
     {
         public List<BListItem> Items { get; } = new();
 
@@ -23,6 +23,9 @@ namespace BlazorComponent
         // TODO: bool? _expand
         [Parameter]
         public virtual bool Expand { get; set; }
+        
+        [Parameter]
+        public bool Linkage { get; set; }
 
         [Parameter]
         public virtual string Tag { get; set; } = "div";

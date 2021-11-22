@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BlazorComponent
 {
-    public partial class BBreadcrumbs : BDomComponentBase, IBreadcrumbs, IBreadcrumbsDivider
+    public partial class BBreadcrumbs : BDomComponentBase, IBreadcrumbs, IBreadcrumbsDivider, ILinkable
     {
         protected string Tag { get; init; } = "ul";
 
@@ -14,6 +14,9 @@ namespace BlazorComponent
 
         [Parameter]
         public RenderFragment DividerContent { get; set; }
+        
+        [Parameter]
+        public bool Linkage { get; set; }
 
         [Parameter]
         public IReadOnlyList<BreadcrumbItem> Items { get; set; } = new List<BreadcrumbItem>();

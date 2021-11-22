@@ -1,16 +1,22 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    /// <summary>
-    /// The component that can be rendered with <see cref="BBreadcrumbsLinkItem"/> or <see cref="BBreadcrumbsPlainItem"/>.
-    /// </summary>
-    public abstract partial class BBreadcrumbsItem : BDomComponentBase, IBreadcrumbsItem, IBreadcrumbsDivider, IRoutable
+    public abstract partial class BBreadcrumbsItem : BDomComponentBase, IBreadcrumbsItem, IBreadcrumbsDivider, IRoutable, ILinkable
     {
         private IRoutable _router;
 
         protected string WrappedTag { get; set; } = "li";
+
+        protected bool Matched { get; set; }
+
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
+
+        [CascadingParameter]
+        public BBreadcrumbs Breadcrumbs { get; set; }
 
         [Parameter]
         public bool Disabled { get; set; }
@@ -20,6 +26,9 @@ namespace BlazorComponent
 
         [Parameter]
         public bool Link { get; set; }
+
+        [Parameter]
+        public bool Linkage { get; set; }
 
         public EventCallback<MouseEventArgs> OnClick { get; set; }
 
@@ -35,6 +44,40 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
+        public bool IsDisabled => Disabled || Matched;
+
+        public bool IsLinkage => Href != null && (Breadcrumbs?.Linkage ?? Linkage);
+
+        protected override void OnInitialized()
+        {
+            Breadcrumbs?.AddSubBreadcrumbsItem(this);
+
+            if (IsLinkage)
+            {
+                Matched = MatchRoute(NavigationManager.Uri);
+            }
+
+            NavigationManager.LocationChanged += OnLocationChanged;
+        }
+
+        private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+        {
+            if (!IsLinkage) return;
+
+            Matched = MatchRoute(e.Location);
+        }
+
+        private bool MatchRoute(string path)
+        {
+            var relativePath = NavigationManager.ToBaseRelativePath(path);
+            if (Href.StartsWith("/"))
+            {
+                Href = Href[1..];
+            }
+
+            return string.Equals(Href, relativePath, StringComparison.OrdinalIgnoreCase);
+        }
+
         protected override void OnParametersSet()
         {
             _router = new Router(this);
@@ -44,20 +87,19 @@ namespace BlazorComponent
 
         #region When using razor definition without `Items` parameter
 
-        [CascadingParameter]
-        public BBreadcrumbs Breadcrumbs { get; set; }
-
         protected bool IsLast => Breadcrumbs == null || Breadcrumbs.SubBreadcrumbsItems.Last() == this;
 
         public string Divider => Breadcrumbs?.Divider ?? "/";
 
         public RenderFragment DividerContent => Breadcrumbs?.DividerContent;
 
-        protected override void OnInitialized()
-        {
-            Breadcrumbs?.AddSubBreadcrumbsItem(this);
-        }
-
         #endregion
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+
+            NavigationManager.LocationChanged -= OnLocationChanged;
+        }
     }
 }
