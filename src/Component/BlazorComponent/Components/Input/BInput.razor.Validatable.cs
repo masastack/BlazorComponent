@@ -66,6 +66,9 @@ namespace BlazorComponent
         [Parameter]
         public List<string> SuccessMessages { get; set; }
 
+        [Parameter]
+        public IEnumerable<Func<TValue, StringBoolean>> Rules { get; set; }
+
         protected EditContext OldEditContext { get; set; }
 
         protected FieldIdentifier ValueIdentifier { get; set; }
@@ -201,6 +204,25 @@ namespace BlazorComponent
             if (EditContext != null && ValueExpression != null)
             {
                 EditContext.NotifyFieldChanged(ValueIdentifier);
+            }
+
+            if (Rules != null)
+            {
+                ErrorBucket.Clear();
+
+                foreach (var rule in Rules)
+                {
+                    var result = rule(InternalValue);
+                    if (result.IsT0)
+                    {
+                        ErrorBucket.Add(result.AsT0);
+                    }
+                }
+
+                if (ErrorBucket.Count > 0)
+                {
+                    StateHasChanged();
+                }
             }
         }
 

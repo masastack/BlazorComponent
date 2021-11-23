@@ -4,7 +4,10 @@
 <CascadingValue Value="this">
     <CascadingValue Value="EditContext">
         <form class="@CssProvider.GetClass()" @onsubmit="OnSubmit">
-            @ChildContent(EditContext)
+            @if (ChildContent != null)
+            {
+                @ChildContent(EditContext)
+            }
         </form>
     </CascadingValue>
 </CascadingValue>

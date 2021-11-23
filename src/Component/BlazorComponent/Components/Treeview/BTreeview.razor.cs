@@ -31,6 +31,7 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment<TreeviewItem<TItem>> LabelContent { get; set; }
 
+        [EditorRequired]
         [Parameter]
         public Func<TItem, string> ItemText { get; set; }
 
@@ -43,9 +44,11 @@ namespace BlazorComponent
         [Parameter]
         public Func<TItem, bool> ItemDisabled { get; set; }
 
+        [EditorRequired]
         [Parameter]
         public Func<TItem, TKey> ItemKey { get; set; }
 
+        [EditorRequired]
         [Parameter]
         public Func<TItem, List<TItem>> ItemChildren { get; set; }
 
@@ -407,21 +410,6 @@ namespace BlazorComponent
 
         protected override void OnParametersSet()
         {
-            if (ItemKey == null)
-            {
-                throw new ArgumentNullException(nameof(ItemKey));
-            }
-
-            if (ItemChildren == null)
-            {
-                throw new ArgumentNullException(nameof(ItemChildren));
-            }
-
-            if (ItemText == null)
-            {
-                throw new ArgumentNullException(nameof(ItemText));
-            }
-
             if (!ListComparer.Equals(_oldItems, Items))
             {
                 Nodes.Clear();

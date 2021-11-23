@@ -1,5 +1,6 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
+@attribute [CascadingTypeParameter(nameof(TValue))]
 @typeparam TValue
 @implements IInput<TValue>
 
