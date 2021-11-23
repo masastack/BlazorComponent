@@ -7,14 +7,12 @@ using Microsoft.Extensions.CommandLineUtils;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using BlazorComponent.Doc.CLI.Helpers;
 
 namespace BlazorComponent.Doc.CLI.Commands
 {
@@ -201,7 +199,7 @@ namespace BlazorComponent.Doc.CLI.Commands
                 .GroupBy(x => x.Key)
                 .ToDictionary(x => x.Key, x => x.Select(x => x.Value));
 
-            foreach (var lang in new[] {"zh-CN", "en-US"})
+            foreach (var lang in new[] { "zh-CN", "en-US" })
             {
                 var menus = new List<DemoMenuItemModel>();
 
@@ -481,7 +479,7 @@ namespace BlazorComponent.Doc.CLI.Commands
                         SubTitle = docData.meta.TryGetValue("subtitle", out string subtitle) ? subtitle : null,
                         Type = docData.meta["type"],
                         Desc = docData.desc,
-                        Apis = ApiHelper.GetApiDoc(docData.apiDoc),
+                        Apis = docData.apiDoc,
                         Cols = docData.meta.TryGetValue("cols", out var cols) ? int.Parse(cols) : (int?)null,
                         Cover = docData.meta.TryGetValue("cover", out var cover) ? cover : null,
                     };

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BlazorComponent.Doc.Models
 {
@@ -12,13 +13,15 @@ namespace BlazorComponent.Doc.Models
 
         public string Desc { get; set; }
 
-        public List<ApiItem> Apis { get; set; }
+        public string Apis { get; set; }
 
         public int? Cols { get; set; }
 
         public string Cover { get; set; }
 
         public int Order { get; set; }
+
+        public DateTime LastWriteTime { get; set; }
 
         public List<DemoItemModel> DemoList { get; set; } = new List<DemoItemModel>();
 
@@ -56,31 +59,31 @@ namespace BlazorComponent.Doc.Models
         public static DemoItemModel GenerateExample(string lang)
         {
             var title = lang == "zh-CN" ? "示例" : "Examples";
-            return new DemoItemModel() {Title = title};
+            return new DemoItemModel() { Title = title };
         }
 
         public static DemoItemModel GenerateProps(string lang)
         {
             var title = lang == "zh-CN" ? "属性" : "Props";
-            return new DemoItemModel {Title = title};
+            return new DemoItemModel { Title = title };
         }
 
         public static DemoItemModel GenerateEvents(string lang)
         {
             var title = lang == "zh-CN" ? "事件" : "Events";
-            return new DemoItemModel {Title = title};
+            return new DemoItemModel { Title = title };
         }
 
         public static DemoItemModel GenerateContents(string lang)
         {
             var title = lang == "zh-CN" ? "插槽" : "Contents";
-            return new DemoItemModel {Title = title};
+            return new DemoItemModel { Title = title };
         }
 
         public static DemoItemModel GenerateMisc(string lang)
         {
             var title = lang == "zh-CN" ? "其他" : "Misc";
-            return new DemoItemModel {Title = title};
+            return new DemoItemModel { Title = title };
         }
     }
 

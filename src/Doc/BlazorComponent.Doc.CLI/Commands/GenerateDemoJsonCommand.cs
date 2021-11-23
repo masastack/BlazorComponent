@@ -4,14 +4,11 @@ using BlazorComponent.Doc.Models;
 using Microsoft.Extensions.CommandLineUtils;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
-using BlazorComponent.Doc.CLI.Helpers;
 
 namespace BlazorComponent.Doc.CLI.Commands
 {
@@ -108,6 +105,7 @@ namespace BlazorComponent.Doc.CLI.Commands
                             if (!subComponentDic.ContainsKey(language)) continue;
 
                             subComponentDic[language].DemoList.AddRange(demoItems);
+                            subComponentDic[language].LastWriteTime = subComponentDirectory.LastWriteTime;
                         }
 
                         componentList.Add(subComponentDic);
@@ -124,6 +122,7 @@ namespace BlazorComponent.Doc.CLI.Commands
                         if (!componentDic.ContainsKey(language)) continue;
 
                         componentDic[language].DemoList.AddRange(demoItems);
+                        componentDic[language].LastWriteTime = componentDirectory.LastWriteTime;
                     }
 
                     componentList.Add(componentDic);
@@ -198,7 +197,7 @@ namespace BlazorComponent.Doc.CLI.Commands
                         SubTitle = docData.meta.TryGetValue("subtitle", out string subtitle) ? subtitle : null,
                         Type = docData.meta["type"],
                         Desc = docData.desc,
-                        Apis = ApiHelper.GetApiDoc(docData.apiDoc),
+                        Apis = docData.apiDoc.Contains("</h2>") ? docData.apiDoc.Split("</h2>")[1] : docData.apiDoc,
                         Cols = docData.meta.TryGetValue("cols", out var cols) ? int.Parse(cols) : (int?)null,
                         Cover = docData.meta.TryGetValue("cover", out var cover) ? cover : null,
                     };
