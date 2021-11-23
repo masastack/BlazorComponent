@@ -6,6 +6,7 @@ using Markdig.Syntax;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -18,7 +19,7 @@ namespace BlazorComponent.Doc.CLI.Wrappers
 {
     public class DocWrapper
     {
-        public static (Dictionary<string, string> Meta, string Desc, string ApiDoc) ParseDemoDoc(string input)
+        public static(Dictionary<string, string> Meta, string Desc, string apis, string caveats) ParseDemoDoc(string input)
         {
             var pipeline = new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
@@ -35,9 +36,10 @@ namespace BlazorComponent.Doc.CLI.Wrappers
                 meta = new Deserializer().Deserialize<Dictionary<string, string>>(yaml);
             }
 
-            var isAfterApi = false;
+            var step = Heading.Description;
             var descPart = "";
             var apiPart = "";
+            var caveats = "";
 
             for (var i = yamlBlock?.Line ?? 0; i < document.Count; i++)
             {
@@ -45,9 +47,14 @@ namespace BlazorComponent.Doc.CLI.Wrappers
                 if (block is YamlFrontMatterBlock)
                     continue;
 
-                if (block is HeadingBlock heading && heading.Level == 2 && heading.Inline.FirstChild.ToString() == "API")
+                if (block is HeadingBlock heading && heading.Level == 2)
                 {
-                    isAfterApi = true;
+                    step = heading.Inline.FirstChild.ToString() switch
+                    {
+                        "API" => Heading.Api,
+                        "Caveats" => Heading.Caveats,
+                        _ => step
+                    };
                 }
 
                 using var writer = new StringWriter();
@@ -56,20 +63,26 @@ namespace BlazorComponent.Doc.CLI.Wrappers
 
                 var blockHtml = renderer.Render(block);
 
-                if (!isAfterApi)
+                switch (step)
                 {
-                    descPart += blockHtml;
-                }
-                else
-                {
-                    apiPart += blockHtml;
+                    case Heading.Description:
+                        descPart += blockHtml;
+                        break;
+                    case Heading.Api:
+                        apiPart += blockHtml;
+                        break;
+                    case Heading.Caveats:
+                        caveats += blockHtml;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
 
-            return (meta, descPart, apiPart);
+            return (meta, descPart, apiPart, caveats);
         }
 
-        public static (DescriptionYaml Meta, string Style, Dictionary<string, string> Descriptions) ParseDescription(string input)
+        public static(DescriptionYaml Meta, string Style, Dictionary<string, string> Descriptions) ParseDescription(string input)
         {
             var pipeline = new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
@@ -202,7 +215,7 @@ namespace BlazorComponent.Doc.CLI.Wrappers
             return matches.Select(r => r.Groups["title"].ToString());
         }
 
-        public static (int order, string title, string html) ParseDocs(string input)
+        public static(int order, string title, string html) ParseDocs(string input)
         {
             input = input.Trim(' ', '\r', '\n');
             var pipeline = new MarkdownPipelineBuilder()
@@ -232,23 +245,25 @@ namespace BlazorComponent.Doc.CLI.Wrappers
 
             html = $"<h1>{title}</h1>\n" + html;
 
-            var h1Class = "\"m-heading text-h3 text-sm-h3 mb-2\""; ;
+            var h1Class = "\"m-heading text-h3 text-sm-h3 mb-2\"";
+            ;
             var h2Class = "\"m-heading text-h4 text-sm-h4 mb-3\"";
             var aClass = "\"text-decoration-none text-right text-md-left\"";
             var divClass = "\"mb-8\"";
 
             html = Regex.Replace(html, "<h2>(?<title>.*)<\\/h2>", m =>
-            $@"
+                $@"
             </section><section id={GetSectionId(m.Groups["title"].ToString())}><h2>{m.Groups["title"]}</h2>");
 
             html = new Regex("<\\/section>").Replace(html, $"<div class={divClass}>&nbsp;</div>", 1);
 
-            html = Regex.Replace(html, "<h(?<n>1|2)>(?<title>.*)<\\/h(1|2)>", m => m.Groups["n"].ToString() == "1" ? $@"
+            html = Regex.Replace(html, "<h(?<n>1|2)>(?<title>.*)<\\/h(1|2)>", m => m.Groups["n"].ToString() == "1"
+                ? $@"
                 <h1 class={h1Class}>
                     <a class={aClass}>#</a>
                     {m.Groups["title"]}
-                </h1>" :
-                $@"
+                </h1>"
+                : $@"
                 <h2 class={h2Class}>
                     <a class={aClass}>#</a>
                     {m.Groups["title"]}
@@ -281,5 +296,14 @@ namespace BlazorComponent.Doc.CLI.Wrappers
         public bool Debug { get; set; }
 
         public bool? Docs { get; set; }
+    }
+
+    public enum Heading
+    {
+        Description,
+
+        Api,
+
+        Caveats
     }
 }

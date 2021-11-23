@@ -471,17 +471,18 @@ namespace BlazorComponent.Doc.CLI.Commands
                 {
                     var language = docItem.Name.Replace("index.", "").Replace(docItem.Extension, "");
                     string content = File.ReadAllText(docItem.FullName);
-                    (Dictionary<string, string> meta, string desc, string apiDoc) docData = DocWrapper.ParseDemoDoc(content);
+                    var (meta, desc, apis, caveats) = DocWrapper.ParseDemoDoc(content);
 
                     var model = new DemoComponentModel()
                     {
-                        Title = docData.meta["title"],
-                        SubTitle = docData.meta.TryGetValue("subtitle", out string subtitle) ? subtitle : null,
-                        Type = docData.meta["type"],
-                        Desc = docData.desc,
-                        Apis = docData.apiDoc,
-                        Cols = docData.meta.TryGetValue("cols", out var cols) ? int.Parse(cols) : (int?)null,
-                        Cover = docData.meta.TryGetValue("cover", out var cover) ? cover : null,
+                        Title = meta["title"],
+                        SubTitle = meta.TryGetValue("subtitle", out string subtitle) ? subtitle : null,
+                        Type = meta["type"],
+                        Desc = desc,
+                        Apis = apis.RemoveTag("h2"),
+                        Caveats = caveats.RemoveTag("h2"),
+                        Cols = meta.TryGetValue("cols", out var cols) ? int.Parse(cols) : (int?)null,
+                        Cover = meta.TryGetValue("cover", out var cover) ? cover : null,
                     };
 
                     dict[language] = model;

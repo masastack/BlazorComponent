@@ -14,6 +14,8 @@ namespace BlazorComponent.Doc.Models
         public string Desc { get; set; }
 
         public string Apis { get; set; }
+        
+        public string Caveats { get; set; }
 
         public int? Cols { get; set; }
 
