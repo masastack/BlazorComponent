@@ -22,7 +22,7 @@ namespace BlazorComponent
         
         RenderFragment PrevContent { get; set; }
 
-        internal void OnAffixClick(string direction);
+        internal Task OnAffixClick(string direction);
 
         bool HasNext { get; }
 

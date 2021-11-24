@@ -14,9 +14,9 @@ namespace BlazorComponent
 
         protected bool Visible => !(Component.ShowArrows == null && !Active);
 
-        protected void HandleOnClick(MouseEventArgs args)
+        protected Task HandleOnClick(MouseEventArgs args)
         {
-            Component.OnAffixClick("next");
+            return Component.OnAffixClick("next");
         }
     }
 }

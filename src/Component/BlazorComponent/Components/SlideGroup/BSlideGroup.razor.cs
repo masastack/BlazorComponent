@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
@@ -54,17 +51,17 @@ namespace BlazorComponent
 
         [Parameter]
         public string NextIcon { get; set; }
-        
+
         [Parameter]
         public RenderFragment NextContent { get; set; }
 
         [Parameter]
         public string PrevIcon { get; set; }
-        
+
         [Parameter]
         public RenderFragment PrevContent { get; set; }
 
-        protected bool _render = false;
+        protected bool _render;
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -81,10 +78,7 @@ namespace BlazorComponent
 
         public async Task SetWidths()
         {
-            var wrapperElement = await JsInvokeAsync<Web.Element>(JsInteropConstants.GetDomInfo, WrapperRef);
-            WrapperWidth = wrapperElement?.ClientWidth ?? 0;
-            var contentElement = await JsInvokeAsync<Web.Element>(JsInteropConstants.GetDomInfo, ContentRef);
-            ContentWidth = contentElement?.ClientWidth ?? 0;
+            (WrapperWidth, ContentWidth) = await GetWidths();
 
             IsOverflowing = WrapperWidth + 1 < ContentWidth;
 
@@ -93,6 +87,13 @@ namespace BlazorComponent
             _render = true;
 
             StateHasChanged();
+        }
+
+        private async Task<(double wrapper, double content)> GetWidths()
+        {
+            var wrapperElement = await JsInvokeAsync<Web.Element>(JsInteropConstants.GetDomInfo, WrapperRef);
+            var contentElement = await JsInvokeAsync<Web.Element>(JsInteropConstants.GetDomInfo, ContentRef);
+            return (wrapperElement?.ClientWidth ?? 0, contentElement?.ClientWidth ?? 0);
         }
 
         protected override void SetComponentClass()
@@ -137,9 +138,9 @@ namespace BlazorComponent
 
         public bool HasPrev => HasAffixes && ScrollOffset != 0;
 
-        void ISlideGroup.OnAffixClick(string direction)
+        async Task ISlideGroup.OnAffixClick(string direction)
         {
-            ScrollTo(direction);
+            await ScrollTo(direction);
 
             StateHasChanged();
         }
@@ -156,7 +157,7 @@ namespace BlazorComponent
 
                 if ((Rtl && wrapperPosition.Right < lastItemPosition.Right) || (!Rtl && wrapperPosition.Left > lastItemPosition.Left))
                 {
-                    ScrollTo("prev");
+                    await ScrollTo("prev");
                 }
             }
 
@@ -225,8 +226,9 @@ namespace BlazorComponent
             }
         }
 
-        protected void ScrollTo(string direction)
+        protected async Task ScrollTo(string direction)
         {
+            (WrapperWidth, ContentWidth) = await GetWidths();
             ScrollOffset = CalculateNewOffset(direction, WrapperWidth, ContentWidth, Rtl, ScrollOffset);
         }
 

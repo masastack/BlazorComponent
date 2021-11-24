@@ -9,14 +9,14 @@ namespace BlazorComponent
         protected bool Active => Component.HasPrev;
 
         protected string Icon => Component.PrevIcon;
-        
+
         protected RenderFragment IconContent => Component.PrevContent;
 
         protected bool Visible => !(Component.ShowArrows == null && !Active);
 
-        protected void HandleOnClick(MouseEventArgs args)
+        protected Task HandleOnClick(MouseEventArgs args)
         {
-            Component.OnAffixClick("prev");
+            return Component.OnAffixClick("prev");
         }
     }
 }

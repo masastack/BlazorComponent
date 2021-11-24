@@ -126,8 +126,6 @@ namespace BlazorComponent
                 Slider = (height, left, right, top, width);
             }
 
-            Instance?.SetWidths();
-
             if (firstRender || _isModified)
             {
                 StateHasChanged();

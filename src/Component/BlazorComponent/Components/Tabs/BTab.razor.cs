@@ -18,8 +18,13 @@ namespace BlazorComponent
         public async Task HandleClick(MouseEventArgs args)
         {
             await ToggleItem();
-            
-            await OnClick.InvokeAsync(args);
+
+            await (ItemGroup as BSlideGroup)?.SetWidths();
+
+            if (OnClick.HasDelegate)
+            {
+                await OnClick.InvokeAsync(args);
+            }
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
