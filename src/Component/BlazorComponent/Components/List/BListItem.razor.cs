@@ -67,6 +67,11 @@ namespace BlazorComponent
 
         protected virtual async Task HandleOnClick(MouseEventArgs args)
         {
+            if (args.Detail > 0)
+            {
+                await JsInvokeAsync(JsInteropConstants.Blur, Ref);
+            }
+            
             if (args.Button == 0)
             {
                 await ToggleItem();
