@@ -12,6 +12,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BlazorComponent.Doc.Models;
+using Microsoft.Extensions.CommandLineUtils;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -19,7 +20,8 @@ namespace BlazorComponent.Doc.CLI.Wrappers
 {
     public class DocWrapper
     {
-        public static(Dictionary<string, string> Meta, string Desc, string apis, string caveats) ParseDemoDoc(string input)
+        public static(Dictionary<string, string> meta, string desc, Dictionary<string, string> others)
+            ParseDemoDoc(string input)
         {
             var pipeline = new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
@@ -36,10 +38,8 @@ namespace BlazorComponent.Doc.CLI.Wrappers
                 meta = new Deserializer().Deserialize<Dictionary<string, string>>(yaml);
             }
 
-            var step = Heading.Description;
-            var descPart = "";
-            var apiPart = "";
-            var caveats = "";
+            var currentH2 = string.Empty;
+            Dictionary<string, string> h2Sections = new();
 
             for (var i = yamlBlock?.Line ?? 0; i < document.Count; i++)
             {
@@ -49,12 +49,7 @@ namespace BlazorComponent.Doc.CLI.Wrappers
 
                 if (block is HeadingBlock heading && heading.Level == 2)
                 {
-                    step = heading.Inline.FirstChild.ToString() switch
-                    {
-                        "API" => Heading.Api,
-                        "Caveats" => Heading.Caveats,
-                        _ => step
-                    };
+                    currentH2 = heading.Inline.FirstChild.ToString();
                 }
 
                 using var writer = new StringWriter();
@@ -63,23 +58,22 @@ namespace BlazorComponent.Doc.CLI.Wrappers
 
                 var blockHtml = renderer.Render(block);
 
-                switch (step)
+                if (h2Sections.ContainsKey(currentH2))
                 {
-                    case Heading.Description:
-                        descPart += blockHtml;
-                        break;
-                    case Heading.Api:
-                        apiPart += blockHtml;
-                        break;
-                    case Heading.Caveats:
-                        caveats += blockHtml;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    h2Sections[currentH2] += blockHtml;
+                }
+                else
+                {
+                    h2Sections[currentH2] = blockHtml.ToString().RemoveTag("h2");
                 }
             }
 
-            return (meta, descPart, apiPart, caveats);
+            if (h2Sections.TryGetValue(string.Empty, out var desc))
+            {
+                h2Sections.Remove(string.Empty);
+            }
+
+            return (meta, desc, h2Sections);
         }
 
         public static(DescriptionYaml Meta, string Style, Dictionary<string, string> Descriptions) ParseDescription(string input)
@@ -281,7 +275,7 @@ namespace BlazorComponent.Doc.CLI.Wrappers
 
         private static string GetSectionId(string title)
         {
-            return $"\"section-{HashHelper.Hash(title)}\"";
+            return $"\"{title.HashSection()}\"";
         }
     }
 

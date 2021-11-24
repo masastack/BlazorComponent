@@ -4,6 +4,8 @@ public static class StringExtensions
 {
     public static string RemoveTag(this string markup, string tag)
     {
+        if (markup == null) return null;
+        
         var start = $"<{tag}>";
         var end = $"</{tag}>";
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent.Doc.Extensions
 {
-    public class HashHelper
+    internal class HashHelper
     {
         // BKDR Hash Function
         public static int Hash(string str)

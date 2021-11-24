@@ -13,15 +13,13 @@ namespace BlazorComponent.Doc.Models
 
         public string Desc { get; set; }
 
-        public string Apis { get; set; }
-        
-        public string Caveats { get; set; }
-
         public int? Cols { get; set; }
 
         public string Cover { get; set; }
 
         public int Order { get; set; }
+        
+        public Dictionary<string, string> OtherDocs { get; set; }
 
         public DateTime LastWriteTime { get; set; }
 

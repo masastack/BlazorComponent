@@ -189,7 +189,7 @@ namespace BlazorComponent.Doc.CLI.Commands
                 {
                     var language = docItem.Name.Replace("index.", "").Replace(docItem.Extension, "");
                     string content = File.ReadAllText(docItem.FullName);
-                    var (meta, desc, apis, caveats) = DocWrapper.ParseDemoDoc(content);
+                    var (meta, desc, others) = DocWrapper.ParseDemoDoc(content);
 
                     var model = new DemoComponentModel()
                     {
@@ -197,10 +197,9 @@ namespace BlazorComponent.Doc.CLI.Commands
                         SubTitle = meta.TryGetValue("subtitle", out string subtitle) ? subtitle : null,
                         Type = meta["type"],
                         Desc = desc,
-                        Apis = apis.RemoveTag("h2"),
-                        Caveats = caveats.RemoveTag("h2"),
                         Cols = meta.TryGetValue("cols", out var cols) ? int.Parse(cols) : (int?)null,
                         Cover = meta.TryGetValue("cover", out var cover) ? cover : null,
+                        OtherDocs = others
                     };
 
                     dict[language] = model;
