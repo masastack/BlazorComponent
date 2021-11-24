@@ -26,6 +26,9 @@ namespace BlazorComponent
         public RenderFragment ChildContent { get; set; }
 
         [Parameter]
+        public bool Optional { get; set; }
+
+        [Parameter]
         public string SliderColor { get; set; }
 
         [Parameter]
