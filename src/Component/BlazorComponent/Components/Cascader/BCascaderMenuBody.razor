@@ -13,6 +13,7 @@
                     <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSelectList<,,>))"
                                    OnItemClick="@HandleOnItemClick"
                                    Item="@item"
+                                   Loading="@IsLoading(item)"
                                    Value="@ItemValue(item)"
                                    Label="@ItemText(item)"
                                    Children="@ItemChildren(item)">

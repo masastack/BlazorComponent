@@ -62,5 +62,8 @@ namespace BlazorComponent
 
         [Parameter]
         public bool Disabled { get; set; }
+
+        [Parameter]
+        public StringBoolean Loading { get; set; }
     }
 }

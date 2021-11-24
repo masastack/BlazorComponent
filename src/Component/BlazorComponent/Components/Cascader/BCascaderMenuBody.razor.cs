@@ -11,14 +11,33 @@ namespace BlazorComponent
 
         protected List<TItem> Children { get; set; }
 
-        public Func<TItem, List<TItem>> ItemChildren => Component.ItemChildren;
+        protected Func<TItem, List<TItem>> ItemChildren => Component.ItemChildren;
+
+        protected Func<TItem, Task> LoadChildren => Component.LoadChildren;
+
+        protected TItem LoadingItem { get; set; }
 
         [Parameter]
         public List<TItem> Items { get; set; }
 
-        public EventCallback<TItem> HandleOnItemClick => EventCallback.Factory.Create<TItem>(this, item =>
+        protected StringBoolean IsLoading(TItem item)
+        {
+            return LoadChildren == null ? null : EqualityComparer<TItem>.Default.Equals(item, LoadingItem);
+        }
+
+        //TODO: refactor this
+        public EventCallback<TItem> HandleOnItemClick => EventCallback.Factory.Create<TItem>(this, async item =>
         {
             var children = ItemChildren(item);
+
+            if (LoadChildren != null && children != null && children.Count == 0)
+            {
+                LoadingItem = item;
+                await LoadChildren(item);
+                LoadingItem = default;
+
+                children = ItemChildren(item);
+            }
 
             if (children != null && children.Count > 0)
             {

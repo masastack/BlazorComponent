@@ -20,7 +20,7 @@
                     var index = Label.ToLower().IndexOf(queryText.ToLower());
                     if (index > 0)
                     {
-                        @Label.Substring(0, index);
+                        @Label.Substring(0, index)
                     }
                     <span class="@Select.CssProvider.GetClass("mask")">
                         @queryText
@@ -34,12 +34,19 @@
             }
         </AbstractComponent>
     </AbstractComponent>
-    @if (!string.IsNullOrEmpty(Icon))
+    @if (!string.IsNullOrEmpty(Icon) || Loading == true)
     {
         <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemIcon>()">
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
-                @Icon
-            </AbstractComponent>
+            @if (Loading == true)
+            {
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BProgressCircular>()"></AbstractComponent>
+            }
+            else
+            {
+                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
+                    @Icon
+                </AbstractComponent>
+            }
         </AbstractComponent>
     }
 </AbstractComponent>
