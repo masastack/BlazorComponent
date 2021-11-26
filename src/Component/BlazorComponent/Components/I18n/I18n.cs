@@ -20,7 +20,7 @@ namespace BlazorComponent.Components
 
         private static string? _defaultLanguage;
 
-        private static string DefaultLanguage
+        public static string DefaultLanguage
         {
             get
             {
@@ -93,7 +93,7 @@ namespace BlazorComponent.Components
         public void SetLang(string language) => CurrentLanguage = language;
     }
 
-    internal class LanguageSettings
+    public class LanguageSettings
     {
         public LanguageSettings(string defaultLanguage, Setting[] settings)
         {
