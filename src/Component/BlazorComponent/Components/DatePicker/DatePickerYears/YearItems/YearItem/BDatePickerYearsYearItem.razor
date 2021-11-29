@@ -5,7 +5,7 @@
     @{
     var active = Value == Year;
     <li @key="Year" class="@CssProvider.GetClass("year-item",data:active)" @onclick="HandleOnYearItemClick">
-        @Formatter(Year)
+        @Formatter(new DateOnly(Year,1,1))
     </li>
 }
 

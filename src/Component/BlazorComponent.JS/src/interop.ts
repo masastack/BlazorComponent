@@ -403,6 +403,10 @@ export function addHtmlElementEventListener(selector, type, invoker, options, ac
             args.stopPropagation();
         }
 
+        if (actions?.preventDefault) {
+            args.preventDefault();
+        }
+
         // mouseleave relatedTarget
         if (actions?.relatedTarget && document.querySelector(actions.relatedTarget)?.contains(args.relatedTarget)) {
             return;

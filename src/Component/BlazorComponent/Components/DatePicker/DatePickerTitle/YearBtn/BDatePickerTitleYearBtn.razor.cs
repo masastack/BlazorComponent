@@ -10,7 +10,7 @@ namespace BlazorComponent
 {
     public partial class BDatePickerTitleYearBtn<TDatePickerTitle> where TDatePickerTitle : IDatePickerTitle
     {
-        public int Year => Component.Year;
+        public string Year => Component.Year;
 
         public string YearIcon => Component.YearIcon;
 

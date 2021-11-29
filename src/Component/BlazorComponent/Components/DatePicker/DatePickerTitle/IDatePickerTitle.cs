@@ -9,7 +9,7 @@ namespace BlazorComponent
 {
     public interface IDatePickerTitle : IHasProviderComponent
     {
-        int Year { get; }
+        string Year { get; }
 
         string YearIcon { get; }
 

@@ -14,7 +14,7 @@ namespace BlazorComponent
 
         DateOnly? Min { get; }
 
-        Func<int, string> Formatter { get; }
+        Func<DateOnly, string> Formatter { get; }
 
         Task HandleOnYearItemClickAsync(int year);
     }

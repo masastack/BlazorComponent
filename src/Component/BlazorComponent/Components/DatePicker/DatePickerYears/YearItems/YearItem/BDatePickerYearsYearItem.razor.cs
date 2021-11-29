@@ -13,7 +13,7 @@ namespace BlazorComponent
         [Parameter]
         public int Year { get; set; }
 
-        public Func<int, string> Formatter => Component.Formatter;
+        public Func<DateOnly, string> Formatter => Component.Formatter;
 
         public int Value => Component.Value;
 

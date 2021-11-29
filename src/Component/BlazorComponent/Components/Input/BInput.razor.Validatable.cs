@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BInput<TValue>
+    public partial class BInput<TValue> : IValidatable
     {
         private TValue _lazyValue;
         private bool _isFocused;
@@ -189,6 +189,16 @@ namespace BlazorComponent
 
         public virtual bool ExternalError => ErrorMessages.Count > 0 || Error;
 
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+
+            if (Form != null)
+            {
+                Form.Register(this);
+            }
+        }
+
         protected override void OnParametersSet()
         {
             SubscribeValidationStateChanged();
@@ -251,9 +261,62 @@ namespace BlazorComponent
             }
         }
 
+        public Task<bool> ValidateAsync()
+        {
+            //No rules should be valid. 
+            var valid = true;
+
+            if (Rules != null)
+            {
+                ErrorBucket.Clear();
+
+                foreach (var rule in Rules)
+                {
+                    var result = rule(InternalValue);
+                    if (result.IsT0)
+                    {
+                        ErrorBucket.Add(result.AsT0);
+                    }
+                }
+
+                valid = ErrorBucket.Count > 0;
+            }
+
+            return Task.FromResult(valid);
+        }
+
+        public async Task ResetAsync()
+        {
+            //We will change this and InternalValue
+            ErrorBucket.Clear();
+
+            _lazyValue = default;
+            await ValueChanged.InvokeAsync(_lazyValue);
+        }
+
+        public Task ResetValidationAsync()
+        {
+            ErrorBucket.Clear();
+            return Task.CompletedTask;
+        }
+
         protected virtual void HandleOnValidationStateChanged(object sender, ValidationStateChangedEventArgs e)
         {
-            ErrorBucket = EditContext.GetValidationMessages(ValueIdentifier).ToList();
+            var errors = EditContext.GetValidationMessages(ValueIdentifier);
+            if (!errors.Any())
+            {
+                if (ErrorBucket.Count == 0)
+                {
+                    return;
+                }
+
+                ErrorBucket.Clear();
+            }
+            else
+            {
+                ErrorBucket = errors.ToList();
+            }
+
             StateHasChanged();
         }
 
