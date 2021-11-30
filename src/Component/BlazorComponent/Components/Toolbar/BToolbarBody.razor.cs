@@ -6,7 +6,7 @@ namespace BlazorComponent
     {
         public string Src => Component.Src;
 
-        public RenderFragment<ImgProps> ImgContent => Component.ImgContent;
+        public RenderFragment<Dictionary<string, object>> ImgContent => Component.ImgContent;
 
         public StringNumber Height => Component.Height;
 
@@ -14,10 +14,10 @@ namespace BlazorComponent
 
         public RenderFragment ExtensionContent => Component.ExtensionContent;
 
-        public ImgProps ImgProps => new()
+        public Dictionary<string, object> ImgProps => new()
         {
-            Height = Height,
-            Src = Src
+            { "Height", Height },
+            { "Src", Src }
         };
     }
 }

@@ -4,7 +4,7 @@
 
 @if (!string.IsNullOrEmpty(Src) || ImgContent != null)
 {
-    <div class="@CssProvider.GetClass("image")">
+    <div class="@CssProvider.GetClass("image")" style="@CssProvider.GetStyle("image")">
         @if (ImgContent != null)
         {
             @ImgContent(ImgProps)

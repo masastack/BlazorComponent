@@ -11,7 +11,7 @@ namespace BlazorComponent
     {
         string Src { get; }
 
-        RenderFragment<ImgProps> ImgContent { get; }
+        RenderFragment<Dictionary<string, object>> ImgContent { get; }
 
         StringNumber Height { get; }
 

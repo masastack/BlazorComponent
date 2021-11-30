@@ -14,7 +14,9 @@ namespace BlazorComponent
         public ForwardRef RefBack { get; set; } = new ForwardRef();
 
         [Inject]
-        protected IJSRuntime Js { get; set; }
+        public virtual IJSRuntime Js { get; set; }
+
+        protected bool Prerendering { get; set; } = true;
 
         protected void CallAfterRender(Func<Task> action)
         {
@@ -23,6 +25,8 @@ namespace BlazorComponent
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
+            Prerendering = false;
+            
             await base.OnAfterRenderAsync(firstRender);
             if (firstRender)
             {
