@@ -4,8 +4,8 @@
 @typeparam TInput
 @inherits BSelectMenu<TItem, TValue,TValue, TInput>
 
-<div style="@CssProvider.GetStyle("cascader-menu-body")">
-    <div style="@CssProvider.GetStyle("cascader-menu-body-wrap")">
+<div class="@CssProvider.GetClass("menu-body")">
+    <div class="@CssProvider.GetClass("menu-body-wrapper")" style="@CssProvider.GetStyle("menu-body-wrapper")">
         <AbstractComponent Metadata="AbstractProvider.GetMetadata<BList>()">
             <AbstractComponent Metadata="AbstractProvider.GetMetadata<BItemGroup>()">
                 @foreach (var item in Items)

@@ -33,5 +33,13 @@ namespace BlazorComponent
                 Component.Menu = value;
             }
         }
+
+        public bool HideSelected => Component.HideSelected;
+
+        public IList<TItemValue> Values => Component.Values;
+
+        public bool HideNoData => Component.HideNoData;
+
+        public RenderFragment NoDataContent => Component.NoDataContent;
     }
 }

@@ -46,7 +46,7 @@ export function removeStepperEventListener(element: HTMLElement, isActive: Boole
 
 export function initStepperWrapper(element: HTMLElement) {
     if (!element.classList.contains('active')) {
-        element.style.display='none';
+        element.style.display = 'none';
     }
 
     var observer = new MutationObserver(function (mutationsList) {
@@ -55,13 +55,13 @@ export function initStepperWrapper(element: HTMLElement) {
                 if (mutation.attributeName == 'class') {
                     var target: HTMLElement = mutation.target as HTMLElement;
                     if (target.classList.contains('active')) {
-                        target.style.display='';
-                        enter(target,true);
+                        target.style.display = '';
+                        enter(target, true);
                     }
-                    else{
+                    else {
                         leave(target);
                         setTimeout(() => {
-                            target.style.display='none';
+                            target.style.display = 'none';
                         }, 300);
                     }
                 }
@@ -417,7 +417,7 @@ export function addHtmlElementEventListener(selector, type, invoker, options, ac
         for (var k in args) {
             if (typeof args[k] == 'string' || typeof args[k] == 'number') {
                 obj[k] = args[k];
-            } else if (k == 'target') {
+            } else if (k == 'target' && args.target.attributes) {
                 var target = {
                     attributes: {}
                 };

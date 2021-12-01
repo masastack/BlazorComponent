@@ -3,7 +3,7 @@
 
 <CascadingValue Value="this">
     <CascadingValue Value="true" Name="IsInList">
-        <Element Tag="@Tag" Class="@CssProvider.GetClass()" Style="@CssProvider.GetStyle()" ReferenceCaptureAction="@((_) => Ref = _)" ExtraAttributes="@Attributes">
+        <Element Tag="@Tag" Class="@CssProvider.GetClass()" Style="@CssProvider.GetStyle()" ReferenceCaptureAction="@((_) => Ref = _)" @attributes="Attributes">
             @ChildContent
         </Element>
     </CascadingValue>

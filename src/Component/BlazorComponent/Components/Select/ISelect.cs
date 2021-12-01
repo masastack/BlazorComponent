@@ -13,6 +13,7 @@ namespace BlazorComponent
         bool Multiple { get; }
 
         IList<TItemValue> Values { get; }
+
         Task SetSelectedAsync(string label, TItemValue value);
 
         Task RemoveSelectedAsync(string label, TItemValue value);
@@ -41,10 +42,16 @@ namespace BlazorComponent
 
         RenderFragment AppendItemContent => default;
 
-        RenderFragment<int> SelectionContent => default;
+        RenderFragment<SelectSelectionProps<TItem>> SelectionContent => default;
 
         IList<TItem> SelectedItems { get; }
-        
+
         object Menu { set; }
+
+        bool HideSelected { get; }
+
+        bool HideNoData { get; }
+
+        RenderFragment NoDataContent { get; }
     }
 }

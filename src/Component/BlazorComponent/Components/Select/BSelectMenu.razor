@@ -18,13 +18,18 @@
                     {
                         var highlighted = HighlightIndex == i;
                         var item = ComputedItems[i];
-                        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSelectList<,,>))"
+                        var value=ItemValue(item);
+
+                        if(!HideSelected || !Values.Contains(value))
+                        {
+                            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSelectList<,,>))"
                                    Item="@item"
                                    Highlighted="@highlighted"
                                    Value="@ItemValue(item)"
                                    Label="@ItemText(item)"
                                    Disabled="@ItemDisabled(item)"
                                    key="@ItemValue(item).ToString()" />
+                        }
                     }
                     @if (AppendItemContent != null)
                     {
@@ -40,7 +45,15 @@
             }
             else
             {
-                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BList>()">
+                if (!HideNoData)
+                {
+                    if (NoDataContent!=null)
+                    {
+                        @NoDataContent
+                    }
+                    else
+                    {
+                        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BList>()">
                     <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItem>()" Link="@false">
                         <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemContent>()">
                             <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemTitle>()">
@@ -49,6 +62,8 @@
                         </AbstractComponent>
                     </AbstractComponent>
                 </AbstractComponent>
+                    }
+                }
             }
         </CascadingValue>);
 }, referenceCapture: menu => Menu=menu)

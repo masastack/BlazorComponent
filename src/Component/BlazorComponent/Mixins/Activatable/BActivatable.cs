@@ -49,7 +49,7 @@ public abstract class BActivatable : BDelayable, IActivatable
     }
 
     protected bool HasActivator => ActivatorContent != null || _externalActivatorRef != null;
-    
+
     public RenderFragment ComputedActivatorContent
     {
         get
@@ -79,7 +79,17 @@ public abstract class BActivatable : BDelayable, IActivatable
     }
 
     [Parameter]
-    public bool Disabled { get; set; }
+    public bool Disabled
+    {
+        get
+        {
+            return GetValue<bool>();
+        }
+        set
+        {
+            SetValue(value);
+        }
+    }
 
     [Parameter]
     public bool OpenOnHover { get; set; }
@@ -96,6 +106,17 @@ public abstract class BActivatable : BDelayable, IActivatable
 
     [Parameter]
     public EventCallback<bool> ValueChanged { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        Watcher
+            .Watch<bool>(nameof(Disabled), val =>
+            {
+                _ = ResetActivator();
+            });
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

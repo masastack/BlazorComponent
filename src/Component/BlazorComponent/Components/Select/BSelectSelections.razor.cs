@@ -15,7 +15,7 @@ namespace BlazorComponent
 
         public bool Multiple => Component.Multiple;
 
-        public RenderFragment<int> SelectionContent => Component.SelectionContent;
+        public RenderFragment<SelectSelectionProps<TItem>> SelectionContent => Component.SelectionContent;
 
         public IList<TItem> SelectedItems => Component.SelectedItems;
     }

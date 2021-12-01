@@ -12,6 +12,9 @@ namespace BlazorComponent
         [Parameter]
         public bool Highlighted { get; set; }
 
+        [Parameter]
+        public RenderFragment<SelectListItemProps<TItem>> ItemContent { get; set; }
+
         protected bool Selected
         {
             get
