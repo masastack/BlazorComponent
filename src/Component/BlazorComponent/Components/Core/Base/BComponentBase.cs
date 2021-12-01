@@ -16,8 +16,6 @@ namespace BlazorComponent
         [Inject]
         public virtual IJSRuntime Js { get; set; }
 
-        protected bool Prerendering { get; set; } = true;
-
         protected void CallAfterRender(Func<Task> action)
         {
             _afterRenderCallQuene.Enqueue(action);
@@ -25,8 +23,6 @@ namespace BlazorComponent
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            Prerendering = false;
-            
             await base.OnAfterRenderAsync(firstRender);
             if (firstRender)
             {
