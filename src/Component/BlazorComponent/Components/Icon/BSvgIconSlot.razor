@@ -9,10 +9,12 @@
 else
 {
     <span role="img" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" @ref="Ref" @attributes="Attrs">
-        <svg @attributes="SvgAttrs" class="@CssProvider.GetClass("m-icon-svg")" xmlns="http://www.w3.org/2000/svg">
+        <svg class="@CssProvider.GetClass("svg")"
+             style="@CssProvider.GetStyle("svg")"
+             xmlns="http://www.w3.org/2000/svg"
+             @attributes="SvgAttrs">
             <path d="@Icon">
             </path>
         </svg>
     </span>
 }
-
