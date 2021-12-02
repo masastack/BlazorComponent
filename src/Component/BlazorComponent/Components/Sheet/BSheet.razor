@@ -4,8 +4,6 @@
 <BCascadingValue Value="this">
     <Element Tag="@Tag" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id"
              ReferenceCaptureAction="r => Ref = r"
-             @onclick="HandleOnClick"
-             @oncontextmenu:preventDefault="OnContextmenuPreventDefault"
              @attributes="Attributes">
         <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSheetBody<>))"></AbstractComponent>
     </Element>

@@ -4,7 +4,7 @@
 
 @if (ShowContent)
 {
-    <div Show="Value" class="@CssProvider.GetClass("content")" style="@CssProvider.GetStyle("content")" @ref="ContentRef" @attributes="ContentAttrs">
+    <div class="@CssProvider.GetClass("content")" style="@CssProvider.GetStyle("content")" @onkeydown="@HandleOnKeyDown" @ref="ContentRef" @attributes="ContentAttrs">
         <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDialogInnerContent<>))"></AbstractComponent>
     </div>
 }

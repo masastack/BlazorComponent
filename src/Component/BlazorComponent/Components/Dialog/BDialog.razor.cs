@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
@@ -11,8 +12,9 @@ namespace BlazorComponent
 {
     public partial class BDialog : BActivatable, IAsyncDisposable
     {
+        private bool _isHasOverlayElement;
+        private bool _valueChangedToTrue;
         private int _stackMinZIndex = 200;
-        private bool _isNotFirstRender = true;
 
         protected virtual string AttachSelector { get; set; }
 
@@ -31,6 +33,12 @@ namespace BlazorComponent
         public RenderFragment ChildContent { get; set; }
 
         [Parameter]
+        public bool Fullscreen { get; set; }
+
+        [Parameter]
+        public bool HideOverlay { get; set; }
+
+        [Parameter]
         public StringNumber MaxWidth { get; set; }
 
         [Parameter]
@@ -42,28 +50,18 @@ namespace BlazorComponent
         [Parameter]
         public StringNumber Width { get; set; }
 
-        private bool _isHasOverlayElement;
-
         public override bool Value
         {
             get => base.Value;
             set
             {
+                _valueChangedToTrue = base.Value != value && value;
+
                 base.Value = value;
+
                 if (value)
                 {
                     _isHasOverlayElement = true;
-                }
-            }
-        }
-
-        protected override async Task OnParametersSetAsync()
-        {
-            if (!_isNotFirstRender)
-            {
-                if (ZIndex == default)
-                {
-                    ZIndex = await ActiveZIndex();
                 }
             }
         }
@@ -72,12 +70,29 @@ namespace BlazorComponent
         {
             await base.OnAfterRenderAsync(firstRender);
 
-            if (firstRender)
-            {
-                _isNotFirstRender = false;
-            }
-
             await ShowLazyContent();
+            
+            if (_valueChangedToTrue)
+            {
+                ZIndex = await ActiveZIndex();
+                await Show();
+                StateHasChanged();
+                _valueChangedToTrue = false;
+            }
+        }
+
+        protected bool ShowOverlay => !Fullscreen && !HideOverlay;
+
+        private async Task Show()
+        {
+            // TODO: previousActiveElement
+            // https://github.com/vuetifyjs/vuetify/blob/master/packages/vuetify/src/components/VDialog/VDialog.ts#L185
+            
+            var contains = await JsInvokeAsync<bool?>(JsInteropConstants.ContainsActiveElement, ContentRef);
+            if (contains.HasValue && !contains.Value)
+            {
+                await JsInvokeAsync(JsInteropConstants.Focus, ContentRef);
+            }
         }
 
         protected override async Task Close()
@@ -104,7 +119,7 @@ namespace BlazorComponent
 
         private async Task<int> GetMaxZIndex()
         {
-            var maxZindex = await JsInvokeAsync<int>(JsInteropConstants.GetMenuOrDialogMaxZIndex, new List<ElementReference> {ContentRef}, Ref);
+            var maxZindex = await JsInvokeAsync<int>(JsInteropConstants.GetMenuOrDialogMaxZIndex, new List<ElementReference> { ContentRef }, Ref);
 
             return maxZindex > _stackMinZIndex ? maxZindex : _stackMinZIndex;
         }

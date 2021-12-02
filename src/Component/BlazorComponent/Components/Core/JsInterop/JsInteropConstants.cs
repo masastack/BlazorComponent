@@ -51,13 +51,13 @@
         public static string ScrollToPosition => $"{Variables.JsInteropFuncNamePrefix}scrollToPosition";
 
         public static string GetFirstChildDomInfo => $"{Variables.JsInteropFuncNamePrefix}getFirstChildDomInfo";
-        
+
         public static string AddCls => $"{Variables.JsInteropFuncNamePrefix}addCls";
-        
+
         public static string AddClsToFirstChild => $"{Variables.JsInteropFuncNamePrefix}addClsToFirstChild";
 
         public static string RemoveCls => $"{Variables.JsInteropFuncNamePrefix}removeCls";
-        
+
         public static string RemoveClsFromFirstChild => $"{Variables.JsInteropFuncNamePrefix}removeClsFromFirstChild";
 
         public static string AddDomEventListenerToFirstChild => $"{Variables.JsInteropFuncNamePrefix}addDomEventListenerToFirstChild";
@@ -143,6 +143,8 @@
         public static string InitStepperWrapper => $"{Variables.JsInteropFuncNamePrefix}initStepperWrapper";
 
         public static string UpdateCanvas => $"{Variables.JsInteropFuncNamePrefix}updateCanvas";
+        
+        public  static string ContainsActiveElement => $"{Variables.JsInteropFuncNamePrefix}containsActiveElement";
 
         #region Draggable Modal
 

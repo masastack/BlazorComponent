@@ -57,8 +57,7 @@ export function initStepperWrapper(element: HTMLElement) {
                     if (target.classList.contains('active')) {
                         target.style.display = '';
                         enter(target, true);
-                    }
-                    else {
+                    } else {
                         leave(target);
                         setTimeout(() => {
                             target.style.display = 'none';
@@ -69,7 +68,7 @@ export function initStepperWrapper(element: HTMLElement) {
         }
     });
 
-    observer.observe(element, { attributes: true, attributeFilter: ['class'] });
+    observer.observe(element, {attributes: true, attributeFilter: ['class']});
 }
 
 function onTransition(e: TransitionEvent, isActive: Boolean, element: HTMLElement) {
@@ -386,8 +385,7 @@ export function addHtmlElementEventListener(selector, type, invoker, options, ac
 
     if (selector == "window") {
         htmlElement = window;
-    }
-    else if (selector == "document") {
+    } else if (selector == "document") {
         htmlElement = document.documentElement;
     } else {
         htmlElement = document.querySelector(selector);
@@ -452,8 +450,7 @@ export function removeHtmlElementEventListener(selector, type) {
 
     if (selector == "window") {
         htmlElement = window;
-    }
-    else if (selector == "document") {
+    } else if (selector == "document") {
         htmlElement = document.documentElement;
     } else {
         htmlElement = document.querySelector(selector);
@@ -483,7 +480,7 @@ export function addOutsideClickEventListener(invoker, insideSelectors: string[])
         invoker.invokeMethodAsync("Invoke", {});
     }
 
-    document.addEventListener("click", listener, { capture: true });
+    document.addEventListener("click", listener, {capture: true});
 
     var key = `(${insideSelectors.join(',')})document:click`
 
@@ -496,7 +493,7 @@ export function removeOutsideClickEventListener(insideSelectors: string[]) {
     var key = `(${insideSelectors.join(',')})document:click`
 
     if (outsideClickListenerCaches[key]) {
-        document.removeEventListener('click', outsideClickListenerCaches[key], { capture: true });
+        document.removeEventListener('click', outsideClickListenerCaches[key], {capture: true});
         outsideClickListenerCaches[key] = undefined
     }
 }
@@ -772,7 +769,7 @@ export function elementScrollIntoView(selector: Element | string) {
     if (!element)
         return;
 
-    element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    element.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'start'});
 }
 
 const oldBodyCacheStack = [];
@@ -827,7 +824,7 @@ export function createIconFromfontCN(scriptUrl) {
 }
 
 export function getScroll() {
-    return { x: window.pageXOffset, y: window.pageYOffset };
+    return {x: window.pageXOffset, y: window.pageYOffset};
 }
 
 export function getInnerText(element) {
@@ -977,7 +974,7 @@ function mentionsOnWindowClick(e) {
 
 //#endregion
 
-export { disableDraggable, enableDraggable, resetModalPosition } from "./modules/dragHelper";
+export {disableDraggable, enableDraggable, resetModalPosition} from "./modules/dragHelper";
 
 export function bindTableHeaderAndBodyScroll(bodyRef, headerRef) {
     bodyRef.bindScrollLeftToHeader = () => {
@@ -1222,4 +1219,13 @@ export function checkElementFixed(selector) {
     }
 
     return false;
+}
+
+export function containsActiveElement(selector) {
+    var el = getDom(selector);
+    if (el) {
+        return el.contains(document.activeElement);
+    }
+    
+    return null;
 }

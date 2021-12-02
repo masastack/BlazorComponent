@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System.Collections.Generic;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
@@ -16,5 +16,7 @@ namespace BlazorComponent
         Dictionary<string, object> ContentAttrs { get; }
 
         bool ShowContent { get; }
+        
+        Task Keydown(KeyboardEventArgs args);
     }
 }

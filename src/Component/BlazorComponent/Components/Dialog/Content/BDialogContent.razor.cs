@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
@@ -19,5 +15,10 @@ namespace BlazorComponent
         public bool ShowContent => Component.ShowContent;
 
         public bool Value => Component.Value;
+
+        protected async Task HandleOnKeyDown(KeyboardEventArgs args)
+        {
+            await Component.Keydown(args);
+        }
     }
 }
