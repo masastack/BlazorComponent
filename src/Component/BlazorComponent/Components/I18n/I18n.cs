@@ -11,11 +11,11 @@ namespace BlazorComponent.Components
 {
     public class I18n
     {
-        private static ConcurrentDictionary<string, Dictionary<string, Dictionary<string, string>>> _i18nCache;
+        private static ConcurrentDictionary<string, Dictionary<string, string>> _i18nCache;
 
         static I18n()
         {
-            _i18nCache = new ConcurrentDictionary<string, Dictionary<string, Dictionary<string, string>>>();
+            _i18nCache = new ConcurrentDictionary<string, Dictionary<string, string>>();
         }
 
         private static string? _defaultLanguage;
@@ -32,7 +32,7 @@ namespace BlazorComponent.Components
             }
         }
 
-        public static void AddLang(string language, Dictionary<string, Dictionary<string, string>>? langMap, bool isDefaultLanguage = false)
+        public static void AddLang(string language, Dictionary<string, string>? langMap, bool isDefaultLanguage = false)
         {
             if (langMap is null) return;
 
@@ -41,20 +41,16 @@ namespace BlazorComponent.Components
             _i18nCache.AddOrUpdate(language, langMap, (name, original) => langMap);
         }
 
-        public static void AddLang(string languageSettingsFile)
+        public static void AddLang(string language, string languageSettingsFile, bool isDefaultLanguage = false)
         {
-            var languageSettings = JsonSerializer.Deserialize<LanguageSettings>(File.ReadAllText(languageSettingsFile));
+            var languageSettings = JsonSerializer.Deserialize<Dictionary<string,string>>(File.ReadAllText(languageSettingsFile));
             if (languageSettings is not null)
             {
-                DefaultLanguage = languageSettings.DefaultLanguage;
-                foreach (var setting in languageSettings.Settings)
-                {
-                    AddLang(setting.Language, JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(File.ReadAllText(setting.FilePath)));
-                }
+                AddLang(language, languageSettings, isDefaultLanguage);
             }
         }
 
-        public static IReadOnlyDictionary<string, Dictionary<string, string>>? GetLang(string language)
+        public static IReadOnlyDictionary<string, string>? GetLang(string language)
         {
             return _i18nCache.GetValueOrDefault(language);
         }
@@ -76,13 +72,13 @@ namespace BlazorComponent.Components
             }
         }
 
-        public IReadOnlyDictionary<string, Dictionary<string, string>>? _languageMap;
+        public IReadOnlyDictionary<string, string>? _languageMap;
 
-        public IReadOnlyDictionary<string, Dictionary<string, string>> LanguageMap
+        public IReadOnlyDictionary<string, string> LanguageMap
         {
             get
             {
-                return _languageMap ?? throw new Exception($"Not has {CurrentLanguage} language !");
+                return _languageMap ?? (_languageMap = GetLang(CurrentLanguage)) ?? throw new Exception($"Not has {CurrentLanguage} language !");
             }
             private set
             {
@@ -91,31 +87,10 @@ namespace BlazorComponent.Components
         }
 
         public void SetLang(string language) => CurrentLanguage = language;
-    }
 
-    public class LanguageSettings
-    {
-        public LanguageSettings(string defaultLanguage, Setting[] settings)
+        public string? T(string key)
         {
-            DefaultLanguage = defaultLanguage;
-            Settings = settings;
-        }
-
-        public string DefaultLanguage { get; set; }
-
-        public Setting[] Settings { get; set; }
-
-        public class Setting
-        {
-            public Setting(string language, string filePath)
-            {
-                Language = language;
-                FilePath = filePath;
-            }
-
-            public string Language { get; set; }
-
-            public string FilePath { get; set; }
+            return LanguageMap.GetValueOrDefault(key);
         }
     }
 }
