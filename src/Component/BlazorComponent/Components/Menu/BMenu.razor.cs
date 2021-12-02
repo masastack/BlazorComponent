@@ -129,6 +129,20 @@ namespace BlazorComponent
             return UpdateDimensions(lazySetter);
         }
 
+        protected override Dictionary<string, (EventCallback<MouseEventArgs>, EventListenerActions)> GenActivatorMouseListeners()
+        {
+            var listeners = base.GenActivatorMouseListeners();
+
+            // if contentRef is null, remove the mouseleave listener.
+            // the mouseleave event will be listened again in AfterShowContent method.
+            if (listeners.ContainsKey("mouseleave") && ContentRef.Context == null)
+            {
+                listeners.Remove("mouseleave");
+            }
+
+            return listeners;
+        }
+
         protected override Dictionary<string, EventCallback<KeyboardEventArgs>> GenActivatorKeyboardListeners()
         {
             var listeners = base.GenActivatorKeyboardListeners();

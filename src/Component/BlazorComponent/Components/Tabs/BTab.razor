@@ -1,11 +1,11 @@
 ﻿@namespace BlazorComponent
 @inherits BGroupItem<ItemGroupBase>
 
-<div class="@CssProvider.GetClass()"
-     style="@CssProvider.GetStyle()"
-     id="@Id"
-     @ref="Ref"
-     @onclick="HandleClick"
-     @attributes="@Attributes">
+<Element Tag="@Tag"
+         Class="@CssProvider.GetClass()"
+         Style="@CssProvider.GetStyle()"
+         ReferenceCaptureAction="_ => Ref = _"
+         @onclick="HandleOnClick"
+         @attributes="@Attributes">
     @ChildContent
-</div>
+</Element>

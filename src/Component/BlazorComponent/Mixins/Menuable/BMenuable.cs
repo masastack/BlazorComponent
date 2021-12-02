@@ -358,17 +358,13 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
 
         if (listeners.ContainsKey("mouseleave"))
         {
-            // ShowLazyContent
+            // ContentRef is null if use the feature ShowLazyContent
             if (ContentRef.Context != null)
             {
                 listeners["mouseleave"] = (
                     listeners["mouseleave"].listener,
                     new EventListenerActions(Document.QuerySelector(ContentRef).Selector)
                 );
-            }
-            else
-            {
-                listeners.Remove("mouseleave");
             }
         }
 

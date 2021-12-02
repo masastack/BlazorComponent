@@ -97,15 +97,6 @@ namespace BlazorComponent
         [Parameter]
         public string Transition { get; set; }
 
-        protected override async Task AfterShowContent()
-        {
-            await ActivatorElement.AddEventListenerAsync(
-                "mouseleave",
-                CreateEventCallback<MouseEventArgs>(_ => Close()),
-                false,
-                new EventListenerActions(Document.QuerySelector(ContentRef).Selector));
-        }
-
         protected override async Task Activate(Action lazySetter)
         {
             await UpdateDimensions(lazySetter);

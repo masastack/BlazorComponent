@@ -18,12 +18,16 @@ public class Delayer : IDelayable
 
     public int CloseDelay { get; set; }
 
+    public int ComputedOpenDelay => OpenDelay == 0 ? 16 : OpenDelay;
+    
+    public int ComputedCloseDelay => CloseDelay == 0 ? 16 : CloseDelay;
+
     public async Task RunOpenDelay(Func<Task> cb = null)
     {
         _cancellationTokenSource?.Cancel();
         _cancellationTokenSource = new CancellationTokenSource();
 
-        await Task.Delay(OpenDelay, _cancellationTokenSource.Token);
+        await Task.Delay(ComputedOpenDelay, _cancellationTokenSource.Token);
 
         if (cb != null)
         {
@@ -36,7 +40,7 @@ public class Delayer : IDelayable
         _cancellationTokenSource?.Cancel();
         _cancellationTokenSource = new CancellationTokenSource();
 
-        await Task.Delay(CloseDelay, _cancellationTokenSource.Token);
+        await Task.Delay(ComputedCloseDelay, _cancellationTokenSource.Token);
 
         if (cb != null)
         {
