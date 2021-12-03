@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using BlazorComponent.Abstracts;
 using BlazorComponent.Components;
 using Microsoft.AspNetCore.Components;
 

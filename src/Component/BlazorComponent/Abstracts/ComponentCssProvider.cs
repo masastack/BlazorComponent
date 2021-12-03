@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BlazorComponent.Components.Core;
-using BlazorComponent.Components.Core.CssProcess;
 using Microsoft.AspNetCore.Components;
 
-namespace BlazorComponent
+namespace BlazorComponent.Abstracts
 {
     public class ComponentCssProvider
     {

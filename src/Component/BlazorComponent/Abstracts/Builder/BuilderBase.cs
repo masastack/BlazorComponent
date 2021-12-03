@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BlazorComponent.Components.Core.CssProcess
+namespace BlazorComponent
 {
     public class BuilderBase
     {

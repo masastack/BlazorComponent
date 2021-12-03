@@ -87,6 +87,23 @@ namespace BlazorComponent.Web
                     })), options.Value, actions);
         }
 
+        public async Task AddEventListenerAsync(string type, EventCallback listener, bool preventDefault = false, bool stopPropagation = false)
+        {
+            await JS.InvokeVoidAsync(JsInteropConstants.AddHtmlElementEventListener, Selector, type, DotNetObjectReference.Create(
+                new Invoker<object>(
+                    async (p) =>
+                    {
+                        if (listener.HasDelegate)
+                        {
+                            await listener.InvokeAsync();
+                        }
+                    })), false, new EventListenerActions
+                    {
+                        PreventDefault = preventDefault,
+                        StopPropagation = stopPropagation
+                    });
+        }
+
         public async Task AddEventListenerAsync<T>(string type, EventCallback<T> listener, OneOf<EventListenerOptions, bool> options,
             EventListenerActions actions = null)
         {

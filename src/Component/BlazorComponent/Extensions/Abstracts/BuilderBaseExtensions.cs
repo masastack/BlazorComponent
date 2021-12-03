@@ -1,5 +1,4 @@
-﻿using BlazorComponent.Components.Core.CssProcess;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,28 +8,28 @@ namespace BlazorComponent
 {
     public static class BuilderBaseExtensions
     {
-        public static TBuilder Add<TBuilder>(this TBuilder builder,string name)
-            where TBuilder:BuilderBase
+        public static TBuilder Add<TBuilder>(this TBuilder builder, string name)
+            where TBuilder : BuilderBase
         {
             builder._mapper.TryAdd(() => name, () => true);
             return builder;
         }
 
-        public static TBuilder Add<TBuilder>(this TBuilder builder,Func<string> funcName)
+        public static TBuilder Add<TBuilder>(this TBuilder builder, Func<string> funcName)
             where TBuilder : BuilderBase
         {
             builder._mapper.TryAdd(funcName, () => true);
             return builder;
         }
 
-        public static TBuilder AddIf<TBuilder>(this TBuilder builder,Func<string> funcName, Func<bool> func)
+        public static TBuilder AddIf<TBuilder>(this TBuilder builder, Func<string> funcName, Func<bool> func)
             where TBuilder : BuilderBase
         {
             builder._mapper.TryAdd(funcName, func);
             return builder;
         }
 
-        public static TBuilder AddIf<TBuilder>(this TBuilder builder,string name, Func<bool> func)
+        public static TBuilder AddIf<TBuilder>(this TBuilder builder, string name, Func<bool> func)
             where TBuilder : BuilderBase
         {
             builder._mapper.TryAdd(() => name, func);
@@ -70,5 +69,28 @@ namespace BlazorComponent
             return builder;
         }
 
+        public static string GetClass(this Dictionary<Func<string>, Func<bool>> mapper)
+        {
+            var classList = mapper.Where(i => i.Value() && !string.IsNullOrWhiteSpace(i.Key())).Select(i => i.Key()?.Trim());
+            if (!classList.Any())
+            {
+                //In this case,style will never render as class="" but nothing
+                return null;
+            }
+
+            return string.Join(" ", classList);
+        }
+
+        public static string GetStyle(this Dictionary<Func<string>, Func<bool>> mapper)
+        {
+            var styleList = mapper.Where(i => i.Value() && !string.IsNullOrWhiteSpace(i.Key())).Select(i => i.Key()?.Trim().Trim(';'));
+            if (!styleList.Any())
+            {
+                //In this case,style will never render as style="" but nothing
+                return null;
+            }
+
+            return string.Join(";", styleList);
+        }
     }
 }
