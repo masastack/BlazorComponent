@@ -76,13 +76,13 @@ namespace BlazorComponent
             }
         }
 
-        public async Task SetWidths()
+        public async Task SetWidths(StringNumber selectedValue = null)
         {
             (WrapperWidth, ContentWidth) = await GetWidths();
 
             IsOverflowing = WrapperWidth + 1 < ContentWidth;
 
-            await ScrollToView();
+            await ScrollToView(selectedValue);
 
             _render = true;
 
@@ -145,9 +145,9 @@ namespace BlazorComponent
             StateHasChanged();
         }
 
-        protected async Task ScrollToView()
+        protected async Task ScrollToView(StringNumber selectedValue)
         {
-            if (Value == null && Items.Any())
+            if (selectedValue == null && Items.Any())
             {
                 var lastItemRef = Items[^1].Ref;
                 if (lastItemRef.Context == null) return;
@@ -161,12 +161,12 @@ namespace BlazorComponent
                 }
             }
 
-            if (Value == null) return;
+            if (selectedValue == null) return;
 
-            var selectedItem = Items.FirstOrDefault(item => item.Value == Value);
+            var selectedItem = Items.FirstOrDefault(item => item.Value == selectedValue);
             if (selectedItem?.Ref.Context == null) return;
 
-            if (Items.FindIndex(u => u.Value == Value) == 0 || (!CenterActive && !IsOverflowing))
+            if (Items.FindIndex(u => u.Value == selectedValue) == 0 || (!CenterActive && !IsOverflowing))
             {
                 ScrollOffset = 0;
             }

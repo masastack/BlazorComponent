@@ -54,7 +54,7 @@ namespace BlazorComponent
         {
             if (Matched)
             {
-                _ = (ItemGroup as BSlideGroup).SetWidths();
+                _ = (ItemGroup as BSlideGroup).SetWidths(Value);
             }
 
             await ToggleItem();
