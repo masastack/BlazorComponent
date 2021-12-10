@@ -59,7 +59,13 @@ namespace BlazorComponent
         public string PrependIcon { get; set; }
 
         [Parameter]
+        public RenderFragment PrependIconContent { get; set; }
+
+        [Parameter]
         public string AppendIcon { get; set; }
+
+        [Parameter]
+        public RenderFragment AppendIconContent { get; set; }
 
         [Parameter]
         public RenderFragment ActivatorContent { get; set; }
