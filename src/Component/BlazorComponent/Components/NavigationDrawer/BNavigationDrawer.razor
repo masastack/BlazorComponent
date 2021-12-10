@@ -2,13 +2,13 @@
 @inherits BDomComponentBase
 
 <BCascadingValue Value="this">
-    @if (Temporary)
+    @if (InternalShowOverlay)
     {
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BOverlay>()" />
+        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BOverlay>()"/>
     }
-    <aside class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @attributes="Attributes" 
-        @onmouseenter="MouseEnter" @onmouseleave="MouseLeave" @onclick="Click"> 
-        @if (Src.Match(t0 => !string.IsNullOrWhiteSpace(t0), t1 => t1 != null) || ImgContent != null)
+    <aside class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @attributes="Attributes"
+           @onmouseenter="MouseEnter" @onmouseleave="MouseLeave" @onclick="Click">
+        @if (Src != default || ImgContent != default)
         {
             <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BNavigationDrawerBackground<>))"></AbstractComponent>
         }
@@ -18,4 +18,3 @@
         <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BNavigationDrawerBorder<>))"></AbstractComponent>
     </aside>
 </BCascadingValue>
-

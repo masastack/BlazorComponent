@@ -16,8 +16,8 @@ namespace BlazorComponent
 
         RenderFragment AppendContent { get; }
 
-        RenderFragment<NavigationDrawerImgProps> ImgContent { get; }
+        RenderFragment<Dictionary<string, object>> ImgContent { get; }
 
-        OneOf<string, SrcObject> Src => default;
+        string Src { get; }
     }
 }
