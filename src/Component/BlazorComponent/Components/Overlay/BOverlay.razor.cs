@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using System;
 
 namespace BlazorComponent
 {
@@ -11,16 +9,5 @@ namespace BlazorComponent
         /// </summary>
         [Parameter]
         public bool Value { get; set; }
-
-        [Parameter]
-        public EventCallback<MouseEventArgs> OnClick { get; set; }
-
-        private void HandleOnClick(MouseEventArgs args)
-        {
-            if (OnClick.HasDelegate)
-            {
-                OnClick.InvokeAsync(args);
-            }
-        }
     }
 }

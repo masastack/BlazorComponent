@@ -3,16 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BlazorComponent.Web;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.JSInterop;
 using OneOf;
 
 namespace BlazorComponent
 {
     public abstract partial class BNavigationDrawer : BDomComponentBase
     {
+        private bool _value;
+
+        protected bool _valueChangedToTrue;
         protected bool _miniVariant = false;
+
         private bool IsMobileFromJs { get; set; }
+
+        [Inject]
+        private Document Document { get; set; }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
@@ -58,29 +67,47 @@ namespace BlazorComponent
         [Parameter]
         public bool Temporary { get; set; }
 
-        private bool _value = true;
-
         [Parameter]
         public bool Value
         {
             get => _value;
             set
             {
-                if (value == _value) return;
+                if (_value == false && value)
+                    _valueChangedToTrue = true;
+
                 _value = value;
+                IsActive = value;
             }
         }
 
         [Parameter]
         public EventCallback<bool> ValueChanged { get; set; }
 
-        protected bool InternalShowOverlay => IsActive && (ShowOverlay || (!HideOverlay && (IsMobile || Temporary)));
+        protected bool IsActive { get; set; }
 
-        public bool IsActive => Value;
+        protected bool InternalShowOverlay => IsActive && (ShowOverlay || (!HideOverlay && (IsMobile || Temporary)));
 
         protected bool IsMobile => !Stateless && !Permanent && IsMobileFromJs;
 
         protected bool IsMouseover { get; set; }
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+
+            if (Permanent)
+            {
+                _ = UpdateValue(true);
+            }
+            else if (Stateless)
+            {
+            }
+            else if (!Temporary)
+            {
+                // logic move to firstRender because need to get isMobile by js runtime.
+            }
+        }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -88,13 +115,28 @@ namespace BlazorComponent
 
             if (firstRender)
             {
+                await JsInvokeAsync(JsInteropConstants.AddOutsideClickEventListener,
+                    DotNetObjectReference.Create(new Invoker<object>(OutsideClick)),
+                    new[] { Document.QuerySelector(Ref).Selector });
+
                 IsMobileFromJs = await JsInvokeAsync<bool>(JsInteropConstants.IsMobile);
+
+                if (!Permanent && !Stateless && !Temporary)
+                {
+                    await UpdateValue(!IsMobile);
+                }
             }
         }
 
         public virtual Task Click(MouseEventArgs e)
         {
             return Task.CompletedTask;
+        }
+
+        private bool CloseConditional()
+        {
+            // other conditions are handled in js AddOutsideClickEventListener
+            return IsActive;
         }
 
         public virtual Task MouseEnter(MouseEventArgs e)
@@ -115,11 +157,21 @@ namespace BlazorComponent
 
         //TODO ontransitionend事件
 
-        protected void UpdateValue(bool value)
+        private async Task OutsideClick(object _)
+        {
+            if (!CloseConditional()) return;
+
+            if (Temporary)
+            {
+                await UpdateValue(false);
+            }
+        }
+
+        protected async Task UpdateValue(bool value)
         {
             if (ValueChanged.HasDelegate)
             {
-                ValueChanged.InvokeAsync(value);
+                await ValueChanged.InvokeAsync(value);
             }
             else
             {

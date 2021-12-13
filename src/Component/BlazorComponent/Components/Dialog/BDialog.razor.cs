@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.JSInterop;
 
 namespace BlazorComponent
 {
@@ -23,6 +24,8 @@ namespace BlazorComponent
         public ElementReference DialogRef { get; set; }
 
         protected AbstractComponent Overlay { get; set; }
+
+        protected ElementReference OverlayRef => ((BOverlay)Overlay.Instance).Ref;
 
         protected int ZIndex { get; set; }
 
@@ -55,7 +58,8 @@ namespace BlazorComponent
             get => base.Value;
             set
             {
-                _valueChangedToTrue = base.Value != value && value;
+                if (base.Value == false && value)
+                    _valueChangedToTrue = true;
 
                 base.Value = value;
 
@@ -71,7 +75,7 @@ namespace BlazorComponent
             await base.OnAfterRenderAsync(firstRender);
 
             await ShowLazyContent();
-            
+
             if (_valueChangedToTrue)
             {
                 ZIndex = await ActiveZIndex();
@@ -87,7 +91,7 @@ namespace BlazorComponent
         {
             // TODO: previousActiveElement
             // https://github.com/vuetifyjs/vuetify/blob/master/packages/vuetify/src/components/VDialog/VDialog.ts#L185
-            
+
             var contains = await JsInvokeAsync<bool?>(JsInteropConstants.ContainsActiveElement, ContentRef);
             if (contains.HasValue && !contains.Value)
             {
@@ -134,8 +138,8 @@ namespace BlazorComponent
             if (ContentRef.Context != null)
                 await JsInvokeAsync(JsInteropConstants.DelElementFrom, ContentRef, AttachSelector);
 
-            if (((BDomComponentBase)Overlay?.Instance).Ref.Context != null && _isHasOverlayElement)
-                await JsInvokeAsync(JsInteropConstants.DelElementFrom, ((BDomComponentBase)Overlay.Instance).Ref, AttachSelector);
+            if (OverlayRef.Context != null && _isHasOverlayElement)
+                await JsInvokeAsync(JsInteropConstants.DelElementFrom, OverlayRef, AttachSelector);
 
             GC.SuppressFinalize(this);
         }
