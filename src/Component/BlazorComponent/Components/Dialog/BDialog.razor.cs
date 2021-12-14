@@ -78,9 +78,9 @@ namespace BlazorComponent
 
             if (_valueChangedToTrue)
             {
-                ZIndex = await ActiveZIndex();
+                ZIndex = await ActiveZIndex(true);
                 await Show();
-                StateHasChanged();
+                await InvokeStateHasChangedAsync();
                 _valueChangedToTrue = false;
             }
         }
@@ -106,19 +106,9 @@ namespace BlazorComponent
             await base.Close();
         }
 
-        private async Task<int> ActiveZIndex()
+        private async Task<int> ActiveZIndex(bool isActive)
         {
-            int zIndex;
-            if (!Value)
-            {
-                zIndex = await JsInvokeAsync<int>(JsInteropConstants.GetZIndex, ContentRef);
-            }
-            else
-            {
-                zIndex = await GetMaxZIndex() + 2;
-            }
-
-            return zIndex;
+            return !isActive ? await JsInvokeAsync<int>(JsInteropConstants.GetZIndex, ContentRef) : await GetMaxZIndex() + 2;
         }
 
         private async Task<int> GetMaxZIndex()

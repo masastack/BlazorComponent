@@ -219,7 +219,7 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
             ShowContent = true;
             Value = false;
 
-            StateHasChanged();
+            await InvokeStateHasChangedAsync();
             await Task.Delay(BROWSER_RENDER_INTERVAL);
 
             await AfterShowContent();
