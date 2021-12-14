@@ -23,14 +23,14 @@ namespace BlazorComponent
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
             var type = Metadata.Type;
-            var props = Metadata.Properties;
+            var attrs = Metadata.Attributes;
 
             var sequence = 0;
             builder.OpenComponent(sequence++, type);
 
-            if (props != null)
+            if (attrs != null)
             {
-                builder.AddMultipleAttributes(sequence++, props);
+                builder.AddMultipleAttributes(sequence++, attrs);
             }
 
             builder.AddMultipleAttributes(sequence++, AdditionalAttributes);

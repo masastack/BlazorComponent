@@ -1,9 +1,0 @@
-﻿@namespace BlazorComponent
-@typeparam TImage
-@inherits ComponentAbstractBase<TImage>
-@if (PlaceholderContent != null && IsLoading)
-{
-    <div class="@CssProvider.GetClass("placeholder")">
-        @PlaceholderContent
-    </div>
-}

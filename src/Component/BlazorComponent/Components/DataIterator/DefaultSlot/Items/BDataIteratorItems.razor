@@ -1,11 +1,11 @@
 ﻿@namespace BlazorComponent
 @typeparam TItem
 @typeparam TComponent
-@inherits ComponentAbstractBase<TComponent>
+@inherits ComponentPartBase<TComponent>
 
 @if (IsEmpty)
 {
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataIteratorEmpty<,>))"></AbstractComponent>
+    @RenderPart(typeof(BDataIteratorEmpty<,>))
 }
 else if (ComponentChildContent != null)
 {

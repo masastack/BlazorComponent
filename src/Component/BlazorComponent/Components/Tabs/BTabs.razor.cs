@@ -9,7 +9,7 @@ namespace BlazorComponent
 
         private List<ITabItem> TabItems { get; set; }
 
-        private AbstractComponent TabsBarRef { get; set; }
+        private object TabsBarRef { get; set; }
 
         protected(StringNumber height, StringNumber left, StringNumber right, StringNumber top, StringNumber width) Slider { get; set; }
 
@@ -85,7 +85,7 @@ namespace BlazorComponent
 
         public bool IsReversed => Rtl && Vertical;
 
-        public BSlideGroup Instance => TabsBarRef?.Instance as BSlideGroup;
+        public BSlideGroup Instance => TabsBarRef as BSlideGroup;
 
         public void RegisterTabItem(ITabItem tabItem)
         {

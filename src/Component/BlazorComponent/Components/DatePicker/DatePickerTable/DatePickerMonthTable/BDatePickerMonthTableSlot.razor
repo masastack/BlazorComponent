@@ -1,7 +1,7 @@
 ﻿@namespace BlazorComponent
 @typeparam TDatePickerMonthTable
-@inherits ComponentAbstractBase<TDatePickerMonthTable>
+@inherits ComponentPartBase<TDatePickerMonthTable>
 
-<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerMonthTableTBody<>))"></AbstractComponent>
+@RenderPart(typeof(BDatePickerMonthTableTBody<>))
 
 

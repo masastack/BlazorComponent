@@ -9,10 +9,6 @@ namespace BlazorComponent
     {
         protected List<StringNumber> _values = new();
 
-        public readonly GroupType GroupType;
-
-        public List<IGroupable> Items { get; } = new();
-
         public ItemGroupBase(GroupType groupType)
         {
             GroupType = groupType;
@@ -54,6 +50,10 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<List<StringNumber>> ValuesChanged { get; set; }
 
+        public GroupType GroupType { get; }
+
+        public List<IGroupable> Items { get; } = new();
+
         public List<StringNumber> AllValues => Items.Select(item => item.Value).ToList();
 
         public void Register(IGroupable item)
@@ -67,7 +67,7 @@ namespace BlazorComponent
             // assign first registered item
             if (Mandatory && Value == null)
             {
-                _ = UpdateMandatory();
+                _ = UpdateMandatoryAsync();
             }
         }
 
@@ -78,7 +78,7 @@ namespace BlazorComponent
             // TODO: other code
         }
 
-        private async Task UpdateMandatory(bool last = false)
+        private async Task UpdateMandatoryAsync(bool last = false)
         {
             if (Items.Count == 0) return;
 
@@ -90,10 +90,28 @@ namespace BlazorComponent
 
             if (item == null) return;
 
-            await Toggle(item.Value);
+            await ToggleAsync(item.Value);
         }
 
-        public async virtual Task Toggle(StringNumber key)
+        public async virtual Task ToggleAsync(StringNumber key)
+        {
+            UpdateValue(key);
+
+            if (ValuesChanged.HasDelegate)
+            {
+                await ValuesChanged.InvokeAsync(_values);
+            }
+            else if (ValueChanged.HasDelegate)
+            {
+                await ValueChanged.InvokeAsync(_values.LastOrDefault());
+            }
+            else
+            {
+                StateHasChanged();
+            }
+        }
+
+        private void UpdateValue(StringNumber key)
         {
             if (_values.Contains(key))
             {
@@ -113,18 +131,6 @@ namespace BlazorComponent
             {
                 _values.Add(key);
             }
-
-            if (ValuesChanged.HasDelegate)
-            {
-                await ValuesChanged.InvokeAsync(_values);
-            }
-
-            if (ValueChanged.HasDelegate)
-            {
-                await ValueChanged.InvokeAsync(_values.LastOrDefault());
-            }
-
-            StateHasChanged();
         }
     }
 }

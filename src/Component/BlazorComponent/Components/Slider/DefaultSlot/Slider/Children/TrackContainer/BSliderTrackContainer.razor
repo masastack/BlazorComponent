@@ -1,7 +1,7 @@
 ﻿@namespace BlazorComponent
 @typeparam TValue
 @typeparam TInput
-@inherits ComponentAbstractBase<TInput>
+@inherits ComponentPartBase<TInput>
 
 <div class="@CssProvider.GetClass("track-container")" @ref="TrackElement">
     <div class="@CssProvider.GetClass("track-background")" style="@CssProvider.GetStyle("track-background")"></div>

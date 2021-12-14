@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public partial class BSheet : BDomComponentBase, IThemeable
+    public partial class BSheet : BDomComponentBase
     {
         [Parameter]
         public RenderFragment ChildContent { get; set; }

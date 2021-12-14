@@ -1,8 +1,8 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<AbstractComponent Metadata="AbstractProvider.GetMetadata<BButton>()" @attributes="Attributes">
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
+<BButton @attributes="GetAttributes(typeof(BButton))">
+    <BIcon @attributes="GetAttributes(typeof(BIcon))">
         mdi-menu
-    </AbstractComponent>
-</AbstractComponent>
+    </BIcon>
+</BButton>

@@ -1,0 +1,10 @@
+﻿@namespace BlazorComponent
+@typeparam TValue
+@typeparam TInput
+@inherits BInputDefaultSlot<TValue,TInput>
+
+@RenderPart(typeof(BTextFieldFieldset<,>))
+@RenderPart(typeof(BTextFieldTextFieldSlot<,>))
+@RenderPart(typeof(BTextFieldClearIcon<,>))
+@RenderPart(typeof(BTextFieldIconSlot<,>))
+@RenderPart(typeof(BLoadableProgress<>))

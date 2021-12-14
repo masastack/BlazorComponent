@@ -1,0 +1,17 @@
+﻿@namespace BlazorComponent
+@typeparam TValue
+@typeparam TInput
+@inherits ComponentPartBase<TInput>
+
+<div class="@CssProvider.GetClass("text-field-slot")">
+    @RenderPart(typeof(BInputLabel<,>))
+    @if (Prefix != null)
+    {
+        @RenderPart(typeof(BTextFieldAffix<,>),Prefix,arg0Name:"Type")
+    }
+    @RenderPart(typeof(BTextFieldInput<,>))
+    @if (Suffix != null)
+    {
+        @RenderPart(typeof(BTextFieldAffix<,>),Suffix,arg0Name:"Type")
+    }
+</div>

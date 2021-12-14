@@ -59,11 +59,5 @@ namespace BlazorComponent
             Value = false;
             return Task.CompletedTask;
         }
-
-        protected override void SetComponentClass()
-        {
-            AbstractProvider.Apply(typeof(CascadingValue<>), typeof(CascadingValue<BAlert>),
-                props => { props[nameof(CascadingValue<BAlert>.Value)] = this; });
-        }
     }
 }

@@ -14,14 +14,14 @@ namespace BlazorComponent
             Type = type ?? throw new ArgumentNullException(nameof(type));
         }
 
-        public AbstractMetadata(Type type, Dictionary<string, object> properties)
+        public AbstractMetadata(Type type, Dictionary<string, object> attributes)
             : this(type)
         {
-            Properties = properties ?? throw new ArgumentNullException(nameof(properties));
+            Attributes = attributes ?? throw new ArgumentNullException(nameof(attributes));
         }
 
         public Type Type { get; }
 
-        public Dictionary<string, object> Properties { get; }
+        public Dictionary<string, object> Attributes { get; }
     }
 }

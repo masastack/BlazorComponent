@@ -3,9 +3,9 @@
 
 <div class="@CssProvider.GetClass()" @onclick="HandleOnClickAsync" @onclick:stopPropagation>
     <div class="@CssProvider.GetClass("input")">
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BIcon))">
+        <BIcon @attributes="GetAttributes(typeof(BIcon))">
             @ComputedIcon
-        </AbstractComponent>
+        </BIcon>
         @if (Ripple && !Disabled)
         {
             <div class="@CssProvider.GetClass("ripple")" style="@CssProvider.GetStyle("ripple")"></div>

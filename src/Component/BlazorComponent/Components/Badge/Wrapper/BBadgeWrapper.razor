@@ -1,0 +1,7 @@
+﻿@namespace BlazorComponent
+@typeparam TBadge
+@inherits ComponentPartBase<TBadge>
+
+<span class="@CssProvider.GetClass("wrapper")">
+    @RenderPart(typeof(BBadgeBadge<>))
+</span>

@@ -1,0 +1,9 @@
+﻿@namespace BlazorComponent
+@typeparam TAlert
+@inherits ComponentPartBase<TAlert>
+
+<BButton @attributes="@(GetAttributes(typeof(BButton),"dismissible"))" aria-label="@CloseLabel" Icon Small OnClick="@HandleOnDismiss">
+    <BIcon @attributes="@(GetAttributes(typeof(BIcon),"dismissible"))">
+        @CloseIcon
+    </BIcon>
+</BButton>

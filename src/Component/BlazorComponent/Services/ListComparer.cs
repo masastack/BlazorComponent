@@ -8,7 +8,7 @@ namespace BlazorComponent
 {
     public class ListComparer
     {
-        public static bool Equals<TValue>(List<TValue> left, List<TValue> right)
+        public static bool Equals<TValue>(IList<TValue> left, IList<TValue> right)
         {
             if (ReferenceEquals(left, right))
             {

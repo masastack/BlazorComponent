@@ -12,14 +12,5 @@ namespace BlazorComponent
 
         [Parameter]
         public bool Left { get; set; }
-
-        protected override void SetComponentClass()
-        {
-            AbstractProvider
-                .Apply(typeof(CascadingValue<>), typeof(CascadingValue<BBadge>), props =>
-                {
-                    props[nameof(CascadingValue<BBadge>.Value)] = this;
-                });
-        }
     }
 }

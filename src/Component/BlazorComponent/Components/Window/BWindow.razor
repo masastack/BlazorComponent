@@ -17,9 +17,11 @@
                         }
                         else
                         {
-                            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BButton>()" Icon @onclick="Prev">
-                                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">@PrevIcon</AbstractComponent>
-                            </AbstractComponent>
+                            <BButton Icon @onclick="Prev" @attributes="GetAttributes(typeof(BButton))">
+                                <BIcon @attributes="GetAttributes(typeof(BIcon))">
+                                    @PrevIcon
+                                </BIcon>
+                            </BButton>
                         }
                     </div>
                 }
@@ -33,9 +35,11 @@
                         }
                         else
                         {
-                            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BButton>()" Icon @onclick="Next">
-                                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">@NextIcon</AbstractComponent>
-                            </AbstractComponent>
+                            <BButton Icon @onclick="Next" @attributes="GetAttributes(typeof(BButton))">
+                                <BIcon @attributes="GetAttributes(typeof(BIcon))">
+                                    @NextIcon
+                                </BIcon>
+                            </BButton>
                         }
                     </div>
                 }

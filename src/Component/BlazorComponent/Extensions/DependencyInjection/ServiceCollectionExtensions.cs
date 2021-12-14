@@ -1,5 +1,6 @@
 ﻿using BlazorComponent;
 using BlazorComponent.Web;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddScoped<Document>();
             services.TryAddSingleton<IComponentIdGenerator, GuidComponentIdGenerator>();
             CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CurrentCulture;
+            services.AddSingleton<IComponentActivator, AbstractComponentActivator>();
 
             return services;
         }

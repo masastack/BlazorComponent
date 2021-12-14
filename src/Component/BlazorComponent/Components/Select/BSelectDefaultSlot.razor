@@ -4,25 +4,21 @@
 @typeparam TValue
 @inherits BTextFieldDefaultSlot<TValue, ISelect<TItem, TItemValue,TValue>>
 
-<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTextFieldFieldset<,>))"></AbstractComponent>
+@RenderPart(typeof(BTextFieldFieldset<,>))
 <div class="@CssProvider.GetClass("select-slot")">
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BInputLabel<,>))"></AbstractComponent>
+    @RenderPart(typeof(BInputLabel<,>))
     @if (Prefix != null)
     {
-        <AbstractComponent Type="prefix" Metadata="AbstractProvider.GetMetadata(typeof(BTextFieldAffix<,>))">
-            @Prefix
-        </AbstractComponent>
+        @RenderPart(typeof(BTextFieldAffix<,>),"prefix",RenderText(Prefix),arg0Name:"Type",arg1Name:"ChildContent")
     }
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSelectSelections<,,,>))"></AbstractComponent>
+    @RenderPart(typeof(BSelectSelections<,,,>))
     @if (Suffix != null)
     {
-        <AbstractComponent Type="suffix" Metadata="AbstractProvider.GetMetadata(typeof(BTextFieldAffix<,>))">
-            @Suffix
-        </AbstractComponent>
+        @RenderPart(typeof(BTextFieldAffix<,>),"suffix",RenderText(Suffix),arg0Name:"Type",arg1Name:"ChildContent")
     }
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTextFieldClearIcon<,>))"></AbstractComponent>
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTextFieldIconSlot<,>))"></AbstractComponent>
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSelectHiddenInput<,,,>))"></AbstractComponent>
+    @RenderPart(typeof(BTextFieldClearIcon<,>))
+    @RenderPart(typeof(BTextFieldIconSlot<,>))
+    @RenderPart(typeof(BSelectHiddenInput<,,,>))
 </div>
-<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSelectMenu<,,,>))"></AbstractComponent>
-<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BLoadableProgress<>))"></AbstractComponent>
+@RenderPart(typeof(BSelectMenu<,,,>))
+@RenderPart(typeof(BLoadableProgress<>))

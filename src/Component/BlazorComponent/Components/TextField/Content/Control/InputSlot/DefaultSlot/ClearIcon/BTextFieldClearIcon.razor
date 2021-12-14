@@ -1,0 +1,20 @@
+﻿@namespace BlazorComponent
+@typeparam TValue
+@typeparam TInput
+@inherits ComponentPartBase<TInput>
+
+@if (Clearable)
+{
+    var childContent = (RenderFragment)null;
+
+    if (!IsDirty)
+    {
+        childContent = @<div></div>;
+    }
+    else
+    {
+        childContent = RenderPart(typeof(BInputIcon<,>), "clear-icon", ClearIcon, HandleOnClearClickAsync,arg0Name:"Type",arg1Name:"Icon",arg2Name:"OnClick");
+    }
+
+    @RenderPart(typeof(BInputSlot<,>),"append","outer",childContent,arg0Name:"Type","Location")
+}

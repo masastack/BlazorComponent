@@ -1,20 +1,20 @@
 ﻿@namespace BlazorComponent
 @typeparam TItem
 @typeparam TDataTable
-@inherits ComponentAbstractBase<TDataTable>
+@inherits ComponentPartBase<TDataTable>
 
 @if (IsEmpty)
 {
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataIteratorEmpty<,>))"></AbstractComponent>
+    @RenderPart(typeof(BDataIteratorEmpty<,>))
 }
 else
 {
     if (GroupedItems.Any())
     {
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataTableGroupedRows<,>))"></AbstractComponent>
+        @RenderPart(typeof(BDataTableGroupedRows<,>))
     }
     else
     {
-        <AbstractComponent Items="@ComputedItems" Metadata="AbstractProvider.GetMetadata(typeof(BDataTableRows<,>))"></AbstractComponent>
+        @RenderPart(typeof(BDataTableRows<,>),ComputedItems,arg0Name:"Items")
     }
 }

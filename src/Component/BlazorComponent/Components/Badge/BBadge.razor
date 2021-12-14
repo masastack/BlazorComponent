@@ -1,17 +1,15 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<BCascadingValue Value="this">
-    <span class="@CssProvider.GetClass()">
-        @if (InLine && Left)
-        {
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BBadgeWrapper<>))"></AbstractComponent>
-            @ChildContent
-        }
-        else
-        {
-            @ChildContent
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BBadgeWrapper<>))"></AbstractComponent>
-        }
-    </span>
-</BCascadingValue>
+<span class="@CssProvider.GetClass()">
+    @if (InLine && Left)
+    {
+        @RenderPart(typeof(BBadgeWrapper<>))
+        @ChildContent
+    }
+    else
+    {
+        @ChildContent
+        @RenderPart(typeof(BBadgeWrapper<>))
+    }
+</span>

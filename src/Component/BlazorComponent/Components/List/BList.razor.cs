@@ -3,12 +3,8 @@ using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
-    public abstract partial class BList : BDomComponentBase, ILinkable
+    public partial class BList : BDomComponentBase, ILinkable
     {
-        public List<BListItem> Items { get; } = new();
-
-        protected List<BListGroup> Groups { get; } = new();
-
         // TODO: add cascading value in Menu
         [CascadingParameter(Name = "IsInMenu")]
         public bool IsInMenu { get; set; }
@@ -23,12 +19,16 @@ namespace BlazorComponent
         // TODO: bool? _expand
         [Parameter]
         public virtual bool Expand { get; set; }
-        
+
         [Parameter]
         public bool Linkage { get; set; }
 
         [Parameter]
         public virtual string Tag { get; set; } = "div";
+
+        public List<BListItem> Items { get; } = new();
+
+        protected List<BListGroup> Groups { get; } = new();
 
         protected override void OnInitialized()
         {
@@ -41,8 +41,6 @@ namespace BlazorComponent
         internal void Register(BListGroup listGroup)
         {
             Groups.Add(listGroup);
-
-            StateHasChanged();
         }
 
         internal void Unregister(BListGroup listGroup)
@@ -58,7 +56,7 @@ namespace BlazorComponent
             {
                 group.Toggle(id);
             }
-            
+
             StateHasChanged();
         }
 

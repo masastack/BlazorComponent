@@ -1,11 +1,11 @@
 ﻿@namespace BlazorComponent
 @typeparam TDatePickerHeader
-@inherits ComponentAbstractBase<TDatePickerHeader>
+@inherits ComponentPartBase<TDatePickerHeader>
 
 @*TODO: arialLabel*@
-<AbstractComponent Metadata="AbstractProvider.GetMetadata<BButton>(Change)">
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
+<BButton @attributes="GetAttributes(typeof(BButton),Change)">
+    <BIcon @attributes="GetAttributes(typeof(BIcon))">
         @((Change < 0) == !RTL ? PrevIcon : NextIcon)
-    </AbstractComponent>
-</AbstractComponent>
+    </BIcon>
+</BButton>
 

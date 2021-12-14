@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public partial class BSlideGroupNext<TSlideGroup> : ComponentAbstractBase<TSlideGroup>
+    public partial class BSlideGroupNext<TSlideGroup> : ComponentPartBase<TSlideGroup>
         where TSlideGroup : ISlideGroup
     {
         protected bool Active => Component.HasNext;

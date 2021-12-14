@@ -20,7 +20,7 @@ namespace BlazorComponent
 
         public async Task Toggle()
         {
-            await ToggleItem();
+            await ToggleAsync();
         }
     }
 }

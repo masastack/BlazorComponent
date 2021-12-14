@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public abstract partial class BBreadcrumbsItem : BDomComponentBase, IBreadcrumbsItem, IBreadcrumbsDivider, IRoutable, ILinkable
+    public partial class BBreadcrumbsItem : BDomComponentBase, IBreadcrumbsItem, IBreadcrumbsDivider, IRoutable, ILinkable
     {
         private IRoutable _router;
 

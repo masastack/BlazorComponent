@@ -6,13 +6,9 @@ namespace BlazorComponent
 {
     public interface IAlert : IHasProviderComponent
     {
-        #region protected fields
-
         RenderFragment IconContent { get; }
 
         bool IsShowIcon { get; }
-
-        #endregion
 
         Borders Border { get; }
 

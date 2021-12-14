@@ -1,14 +1,12 @@
-﻿@namespace BlazorComponent
+﻿ @namespace BlazorComponent
 @using BlazorComponent.Helpers
 @inherits BDomComponentBase
 
-<BCascadingValue Value="this">
-    @if (RegexHelper.RegexSvgPath(Icon))
-    {
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSvgIconSlot<>))"></AbstractComponent>
-    }
-    else
-    {
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BFontIconSlot<>))"></AbstractComponent>
-    }
-</BCascadingValue>
+@if (RegexHelper.RegexSvgPath(Icon))
+{
+    @RenderPart(typeof(BSvgIconSlot<>))
+}
+else
+{
+    @RenderPart(typeof(BFontIconSlot<>))
+}

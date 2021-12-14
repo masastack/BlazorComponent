@@ -5,9 +5,9 @@ namespace BlazorComponent
 {
     public interface IProgressCircular : IHasProviderComponent
     {
-        Dictionary<string, object> SvgAttributes => new();
+        Dictionary<string, object> SvgAttrs => new();
 
-        Dictionary<string, object> CircleAttributes => new();
+        Dictionary<string, object> CircleAttrs => new();
 
         RenderFragment ChildContent { get; }
 

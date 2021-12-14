@@ -1,0 +1,12 @@
+﻿@namespace BlazorComponent
+@typeparam TValue
+@typeparam TInput
+@inherits ComponentPartBase<TInput>
+
+@if (ChildContent != null)
+{
+    var name = $"{Type}-{Location}";
+    <div class="@CssProvider.GetClass(name)">
+        @ChildContent
+    </div>
+}

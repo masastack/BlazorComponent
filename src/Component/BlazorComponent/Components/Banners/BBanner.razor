@@ -1,10 +1,8 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<BCascadingValue Value="this">
-    <ExpandTransition>
-        <Element Show="Value" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BBannerWrapper<>))"></AbstractComponent>
-        </Element>
-    </ExpandTransition>
-</BCascadingValue>
+<ExpandTransition>
+    <Element Show="Value" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">
+        @RenderPart(typeof(BBannerWrapper<>))
+    </Element>
+</ExpandTransition>

@@ -1,34 +1,33 @@
 ﻿@namespace BlazorComponent
 @typeparam TItem
 @typeparam TDataTable
-@inherits ComponentAbstractBase<TDataTable>
+@inherits ComponentPartBase<TDataTable>
 
-@Render(typeof(BDataTableRowGroup), props => {
-    props
-        .Add("Value",IsOpen);
-
-    if(GroupHeaderContent!=null)
-    {
-         props.AddContent("ColumnHeaderContent",GroupHeaderContent);
-    }
-    else
-    {
-        props.AddContent("ColumnHeaderContent",@<td class="@CssProvider.GetClass("group-header")" @attributes="ColspanAttrs">
-        <AbstractComponent Metadata="@(AbstractProvider.GetMetadata(typeof(BButton),"group-toggle",data:Group.Key))">
-            <AbstractComponent Metadata="@(AbstractProvider.GetMetadata(typeof(BIcon),"group-toggle-icon"))">
-                @(IsOpen?GroupMinusIcon:GroupPlusIcon)
-            </AbstractComponent>
-        </AbstractComponent>
-        @($"{Options.GroupBy[0]}: {Group.Key}")
-        <AbstractComponent Metadata="@(AbstractProvider.GetMetadata(typeof(BButton),"group-remove"))">
-            <AbstractComponent Metadata="@(AbstractProvider.GetMetadata(typeof(BIcon),"group-remove-icon"))">
-                @GroupCloseIcon
-            </AbstractComponent>
-        </AbstractComponent>
-    </td>);
-    }
-
-    props.AddContent("RowContentContent",@<AbstractComponent Items="@Group" Metadata="AbstractProvider.GetMetadata(typeof(BDataTableRows<,>))">
-    </AbstractComponent>);
-})
+<BDataTableRowGroup Value="IsOpen" @attributes="GetAttributes(typeof(BDataTableRowGroup))">
+    <ColumnHeaderContent>
+        @if(GroupHeaderContent!=null)
+        {
+            @GroupHeaderContent
+        }
+        else
+        {
+            <td class="@CssProvider.GetClass("group-header")" @attributes="ColspanAttrs">
+                <BButton @attributes="@(GetAttributes(typeof(BButton),"group-toggle",data:Group.Key))">
+                    <BIcon @attributes="@(GetAttributes(typeof(BIcon),"group-toggle-icon"))">
+                        @(IsOpen?GroupMinusIcon:GroupPlusIcon)
+                    </BIcon>
+                </BButton>
+                @($"{Options.GroupBy[0]}: {Group.Key}")
+                <BButton @attributes="@(GetAttributes(typeof(BButton),"group-remove"))">
+                    <BIcon @attributes="@(GetAttributes(typeof(BIcon),"group-remove-icon"))">
+                        @GroupCloseIcon
+                    </BIcon>
+                </BButton>
+            </td>
+        }
+    </ColumnHeaderContent>
+    <RowContentContent>
+        @RenderPart(typeof(BDataTableRows<,>),Group,arg0Name:"Items")
+    </RowContentContent>
+</BDataTableRowGroup>
 

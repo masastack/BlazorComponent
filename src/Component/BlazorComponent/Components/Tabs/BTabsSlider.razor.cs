@@ -1,6 +1,6 @@
 ﻿namespace BlazorComponent
 {
-    public partial class BTabsSlider<TTabs> : ComponentAbstractBase<TTabs>
+    public partial class BTabsSlider<TTabs> : ComponentPartBase<TTabs>
         where TTabs : ITabs
     {
     }

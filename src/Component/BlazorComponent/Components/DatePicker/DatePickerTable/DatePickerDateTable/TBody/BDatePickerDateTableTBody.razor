@@ -1,36 +1,42 @@
 ﻿@namespace BlazorComponent
 @typeparam TDatePickerDateTable
-@inherits ComponentAbstractBase<TDatePickerDateTable>
+@inherits ComponentPartBase<TDatePickerDateTable>
 
 <tbody>
     @foreach (var child in Children)
     {
         var childDatas = child;
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerDateTableTR<>))">
-            @foreach (var data in childDatas)
+
+        RenderFragment childContent = builder =>
+        {
+            var sequence = 0;
+            foreach (var data in childDatas)
             {
                 var rowData = data;
                 if (rowData.Type == "WeekNumber")
                 {
-                    <AbstractComponent @attributes="rowData.Attrs" Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerDateTableWeekNumber<>))"></AbstractComponent>
+                    builder.AddContent(sequence++, RenderPart(typeof(BDatePickerDateTableWeekNumber<>), rowData.Attrs));
                 }
                 else if (rowData.Type == "ShowAdjacentMonthsButton")
                 {
-                    <td>
+                    builder.AddContent(sequence++,@<td>
                         @if (ShowAdjacentMonths)
                         {
-                            <AbstractComponent @attributes="rowData.Attrs" Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerTableButton<>))"></AbstractComponent>
+                            @RenderPart(typeof(BDatePickerTableButton<>),rowData.Attrs)
                         }
-                    </td>
+                    </td>);
+                    
                 }
                 else if (rowData.Type == "Button")
                 {
-                    <td>
-                        <AbstractComponent @attributes="rowData.Attrs" Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerTableButton<>))"></AbstractComponent>
-                    </td>
+                    builder.AddContent(sequence++,@<td>
+                        @RenderPart(typeof(BDatePickerTableButton<>),rowData.Attrs)
+                    </td>);
                 }
             }
-        </AbstractComponent>
+        };
+
+        @RenderPart(typeof(BDatePickerDateTableTR<>),childContent)
     }
 </tbody>
 

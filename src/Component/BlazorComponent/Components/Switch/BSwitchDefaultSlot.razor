@@ -1,5 +1,5 @@
 ﻿@namespace BlazorComponent
 @inherits BInputDefaultSlot<bool,ISwitch>
 
-<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSwitchSwitch<>))"></AbstractComponent>
-<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BInputLabel<,>))"></AbstractComponent>
+@RenderPart(typeof(BSwitchSwitch<>))
+@RenderPart(typeof(BInputLabel<,>))

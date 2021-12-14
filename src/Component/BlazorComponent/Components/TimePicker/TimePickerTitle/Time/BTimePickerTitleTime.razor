@@ -1,21 +1,15 @@
 ﻿@namespace BlazorComponent
 @typeparam TTimePickerTitle
-@inherits ComponentAbstractBase<TTimePickerTitle>
+@inherits ComponentPartBase<TTimePickerTitle>
 
 <div class="@CssProvider.GetClass("time")">
-    <AbstractComponent Name="picker-button-hour" OnClick="@OnHourClick" Metadata="AbstractProvider.GetMetadata(typeof(BPickerTitlePickerButton<>))">
-        @DisplayedHour
-    </AbstractComponent>
+    @RenderPart(typeof(BPickerTitlePickerButton<>),"picker-button-hour",OnHourClick,RenderText(DisplayedHour),arg0Name:"Name",arg1Name:"OnClick",arg2Name:"ChildContent")
     <span>:</span>
-    <AbstractComponent Name="picker-button-minute" OnClick="@OnMinuteClick" Metadata="AbstractProvider.GetMetadata(typeof(BPickerTitlePickerButton<>))">
-        @DisplayedMinute
-    </AbstractComponent>
+    @RenderPart(typeof(BPickerTitlePickerButton<>),"picker-button-minute",OnMinuteClick,RenderText(DisplayedMinute),arg0Name:"Name",arg1Name:"OnClick",arg2Name:"ChildContent")
     @if (UseSeconds)
     {
         <span>:</span>
-        <AbstractComponent Name="picker-button-second" OnClick="@OnSecondClick" Metadata="AbstractProvider.GetMetadata(typeof(BPickerTitlePickerButton<>))">
-            @DisplayedSecond
-        </AbstractComponent>
+        @RenderPart(typeof(BPickerTitlePickerButton<>),"picker-button-second",OnSecondClick,RenderText(DisplayedSecond),arg0Name:"Name",arg1Name:"OnClick",arg2Name:"ChildContent")
     }
 </div>
 

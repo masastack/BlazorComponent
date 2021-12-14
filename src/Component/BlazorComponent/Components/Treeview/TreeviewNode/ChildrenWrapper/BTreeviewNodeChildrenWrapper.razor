@@ -1,0 +1,16 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TKey
+@typeparam TTreeviewNode
+@inherits ComponentPartBase<TTreeviewNode>
+
+@if (IsOpen && ComputedChildren != null)
+{
+    <div class="@CssProvider.GetClass("children")">
+        @foreach (var item in ComputedChildren)
+        {
+            @RenderPart(typeof(BTreeviewNodeChild<,,>),item,Disabled,arg1Name:"ParentIsDisabled")
+        }
+    </div>
+}
+

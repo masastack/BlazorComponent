@@ -1,6 +1,6 @@
 ﻿@namespace BlazorComponent
 @typeparam TDatePickerYears
-@inherits ComponentAbstractBase<TDatePickerYears>
+@inherits ComponentPartBase<TDatePickerYears>
 
     @{
     var selectedYear = Value > 0 ? Value : DateTime.Now.Year;
@@ -9,7 +9,7 @@
 
     for (var year = maxYear; year >= minYear; year--)
     {
-        <AbstractComponent Year="@year" Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerYearsYearItem<>))"></AbstractComponent>
+        @RenderPart(typeof(BDatePickerYearsYearItem<>),year)
     }
 }
 

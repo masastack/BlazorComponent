@@ -1,7 +1,0 @@
-﻿@namespace BlazorComponent
-@typeparam TCalendarCategory
-@inherits BCalendarDailyDays<TCalendarCategory>
-
-<div class="@CssProvider.GetClass("dayInterval")" style="@CssProvider.GetStyle("dayInterval")">
-    @IntervalContent(GetCategoryScope)
-</div>

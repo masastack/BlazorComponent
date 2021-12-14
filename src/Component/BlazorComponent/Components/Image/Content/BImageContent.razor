@@ -1,0 +1,10 @@
+﻿@namespace BlazorComponent
+@typeparam TImage
+@inherits ComponentPartBase<TImage>
+
+@if (!string.IsNullOrEmpty(Src) || !string.IsNullOrEmpty(LazySrc) || !string.IsNullOrEmpty(Gradient))
+{
+    <div class="@CssProvider.GetClass("image")"
+         style="@CssProvider.GetStyle("image")">
+    </div>
+}

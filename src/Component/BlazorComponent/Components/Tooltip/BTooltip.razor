@@ -1,13 +1,11 @@
 ﻿@namespace BlazorComponent
 @inherits BMenuable
 
-<BCascadingValue Value="this">
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTooltipContent<>))"></AbstractComponent>
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTooltipActivator<>))"></AbstractComponent>
-    <Element Tag="@Tag"
-             class="@CssProvider.GetClass()"
-             style="@CssProvider.GetStyle()"
-             id="@Id"
-             ReferenceCaptureAction="r => Ref = r">
-    </Element>
-</BCascadingValue>
+@RenderPart(typeof(BTooltipContent<>))
+@RenderPart(typeof(BTooltipActivator<>))
+<Element Tag="@Tag"
+         class="@CssProvider.GetClass()"
+         style="@CssProvider.GetStyle()"
+         id="@Id"
+         ReferenceCaptureAction="r => Ref = r">
+</Element>

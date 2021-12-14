@@ -1,14 +1,14 @@
 ﻿@namespace BlazorComponent
 @typeparam TItem
 @typeparam TDataTable
-@inherits ComponentAbstractBase<TDataTable>
+@inherits ComponentPartBase<TDataTable>
 
 @if (ItemContent != null)
 {
-    <AbstractComponent Items="@Items" Metadata="AbstractProvider.GetMetadata(typeof(BDataTableScopedRows<,>))"></AbstractComponent>
+    @RenderPart(typeof(BDataTableScopedRows<,>),Items)
 }
 else
 {
-    <AbstractComponent Items="@Items" Metadata="AbstractProvider.GetMetadata(typeof(BDataTableDefaultRows<,>))"></AbstractComponent>
+    @RenderPart(typeof(BDataTableDefaultRows<,>),Items)
 }
 

@@ -1,15 +1,13 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<BCascadingValue Value="this">
-    <div class="@CssProvider.GetClass()" @onmousedown="HandleOnMouseDownAsync" @onmousedown:preventDefault
-         @onmouseup="HandleOnMouseUpAsync" @onmouseup:stopPropagation @onmouseleave="HandleOnMouseLeaveAsync"
-         @onmousemove="HandleOnDragMoveAsync" @onmousemove:preventDefault
-         @ref="Ref">
-        <div class="@CssProvider.GetClass("inner")" @ref="InnerClockElement">
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTimePickerClockHand<>))"></AbstractComponent>
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTimePickerClockValues<>))"></AbstractComponent>
-        </div>
+<div class="@CssProvider.GetClass()" @onmousedown="HandleOnMouseDownAsync" @onmousedown:preventDefault
+     @onmouseup="HandleOnMouseUpAsync" @onmouseup:stopPropagation @onmouseleave="HandleOnMouseLeaveAsync"
+     @onmousemove="HandleOnDragMoveAsync" @onmousemove:preventDefault
+     @ref="Ref">
+    <div class="@CssProvider.GetClass("inner")" @ref="InnerClockElement">
+        @RenderPart(typeof(BTimePickerClockHand<>))
+        @RenderPart(typeof(BTimePickerClockValues<>))
     </div>
-</BCascadingValue>
+</div>
 

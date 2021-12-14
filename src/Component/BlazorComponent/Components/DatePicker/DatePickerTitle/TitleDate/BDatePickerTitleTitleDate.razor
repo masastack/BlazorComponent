@@ -1,8 +1,6 @@
 ﻿@namespace BlazorComponent
 @typeparam TDatePickerTitle
-@inherits ComponentAbstractBase<TDatePickerTitle>
+@inherits ComponentPartBase<TDatePickerTitle>
 
-<AbstractComponent Name="title-date-btn" OnClick="@OnTitleDateBtnClick" Metadata="AbstractProvider.GetMetadata(typeof(BPickerTitlePickerButton<>))">
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerTitleTitleText<>))"></AbstractComponent>
-</AbstractComponent>
+@RenderPart(typeof(BPickerTitlePickerButton<>),"title-date-btn",OnTitleDateBtnClick,RenderPart(typeof(BDatePickerTitleTitleText<>)),arg0Name:"Name",arg1Name:"OnClick",arg2Name:"ChildContent")
 

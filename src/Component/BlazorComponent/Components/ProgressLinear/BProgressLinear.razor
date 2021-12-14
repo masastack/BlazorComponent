@@ -1,23 +1,17 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<BCascadingValue Value="this">
-	<div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @onclick="HandleOnClickAsync">
-		<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BProgressLinearStream<>))"></AbstractComponent>
-
-		<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BProgressLinearBackground<>))"></AbstractComponent>
-
-		<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BProgressLinearBuffer<>))"></AbstractComponent>
-
-		@if (Indeterminate)
-		{
-			<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BProgressLinearIndeterminate<>))"></AbstractComponent>
-		}
-		else
-		{
-			<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BProgressLinearDeterminate<>))"></AbstractComponent>
-		}
-
-		<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BProgressLinearContent<>))"></AbstractComponent>
-	</div>
-</BCascadingValue>
+<div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @onclick="HandleOnClickAsync">
+    @RenderPart(typeof(BProgressLinearStream<>))
+    @RenderPart(typeof(BProgressLinearBackground<>))
+    @RenderPart(typeof(BProgressLinearBuffer<>))
+    @if (Indeterminate)
+    {
+        @RenderPart(typeof(BProgressLinearIndeterminate<>))
+    }
+    else
+    {
+        @RenderPart(typeof(BProgressLinearDeterminate<>))
+    }
+    @RenderPart(typeof(BProgressLinearContent<>))
+</div>

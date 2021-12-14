@@ -6,26 +6,26 @@
     <div class="@CssProvider.GetClass("radio")" style="@CssProvider.GetStyle("radio")">
         @if (IsActive)
         {
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
+            <BIcon @attributes="GetAttributes(typeof(BIcon))">
                 @OnIcon
-            </AbstractComponent>
+            </BIcon>
         }
         else
         {
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">
+            <BIcon @attributes="GetAttributes(typeof(BIcon))">
                 @OffIcon
-            </AbstractComponent>
+            </BIcon>
         }
 
         <input disabled="@IsDisabled" role="radio" type="radio" checked="@IsActive" value="@Value"
-               @onblur="OnBlur" @onchange="OnChange" @onfocus="OnFocus" @onkeydown="OnKeyDown" @onclick="HandleClick" @onclick:stopPropagation/>
+               @onblur="OnBlur" @onchange="OnChange" @onfocus="OnFocus" @onkeydown="OnKeyDown" @onclick="HandleClick" @onclick:stopPropagation />
 
         @if (Ripple)
         {
             <div class="@CssProvider.GetClass("ripple")" style="@CssProvider.GetStyle("ripple")"></div>
         }
     </div>
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BLabel>()">
+    <BLabel @attributes="GetAttributes(typeof(BLabel))">
         @if (LabelContent != default)
         {
             @LabelContent
@@ -34,5 +34,5 @@
         {
             @Label
         }
-    </AbstractComponent>
+    </BLabel>
 </div>

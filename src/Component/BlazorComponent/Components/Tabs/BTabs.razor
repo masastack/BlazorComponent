@@ -3,40 +3,37 @@
 
 <BCascadingValue Value="this">
     <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BSlideGroup>()"
-                           Mandatory="@(!Optional)"
-                           NextIcon="@NextIcon"
-                           PrevIcon="@PrevIcon"
-                           ShowArrows="@ShowArrows"
-                           Value="@Value"
-                           ValueChanged="@ValueChanged"
-                           Color="@Color"
-                           @ref="TabsBarRef">
-
+        <BSlideGroup Mandatory="@(!Optional)"
+                  NextIcon="@NextIcon"
+                  PrevIcon="@PrevIcon"
+                  ShowArrows="@ShowArrows"
+                  Value="@Value"
+                  ValueChanged="@ValueChanged"
+                  Color="@Color"
+                  @ref="TabsBarRef"
+                  @attributes="GetAttributes(typeof(BSlideGroup))">
             @if (!HideSlider)
             {
-                <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTabsSlider<>))"></AbstractComponent>
+                @RenderPart(typeof(BTabsSlider<>))
             }
-
             @ChildContent
-
-        </AbstractComponent>
+        </BSlideGroup>
 
         @if (TabItems != null)
         {
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BWindow>()" Value="@Value">
+            <BWindow Value="Value" @attributes="GetAttributes(typeof(BWindow))">
                 @foreach (var tabItem in TabItems)
                 {
-                    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BWindowItem>()"
-                                       Value="@tabItem.Value"
-                                       ActiveClass="@tabItem.ActiveClass"
-                                       Disabled="@tabItem.Disabled"
-                                       Class="@tabItem.Class"
-                                       Style="@tabItem.Style">
+                    <BWindowItem Value="@tabItem.Value"
+                         ActiveClass="@tabItem.ActiveClass"
+                         Disabled="@tabItem.Disabled"
+                         Class="@tabItem.Class"
+                         Style="@tabItem.Style"
+                         @attributes="GetAttributes(typeof(BWindowItem))">
                         @tabItem.ChildContent
-                    </AbstractComponent>
+                    </BWindowItem>
                 }
-            </AbstractComponent>
+            </BWindow>
         }
 
     </div>

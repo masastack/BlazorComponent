@@ -1,0 +1,17 @@
+﻿@namespace BlazorComponent
+@typeparam TTimelineItem
+@inherits ComponentPartBase<TTimelineItem>
+
+@if (HasIcon)
+{
+    @if (ComponentIconContent != null)
+    {
+        @ComponentIconContent
+    }
+    else
+    {
+        <BIcon @attributes="GetAttributes(typeof(BIcon))">
+            @Icon
+        </BIcon>
+    }
+}

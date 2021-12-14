@@ -1,6 +1,6 @@
 ﻿@namespace BlazorComponent
 @typeparam TComponent
-@inherits ComponentAbstractBase<TComponent>
+@inherits ComponentPartBase<TComponent>
 
 <div class="@CssProvider.GetClass(Name)" @onclick="OnClick" @onclick:stopPropagation>
     @ChildContent

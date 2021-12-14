@@ -140,14 +140,5 @@ namespace BlazorComponent
                 await OnMouseUp.InvokeAsync(args);
             }
         }
-
-        protected override void SetComponentClass()
-        {
-            AbstractProvider
-                .Apply(typeof(CascadingValue<>), typeof(CascadingValue<BInput<TValue>>), props =>
-                 {
-                     props[nameof(CascadingValue<BInput<TValue>>.Value)] = this;
-                 });
-        }
     }
 }

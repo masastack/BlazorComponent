@@ -1,0 +1,8 @@
+﻿@namespace BlazorComponent
+@typeparam TResponsive
+@inherits ComponentPartBase<TResponsive>
+
+@if (AspectRatio != null)
+{
+    <div class="@CssProvider.GetClass("sizer")" style="@CssProvider.GetStyle("sizer")"></div>
+}

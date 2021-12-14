@@ -1,10 +1,10 @@
 ﻿@namespace BlazorComponent
 @typeparam TValue
 @typeparam TInput
-@inherits ComponentAbstractBase<TInput>
+@inherits ComponentPartBase<TInput>
 
-<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSliderInput<,>))"></AbstractComponent>
-<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSliderTrackContainer<,>))"></AbstractComponent>
-<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSliderSteps<,>))"></AbstractComponent>
-<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSliderThumbContainer<,>))"></AbstractComponent>
+@RenderPart(typeof(BSliderInput<,>))
+@RenderPart(typeof(BSliderTrackContainer<,>))
+@RenderPart(typeof(BSliderSteps<,>))
+@RenderPart(typeof(BSliderThumbContainer<,>))
 

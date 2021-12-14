@@ -1,0 +1,20 @@
+﻿@namespace BlazorComponent
+@typeparam TValue
+@typeparam TInput
+@inherits ComponentPartBase<TInput>
+
+@if (AppendContent != null || AppendIcon != null)
+{
+    var childContent = (RenderFragment)null;
+
+    if (AppendContent != null)
+    {
+        childContent = AppendContent;
+    }
+    else if (AppendIcon != null)
+    {
+        childContent = RenderPart(typeof(BInputIcon<,>), "append-icon", AppendIcon, HandleOnAppendClickAsync,arg0Name:"Type",arg1Name:"Icon",arg2Name:"OnClick");
+    }
+
+    @RenderPart(typeof(BInputSlot<,>),"append","outer",childContent,arg0Name:"Type","Location")
+}

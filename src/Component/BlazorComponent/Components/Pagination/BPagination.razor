@@ -1,8 +1,6 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<BCascadingValue Value="this">
-    <nav id="@Id" @ref="Ref" class="@Class">
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BPaginationList<>))"></AbstractComponent>
-    </nav>
-</BCascadingValue>
+<nav id="@Id" @ref="Ref" class="@Class">
+    @RenderPart(typeof(BPaginationList<>))
+</nav>

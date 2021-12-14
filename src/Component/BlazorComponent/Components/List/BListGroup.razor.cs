@@ -81,11 +81,6 @@ namespace BlazorComponent
             get => _isActive;
             set
             {
-                if (!SubGroup && value && !_isActiveUpdated)
-                {
-                    List?.ListClick(Id);
-                }
-
                 _isActive = value;
             }
         }
@@ -94,7 +89,10 @@ namespace BlazorComponent
         {
             base.OnInitialized();
 
-            List?.Register(this);
+            if (List != null)
+            {
+                List.Register(this);
+            }
 
             if (Group != null)
             {

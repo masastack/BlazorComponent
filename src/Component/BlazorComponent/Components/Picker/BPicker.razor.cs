@@ -9,5 +9,8 @@ namespace BlazorComponent
 
         [Parameter]
         public RenderFragment ActionsContent { get; set; }
+
+        [Parameter]
+        public RenderFragment ChildContent { get; set; }
     }
 }

@@ -1,0 +1,10 @@
+﻿@namespace BlazorComponent
+@typeparam TChip
+@inherits ComponentPartBase<TChip>
+
+@if (Close)
+{
+    <BIcon @attributes="@(GetAttributes(typeof(BIcon),"close"))">
+        @CloseIcon
+    </BIcon>
+}

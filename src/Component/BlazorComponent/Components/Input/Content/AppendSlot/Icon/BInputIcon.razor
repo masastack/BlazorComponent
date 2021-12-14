@@ -1,0 +1,10 @@
+﻿@namespace BlazorComponent
+@typeparam TValue
+@typeparam TInput
+@inherits ComponentPartBase<TInput>
+@*//TODO:这里还需要进一步完善*@
+<div class="@CssProvider.GetClass(Type)">
+    <BIcon OnClick="OnClick" @attributes="GetAttributes(typeof(BIcon),Type)">
+        @Icon
+    </BIcon>
+</div>

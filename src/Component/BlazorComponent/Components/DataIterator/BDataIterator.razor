@@ -2,6 +2,4 @@
 @typeparam TItem
 @inherits BData<TItem>
 
-<BCascadingValue Value="this">
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataIteratorDefaultSlot<,>))"></AbstractComponent>
-</BCascadingValue>
+@RenderPart(typeof(BDataIteratorDefaultSlot<,>))

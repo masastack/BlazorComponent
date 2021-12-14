@@ -10,7 +10,7 @@
         {
             foreach (var item in ComputedItems)
             {
-                <AbstractComponent Item="@item" ParentIsDisabled="@(ItemDisabled?.Invoke(item) ?? false)" Metadata="AbstractProvider.GetMetadata(typeof(BTreeviewNodeChild<,,>))"></AbstractComponent>
+                @RenderPart(typeof(BTreeviewNodeChild<,,>),item,ItemDisabled?.Invoke(item) ?? false,arg1Name:"ParentIsDisabled")
             }
         }
         else

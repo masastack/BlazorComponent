@@ -1,18 +1,26 @@
 ﻿@namespace BlazorComponent
 @typeparam TItem
 @typeparam TDataTable
-@inherits ComponentAbstractBase<TDataTable>
+@inherits ComponentPartBase<TDataTable>
 
-@Render(typeof(BSimpleTable), props => {
-        if (HasTop)
+<BSimpleTable @attributes="GetAttributes(typeof(BSimpleTable))">
+    <TopContent>
+        @if (HasTop)
         {
-            props.Add("TopContent", TopContent);
+            @TopContent
         }
-
-        props.AddChildContents(Render(typeof(BDataTableCaption<,>)), Render(typeof(BDataTableColgroup<,>)), Render(typeof(BDataTableHeaders<,>)), Render(typeof(BDataTableBody<,>)), Render(typeof(BDataTableFoot<,>)));
-
-        if (HasBottom)
+    </TopContent>
+    <ChildContent>
+        @RenderPart(typeof(BDataTableCaption<,>))
+        @RenderPart(typeof(BDataTableColgroup<,>))
+        @RenderPart(typeof(BDataTableHeaders<,>))
+        @RenderPart(typeof(BDataTableBody<,>))
+        @RenderPart(typeof(BDataTableFoot<,>))
+    </ChildContent>
+    <BottomContent>
+        @if (HasBottom)
         {
-            props.Add("BottomContent", Render(typeof(BDataTableFooters<,>)));
+            @RenderPart(typeof(BDataTableFooters<,>))
         }
-})
+    </BottomContent>
+</BSimpleTable>

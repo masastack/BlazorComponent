@@ -1,0 +1,13 @@
+﻿@namespace BlazorComponent
+@typeparam TMessages
+@inherits ComponentPartBase<TMessages>
+
+<div class="@CssProvider.GetClass("wrap")">
+    @if (Value != null)
+    {
+        foreach (var message in Value)
+        {
+            @RenderPart(typeof(BMessagesMessage<>),message)
+        }
+    }
+</div>

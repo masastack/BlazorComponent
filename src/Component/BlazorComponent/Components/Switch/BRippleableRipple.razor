@@ -1,8 +1,0 @@
-﻿@namespace BlazorComponent
-@typeparam TComponent
-@inherits ComponentAbstractBase<TComponent>
-
-@if (Ripple)
-{
-    <div class="@CssProvider.GetClass("ripple")" style="@CssProvider.GetStyle("ripple")"></div>
-}

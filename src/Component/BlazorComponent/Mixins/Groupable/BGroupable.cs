@@ -62,11 +62,11 @@ namespace BlazorComponent
             }
         }
 
-        protected virtual async Task ToggleItem()
+        protected virtual async Task ToggleAsync()
         {
             if (!Matched) return;
 
-            await ItemGroup.Toggle(Value);
+            await ItemGroup.ToggleAsync(Value);
         }
 
         protected override void Dispose(bool disposing)

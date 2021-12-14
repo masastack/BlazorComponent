@@ -6,25 +6,26 @@
 
 <div class="@CssProvider.GetClass("menu-body")">
     <div class="@CssProvider.GetClass("menu-body-wrapper")" style="@CssProvider.GetStyle("menu-body-wrapper")">
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BList>()">
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BItemGroup>()">
+        <BList @attributes="GetAttributes(typeof(BList))">
+            <BItemGroup @attributes="GetAttributes(typeof(BItemGroup))">
                 @foreach (var item in Items)
                 {
-                    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSelectList<,,>))"
-                                   OnItemClick="@HandleOnItemClick"
-                                   Item="@item"
-                                   Loading="@IsLoading(item)"
-                                   Value="@ItemValue(item)"
-                                   Label="@ItemText(item)"
-                                   Children="@ItemChildren(item)">
-                    </AbstractComponent>
+                    <BCascaderList TItem="TItem" TValue="TValue"
+                               OnItemClick="@HandleOnItemClick"
+                               Item="@item"
+                               Loading="@IsLoading(item)"
+                               Value="@ItemValue(item)"
+                               Label="@ItemText(item)"
+                               Children="@ItemChildren(item)"
+                               @attributes="GetAttributes(typeof(BSelectList<,,>))">
+                    </BCascaderList>
                 }
-            </AbstractComponent>
-        </AbstractComponent>
+            </BItemGroup>
+        </BList>
     </div>
 </div>
 
 @if (ShowChildren)
 {
-    <AbstractComponent Items="@Children" Metadata="AbstractProvider.GetMetadata(typeof(BCascaderMenuBody<,,>))"></AbstractComponent>
+    @RenderPart(typeof(BCascaderMenuBody<,,>),Children,Level+1, arg0Name:"Items",arg1Name:"Level")
 }

@@ -18,7 +18,7 @@ namespace BlazorComponent
         [Parameter]
         public StringNumber Max { get; set; }
 
-        public async override Task Toggle(StringNumber value)
+        public async override Task ToggleAsync(StringNumber value)
         {
             if (_values.Contains(value))
             {
@@ -46,13 +46,14 @@ namespace BlazorComponent
             {
                 await ValuesChanged.InvokeAsync(_values);
             }
-
-            if (ValueChanged.HasDelegate)
+            else if (ValueChanged.HasDelegate)
             {
                 await ValueChanged.InvokeAsync(_values.LastOrDefault());
             }
-
-            StateHasChanged();
+            else
+            {
+                StateHasChanged();
+            }
         }
     }
 }

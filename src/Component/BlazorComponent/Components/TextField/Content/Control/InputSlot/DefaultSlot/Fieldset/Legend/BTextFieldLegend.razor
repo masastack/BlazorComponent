@@ -1,0 +1,10 @@
+﻿@namespace BlazorComponent
+@typeparam TValue
+@typeparam TInput
+@inherits ComponentPartBase<TInput>
+
+<legend style="@CssProvider.GetStyle( "legend")">
+    <span class="@CssProvider.GetStyle( "legend-span")">
+        @((MarkupString)InnerHTML)
+    </span>
+</legend>

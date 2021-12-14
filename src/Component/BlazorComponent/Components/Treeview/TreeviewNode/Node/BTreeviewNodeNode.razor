@@ -1,0 +1,22 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TKey
+@typeparam TTreeviewNode
+@inherits ComponentPartBase<TTreeviewNode>
+
+<div class="@CssProvider.GetClass("root")" @onclick="HandleOnClick">
+    @RenderPart(typeof(BTreeviewNodeLevel<,,>),Level)
+    @if (HasChildren)
+    {
+        @RenderPart(typeof(BTreeviewNodeToggle<,,>))
+    }
+    else
+    {
+        @RenderPart(typeof(BTreeviewNodeLevel<,,>),1,arg0Name:"Level")
+    }
+    @if (Selectable)
+    {
+        @RenderPart(typeof(BTreeviewNodeCheckbox<,,>))
+    }
+    @RenderPart(typeof(BTreeviewNodeContent<,,>))
+</div>

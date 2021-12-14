@@ -1,18 +1,16 @@
 ﻿@namespace BlazorComponent
 @typeparam TItem
 @typeparam TDataTable
-@inherits ComponentAbstractBase<TDataTable>
+@inherits ComponentPartBase<TDataTable>
 
-@Render(typeof(BDataTableRowGroup), props => {
-    props
-        .Add("Value",IsExpanded)
-        .AddContent("RowHeaderContent", Render(typeof(BDataTableDefaultSimpleRow<,>), rowProps => {
-            rowProps
-                .Add("Index",Index)
-                .Add("Item",Item);
-        }))
-        .AddContent("RowContentContent",@<tr class="@CssProvider.GetClass("expanded-content")">
+<BDataTableRowGroup Value="IsExpanded" @attributes="GetAttributes(typeof(BDataTableRowGroup))">
+    <RowHeaderContent>
+        @RenderPart(typeof(BDataTableDefaultSimpleRow<,>),Index,Item)
+    </RowHeaderContent>
+    <RowContentContent>
+        <tr class="@CssProvider.GetClass("expanded-content")">
             @ExpandedItemContent(Props)
-        </tr>);
-})
+        </tr>
+    </RowContentContent>
+</BDataTableRowGroup>
 

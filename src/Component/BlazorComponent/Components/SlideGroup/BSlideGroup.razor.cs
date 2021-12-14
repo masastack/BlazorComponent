@@ -98,8 +98,11 @@ namespace BlazorComponent
 
         protected override void SetComponentClass()
         {
-            AbstractProvider.Apply(typeof(CascadingValue<ISlideGroup>), typeof(CascadingValue<BSlideGroup>),
-                props => props[nameof(CascadingValue<BSlideGroup>.Value)] = this);
+            AbstractProvider
+                .Apply(typeof(CascadingValue<ISlideGroup>), typeof(CascadingValue<BSlideGroup>), attrs =>
+                 {
+                     attrs[nameof(CascadingValue<BSlideGroup>.Value)] = this;
+                 });
         }
 
         public bool IsOverflowing { get; protected set; }

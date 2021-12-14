@@ -1,0 +1,7 @@
+﻿@namespace BlazorComponent
+@typeparam TAlert
+@inherits ComponentPartBase<TAlert>
+
+<div class="@CssProvider.GetClass("content")">
+    @ChildContent
+</div>

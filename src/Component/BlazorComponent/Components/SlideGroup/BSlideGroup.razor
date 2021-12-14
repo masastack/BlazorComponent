@@ -3,16 +3,12 @@
 
 <BCascadingValue Value="this">
     <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id">
-
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSlideGroupPrev<>))"></AbstractComponent>
-
+        @RenderPart(typeof(BSlideGroupPrev<>))
         <div class="@CssProvider.GetClass("wrapper")" style="@CssProvider.GetStyle("wrapper")" @ref="WrapperRef">
             <div class="@CssProvider.GetClass("content")" style="@CssProvider.GetStyle("content")" @ref="ContentRef">
                 @ChildContent
             </div>
         </div>
-
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSlideGroupNext<>))"></AbstractComponent>
-
+        @RenderPart(typeof(BSlideGroupNext<>))
     </div>
 </BCascadingValue>

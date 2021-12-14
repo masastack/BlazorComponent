@@ -2,10 +2,10 @@
 @inherits BInputDefaultSlot<bool,ICheckbox>
 
 <div class="@CssProvider.GetClass("checkbox-input")">
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BIcon))">
+    <BIcon @attributes="GetAttributes(typeof(BIcon))">
         @ComputedIcon
-    </AbstractComponent>
-    <AbstractComponent Type="checkbox" Metadata="AbstractProvider.GetMetadata(typeof(BSelectableInput<>))"></AbstractComponent>
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BRippleableRipple<>))"></AbstractComponent>
+    </BIcon>
+    @RenderPart(typeof(BSelectableInput<>),"checkbox",arg0Name:"Type")
+    @RenderPart(typeof(BRippleableRipple<>))
 </div>
 

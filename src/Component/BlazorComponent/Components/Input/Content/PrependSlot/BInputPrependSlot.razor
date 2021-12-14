@@ -1,0 +1,20 @@
+﻿@namespace BlazorComponent
+@typeparam TValue
+@typeparam TInput
+@inherits ComponentPartBase<TInput>
+
+@if (PrependContent != null || PrependIcon != null)
+{
+    var childContent = (RenderFragment)null;
+
+    if (PrependContent != null)
+    {
+        childContent = PrependContent;
+    }
+    else if (PrependIcon != null)
+    {
+        childContent = RenderPart(typeof(BInputIcon<,>), "prepend-icon", PrependIcon, HandleOnPrependClickAsync,arg0Name:"Type",arg1Name:"Icon",arg2Name:"OnClick");
+    }
+
+    @RenderPart(typeof(BInputSlot<,>),"prepend","outer",childContent,arg0Name:"Type","Location")
+}

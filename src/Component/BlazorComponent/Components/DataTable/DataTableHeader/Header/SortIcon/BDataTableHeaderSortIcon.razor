@@ -1,8 +1,8 @@
 ﻿@namespace BlazorComponent
 @typeparam TDataTableHeader
-@inherits ComponentAbstractBase<TDataTableHeader>
+@inherits ComponentPartBase<TDataTableHeader>
 
-<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BIcon))">
+<BIcon @attributes="GetAttributes(typeof(BIcon))">
     @SortIcon
-</AbstractComponent>
+</BIcon>
 

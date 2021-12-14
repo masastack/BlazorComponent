@@ -1,12 +1,12 @@
 ﻿@namespace BlazorComponent
 @typeparam TTimePicker
-@inherits ComponentAbstractBase<TTimePicker>
+@inherits ComponentPartBase<TTimePicker>
 
 <div @key="Selecting" class="@CssProvider.GetClass("container")">
     @if (!AmPmInTitle && IsAmPm)
     {
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTimePickerClockAmPm<>))"></AbstractComponent>
+        @RenderPart(typeof(BTimePickerClockAmPm<>))
     }
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTimePickerClock))"></AbstractComponent>
+    <BTimePickerClock @attributes="GetAttributes(typeof(BTimePickerClock))"></BTimePickerClock>
 </div>
 

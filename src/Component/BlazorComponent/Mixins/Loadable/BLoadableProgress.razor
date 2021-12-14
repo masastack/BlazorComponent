@@ -1,6 +1,6 @@
 ﻿@namespace BlazorComponent
 @typeparam TComponent
-@inherits ComponentAbstractBase<TComponent>
+@inherits ComponentPartBase<TComponent>
 
 @if (Loading is not null && Loading != false)
 {
@@ -10,7 +10,7 @@
     }
     else
     {
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BProgressLinear>()"></AbstractComponent>
+        <BProgressLinear @attributes="GetAttributes(typeof(BProgressLinear))"></BProgressLinear>
     }
 }
 

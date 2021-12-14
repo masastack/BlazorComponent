@@ -1,0 +1,8 @@
+﻿@namespace BlazorComponent
+@typeparam TValue
+@typeparam TInput
+@inherits ComponentPartBase<TInput>
+
+<div class="@CssProvider.GetClass(ComputedType)">
+    @ChildContent
+</div>

@@ -18,6 +18,6 @@
     <!--When using razor definition without `Items` parameter-->
     @if (Breadcrumbs.ChildContent != null && !IsLast)
     {
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BBreadcrumbsDivider>()" Divider="@Breadcrumbs.Divider" DividerContent="@Breadcrumbs.DividerContent"></AbstractComponent>
+        <BBreadcrumbsDivider Divider="@Breadcrumbs.Divider" DividerContent="@Breadcrumbs.DividerContent" @attributes="GetAttributes(typeof(BBreadcrumbsDivider))"></BBreadcrumbsDivider>
     }
 </BCascadingValue>

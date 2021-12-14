@@ -136,8 +136,6 @@
 		<None Include="I18n\Locales\vi-VN.json" />
 		<None Include="I18n\Locales\zh-CN.json" />
 		<None Include="I18n\Locales\zh-TW.json" />
-		<None Include="Components\Timeline\BTimeline.razor" />
-		<None Include="Components\Timeline\BTimelineItem.razor" />
 	</ItemGroup>
 
 	<ItemGroup>

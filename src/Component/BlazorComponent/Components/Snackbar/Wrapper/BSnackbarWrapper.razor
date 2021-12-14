@@ -1,0 +1,8 @@
+﻿@namespace BlazorComponent
+@typeparam TSnackbar
+@inherits ComponentPartBase<TSnackbar>
+
+<Element Show="Value" class="@CssProvider.GetClass("wrap")" style="@CssProvider.GetStyle("wrap")">
+    @RenderPart(typeof(BSnackbarContent<>))
+    @RenderPart(typeof(BSnackbarAction<>))
+</Element>

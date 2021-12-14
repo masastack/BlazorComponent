@@ -23,9 +23,9 @@ namespace BlazorComponent
 
         public ElementReference DialogRef { get; set; }
 
-        protected AbstractComponent Overlay { get; set; }
+        protected object Overlay { get; set; }
 
-        protected ElementReference OverlayRef => ((BOverlay)Overlay.Instance).Ref;
+        protected ElementReference OverlayRef => ((BOverlay)Overlay).Ref;
 
         protected int ZIndex { get; set; }
 
@@ -128,8 +128,8 @@ namespace BlazorComponent
             if (ContentRef.Context != null)
                 await JsInvokeAsync(JsInteropConstants.DelElementFrom, ContentRef, AttachSelector);
 
-            if (OverlayRef.Context != null && _isHasOverlayElement)
-                await JsInvokeAsync(JsInteropConstants.DelElementFrom, OverlayRef, AttachSelector);
+            if (Overlay != null && ((BDomComponentBase)Overlay).Ref.Context != null && _isHasOverlayElement)
+                await JsInvokeAsync(JsInteropConstants.DelElementFrom, ((BDomComponentBase)Overlay).Ref, AttachSelector);
 
             GC.SuppressFinalize(this);
         }

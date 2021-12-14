@@ -1,45 +1,51 @@
 ﻿@namespace BlazorComponent
 @typeparam TItem
 @typeparam TComponent
-@inherits ComponentAbstractBase<TComponent>
+@inherits ComponentPartBase<TComponent>
 
 @if (!Items.Any() && Loading == true)
 {
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataIteratorEmptyWrapper))">
-        @if (LoadingContent != null)
-        {
-            @LoadingContent
-        }
-        else
-        {
-            @LoadingText
-        }
-    </AbstractComponent>
+    var childContent = (RenderFragment)null;
+
+    if (LoadingContent != null)
+    {
+        childContent = LoadingContent;
+    }
+    else
+    {
+        childContent = RenderText(LoadingText);
+    }
+
+    @RenderPart(typeof(BDataIteratorEmptyWrapper),childContent)
 }
 else if (!Items.Any())
 {
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataIteratorEmptyWrapper))">
-        @if (NoDataContent != null)
-        {
-            @NoDataContent
-        }
-        else
-        {
-            @NoDataText
-        }
-    </AbstractComponent>
+    var childContent = (RenderFragment)null;
+
+    if (NoDataContent != null)
+    {
+        childContent = NoDataContent;
+    }
+    else
+    {
+        childContent = RenderText(NoDataText);
+    }
+
+    @RenderPart(typeof(BDataIteratorEmptyWrapper),childContent)
 }
 else if (Pagination.ItemsLength == 0)
 {
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataIteratorEmptyWrapper))">
-        @if (NoResultsContent != null)
-        {
-            @NoResultsContent
-        }
-        else
-        {
-            @NoResultsText
-        }
-    </AbstractComponent>
+    var childContent = (RenderFragment)null;
+
+    if (NoResultsContent != null)
+    {
+        childContent = NoResultsContent;
+    }
+    else
+    {
+        childContent = RenderText(NoResultsText);
+    }
+
+    @RenderPart(typeof(BDataIteratorEmptyWrapper),childContent)
 }
 

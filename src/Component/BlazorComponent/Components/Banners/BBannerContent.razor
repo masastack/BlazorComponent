@@ -1,8 +1,0 @@
-﻿@namespace BlazorComponent
-@typeparam TBanner
-@inherits ComponentAbstractBase<TBanner>
-
-<div class="@CssProvider.GetClass("content")">
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BBannerIcon<>))"></AbstractComponent>
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BBannerText<>))"></AbstractComponent>
-</div>

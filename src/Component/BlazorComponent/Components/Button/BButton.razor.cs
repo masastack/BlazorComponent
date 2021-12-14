@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public abstract partial class BButton : BGroupItem<ItemGroupBase>, IThemeable, IButton, IRoutable
+    public partial class BButton : BGroupItem<ItemGroupBase>, IThemeable, IButton, IRoutable
     {
         protected BButton() : base(GroupType.ButtonGroup)
         {
@@ -91,7 +91,7 @@ namespace BlazorComponent
         {
             await OnClick.InvokeAsync(args);
 
-            await ToggleItem();
+            await ToggleAsync();
         }
     }
 }

@@ -1,8 +1,0 @@
-﻿@namespace BlazorComponent
-@typeparam TCalendarCategory
-@inherits BCalendarDailyDays<TCalendarCategory>
-
-@foreach (var interval in Intervals[Index])
-{
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BCalendarCategoryDayInterval<>))" Interval="@interval" Category="@Day"></AbstractComponent>
-}

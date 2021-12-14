@@ -1,17 +1,17 @@
 ﻿@namespace BlazorComponent
 @typeparam TDataTableHeader
-@inherits ComponentAbstractBase<TDataTableHeader>
+@inherits ComponentPartBase<TDataTableHeader>
 
 <th class="@CssProvider.GetClass("header",data:Header)" style="@CssProvider.GetStyle("header",data:Header)" @attributes="GetHeaderAttrs(Header)">
     @if (Header.Value == "data-table-select" && !SingleSelect)
     {
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataTableHeaderSelectAll<>))"></AbstractComponent>
+        @RenderPart(typeof(BDataTableHeaderSelectAll<>))
     }
     else
     {
         @if (!DisableSort && Header.Sortable && Header.Align == "end")
         {
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataTableHeaderSortIcon<>))"></AbstractComponent>
+            @RenderPart(typeof(BDataTableHeaderSortIcon<>))
         }
         <span>
             @if (HeaderColContent != null)
@@ -28,7 +28,7 @@
             var sortIndex = Options.SortBy.IndexOf(Header.Value);
             var beingSorted = sortIndex >= 0;
 
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataTableHeaderSortIcon<>))"></AbstractComponent>
+            @RenderPart(typeof(BDataTableHeaderSortIcon<>))
             if (Options.MultiSort && beingSorted)
             {
                 <span class="@CssProvider.GetClass("sort-badge")">
@@ -38,7 +38,7 @@
         }
         @if (ShowGroupBy && Header.Groupable)
         {
-            <AbstractComponent Header="@Header" Metadata="AbstractProvider.GetMetadata(typeof(BDataTableGroupByToggle<>))"></AbstractComponent>
+            @RenderPart(typeof(BDataTableGroupByToggle<>),Header)
         }
     }
 </th>

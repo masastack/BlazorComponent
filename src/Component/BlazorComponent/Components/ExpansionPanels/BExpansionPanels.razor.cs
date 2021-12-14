@@ -40,7 +40,7 @@ namespace BlazorComponent
         [Parameter]
         public bool Tile { get; set; }
 
-        public async override Task Toggle(StringNumber value)
+        public async override Task ToggleAsync(StringNumber value)
         {
             if (_values.Contains(value))
             {

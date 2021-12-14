@@ -2,13 +2,11 @@
 @inherits BDomComponentBase
 @implements IHasProviderComponent
 
-<BCascadingValue Value="this">
-    <div class="@CssProvider.GetClass()">
-        @PrependContent
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataFooterItemsPerPageSelect<>))"></AbstractComponent>
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataFooterPaginationInfo<>))"></AbstractComponent>
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataFooterIcons<>))"></AbstractComponent>
-    </div>
-</BCascadingValue>
+<div class="@CssProvider.GetClass()">
+    @PrependContent
+    @RenderPart(typeof(BDataFooterItemsPerPageSelect<>))
+    @RenderPart(typeof(BDataFooterPaginationInfo<>))
+    @RenderPart(typeof(BDataFooterIcons<>))
+</div>
 
 

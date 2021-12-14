@@ -27,7 +27,7 @@ namespace BlazorComponent
             {
                 Active = IsActive,
                 ActiveClass = IsActive ? ComputedActiveClass : "",
-                Toggle = ToggleItem,
+                Toggle = ToggleAsync,
                 Ref = RefBack,
                 Value = Value
             };

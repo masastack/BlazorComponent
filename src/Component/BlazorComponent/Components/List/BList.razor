@@ -2,7 +2,7 @@
 @inherits BDomComponentBase
 
 <CascadingValue Value="this">
-    <CascadingValue Value="true" Name="IsInList">
+    <CascadingValue Value="true" Name="IsInList" IsFixed>
         <Element Tag="@Tag" Class="@CssProvider.GetClass()" Style="@CssProvider.GetStyle()" ReferenceCaptureAction="@((_) => Ref = _)" @attributes="Attributes">
             @ChildContent
         </Element>

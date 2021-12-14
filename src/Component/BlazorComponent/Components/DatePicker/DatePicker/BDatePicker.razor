@@ -1,40 +1,35 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<BCascadingValue Value="this">
-    @Render(typeof(BPicker), props => {
-        props
-            .Add("class",CssProvider.GetClass());
-
-        if (!NoTitle)
+<BPicker Class="@CssProvider.GetClass()" @attributes="GetAttributes(typeof(BPicker))">
+    <TitleContent>
+        @if (!NoTitle)
         {
-            props
-                .AddContent("TitleContent",@<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerTitle))"></AbstractComponent>);
+            <BDatePickerTitle @attributes="GetAttributes(typeof(BDatePickerTitle))"></BDatePickerTitle>
         }
-
-        props.AddChildContent(@<div @key="InternalActivePicker">
-                @if (InternalActivePicker == DatePickerType.Year)
+    </TitleContent>
+    <ChildContent>
+        <div @key="InternalActivePicker">
+            @if (InternalActivePicker == DatePickerType.Year)
+            {
+                @RenderPart(typeof(BDatePickerYears<>))
+            }
+            else
+            {
+                @RenderPart(typeof(BDatePickerTableHeader<>))
+                if (InternalActivePicker == DatePickerType.Date)
                 {
-                    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerYears<>))"></AbstractComponent>
+                    @RenderPart(typeof(BDatePickerDateTable<>))
                 }
                 else
                 {
-                    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerTableHeader<>))"></AbstractComponent>
-                    if (InternalActivePicker == DatePickerType.Date)
-                    {
-                        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerDateTable<>))"></AbstractComponent>
-                    }
-                    else
-                    {
-                        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerMonthTable<>))"></AbstractComponent>
-                    }
+                    @RenderPart(typeof(BDatePickerMonthTable<>))
                 }
-            </div>);
-
-        if (ChildContent != null)
-        {
-            props.AddContent("ActionsContent",ChildContent);
-        }
-    })
-</BCascadingValue>
+            }
+        </div>
+    </ChildContent>
+    <ActionsContent>
+        @ChildContent
+    </ActionsContent>
+</BPicker>
 

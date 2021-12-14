@@ -1,19 +1,13 @@
 ﻿@namespace BlazorComponent
 @typeparam TComponent
-@inherits ComponentAbstractBase<TComponent>
+@inherits ComponentPartBase<TComponent>
 
 <div class="@CssProvider.GetClass("icons-before")">
     @if (ShowFirstLastPage)
     {
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataFooterIcon<>))"
-                       OnClick="@HandleOnFirstPageAsync"
-                       Disabled="@(Options.Page==1)"
-                       Icon="@(RTL?LastIcon:FirstIcon)"></AbstractComponent>
+        @RenderPart(typeof(BDataFooterIcon<>),HandleOnFirstPageAsync,Options.Page==1,RTL?LastIcon:FirstIcon,arg0Name:"OnClick",arg1Name:"Disabled",arg2Name:"Icon")
     }
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataFooterIcon<>))"
-                       OnClick="@HandleOnPreviousPageAsync"
-                       Disabled="@(Options.Page==1)"
-                       Icon="@(RTL?NextIcon:PrevIcon)"></AbstractComponent>
+    @RenderPart(typeof(BDataFooterIcon<>),HandleOnPreviousPageAsync,Options.Page==1,RTL?NextIcon:PrevIcon,arg0Name:"OnClick",arg1Name:"Disabled",arg2Name:"Icon")
 </div>
 @if (ShowCurrentPage)
 {
@@ -22,16 +16,10 @@
     </span>
 }
 <div class="@CssProvider.GetClass("icons-after")">
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataFooterIcon<>))"
-                       OnClick="@HandleOnNextPageAsync"
-                       Disabled="@DisableNextPageIcon"
-                       Icon="@(RTL?PrevIcon:NextIcon)"></AbstractComponent>
+    @RenderPart(typeof(BDataFooterIcon<>),HandleOnNextPageAsync,DisableNextPageIcon,RTL?PrevIcon:NextIcon,arg0Name:"OnClick",arg1Name:"Disabled",arg2Name:"Icon")
     @if (ShowFirstLastPage)
     {
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDataFooterIcon<>))"
-                       OnClick="@HandleOnLastPageAsync"
-                       Disabled="@(Options.Page>=Pagination.PageCount||Options.ItemsPerPage==-1)"
-                       Icon="@(RTL?FirstIcon:LastIcon)"></AbstractComponent>
+        @RenderPart(typeof(BDataFooterIcon<>),HandleOnLastPageAsync,Options.Page>=Pagination.PageCount||Options.ItemsPerPage==-1,RTL?FirstIcon:LastIcon,arg0Name:"OnClick",arg1Name:"Disabled",arg2Name:"Icon")
     }
 </div>
 

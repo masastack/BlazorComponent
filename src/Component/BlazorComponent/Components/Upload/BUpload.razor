@@ -22,29 +22,29 @@
         <div class="@CssProvider.GetClass("chips-wrapper")" style="@CssProvider.GetStyle("chips-wrapper")">
             @foreach (var file in Files)
             {
-                @Render(typeof(BTooltip), props => {
-                    props
-                        .Add("Top",true)
-                        .Add("Disabled",string.IsNullOrEmpty(file.Error))
-                        .AddContent<ActivatorProps>("ActivatorContent",context=>@<AbstractComponent Metadata="AbstractProvider.GetMetadata<BChip>()"
-                               Class="upload-item"
-                               Close
-                               CloseIconColor="@(file.Uploaded ? "" : "red")"
-                               CloseClick="@(EventCallback.Factory.Create<MouseEventArgs>(this, () => Files.Remove(file)))"
-                               @attributes="context.Attrs">
+                <BTooltip Top Disabled="string.IsNullOrEmpty(file.Error)" @attributes="GetAttributes(typeof(BTooltip))">
+                    <ActivatorContent>
+                        <BChip Class="upload-item"
+                   Close
+                   CloseIconColor="@(file.Uploaded ? "" : "red")"
+                   CloseClick="@(EventCallback.Factory.Create<MouseEventArgs>(this, () => Files.Remove(file)))"
+                   @attributes="context.Attrs">
                             @if (file.IsImage)
                             {
-                                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BAvatar>()" Tile>
+                                <BAvatar Tile @attributes="GetAttributes(typeof(BAvatar))">
                                     <AbstractComponent Metadata="AbstractProvider.GetMetadata<IImage>()" Src="@file.Url" />
-                                </AbstractComponent>
+                                </BAvatar>
                             }
 
                             <span class="@GetColorCss(file.Uploaded)">
                                 @file.FileName@(ShowSize && file.BrowserFile != null ? $"({FormatSize(file.BrowserFile.Size)})" : "")
                             </span>
-                        </AbstractComponent>)
-                        .AddChildContent(file.Error);
-                })
+                        </BChip>
+                    </ActivatorContent>
+                    <ChildContent>
+                        @file.Error
+                    </ChildContent>
+                </BTooltip>
             }
         </div>
     }
@@ -53,31 +53,32 @@
         <div class="upload-cards">
             @foreach (var file in Files)
             {
-                @Render(typeof(BTooltip), props => {
-                    props
-                        .Add("Top",true)
-                        .Add("Disabled",string.IsNullOrEmpty(file.Error))
-                        .AddContent<ActivatorProps>("ActivatorContent",context=>@<AbstractComponent Metadata="AbstractProvider.GetMetadata<ICard>()" Outlined Style="@GetListItemStyle(file.Uploaded)" Class="upload-card upload-card--fix">
+                <BTooltip Top Disabled="string.IsNullOrEmpty(file.Error)" @attributes="GetAttributes(typeof(BTooltip))">
+                    <ActivatorContent>
+                        <AbstractComponent Metadata="AbstractProvider.GetMetadata<ICard>()" Outlined Style="@GetListItemStyle(file.Uploaded)" Class="upload-card upload-card--fix">
                             <div @onmouseenter="() => file.Hover = true" @onmouseleave="() => file.Hover = false" class="upload-card-item" @attributes="context.Attrs">
                                 @if (file.IsImage)
                                 {
                                     <AbstractComponent Metadata="AbstractProvider.GetMetadata<IImage>()" Src="@file.Url" Width="@CardSize" Height="@CardSize"></AbstractComponent>
                                 }
 
-                                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BOverlay>()" Absolute Value="@file.Hover" Opacity="@((StringNumber)0.2)">
-                                    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BButton>()" Dark Icon OnClick="@(EventCallback.Factory.Create<MouseEventArgs>(this, () => {
+                                <BOverlay Absolute Value="@file.Hover" Opacity="@((StringNumber)0.2)" @attributes="GetAttributes(typeof(BOverlay))">
+                                    <BButton Dark Icon OnClick="() => {
                         Files.Remove(file);
                         file.Hover = false;
-                }))">
-                                        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()" Small>
+                }" @attributes="GetAttributes(typeof(BButton))">
+                                        <BIcon @attributes="GetAttributes(typeof(BIcon))">
                                             mdi-close
-                                        </AbstractComponent>
-                                    </AbstractComponent>
-                                </AbstractComponent>
+                                        </BIcon>
+                                    </BButton>
+                                </BOverlay>
                             </div>
-                        </AbstractComponent>)
-                        .AddChildContent(file.Error);
-                })
+                        </AbstractComponent>
+                    </ActivatorContent>
+                    <ChildContent>
+                        @file.Error
+                    </ChildContent>
+                </BTooltip>
             }
 
             <div class="upload-item @CssProvider.GetClass()" style="@CssProvider.GetStyle()" @onclick="HandleOnClick">
@@ -87,52 +88,51 @@
     }
     else
     {
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BList>()">
+        <BList @attributes="GetAttributes(typeof(BList))">
             @foreach (var file in Files)
             {
-                @Render(typeof(BTooltip), props => {
-                    props
-                        .Add("Top",true)
-                        .Add("Disabled",string.IsNullOrEmpty(file.Error))
-                        .AddContent<ActivatorProps>("ActivatorContent",context=>@<div style="@GetListItemStyle(file.Uploaded)" class="upload-item" @attributes="context.Attrs">
-                            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItem>()">
+                <BTooltip Top Disabled="string.IsNullOrEmpty(file.Error)" @attributes="GetAttributes(typeof(BTooltip))">
+                    <ActivatorContent>
+                        <div style="@GetListItemStyle(file.Uploaded)" class="upload-item" @attributes="context.Attrs">
+                            <BListItem @attributes="GetAttributes(typeof(BListItem))">
                                 @if (file.IsImage)
                                 {
-                                    <AbstractComponent Metadata="@(AbstractProvider.GetMetadata<BAvatar>("list-item"))" Tile>
+                                    <BAvatar Tile @attributes="GetAttributes(typeof(BAvatar))">
                                         <AbstractComponent Metadata="AbstractProvider.GetMetadata<IImage>()" Src="@file.Url" />
-                                    </AbstractComponent>
+                                    </BAvatar>
                                 }
                                 else
                                 {
-                                    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemIcon>()">
-                                        <AbstractComponent Metadata="@(AbstractProvider.GetMetadata<BIcon>())"
-                                           Small Color="@(file.Uploaded ? "" : "red")">
+                                    <BListItemIcon @attributes="GetAttributes(typeof(BListItemIcon))">
+                                        <BIcon Small Color="@(file.Uploaded ? "" : "red")" @attributes="GetAttributes(typeof(BIcon))">
                                             mdi-paperclip
-                                        </AbstractComponent>
-                                    </AbstractComponent>
+                                        </BIcon>
+                                    </BListItemIcon>
                                 }
-                                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemContent>()">
-                                    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemTitle>()" Class="@GetColorCss(file.Uploaded)">
+                                <BListItemContent @attributes="GetAttributes(typeof(BListItemContent))">
+                                    <BListItemTitle Class="@GetColorCss(file.Uploaded)" @attributes="GetAttributes(typeof(BListItemTitle))">
                                         @file.FileName@(ShowSize && file.BrowserFile != null ? $"({FormatSize(file.BrowserFile.Size)})" : "")
-                                    </AbstractComponent>
-                                </AbstractComponent>
-                                <AbstractComponent Metadata="AbstractProvider.GetMetadata<BListItemAction>()">
-                                    <AbstractComponent Metadata="AbstractProvider.GetMetadata<BButton>()"
-                                           Icon
-                                           Color="@(file.Uploaded ? "" : "red")"
-                                           OnClick="@(EventCallback.Factory.Create<MouseEventArgs>(this, () => Files.Remove(file)))">
-                                        <AbstractComponent Metadata="@(AbstractProvider.GetMetadata<BIcon>())"
-                                               Small>
+                                    </BListItemTitle>
+                                </BListItemContent>
+                                <BListItemAction @attributes="GetAttributes(typeof(BListItemAction))">
+                                    <BButton Icon
+                                 Color="@(file.Uploaded ? "" : "red")"
+                                 Small
+                                 OnClick="() => Files.Remove(file)" @attributes="GetAttributes(typeof(BButton))">
+                                        <BIcon @attributes="GetAttributes(typeof(BIcon))">
                                             mdi-close
-                                        </AbstractComponent>
-                                    </AbstractComponent>
-                                </AbstractComponent>
-                            </AbstractComponent>
-                        </div>)
-                        .AddChildContent(file.Error);
-                })
+                                        </BIcon>
+                                    </BButton>
+                                </BListItemAction>
+                            </BListItem>
+                        </div>
+                    </ActivatorContent>
+                    <ChildContent>
+                        @file.Error
+                    </ChildContent>
+                </BTooltip>
             }
-        </AbstractComponent>
+        </BList>
     }
 }
 
@@ -140,9 +140,9 @@
 
 @if (Counter && Files.Any())
 {
-    @Render(typeof(BMessages), props => {
-        props.AddContent<string>("ChildContent",context=>builder=>builder.AddContent(0,$"{Files.Count} files"));
-    })
+    <BMessages @attributes="GetAttributes(typeof(BMessages))">
+        @($"{Files.Count} files"))
+    </BMessages>
 }
 
 <style>

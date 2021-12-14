@@ -1,0 +1,11 @@
+﻿@namespace BlazorComponent
+@typeparam TPagination
+@inherits ComponentPartBase<TPagination>
+
+<li>
+    <button class="@CssProvider.GetClass(IconClassName())" type="button" disabled="@Disabled" @onclick="HandleAsync" @onclick:preventDefault>
+        <BIcon @attributes="GetAttributes(typeof(BIcon))">
+            @GetIcon
+        </BIcon>
+    </button>
+</li>

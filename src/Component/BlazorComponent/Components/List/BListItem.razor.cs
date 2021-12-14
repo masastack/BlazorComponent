@@ -36,7 +36,7 @@ namespace BlazorComponent
 
         [Parameter]
         public bool Link { get; set; }
-        
+
         [Parameter]
         public bool Linkage { get; set; }
 
@@ -54,7 +54,7 @@ namespace BlazorComponent
         public bool IsLink => _router.IsLink;
 
         public bool IsClickable => _router.IsClickable || ItemGroup != null;
-        
+
         protected override void OnParametersSet()
         {
             base.OnParametersSet();
@@ -71,16 +71,13 @@ namespace BlazorComponent
             {
                 await JsInvokeAsync(JsInteropConstants.Blur, Ref);
             }
-            
-            if (args.Button == 0)
-            {
-                await ToggleItem();
 
-                if (OnClick.HasDelegate)
-                {
-                    await OnClick.InvokeAsync(args);
-                }
+            if (OnClick.HasDelegate)
+            {
+                await OnClick.InvokeAsync(args);
             }
+
+            await ToggleAsync();
         }
 
         private void SetAttrs()
@@ -118,7 +115,7 @@ namespace BlazorComponent
             {
                 Active = IsActive,
                 ActiveClass = IsActive ? ComputedActiveClass : "",
-                Toggle = ToggleItem,
+                Toggle = ToggleAsync,
                 Ref = RefBack,
                 Value = Value
             };

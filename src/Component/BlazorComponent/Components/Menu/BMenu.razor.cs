@@ -9,7 +9,7 @@ using Microsoft.JSInterop;
 
 namespace BlazorComponent
 {
-    public abstract partial class BMenu : BMenuable
+    public partial class BMenu : BMenuable
     {
         private readonly int _defaultOffset = 8;
 
@@ -224,6 +224,11 @@ namespace BlazorComponent
             }
 
             await InvokeStateHasChangedAsync();
+        }
+
+        protected override Task MoveContentTo()
+        {
+            return Task.CompletedTask;
         }
     }
 }

@@ -1,17 +1,23 @@
 ﻿@namespace BlazorComponent
 @typeparam TDatePickerDateTable
-@inherits ComponentAbstractBase<TDatePickerDateTable>
+@inherits ComponentPartBase<TDatePickerDateTable>
 
 <thead>
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BDatePickerDateTableTR<>))">
-        @if (ShowWeek)
-        {
-            <th></th>
-        }
-        @foreach (var day in WeekDays)
-        {
-            <th>@day</th>
-        }
-    </AbstractComponent>
+    @{
+        //REVIEW: How about remove this to BDatePickerDateTableTR<>
+        RenderFragment childContent = builder =>
+                {
+                    var sequence = 0;
+                    if (ShowWeek)
+                    {
+                        builder.AddContent(sequence++,@<th></th>);
+                    }
+                    foreach (var day in WeekDays)
+                    {
+                        builder.AddContent(sequence++,@<th>@day</th>);
+                    }
+                };
+    }
+    @RenderPart(typeof(BDatePickerDateTableTR<>),childContent)
 </thead>
 

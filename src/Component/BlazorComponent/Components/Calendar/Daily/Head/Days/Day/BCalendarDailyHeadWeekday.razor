@@ -1,7 +1,0 @@
-﻿@namespace BlazorComponent
-@typeparam TCalendarDaily
-@inherits ComponentAbstractBase<TCalendarDaily>
-
-<div class="@CssProvider.GetClass("headWeekday", Index, Day)" style="@CssProvider.GetStyle("headWeekday", Index, Day)">
-    @WeekdayFormatter
-</div>

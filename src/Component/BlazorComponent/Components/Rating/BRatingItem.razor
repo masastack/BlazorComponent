@@ -1,6 +1,6 @@
 ﻿@namespace BlazorComponent
 @typeparam TRating
-@inherits ComponentAbstractBase<TRating>
+@inherits ComponentPartBase<TRating>
 
 @if (ItemContent != null)
 {
@@ -8,7 +8,7 @@
 }
 else
 {
-    <AbstractComponent Metadata="@(AbstractProvider.GetMetadata<BIcon>(ItemIndex))">
+    <BIcon @attributes="GetAttributes(typeof(BIcon),ItemIndex)">
         @GetIconName(Item)
-    </AbstractComponent>
+    </BIcon>
 }

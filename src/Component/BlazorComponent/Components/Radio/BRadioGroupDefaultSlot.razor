@@ -5,7 +5,7 @@
 <div class="@CssProvider.GetClass("radio-group")">
     @if (HasLabel)
     {
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BLabel>()" Tag="legend">
+        <BLabel @attributes="GetAttributes(typeof(BLabel))" Tag="legend">
             @if (LabelContent != null)
             {
                 @LabelContent
@@ -14,7 +14,7 @@
             {
                 @Label
             }
-        </AbstractComponent>
+        </BLabel>
     }
     @ComponentChildContent
 </div>

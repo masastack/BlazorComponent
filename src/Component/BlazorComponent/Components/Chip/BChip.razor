@@ -8,6 +8,6 @@
              ReferenceCaptureAction="_ => Ref = _"
              @onclick="HandleOnClick"
              @attributes="Attributes">
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BChipContent<>))"></AbstractComponent>
+        @RenderPart(typeof(BChipContent<>))
     </Element>
 </BCascadingValue>

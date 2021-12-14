@@ -2,5 +2,5 @@
 @typeparam TCheckbox
 @inherits BInputDefaultSlot<bool,TCheckbox>
 
-<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BCheckboxCheckbox))"></AbstractComponent>
-<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BInputLabel<,>))"></AbstractComponent>
+@RenderPart(typeof(BCheckboxCheckbox))
+@RenderPart(typeof(BInputLabel<,>))

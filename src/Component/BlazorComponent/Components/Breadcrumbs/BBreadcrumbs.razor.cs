@@ -14,7 +14,7 @@ namespace BlazorComponent
 
         [Parameter]
         public RenderFragment DividerContent { get; set; }
-        
+
         [Parameter]
         public bool Linkage { get; set; }
 

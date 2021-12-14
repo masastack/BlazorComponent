@@ -1,0 +1,13 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TKey
+@inherits BDomComponentBase
+@implements ITreeviewNode<TItem, TKey>
+
+<BCascadingValue Value="this">
+    <div class="@CssProvider.GetClass()">
+        @RenderPart(typeof(BTreeviewNodeNode<,,>))
+        @RenderPart(typeof(BTreeviewNodeChildrenWrapper<,,>))
+    </div>
+</BCascadingValue>
+

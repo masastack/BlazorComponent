@@ -45,7 +45,7 @@ namespace BlazorComponent
 
         private async Task HandleOnClick(MouseEventArgs args)
         {
-            await ToggleItem();
+            await ToggleAsync();
 
             await (ItemGroup as BSlideGroup)?.SetWidths(Value);
 

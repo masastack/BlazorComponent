@@ -4,7 +4,7 @@
 @typeparam TInput
 @inherits BTextFieldInput<TValue,TInput>
 
-<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BFileInputSelections<,>))"></AbstractComponent>
+@RenderPart(typeof(BFileInputSelections<,>))
 <InputFile autofocus="@Autofocus"
            disabled="@Disabled" placeholder="@Placeholder"
            readonly="@Readonly"

@@ -1,7 +1,7 @@
 ﻿@namespace BlazorComponent
 @typeparam TItem
 @typeparam TDataTable
-@inherits ComponentAbstractBase<TDataTable>
+@inherits ComponentPartBase<TDataTable>
 
 @for (var i = 0; i < Items.Count(); i++)
 {
@@ -10,11 +10,11 @@
 
     if (ExpandedItemContent != null)
     {
-        <AbstractComponent Index="@index" Item="@item" Metadata="AbstractProvider.GetMetadata(typeof(BDataTableDefaultExpandedRow<,>))"></AbstractComponent>
+        @RenderPart(typeof(BDataTableDefaultExpandedRow<,>),index,item)
     }
     else
     {
-        <AbstractComponent Index="@index" Item="@item" Metadata="AbstractProvider.GetMetadata(typeof(BDataTableDefaultSimpleRow<,>))"></AbstractComponent>
+        @RenderPart(typeof(BDataTableDefaultSimpleRow<,>),index,item)
     }
 }
 

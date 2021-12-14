@@ -1,0 +1,9 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TKey
+@typeparam TTreeviewNode
+@inherits ComponentPartBase<TTreeviewNode>
+
+<BIcon @attributes="GetAttributes(typeof(BIcon),Name)">
+    @ComputedIcon
+</BIcon>

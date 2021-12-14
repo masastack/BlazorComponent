@@ -1,0 +1,61 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+@typeparam TItem
+@typeparam TItemValue
+@typeparam TValue
+
+<BListItem @attributes="GetAttributes(typeof(BListItem))">
+    @if (ItemContent != null)
+    {
+        var props = new SelectListItemProps<TItem>(Item);
+        @ItemContent(props)
+    }
+    else
+    {
+        if (Select.Multiple)
+        {
+            <BListItemAction @attributes="GetAttributes(typeof(BListItemAction))">
+                <BSimpleCheckbox @attributes="GetAttributes(typeof(BSimpleCheckbox))">
+                </BSimpleCheckbox>
+            </BListItemAction>
+        }
+        <BListItemContent @attributes="GetAttributes(typeof(BListItemContent))">
+            <BListItemTitle @attributes="GetAttributes(typeof(BListItemTitle))">
+                @{
+                    var queryText = Select.QueryText;
+                    if (!string.IsNullOrEmpty(queryText) && Label.Contains(queryText, StringComparison.OrdinalIgnoreCase) && queryText.Length < Label.Length)
+                    {
+                        var index = Label.ToLower().IndexOf(queryText.ToLower());
+                        if (index > 0)
+                        {
+                            @Label.Substring(0, index)
+                        }
+                        <span class="@Select.CssProvider.GetClass("mask")">
+                            @queryText
+                        </span>
+                        @Label.Substring(index + queryText.Length)
+                    }
+                    else
+                    {
+                        @Label
+                    }
+                }
+            </BListItemTitle>
+        </BListItemContent>
+        @if (!string.IsNullOrEmpty(Icon) || Loading == true)
+        {
+            <BListItemIcon @attributes="GetAttributes(typeof(BListItemIcon))">
+                @if (Loading == true)
+                {
+                    <BProgressCircular @attributes="GetAttributes(typeof(BProgressCircular))"></BProgressCircular>
+                }
+                else
+                {
+                    <BIcon @attributes="GetAttributes(typeof(BIcon))">
+                        @Icon
+                    </BIcon>
+                }
+            </BListItemIcon>
+        }
+    }
+</BListItem>

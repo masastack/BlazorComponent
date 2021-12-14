@@ -1,0 +1,9 @@
+﻿@namespace BlazorComponent
+@typeparam TValue
+@typeparam TInput
+@inherits ComponentPartBase<TInput>
+
+<div class="@CssProvider.GetClass( "control")">
+    @RenderPart(typeof(BInputInputSlot<,>))
+    @RenderPart(typeof(BInputMessages<,>))
+</div>

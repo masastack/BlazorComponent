@@ -1,0 +1,25 @@
+﻿@namespace BlazorComponent
+@typeparam TBreadcrumbs
+@inherits ComponentPartBase<TBreadcrumbs>
+
+@if (ItemContent != null)
+{
+    @ItemContent(Item)
+
+    @if (RenderDivider && !IsLast)
+    {
+        <BBreadcrumbsDivider @attributes="GetAttributes(typeof(BBreadcrumbsDivider))"></BBreadcrumbsDivider>
+    }
+}
+else
+{
+    <BBreadcrumbsItem Text="@Item.Text"
+                  Href="@Item.Href"
+                  Disabled="@Item.Disabled"
+                  Linkage="@Item.Linkage"
+                  @attributes="GetAttributes(typeof(BBreadcrumbsItem))"></BBreadcrumbsItem>
+    @if (RenderDivider && !IsLast)
+    {
+        <BBreadcrumbsDivider Divider="@Divider" DividerContent="@DividerContent" @attributes="GetAttributes(typeof(BBreadcrumbsDivider))"></BBreadcrumbsDivider>
+    }
+}

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public abstract partial class BTooltip : BMenuable
+    public partial class BTooltip : BMenuable
     {
         public BTooltip()
         {
@@ -123,6 +123,11 @@ namespace BlazorComponent
             listeners.Add("blur", CreateEventCallback<FocusEventArgs>(_ => Close()));
 
             return listeners;
+        }
+
+        protected override Task MoveContentTo()
+        {
+            return Task.CompletedTask;
         }
     }
 }

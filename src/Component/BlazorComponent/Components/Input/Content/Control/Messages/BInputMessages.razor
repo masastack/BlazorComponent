@@ -1,0 +1,9 @@
+﻿@namespace BlazorComponent
+@typeparam TValue
+@typeparam TInput
+@inherits ComponentPartBase<TInput>
+
+@if (ShowDetails)
+{
+    <BMessages @attributes="GetAttributes(typeof(BMessages))"></BMessages>
+}

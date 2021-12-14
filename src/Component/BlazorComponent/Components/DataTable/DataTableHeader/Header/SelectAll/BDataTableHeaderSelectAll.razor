@@ -1,6 +1,6 @@
 ﻿@namespace BlazorComponent
 @typeparam TDataTableHeader
-@inherits ComponentAbstractBase<TDataTableHeader>
+@inherits ComponentPartBase<TDataTableHeader>
 
 @if (DataTableSelectContent != null)
 {
@@ -8,6 +8,6 @@
 }
 else
 {
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSimpleCheckbox))"></AbstractComponent>
+    <BSimpleCheckbox @attributes="GetAttributes(typeof(BSimpleCheckbox))"></BSimpleCheckbox>
 }
 

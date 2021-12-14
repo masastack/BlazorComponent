@@ -19,14 +19,5 @@ namespace BlazorComponent
                 await OnClick.InvokeAsync();
             }
         }
-
-        protected override void SetComponentClass()
-        {
-            AbstractProvider
-                .Apply(typeof(CascadingValue<>), typeof(CascadingValue<BSystemBar>), props =>
-                {
-                    props[nameof(CascadingValue<BSystemBar>.Value)] = this;
-                });
-        }
     }
 }

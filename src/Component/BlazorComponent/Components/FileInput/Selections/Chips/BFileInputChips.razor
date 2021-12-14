@@ -1,0 +1,16 @@
+﻿@namespace BlazorComponent
+@typeparam TValue
+@typeparam TInput
+@inherits ComponentPartBase<TInput>
+
+@if (IsDirty)
+{
+    for (var i = 0; i < Text.Count; i++)
+    {
+        //TODO:Close
+        var text = Text[i];
+        <BChip @attributes="GetAttributes(typeof(BChip))">
+            @text
+        </BChip>
+    }
+}

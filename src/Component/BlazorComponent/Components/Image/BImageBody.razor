@@ -1,8 +1,8 @@
 ﻿@namespace BlazorComponent
 @typeparam TImage
-@inherits ComponentAbstractBase<TImage>
+@inherits ComponentPartBase<TImage>
 
-<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BResponsiveSizer<>))"></AbstractComponent>
-<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BImageContent<>))"></AbstractComponent>
-<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BPlaceholderSlot<>))"></AbstractComponent>
-<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BResponsiveContent<>))"></AbstractComponent>
+@RenderPart(typeof(BResponsiveSizer<>))
+@RenderPart(typeof(BImageContent<>))
+@RenderPart(typeof(BPlaceholderSlot<>))
+@RenderPart(typeof(BResponsiveContent<>))

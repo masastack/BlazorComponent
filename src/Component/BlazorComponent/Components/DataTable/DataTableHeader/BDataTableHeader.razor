@@ -1,13 +1,11 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<BCascadingValue Value="this">
-    <thead class="@CssProvider.GetClass()">
-        <tr>
-            @foreach (var header in Headers)
-            {
-                <AbstractComponent Header="@header" Metadata="AbstractProvider.GetMetadata(typeof(BDataTableHeaderHeader<>))"></AbstractComponent>
-            }
-        </tr>
-    </thead>
-</BCascadingValue>
+<thead class="@CssProvider.GetClass()">
+    <tr>
+        @foreach (var header in Headers)
+        {
+            @RenderPart(typeof(BDataTableHeaderHeader<>),header)
+        }
+    </tr>
+</thead>

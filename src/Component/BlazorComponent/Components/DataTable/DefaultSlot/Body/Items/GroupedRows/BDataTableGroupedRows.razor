@@ -1,7 +1,7 @@
 ﻿@namespace BlazorComponent
 @typeparam TItem
 @typeparam TDataTable
-@inherits ComponentAbstractBase<TDataTable>
+@inherits ComponentPartBase<TDataTable>
 
 @foreach (var group in GroupedItems)
 {
@@ -17,6 +17,6 @@
     }
     else
     {
-        <AbstractComponent Group="@group" Metadata="AbstractProvider.GetMetadata(typeof(BDataTableDefaultGroupedRow<,>))"></AbstractComponent>
+        @RenderPart(typeof(BDataTableDefaultGroupedRow<,>),group)
     }
 }

@@ -2,21 +2,18 @@
 @inherits BDomComponentBase
 
 
-<BCascadingValue Value="this">
-    @Render(typeof(BPicker), props => {
-        props.Add("class",CssProvider.GetClass());
-
-        if (!NoTitle)
+<BPicker Class="@CssProvider.GetClass()" @attributes="GetAttributes(typeof(BPicker))">
+    <TitleContent>
+        @if (!NoTitle)
         {
-            props.AddContent("TitleContent",@<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTimePickerTitle))"></AbstractComponent>);
+            <BTimePickerTitle @attributes="GetAttributes(typeof(BTimePickerTitle))"></BTimePickerTitle>
         }
-
-        props.AddChildContent(@<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTimePickerPickerBody<>))"></AbstractComponent>);
-
-        if (ChildContent!=null)
-        {
-            props.AddContent("ActionsContent",ChildContent);
-        }
-    })
-</BCascadingValue>
+    </TitleContent>
+    <ChildContent>
+        @RenderPart(typeof(BTimePickerPickerBody<>))
+    </ChildContent>
+    <ActionsContent>
+        @ChildContent
+    </ActionsContent>
+</BPicker>
 

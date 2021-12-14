@@ -10,58 +10,53 @@ namespace BlazorComponent
     public class ComponentAbstractProvider
     {
         private readonly Dictionary<ComponentKey, Type> _typeConfig = new();
-        private readonly Dictionary<ComponentKey, Action<PropsDictionary>> _propertiesConfig = new();
+        private readonly Dictionary<ComponentKey, Action<AttributesDictionary>> _attributesConfig = new();
+        private readonly Dictionary<ComponentKey, IComponentPart> _partsConfig = new();
 
-        public ComponentAbstractProvider Apply(Type type, Type implementType, Action<PropsDictionary> propertiesAction = null)
+        public ComponentAbstractProvider Apply(Type type, Type implementType, Action<AttributesDictionary> attributesAction = null)
         {
             var key = new ComponentKey(type);
             if (_typeConfig.TryAdd(key, implementType))
             {
-                _propertiesConfig[key] = propertiesAction;
+                _attributesConfig[key] = attributesAction;
             }
 
             return this;
         }
 
-        public ComponentAbstractProvider Apply(Type type, Type implementType, string name, Action<PropsDictionary> propertiesAction = null)
+        public ComponentAbstractProvider Apply(Type type, Type implementType, string name, Action<AttributesDictionary> attributesAction = null)
         {
             var key = new ComponentKey(type, name);
             if (_typeConfig.TryAdd(key, implementType))
             {
-                _propertiesConfig[key] = propertiesAction;
+                _attributesConfig[key] = attributesAction;
             }
 
             return this;
         }
 
-        public ComponentAbstractProvider Apply<TComponent>(Action<PropsDictionary> propertiesAction = null)
-        {
-            var key = ComponentKey.Get<TComponent>();
-            return Apply<TComponent, TComponent>(key, propertiesAction);
-        }
-
-        public ComponentAbstractProvider Apply<TComponent, TImplementComponent>(Action<PropsDictionary> propertiesAction = null)
+        public ComponentAbstractProvider Apply<TComponent, TImplementComponent>(Action<AttributesDictionary> attributesAction = null)
             where TImplementComponent : TComponent
         {
             var key = ComponentKey.Get<TComponent>();
-            return Apply<TComponent, TImplementComponent>(key, propertiesAction);
+            return Apply<TComponent, TImplementComponent>(key, attributesAction);
         }
 
-        private ComponentAbstractProvider Apply<TComponent, TImplementComponent>(ComponentKey key, Action<PropsDictionary> propertiesAction) where TImplementComponent : TComponent
+        private ComponentAbstractProvider Apply<TComponent, TImplementComponent>(ComponentKey key, Action<AttributesDictionary> attributesAction) where TImplementComponent : TComponent
         {
             if (_typeConfig.TryAdd(key, typeof(TImplementComponent)))
             {
-                _propertiesConfig[key] = propertiesAction;
+                _attributesConfig[key] = attributesAction;
             }
 
             return this;
         }
 
-        public ComponentAbstractProvider Apply<TComponent, TImplementComponent>(string name, Action<PropsDictionary> propertiesAction = null)
+        public ComponentAbstractProvider Apply<TComponent, TImplementComponent>(string name, Action<AttributesDictionary> attributesAction = null)
             where TImplementComponent : TComponent
         {
             var key = ComponentKey.Get<TComponent>(name);
-            return Apply<TComponent, TImplementComponent>(key, propertiesAction);
+            return Apply<TComponent, TImplementComponent>(key, attributesAction);
         }
 
         /// <summary>
@@ -69,76 +64,54 @@ namespace BlazorComponent
         /// </summary>
         /// <typeparam name="TComponent"></typeparam>
         /// <param name="name"></param>
-        /// <param name="propertiesAction"></param>
+        /// <param name="attributesAction"></param>
         /// <returns></returns>
-        public ComponentAbstractProvider Apply<TComponent>(string name, Action<PropsDictionary> propertiesAction = null)
+        public ComponentAbstractProvider Apply<TComponent>(string name, Action<AttributesDictionary> attributesAction = null)
             where TComponent : IComponent
         {
-            return Apply<IComponent, TComponent>(name, propertiesAction);
+            return Apply<IComponent, TComponent>(name, attributesAction);
         }
 
-        public ComponentAbstractProvider Merge<TComponent>(Action<PropsDictionary> mergePropertiesAction = null)
+        public ComponentAbstractProvider Merge<TComponent>(Action<AttributesDictionary> mergeAttributesAction = null)
         {
             var key = ComponentKey.Get<TComponent>();
-            Merge(key, mergePropertiesAction);
+            Merge(key, mergeAttributesAction);
 
             return this;
         }
 
-        public ComponentAbstractProvider Merge<TComponent, TImplementComponent>(Action<PropsDictionary> mergePropertiesAction = null)
+        public ComponentAbstractProvider Merge<TComponent, TImplementComponent>(Action<AttributesDictionary> mergeAttributesAction = null)
             where TImplementComponent : TComponent
         {
             var key = ComponentKey.Get<TComponent>();
 
             _typeConfig[key] = typeof(TImplementComponent);
-            Merge(key, mergePropertiesAction);
+            Merge(key, mergeAttributesAction);
 
             return this;
         }
 
-        public ComponentAbstractProvider Merge(Type type, Type implementType, Action<PropsDictionary> mergePropertiesAction = null)
+        public ComponentAbstractProvider Merge(Type type, Type implementType, Action<AttributesDictionary> mergeAttributesAction = null)
         {
             var key = new ComponentKey(type);
 
             _typeConfig[key] = implementType;
-            Merge(key, mergePropertiesAction);
+            Merge(key, mergeAttributesAction);
 
             return this;
         }
 
-        private void Merge(ComponentKey key, Action<PropsDictionary> mergePropertiesAction = null)
+        private void Merge(ComponentKey key, Action<AttributesDictionary> mergeAttributesAction = null)
         {
-            if (mergePropertiesAction != null)
+            if (mergeAttributesAction != null)
             {
-                var propertiesAction = _propertiesConfig.GetValueOrDefault(key);
-                _propertiesConfig[key] = properties =>
+                var attributesAction = _attributesConfig.GetValueOrDefault(key);
+                _attributesConfig[key] = attrs =>
                 {
-                    propertiesAction?.Invoke(properties);
-                    mergePropertiesAction?.Invoke(properties);
+                    attributesAction?.Invoke(attrs);
+                    mergeAttributesAction?.Invoke(attrs);
                 };
             }
-        }
-
-        public ComponentAbstractProvider Merge<TComponent>(string name, Action<PropsDictionary> mergePropertiesAction = null)
-        {
-            var key = ComponentKey.Get<TComponent>(name);
-            Merge(key, mergePropertiesAction);
-
-            return this;
-        }
-
-        /// <summary>
-        /// Use this with <see cref="Apply{TComponent}(string, Action{PropsDictionary})"/> and <see cref="GetMetadata(string)"/>
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="mergePropertiesAction"></param>
-        /// <returns></returns>
-        public ComponentAbstractProvider Merge(string name, Action<PropsDictionary> mergePropertiesAction = null)
-        {
-            var key = ComponentKey.Get<IComponent>(name);
-            Merge(key, mergePropertiesAction);
-
-            return this;
         }
 
         public AbstractMetadata GetMetadata(Type type)
@@ -147,15 +120,15 @@ namespace BlazorComponent
             return GetMetadata(key);
         }
 
-        private AbstractMetadata GetMetadata(ComponentKey key, PropsDictionary dic = null)
+        private AbstractMetadata GetMetadata(ComponentKey key, AttributesDictionary dic = null)
         {
             var implementType = _typeConfig.GetValueOrDefault(key, typeof(EmptyComponent));
 
-            var properties = dic ?? new PropsDictionary();
-            var action = _propertiesConfig.GetValueOrDefault(key);
-            action?.Invoke(properties);
+            var attributes = dic ?? new AttributesDictionary();
+            var action = _attributesConfig.GetValueOrDefault(key);
+            action?.Invoke(attributes);
 
-            return new AbstractMetadata(implementType, properties);
+            return new AbstractMetadata(implementType, attributes);
         }
 
         public AbstractMetadata GetMetadata<TComponent>()
@@ -179,25 +152,89 @@ namespace BlazorComponent
             return GetMetadata<IComponent>(name);
         }
 
-        public AbstractMetadata GetMetadata<TComponent>(int index)
+        public AbstractMetadata GetMetadata(Type type, int index)
         {
-            var key = new ComponentKey(typeof(TComponent));
-
-            return GetMetadata(key, new PropsDictionary(index));
+            var key = new ComponentKey(type);
+            return GetMetadata(key, new AttributesDictionary(index));
         }
 
         public AbstractMetadata GetMetadata(Type type, object data = null)
         {
             var key = new ComponentKey(type);
 
-            return GetMetadata(key, new PropsDictionary(data));
+            return GetMetadata(key, new AttributesDictionary(data));
         }
 
         public AbstractMetadata GetMetadata(Type type, string name, object data = null)
         {
             var key = new ComponentKey(type, name);
 
-            return GetMetadata(key, new PropsDictionary(data));
+            return GetMetadata(key, new AttributesDictionary(data));
+        }
+
+        public RenderFragment GetPartContent(Type keyType, IHasProviderComponent component)
+        {
+            var key = new ComponentKey(keyType);
+
+            var partType = _typeConfig.GetValueOrDefault(key);
+            if (partType == null)
+            {
+                _partsConfig[key] = null;
+                return null;
+            }
+
+            //REVIEW: Always create a new obj?
+            var obj = Activator.CreateInstance(partType);
+            if (obj is IComponentPart componentPart)
+            {
+                componentPart.Attach(component);
+                _partsConfig[key] = componentPart;
+
+                return componentPart.Content;
+            }
+
+            throw new InvalidOperationException();
+        }
+
+        public RenderFragment GetPartContent(Type keyType, IHasProviderComponent component, Action<AttributesBuilder> builderAction)
+        {
+            var key = new ComponentKey(keyType);
+            return GetPartContent(key, component, builderAction);
+        }
+
+        public RenderFragment GetPartContent(Type keyType, object name, IHasProviderComponent component, Action<AttributesBuilder> builderAction)
+        {
+            var key = new ComponentKey(keyType, name.ToString());
+            return GetPartContent(key, component, builderAction);
+        }
+
+        public RenderFragment GetPartContent(ComponentKey key, IHasProviderComponent component, Action<AttributesBuilder> builderAction)
+        {
+            //Part has parameters,We may always creat a new obj
+
+            //TODO: change type config
+            var partType = _typeConfig.GetValueOrDefault(new ComponentKey(key.Type));
+            if (partType == null)
+            {
+                _partsConfig[key] = null;
+                return null;
+            }
+
+            var obj = Activator.CreateInstance(partType);
+            if (obj is IComponentPart componentPart)
+            {
+                componentPart.Attach(component);
+                _partsConfig[key] = componentPart;
+
+                var builder = new AttributesBuilder();
+                builderAction(builder);
+                var parameterView = ParameterView.FromDictionary(builder.Attributes);
+                componentPart.SetParametersView(parameterView);
+
+                return componentPart.Content;
+            }
+
+            throw new InvalidOperationException();
         }
     }
 }

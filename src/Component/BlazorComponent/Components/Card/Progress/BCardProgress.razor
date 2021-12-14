@@ -1,0 +1,11 @@
+﻿@namespace BlazorComponent
+@typeparam TCard
+@inherits ComponentPartBase<TCard>
+
+
+@if (Loading != false || ProgressContent != null)
+{
+    <div class="@CssProvider.GetClass("progress")">
+        @RenderPart(typeof(BLoadableProgress<>))
+    </div>
+}

@@ -14,5 +14,8 @@ namespace BlazorComponent
 
         [Parameter]
         public RenderFragment BottomContent { get; set; }
+
+        [Parameter]
+        public RenderFragment ChildContent { get; set; }
     }
 }

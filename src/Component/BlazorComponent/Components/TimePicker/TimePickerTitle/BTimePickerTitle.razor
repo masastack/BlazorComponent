@@ -1,13 +1,11 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<BCascadingValue Value="this">
-    <div class="@CssProvider.GetClass()">
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTimePickerTitleTime<>))"></AbstractComponent>
-        @if (AmPm)
-        {
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BTimePickerTitleAmPm<>))"></AbstractComponent>
-        }
-    </div>
-</BCascadingValue>
+<div class="@CssProvider.GetClass()">
+    @RenderPart(typeof(BTimePickerTitleTime<>))
+    @if (AmPm)
+    {
+        @RenderPart(typeof(BTimePickerTitleAmPm<>))
+    }
+</div>
 

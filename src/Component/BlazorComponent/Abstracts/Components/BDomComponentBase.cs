@@ -47,7 +47,7 @@ namespace BlazorComponent
             Watcher.SetValue(value, name);
         }
 
-        protected RenderFragment Render(Type type, Action<PropsBuilder> propsBuilderAction = null, object key = null, object data = null, Action<object> referenceCapture = null)
+        protected RenderFragment Render(Type type, Action<AttributesBuilder> parametersBuilderAction = null, object key = null, object data = null, Action<object> referenceCapture = null)
         {
             var metadata = AbstractProvider.GetMetadata(type, data);
             return builder =>
@@ -55,14 +55,14 @@ namespace BlazorComponent
                 var sequence = 0;
                 builder.OpenComponent(sequence++, metadata.Type);
 
-                builder.AddMultipleAttributes(sequence++, metadata.Properties);
+                builder.AddMultipleAttributes(sequence++, metadata.Attributes);
 
-                if (propsBuilderAction != null)
+                if (parametersBuilderAction != null)
                 {
-                    var propsBuilder = new PropsBuilder();
-                    propsBuilderAction.Invoke(propsBuilder);
+                    var parametersBuilder = new AttributesBuilder();
+                    parametersBuilderAction.Invoke(parametersBuilder);
 
-                    builder.AddMultipleAttributes(sequence++, propsBuilder.Props);
+                    builder.AddMultipleAttributes(sequence++, parametersBuilder.Attributes);
                 }
 
                 if (key != null)
@@ -77,6 +77,56 @@ namespace BlazorComponent
 
                 builder.CloseComponent();
             };
+        }
+
+        protected RenderFragment RenderPart(Type keyType)
+        {
+            return AbstractProvider.GetPartContent(keyType, this);
+        }
+
+        protected RenderFragment RenderPart(Type keyType, Action<AttributesBuilder> builderAction)
+        {
+            return AbstractProvider.GetPartContent(keyType, this, builderAction);
+        }
+
+        protected RenderFragment RenderPart(Type keyType, object arg0, [CallerArgumentExpression("arg0")] string arg0Name = null)
+        {
+            return AbstractProvider.GetPartContent(keyType, this, builder =>
+            {
+                builder
+                    .Add(arg0Name, arg0);
+            });
+        }
+
+        protected RenderFragment RenderPart(Type keyType, object arg0, object arg1, [CallerArgumentExpression("arg0")] string arg0Name = null, [CallerArgumentExpression("arg1")] string arg1Name = null)
+        {
+            return AbstractProvider.GetPartContent(keyType, this, builder =>
+            {
+                builder
+                    .Add(arg0Name, arg0)
+                    .Add(arg1Name, arg1);
+            });
+        }
+
+        protected RenderFragment RenderPart(Type keyType, object arg0, object arg1, object arg2, [CallerArgumentExpression("arg0")] string arg0Name = null, [CallerArgumentExpression("arg1")] string arg1Name = null, [CallerArgumentExpression("arg2")] string arg2Name = null)
+        {
+            return AbstractProvider.GetPartContent(keyType, this, builder =>
+            {
+                builder
+                    .Add(arg0Name, arg0)
+                    .Add(arg1Name, arg1)
+                    .Add(arg2Name, arg2);
+            });
+        }
+
+        protected Dictionary<string, object> GetAttributes(Type type, object data = null)
+        {
+            return AbstractProvider.GetMetadata(type, data).Attributes;
+        }
+
+        protected Dictionary<string, object> GetAttributes(Type type, string name, object data = null)
+        {
+            return AbstractProvider.GetMetadata(type, name, data).Attributes;
         }
 
         [Inject]

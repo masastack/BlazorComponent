@@ -1,21 +1,27 @@
 ﻿@namespace BlazorComponent
 @typeparam TStepper
-@inherits ComponentAbstractBase<TStepper>
+@inherits ComponentPartBase<TStepper>
 
 <span class="@CssProvider.GetClass("step")">
     @if (HasError)
     {
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">@ErrorIcon</AbstractComponent>
+        <BIcon @attributes="GetAttributes(typeof(BIcon))">
+            @ErrorIcon
+        </BIcon>
     }
     else if (Complete)
     {
         if (Editable)
         {
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">@EditIcon</AbstractComponent>
+            <BIcon @attributes="GetAttributes(typeof(BIcon))">
+                @EditIcon
+            </BIcon>
         }
         else
         {
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata<BIcon>()">@CompleteIcon</AbstractComponent>
+            <BIcon @attributes="GetAttributes(typeof(BIcon))">
+                @CompleteIcon
+            </BIcon>
         }
     }
     else

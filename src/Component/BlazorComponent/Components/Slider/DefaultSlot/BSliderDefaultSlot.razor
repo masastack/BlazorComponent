@@ -5,12 +5,11 @@
 
 @if (!InverseLabel)
 {
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BInputLabel<,>))"></AbstractComponent>
+    @RenderPart(typeof(BInputLabel<,>))
 }
-<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BSliderSlider<,>))"></AbstractComponent>
+@RenderPart(typeof(BSliderSlider<,>))
 @if (InverseLabel)
 {
-    <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BInputLabel<,>))"></AbstractComponent>
+    @RenderPart(typeof(BInputLabel<,>))
 }
-
-<AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BLoadableProgress<>))"></AbstractComponent>
+@RenderPart(typeof(BLoadableProgress<>))

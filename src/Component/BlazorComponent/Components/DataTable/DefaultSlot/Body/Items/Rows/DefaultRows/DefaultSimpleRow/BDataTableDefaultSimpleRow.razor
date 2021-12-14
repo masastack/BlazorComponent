@@ -1,46 +1,46 @@
 ﻿@namespace BlazorComponent
 @typeparam TItem
 @typeparam TDataTable
-@inherits ComponentAbstractBase<TDataTable>
+@inherits ComponentPartBase<TDataTable>
 
-@Render(typeof(BDataTableRow<>), props => {
-    props
-        .Add("onclick",HandleOnRowClickAsync)
-        .Add("oncontextmenu",HandleOnRowContextMenuAsync)
-        .Add("ondblclick",HandleOnRowDbClickAsync)
-        .Add("Index",Index)
-        .Add("Item",Item);
-
-    if (ShowExpand || ShowSelect)
-    {
-        props.AddContent<ItemColProps<TItem>>("ItemColContent", context => {
-            if (context.Header.Value == "data-table-expand" && ShowExpand)
+<BDataTableRow onclick="HandleOnRowClickAsync"
+               oncontextmenu="HandleOnRowContextMenuAsync"
+               ondblclick="HandleOnRowDbClickAsync"
+               Index="Index"
+               Item="Item"
+               @key="ItemKey?.Invoke(Item)"
+               @attributes="GetAttributes(typeof(BDataTableRow<>))">
+    <ItemColContent>
+        @if (context.Header.Value == "data-table-expand" && ShowExpand)
+        {
+            if (ItemDataTableExpandContent != null)
             {
-                if (ItemDataTableExpandContent != null)
-                {
-                    return ItemDataTableExpandContent;
-                }
-
-                return Render(typeof(BIcon), "expand-icon", data: Item, textContent: ExpandIcon);
+                @ItemDataTableExpandContent
             }
 
-            if (context.Header.Value == "data-table-select" && ShowSelect)
+            <BIcon @attributes="@(GetAttributes(typeof(BIcon),"expand-icon",data:Item))">
+                @ExpandIcon
+            </BIcon>
+        }
+        else if (context.Header.Value == "data-table-select" && ShowSelect)
+        {
+            if (ItemDataTableSelectContent != null)
             {
-                if (ItemDataTableSelectContent != null)
-                {
-                    return ItemDataTableSelectContent;
-                }
-
-                return Render(typeof(BSimpleCheckbox), data: Item);
+                @ItemDataTableSelectContent
             }
-
-            if (ItemColContent != null)
+            else
             {
-                return ItemColContent(context);
+                <BSimpleCheckbox @attributes="GetAttributes(typeof(BSimpleCheckbox), data: Item)"></BSimpleCheckbox>
             }
-
-            return RenderText(context.Value);
-        });
-    }
-}, key: ItemKey?.Invoke(Item))
+        }
+        else if (ItemColContent != null)
+        {
+            @ItemColContent(context);
+        }
+        else
+        {
+            @context.Value
+        }
+    </ItemColContent>
+</BDataTableRow>
 

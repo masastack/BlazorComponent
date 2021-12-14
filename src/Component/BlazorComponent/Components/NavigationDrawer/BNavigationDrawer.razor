@@ -1,20 +1,19 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<BCascadingValue Value="this">
-    @if (InternalShowOverlay)
+@if (InternalShowOverlay)
+{
+    <BOverlay @attributes="GetAttributes(typeof(BOverlay))"></BOverlay>
+}
+<aside class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @attributes="Attributes"
+       @onmouseenter="MouseEnter" @onmouseleave="MouseLeave" @onclick="Click">
+    @if (Src != null || ImgContent != null)
     {
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata<BOverlay>()"/>
+        @RenderPart(typeof(BNavigationDrawerBackground<>))
     }
-    <aside class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @attributes="Attributes"
-           @onmouseenter="MouseEnter" @onmouseleave="MouseLeave" @onclick="Click">
-        @if (Src != default || ImgContent != default)
-        {
-            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BNavigationDrawerBackground<>))"></AbstractComponent>
-        }
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BNavigationDrawerPosition<>))" ClassName="prepend"></AbstractComponent>
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BNavigationDrawerContent<>))"></AbstractComponent>
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BNavigationDrawerPosition<>))" ClassName="append"></AbstractComponent>
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BNavigationDrawerBorder<>))"></AbstractComponent>
-    </aside>
-</BCascadingValue>
+    @RenderPart(typeof(BNavigationDrawerPosition<>),"prepend",arg0Name:"ClassName")
+    @RenderPart(typeof(BNavigationDrawerContent<>))
+    @RenderPart(typeof(BNavigationDrawerPosition<>),"append",arg0Name:"ClassName")
+    @RenderPart(typeof(BNavigationDrawerBorder<>))
+</aside>
+

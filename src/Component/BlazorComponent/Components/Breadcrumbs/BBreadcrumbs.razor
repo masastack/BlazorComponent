@@ -7,7 +7,7 @@
         {
             @foreach (var item in Items)
             {
-                <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(BBreadcrumbsItemGroup<>))" Item="@item"></AbstractComponent>
+                @RenderPart(typeof(BBreadcrumbsItemGroup<>),item)
             }
         }
         else

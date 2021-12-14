@@ -9,14 +9,5 @@ namespace BlazorComponent
 
         [Parameter]
         public bool Value { get; set; } = true;
-
-        protected override void SetComponentClass()
-        {
-            AbstractProvider
-                .Apply(typeof(CascadingValue<>), typeof(CascadingValue<BBanner>), props =>
-                {
-                    props[nameof(CascadingValue<BBanner>.Value)] = this;
-                });
-        }
     }
 }

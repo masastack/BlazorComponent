@@ -1,0 +1,73 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TItemValue
+@typeparam TValue
+@typeparam TInput
+@inherits ComponentPartBase<TInput>
+
+<BMenu @attributes="GetAttributes(typeof(BMenu))" @ref="Menu">
+    <CascadingValue Value="Component">
+        @if (ComputedItems.Any())
+        {
+            <BList @attributes="GetAttributes(typeof(BList))">
+                @if (PrependItemContent != null)
+                {
+                    @PrependItemContent
+                }
+                @for (int i = 0; i < ComputedItems.Count; i++)
+                {
+                    var highlighted = HighlightIndex == i;
+                    var item = ComputedItems[i];
+                    var value = ItemValue(item);
+
+                    if (!HideSelected || !Values.Contains(value))
+                    {
+                        <BSelectList TItem="TItem"
+                         TItemValue="TItemValue"
+                         TValue="TValue"
+                         Item="@item"
+                         Highlighted="@highlighted"
+                         Value="@ItemValue(item)"
+                         Label="@ItemText(item)"
+                         Disabled="@ItemDisabled(item)"
+                         Key="@ItemValue(item).ToString()"
+                         @attributes="GetAttributes(typeof(BSelectList<,,>))">
+                        </BSelectList>
+                    }
+                }
+                @if (AppendItemContent != null)
+                {
+                    @AppendItemContent
+                }
+            </BList>
+        }
+        else if (InputChildContent != null)
+        {
+            <BList @attributes="GetAttributes(typeof(BList))">
+                @InputChildContent
+            </BList>
+        }
+        else
+        {
+            if (!HideNoData)
+            {
+                if (NoDataContent != null)
+                {
+                    @NoDataContent
+                }
+                else
+                {
+                    <BList @attributes="GetAttributes(typeof(BList))">
+                        <BListItem Link="false" @attributes="GetAttributes(typeof(BListItem))">
+                            <BListItemContent @attributes="GetAttributes(typeof(BListItemContent))">
+                                <BListItemTitle @attributes="GetAttributes(typeof(BListItemTitle))">
+                                    No data available
+                                </BListItemTitle>
+                            </BListItemContent>
+                        </BListItem>
+                    </BList>
+                }
+            }
+        }
+    </CascadingValue>
+</BMenu>

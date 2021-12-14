@@ -1,0 +1,20 @@
+﻿@namespace BlazorComponent
+@typeparam TValue
+@typeparam TInput
+@inherits ComponentPartBase<TInput>
+
+@if (Text.Count < 2)
+{
+    foreach (var text in Text)
+    {
+        @text
+    }
+}
+else if (ShowSize && (Counter == null || Counter == false))
+{
+    @ComputedCounterValue
+}
+else
+{
+    @($"{Text.Count} files")
+}
