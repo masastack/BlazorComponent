@@ -18,5 +18,16 @@ namespace BlazorComponent
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
+
+        [Parameter]
+        public Action<ElementReference> ReferenceCapture { get; set; }
+
+        public ElementReference Element
+        {
+            set
+            {
+                ReferenceCapture?.Invoke(value);
+            }
+        }
     }
 }

@@ -15,5 +15,7 @@ namespace BlazorComponent
         public string PrependInnerIcon => Component.PrependInnerIcon;
 
         public EventCallback<MouseEventArgs> HandleOnPrependInnerClickAsync => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnPrependInnerClickAsync);
+
+        public Action<ElementReference> PrependInnerReferenceCapture => element => Component.PrependInnerElement = element;
     }
 }

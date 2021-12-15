@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Components;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,5 +12,8 @@ namespace BlazorComponent
         public string Prefix => Component.Prefix;
 
         public string Suffix => Component.Suffix;
+
+        public Action<ElementReference> PrefixReferenceCapture => element => Component.PrefixElement = element;
+
     }
 }

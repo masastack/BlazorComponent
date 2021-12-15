@@ -15,6 +15,17 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
+        [Parameter]
+        public Action<ElementReference> ReferenceCapture { get; set; }
+
         public virtual string ComputedType => $"text-field-{Type}";
+
+        public ElementReference Element
+        {
+            set
+            {
+                ReferenceCapture?.Invoke(value);
+            }
+        }
     }
 }

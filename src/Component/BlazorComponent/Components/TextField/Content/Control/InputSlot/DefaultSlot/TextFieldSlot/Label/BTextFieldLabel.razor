@@ -4,7 +4,7 @@
 
 @if (ShowLabel)
 {
-    <BLabel @attributes="GetAttributes(typeof(BLabel))">
+    <BLabel @attributes="GetAttributes(typeof(BLabel))" @ref="LabelReference">
         @if (LabelContent != null)
         {
             @LabelContent

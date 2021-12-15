@@ -14,7 +14,6 @@ namespace BlazorComponent
         private const string APPEND = "append";
 
         private bool _isActive;
-        private bool _isActiveUpdated;
         private bool _value;
 
         [Inject]
@@ -117,10 +116,7 @@ namespace BlazorComponent
 
         public void Toggle(string id)
         {
-            _isActiveUpdated = true;
-
             IsActive = Id == id;
-
             _ = UpdateValue(IsActive);
         }
 
@@ -128,10 +124,7 @@ namespace BlazorComponent
         {
             if (Disabled) return;
 
-            _isActiveUpdated = false;
-
             IsActive = !IsActive;
-
             _ = UpdateValue(IsActive);
         }
 

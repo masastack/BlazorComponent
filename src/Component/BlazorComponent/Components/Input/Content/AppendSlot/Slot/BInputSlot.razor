@@ -6,7 +6,7 @@
 @if (ChildContent != null)
 {
     var name = $"{Type}-{Location}";
-    <div class="@CssProvider.GetClass(name)">
+    <div class="@CssProvider.GetClass(name)" @ref="Element">
         @ChildContent
     </div>
 }

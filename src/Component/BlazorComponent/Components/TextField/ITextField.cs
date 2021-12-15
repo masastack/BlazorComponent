@@ -145,6 +145,12 @@ namespace BlazorComponent
             }
         }
 
+        BLabel LabelReference { set; }
+
+        ElementReference PrefixElement { set; }
+
+        ElementReference PrependInnerElement { set; }
+
         Task HandleOnAppendOuterClickAsync(MouseEventArgs args)
         {
             return Task.CompletedTask;

@@ -13,8 +13,8 @@
     }
     else if (PrependInnerIcon != null)
     {
-        childContent = RenderPart(typeof(BInputIcon<,>), "prepend-inner-icon", PrependInnerIcon, HandleOnPrependInnerClickAsync,arg0Name:"Type",arg1Name:"Icon",arg2Name:"OnClick");
+        childContent = RenderPart(typeof(BInputIcon<,>), "prepend-inner-icon", PrependInnerIcon, HandleOnPrependInnerClickAsync, arg0Name: "Type", arg1Name: "Icon", arg2Name: "OnClick");
     }
 
-    @RenderPart(typeof(BInputSlot<,>),"prepend","inner",childContent,arg0Name:"Type","Location")
+    @RenderPart(typeof(BInputSlot<,>),"prepend","inner",childContent,PrependInnerReferenceCapture, arg0Name:"Type",arg1Name: "Location",arg3Name:"ReferenceCapture")
 }

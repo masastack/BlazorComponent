@@ -7,11 +7,11 @@
     @RenderPart(typeof(BInputLabel<,>))
     @if (Prefix != null)
     {
-        @RenderPart(typeof(BTextFieldAffix<,>),Prefix,arg0Name:"Type")
+        @RenderPart(typeof(BTextFieldAffix<,>),"prefix",RenderText(Prefix),PrefixReferenceCapture,arg0Name:"Type",arg1Name:"ChildContent",arg2Name:"ReferenceCapture")
     }
     @RenderPart(typeof(BTextFieldInput<,>))
     @if (Suffix != null)
     {
-        @RenderPart(typeof(BTextFieldAffix<,>),Suffix,arg0Name:"Type")
+        @RenderPart(typeof(BTextFieldAffix<,>),"suffix",RenderText(Suffix),arg0Name:"Type",arg1Name:"ChildContent")
     }
 </div>
