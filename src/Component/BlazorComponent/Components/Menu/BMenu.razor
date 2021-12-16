@@ -9,17 +9,19 @@
 <div style="@CssProvider.GetStyle()" class="@CssProvider.GetClass()" @ref="Ref">
     @if (ShowContent)
     {
-        <Transition Name="@Transition">
-            <Element Show="Value"
-                 style="@CssProvider.GetStyle("content")"
-                 class="@CssProvider.GetClass("content")"
-                 @onclick="OnContentClick"
-                 @onmouseenter="OnContentMouseenter"
-                 @onmouseleave="OnContentMouseleave"
-                 @attributes="@Attributes"
-                 ReferenceCaptureAction="r => ContentRef = r">
-                @ChildContent
-            </Element>
-        </Transition>
+        <BCascadingValue Value="this">
+            <Transition Name="@Transition">
+                <Element Show="Value"
+                     style="@CssProvider.GetStyle("content")"
+                     class="@CssProvider.GetClass("content")"
+                     @onclick="OnContentClick"
+                     @onmouseenter="OnContentMouseenter"
+                     @onmouseleave="OnContentMouseleave"
+                     @attributes="@Attributes"
+                     ReferenceCaptureAction="r => ContentRef = r">
+                    @ChildContent
+                </Element>
+            </Transition>
+        </BCascadingValue>
     }
 </div>

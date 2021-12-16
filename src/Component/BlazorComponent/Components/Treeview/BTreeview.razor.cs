@@ -300,15 +300,14 @@ namespace BlazorComponent
 
             Value = _oldValue;
 
-            if (OnInput.HasDelegate)
-            {
-                var value = Nodes.Values.Where(r => r.IsSelected).Select(r => r.Item).ToList();
-                _ = OnInput.InvokeAsync(value);
-            }
-
             if (ValueChanged.HasDelegate)
             {
                 await ValueChanged.InvokeAsync(Value);
+            }
+            else if (OnInput.HasDelegate)
+            {
+                var value = Nodes.Values.Where(r => r.IsSelected).Select(r => r.Item).ToList();
+                await OnInput.InvokeAsync(value);
             }
             else
             {

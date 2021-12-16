@@ -3,9 +3,9 @@
 @typeparam TDataTable
 @inherits ComponentPartBase<TDataTable>
 
-<BDataTableRow onclick="HandleOnRowClickAsync"
-               oncontextmenu="HandleOnRowContextMenuAsync"
-               ondblclick="HandleOnRowDbClickAsync"
+<BDataTableRow @onclick="HandleOnRowClickAsync"
+               @oncontextmenu="HandleOnRowContextMenuAsync"
+               @ondblclick="HandleOnRowDbClickAsync"
                Index="Index"
                Item="Item"
                @key="ItemKey?.Invoke(Item)"
