@@ -4,7 +4,7 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<Version>0.1.0</Version>
 		<PackageProjectUrl></PackageProjectUrl>
-		<PackageIcon>logo_blazorcomponent_32.png</PackageIcon>
+		<PackageIcon>BlazorComponent32_32.png</PackageIcon>
 		<PackageIconUrl />
 		<RepositoryUrl>https://github.com/BlazorComponent/BlazorComponent</RepositoryUrl>
 		<RepositoryType>github</RepositoryType>
@@ -87,7 +87,7 @@
 		<Content Remove="I18n\Locales\zh-TW.json" />
 		<Content Remove="Components\Icon\BIconSlot.razor" />
 		<Content Remove="tsconfig.json" />
-		<None Include="..\..\..\docs\logo_blazorcomponent_32.png">
+		<None Include="..\..\..\docs\BlazorComponent32_32.png">
 		  <Pack>True</Pack>
 		  <PackagePath></PackagePath>
 		</None>
