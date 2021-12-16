@@ -1,13 +1,17 @@
-![](https://github.com/BlazorComponent/BlazorComponent/raw/develop/docs/logo-v.png)
+<img src="https://github.com/BlazorComponent/BlazorComponent/raw/develop/docs/logo-v.png" alt="logo" style="zoom:50%;" />
 
-源自 [ant-design-blazor](https://github.com/ant-design-blazor/ant-design-blazor) 的基础组件库。
+> 早期借鉴于 [ant-design-blazor](https://github.com/ant-design-blazor/ant-design-blazor) 的组件库部分核心功能。
+
 抽离出无样式的底层组件框架，支持基于属性、插槽、自由内嵌组件等方式二次开发自己的UI组件库。
+
+
 
 ## 特性
 
 - 🛡 使用 C# 构建，多范式静态语言带来高效的开发体验。
 - ⚙️ 基于 .NET 6，可直接引用丰富的 .NET 类库。
 - 🎁 可与已有的 ASP.NET Core MVC、Razor Pages 项目无缝集成。
+- 
 
 ## 安装
 
