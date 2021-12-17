@@ -21,11 +21,64 @@ namespace BlazorComponent
             Watcher = new PropertyWatcher(GetType());
         }
 
+        [Parameter]
+        public string Id { get; set; }
+
+        /// <summary>
+        /// Specifies one or more class names for an DOM element.
+        /// </summary>
+        [Parameter]
+        public string Class { get; set; }
+
+        /// <summary>
+        /// Specifies an inline style for an DOM element.
+        /// </summary>
+        [Parameter]
+        public string Style { get; set; }
+
+        /// <summary>
+        /// Custom attributes
+        /// </summary>
+        [Parameter(CaptureUnmatchedValues = true)]
+        public virtual IDictionary<string, object> Attributes { get; set; } = new Dictionary<string, object>();
+
+        [Inject]
+        public IComponentIdGenerator ComponentIdGenerator { get; set; }
+
         public ComponentCssProvider CssProvider { get; } = new();
 
         public ComponentAbstractProvider AbstractProvider { get; } = new();
 
         public PropertyWatcher Watcher { get; }
+
+        /// <summary>
+        /// Returned ElementRef reference for DOM element.
+        /// </summary>
+        public virtual ElementReference Ref
+        {
+            get => _ref;
+            set
+            {
+                _ref = value;
+                RefBack?.Set(value);
+            }
+        }
+
+        protected override void OnInitialized()
+        {
+            Id ??= ComponentIdGenerator.Generate(this);
+            base.OnInitialized();
+        }
+
+        protected override Task OnInitializedAsync()
+        {
+            SetComponentClass();
+            return base.OnInitializedAsync();
+        }
+
+        protected virtual void SetComponentClass()
+        {
+        }
 
         protected TValue GetValue<TValue>(TValue @default = default, [CallerMemberName] string name = null)
         {
@@ -127,59 +180,6 @@ namespace BlazorComponent
         protected Dictionary<string, object> GetAttributes(Type type, string name, object data = null)
         {
             return AbstractProvider.GetMetadata(type, name, data).Attributes;
-        }
-
-        [Inject]
-        public IComponentIdGenerator ComponentIdGenerator { get; set; }
-
-        [Parameter]
-        public string Id { get; set; }
-
-        /// <summary>
-        /// Returned ElementRef reference for DOM element.
-        /// </summary>
-        public virtual ElementReference Ref
-        {
-            get => _ref;
-            set
-            {
-                _ref = value;
-                RefBack?.Set(value);
-            }
-        }
-
-        /// <summary>
-        /// Specifies one or more class names for an DOM element.
-        /// </summary>
-        [Parameter]
-        public string Class { get; set; }
-
-        /// <summary>
-        /// Specifies an inline style for an DOM element.
-        /// </summary>
-        [Parameter]
-        public string Style { get; set; }
-
-        /// <summary>
-        /// Custom attributes
-        /// </summary>
-        [Parameter(CaptureUnmatchedValues = true)]
-        public virtual IDictionary<string, object> Attributes { get; set; } = new Dictionary<string, object>();
-
-        protected override void OnInitialized()
-        {
-            Id ??= ComponentIdGenerator.Generate(this);
-            base.OnInitialized();
-        }
-
-        protected override Task OnInitializedAsync()
-        {
-            SetComponentClass();
-            return base.OnInitializedAsync();
-        }
-
-        protected virtual void SetComponentClass()
-        {
         }
 
         public EventCallback<TValue> CreateEventCallback<TValue>(Func<TValue, Task> callback)

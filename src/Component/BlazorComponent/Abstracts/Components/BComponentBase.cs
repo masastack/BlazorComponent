@@ -8,7 +8,7 @@ namespace BlazorComponent
 {
     public abstract class BComponentBase : ComponentBase, IDisposable
     {
-        private readonly Queue<Func<Task>> _afterRenderCallQuene = new Queue<Func<Task>>();
+        private readonly Queue<Func<Task>> _nextTickQuene = new();
 
         [Parameter]
         public ForwardRef RefBack { get; set; } = new ForwardRef();
@@ -16,9 +16,9 @@ namespace BlazorComponent
         [Inject]
         public virtual IJSRuntime Js { get; set; }
 
-        protected void CallAfterRender(Func<Task> action)
+        protected void NextTick(Func<Task> callback)
         {
-            _afterRenderCallQuene.Enqueue(action);
+            _nextTickQuene.Enqueue(callback);
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -29,19 +29,19 @@ namespace BlazorComponent
                 await OnFirstAfterRenderAsync();
             }
 
-            if (_afterRenderCallQuene.Count > 0)
+            if (_nextTickQuene.Count > 0)
             {
-                var actions = _afterRenderCallQuene.ToArray();
-                _afterRenderCallQuene.Clear();
+                var callbacks = _nextTickQuene.ToArray();
+                _nextTickQuene.Clear();
 
-                foreach (var action in actions)
+                foreach (var callback in callbacks)
                 {
                     if (IsDisposed)
                     {
                         return;
                     }
 
-                    await action();
+                    await callback();
                 }
             }
         }
