@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using BlazorComponent.Web;
@@ -53,13 +54,25 @@ namespace BlazorComponent
 
         public bool IsActive => TransitionCount > 0;
 
-        public int InternalIndex => Items.FindIndex(item => item.Value == Value);
+        public int InternalIndex
+        {
+            get => GetValue<int>();
+            set => SetValue(value);
+        }
 
         public bool HasActiveItems => Items.Any(item => !item.Disabled);
 
         public bool HasNext => Continuous || InternalIndex < Items.Count - 1;
 
         public bool HasPrev => Continuous || InternalIndex > 0;
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+
+            Watcher.Watch<int>(nameof(InternalIndex),
+                (newVal, oldVal) => Reverse = UpdateReverse(newVal, oldVal));
+        }
 
         protected override void OnAfterRender(bool firstRender)
         {
@@ -68,6 +81,13 @@ namespace BlazorComponent
                 ArrowsVisible = ShowArrowsOnHover || ShowArrows;
                 StateHasChanged();
             }
+        }
+
+        protected override void OnParametersSet()
+        {
+            base.OnParametersSet();
+
+            InternalIndex = Items.FindIndex(item => item.Value == Value);
         }
 
         protected void Next()
@@ -124,6 +144,27 @@ namespace BlazorComponent
             if (prevItem.Disabled) return GetPrevIndex(prevIndex);
 
             return prevIndex;
+        }
+        
+        private bool UpdateReverse(int val, int oldVal)
+        {
+            var itemsLength = Items.Count;
+            var lastIndex = itemsLength - 1;
+
+            if (itemsLength <= 2) return val < oldVal;
+
+            if (val == lastIndex && oldVal == 0)
+            {
+                return true;
+            }
+            else if (val == 0 && oldVal == lastIndex)
+            {
+                return false;
+            }
+            else
+            {
+                return val < oldVal;
+            }
         }
     }
 }
