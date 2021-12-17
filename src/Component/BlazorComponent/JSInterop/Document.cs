@@ -17,6 +17,8 @@ namespace BlazorComponent.Web
             _js = js;
         }
 
+        internal IJSRuntime JS => _js;
+
         public HtmlElement QuerySelector(string selectors)
         {
             return new HtmlElement(_js, selectors);

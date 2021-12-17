@@ -18,6 +18,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddScoped<DomEventJsInterop>();
             services.TryAddScoped<HeadJsInterop>();
             services.TryAddScoped<Document>();
+            services.TryAddScoped(serviceProvider => new Window(serviceProvider.GetService<Document>()));
             services.TryAddSingleton<IComponentIdGenerator, GuidComponentIdGenerator>();
             CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CurrentCulture;
             services.AddSingleton<IComponentActivator, AbstractComponentActivator>();

@@ -13,47 +13,29 @@ namespace BlazorComponent
 {
     public abstract partial class BNavigationDrawer : BDomComponentBase
     {
-        private bool _value;
-
-        protected bool _valueChangedToTrue;
-        protected bool _miniVariant = false;
-
-        private bool IsMobileFromJs { get; set; }
-
-        [Inject]
-        private Document Document { get; set; }
+        private CancellationTokenSource _cancellationTokenSource;
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
-
-        /// <summary>
-        /// Collapses the drawer to a mini-variant until hovering with the mouse
-        /// </summary>
-        [Parameter]
-        public bool ExpandOnHover { get; set; }
-
-        [Parameter]
-        public bool HideOverlay { get; set; }
-
-        [Parameter]
-        public RenderFragment<Dictionary<string, object>> ImgContent { get; set; }
-
-        [Parameter]
-        public bool MiniVariant
+        public bool ExpandOnHover
         {
-            get => _miniVariant;
+            get
+            {
+                return GetValue<bool>();
+            }
             set
             {
-                if (value == _miniVariant) return;
-                _miniVariant = value;
+                SetValue(value);
             }
         }
 
         [Parameter]
-        public bool Permanent { get; set; }
+        public bool MiniVariant { get; set; }
 
         [Parameter]
-        public bool ShowOverlay { get; set; }
+        public EventCallback<bool> MiniVariantChanged { get; set; }
+
+        [Parameter]
+        public bool Permanent { get; set; }
 
         [Parameter]
         public string Src { get; set; }
@@ -61,51 +43,78 @@ namespace BlazorComponent
         [Parameter]
         public bool Stateless { get; set; }
 
-        /// <summary>
-        /// A temporary drawer sits above its application and uses a scrim (overlay) to darken the background
-        /// </summary>
+        [Parameter]
+        public string Tag
+        {
+            get
+            {
+                return GetValue(App ? "nav" : "aside");
+            }
+            set
+            {
+                SetValue(value);
+            }
+        }
+
         [Parameter]
         public bool Temporary { get; set; }
 
         [Parameter]
         public bool Value
         {
-            get => _value;
+            get
+            {
+                return GetValue<bool>();
+            }
             set
             {
-                if (_value == false && value)
-                    _valueChangedToTrue = true;
-
-                _value = value;
-                IsActive = value;
+                SetValue(value);
             }
         }
 
         [Parameter]
         public EventCallback<bool> ValueChanged { get; set; }
 
+        [Parameter]
+        public bool App { get; set; }
+
+        [Parameter]
+        public bool HideOverlay { get; set; }
+
+        [Parameter]
+        public RenderFragment ChildContent { get; set; }
+
+        [Parameter]
+        public RenderFragment<Dictionary<string, object>> ImgContent { get; set; }
+
+        [Inject]
+        private Document Document { get; set; }
+
+        protected bool IsMouseover
+        {
+            get
+            {
+                return GetValue<bool>();
+            }
+            set
+            {
+                SetValue(value);
+            }
+        }
+
+        //TODO: TouchArea,StackMinZIndex
+
+        protected virtual bool IsMobileBreakpoint { get; }
+
         protected bool IsActive { get; set; }
 
-        protected bool InternalShowOverlay => IsActive && (ShowOverlay || (!HideOverlay && (IsMobile || Temporary)));
+        protected bool IsMobile => !Stateless && !Permanent && IsMobileBreakpoint;//TODO: fix mobile
 
-        protected bool IsMobile => !Stateless && !Permanent && IsMobileFromJs;
-
-        protected bool IsMouseover { get; set; }
-
-        protected override void OnInitialized()
+        protected bool ShowOverlay
         {
-            base.OnInitialized();
-
-            if (Permanent)
+            get
             {
-                _ = UpdateValue(true);
-            }
-            else if (Stateless)
-            {
-            }
-            else if (!Temporary)
-            {
-                // logic move to firstRender because need to get isMobile by js runtime.
+                return (!HideOverlay && IsActive && (IsMobile || Temporary));
             }
         }
 
@@ -119,8 +128,6 @@ namespace BlazorComponent
                     DotNetObjectReference.Create(new Invoker<object>(OutsideClick)),
                     new[] { Document.QuerySelector(Ref).Selector });
 
-                IsMobileFromJs = await JsInvokeAsync<bool>(JsInteropConstants.IsMobile);
-
                 if (!Permanent && !Stateless && !Temporary)
                 {
                     await UpdateValue(!IsMobile);
@@ -128,31 +135,33 @@ namespace BlazorComponent
             }
         }
 
-        public virtual Task Click(MouseEventArgs e)
+        public virtual Task HandleOnClickAsync(MouseEventArgs e)
         {
             return Task.CompletedTask;
         }
 
-        private bool CloseConditional()
+        public virtual async Task HandleOnMouseEnterAsync(MouseEventArgs e)
         {
-            // other conditions are handled in js AddOutsideClickEventListener
-            return IsActive;
-        }
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource = new CancellationTokenSource();
+            await Task.Delay(150, _cancellationTokenSource.Token);
 
-        public virtual Task MouseEnter(MouseEventArgs e)
-        {
             if (ExpandOnHover)
+            {
                 IsMouseover = true;
-
-            return Task.CompletedTask;
+            }
         }
 
-        public virtual Task MouseLeave(MouseEventArgs e)
+        public virtual async Task HandleOnMouseLeaveAsync(MouseEventArgs e)
         {
-            if (ExpandOnHover)
-                IsMouseover = false;
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource = new CancellationTokenSource();
+            await Task.Delay(150, _cancellationTokenSource.Token);
 
-            return Task.CompletedTask;
+            if (ExpandOnHover)
+            {
+                IsMouseover = false;
+            }
         }
 
         //TODO ontransitionend事件
@@ -165,6 +174,12 @@ namespace BlazorComponent
             {
                 await UpdateValue(false);
             }
+        }
+
+        private bool CloseConditional()
+        {
+            // other conditions are handled in js AddOutsideClickEventListener
+            return IsActive;
         }
 
         protected async Task UpdateValue(bool value)

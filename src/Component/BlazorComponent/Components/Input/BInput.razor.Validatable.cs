@@ -211,7 +211,7 @@ namespace BlazorComponent
                 FirstValidate = false;
             }
 
-            if (EditContext != null && ValueExpression != null)
+            if (EditContext != null && !EqualityComparer<FieldIdentifier>.Default.Equals(ValueIdentifier, default))
             {
                 EditContext.NotifyFieldChanged(ValueIdentifier);
             }
