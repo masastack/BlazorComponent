@@ -1,23 +1,25 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<CascadingValue Name="IsInNav" Value="@(Tag=="nav")">
-    @if (ShowOverlay)
-    {
-        <BOverlay @attributes="GetAttributes(typeof(BOverlay))"></BOverlay>
-    }
-    @*TODO: Directives,Listeners*@
-    <Element Tag="@Tag" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" ReferenceCaptureAction="element=>Ref=element" @attributes="Attributes"
-             @onmouseenter="HandleOnMouseEnterAsync" @onmouseleave="HandleOnMouseLeaveAsync" @onclick="HandleOnClickAsync">
-        @if (Src != null || ImgContent != null)
+<CascadingValue Value="this">
+    <CascadingValue Name="IsInNav" Value="@(Tag=="nav")">
+        @if (ShowOverlay)
         {
-            @RenderPart(typeof(BNavigationDrawerBackground<>))
+            <BOverlay @attributes="GetAttributes(typeof(BOverlay))"></BOverlay>
         }
-        @RenderPart(typeof(BNavigationDrawerPosition<>),"prepend",arg0Name:"ClassName")
-        @RenderPart(typeof(BNavigationDrawerContent<>))
-        @RenderPart(typeof(BNavigationDrawerPosition<>),"append",arg0Name:"ClassName")
-        @RenderPart(typeof(BNavigationDrawerBorder<>))
-    </Element>
+        @*TODO: Directives,Listeners*@
+        <Element Tag="@Tag" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" ReferenceCaptureAction="element=>Ref=element" @attributes="Attributes"
+                 @onmouseenter="HandleOnMouseEnterAsync" @onmouseleave="HandleOnMouseLeaveAsync" @onclick="HandleOnClickAsync">
+            @if (Src != null || ImgContent != null)
+            {
+                @RenderPart(typeof(BNavigationDrawerBackground<>))
+            }
+            @RenderPart(typeof(BNavigationDrawerPosition<>),"prepend",arg0Name:"ClassName")
+            @RenderPart(typeof(BNavigationDrawerContent<>))
+            @RenderPart(typeof(BNavigationDrawerPosition<>),"append",arg0Name:"ClassName")
+            @RenderPart(typeof(BNavigationDrawerBorder<>))
+        </Element>
+    </CascadingValue>
 </CascadingValue>
 
 

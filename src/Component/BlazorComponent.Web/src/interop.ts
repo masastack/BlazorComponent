@@ -68,7 +68,7 @@ export function initStepperWrapper(element: HTMLElement) {
         }
     });
 
-    observer.observe(element, {attributes: true, attributeFilter: ['class']});
+    observer.observe(element, { attributes: true, attributeFilter: ['class'] });
 }
 
 function onTransition(e: TransitionEvent, isActive: Boolean, element: HTMLElement) {
@@ -471,15 +471,15 @@ export function removeHtmlElementEventListener(selector, type) {
 
 var outsideClickListenerCaches: { [key: string]: any } = {}
 
-export function addOutsideClickEventListener(invoker, noInvokeSelectors: string[], invokeSelectors: string[]) {
+export function addOutsideClickEventListener(invoker, noInvokeSelectors: [], invokeSelectors: []) {
     if (!noInvokeSelectors) return;
 
     var listener = function (args) {
-        var exists = noInvokeSelectors.some(s => document.querySelector(s)?.contains(args.target));
+        var exists = noInvokeSelectors.some(s => getDom(s)?.contains(args.target));
         if (exists) return;
 
         if (invokeSelectors) {
-            if (invokeSelectors.some(s => document.querySelector(s)?.contains(args.target))) {
+            if (invokeSelectors.some(s => getDom(s)?.contains(args.target))) {
                 invoker.invokeMethodAsync("Invoke", {});
             }
         } else {
@@ -487,7 +487,7 @@ export function addOutsideClickEventListener(invoker, noInvokeSelectors: string[
         }
     }
 
-    document.addEventListener("click", listener, {capture: true});
+    document.addEventListener("click", listener, true);
 
     var key = `(${noInvokeSelectors.join(',')})document:click`
 
@@ -500,7 +500,7 @@ export function removeOutsideClickEventListener(insideSelectors: string[]) {
     var key = `(${insideSelectors.join(',')})document:click`
 
     if (outsideClickListenerCaches[key]) {
-        document.removeEventListener('click', outsideClickListenerCaches[key], {capture: true});
+        document.removeEventListener('click', outsideClickListenerCaches[key], true);
         outsideClickListenerCaches[key] = undefined
     }
 }
@@ -776,7 +776,7 @@ export function elementScrollIntoView(selector: Element | string) {
     if (!element)
         return;
 
-    element.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'start'});
+    element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
 }
 
 const oldBodyCacheStack = [];
@@ -831,7 +831,7 @@ export function createIconFromfontCN(scriptUrl) {
 }
 
 export function getScroll() {
-    return {x: window.pageXOffset, y: window.pageYOffset};
+    return { x: window.pageXOffset, y: window.pageYOffset };
 }
 
 export function getInnerText(element) {
@@ -981,7 +981,7 @@ function mentionsOnWindowClick(e) {
 
 //#endregion
 
-export {disableDraggable, enableDraggable, resetModalPosition} from "./modules/dragHelper";
+export { disableDraggable, enableDraggable, resetModalPosition } from "./modules/dragHelper";
 
 export function bindTableHeaderAndBodyScroll(bodyRef, headerRef) {
     bodyRef.bindScrollLeftToHeader = () => {

@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 using BlazorComponent.Web;
 using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.JSInterop;
+using BlazorComponent.Mixins;
 
 namespace BlazorComponent
 {
-    public partial class BMenu : BMenuable
+    public partial class BMenu : BMenuable, IDependent
     {
         private readonly int _defaultOffset = 8;
+        private readonly List<IDependent> _dependents = new();
 
         protected string CalculatedLeft
         {
@@ -105,6 +107,39 @@ namespace BlazorComponent
 
         [Parameter]
         public string Transition { get; set; }
+
+        [CascadingParameter]
+        public IDependent CascadingDependent { get; set; }
+
+        public IEnumerable<HtmlElement> DependentElements
+        {
+            get
+            {
+                var elements = _dependents
+                    .SelectMany(dependent => dependent.DependentElements)
+                    .ToList();
+
+                var contentElement = Document.GetElementById(Id);
+                elements.Add(contentElement);
+
+                return elements;
+            }
+        }
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+
+            if (CascadingDependent != null)
+            {
+                CascadingDependent.RegisterChild(this);
+            }
+        }
+
+        public void RegisterChild(IDependent dependent)
+        {
+            _dependents.Add(dependent);
+        }
 
         protected override async Task AfterShowContent()
         {

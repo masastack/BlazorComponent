@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BlazorComponent.Mixins;
 using BlazorComponent.Web;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -11,9 +12,11 @@ using OneOf;
 
 namespace BlazorComponent
 {
-    public abstract partial class BNavigationDrawer : BDomComponentBase
+    public abstract partial class BNavigationDrawer : BDomComponentBase, IDependent
     {
         private CancellationTokenSource _cancellationTokenSource;
+        private bool _disposed;
+        private readonly List<IDependent> _dependents = new();
 
         [Parameter]
         public bool ExpandOnHover
@@ -87,6 +90,9 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment<Dictionary<string, object>> ImgContent { get; set; }
 
+        [CascadingParameter]
+        public IDependent CascadingDependent { get; set; }
+
         [Inject]
         private Document Document { get; set; }
 
@@ -110,12 +116,50 @@ namespace BlazorComponent
 
         protected bool IsMobile => !Stateless && !Permanent && IsMobileBreakpoint;//TODO: fix mobile
 
+        protected bool ReactsToClick
+        {
+            get
+            {
+                return !Stateless && !Permanent && (IsMobile || Temporary);
+            }
+        }
+
         protected bool ShowOverlay
         {
             get
             {
                 return (!HideOverlay && IsActive && (IsMobile || Temporary));
             }
+        }
+
+        public IEnumerable<HtmlElement> DependentElements
+        {
+            get
+            {
+                var elements = _dependents
+                    .SelectMany(dependent => dependent.DependentElements)
+                    .ToList();
+
+                var element = Document.QuerySelector(Ref);
+                elements.Add(element);
+
+                return elements;
+            }
+        }
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+
+            if (CascadingDependent != null)
+            {
+                CascadingDependent.RegisterChild(this);
+            }
+        }
+
+        public void RegisterChild(IDependent dependent)
+        {
+            _dependents.Add(dependent);
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -125,8 +169,8 @@ namespace BlazorComponent
             if (firstRender)
             {
                 await JsInvokeAsync(JsInteropConstants.AddOutsideClickEventListener,
-                    DotNetObjectReference.Create(new Invoker<object>(OutsideClick)),
-                    new[] { Document.QuerySelector(Ref).Selector });
+                    DotNetObjectReference.Create(new Invoker<object>(HandleOnOutsideClickAsync)),
+                    DependentElements.Select(element => element.Selector));
 
                 if (!Permanent && !Stateless && !Temporary)
                 {
@@ -166,7 +210,7 @@ namespace BlazorComponent
 
         //TODO ontransitionend事件
 
-        private async Task OutsideClick(object _)
+        private async Task HandleOnOutsideClickAsync(object _)
         {
             if (!CloseConditional()) return;
 
@@ -178,8 +222,7 @@ namespace BlazorComponent
 
         private bool CloseConditional()
         {
-            // other conditions are handled in js AddOutsideClickEventListener
-            return IsActive;
+            return IsActive && !_disposed && ReactsToClick;
         }
 
         protected async Task UpdateValue(bool value)
@@ -192,6 +235,11 @@ namespace BlazorComponent
             {
                 Value = value;
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            _disposed = true;
         }
     }
 }

@@ -19,6 +19,11 @@ namespace BlazorComponent.Web
 
         internal IJSRuntime JS => _js;
 
+        public HtmlElement GetElementById(string id)
+        {
+            return new HtmlElement(_js, "#" + id);
+        }
+
         public HtmlElement QuerySelector(string selectors)
         {
             return new HtmlElement(_js, selectors);
