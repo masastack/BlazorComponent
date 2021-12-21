@@ -112,7 +112,17 @@ namespace BlazorComponent
 
         protected virtual bool IsMobileBreakpoint { get; }
 
-        protected bool IsActive { get; set; }
+        protected bool IsActive
+        {
+            get
+            {
+                return GetValue<bool>();
+            }
+            set
+            {
+                SetValue(value);
+            }
+        }
 
         protected bool IsMobile => !Stateless && !Permanent && IsMobileBreakpoint;//TODO: fix mobile
 
