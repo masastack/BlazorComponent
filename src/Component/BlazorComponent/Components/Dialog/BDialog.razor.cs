@@ -13,7 +13,6 @@ namespace BlazorComponent
 {
     public partial class BDialog : BActivatable
     {
-        private bool _isHasOverlayElement;
         private bool _valueChangedToTrue;
         private int _stackMinZIndex = 200;
 
@@ -62,11 +61,6 @@ namespace BlazorComponent
                     _valueChangedToTrue = true;
 
                 base.Value = value;
-
-                if (value)
-                {
-                    _isHasOverlayElement = true;
-                }
             }
         }
 

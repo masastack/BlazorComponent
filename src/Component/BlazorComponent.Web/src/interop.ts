@@ -1230,7 +1230,7 @@ export function checkElementFixed(selector) {
 
 export function containsActiveElement(selector) {
     var el = getDom(selector);
-    if (el) {
+    if (el && el.contains) {
         return el.contains(document.activeElement);
     }
 
