@@ -11,7 +11,7 @@ using Microsoft.JSInterop;
 
 namespace BlazorComponent
 {
-    public partial class BDialog : BActivatable, IAsyncDisposable
+    public partial class BDialog : BActivatable
     {
         private bool _isHasOverlayElement;
         private bool _valueChangedToTrue;
@@ -121,17 +121,6 @@ namespace BlazorComponent
         public virtual Task ShowLazyContent()
         {
             return Task.CompletedTask;
-        }
-
-        public async ValueTask DisposeAsync()
-        {
-            if (ContentRef.Context != null)
-                await JsInvokeAsync(JsInteropConstants.DelElementFrom, ContentRef, AttachSelector);
-
-            if (Overlay != null && ((BDomComponentBase)Overlay).Ref.Context != null && _isHasOverlayElement)
-                await JsInvokeAsync(JsInteropConstants.DelElementFrom, ((BDomComponentBase)Overlay).Ref, AttachSelector);
-
-            GC.SuppressFinalize(this);
         }
     }
 }
