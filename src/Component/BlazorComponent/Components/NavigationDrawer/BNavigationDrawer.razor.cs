@@ -150,7 +150,7 @@ namespace BlazorComponent
                     .SelectMany(dependent => dependent.DependentElements)
                     .ToList();
 
-                var element = Document.QuerySelector(Ref);
+                var element = Document.GetElementByReference(Ref);
                 elements.Add(element);
 
                 return elements;

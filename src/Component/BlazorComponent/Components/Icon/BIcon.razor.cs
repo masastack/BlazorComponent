@@ -107,7 +107,7 @@ namespace BlazorComponent
 
             if (firstRender && OnClick.HasDelegate)
             {
-                var button = Document.QuerySelector(Ref);
+                var button = Document.GetElementByReference(Ref);
                 await button.AddEventListenerAsync("click", CreateEventCallback<MouseEventArgs>(HandleOnClick), false, new EventListenerActions
                 {
                     PreventDefault = true,

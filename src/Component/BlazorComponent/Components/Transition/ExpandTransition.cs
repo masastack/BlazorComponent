@@ -37,7 +37,7 @@ namespace BlazorComponent
         protected override async Task OnBeforeEnterAsync()
         {
             var prop = SizeProp[..1].ToUpper() + SizeProp[1..];
-            var el = Document.QuerySelector(FirstElement.Reference);
+            var el = Document.GetElementByReference(FirstElement.Reference);
             Size = await el.GetSizeAsync(prop);
 
             await base.OnBeforeEnterAsync();
@@ -46,7 +46,7 @@ namespace BlazorComponent
         protected override async Task OnBeforeLeaveAsync()
         {
             var prop = SizeProp[..1].ToUpper() + SizeProp[1..];
-            var el = Document.QuerySelector(FirstElement.Reference);
+            var el = Document.GetElementByReference(FirstElement.Reference);
             Size = await el.GetSizeAsync(prop);
 
             await base.OnBeforeLeaveAsync();

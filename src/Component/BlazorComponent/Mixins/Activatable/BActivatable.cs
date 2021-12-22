@@ -29,7 +29,7 @@ public abstract class BActivatable : BDelayable, IActivatable
     private string InternalActivatorSelector => $"[{_activatorId}]";
 
     protected string ActivatorSelector => _externalActivatorRef.HasValue
-        ? Document.QuerySelector(_externalActivatorRef.Value).Selector
+        ? Document.GetElementByReference(_externalActivatorRef.Value).Selector
         : InternalActivatorSelector;
 
     protected HtmlElement ActivatorElement { get; private set; }
@@ -237,7 +237,7 @@ public abstract class BActivatable : BDelayable, IActivatable
         }
         else if (_externalActivatorRef != null)
         {
-            ActivatorElement = Document.QuerySelector(_externalActivatorRef.Value);
+            ActivatorElement = Document.GetElementByReference(_externalActivatorRef.Value);
         }
 
         return ActivatorElement;

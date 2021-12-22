@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 
 namespace BlazorComponent
 {
-    public class Element : ComponentBase
+    public class Element : BComponentBase
     {
         private bool _firstElement;
 
@@ -145,16 +145,30 @@ namespace BlazorComponent
                     Watcher
                         .Watch<bool?>(nameof(Show), val =>
                         {
-                            Transition.RunTransition(TransitionMode.Show, val.Value);
+                            NextTick(() =>
+                            {
+                                //Dom may not ready,so we move transition to nextTick
+                                Transition.RunTransition(TransitionMode.Show, val.Value);
+                                return Task.CompletedTask;
+                            });
                         })
                         .Watch<bool?>(nameof(If), val =>
                         {
-                            Transition.RunTransition(TransitionMode.If, val.Value);
+                            NextTick(() =>
+                            {
+                                Transition.RunTransition(TransitionMode.If, val.Value);
+                                return Task.CompletedTask;
+                            });
                         })
                         .Watch<object>(nameof(Key), () =>
                         {
-                            InternalIf = !InternalIf;
-                            Transition.RunTransition(TransitionMode.If, InternalIf.Value);
+                            NextTick(() =>
+                            {
+                                InternalIf = !InternalIf;
+                                Transition.RunTransition(TransitionMode.If, InternalIf.Value);
+
+                                return Task.CompletedTask;
+                            });
                         });
                 }
             }

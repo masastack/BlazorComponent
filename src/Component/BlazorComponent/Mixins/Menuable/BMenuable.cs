@@ -386,11 +386,11 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
             {
                 if (actions == null)
                 {
-                    actions = new EventListenerActions(Document.QuerySelector(ContentRef).Selector);
+                    actions = new EventListenerActions(Document.GetElementByReference(ContentRef).Selector);
                 }
                 else
                 {
-                    actions.RelatedTarget = Document.QuerySelector(ContentRef).Selector;
+                    actions.RelatedTarget = Document.GetElementByReference(ContentRef).Selector;
                 }
             }
 
@@ -508,7 +508,7 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
             }
         }
 
-        var contentElement = Document.QuerySelector(ContentRef);
+        var contentElement = Document.GetElementByReference(ContentRef);
         Dimensions.content = await Measure(contentElement);
 
         lazySetter?.Invoke();
@@ -558,7 +558,7 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
         return maxZindex > _stackMinZIndex ? maxZindex : _stackMinZIndex;
     }
 
-    private HtmlElement GetContent() => Document.QuerySelector(ContentRef);
+    private HtmlElement GetContent() => Document.GetElementByReference(ContentRef);
 
     public async ValueTask DisposeAsync()
     {
