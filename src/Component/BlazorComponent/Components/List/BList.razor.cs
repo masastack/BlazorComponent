@@ -26,8 +26,6 @@ namespace BlazorComponent
         [Parameter]
         public virtual string Tag { get; set; } = "div";
 
-        public List<BListItem> Items { get; } = new();
-
         protected List<BListGroup> Groups { get; } = new();
 
         protected override void OnInitialized()
@@ -58,10 +56,6 @@ namespace BlazorComponent
             }
 
             StateHasChanged();
-        }
-
-        public virtual void Select(BListItem mListItem)
-        {
         }
     }
 }
