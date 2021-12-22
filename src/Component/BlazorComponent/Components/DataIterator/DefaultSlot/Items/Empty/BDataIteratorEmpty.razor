@@ -16,7 +16,7 @@
         childContent = RenderText(LoadingText);
     }
 
-    @RenderPart(typeof(BDataIteratorEmptyWrapper),childContent)
+    @RenderPart(typeof(BDataIteratorEmptyWrapper<,>),childContent)
 }
 else if (!Items.Any())
 {
@@ -31,7 +31,7 @@ else if (!Items.Any())
         childContent = RenderText(NoDataText);
     }
 
-    @RenderPart(typeof(BDataIteratorEmptyWrapper),childContent)
+    @RenderPart(typeof(BDataIteratorEmptyWrapper<,>),childContent)
 }
 else if (Pagination.ItemsLength == 0)
 {
@@ -46,6 +46,6 @@ else if (Pagination.ItemsLength == 0)
         childContent = RenderText(NoResultsText);
     }
 
-    @RenderPart(typeof(BDataIteratorEmptyWrapper),childContent)
+    @RenderPart(typeof(BDataIteratorEmptyWrapper<,>),childContent)
 }
 

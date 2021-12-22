@@ -27,7 +27,7 @@ namespace BlazorComponent
                 .Apply(typeof(BDataTableDefaultGroupedRow<,>), typeof(BDataTableDefaultGroupedRow<TItem, IDataTable<TItem>>))
                 .Apply(typeof(BDataTableDefaultSimpleRow<,>), typeof(BDataTableDefaultSimpleRow<TItem, IDataTable<TItem>>))
                 .Apply(typeof(BDataTableRows<,>), typeof(BDataTableRows<TItem, IDataTable<TItem>>))
-                .Merge(typeof(BDataIteratorEmptyWrapper), typeof(BDataTableEmptyWrapper<TItem, IDataTable<TItem>>))
+                .Merge(typeof(BDataIteratorEmptyWrapper<,>), typeof(BDataTableEmptyWrapper<TItem, IDataTable<TItem>>))
                 .Apply(typeof(BDataTableScopedRows<,>), typeof(BDataTableScopedRows<TItem, IDataTable<TItem>>));
         }
     }

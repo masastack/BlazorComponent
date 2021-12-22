@@ -8,7 +8,7 @@
                 .Apply(typeof(BDataIteratorDefaultSlot<,>), typeof(BDataIteratorDefaultSlot<TItem, IDataIterator<TItem>>))
                 .Apply(typeof(BDataIteratorItems<,>), typeof(BDataIteratorItems<TItem, IDataIterator<TItem>>))
                 .Apply(typeof(BDataIteratorEmpty<,>), typeof(BDataIteratorEmpty<TItem, IDataIterator<TItem>>))
-                .Apply(typeof(BDataIteratorEmptyWrapper), typeof(BDataIteratorEmptyWrapper))
+                .Apply(typeof(BDataIteratorEmptyWrapper<,>), typeof(BDataIteratorEmptyWrapper<TItem, IDataIterator<TItem>>))
                 .Apply(typeof(BDataIteratorFooter<,>), typeof(BDataIteratorFooter<TItem, IDataIterator<TItem>>));
         }
     }
