@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
-    public partial class BList : BDomComponentBase, ILinkable
+    public partial class BList : BDomComponentBase
     {
         // TODO: add cascading value in Menu
         [CascadingParameter(Name = "IsInMenu")]

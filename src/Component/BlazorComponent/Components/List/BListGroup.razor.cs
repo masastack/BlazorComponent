@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Routing;
 
@@ -13,7 +14,6 @@ namespace BlazorComponent
         private const string PREPEND = "prepend";
         private const string APPEND = "append";
 
-        private bool _isActive;
         private bool _value;
 
         [Inject]
@@ -26,7 +26,7 @@ namespace BlazorComponent
         public bool Disabled { get; set; }
 
         [Parameter]
-        public string Group { get; set; }
+        public List<string> Group { get; set; }
 
         [Parameter]
         public bool Value
@@ -35,7 +35,7 @@ namespace BlazorComponent
             set
             {
                 _value = value;
-                _isActive = value;
+                IsActive = value;
             }
         }
 
@@ -75,52 +75,33 @@ namespace BlazorComponent
         [Parameter]
         public bool SubGroup { get; set; }
 
-        public bool IsActive
-        {
-            get => _isActive;
-            set
-            {
-                _isActive = value;
-            }
-        }
+        protected bool IsActive { get; set; }
 
         protected override void OnInitialized()
         {
             base.OnInitialized();
 
-            if (List != null)
-            {
-                List.Register(this);
-            }
-
-            if (Group != null)
-            {
-                IsActive = MatchRoute(NavigationManager.Uri);
-            }
+            List?.Register(this);
 
             NavigationManager.LocationChanged += OnLocationChanged;
+
+            UpdateActiveForLinkage();
         }
 
         private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
         {
-            if (Group == null) return;
+            UpdateActiveForLinkage();
 
-            IsActive = MatchRoute(e.Location);
+            StateHasChanged();
         }
 
-        private bool MatchRoute(string path)
-        {
-            var relativePath = NavigationManager.ToBaseRelativePath(path);
-            return Group.Contains(relativePath, StringComparison.OrdinalIgnoreCase);
-        }
-
-        public void Toggle(string id)
+        internal void Toggle(string id)
         {
             IsActive = Id == id;
             _ = UpdateValue(IsActive);
         }
 
-        public void HandleOnClick(EventArgs args)
+        private void HandleOnClick(EventArgs args)
         {
             if (Disabled) return;
 
@@ -128,14 +109,25 @@ namespace BlazorComponent
             _ = UpdateValue(IsActive);
         }
 
+        private bool MatchRoute(string path)
+        {
+            var relativePath = "/" + NavigationManager.ToBaseRelativePath(path);
+            return Group.Any(item => Regex.Match(relativePath, item, RegexOptions.IgnoreCase).Success);
+        }
+
+        private void UpdateActiveForLinkage()
+        {
+            if (Group != null)
+            {
+                IsActive = MatchRoute(NavigationManager.Uri);
+            }
+        }
+
         protected override void Dispose(bool disposing)
         {
             List?.Unregister(this);
 
-            if (NavigationManager != null)
-            {
-                NavigationManager.LocationChanged -= OnLocationChanged;
-            }
+            NavigationManager.LocationChanged -= OnLocationChanged;
 
             base.Dispose(disposing);
         }

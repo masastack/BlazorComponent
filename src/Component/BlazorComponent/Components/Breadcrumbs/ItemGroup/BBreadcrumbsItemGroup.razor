@@ -14,10 +14,12 @@
 else
 {
     <BBreadcrumbsItem Text="@Item.Text"
-                  Href="@Item.Href"
-                  Disabled="@Item.Disabled"
-                  Linkage="@Item.Linkage"
-                  @attributes="GetAttributes(typeof(BBreadcrumbsItem))"></BBreadcrumbsItem>
+                      Href="@Item.Href"
+                      Disabled="@Item.Disabled"
+                      Linkage="@Item.Linkage"
+                      Exact="@Item.Exact"
+                      @attributes="GetAttributes(typeof(BBreadcrumbsItem))">
+    </BBreadcrumbsItem>
     @if (RenderDivider && !IsLast)
     {
         <BBreadcrumbsDivider Divider="@Divider" DividerContent="@DividerContent" @attributes="GetAttributes(typeof(BBreadcrumbsDivider))"></BBreadcrumbsDivider>

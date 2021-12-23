@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BlazorComponent
 {
-    public partial class BBreadcrumbs : BDomComponentBase, IBreadcrumbs, IBreadcrumbsDivider, ILinkable
+    public partial class BBreadcrumbs : BDomComponentBase, IBreadcrumbs, IBreadcrumbsDivider
     {
         protected string Tag { get; init; } = "ul";
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -6,6 +7,7 @@ namespace BlazorComponent
 {
     public partial class BBreadcrumbsItem : BDomComponentBase, IBreadcrumbsItem, IBreadcrumbsDivider, IRoutable, ILinkable
     {
+        private Linker _linker;
         private IRoutable _router;
 
         protected string WrappedTag { get; set; } = "li";
@@ -20,6 +22,9 @@ namespace BlazorComponent
 
         [Parameter]
         public bool Disabled { get; set; }
+
+        [Parameter]
+        public bool Exact { get; set; }
 
         [Parameter]
         public string Href { get; set; }
@@ -50,36 +55,26 @@ namespace BlazorComponent
 
         protected override void OnInitialized()
         {
+            _linker = new Linker(this);
+            
             Breadcrumbs?.AddSubBreadcrumbsItem(this);
 
-            if (IsLinkage)
-            {
-                Matched = MatchRoute(NavigationManager.Uri);
-            }
-
             NavigationManager.LocationChanged += OnLocationChanged;
+            
+            UpdateActiveForLinkage();
         }
 
         private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
         {
-            if (!IsLinkage) return;
-
-            Matched = MatchRoute(e.Location);
-        }
-
-        private bool MatchRoute(string path)
-        {
-            var relativePath = NavigationManager.ToBaseRelativePath(path);
-            if (Href.StartsWith("/"))
-            {
-                Href = Href[1..];
-            }
-
-            return string.Equals(Href, relativePath, StringComparison.OrdinalIgnoreCase);
+            UpdateActiveForLinkage();
+            
+            StateHasChanged();
         }
 
         protected override void OnParametersSet()
         {
+            _linker = new Linker(this);
+
             _router = new Router(this);
 
             (Tag, Attributes) = _router.GenerateRouteLink();
@@ -94,6 +89,14 @@ namespace BlazorComponent
         public RenderFragment DividerContent => Breadcrumbs?.DividerContent;
 
         #endregion
+
+        private void UpdateActiveForLinkage()
+        {
+            if (IsLinkage)
+            {
+                Matched = _linker.MatchRoute(Href);
+            }
+        }
 
         protected override void Dispose(bool disposing)
         {

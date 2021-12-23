@@ -2,16 +2,21 @@
 using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components.Routing;
 
 namespace BlazorComponent
 {
     public partial class BListItem : BGroupItem<ItemGroupBase>, IRoutable, ILinkable
     {
+        private Linker _linker;
         private IRoutable _router;
 
         public BListItem() : base(GroupType.ListItemGroup)
         {
         }
+
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
 
         [CascadingParameter(Name = "IsInGroup")]
         public bool IsInGroup { get; set; }
@@ -25,8 +30,14 @@ namespace BlazorComponent
         [CascadingParameter(Name = "IsInNav")]
         public bool IsInNav { get; set; }
 
+        [CascadingParameter]
+        public BList List { get; set; }
+
         [Parameter]
         public string Color { get; set; }
+
+        [Parameter]
+        public bool Exact { get; set; }
 
         [Parameter]
         public string Href { get; set; }
@@ -51,18 +62,41 @@ namespace BlazorComponent
 
         protected RenderFragment ComputedItemContent => ItemContent(GenItemContext());
 
+        public bool IsClickable => _router.IsClickable || ItemGroup != null;
+
         public bool IsLink => _router.IsLink;
 
-        public bool IsClickable => _router.IsClickable || ItemGroup != null;
+        public bool IsLinkage => Href != null && (List?.Linkage ?? Linkage);
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+
+            _linker = new Linker(this);
+
+            NavigationManager.LocationChanged += OnLocationChanged;
+
+            UpdateActiveForLinkage();
+        }
 
         protected override void OnParametersSet()
         {
             base.OnParametersSet();
 
+            _linker = new Linker(this);
+
             _router = new Router(this);
             (Tag, Attributes) = _router.GenerateRouteLink();
 
             SetAttrs();
+        }
+
+
+        private void OnLocationChanged(object sender, LocationChangedEventArgs e)
+        {
+            UpdateActiveForLinkage();
+
+            StateHasChanged();
         }
 
         protected virtual async Task HandleOnClick(MouseEventArgs args)
@@ -119,6 +153,21 @@ namespace BlazorComponent
                 Ref = RefBack,
                 Value = Value
             };
+        }
+
+        private void UpdateActiveForLinkage()
+        {
+            if (IsLinkage)
+            {
+                IsActive = _linker.MatchRoute(Href);
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            NavigationManager.LocationChanged -= OnLocationChanged;
+
+            base.Dispose(disposing);
         }
     }
 }
