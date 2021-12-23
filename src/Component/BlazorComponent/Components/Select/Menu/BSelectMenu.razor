@@ -50,13 +50,14 @@
     {
         if (!HideNoData)
         {
-            if (NoDataContent != null)
-            {
-                @NoDataContent
-            }
-            else
-            {
-                <BList @attributes="GetAttributes(typeof(BList))">
+            <BList @attributes="GetAttributes(typeof(BList))">
+                @if (NoDataContent != null)
+                {
+                    @NoDataContent
+                }
+                else
+                {
+
                     <BListItem Link="false" @attributes="GetAttributes(typeof(BListItem))">
                         <BListItemContent @attributes="GetAttributes(typeof(BListItemContent))">
                             <BListItemTitle @attributes="GetAttributes(typeof(BListItemTitle))">
@@ -64,8 +65,8 @@
                             </BListItemTitle>
                         </BListItemContent>
                     </BListItem>
-                </BList>
-            }
+                }
+            </BList>
         }
     }
 </BMenu>
