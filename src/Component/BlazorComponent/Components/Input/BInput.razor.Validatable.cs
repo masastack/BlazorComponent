@@ -67,7 +67,17 @@ namespace BlazorComponent
         public List<string> SuccessMessages { get; set; }
 
         [Parameter]
-        public IEnumerable<Func<TValue, StringBoolean>> Rules { get; set; }
+        public IEnumerable<Func<TValue, StringBoolean>> Rules
+        {
+            get
+            {
+                return GetValue<IEnumerable<Func<TValue, StringBoolean>>>();
+            }
+            set
+            {
+                SetValue(value);
+            }
+        }
 
         protected EditContext OldEditContext { get; set; }
 
