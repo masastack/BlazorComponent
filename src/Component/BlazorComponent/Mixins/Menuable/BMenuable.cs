@@ -1,4 +1,5 @@
-﻿using BlazorComponent.Web;
+﻿using System.Runtime.CompilerServices;
+using BlazorComponent.Web;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -115,14 +116,9 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
 
             if (_delayIsActive == value) return;
 
-            if (value)
-            {
-                _ = CallActivate(() => _delayIsActive = true);
-            }
-            else
-            {
-                _ = CallDeactivate(() => _delayIsActive = false);
-            }
+            _ = value
+                ? CallActivate(() => _delayIsActive = true)
+                : CallDeactivate(() => _delayIsActive = false);
         }
     }
 
@@ -196,6 +192,18 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
 
     [Parameter]
     public bool Top { get; set; }
+
+    [Parameter]
+    public override bool Value
+    {
+        get => IsActive;
+        set
+        {
+            _ = ShowLazyContent();
+
+            IsActive = value;
+        }
+    }
 
     [Parameter]
     public StringNumber ZIndex { get; set; }
@@ -346,7 +354,7 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
             var onClick = listeners["click"].listener;
             var actions = listeners["click"].actions;
 
-            listeners["click"] = (CreateEventCallback<MouseEventArgs>(async  e =>
+            listeners["click"] = (CreateEventCallback<MouseEventArgs>(async e =>
             {
                 await ShowLazyContent();
 
