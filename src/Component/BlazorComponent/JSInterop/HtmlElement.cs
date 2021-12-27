@@ -10,21 +10,17 @@ using OneOf;
 
 namespace BlazorComponent.Web
 {
-    public class HtmlElement
+    public class HtmlElement : JSObject
     {
         public HtmlElement()
         {
         }
 
         public HtmlElement(IJSRuntime js, string selector)
+            : base(js)
         {
-            JS = js;
             Selector = selector;
         }
-
-        public IJSRuntime JS { get; internal set; }
-
-        public string Selector { get; internal set; } // TODO: may be singular: Selector
 
         public HtmlElement ParentElement => new HtmlElement(JS, $"{Selector}.parentElement");
 
@@ -35,9 +31,9 @@ namespace BlazorComponent.Web
             await JS.InvokeVoidAsync(JsInteropConstants.AddCls, Selector, className);
         }
 
-        public async Task DispatchEventAsync(Event @event)
+        public async Task DispatchEventAsync(Event @event, bool stopPropagation)
         {
-            await JS.InvokeVoidAsync(JsInteropConstants.TriggerEvent, Selector, @event.Type, @event.Name, @event.ShouldStopPropagation);
+            await JS.InvokeVoidAsync(JsInteropConstants.TriggerEvent, Selector, @event.Type, @event.Name, stopPropagation);
         }
 
         public async Task SetPropertyAsync(string name, object value)

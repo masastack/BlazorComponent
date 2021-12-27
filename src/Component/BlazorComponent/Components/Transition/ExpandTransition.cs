@@ -15,7 +15,7 @@ namespace BlazorComponent
 
         protected virtual bool X { get; }
 
-        protected double Size { get; set; }
+        protected double? Size { get; set; }
 
         protected string SizeProp => X ? "width" : "height";
 
@@ -26,7 +26,7 @@ namespace BlazorComponent
             StyleBuilder
                 .AddIf(() => $"{SizeProp}:0px", () => State == TransitionState.Enter || State == TransitionState.LeaveTo)
                 .AddIf("overflow:hidden", () => State != TransitionState.None)
-                .AddIf(() => $"{SizeProp}:{Size}px", () => State == TransitionState.EnterTo || State == TransitionState.Leave);
+                .AddIf(() => $"{SizeProp}:{Size}px", () => (State == TransitionState.EnterTo || State == TransitionState.Leave) && Size != null);
         }
 
         protected override void OnParametersSet()

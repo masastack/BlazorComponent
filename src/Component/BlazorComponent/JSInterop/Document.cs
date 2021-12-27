@@ -8,35 +8,33 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent.Web
 {
-    public class Document
+    public class Document : JSObject
     {
-        private IJSRuntime _js;
-
         public Document(IJSRuntime js)
-        {
-            _js = js;
-        }
+            : base(js)
 
-        internal IJSRuntime JS => _js;
+        {
+            Selector = "document";
+        }
 
         public HtmlElement GetElementById(string id)
         {
-            return new HtmlElement(_js, "#" + id);
+            return new HtmlElement(JS, "#" + id);
         }
 
         public HtmlElement QuerySelector(string selectors)
         {
-            return new HtmlElement(_js, selectors);
+            return new HtmlElement(JS, selectors);
         }
 
         public async Task<T> ExecCommandAsync<T>(string commandId, bool? showUI, object value = null)
         {
-            return await _js.InvokeAsync<T>("document.execCommand", commandId, showUI, value);
+            return await JS.InvokeAsync<T>("document.execCommand", commandId, showUI, value);
         }
 
         public async Task ExecCommandAsync(string commandId, bool? showUI, object value = null)
         {
-            await _js.InvokeVoidAsync("document.execCommand", commandId, showUI, value);
+            await JS.InvokeVoidAsync("document.execCommand", commandId, showUI, value);
         }
     }
 }

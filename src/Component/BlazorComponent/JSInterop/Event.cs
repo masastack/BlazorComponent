@@ -14,15 +14,8 @@ namespace BlazorComponent.Web
             Name = name;
         }
 
-        internal string Type { get; }
+        public string Type { get; }
 
-        internal string Name { get; }
-
-        internal bool ShouldStopPropagation { get; private set; }
-
-        public void StopPropagation()
-        {
-            ShouldStopPropagation = true;
-        }
+        public string Name { get; }
     }
 }

@@ -8,17 +8,19 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace BlazorComponent
+namespace BlazorComponent.Web
 {
-    public class Window
+    public class Window : JSObject
     {
         public Window()
         {
         }
 
         public Window(Document document)
+            : base(document.JS)
         {
             Document = document;
+            Selector = "window";
         }
 
         [JsonPropertyName("innerHeight")]
@@ -39,11 +41,9 @@ namespace BlazorComponent
 
         public Document Document { get; }
 
-        internal IJSRuntime JS => Document.JS;
-
         public async Task AddEventListenerAsync(string type, Func<Task> listener, OneOf<EventListenerOptions, bool> options)
         {
-            await JS.InvokeVoidAsync(JsInteropConstants.AddHtmlElementEventListener, "window", type, DotNetObjectReference.Create(new Invoker<object>((p) =>
+            await JS.InvokeVoidAsync(JsInteropConstants.AddHtmlElementEventListener, Selector, type, DotNetObjectReference.Create(new Invoker<object>((p) =>
             {
                 listener?.Invoke();
             })), options.Value);

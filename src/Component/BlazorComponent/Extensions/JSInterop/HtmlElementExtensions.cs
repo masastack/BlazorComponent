@@ -5,32 +5,22 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components;
+using System.Text.Json;
 
 namespace BlazorComponent.Web
 {
     public static class HtmlElementExtensions
     {
-        public static async Task<double> GetSizeAsync(this HtmlElement htmlElement, string prop)
+        /// <summary>
+        /// We will remove this when transition been refactored
+        /// </summary>
+        /// <param name="htmlElement"></param>
+        /// <param name="prop"></param>
+        /// <returns></returns>
+        internal static async Task<double?> GetSizeAsync(this HtmlElement htmlElement, string prop)
         {
-            var size = await htmlElement.JS.InvokeAsync<double>(JsInteropConstants.GetSize, htmlElement.Selector, prop);
-            return size;
-        }
-
-        public static async Task<TProp> GetPropAsync<TProp>(this HtmlElement htmlElement, string name)
-        {
-            var prop = await htmlElement.JS.InvokeAsync<TProp>(JsInteropConstants.GetProp, htmlElement.Selector, name);
-            return prop;
-        }
-
-        public static async Task<double> GetScrollHeightWithoutHeight(this HtmlElement htmlElement)
-        {
-            var scrollHeight = await htmlElement.JS.InvokeAsync<double>(JsInteropConstants.ScrollHeightWithoutHeight, htmlElement.Selector);
-            return scrollHeight;
-        }
-
-        public static async Task UpdateWindowTransitionAsync(this HtmlElement htmlElement, bool isActive, ElementReference? item = null)
-        {
-            await htmlElement.JS.InvokeVoidAsync(JsInteropConstants.UpdateWindowTransition, htmlElement.Selector, isActive, item);
+            var jsonElement = await htmlElement.JS.InvokeAsync<JsonElement>(JsInteropConstants.GetSize, htmlElement.Selector, prop);
+            return jsonElement.ValueKind == JsonValueKind.Number ? jsonElement.GetDouble() : null;
         }
     }
 }
