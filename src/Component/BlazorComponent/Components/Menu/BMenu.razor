@@ -1,10 +1,7 @@
 ﻿@namespace BlazorComponent
 @inherits BMenuable
 
-@if (ActivatorContent != null)
-{
-    @ComputedActivatorContent
-}
+@ComputedActivatorContent
 
 <div style="@CssProvider.GetStyle()" class="@CssProvider.GetClass()" @ref="Ref">
     @if (ShowContent)

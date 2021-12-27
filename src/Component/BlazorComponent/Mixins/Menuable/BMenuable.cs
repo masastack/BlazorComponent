@@ -568,6 +568,21 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
 
     private HtmlElement GetContent() => Document.GetElementByReference(ContentRef);
 
+    private async Task DeleteContent()
+    {
+        try
+        {
+            if (ContentRef.Context != null)
+            {
+                await JsInvokeAsync(JsInteropConstants.DelElementFrom, ContentRef, AttachedSelector);
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+
     public async ValueTask DisposeAsync()
     {
         if (_hasWindow)
@@ -586,6 +601,8 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
 
             _ = JsInvokeAsync(JsInteropConstants.RemoveOutsideClickEventListener, selectors);
         }
+
+        await DeleteContent();
 
         GC.SuppressFinalize(this);
     }

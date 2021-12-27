@@ -11,7 +11,7 @@ using Microsoft.JSInterop;
 
 namespace BlazorComponent
 {
-    public partial class BDialog : BActivatable
+    public partial class BDialog : BActivatable, IAsyncDisposable
     {
         private bool _valueChangedToTrue;
         private int _stackMinZIndex = 200;
@@ -24,7 +24,9 @@ namespace BlazorComponent
 
         protected object Overlay { get; set; }
 
-        protected ElementReference OverlayRef => ((BOverlay)Overlay).Ref;
+        protected ElementReference? OverlayRef => ((BOverlay)Overlay)?.Ref;
+
+        public virtual bool ShowContent { get; set; }
 
         protected int ZIndex { get; set; }
 
@@ -112,9 +114,36 @@ namespace BlazorComponent
             return maxZindex > _stackMinZIndex ? maxZindex : _stackMinZIndex;
         }
 
-        public virtual Task ShowLazyContent()
+        protected virtual Task ShowLazyContent()
         {
             return Task.CompletedTask;
+        }
+
+        protected virtual async Task DeleteContent()
+        {
+            try
+            {
+                if (ContentRef.Context != null)
+                {
+                    await JsInvokeAsync(JsInteropConstants.DelElementFrom, ContentRef, AttachSelector);
+                }
+
+                if (OverlayRef?.Context != null)
+                {
+                    await JsInvokeAsync(JsInteropConstants.DelElementFrom, OverlayRef, AttachSelector);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            await DeleteContent();
+            
+            GC.SuppressFinalize(this);
         }
     }
 }
