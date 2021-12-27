@@ -1,13 +1,16 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<BPicker Class="@CssProvider.GetClass()" @attributes="GetAttributes(typeof(BPicker))">
-    <TitleContent>
-        @if (!NoTitle)
-        {
-            <BDatePickerTitle @attributes="GetAttributes(typeof(BDatePickerTitle))"></BDatePickerTitle>
-        }
-    </TitleContent>
+@{
+    //We want default to be null,so that BPicker Title will render nothing
+    var titleContent = (RenderFragment)null;
+    @if (!NoTitle)
+    {
+        titleContent =@<BDatePickerTitle @attributes="GetAttributes(typeof(BDatePickerTitle))"></BDatePickerTitle>;
+    }
+}
+
+<BPicker TitleContent="titleContent" Class="@CssProvider.GetClass()" @attributes="GetAttributes(typeof(BPicker))">
     <ChildContent>
         <div @key="InternalActivePicker">
             @if (InternalActivePicker == DatePickerType.Year)

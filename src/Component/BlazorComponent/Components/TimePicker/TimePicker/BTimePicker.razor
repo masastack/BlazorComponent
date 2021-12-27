@@ -1,14 +1,16 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
+@{
+    //We want default to be null,so that BPicker Title will render nothing
+    var titleContent = (RenderFragment)null;
+    @if (!NoTitle)
+    {
+        titleContent =@<BTimePickerTitle @attributes="GetAttributes(typeof(BTimePickerTitle))"></BTimePickerTitle>;
+    }
+}
 
-<BPicker Class="@CssProvider.GetClass()" @attributes="GetAttributes(typeof(BPicker))">
-    <TitleContent>
-        @if (!NoTitle)
-        {
-            <BTimePickerTitle @attributes="GetAttributes(typeof(BTimePickerTitle))"></BTimePickerTitle>
-        }
-    </TitleContent>
+<BPicker TitleContent="titleContent" Class="@CssProvider.GetClass()" @attributes="GetAttributes(typeof(BPicker))">
     <ChildContent>
         @RenderPart(typeof(BTimePickerPickerBody<>))
     </ChildContent>
