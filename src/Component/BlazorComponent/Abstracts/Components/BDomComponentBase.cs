@@ -19,6 +19,7 @@ namespace BlazorComponent
             CssProvider.StaticClass = () => Class;
             CssProvider.StaticStyle = () => Style;
             Watcher = new PropertyWatcher(GetType());
+            OnWatcherInitialized();
         }
 
         [Parameter]
@@ -62,6 +63,10 @@ namespace BlazorComponent
                 _ref = value;
                 RefBack?.Set(value);
             }
+        }
+
+        protected virtual void OnWatcherInitialized()
+        {
         }
 
         protected override void OnInitialized()

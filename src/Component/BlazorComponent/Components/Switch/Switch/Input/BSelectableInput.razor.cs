@@ -15,7 +15,7 @@ namespace BlazorComponent
 
         public bool IsDisabled => Component.IsDisabled;
 
-        public bool Value => Component.Value;
+        public bool InternalValue => Component.InternalValue;
 
         public Dictionary<string, object> InputAttrs => Component.InputAttrs;
 

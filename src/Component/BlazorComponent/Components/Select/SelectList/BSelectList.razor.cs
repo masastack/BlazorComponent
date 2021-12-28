@@ -25,9 +25,9 @@ namespace BlazorComponent
                     {
                         return Select.Values.Contains(Value);
                     }
-                    else if (Select.Value != null)
+                    else if (Select.InternalValue != null)
                     {
-                        return Select.Value.Equals(Value);
+                        return Select.InternalValue.Equals(Value);
                     }
                 }
 

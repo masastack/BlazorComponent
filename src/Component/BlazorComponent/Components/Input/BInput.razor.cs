@@ -65,7 +65,7 @@ namespace BlazorComponent
 
         [Parameter]
         public EventCallback<MouseEventArgs> OnAppendClick { get; set; }
-        
+
         protected bool HasMouseDown { get; set; }
 
         public virtual bool HasLabel => LabelContent != null || Label != null;
@@ -98,6 +98,9 @@ namespace BlazorComponent
                 return ValidationTarget.Take(ErrorCount).ToList();
             }
         }
+
+        //We want InternalValue to be protected
+        TValue IInput<TValue>.InternalValue => InternalValue;
 
         public virtual async Task HandleOnPrependClickAsync(MouseEventArgs args)
         {

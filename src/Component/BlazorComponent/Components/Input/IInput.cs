@@ -30,18 +30,6 @@ namespace BlazorComponent
 
         RenderFragment ChildContent { get; }
 
-        Task HandleOnPrependClickAsync(MouseEventArgs args)
-        {
-            return Task.CompletedTask;
-        }
-
-        Task HandleOnAppendClickAsync(MouseEventArgs args)
-        {
-            return Task.CompletedTask;
-        }
-
-        
-
         string Label => default;
 
         RenderFragment LabelContent => default;
@@ -76,6 +64,18 @@ namespace BlazorComponent
             {
                 //default todo nothing
             }
+        }
+
+        TValue InternalValue { get; }
+
+        Task HandleOnPrependClickAsync(MouseEventArgs args)
+        {
+            return Task.CompletedTask;
+        }
+
+        Task HandleOnAppendClickAsync(MouseEventArgs args)
+        {
+            return Task.CompletedTask;
         }
 
         Task HandleOnClickAsync(MouseEventArgs args)

@@ -5,4 +5,4 @@
 @typeparam TInput
 @inherits ComponentPartBase<TInput>
 
-<input type="hidden" value="@(Multiple ? string.Join(',', Values) : Value)" />
+<input type="hidden" value="@(Multiple ? string.Join(',', Values) : InternalValue)" />

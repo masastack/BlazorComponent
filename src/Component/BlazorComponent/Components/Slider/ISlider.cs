@@ -42,8 +42,6 @@ namespace BlazorComponent
 
         RenderFragment<int> ThumbLabelContent { get; }
 
-        TValue InternalValue { get; }
-
         Task HandleOnSliderClickAsync(MouseEventArgs args)
         {
             return Task.CompletedTask;

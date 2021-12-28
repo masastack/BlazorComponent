@@ -11,7 +11,6 @@ namespace BlazorComponent
 {
     public partial class BInput<TValue> : IValidatable
     {
-        private TValue _lazyValue;
         private bool _isFocused;
 
         [Parameter]
@@ -28,11 +27,11 @@ namespace BlazorComponent
         {
             get
             {
-                return _lazyValue;
+                return GetValue<TValue>();
             }
             set
             {
-                _lazyValue = value;
+                SetValue(value);
             }
         }
 
@@ -87,20 +86,37 @@ namespace BlazorComponent
 
         protected bool HasFocused { get; set; }
 
+        protected virtual TValue LazyValue { get; set; }
+
         protected TValue InternalValue
         {
             get
             {
-                return _lazyValue;
+                return LazyValue;
             }
             set
             {
-                _lazyValue = value;
+                if (EqualityComparer<TValue>.Default.Equals(value, LazyValue))
+                {
+                    return;
+                }
+
+                if (ValueChanged.HasDelegate)
+                {
+                    _ = ValueChanged.InvokeAsync(value);
+                }
+
+                LazyValue = value;
                 HasInput = true;
 
-                //REVIEW:Is this ok?
-                _ = ValueChanged.InvokeAsync(_lazyValue);
-                if (!ValidateOnBlur) Validate();
+                if (!ValidateOnBlur)
+                {
+                    NextTick(() =>
+                    {
+                        Validate();
+                        return Task.CompletedTask;
+                    });
+                }
             }
         }
 
@@ -117,7 +133,14 @@ namespace BlazorComponent
                 if (!_isFocused && !IsDisabled)
                 {
                     HasFocused = true;
-                    if (ValidateOnBlur) Validate();
+                    if (ValidateOnBlur)
+                    {
+                        NextTick(() =>
+                        {
+                            Validate();
+                            return Task.CompletedTask;
+                        });
+                    }
                 }
             }
         }
@@ -198,6 +221,15 @@ namespace BlazorComponent
         }
 
         public virtual bool ExternalError => ErrorMessages.Count > 0 || Error;
+
+        protected override void OnWatcherInitialized()
+        {
+            Watcher
+                .Watch<TValue>(nameof(Value), val =>
+                {
+                    LazyValue = val;
+                });
+        }
 
         protected override void OnInitialized()
         {
@@ -300,8 +332,11 @@ namespace BlazorComponent
             //We will change this and InternalValue
             ErrorBucket.Clear();
 
-            _lazyValue = default;
-            await ValueChanged.InvokeAsync(_lazyValue);
+            LazyValue = default;
+            if (ValueChanged.HasDelegate)
+            {
+                await ValueChanged.InvokeAsync(LazyValue);
+            }
         }
 
         public Task ResetValidationAsync()

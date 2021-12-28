@@ -12,6 +12,6 @@ namespace BlazorComponent
 
         public IList<TItemValue> Values => Component.Values;
 
-        public TValue Value => Component.Value;
+        public TValue InternalValue => Component.InternalValue;
     }
 }
