@@ -362,7 +362,7 @@ namespace BlazorComponent
                 ErrorBucket = errors.ToList();
             }
 
-            StateHasChanged();
+            InvokeStateHasChanged();
         }
 
         protected override void Dispose(bool disposing)

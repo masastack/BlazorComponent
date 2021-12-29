@@ -56,19 +56,18 @@ namespace BlazorComponent
         protected override void OnInitialized()
         {
             _linker = new Linker(this);
-            
+
             Breadcrumbs?.AddSubBreadcrumbsItem(this);
 
             NavigationManager.LocationChanged += OnLocationChanged;
-            
+
             UpdateActiveForLinkage();
         }
 
         private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
         {
             UpdateActiveForLinkage();
-            
-            StateHasChanged();
+            InvokeStateHasChanged();
         }
 
         protected override void OnParametersSet()

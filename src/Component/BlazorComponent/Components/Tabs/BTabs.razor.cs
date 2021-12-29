@@ -11,7 +11,7 @@ namespace BlazorComponent
 
         private object TabsBarRef { get; set; }
 
-        protected(StringNumber height, StringNumber left, StringNumber right, StringNumber top, StringNumber width) Slider { get; set; }
+        protected (StringNumber height, StringNumber left, StringNumber right, StringNumber top, StringNumber width) Slider { get; set; }
 
         [CascadingParameter(Name = "rtl")]
         public bool Rtl { get; set; }
@@ -96,8 +96,6 @@ namespace BlazorComponent
             if (TabItems.Any(item => item.Value.Equals(tabItem.Value))) return;
 
             TabItems.Add(tabItem);
-
-            StateHasChanged();
         }
 
         public void UnregisterTabItem(ITabItem tabItem)
@@ -128,9 +126,8 @@ namespace BlazorComponent
 
             if (firstRender || _isModified)
             {
-                StateHasChanged();
-
                 _isModified = false;
+                StateHasChanged();
             }
         }
     }

@@ -69,13 +69,14 @@ namespace BlazorComponent
             {
                 await ValueChanged.InvokeAsync(_values.LastOrDefault());
             }
-
-            if (ValuesChanged.HasDelegate)
+            else if (ValuesChanged.HasDelegate)
             {
                 await ValuesChanged.InvokeAsync(_values);
             }
-
-            StateHasChanged();
+            else
+            {
+                StateHasChanged();
+            }
         }
 
 

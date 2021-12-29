@@ -14,8 +14,6 @@ namespace BlazorComponent
             Mandatory = true;
         }
 
-        public bool ArrowsVisible { get; set; }
-
         [Parameter]
         public bool Continuous { get; set; }
 
@@ -48,6 +46,8 @@ namespace BlazorComponent
         [Inject]
         public Document Document { get; set; }
 
+        public bool ArrowsVisible => ShowArrowsOnHover || ShowArrows;
+
         public int TransitionCount { get; set; }
 
         public StringNumber TransitionHeight { get; set; }
@@ -72,15 +72,6 @@ namespace BlazorComponent
 
             Watcher.Watch<int>(nameof(InternalIndex),
                 (newVal, oldVal) => Reverse = UpdateReverse(newVal, oldVal));
-        }
-
-        protected override void OnAfterRender(bool firstRender)
-        {
-            if (firstRender)
-            {
-                ArrowsVisible = ShowArrowsOnHover || ShowArrows;
-                StateHasChanged();
-            }
         }
 
         protected override void OnParametersSet()
@@ -145,7 +136,7 @@ namespace BlazorComponent
 
             return prevIndex;
         }
-        
+
         private bool UpdateReverse(int val, int oldVal)
         {
             var itemsLength = Items.Count;

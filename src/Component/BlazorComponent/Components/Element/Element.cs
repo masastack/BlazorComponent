@@ -116,7 +116,7 @@ namespace BlazorComponent
 
         public virtual async Task UpdateViewAsync()
         {
-            await InvokeAsync(StateHasChanged);
+            await InvokeStateHasChangedAsync();
         }
 
         protected bool? InternalIf { get; set; } = true;

@@ -142,8 +142,6 @@ namespace BlazorComponent
         public async ValueTask DisposeAsync()
         {
             await DeleteContent();
-            
-            GC.SuppressFinalize(this);
         }
     }
 }

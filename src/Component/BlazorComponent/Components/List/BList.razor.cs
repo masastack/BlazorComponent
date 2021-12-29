@@ -45,17 +45,5 @@ namespace BlazorComponent
         {
             Groups.Remove(listGroup);
         }
-
-        internal void ListClick(string id)
-        {
-            if (Expand) return;
-
-            foreach (var group in Groups)
-            {
-                group.Toggle(id);
-            }
-
-            StateHasChanged();
-        }
     }
 }

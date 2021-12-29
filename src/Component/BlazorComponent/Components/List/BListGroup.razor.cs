@@ -91,8 +91,7 @@ namespace BlazorComponent
         private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
         {
             UpdateActiveForLinkage();
-
-            StateHasChanged();
+            InvokeStateHasChanged();
         }
 
         internal void Toggle(string id)

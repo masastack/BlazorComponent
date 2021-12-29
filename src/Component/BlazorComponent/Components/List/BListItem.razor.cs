@@ -95,8 +95,7 @@ namespace BlazorComponent
         private void OnLocationChanged(object sender, LocationChangedEventArgs e)
         {
             UpdateActiveForLinkage();
-
-            StateHasChanged();
+            InvokeStateHasChanged();
         }
 
         protected virtual async Task HandleOnClick(MouseEventArgs args)

@@ -16,19 +16,10 @@ namespace BlazorComponent
         [Inject]
         public virtual IJSRuntime Js { get; set; }
 
-        protected void NextTick(Func<Task> callback)
-        {
-            _nextTickQuene.Enqueue(callback);
-        }
+        protected bool IsDisposed { get; private set; }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            await base.OnAfterRenderAsync(firstRender);
-            if (firstRender)
-            {
-                await OnFirstAfterRenderAsync();
-            }
-
             if (_nextTickQuene.Count > 0)
             {
                 var callbacks = _nextTickQuene.ToArray();
@@ -46,31 +37,25 @@ namespace BlazorComponent
             }
         }
 
-        protected virtual Task OnFirstAfterRenderAsync()
+        protected void NextTick(Func<Task> callback)
         {
-            return Task.CompletedTask;
+            _nextTickQuene.Enqueue(callback);
         }
 
         protected void InvokeStateHasChanged()
         {
-            InvokeAsync(() =>
+            if (!IsDisposed)
             {
-                if (!IsDisposed)
-                {
-                    StateHasChanged();
-                }
-            });
+                _ = InvokeAsync(StateHasChanged);
+            }
         }
 
         protected async Task InvokeStateHasChangedAsync()
         {
-            await InvokeAsync(() =>
+            if (!IsDisposed)
             {
-                if (!IsDisposed)
-                {
-                    StateHasChanged();
-                }
-            });
+                await InvokeAsync(StateHasChanged);
+            }
         }
 
         protected async Task<T> JsInvokeAsync<T>(string code, params object[] args)
@@ -83,21 +68,15 @@ namespace BlazorComponent
             await Js.InvokeVoidAsync(code, args);
         }
 
-        #region Dispose
-
-        protected bool IsDisposed { get; private set; }
-
         protected virtual void Dispose(bool disposing)
         {
             if (IsDisposed) return;
-
             IsDisposed = true;
         }
 
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         ~BComponentBase()
@@ -105,7 +84,5 @@ namespace BlazorComponent
             // Finalizer calls Dispose(false)
             Dispose(false);
         }
-
-        #endregion
     }
 }
