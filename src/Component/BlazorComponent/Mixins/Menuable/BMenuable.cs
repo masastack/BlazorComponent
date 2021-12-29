@@ -17,7 +17,8 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
     private double _absoluteY;
     private Web.Element _documentElement;
     private bool _hasWindow;
-    protected bool _showContentCompleted;
+    private InternalListenerEvent _internalListenerEvent = InternalListenerEvent.None; // just record the last triggered event
+    private bool _showContentCompleted;
     private Window _window;
 
     protected(Position activator, Position content) Dimensions = new(new Position(), new Position());
@@ -144,6 +145,9 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
 
     [Parameter]
     public bool Bottom { get; set; }
+
+    [Parameter]
+    public string ContentClass { get; set; }
 
     [Parameter]
     public bool Left { get; set; }
@@ -356,6 +360,8 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
 
             listeners["click"] = (CreateEventCallback<MouseEventArgs>(async e =>
             {
+                _internalListenerEvent = InternalListenerEvent.Click;
+
                 await ShowLazyContent();
 
                 if (OpenOnClick && onClick.HasDelegate)
@@ -368,21 +374,7 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
             }), actions);
         }
 
-        if (listeners.ContainsKey("mouseenter"))
-        {
-            var cb = listeners["mouseenter"].listener;
-            var actions = listeners["mouseenter"].actions;
-
-            listeners["mouseenter"] = (CreateEventCallback<MouseEventArgs>(async e =>
-            {
-                await ShowLazyContent();
-
-                if (cb.HasDelegate)
-                {
-                    await cb.InvokeAsync(e);
-                }
-            }), actions);
-        }
+        ResetListener(ref listeners, InternalListenerEvent.Mouseenter, (e) => ShowLazyContent());
 
         if (listeners.ContainsKey("mouseleave"))
         {
@@ -409,7 +401,7 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
                     await Task.Delay(16);
                 }
 
-                while (!Value)
+                while (_internalListenerEvent == InternalListenerEvent.Mouseenter && !Value)
                 {
                     await Task.Delay(16);
                 }
@@ -420,6 +412,16 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
                 }
             }), actions);
         }
+
+        return listeners;
+    }
+
+    protected override Dictionary<string, EventCallback<FocusEventArgs>> GenActivatorFocusListeners()
+    {
+        var listeners = base.GenActivatorFocusListeners();
+
+        ResetListener(ref listeners, InternalListenerEvent.Focus);
+        ResetListener(ref listeners, InternalListenerEvent.Blur);
 
         return listeners;
     }
@@ -583,6 +585,50 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
         }
     }
 
+    private void ResetListener<T>(ref Dictionary<string, EventCallback<T>> listeners, InternalListenerEvent @event)
+    {
+        var type = @event.ToString().ToLower();
+
+        if (!listeners.ContainsKey(type)) return;
+
+        var cb = listeners[type];
+
+        listeners[type] = CreateEventCallback<T>(async e =>
+        {
+            _internalListenerEvent = @event;
+
+            if (cb.HasDelegate)
+            {
+                await cb.InvokeAsync(e);
+            }
+        });
+    }
+
+    private void ResetListener<T>(
+        ref Dictionary<string, (EventCallback<T> listener, EventListenerActions actions)> listeners,
+        InternalListenerEvent @event,
+        Func<T, Task> beforeInvoke = null)
+    {
+        var type = @event.ToString().ToLower();
+
+        if (!listeners.ContainsKey(type)) return;
+
+        var cb = listeners[type].listener;
+        var actions = listeners[type].actions;
+
+        listeners[type] = (CreateEventCallback<T>(async e =>
+        {
+            beforeInvoke?.Invoke(e);
+
+            _internalListenerEvent = @event;
+
+            if (cb.HasDelegate)
+            {
+                await cb.InvokeAsync(e);
+            }
+        }), actions);
+    }
+
     public async ValueTask DisposeAsync()
     {
         if (_hasWindow)
@@ -628,5 +674,14 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
             X = rect?.X ?? 0;
             Y = rect?.Y ?? 0;
         }
+    }
+
+    private enum InternalListenerEvent
+    {
+        None,
+        Mouseenter,
+        Click,
+        Focus,
+        Blur
     }
 }

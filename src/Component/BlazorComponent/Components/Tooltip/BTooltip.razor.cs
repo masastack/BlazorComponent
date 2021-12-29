@@ -11,6 +11,7 @@ namespace BlazorComponent
         public BTooltip()
         {
             OpenOnHover = true;
+            OpenOnFocus = true;
         }
 
         protected double CalculatedLeft
@@ -110,17 +111,6 @@ namespace BlazorComponent
             {
                 listeners.Remove("click");
             }
-
-            return listeners;
-        }
-
-        protected override Dictionary<string, EventCallback<FocusEventArgs>> GenActivatorFocusListeners()
-        {
-            var listeners = base.GenActivatorFocusListeners();
-
-            listeners.Add("focus", CreateEventCallback<FocusEventArgs>(_ => Open()));
-
-            listeners.Add("blur", CreateEventCallback<FocusEventArgs>(_ => Close()));
 
             return listeners;
         }

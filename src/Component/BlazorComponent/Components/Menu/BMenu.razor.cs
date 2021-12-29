@@ -82,9 +82,6 @@ namespace BlazorComponent
         public RenderFragment ChildContent { get; set; }
 
         [Parameter]
-        public string ContentClass { get; set; }
-
-        [Parameter]
         public string ContentStyle { get; set; }
 
         [Parameter]
