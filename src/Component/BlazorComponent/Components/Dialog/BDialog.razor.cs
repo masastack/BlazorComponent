@@ -135,7 +135,7 @@ namespace BlazorComponent
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                // ignored
             }
         }
 

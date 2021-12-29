@@ -581,7 +581,7 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            // ignored
         }
     }
 
