@@ -6,6 +6,7 @@
          Tag="@Tag"
          ReferenceCaptureAction="_ => Ref = _"
          @onclick="HandleOnClick"
+         @onmousedown:preventDefault
          @attributes="Attributes">
     @if (ItemContent != null)
     {
