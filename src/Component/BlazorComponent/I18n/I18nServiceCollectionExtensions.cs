@@ -1,9 +1,8 @@
 ﻿using BlazorComponent.I18n;
-using System.Text.Json;
-using System.IO;
-using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
+using System.Net.Http.Json;
 using System.Reflection;
+using System.Text.Json;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -64,7 +63,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IServiceCollection AddMasaI18nForServer(this IServiceCollection services, string languageConfigFilePath)
         {
-            var languageConfig = JsonSerializer.Deserialize<LanguageConfig>(File.ReadAllText(Path.Combine(_baseUrl, languageConfigFilePath))) ?? throw new Exception("Failed to read i18n jsonn file data!");
+            var languageConfig = JsonSerializer.Deserialize<LanguageConfig>(File.ReadAllText(Path.Combine(_baseUrl, languageConfigFilePath))) ?? throw new Exception("Failed to read i18n json file data!");
             services.AddMasaI18nForServer(languageConfig);
 
             return services;
@@ -89,9 +88,11 @@ namespace Microsoft.Extensions.DependencyInjection
             await services.AddMasaI18nForWasm(baseUri, languageConfig);
         }
 
-        public static ParameterView GetMasaI18nParameter(this IServiceProvider servicesProvider)
+        public static async Task<ParameterView> GetMasaI18nParameter(this IServiceCollection services)
         {
-            var i18nConfig = servicesProvider.GetRequiredService<I18nConfig>();
+            var provider= services.BuildServiceProvider();
+            var i18nConfig = provider.GetRequiredService<I18nConfig>();
+            await i18nConfig.Initialization();
             return ParameterView.FromDictionary(new Dictionary<string, object?> { [nameof(I18nConfig)] = i18nConfig });
         }
 
@@ -99,31 +100,5 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             if (_httpClient.BaseAddress is null) _httpClient.BaseAddress = new Uri(baseUri);
         }
-    }
-
-    public class LanguageConfig
-    {
-
-        public string? DefaultLanguage { get; set; }
-
-        public List<Language> Languages { get; set; }
-
-        public LanguageConfig(string? defaultLanguage, List<Language> languages)
-        {
-            DefaultLanguage = defaultLanguage;
-            Languages = languages;
-        }
-    }
-
-    public class Language
-    {
-        public Language(string value, string filePath)
-        {
-            Value = value;
-            FilePath = filePath;
-        }
-        public string Value { get; set; }
-
-        public string FilePath { get; set; }
     }
 }
