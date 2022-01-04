@@ -9,14 +9,10 @@ namespace BlazorComponent
 {
     public partial class BSelectSelections<TItem, TItemValue, TValue, TInput> where TInput : ISelect<TItem, TItemValue, TValue>
     {
-        public List<string> Text => Component.Text;
+        protected bool HasChips => Component.HasChips;
 
-        public bool Chips => Component.Chips;
+        protected RenderFragment<SelectSelectionProps<TItem>> SelectionContent => Component.SelectionContent;
 
-        public bool Multiple => Component.Multiple;
-
-        public RenderFragment<SelectSelectionProps<TItem>> SelectionContent => Component.SelectionContent;
-
-        public IList<TItem> SelectedItems => Component.SelectedItems;
+        protected IList<TItem> SelectedItems => Component.SelectedItems;
     }
 }

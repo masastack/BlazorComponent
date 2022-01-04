@@ -11,47 +11,17 @@ namespace BlazorComponent
     public interface ISelect<TItem, TItemValue, TValue> : ITextField<TValue>
     {
         bool Multiple { get; }
-
-        IList<TItemValue> Values { get; }
-
-        Task SetSelectedAsync(string label, TItemValue value);
-
-        Task RemoveSelectedAsync(string label, TItemValue value);
-
-        void SetVisible(bool v);
-
-        bool Chips { get; }
-
-        List<string> Text { get; }
-
-        IReadOnlyList<TItem> Items { get; }
-
-        Func<TItem, TItemValue> ItemValue { get; }
-
-        Func<TItem, bool> ItemDisabled { get; }
-
-        Func<TItem, string> ItemText { get; }
-
-        IReadOnlyList<TItem> ComputedItems { get; }
-
-        int HighlightIndex { get; }
-
-        string QueryText { get; }
-
-        RenderFragment PrependItemContent => default;
-
-        RenderFragment AppendItemContent => default;
-
-        RenderFragment<SelectSelectionProps<TItem>> SelectionContent => default;
-
+        IList<TItemValue> InternalValues { get; }
+        IList<TItem> ComputedItems { get; }
         IList<TItem> SelectedItems { get; }
-
         object Menu { set; }
-
-        bool HideSelected { get; }
-
-        bool HideNoData { get; }
-
+        bool HasChips { get; }
+        RenderFragment PrependItemContent { get; }
+        RenderFragment AppendItemContent { get; }
+        RenderFragment<SelectSelectionProps<TItem>> SelectionContent { get; }
         RenderFragment NoDataContent { get; }
+        string GetText(TItem item);
+        TItemValue GetValue(TItem item);
+        bool GetDisabled(TItem item);
     }
 }

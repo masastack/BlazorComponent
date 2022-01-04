@@ -1,0 +1,18 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TItemValue
+@typeparam TValue
+@inherits ComponentPartBase<ISelectList<TItem,TItemValue,TValue>>
+
+<BListItemContent @attributes="GetAttributes(typeof(BListItemContent))">
+    <BListItemTitle @attributes="GetAttributes(typeof(BListItemTitle))">
+        @if (ChildContent != null)
+        {
+            @ChildContent
+        }
+        else
+        {
+            @((MarkupString)GetFilteredText(Item))
+        }
+    </BListItemTitle>
+</BListItemContent>

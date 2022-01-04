@@ -1,0 +1,13 @@
+﻿@namespace BlazorComponent
+@typeparam TItem
+@typeparam TItemValue
+@typeparam TValue
+@typeparam TInput
+@inherits ComponentPartBase<TInput>
+
+<BSelectList TItem="TItem"
+             TItemValue="TItemValue"
+             TValue="TValue"
+             @attributes="GetAttributes(typeof(BSelectList<,,>))">
+</BSelectList>
+

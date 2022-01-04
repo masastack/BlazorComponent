@@ -34,70 +34,6 @@ namespace BlazorComponent
             parameterView.SetParameterProperties(this);
         }
 
-        protected RenderFragment Render(Type type, Action<AttributesBuilder> parametersBuilderAction = null, object key = null, object data = null, Action<object> referenceCapture = null)
-        {
-            var metadata = AbstractProvider.GetMetadata(type, data);
-            return builder =>
-            {
-                var sequence = 0;
-                builder.OpenComponent(sequence++, metadata.Type);
-
-                builder.AddMultipleAttributes(sequence++, metadata.Attributes);
-
-                if (parametersBuilderAction != null)
-                {
-                    var parametersBuilder = new AttributesBuilder();
-                    parametersBuilderAction.Invoke(parametersBuilder);
-
-                    builder.AddMultipleAttributes(sequence++, parametersBuilder.Attributes);
-                }
-
-                if (key != null)
-                {
-                    builder.SetKey(key);
-                }
-
-                if (referenceCapture != null)
-                {
-                    builder.AddComponentReferenceCapture(sequence++, referenceCapture);
-                }
-
-                builder.CloseComponent();
-            };
-        }
-
-        protected RenderFragment Render(Type type, string name, Action<AttributesBuilder> parametersBuilderAction = null, object key = null, object data = null, string textContent = null)
-        {
-            var metadata = AbstractProvider.GetMetadata(type, name, data);
-            return builder =>
-            {
-                var sequence = 0;
-                builder.OpenComponent(sequence++, metadata.Type);
-
-                builder.AddMultipleAttributes(sequence++, metadata.Attributes);
-
-                if (parametersBuilderAction != null)
-                {
-                    var propsBuilder = new AttributesBuilder();
-                    parametersBuilderAction.Invoke(propsBuilder);
-
-                    builder.AddMultipleAttributes(sequence++, propsBuilder.Attributes);
-                }
-
-                if (key != null)
-                {
-                    builder.SetKey(key);
-                }
-
-                if (textContent != null)
-                {
-                    builder.AddAttribute(sequence++, "ChildContent", RenderText(textContent));
-                }
-
-                builder.CloseComponent();
-            };
-        }
-
         protected RenderFragment RenderText(object text)
         {
             return builder => builder.AddContent(0, text);
@@ -108,17 +44,17 @@ namespace BlazorComponent
             return AbstractProvider.GetPartContent(keyType, Component);
         }
 
-        protected RenderFragment RenderPart(Type keyType, Action<AttributesBuilder> builderAction)
+        protected RenderFragment RenderPart(Type keyType, string name)
         {
-            return AbstractProvider.GetPartContent(keyType, Component, builderAction);
+            return AbstractProvider.GetPartContent(keyType, name, Component);
         }
 
-        protected RenderFragment RenderPart(Type keyType, Dictionary<string, object> parameters)
+        protected RenderFragment RenderPart(Type keyType, Dictionary<string, object> attributes)
         {
             return AbstractProvider.GetPartContent(keyType, Component, builder =>
             {
                 builder
-                    .SetAttributes(parameters);
+                    .SetAttributes(attributes);
             });
         }
 
@@ -164,11 +100,6 @@ namespace BlazorComponent
             });
         }
 
-        protected RenderFragment RenderPart(Type keyType, object name, Action<AttributesBuilder> builderAction)
-        {
-            return AbstractProvider.GetPartContent(keyType, name, Component, builderAction);
-        }
-
         protected EventCallback<TValue> CreateEventCallback<TValue>(Func<TValue, Task> callback)
         {
             return EventCallback.Factory.Create(Component, callback);
@@ -186,7 +117,8 @@ namespace BlazorComponent
 
         protected Dictionary<string, object> GetAttributes(Type type, string name, object data = null)
         {
-            return AbstractProvider.GetMetadata(type, name, data).Attributes;
+            var attrs = AbstractProvider.GetMetadata(type, name, data).Attributes;
+            return attrs;
         }
 
         protected virtual void BuildRenderTree(RenderTreeBuilder builder)

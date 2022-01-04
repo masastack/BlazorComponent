@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public class BCascaderList<TItem, TValue> : BSelectList<TItem, TValue, TValue>
+    public partial class BSelectListAction<TItem, TItemValue, TValue>
     {
         [Parameter]
-        public EventCallback<TItem> OnItemClick { get; set; }
+        public TItem Item { get; set; }
 
         [Parameter]
-        public List<TItem> Children { get; set; }
+        public bool Value { get; set; }
     }
 }

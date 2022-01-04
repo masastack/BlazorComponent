@@ -175,7 +175,11 @@ namespace BlazorComponent
         public RenderFragment GetPartContent(Type keyType, IHasProviderComponent component)
         {
             var key = new ComponentKey(keyType);
+            return GetPartContent(key, component);
+        }
 
+        private RenderFragment GetPartContent(ComponentKey key, IHasProviderComponent component)
+        {
             var partType = _typeConfig.GetValueOrDefault(key);
             if (partType == null)
             {
@@ -196,15 +200,15 @@ namespace BlazorComponent
             throw new InvalidOperationException();
         }
 
+        public RenderFragment GetPartContent(Type keyType, string name, IHasProviderComponent component)
+        {
+            var key = new ComponentKey(keyType, name);
+            return GetPartContent(key, component);
+        }
+
         public RenderFragment GetPartContent(Type keyType, IHasProviderComponent component, Action<AttributesBuilder> builderAction)
         {
             var key = new ComponentKey(keyType);
-            return GetPartContent(key, component, builderAction);
-        }
-
-        public RenderFragment GetPartContent(Type keyType, object name, IHasProviderComponent component, Action<AttributesBuilder> builderAction)
-        {
-            var key = new ComponentKey(keyType, name.ToString());
             return GetPartContent(key, component, builderAction);
         }
 

@@ -11,139 +11,64 @@ namespace BlazorComponent
 {
     public interface ITextField<TValue> : IInput<TValue>, ILoadable
     {
-        string AppendOuterIcon
-        {
-            get
-            {
-                return default;
-            }
-        }
+        string AppendOuterIcon { get; }
 
-        RenderFragment AppendOuterContent
-        {
-            get
-            {
-                return default;
-            }
-        }
+        RenderFragment AppendOuterContent { get; }
 
-        bool HasCounter => default;
+        bool HasCounter { get; }
 
-        StringNumberBoolean Counter => default;
+        StringNumberBoolean Counter { get; }
 
-        Task HandleOnPrependInnerClickAsync(MouseEventArgs args)
-        {
-            return Task.CompletedTask;
-        }
+        string PrependInnerIcon { get; }
 
-        string PrependInnerIcon
-        {
-            get
-            {
-                return default;
-            }
-        }
+        RenderFragment PrependInnerContent { get; }
 
-        RenderFragment PrependInnerContent
-        {
-            get
-            {
-                return default;
-            }
-        }
+        bool Outlined { get; }
 
-        bool Outlined => default;
+        string LegendInnerHTML { get; }
 
-        string LegendInnerHTML
-        {
-            get
-            {
-                return default;
-            }
-        }
+        bool ShowLabel { get; }
 
-        bool ShowLabel => default;
+        string Prefix { get; }
 
-        string Prefix => default;
+        string Suffix { get; }
 
-        string Suffix => default;
+        bool Autofocus { get; }
 
-        bool Autofocus => default;
+        bool IsFocused { get; }
 
-        bool IsFocused => default;
+        bool IsDisabled { get; }
 
-        bool IsDisabled => default;
+        bool PersistentPlaceholder { get; }
 
-        bool PersistentPlaceholder => default;
+        string Placeholder { get; }
 
-        string Placeholder => default;
+        bool IsReadonly { get; }
 
-        bool IsReadonly => default;
+        string Type { get; }
 
-        string Type => "text";
+        EventCallback<FocusEventArgs> OnBlur { get; }
 
-        EventCallback<FocusEventArgs> OnBlur
-        {
-            get
-            {
-                return default;
-            }
-        }
+        EventCallback<FocusEventArgs> OnFocus { get; }
 
-        EventCallback<FocusEventArgs> OnFocus
-        {
-            get
-            {
-                return default;
-            }
-        }
+        EventCallback<KeyboardEventArgs> OnKeyDown { get; }
 
-        EventCallback<KeyboardEventArgs> OnKeyDown
-        {
-            get
-            {
-                return default;
-            }
-        }
+        bool Clearable { get; }
 
-        bool Clearable => default;
+        bool IsDirty { get; }
 
-        bool IsDirty => default;
-
-        string Tag => "input";
+        string Tag { get; }
 
         /// <summary>
         /// This will pass to input and override default settings
         /// </summary>
-        Dictionary<string, object> InputAttrs => new();
+        Dictionary<string, object> InputAttrs { get; }
 
-        string ClearIcon
-        {
-            get
-            {
-                return default;
-            }
-        }
+        string ClearIcon { get; }
 
-        ElementReference InputElement
-        {
-            get
-            {
-                return default;
-            }
-            set
-            {
-                //default todo nothing
-            }
-        }
+        ElementReference InputElement { set; }
 
-        RenderFragment CounterContent
-        {
-            get
-            {
-                return default;
-            }
-        }
+        RenderFragment CounterContent { get; }
 
         BLabel LabelReference { set; }
 
@@ -151,39 +76,20 @@ namespace BlazorComponent
 
         ElementReference PrependInnerElement { set; }
 
-        Task HandleOnAppendOuterClickAsync(MouseEventArgs args)
-        {
-            return Task.CompletedTask;
-        }
+        Task HandleOnPrependInnerClickAsync(MouseEventArgs args);
 
-        Task HandleOnChangeAsync(ChangeEventArgs args)
-        {
-            return Task.CompletedTask;
-        }
+        Task HandleOnAppendOuterClickAsync(MouseEventArgs args);
 
-        Task HandleOnBlurAsync(FocusEventArgs args)
-        {
-            return Task.CompletedTask;
-        }
+        Task HandleOnChangeAsync(ChangeEventArgs args);
 
-        Task HandleOnInputAsync(ChangeEventArgs args)
-        {
-            return Task.CompletedTask;
-        }
+        Task HandleOnBlurAsync(FocusEventArgs args);
 
-        Task HandleOnFocusAsync(FocusEventArgs args)
-        {
-            return Task.CompletedTask;
-        }
+        Task HandleOnInputAsync(ChangeEventArgs args);
 
-        Task HandleOnKeyDownAsync(KeyboardEventArgs args)
-        {
-            return Task.CompletedTask;
-        }
+        Task HandleOnFocusAsync(FocusEventArgs args);
 
-        Task HandleOnClearClickAsync(MouseEventArgs args)
-        {
-            return Task.CompletedTask;
-        }
+        Task HandleOnKeyDownAsync(KeyboardEventArgs args);
+
+        Task HandleOnClearClickAsync(MouseEventArgs args);
     }
 }

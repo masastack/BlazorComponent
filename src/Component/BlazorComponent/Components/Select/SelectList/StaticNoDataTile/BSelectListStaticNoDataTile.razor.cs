@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BDivider : BDomComponentBase
+    public partial class BSelectListStaticNoDataTile<TItem, TItemValue, TValue>
     {
+        protected string NoDataText => Component.NoDataText;
     }
 }

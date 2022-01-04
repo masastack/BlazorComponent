@@ -1,72 +1,102 @@
 ﻿using Microsoft.AspNetCore.Components;
+using System.Linq.Expressions;
 
 namespace BlazorComponent
 {
     public partial class BSelectList<TItem, TItemValue, TValue> : BDomComponentBase
     {
-        private string _key;
-
-        [CascadingParameter]
-        protected ISelect<TItem, TItemValue, TValue> Select { get; set; }
+        private static Func<TItem, string> _itemHeader;
+        private static Func<TItem, bool> _itemDivider;
 
         [Parameter]
-        public bool Highlighted { get; set; }
+        public bool HideSelected { get; set; }
+
+        [EditorRequired]
+        [Parameter]
+        public IList<TItem> Items { get; set; }
 
         [Parameter]
-        public RenderFragment<SelectListItemProps<TItem>> ItemContent { get; set; }
+        public Func<TItem, bool> ItemDisabled { get; set; }
 
-        protected virtual bool Selected
+        [EditorRequired]
+        [Parameter]
+        public Func<TItem, string> ItemText { get; set; }
+
+        [EditorRequired]
+        [Parameter]
+        public Func<TItem, TItemValue> ItemValue { get; set; }
+
+        [Parameter]
+        public string NoDataText { get; set; }
+
+        [Parameter]
+        public IEnumerable<TItem> SelectedItems { get; set; }
+
+        [Parameter]
+        public RenderFragment NoDataContent { get; set; }
+
+        [Parameter]
+        public RenderFragment PrependItemContent { get; set; }
+
+        [Parameter]
+        public RenderFragment AppendItemContent { get; set; }
+
+        protected IList<TItemValue> ParsedItems
         {
             get
             {
-                if (Select != null)
+                return SelectedItems.Select(ItemValue).ToList();
+            }
+        }
+
+        protected bool HasItem(TItem item)
+        {
+            return ParsedItems.IndexOf(ItemValue(item)) > -1;
+        }
+
+        protected Func<TItem, string> ItemHeader
+        {
+            get
+            {
+                if (_itemHeader == null)
                 {
-                    if (Select.Multiple)
-                    {
-                        return Select.Values.Contains(Value);
-                    }
-                    else if (Select.InternalValue != null)
-                    {
-                        return Select.InternalValue.Equals(Value);
-                    }
+                    _itemHeader = GetFuncOrDefault<string>("Header");
                 }
 
-                return false;
+                return _itemHeader;
             }
         }
 
-        [Parameter]
-        public TItem Item { get; set; }
+        private static Func<TItem, T> GetFuncOrDefault<T>(string name)
+        {
+            Func<TItem, T> func;
+            try
+            {
+                var parameterExpression = Expression.Parameter(typeof(TItem), "item");
+                var propertyExpression = Expression.Property(parameterExpression, name);
 
-        [Parameter]
-        public TItemValue Value { get; set; }
+                var lambdaExpression = Expression.Lambda<Func<TItem, T>>(propertyExpression, parameterExpression);
+                func = lambdaExpression.Compile();
+            }
+            catch
+            {
+                func = item => default;
+            }
 
-        /// <summary>
-        /// Gets or sets the key, default returns the <see cref="Value"/> if null.
-        /// </summary>
-        [Parameter]
-        public string Key
+            return func;
+        }
+
+        protected Func<TItem, bool> ItemDivider
         {
             get
             {
-                return _key ?? Value.ToString();
-            }
-            set
-            {
-                _key = value;
+                if (_itemDivider == null)
+                {
+                    _itemDivider = GetFuncOrDefault<bool>("Divider");
+                }
+
+                return _itemDivider;
             }
         }
-
-        [Parameter]
-        public string Label { get; set; }
-
-        [Parameter]
-        public string Icon { get; set; }
-
-        [Parameter]
-        public bool Disabled { get; set; }
-
-        [Parameter]
-        public StringBoolean Loading { get; set; }
     }
 }

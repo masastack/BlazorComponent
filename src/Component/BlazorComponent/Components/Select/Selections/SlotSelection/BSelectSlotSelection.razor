@@ -5,6 +5,9 @@
 @typeparam TInput
 @inherits ComponentPartBase<TInput>
 
-<BMenu @attributes="GetAttributes(typeof(BMenu))" @ref="Menu">
-    @RenderPart(typeof(BSelectList<,,,>))
-</BMenu>
+@{
+    var props = new SelectSelectionProps<TItem>(Item, Index);
+    @SelectionContent(props)
+}
+
+

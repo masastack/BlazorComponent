@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BDivider : BDomComponentBase
+    public interface IAutocomplete<TItem, TItemValue, TValue> : ISelect<TItem, TItemValue, TValue>
     {
+        bool HasSlot { get; }
     }
 }

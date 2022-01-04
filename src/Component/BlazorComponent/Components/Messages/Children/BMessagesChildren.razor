@@ -7,7 +7,7 @@
     {
         foreach (var message in Value)
         {
-            @RenderPart(typeof(BMessagesMessage<>),message)
+            @RenderPart(typeof(BMessagesMessage<>),arg0: message)
         }
     }
 </div>

@@ -5,6 +5,8 @@
 @typeparam TInput
 @inherits ComponentPartBase<TInput>
 
-<BMenu @attributes="GetAttributes(typeof(BMenu))" @ref="Menu">
-    @RenderPart(typeof(BSelectList<,,,>))
-</BMenu>
+<div class="@CssProvider.GetClass("selection-comma",data:(Item,Index))">
+    @($"{GetText(Item)}{(Last?"":", ")}")
+</div>
+
+

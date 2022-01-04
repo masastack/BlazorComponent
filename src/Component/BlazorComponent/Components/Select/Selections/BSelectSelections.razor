@@ -5,39 +5,32 @@
 @typeparam TInput
 @inherits ComponentPartBase<TInput>
 
-<div class="@CssProvider.GetClass("selector")">
-    @if (SelectionContent != null)
-    {
-        for (var i = 0; i < SelectedItems.Count; i++)
+<div class="@CssProvider.GetClass("selections")">
+    @{
+        var selection = (Type)null;
+        if (SelectionContent != null)
         {
-            var item = SelectedItems[i];
-            var props = new SelectSelectionProps<TItem>(item, i);
-            @SelectionContent(props)
+            selection = typeof(BSelectSlotSelection<,,,>);
+        }
+        else if (HasChips)
+        {
+            selection = typeof(BSelectChipSelection<,,,>);
+        }
+        else
+        {
+            selection = typeof(BSelectCommaSelection<,,,>);
         }
     }
-    else if (Chips)
+    @for (var index = 0; index < SelectedItems.Count; index++)
     {
-        foreach (var item in Text)
-        {
-            <BChip @attributes="GetAttributes(typeof(BChip))">
-                @item
-            </BChip>
-        }
+        var item = SelectedItems[index];
+        @RenderPart(selection,item,index,index==SelectedItems.Count-1,arg2Name:"Last")
     }
-    else
-    {
-        for (var i = 0; i < Text.Count(); i++)
-        {
-            var item = Text.ElementAt(i);
-            if (i == Text.Count() - 1)
-            {
-                <div class="@CssProvider.GetClass("selected")">@item</div>
-            }
-            else
-            {
-                <div class="@CssProvider.GetClass("selected")">@($"{item}, ")</div>
-            }
-        }
-    }
-    @RenderPart(typeof(BTextFieldInput<,>))
+    @*When SelectedItems changed,blazor will create a new input element*@
+    @*This will trigger blur event,so we and a wrapper div and key to avoid it*@
+    <div class="@CssProvider.GetClass("input-wrapper")" @key="true">
+        @RenderPart(typeof(BTextFieldInput<,>))
+    </div>
 </div>
+
+

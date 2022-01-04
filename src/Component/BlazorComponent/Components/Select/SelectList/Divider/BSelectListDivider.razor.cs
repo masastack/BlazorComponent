@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BDivider : BDomComponentBase
+    public partial class BSelectListDivider<TItem, TItemValue, TValue>
     {
     }
 }

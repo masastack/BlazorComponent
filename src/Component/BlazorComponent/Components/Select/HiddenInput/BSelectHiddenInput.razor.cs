@@ -10,7 +10,7 @@ namespace BlazorComponent
     {
         public bool Multiple => Component.Multiple;
 
-        public IList<TItemValue> Values => Component.Values;
+        public IList<TItemValue> InternalValues => Component.InternalValues;
 
         public TValue InternalValue => Component.InternalValue;
     }
