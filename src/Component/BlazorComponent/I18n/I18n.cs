@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.IO;
-using System.Linq;
+﻿using System.Collections.Concurrent;
 using System.Text.Json;
 
-namespace BlazorComponent.Components
+namespace BlazorComponent.I18n
 {
     public class I18n
     {
@@ -39,15 +33,6 @@ namespace BlazorComponent.Components
             if (isDefaultLanguage) DefaultLanguage = language;
 
             _i18nCache.AddOrUpdate(language, langMap, (name, original) => langMap);
-        }
-
-        public static void AddLang(string language, string languageSettingsFile, bool isDefaultLanguage = false)
-        {
-            var languageSettings = JsonSerializer.Deserialize<Dictionary<string,string>>(File.ReadAllText(languageSettingsFile));
-            if (languageSettings is not null)
-            {
-                AddLang(language, languageSettings, isDefaultLanguage);
-            }
         }
 
         public static IReadOnlyDictionary<string, string>? GetLang(string language)
