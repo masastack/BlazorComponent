@@ -67,7 +67,11 @@ namespace BlazorComponent
             // assign first registered item
             if (Mandatory && Value == null)
             {
-                _ = UpdateMandatoryAsync();
+                Value = item.Value;
+                if (ValueChanged.HasDelegate)
+                {
+                    _ = ValueChanged.InvokeAsync(Value);
+                }
             }
         }
 
