@@ -4,25 +4,18 @@
     {
         public string? DefaultLanguage { get; set; }
 
-        public List<Language> Languages { get; set; }
+        public string LanguageFileDirectoryForServer { get; set; }
 
-        public LanguageConfig(string? defaultLanguage, List<Language> languages)
+        public string LanguageFileDirectoryForWasm { get; set; }
+
+        public List<string> Languages { get; set; }
+
+        public LanguageConfig(string? defaultLanguage, string languageFileDirectoryForServer, string languageFileDirectoryForWasm, List<string> languages)
         {
             DefaultLanguage = defaultLanguage;
+            LanguageFileDirectoryForServer = languageFileDirectoryForServer;
+            LanguageFileDirectoryForWasm = languageFileDirectoryForWasm;
             Languages = languages;
-        }
-    }
-
-    public class Language
-    {
-        public string Value { get; set; }
-
-        public string FilePath { get; set; }
-
-        public Language(string value, string filePath)
-        {
-            Value = value;
-            FilePath = filePath;
         }
     }
 }

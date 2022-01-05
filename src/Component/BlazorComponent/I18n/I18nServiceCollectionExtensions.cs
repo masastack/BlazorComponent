@@ -10,12 +10,12 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         static HttpClient _httpClient;
 
-        static string _baseUrl;
+        static string _basePath;
 
         static I18nServiceCollectionExtensions()
         {
             _httpClient = new HttpClient();
-            _baseUrl = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            _basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         }
 
         public static IServiceCollection AddMasaI18n(this IServiceCollection services, IEnumerable<(string language, Dictionary<string, string>)> languageMap, string? defaultLanguage = null)
@@ -40,12 +40,12 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddMasaI18nForServer(this IServiceCollection services, string languageDirectory, string? defaultLanguage = null)
         {
-            var files = Directory.GetFiles(Path.Combine(_baseUrl, languageDirectory));
+            var files = Directory.GetFiles(Path.Combine(_basePath, languageDirectory));
             var languageMap = new List<(string language, Dictionary<string, string>)>();
             foreach (var filePath in files)
             {
                 var language = Path.GetFileNameWithoutExtension(filePath);
-                var map = JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(Path.Combine(_baseUrl, filePath)));
+                var map = JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(filePath));
                 languageMap.Add((language, map));
             }
             services.AddMasaI18n(languageMap, defaultLanguage);
@@ -55,7 +55,12 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IServiceCollection AddMasaI18nForServer(this IServiceCollection services, LanguageConfig languageConfig)
         {
-            var languageMap = languageConfig.Languages.Select(language => (language.Value, JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(language.FilePath))));
+            var languageMap = new List<(string language, Dictionary<string, string>)>();
+            foreach (var language in languageConfig.Languages)
+            {
+                var map = JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(Path.Combine(_basePath, languageConfig.LanguageFileDirectoryForServer, $"{language}.json")));
+                languageMap.Add((language, map));
+            }
             services.AddMasaI18n(languageMap, languageConfig.DefaultLanguage);
 
             return services;
@@ -63,7 +68,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IServiceCollection AddMasaI18nForServer(this IServiceCollection services, string languageConfigFilePath)
         {
-            var languageConfig = JsonSerializer.Deserialize<LanguageConfig>(File.ReadAllText(Path.Combine(_baseUrl, languageConfigFilePath))) ?? throw new Exception("Failed to read i18n json file data!");
+            var languageConfig = JsonSerializer.Deserialize<LanguageConfig>(File.ReadAllText(Path.Combine(_basePath, languageConfigFilePath))) ?? throw new Exception("Failed to read i18n json file data!");
             services.AddMasaI18nForServer(languageConfig);
 
             return services;
@@ -75,8 +80,8 @@ namespace Microsoft.Extensions.DependencyInjection
             var languageMap = new List<(string language, Dictionary<string, string>)>();
             foreach (var language in languageConfig.Languages)
             {
-                var map = await _httpClient.GetFromJsonAsync<Dictionary<string, string>>(language.FilePath);
-                languageMap.Add((language.Value, map));
+                var map = await _httpClient.GetFromJsonAsync<Dictionary<string, string>>(Path.Combine(languageConfig.LanguageFileDirectoryForWasm, $"{language}.json"));
+                languageMap.Add((language, map));
             }
             services.AddMasaI18n(languageMap, languageConfig.DefaultLanguage);
         }
@@ -90,7 +95,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static async Task<ParameterView> GetMasaI18nParameter(this IServiceCollection services)
         {
-            var provider= services.BuildServiceProvider();
+            var provider = services.BuildServiceProvider();
             var i18nConfig = provider.GetRequiredService<I18nConfig>();
             await i18nConfig.Initialization();
             return ParameterView.FromDictionary(new Dictionary<string, object?> { [nameof(I18nConfig)] = i18nConfig });
