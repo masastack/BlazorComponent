@@ -5,11 +5,11 @@ namespace BlazorComponent.I18n
 {
     public class I18n
     {
-        private static ConcurrentDictionary<string, Dictionary<string, string>> _i18nCache;
+        private static ConcurrentDictionary<string, IReadOnlyDictionary<string, string>> _i18nCache;
 
         static I18n()
         {
-            _i18nCache = new ConcurrentDictionary<string, Dictionary<string, string>>();
+            _i18nCache = new ConcurrentDictionary<string, IReadOnlyDictionary<string, string>>();
         }
 
         private static string? _defaultLanguage;
@@ -26,7 +26,7 @@ namespace BlazorComponent.I18n
             }
         }
 
-        public static void AddLang(string language, Dictionary<string, string>? langMap, bool isDefaultLanguage = false)
+        public static void AddLang(string language, IReadOnlyDictionary<string, string>? langMap, bool isDefaultLanguage = false)
         {
             if (langMap is null) return;
 
@@ -77,5 +77,7 @@ namespace BlazorComponent.I18n
         {
             return LanguageMap.GetValueOrDefault(key);
         }
+
+        public IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> ToDictionary() => _i18nCache;
     }
 }
