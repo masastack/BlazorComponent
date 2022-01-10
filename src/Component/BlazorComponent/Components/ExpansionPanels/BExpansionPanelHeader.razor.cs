@@ -10,7 +10,7 @@ namespace BlazorComponent
     {
         protected bool HasMouseDown;
 
-        protected bool IsActive => ExpansionPanel?.IsActive ?? false;
+        protected bool IsActive => ExpansionPanel?.InternalIsActive ?? false;
 
         protected bool IsDisabled => ExpansionPanel?.IsDisabled ?? false;
 

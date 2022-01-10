@@ -29,7 +29,6 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment<Action> PrevContent { get; set; }
 
-        // TODO: need transition
         [Parameter]
         public bool Reverse { get; set; }
 
@@ -39,12 +38,13 @@ namespace BlazorComponent
         [Parameter]
         public bool ShowArrowsOnHover { get; set; }
 
-        // TODO: need transition
         [Parameter]
         public bool Vertical { get; set; }
 
         [Inject]
         public Document Document { get; set; }
+
+        protected bool IsReverse { get; set; }
 
         public bool ArrowsVisible => ShowArrowsOnHover || ShowArrows;
 
@@ -71,18 +71,20 @@ namespace BlazorComponent
             base.OnInitialized();
 
             Watcher.Watch<int>(nameof(InternalIndex),
-                (newVal, oldVal) => Reverse = UpdateReverse(newVal, oldVal));
+                (newVal, oldVal) => IsReverse = UpdateReverse(newVal, oldVal));
         }
 
         protected override void OnParametersSet()
         {
             base.OnParametersSet();
 
-            InternalIndex = Items.FindIndex(item => item.Value == Value);
+            UpdateInternalIndex();
         }
 
         protected void Next()
         {
+            UpdateInternalIndex();
+
             if (!HasActiveItems || !HasNext) return;
 
             var nextIndex = GetNextIndex(InternalIndex);
@@ -90,17 +92,20 @@ namespace BlazorComponent
 
             if (ValueChanged.HasDelegate)
             {
-                // TODO: whether need await
                 ValueChanged.InvokeAsync(nextItem.Value);
             }
             else
             {
                 Value = nextItem.Value;
+                InternalIndex = nextIndex;
+                StateHasChanged();
             }
         }
 
         protected void Prev()
         {
+            UpdateInternalIndex();
+
             if (!HasActiveItems || !HasPrev) return;
 
             var prevIndex = GetPrevIndex(InternalIndex);
@@ -108,12 +113,13 @@ namespace BlazorComponent
 
             if (ValueChanged.HasDelegate)
             {
-                // TODO: whether need await
                 ValueChanged.InvokeAsync(pervItem.Value);
             }
             else
             {
                 Value = pervItem.Value;
+                InternalIndex = prevIndex;
+                StateHasChanged();
             }
         }
 
@@ -135,6 +141,11 @@ namespace BlazorComponent
             if (prevItem.Disabled) return GetPrevIndex(prevIndex);
 
             return prevIndex;
+        }
+
+        private void UpdateInternalIndex()
+        {
+            InternalIndex = Items.FindIndex(item => item.Value == Value);
         }
 
         private bool UpdateReverse(int val, int oldVal)

@@ -164,7 +164,7 @@ namespace BlazorComponent
             else if (IsInGroup)
             {
                 Attributes["role"] = "option";
-                Attributes["aria-selected"] = IsActive.ToString();
+                Attributes["aria-selected"] = InternalIsActive.ToString();
             }
             else if (IsInMenu)
             {
@@ -181,8 +181,8 @@ namespace BlazorComponent
         {
             return new ItemContext()
             {
-                Active = IsActive,
-                ActiveClass = IsActive ? ComputedActiveClass : "",
+                Active = InternalIsActive,
+                ActiveClass = InternalIsActive ? ComputedActiveClass : "",
                 Toggle = ToggleAsync,
                 Ref = RefBack,
                 Value = Value
@@ -191,14 +191,14 @@ namespace BlazorComponent
 
         private bool UpdateActiveForLinkage()
         {
-            var isActive = IsActive;
+            var isActive = InternalIsActive;
 
             if (IsLinkage)
             {
-                IsActive = _linker.MatchRoute(Href);
+                InternalIsActive = _linker.MatchRoute(Href);
             }
 
-            return isActive != IsActive;
+            return isActive != InternalIsActive;
         }
 
         protected override void Dispose(bool disposing)

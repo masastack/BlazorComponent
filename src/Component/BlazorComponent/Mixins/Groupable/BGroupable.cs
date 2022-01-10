@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
@@ -39,14 +37,18 @@ namespace BlazorComponent
             }
         }
 
-        public string ComputedActiveClass => ActiveClass ?? ItemGroup?.ActiveClass;
+        protected string ComputedActiveClass => ActiveClass ?? ItemGroup?.ActiveClass;
 
-        public bool Matched => ItemGroup != null && (ItemGroup.GroupType == _groupType);
+        protected bool Matched => ItemGroup != null && (ItemGroup.GroupType == _groupType);
+
+        protected bool ValueMatched => Matched && ItemGroup.Values.Contains(Value);
+
+        public bool InternalIsActive { get; protected set; }
 
         [Parameter]
         public bool IsActive
         {
-            get => _isActive ?? Matched && ItemGroup.Values.Contains(Value);
+            get => _isActive ?? false;
             set => _isActive = value;
         }
 
@@ -55,11 +57,18 @@ namespace BlazorComponent
             base.OnInitialized();
 
             if (!Matched) return;
-
+            
             if (this is IGroupable item)
             {
                 ItemGroup.Register(item);
             }
+        }
+
+        public override async Task SetParametersAsync(ParameterView parameters)
+        {
+            await base.SetParametersAsync(parameters);
+
+            InternalIsActive = _isActive ?? ValueMatched;
         }
 
         protected virtual async Task ToggleAsync()

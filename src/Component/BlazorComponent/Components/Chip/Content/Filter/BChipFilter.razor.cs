@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BChipFilter<TChip> where TChip : IChip
     {
@@ -8,6 +6,6 @@ namespace BlazorComponent
 
         string FilterIcon => Component.FilterIcon;
 
-        public bool IsActive => Component.IsActive;
+        public bool IsActive => Component.InternalIsActive;
     }
 }

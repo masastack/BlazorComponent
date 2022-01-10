@@ -27,8 +27,8 @@ namespace BlazorComponent
         {
             return new ItemContext()
             {
-                Active = IsActive,
-                ActiveClass = IsActive ? ComputedActiveClass : "",
+                Active = InternalIsActive,
+                ActiveClass = InternalIsActive ? ComputedActiveClass : "",
                 Toggle = ToggleAsync,
                 Ref = RefBack,
                 Value = Value
