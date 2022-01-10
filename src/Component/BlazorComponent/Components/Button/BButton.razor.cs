@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public partial class BButton : BGroupItem<ItemGroupBase>, IThemeable, IButton, IRoutable
+    public partial class BButton : BGroupItem<ItemGroupBase>, IThemeable, IButton, IRoutable, IHandleEvent
     {
         protected BButton() : base(GroupType.ButtonGroup)
         {
@@ -70,13 +70,32 @@ namespace BlazorComponent
         [Parameter]
         public bool StopPropagation { get; set; }
 
-        public virtual bool IsDark { get; }
-
         [Parameter]
         public bool Dark { get; set; }
 
         [Parameter]
         public bool Light { get; set; }
+
+        [CascadingParameter(Name = "IsDark")]
+        public bool CascadingIsDark { get; set; }
+
+        public bool IsDark
+        {
+            get
+            {
+                if (Dark)
+                {
+                    return true;
+                }
+
+                if (Light)
+                {
+                    return false;
+                }
+
+                return CascadingIsDark;
+            }
+        }
 
         protected override void OnParametersSet()
         {
@@ -87,9 +106,17 @@ namespace BlazorComponent
             (Tag, Attributes) = router.GenerateRouteLink();
         }
 
+        async Task IHandleEvent.HandleEventAsync(EventCallbackWorkItem item, object? arg)
+        {
+            await item.InvokeAsync(arg);
+        }
+
         protected virtual async Task HandleOnClick(MouseEventArgs args)
         {
-            await OnClick.InvokeAsync(args);
+            if (OnClick.HasDelegate)
+            {
+                await OnClick.InvokeAsync(args);
+            }
 
             await ToggleAsync();
         }

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BIcon
+    public partial class BIcon : IThemeable
     {
         [Parameter]
         public RenderFragment ChildContent { get; set; }
@@ -44,15 +44,32 @@ namespace BlazorComponent
 
         #endregion
 
-        #region  IThemeable
-
         [Parameter]
         public bool Dark { get; set; }
 
         [Parameter]
         public bool Light { get; set; }
 
-        #endregion
+        [CascadingParameter(Name = "IsDark")]
+        public bool CascadingIsDark { get; set; }
+
+        public bool IsDark
+        {
+            get
+            {
+                if (Dark)
+                {
+                    return true;
+                }
+
+                if (Light)
+                {
+                    return false;
+                }
+
+                return CascadingIsDark;
+            }
+        }
 
         [Parameter]
         public string Color { get; set; }

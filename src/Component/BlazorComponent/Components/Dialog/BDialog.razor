@@ -1,13 +1,14 @@
 ﻿@namespace BlazorComponent
 @inherits BActivatable
 
-@RenderPart(typeof(BDialogActivator<>))
+<CascadingValue Value="IsDark" Name="IsDark">
+    @RenderPart(typeof(BDialogActivator<>))
+    <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" role="dialog">
+        @RenderPart(typeof(BDialogContent<>))
 
-<div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" role="dialog">
-    @RenderPart(typeof(BDialogContent<>))
-    
-    @if (ShowContent)
-    {
-        <BOverlay @attributes="GetAttributes(typeof(BOverlay))" @ref="Overlay"></BOverlay>
-    }
-</div>
+        @if (ShowContent)
+        {
+            <BOverlay @attributes="GetAttributes(typeof(BOverlay))" @ref="Overlay"></BOverlay>
+        }
+    </div>
+</CascadingValue>

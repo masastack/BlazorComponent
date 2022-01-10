@@ -15,6 +15,8 @@ namespace BlazorComponent
 
         protected override void OnAfterRender(bool firstRender)
         {
+            base.OnAfterRender(firstRender);
+
             if (firstRender)
             {
                 Ref = RefBack.Current;

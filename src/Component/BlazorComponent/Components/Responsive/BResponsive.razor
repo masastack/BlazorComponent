@@ -1,6 +1,8 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<Element class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" @attributes="@Attributes">
-    @RenderPart(typeof(BResponsiveBody<>))
-</Element>
+<CascadingValue Value="IsDark" Name="IsDark">
+    <Element class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" @attributes="@Attributes">
+        @RenderPart(typeof(BResponsiveBody<>))
+    </Element>
+</CascadingValue>

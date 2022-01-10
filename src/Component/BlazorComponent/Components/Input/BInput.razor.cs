@@ -66,6 +66,33 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<MouseEventArgs> OnAppendClick { get; set; }
 
+        [Parameter]
+        public bool Dark { get; set; }
+
+        [Parameter]
+        public bool Light { get; set; }
+
+        [CascadingParameter(Name = "IsDark")]
+        public bool CascadingIsDark { get; set; }
+
+        public virtual bool IsDark
+        {
+            get
+            {
+                if (Dark)
+                {
+                    return true;
+                }
+
+                if (Light)
+                {
+                    return false;
+                }
+
+                return CascadingIsDark;
+            }
+        }
+
         protected bool HasMouseDown { get; set; }
 
         public virtual bool HasLabel => LabelContent != null || Label != null;

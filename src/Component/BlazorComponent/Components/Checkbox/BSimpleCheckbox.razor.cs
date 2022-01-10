@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public partial class BSimpleCheckbox
+    public partial class BSimpleCheckbox : IThemeable
     {
         [Parameter]
         public bool Disabled { get; set; }
@@ -30,6 +30,33 @@ namespace BlazorComponent
 
         [Parameter]
         public string OffIcon { get; set; } = "mdi-checkbox-blank-outline";
+
+        [Parameter]
+        public bool Dark { get; set; }
+
+        [Parameter]
+        public bool Light { get; set; }
+
+        [CascadingParameter(Name = "IsDark")]
+        public bool CascadingIsDark { get; set; }
+
+        public bool IsDark
+        {
+            get
+            {
+                if (Dark)
+                {
+                    return true;
+                }
+
+                if (Light)
+                {
+                    return false;
+                }
+
+                return CascadingIsDark;
+            }
+        }
 
         public string ComputedIcon
         {

@@ -1,19 +1,21 @@
 ﻿@namespace BlazorComponent
 @inherits BGroupItem<ItemGroupBase>
 
-<Element Tag="@Tag" type="@TypeAttribute"
-         class="@CssProvider.GetClass()"
-         style="@CssProvider.GetStyle()"
-         id="@Id"
-         ReferenceCaptureAction="reference=>Ref=reference"
-         @onclick="HandleOnClick"
-         __internal_stopPropagation_onclick="@StopPropagation"
-         @attributes="Attributes">
+<CascadingValue Value="IsDark" Name="IsDark">
+    <Element Tag="@Tag" type="@TypeAttribute"
+             class="@CssProvider.GetClass()"
+             style="@CssProvider.GetStyle()"
+             id="@Id"
+             ReferenceCaptureAction="reference=>Ref=reference"
+             @onclick="HandleOnClick"
+             __internal_stopPropagation_onclick="@StopPropagation"
+             @attributes="Attributes">
 
-    @if (HasLoader)
-    {
-        @RenderPart(typeof(BButtonLoader<>))
-    }
+        @if (HasLoader)
+        {
+            @RenderPart(typeof(BButtonLoader<>))
+        }
 
-    @RenderPart(typeof(BButtonContent<>))
-</Element>
+        @RenderPart(typeof(BButtonContent<>))
+    </Element>
+</CascadingValue>

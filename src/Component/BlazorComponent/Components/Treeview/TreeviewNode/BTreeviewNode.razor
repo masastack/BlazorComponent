@@ -4,7 +4,7 @@
 @inherits BDomComponentBase
 @implements ITreeviewNode<TItem, TKey>
 
-<BCascadingValue Value="this">
+<BCascadingValue Value="this" IsFixed>
     <div class="@CssProvider.GetClass()">
         @RenderPart(typeof(BTreeviewNodeNode<,,>))
         @RenderPart(typeof(BTreeviewNodeChildrenWrapper<,,>))

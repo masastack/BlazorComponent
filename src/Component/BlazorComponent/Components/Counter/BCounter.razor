@@ -1,13 +1,16 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div class="@CssProvider.GetClass()">
-    @if (Max != null)
-    {
-        @($"{Value}/{Max}")
-    }
-    else
-    {
-        @Value
-    }
-</div>
+<CascadingValue Value="IsDark" Name="IsDark">
+    <div class="@CssProvider.GetClass()">
+        @if (Max != null)
+        {
+            @($"{Value}/{Max}")
+        }
+        else
+        {
+            @Value
+        }
+    </div>
+</CascadingValue>
+

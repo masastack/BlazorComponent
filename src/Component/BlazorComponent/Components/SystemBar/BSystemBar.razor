@@ -1,6 +1,8 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" @ref="Ref" @onclick="HandleOnClickAsync">
-    @ChildContent
-</div>
+<CascadingValue Value="IsDark" Name="IsDark">
+    <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" @ref="Ref" @onclick="HandleOnClickAsync">
+        @ChildContent
+    </div>
+</CascadingValue>

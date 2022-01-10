@@ -221,15 +221,7 @@ namespace BlazorComponent
         /// </summary>
         protected void PreventRender() => _preventRender = true;
 
-        protected override bool ShouldRender()
-        {
-            if (!_preventRender)
-                return base.ShouldRender();
-
-            _preventRender = false;
-            return false;
-        }
-
+        
         #endregion
     }
 }

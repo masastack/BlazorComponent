@@ -66,9 +66,6 @@ namespace BlazorComponent
 
         protected string CalculatedTop => !Auto ? CalcTop() : ((StringNumber)CalcYOverflow(CalcTopAuto())).ConvertToUnit();
 
-        [Inject]
-        public NavigationManager NavigationManager { get; set; }
-
         [Parameter]
         public bool Auto { get; set; }
 
@@ -107,6 +104,33 @@ namespace BlazorComponent
 
         [CascadingParameter]
         public IDependent CascadingDependent { get; set; }
+
+        [Parameter]
+        public bool Dark { get; set; }
+
+        [Parameter]
+        public bool Light { get; set; }
+
+        [CascadingParameter(Name = "AppIsDark")]
+        public bool AppIsDark { get; set; }
+
+        public bool IsDark
+        {
+            get
+            {
+                if (Dark)
+                {
+                    return true;
+                }
+
+                if (Light)
+                {
+                    return false;
+                }
+
+                return AppIsDark;
+            }
+        }
 
         public IEnumerable<HtmlElement> DependentElements
         {

@@ -4,18 +4,20 @@
 @inherits BDomComponentBase
 @implements ITreeview<TItem, TKey>
 
-<BCascadingValue Value="this">
-    <div class="@CssProvider.GetClass()">
-        @if (ComputedItems != null && ComputedItems.Any())
-        {
-            foreach (var item in ComputedItems)
+<CascadingValue Value="IsDark" Name="IsDark">
+    <BCascadingValue Value="this" IsFixed>
+        <div class="@CssProvider.GetClass()">
+            @if (ComputedItems != null && ComputedItems.Any())
             {
-                @RenderPart(typeof(BTreeviewNodeChild<,,>),item,ItemDisabled?.Invoke(item) ?? false,arg1Name:"ParentIsDisabled")
+                foreach (var item in ComputedItems)
+                {
+                    @RenderPart(typeof(BTreeviewNodeChild<,,>),item,ItemDisabled?.Invoke(item) ?? false,arg1Name:"ParentIsDisabled")
+                }
             }
-        }
-        else
-        {
-            @ChildContent
-        }
-    </div>
-</BCascadingValue>
+            else
+            {
+                @ChildContent
+            }
+        </div>
+    </BCascadingValue>
+</CascadingValue>

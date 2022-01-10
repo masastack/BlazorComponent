@@ -1,15 +1,17 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<span class="@CssProvider.GetClass()">
-    @if (InLine && Left)
-    {
-        @RenderPart(typeof(BBadgeWrapper<>))
-        @ChildContent
-    }
-    else
-    {
-        @ChildContent
-        @RenderPart(typeof(BBadgeWrapper<>))
-    }
-</span>
+<CascadingValue Value="IsDark" Name="IsDark">
+    <span class="@CssProvider.GetClass()">
+        @if (InLine && Left)
+        {
+            @RenderPart(typeof(BBadgeWrapper<>))
+            @ChildContent
+        }
+        else
+        {
+            @ChildContent
+            @RenderPart(typeof(BBadgeWrapper<>))
+        }
+    </span>
+</CascadingValue>

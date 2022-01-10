@@ -1,38 +1,41 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-@{
-    //We want default to be null,so that BPicker Title will render nothing
-    var titleContent = (RenderFragment)null;
-    @if (!NoTitle)
-    {
-        titleContent =@<BDatePickerTitle @attributes="GetAttributes(typeof(BDatePickerTitle))"></BDatePickerTitle>;
+<CascadingValue Value="IsDark" Name="IsDark">
+    @{
+        //We want default to be null,so that BPicker Title will render nothing
+        var titleContent = (RenderFragment)null;
+        @if (!NoTitle)
+        {
+            titleContent =@<BDatePickerTitle @attributes="GetAttributes(typeof(BDatePickerTitle))"></BDatePickerTitle>;
+        }
     }
-}
 
-<BPicker TitleContent="titleContent" Class="@CssProvider.GetClass()" @attributes="GetAttributes(typeof(BPicker))">
-    <ChildContent>
-        <div @key="InternalActivePicker">
-            @if (InternalActivePicker == DatePickerType.Year)
-            {
-                @RenderPart(typeof(BDatePickerYears<>))
-            }
-            else
-            {
-                @RenderPart(typeof(BDatePickerTableHeader<>))
-                if (InternalActivePicker == DatePickerType.Date)
+    <BPicker TitleContent="titleContent" Class="@CssProvider.GetClass()" @attributes="GetAttributes(typeof(BPicker))">
+        <ChildContent>
+            <div @key="InternalActivePicker">
+                @if (InternalActivePicker == DatePickerType.Year)
                 {
-                    @RenderPart(typeof(BDatePickerDateTable<>))
+                    @RenderPart(typeof(BDatePickerYears<>))
                 }
                 else
                 {
-                    @RenderPart(typeof(BDatePickerMonthTable<>))
+                    @RenderPart(typeof(BDatePickerTableHeader<>))
+                    if (InternalActivePicker == DatePickerType.Date)
+                    {
+                        @RenderPart(typeof(BDatePickerDateTable<>))
+                    }
+                    else
+                    {
+                        @RenderPart(typeof(BDatePickerMonthTable<>))
+                    }
                 }
-            }
-        </div>
-    </ChildContent>
-    <ActionsContent>
-        @ChildContent
-    </ActionsContent>
-</BPicker>
+            </div>
+        </ChildContent>
+        <ActionsContent>
+            @ChildContent
+        </ActionsContent>
+    </BPicker>
+</CascadingValue>
+
 

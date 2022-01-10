@@ -1,23 +1,21 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<BCascadingValue Value="this">
-    <Element Tag="@WrappedTag" class="@CssProvider.GetClass("wrapper")" style="@CssProvider.GetStyle("wrapper")">
-        <Element Tag="@Tag" Class="@CssProvider.GetClass()" Style="@CssProvider.GetStyle()" @attributes="Attributes">
-            @if (ChildContent != default)
-            {
-                @ChildContent
-            }
-            else
-            {
-                @Text
-            }
-        </Element>
+<Element Tag="@WrappedTag" class="@CssProvider.GetClass("wrapper")" style="@CssProvider.GetStyle("wrapper")">
+    <Element Tag="@Tag" Class="@CssProvider.GetClass()" Style="@CssProvider.GetStyle()" @attributes="Attributes">
+        @if (ChildContent != default)
+        {
+            @ChildContent
+        }
+        else
+        {
+            @Text
+        }
     </Element>
+</Element>
 
-    <!--When using razor definition without `Items` parameter-->
-    @if (Breadcrumbs.ChildContent != null && !IsLast)
-    {
-        <BBreadcrumbsDivider Divider="@Breadcrumbs.Divider" DividerContent="@Breadcrumbs.DividerContent" @attributes="GetAttributes(typeof(BBreadcrumbsDivider))"></BBreadcrumbsDivider>
-    }
-</BCascadingValue>
+<!--When using razor definition without `Items` parameter-->
+@if (Breadcrumbs.ChildContent != null && !IsLast)
+{
+    <BBreadcrumbsDivider Divider="@Breadcrumbs.Divider" DividerContent="@Breadcrumbs.DividerContent" @attributes="GetAttributes(typeof(BBreadcrumbsDivider))"></BBreadcrumbsDivider>
+}

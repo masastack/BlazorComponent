@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public partial class BChip : BGroupItem<ItemGroupBase>, IRoutable
+    public partial class BChip : BGroupItem<ItemGroupBase>, IRoutable, IHandleEvent
     {
         protected IRoutable _router;
 
@@ -41,6 +41,33 @@ namespace BlazorComponent
         [Parameter]
         public string Target { get; set; }
 
+        [Parameter]
+        public bool Light { get; set; }
+
+        [Parameter]
+        public bool Dark { get; set; }
+
+        [CascadingParameter(Name = "IsDark")]
+        public bool CascadingIsDark { get; set; }
+
+        public bool IsDark
+        {
+            get
+            {
+                if (Dark)
+                {
+                    return true;
+                }
+
+                if (Light)
+                {
+                    return false;
+                }
+
+                return CascadingIsDark;
+            }
+        }
+
         protected override void OnParametersSet()
         {
             base.OnParametersSet();
@@ -48,6 +75,11 @@ namespace BlazorComponent
             _router = new Router(this);
 
             (Tag, Attributes) = _router.GenerateRouteLink();
+        }
+
+        async Task IHandleEvent.HandleEventAsync(EventCallbackWorkItem item, object? arg)
+        {
+            await item.InvokeAsync(arg);
         }
 
         protected async Task HandleOnClick(MouseEventArgs args)

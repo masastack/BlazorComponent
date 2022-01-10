@@ -1,8 +1,8 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<CascadingValue Value="this">
-    <CascadingValue Value="EditContext">
+<CascadingValue Value="this" IsFixed>
+    <CascadingValue Value="EditContext" IsFixed>
         <form class="@CssProvider.GetClass()" @onsubmit="OnSubmit">
             @if (ChildContent != null)
             {

@@ -1,19 +1,21 @@
 ﻿@namespace BlazorComponent
 @inherits BGroupItem<ItemGroupBase>
 
-<Element Class="@CssProvider.GetClass()"
-         Style="@CssProvider.GetStyle()"
-         Tag="@Tag"
-         ReferenceCaptureAction="_ => Ref = _"
-         @onclick="HandleOnClick"
-         @onmousedown:preventDefault
-         @attributes="Attributes">
-    @if (ItemContent != null)
-    {
-        @ComputedItemContent
-    }
-    else
-    {
-        @ChildContent
-    }
-</Element>
+<CascadingValue Value="IsDark" Name="IsDark">
+    <Element Class="@CssProvider.GetClass()"
+             Style="@CssProvider.GetStyle()"
+             Tag="@Tag"
+             ReferenceCaptureAction="_ => Ref = _"
+             @onclick="HandleOnClick"
+             @onmousedown:preventDefault
+             @attributes="Attributes">
+        @if (ItemContent != null)
+        {
+            @ComputedItemContent
+        }
+        else
+        {
+            @ChildContent
+        }
+    </Element>
+</CascadingValue>

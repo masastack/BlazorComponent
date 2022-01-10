@@ -203,8 +203,6 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
         get => IsActive;
         set
         {
-            _ = ShowLazyContent();
-
             IsActive = value;
         }
     }

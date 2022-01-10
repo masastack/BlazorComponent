@@ -1,7 +1,7 @@
 ﻿@namespace BlazorComponent
 @inherits BGroupItem<ItemGroupBase>
 
-<BCascadingValue Value="this">
+<CascadingValue Value="IsDark" Name="IsDark">
     <Element Tag="@Tag"
              Class="@CssProvider.GetClass()"
              Style="@CssProvider.GetStyle()"
@@ -10,4 +10,4 @@
              @attributes="Attributes">
         @RenderPart(typeof(BChipContent<>))
     </Element>
-</BCascadingValue>
+</CascadingValue>

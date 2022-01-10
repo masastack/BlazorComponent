@@ -1,10 +1,8 @@
 @namespace BlazorComponent
 @inherits BDomComponentBase
 
-<CascadingValue Value="this">
-    <Element Tag="@Tag" class="@CssProvider.GetClass()" style="@(GutterStyle + " " + CssProvider.GetStyle())" id="@Id"
-             ReferenceCaptureAction="r => Ref = r"
-             @attributes="Attributes">
-        @ChildContent
-    </Element>
-</CascadingValue>
+<Element Tag="@Tag" class="@CssProvider.GetClass()" style="@(GutterStyle + " " + CssProvider.GetStyle())" id="@Id"
+         ReferenceCaptureAction="r => Ref = r"
+         @attributes="Attributes">
+    @ChildContent
+</Element>

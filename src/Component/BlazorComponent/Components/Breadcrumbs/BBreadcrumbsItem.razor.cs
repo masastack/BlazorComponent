@@ -66,8 +66,11 @@ namespace BlazorComponent
 
         private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
         {
-            UpdateActiveForLinkage();
-            InvokeStateHasChanged();
+            var shouldRender = UpdateActiveForLinkage();
+            if (shouldRender)
+            {
+                InvokeStateHasChanged();
+            }
         }
 
         protected override void OnParametersSet()
@@ -89,12 +92,16 @@ namespace BlazorComponent
 
         #endregion
 
-        private void UpdateActiveForLinkage()
+        private bool UpdateActiveForLinkage()
         {
+            var matched = Matched;
+
             if (IsLinkage)
             {
                 Matched = _linker.MatchRoute(Href);
             }
+
+            return matched != Matched;
         }
 
         protected override void Dispose(bool disposing)

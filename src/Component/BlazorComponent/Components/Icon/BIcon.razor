@@ -2,11 +2,13 @@
 @using BlazorComponent.Helpers
 @inherits BDomComponentBase
 
-@if (RegexHelper.RegexSvgPath(Icon))
-{
-    @RenderPart(typeof(BSvgIconSlot<>))
-}
-else
-{
-    @RenderPart(typeof(BFontIconSlot<>))
-}
+<CascadingValue Value="IsDark" Name="IsDark">
+    @if (RegexHelper.RegexSvgPath(Icon))
+    {
+        @RenderPart(typeof(BSvgIconSlot<>))
+    }
+    else
+    {
+        @RenderPart(typeof(BFontIconSlot<>))
+    }
+</CascadingValue>

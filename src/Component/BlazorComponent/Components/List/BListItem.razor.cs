@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components.Routing;
 
 namespace BlazorComponent
 {
-    public partial class BListItem : BGroupItem<ItemGroupBase>, IRoutable, ILinkable
+    public partial class BListItem : BGroupItem<ItemGroupBase>, IRoutable, ILinkable, IHandleEvent
     {
         private Linker _linker;
         private IRoutable _router;
@@ -60,6 +60,33 @@ namespace BlazorComponent
         [Parameter]
         public string Target { get; set; }
 
+        [Parameter]
+        public bool Dark { get; set; }
+
+        [Parameter]
+        public bool Light { get; set; }
+
+        [CascadingParameter(Name = "IsDark")]
+        public bool CascadingIsDark { get; set; }
+
+        public bool IsDark
+        {
+            get
+            {
+                if (Dark)
+                {
+                    return true;
+                }
+
+                if (Light)
+                {
+                    return false;
+                }
+
+                return CascadingIsDark;
+            }
+        }
+
         protected RenderFragment ComputedItemContent => ItemContent(GenItemContext());
 
         public bool IsClickable => _router.IsClickable || ItemGroup != null;
@@ -94,8 +121,16 @@ namespace BlazorComponent
 
         private void OnLocationChanged(object sender, LocationChangedEventArgs e)
         {
-            UpdateActiveForLinkage();
-            InvokeStateHasChanged();
+            var shouldRender = UpdateActiveForLinkage();
+            if (shouldRender)
+            {
+                InvokeStateHasChanged();
+            }
+        }
+
+        async Task IHandleEvent.HandleEventAsync(EventCallbackWorkItem item, object? arg)
+        {
+            await item.InvokeAsync(arg);
         }
 
         protected virtual async Task HandleOnClick(MouseEventArgs args)
@@ -154,12 +189,16 @@ namespace BlazorComponent
             };
         }
 
-        private void UpdateActiveForLinkage()
+        private bool UpdateActiveForLinkage()
         {
+            var isActive = IsActive;
+
             if (IsLinkage)
             {
                 IsActive = _linker.MatchRoute(Href);
             }
+
+            return isActive != IsActive;
         }
 
         protected override void Dispose(bool disposing)

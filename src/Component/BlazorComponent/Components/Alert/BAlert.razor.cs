@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public partial class BAlert : BDomComponentBase, IAlert
+    public partial class BAlert : BDomComponentBase, IAlert, IThemeable
     {
         public RenderFragment IconContent { get; protected set; }
 
@@ -53,6 +53,33 @@ namespace BlazorComponent
 
         [Parameter]
         public EventCallback<bool> ValueChanged { get; set; }
+
+        [Parameter]
+        public bool Dark { get; set; }
+
+        [Parameter]
+        public bool Light { get; set; }
+
+        [CascadingParameter(Name = "IsDark")]
+        public bool CascadingIsDark { get; set; }
+
+        public bool IsDark
+        {
+            get
+            {
+                if (Dark)
+                {
+                    return true;
+                }
+
+                if (Light)
+                {
+                    return false;
+                }
+
+                return CascadingIsDark;
+            }
+        }
 
         public Task HandleOnDismiss(MouseEventArgs args)
         {

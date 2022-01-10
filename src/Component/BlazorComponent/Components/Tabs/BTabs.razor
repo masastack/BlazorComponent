@@ -1,40 +1,42 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<BCascadingValue Value="this">
-    <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
-        <BSlideGroup Mandatory="@(!Optional)"
-                  NextIcon="@NextIcon"
-                  PrevIcon="@PrevIcon"
-                  ShowArrows="@ShowArrows"
-                  Value="@Value"
-                  ValueChanged="@ValueChanged"
-                  Color="@Color"
-                  @ref="TabsBarRef"
-                  @attributes="GetAttributes(typeof(BSlideGroup))">
-            @if (!HideSlider)
-            {
-                @RenderPart(typeof(BTabsSlider<>))
-            }
-            @ChildContent
-        </BSlideGroup>
-
-        @if (TabItems != null)
-        {
-            <BWindow Value="Value" @attributes="GetAttributes(typeof(BWindow))">
-                @foreach (var tabItem in TabItems)
+<CascadingValue Value="IsDark" Name="IsDark">
+    <BCascadingValue Value="this" IsFixed>
+        <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
+            <BSlideGroup Mandatory="@(!Optional)"
+                         NextIcon="@NextIcon"
+                         PrevIcon="@PrevIcon"
+                         ShowArrows="@ShowArrows"
+                         Value="@Value"
+                         ValueChanged="@ValueChanged"
+                         Color="@Color"
+                         @ref="TabsBarRef"
+                         @attributes="GetAttributes(typeof(BSlideGroup))">
+                @if (!HideSlider)
                 {
-                    <BWindowItem Value="@tabItem.Value"
-                         ActiveClass="@tabItem.ActiveClass"
-                         Disabled="@tabItem.Disabled"
-                         Class="@tabItem.Class"
-                         Style="@tabItem.Style"
-                         @attributes="GetAttributes(typeof(BWindowItem))">
-                        @tabItem.ChildContent
-                    </BWindowItem>
+                    @RenderPart(typeof(BTabsSlider<>))
                 }
-            </BWindow>
-        }
+                @ChildContent
+            </BSlideGroup>
 
-    </div>
-</BCascadingValue>
+            @if (TabItems != null)
+            {
+                <BWindow Value="Value" @attributes="GetAttributes(typeof(BWindow))">
+                    @foreach (var tabItem in TabItems)
+                    {
+                        <BWindowItem Value="@tabItem.Value"
+                             ActiveClass="@tabItem.ActiveClass"
+                             Disabled="@tabItem.Disabled"
+                             Class="@tabItem.Class"
+                             Style="@tabItem.Style"
+                             @attributes="GetAttributes(typeof(BWindowItem))">
+                            @tabItem.ChildContent
+                        </BWindowItem>
+                    }
+                </BWindow>
+            }
+
+        </div>
+    </BCascadingValue>
+</CascadingValue>

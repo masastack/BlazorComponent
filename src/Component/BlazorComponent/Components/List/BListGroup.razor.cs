@@ -90,8 +90,11 @@ namespace BlazorComponent
 
         private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
         {
-            UpdateActiveForLinkage();
-            InvokeStateHasChanged();
+            var shouldRender = UpdateActiveForLinkage();
+            if (shouldRender)
+            {
+                InvokeStateHasChanged();
+            }
         }
 
         internal void Toggle(string id)
@@ -114,12 +117,16 @@ namespace BlazorComponent
             return Group.Any(item => Regex.Match(relativePath, item, RegexOptions.IgnoreCase).Success);
         }
 
-        private void UpdateActiveForLinkage()
+        private bool UpdateActiveForLinkage()
         {
+            var isActive = IsActive;
+
             if (Group != null)
             {
                 IsActive = MatchRoute(NavigationManager.Uri);
             }
+
+            return isActive != IsActive;
         }
 
         protected override void Dispose(bool disposing)

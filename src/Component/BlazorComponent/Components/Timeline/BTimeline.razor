@@ -1,8 +1,10 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<CascadingValue Value="this" IsFixed="@true">
-    <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @attributes="Attributes">
-        @ChildContent
-    </div>
+<CascadingValue Value="IsDark" Name="IsDark">
+    <CascadingValue Value="this" IsFixed>
+        <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @attributes="Attributes">
+            @ChildContent
+        </div>
+    </CascadingValue>
 </CascadingValue>

@@ -85,13 +85,37 @@ namespace BlazorComponent
         public bool HideOverlay { get; set; }
 
         [Parameter]
+        public bool Dark { get; set; }
+
+        [Parameter]
+        public bool Light { get; set; }
+
+        [CascadingParameter(Name = "IsDark")]
+        public bool CascadingIsDark { get; set; }
+
+        public bool IsDark
+        {
+            get
+            {
+                if (Dark)
+                {
+                    return true;
+                }
+
+                if (Light)
+                {
+                    return false;
+                }
+
+                return CascadingIsDark;
+            }
+        }
+
+        [Parameter]
         public RenderFragment ChildContent { get; set; }
 
         [Parameter]
         public RenderFragment<Dictionary<string, object>> ImgContent { get; set; }
-
-        [CascadingParameter]
-        public IDependent CascadingDependent { get; set; }
 
         [Inject]
         private Document Document { get; set; }
@@ -157,16 +181,6 @@ namespace BlazorComponent
             }
         }
 
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
-
-            if (CascadingDependent != null)
-            {
-                CascadingDependent.RegisterChild(this);
-            }
-        }
-
         public void RegisterChild(IDependent dependent)
         {
             _dependents.Add(dependent);
@@ -223,20 +237,21 @@ namespace BlazorComponent
         private async Task HandleOnOutsideClickAsync(object _)
         {
             if (!CloseConditional()) return;
-
-            if (Temporary)
-            {
-                await UpdateValue(false);
-            }
+            await UpdateValue(false);
         }
 
-        private bool CloseConditional()
+        protected bool CloseConditional()
         {
             return IsActive && !_disposed && ReactsToClick;
         }
 
         protected async Task UpdateValue(bool value)
         {
+            if (Value == value)
+            {
+                return;
+            }
+
             if (ValueChanged.HasDelegate)
             {
                 await ValueChanged.InvokeAsync(value);
@@ -244,6 +259,7 @@ namespace BlazorComponent
             else
             {
                 Value = value;
+                StateHasChanged();
             }
         }
 

@@ -26,6 +26,33 @@ namespace BlazorComponent
         [Parameter]
         public virtual string Tag { get; set; } = "div";
 
+        [Parameter]
+        public bool Dark { get; set; }
+
+        [Parameter]
+        public bool Light { get; set; }
+
+        [CascadingParameter(Name = "IsDark")]
+        public bool CascadingIsDark { get; set; }
+
+        public bool IsDark
+        {
+            get
+            {
+                if (Dark)
+                {
+                    return true;
+                }
+
+                if (Light)
+                {
+                    return false;
+                }
+
+                return CascadingIsDark;
+            }
+        }
+
         protected List<BListGroup> Groups { get; } = new();
 
         protected override void OnInitialized()

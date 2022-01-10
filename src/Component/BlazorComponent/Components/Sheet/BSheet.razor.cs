@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public partial class BSheet : BDomComponentBase
+    public partial class BSheet : BDomComponentBase, IThemeable
     {
         [Parameter]
         public RenderFragment ChildContent { get; set; }
@@ -13,12 +13,31 @@ namespace BlazorComponent
         [Parameter]
         public virtual string Tag { get; set; } = "div";
 
-        public virtual bool IsDark { get; }
-
         [Parameter]
         public bool Dark { get; set; }
 
         [Parameter]
         public bool Light { get; set; }
+
+        [CascadingParameter(Name = "IsDark")]
+        public bool CascadingIsDark { get; set; }
+
+        public bool IsDark
+        {
+            get
+            {
+                if (Dark)
+                {
+                    return true;
+                }
+
+                if (Light)
+                {
+                    return false;
+                }
+
+                return CascadingIsDark;
+            }
+        }
     }
 }

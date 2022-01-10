@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BlazorComponent
 {
-    public partial class BBreadcrumbs : BDomComponentBase, IBreadcrumbs, IBreadcrumbsDivider
+    public partial class BBreadcrumbs : BDomComponentBase, IBreadcrumbs, IBreadcrumbsDivider, IThemeable
     {
         protected string Tag { get; init; } = "ul";
 
@@ -26,6 +26,33 @@ namespace BlazorComponent
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
+
+        [Parameter]
+        public bool Dark { get; set; }
+
+        [Parameter]
+        public bool Light { get; set; }
+
+        [CascadingParameter(Name = "IsDark")]
+        public bool CascadingIsDark { get; set; }
+
+        protected bool IsDark
+        {
+            get
+            {
+                if (Dark)
+                {
+                    return true;
+                }
+
+                if (Light)
+                {
+                    return false;
+                }
+
+                return CascadingIsDark;
+            }
+        }
 
         #region When using razor definition without Items parameter
 

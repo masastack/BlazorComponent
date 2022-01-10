@@ -2,37 +2,39 @@
 @inherits BDomComponentBase
 @typeparam TValue
 
-<div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @onclick="HandleClick">
-    <div class="@CssProvider.GetClass("radio")" style="@CssProvider.GetStyle("radio")">
-        @if (IsActive)
-        {
-            <BIcon @attributes="GetAttributes(typeof(BIcon))">
-                @OnIcon
-            </BIcon>
-        }
-        else
-        {
-            <BIcon @attributes="GetAttributes(typeof(BIcon))">
-                @OffIcon
-            </BIcon>
-        }
+<CascadingValue Value="IsDark" Name="IsDark">
+    <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @onclick="HandleClick">
+        <div class="@CssProvider.GetClass("radio")" style="@CssProvider.GetStyle("radio")">
+            @if (IsActive)
+            {
+                <BIcon @attributes="GetAttributes(typeof(BIcon))">
+                    @OnIcon
+                </BIcon>
+            }
+            else
+            {
+                <BIcon @attributes="GetAttributes(typeof(BIcon))">
+                    @OffIcon
+                </BIcon>
+            }
 
-        <input disabled="@IsDisabled" role="radio" type="radio" checked="@IsActive" value="@Value"
-               @onblur="OnBlur" @onchange="OnChange" @onfocus="OnFocus" @onkeydown="OnKeyDown" @onclick="HandleClick" @onclick:stopPropagation />
+            <input disabled="@IsDisabled" role="radio" type="radio" checked="@IsActive" value="@Value"
+                   @onblur="OnBlur" @onchange="OnChange" @onfocus="OnFocus" @onkeydown="OnKeyDown" @onclick="HandleClick" @onclick:stopPropagation />
 
-        @if (Ripple)
-        {
-            <div class="@CssProvider.GetClass("ripple")" style="@CssProvider.GetStyle("ripple")"></div>
-        }
+            @if (Ripple)
+            {
+                <div class="@CssProvider.GetClass("ripple")" style="@CssProvider.GetStyle("ripple")"></div>
+            }
+        </div>
+        <BLabel @attributes="GetAttributes(typeof(BLabel))">
+            @if (LabelContent != default)
+            {
+                @LabelContent
+            }
+            else
+            {
+                @Label
+            }
+        </BLabel>
     </div>
-    <BLabel @attributes="GetAttributes(typeof(BLabel))">
-        @if (LabelContent != default)
-        {
-            @LabelContent
-        }
-        else
-        {
-            @Label
-        }
-    </BLabel>
-</div>
+</CascadingValue>

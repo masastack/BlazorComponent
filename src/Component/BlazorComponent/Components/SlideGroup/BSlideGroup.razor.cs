@@ -96,15 +96,6 @@ namespace BlazorComponent
             return (wrapperElement?.ClientWidth ?? 0, contentElement?.ClientWidth ?? 0);
         }
 
-        protected override void SetComponentClass()
-        {
-            AbstractProvider
-                .Apply(typeof(CascadingValue<ISlideGroup>), typeof(CascadingValue<BSlideGroup>), attrs =>
-                 {
-                     attrs[nameof(CascadingValue<BSlideGroup>.Value)] = this;
-                 });
-        }
-
         public bool IsOverflowing { get; protected set; }
 
         public bool HasAffixes

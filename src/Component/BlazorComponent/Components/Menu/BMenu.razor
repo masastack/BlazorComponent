@@ -6,7 +6,7 @@
 <div style="@CssProvider.GetStyle()" class="@CssProvider.GetClass()" @ref="Ref">
     @if (ShowContent)
     {
-        <BCascadingValue Value="this">
+        <BCascadingValue Value="IsDark" Name="IsDark">
             <Transition Name="@Transition">
                 <Element Show="Value"
                      id="@Id"

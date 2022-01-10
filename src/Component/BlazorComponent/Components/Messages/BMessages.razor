@@ -1,7 +1,10 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div class="@CssProvider.GetClass()">
-    @RenderPart(typeof(BMessagesChildren<>))
-</div>
+<CascadingValue Value="IsDark" Name="IsDark">
+    <div class="@CssProvider.GetClass()">
+        @RenderPart(typeof(BMessagesChildren<>))
+    </div>
+</CascadingValue>
+
 

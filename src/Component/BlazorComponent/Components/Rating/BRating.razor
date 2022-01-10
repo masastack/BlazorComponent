@@ -1,10 +1,12 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
-    @for (var i = 0; i < Length.ToInt32(); i++)
-    {
-        var index = i;
-        @RenderPart(typeof(BRatingItem<>),index,arg0Name:"ItemIndex")
-    }
-</div>
+<CascadingValue Value="IsDark" Name="IsDark">
+    <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
+        @for (var i = 0; i < Length.ToInt32(); i++)
+        {
+            var index = i;
+            @RenderPart(typeof(BRatingItem<>),index,arg0Name:"ItemIndex")
+        }
+    </div>
+</CascadingValue>

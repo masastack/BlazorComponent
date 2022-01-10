@@ -21,24 +21,5 @@ namespace BlazorComponent
         public virtual string Tag { get; set; } = "div";
 
         private string GutterStyle { get; set; }
-
-        internal void RowGutterChanged((int horizontalGutter, int verticalGutter) gutter)
-        {
-            GutterStyle = "";
-            if (gutter.horizontalGutter > 0)
-            {
-                GutterStyle = $"padding-left: {gutter.horizontalGutter / 2}px; padding-right: {gutter.horizontalGutter / 2}px;";
-            }
-        }
-
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-        }
     }
 }

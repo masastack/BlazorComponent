@@ -1,6 +1,8 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<nav id="@Id" @ref="Ref" class="@Class">
-    @RenderPart(typeof(BPaginationList<>))
-</nav>
+<CascadingValue Value="IsDark" Name="IsDark">
+    <nav id="@Id" @ref="Ref" class="@Class">
+        @RenderPart(typeof(BPaginationList<>))
+    </nav>
+</CascadingValue>

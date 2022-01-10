@@ -1,18 +1,20 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<BCascadingValue Value="this">
-    <Element Tag="@Tag" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id">
-        @if (ChildContent == null)
-        {
-            @foreach (var item in Items)
+<CascadingValue Value="IsDark" Name="IsDark">
+    <BCascadingValue Value="this" IsFixed>
+        <Element Tag="@Tag" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id">
+            @if (ChildContent == null)
             {
-                @RenderPart(typeof(BBreadcrumbsItemGroup<>),item)
+                @foreach (var item in Items)
+                {
+                    @RenderPart(typeof(BBreadcrumbsItemGroup<>),item)
+                }
             }
-        }
-        else
-        {
-            @ChildContent
-        }
-    </Element>
-</BCascadingValue>
+            else
+            {
+                @ChildContent
+            }
+        </Element>
+    </BCascadingValue>
+</CascadingValue>

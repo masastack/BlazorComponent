@@ -1,7 +1,7 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<CascadingValue Value="this">
+<CascadingValue Value="this" IsFixed>
     <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
         <BListItem @onclick="@HandleOnClick" @attributes="GetAttributes(typeof(BListItem))">
             @if (PrependIconContent != default)
