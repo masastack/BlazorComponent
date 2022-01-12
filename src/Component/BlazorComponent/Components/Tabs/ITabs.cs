@@ -1,4 +1,6 @@
-﻿namespace BlazorComponent
+﻿using Microsoft.AspNetCore.Components;
+
+namespace BlazorComponent
 {
     public interface ITabs : IHasProviderComponent
     {
@@ -7,5 +9,11 @@
         string SliderColor { get; }
 
         StringNumber SliderSize { get; }
+
+        RenderFragment ChildContent { get; }
+
+        List<ITabItem> TabItems { get; }
+
+        StringNumber Value { get; }
     }
 }

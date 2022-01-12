@@ -1,0 +1,37 @@
+﻿@namespace BlazorComponent
+@typeparam TTabs
+@inherits ComponentPartBase<TTabs>
+
+<BMenu Absolute OffsetY @attributes="GetAttributes(typeof(BMenu))">
+    <BList>
+        <BListItem @onclick="OnReload">
+            <BListItemContent>
+                <BListItemTitle>
+                    重新加载
+                </BListItemTitle>
+            </BListItemContent>
+        </BListItem>
+        <BListItem @onclick="OnCloseLeft">
+            <BListItemContent>
+                <BListItemTitle>
+                    关闭左边
+                </BListItemTitle>
+            </BListItemContent>
+        </BListItem>
+        <BListItem @onclick="OnCloseRight">
+            <BListItemContent>
+                <BListItemTitle>
+                    关闭右边
+                </BListItemTitle>
+            </BListItemContent>
+        </BListItem>
+        <BListItem @onclick="OnCloseOther">
+            <BListItemContent>
+                <BListItemTitle>
+                    关闭其它
+                </BListItemTitle>
+            </BListItemContent>
+        </BListItem>
+    </BList>
+</BMenu>
+

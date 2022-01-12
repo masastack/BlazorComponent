@@ -21,7 +21,7 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
     private bool _showContentCompleted;
     private Window _window;
 
-    protected(Position activator, Position content) Dimensions = new(new Position(), new Position());
+    protected (Position activator, Position content) Dimensions = new(new Position(), new Position());
 
     protected bool ActivatorFixed { get; set; }
 
@@ -203,6 +203,9 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
         get => IsActive;
         set
         {
+            //We recover this as no activator mode need
+            //We will remove this when menuable been refactored
+            _ = ShowLazyContent();
             IsActive = value;
         }
     }

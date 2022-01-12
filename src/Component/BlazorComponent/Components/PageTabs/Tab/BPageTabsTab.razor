@@ -1,0 +1,26 @@
+﻿@namespace BlazorComponent
+@typeparam TTabs
+@inherits ComponentPartBase<TTabs>
+
+@for (var i = 0; i < ComputedItems.Count; i++)
+{
+    var item = ComputedItems[i];
+    var tabAttrs = GetAttributes(typeof(BTab), data: item);
+    if (TabContent != null)
+    {
+        var context = new PageTabContentContext(item, tabAttrs);
+        @TabContent(context)
+    }
+    else
+    {
+        var isActive = IsActive(item);
+        <BTab IsActive="isActive" Href="@item.Url" @attributes="tabAttrs">
+            @item.Name
+            <BIcon @attributes="GetAttributes(typeof(BIcon),data:item)">
+                @CloseIcon
+            </BIcon>
+        </BTab>
+    }
+}
+@RenderPart(typeof(BPageTabsMenu<>))
+

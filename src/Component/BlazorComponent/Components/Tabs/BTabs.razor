@@ -17,26 +17,9 @@
                 {
                     @RenderPart(typeof(BTabsSlider<>))
                 }
-                @ChildContent
+                @RenderPart(typeof(BTabsTab<>))
             </BSlideGroup>
-
-            @if (TabItems != null)
-            {
-                <BWindow Value="Value" @attributes="GetAttributes(typeof(BWindow))">
-                    @foreach (var tabItem in TabItems)
-                    {
-                        <BWindowItem Value="@tabItem.Value"
-                             ActiveClass="@tabItem.ActiveClass"
-                             Disabled="@tabItem.Disabled"
-                             Class="@tabItem.Class"
-                             Style="@tabItem.Style"
-                             @attributes="GetAttributes(typeof(BWindowItem))">
-                            @tabItem.ChildContent
-                        </BWindowItem>
-                    }
-                </BWindow>
-            }
-
+            @RenderPart(typeof(BTabsBody<>))
         </div>
     </BCascadingValue>
 </CascadingValue>

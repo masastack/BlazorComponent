@@ -105,6 +105,8 @@ namespace BlazorComponent
             }
         }
 
+        List<ITabItem> ITabs.TabItems => TabItems;
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await CallSlider(firstRender);
