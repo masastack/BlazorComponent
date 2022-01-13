@@ -57,7 +57,7 @@ namespace BlazorComponent
             base.OnInitialized();
 
             if (!Matched) return;
-            
+
             if (this is IGroupable item)
             {
                 ItemGroup.Register(item);
@@ -68,7 +68,14 @@ namespace BlazorComponent
         {
             await base.SetParametersAsync(parameters);
 
-            InternalIsActive = _isActive ?? ValueMatched;
+            if (_isActive.HasValue) // if setting by [Parameter]IsActive, Matched is not required.
+            {
+                InternalIsActive = _isActive.Value;
+            }
+            else if (Matched)
+            {
+                InternalIsActive = ValueMatched;
+            }
         }
 
         protected virtual async Task ToggleAsync()
