@@ -47,7 +47,7 @@ namespace BlazorComponent
 
         public bool? If { get; protected set; } = true;
 
-        protected TransitionState State { get; private set; }
+        public TransitionState State { get; private set; }
 
         protected CssBuilder CssBuilder { get; set; } = new();
 

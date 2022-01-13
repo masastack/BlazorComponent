@@ -186,20 +186,13 @@ namespace BlazorComponent
 
                 builder.AddMultipleAttributes(sequence++, ExtraAttributes);
 
-                if (Key != null)
+                builder.AddContent(sequence++, wrapperBuilder =>
                 {
-                    builder.AddContent(sequence++, elBuilder =>
-                    {
-                        elBuilder.OpenComponent<ElementWrapper>(0);
-                        elBuilder.AddAttribute(1, nameof(ElementWrapper.Value), InternalIf);
-                        elBuilder.AddAttribute(2, nameof(ChildContent), ChildContent);
-                        elBuilder.CloseComponent();
-                    });
-                }
-                else
-                {
-                    builder.AddContent(sequence++, ChildContent);
-                }
+                    wrapperBuilder.OpenComponent<ElementWrapper>(0);
+                    wrapperBuilder.AddAttribute(1, nameof(ElementWrapper.Value), Transition == null || Transition.State == TransitionState.None);//When we play animation,don't update ChildContent
+                    wrapperBuilder.AddAttribute(2, nameof(ChildContent), ChildContent);
+                    wrapperBuilder.CloseComponent();
+                });
 
                 builder.AddElementReferenceCapture(sequence++, ComputedReferenceCaptureAction);
 
