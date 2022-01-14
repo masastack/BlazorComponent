@@ -11,6 +11,7 @@ namespace BlazorComponent
     public class ObservableProperty<TValue> : ObservableProperty
     {
         private bool _hasValue;
+        private TValue _oldValue;
         private TValue _value;
         private IObservableProperty _internalProperty;
 
@@ -36,23 +37,28 @@ namespace BlazorComponent
             }
             set
             {
-                //TODO:support ObservableCollection<>
-                if (!EqualityComparer<TValue>.Default.Equals(_value, value) || value is IEnumerable)
+                //First time set value
+                if (!_hasValue && value is INotifyPropertyChanged notify)
                 {
-                    var oldValue = _value;
+                    notify.PropertyChanged += (sender, args) =>
+                    {
+                        NotifyChange(_value, _oldValue);
+                    };
+                }
+
+                //We can't detect whether reference type has changed
+                //Only if we copy a new instance
+                //We will think it over
+                //
+                //We just assume list always changed
+                //This will be changed when we finished data-collect and deep watch
+                if (!EqualityComparer<TValue>.Default.Equals(_value, value) || value is IList)
+                {
+                    _oldValue = _value;
                     _value = value;
                     _hasValue = true;
 
-                    NotifyChange(value, oldValue);
-
-                    //Deep watch,is this ok?
-                    if (_value is INotifyPropertyChanged notify)
-                    {
-                        notify.PropertyChanged += (sender, args) =>
-                        {
-                            NotifyChange(_value, _value);
-                        };
-                    }
+                    NotifyChange(_value, _oldValue);
                 }
             }
         }
