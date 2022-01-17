@@ -45,13 +45,30 @@ namespace BlazorComponent
         {
             if (_oldModel != Model)
             {
+                //EditContext changed,re-subscribe OnValidationStateChanged event
+                if (EditContext != null)
+                {
+                    EditContext.OnValidationStateChanged -= OnValidationStateChanged;
+                }
+
                 EditContext = new EditContext(Model);
+                EditContext.OnValidationStateChanged += OnValidationStateChanged;
+
                 if (EnableDataAnnotationsValidation)
                 {
                     EditContext.EnableDataAnnotationsValidation();
                 }
 
                 _oldModel = Model;
+            }
+        }
+
+        private void OnValidationStateChanged(object sender, ValidationStateChangedEventArgs e)
+        {
+            var value = !EditContext.GetValidationMessages().Any();
+            if (value != Value && ValueChanged.HasDelegate)
+            {
+                _ = ValueChanged.InvokeAsync(value);
             }
         }
 
@@ -120,6 +137,16 @@ namespace BlazorComponent
             {
                 await ValueChanged.InvokeAsync(true);
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (EditContext != null)
+            {
+                EditContext.OnValidationStateChanged -= OnValidationStateChanged;
+            }
+
+            base.Dispose(disposing);
         }
     }
 }

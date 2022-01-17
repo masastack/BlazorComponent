@@ -111,11 +111,9 @@ namespace BlazorComponent
 
                 if (!ValidateOnBlur)
                 {
-                    NextTick(() =>
-                    {
-                        Validate();
-                        return Task.CompletedTask;
-                    });
+                    //We removed NextTick since it doesn't trigger render
+                    //and validate may not be called
+                    Validate();
                 }
             }
         }
@@ -135,11 +133,7 @@ namespace BlazorComponent
                     HasFocused = true;
                     if (ValidateOnBlur)
                     {
-                        NextTick(() =>
-                        {
-                            Validate();
-                            return Task.CompletedTask;
-                        });
+                        Validate();
                     }
                 }
             }
