@@ -232,8 +232,8 @@ namespace BlazorComponent
 
                 var builder = new AttributesBuilder();
                 builderAction(builder);
-                var parameterView = ParameterView.FromDictionary(builder.Attributes);
-                componentPart.SetParametersView(parameterView);
+                var parameters = ParameterView.FromDictionary(builder.Attributes);
+                componentPart.SetParameters(parameters);
 
                 return componentPart.Content;
             }

@@ -29,7 +29,7 @@ namespace BlazorComponent
             }
         }
 
-        void IComponentPart.SetParametersView(ParameterView parameterView)
+        void IComponentPart.SetParameters(ParameterView parameterView)
         {
             parameterView.SetParameterProperties(this);
         }

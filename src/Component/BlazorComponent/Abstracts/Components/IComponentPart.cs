@@ -13,6 +13,6 @@ namespace BlazorComponent
 
         void Attach(IHasProviderComponent component);
 
-        void SetParametersView(ParameterView parameterView);
+        void SetParameters(ParameterView parameterView);
     }
 }
