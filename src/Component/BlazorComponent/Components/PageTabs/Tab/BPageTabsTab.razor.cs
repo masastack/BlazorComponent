@@ -17,6 +17,8 @@ namespace BlazorComponent
 
         RenderFragment<PageTabContentContext> TabContent => Component.TabContent;
 
-        bool IsActive(PageTabItem item)=>Component.IsActive(item);
+        bool IsActive(PageTabItem item) => Component.IsActive(item);
+
+        void Close(PageTabItem item) => Component.Close(item);
     }
 }

@@ -14,9 +14,17 @@ namespace BlazorComponent
             Url = url ?? throw new ArgumentNullException(nameof(url));
         }
 
-        public string Name { get; set; }
+        public PageTabItem(string name, string url, string icon)
+            : this(name, url)
+        {
+            Icon = icon ?? throw new ArgumentNullException(nameof(icon));
+        }
 
-        public string Url { get; set; }
+        public string Name { get; }
+
+        public string Url { get; }
+
+        public string Icon { get; }
 
         internal bool IsOpened { get; set; }
 

@@ -15,6 +15,7 @@ namespace BlazorComponent
         bool NoActiveItem { get; }
         RenderFragment<PageTabContentContext> TabContent { get; }
         bool IsActive(PageTabItem item);
+        void Close(PageTabItem item);
         Task HandleOnOnReloadAsync(MouseEventArgs args);
         Task HandleOnCloseLeftAsync(MouseEventArgs arg);
         Task HandleOnCloseRightAsync(MouseEventArgs arg);
