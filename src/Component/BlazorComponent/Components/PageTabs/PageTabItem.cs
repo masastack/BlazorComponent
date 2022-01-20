@@ -20,11 +20,19 @@ namespace BlazorComponent
             Icon = icon ?? throw new ArgumentNullException(nameof(icon));
         }
 
+        public PageTabItem(string name, string url, string icon, bool closable)
+            : this(name, url, icon)
+        {
+            Closable = closable;
+        }
+
         public string Name { get; }
 
         public string Url { get; }
 
         public string Icon { get; }
+
+        public bool Closable { get; } = true;
 
         internal bool IsOpened { get; set; }
 

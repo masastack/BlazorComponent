@@ -17,9 +17,12 @@
     {
         <BTab IsActive="isActive" Href="@item.Url" @attributes="tabAttrs">
             @item.Name
-            <BIcon @attributes="GetAttributes(typeof(BIcon),data:item)">
-                @CloseIcon
-            </BIcon>
+            @if (item.Closable)
+            {
+                <BIcon @attributes="GetAttributes(typeof(BIcon),data:item)">
+                    @CloseIcon
+                </BIcon>
+            }
         </BTab>
     }
 }
