@@ -12,6 +12,21 @@ namespace BlazorComponent
     {
         private ItemValue<TItem> _itemValue;
 
+        public DataTableHeader()
+        {
+        }
+
+        public DataTableHeader(string text, string value)
+            : base(text, value)
+        {
+        }
+
+        public DataTableHeader(string text, Func<TItem, object> itemValueFactory)
+        {
+            Text = text ?? throw new ArgumentNullException(nameof(text));
+            _itemValue = new ItemValue<TItem>(itemValueFactory);
+        }
+
         public ItemValue<TItem> ItemValue
         {
             get

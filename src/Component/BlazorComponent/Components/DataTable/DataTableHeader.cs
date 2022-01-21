@@ -9,6 +9,16 @@ namespace BlazorComponent
 {
     public class DataTableHeader
     {
+        public DataTableHeader()
+        {
+        }
+
+        public DataTableHeader(string text, string value)
+        {
+            Text = text ?? throw new ArgumentNullException(nameof(text));
+            Value = value ?? throw new ArgumentNullException(nameof(value));
+        }
+
         public bool Divider { get; set; }
 
         public string Value { get; set; }

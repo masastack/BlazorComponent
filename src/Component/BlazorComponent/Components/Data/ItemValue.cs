@@ -16,6 +16,11 @@ namespace BlazorComponent
             Name = name ?? throw new ArgumentNullException(nameof(name));
         }
 
+        public ItemValue(Func<TItem, object> factory)
+        {
+            _factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        }
+
         public string Name { get; }
 
         public Func<TItem, object> Factory
