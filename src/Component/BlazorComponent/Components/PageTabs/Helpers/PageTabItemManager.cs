@@ -26,7 +26,13 @@ namespace BlazorComponent
             }
 
             item.IsOpened = true;
-            item.OpenedTime = DateTime.Now;
+
+            //Since items will order by OpenedTime
+            //We want to keep it if reload 
+            if (item.OpenedTime == default)
+            {
+                item.OpenedTime = DateTime.Now;
+            }
         }
 
         public static void Close(PageTabItem item)
@@ -38,6 +44,17 @@ namespace BlazorComponent
 
             item.IsOpened = false;
             item.OpenedTime = default;
+        }
+
+        public static void Reload(PageTabItem item)
+        {
+            //Reload will not reset OpenedTime
+            if (!item.IsOpened)
+            {
+                return;
+            }
+
+            item.IsOpened = false;
         }
     }
 }
