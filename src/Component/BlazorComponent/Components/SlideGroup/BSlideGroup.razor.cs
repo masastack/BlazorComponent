@@ -61,18 +61,43 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment PrevContent { get; set; }
 
-        protected bool _render;
+        private int _prevItemsLength;
+        private StringNumber _prevValue;
+        private bool _prevIsOverflowing;
+
+        public override async Task SetParametersAsync(ParameterView parameters)
+        {
+            _prevValue = Value;
+            _prevItemsLength = Items.Count;
+            _prevIsOverflowing = IsOverflowing;
+
+            await base.SetParametersAsync(parameters);
+        }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
             {
                 IsMobile = await JsInvokeAsync<bool>(JsInteropConstants.IsMobile);
+                await SetWidths(Value);
             }
-
-            if (!_render)
+            else if (_prevItemsLength != Items.Count)
             {
-                await SetWidths();
+                _prevItemsLength = Items.Count;
+                await SetWidths(Value);
+            }
+            else if (_prevValue != Value)
+            {
+                _prevValue = Value;
+                await SetWidths(Value);
+            }
+            else if (_prevIsOverflowing != IsOverflowing)
+            {
+                _prevIsOverflowing = IsOverflowing;
+                // Make sure the value of WrapperWidth is after IsOverflowing takes effect.
+                StateHasChanged();
+
+                await SetWidths(Value);
             }
         }
 
@@ -80,11 +105,11 @@ namespace BlazorComponent
         {
             (WrapperWidth, ContentWidth) = await GetWidths();
 
+            // The first time IsOverflowing is true, WrapperWidth will become smaller
+            // because the left and right arrows will display 
             IsOverflowing = WrapperWidth + 1 < ContentWidth;
 
             await ScrollToView(selectedValue);
-
-            _render = true;
 
             StateHasChanged();
         }
@@ -102,9 +127,9 @@ namespace BlazorComponent
         {
             get
             {
-                var _ = !IsMobile && (IsOverflowing || Math.Abs(ScrollOffset) > 0);
+                var hasAffixes = !IsMobile && (IsOverflowing || Math.Abs(ScrollOffset) > 0);
 
-                if (ShowArrows == null) return _;
+                if (ShowArrows == null) return hasAffixes;
 
                 return ShowArrows.Match(
                     str =>
@@ -114,7 +139,7 @@ namespace BlazorComponent
                             "always" => true, // Always show arrows on desktop & mobile
                             "desktop" => !IsMobile, // Always show arrows on desktop
                             "mobile" => IsMobile || (IsOverflowing || Math.Abs(ScrollOffset) > 0), // Show arrows on mobile when overflowing.
-                            _ => _
+                            _ => hasAffixes
                         };
                     },
                     @bool =>
@@ -122,7 +147,7 @@ namespace BlazorComponent
                         return @bool switch
                         {
                             true => IsOverflowing || Math.Abs(ScrollOffset) > 0, // Always show on mobile
-                            _ => _
+                            _ => hasAffixes
                         };
                     });
             }

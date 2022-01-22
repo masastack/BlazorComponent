@@ -4,15 +4,6 @@ namespace BlazorComponent
 {
     public partial class BTabs : BDomComponentBase, ITabs
     {
-        private bool _isModified;
-        private StringNumber _value;
-
-        private List<ITabItem> TabItems { get; set; }
-
-        private object TabsBarRef { get; set; }
-
-        protected (StringNumber height, StringNumber left, StringNumber right, StringNumber top, StringNumber width) Slider { get; set; }
-
         [CascadingParameter(Name = "rtl")]
         public bool Rtl { get; set; }
 
@@ -35,19 +26,7 @@ namespace BlazorComponent
         public StringNumber SliderSize { get; set; } = 2;
 
         [Parameter]
-        public StringNumber Value
-        {
-            get => _value;
-            set
-            {
-                if (_value != value)
-                {
-                    _isModified = true;
-                }
-
-                _value = value;
-            }
-        }
+        public StringNumber Value { get; set; }
 
         private EventCallback<StringNumber>? _valueChanged;
 
@@ -87,6 +66,14 @@ namespace BlazorComponent
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
 
+        private StringNumber _prevValue;
+        
+        private List<ITabItem> TabItems { get; set; }
+
+        private object TabsBarRef { get; set; }
+
+        protected (StringNumber height, StringNumber left, StringNumber right, StringNumber top, StringNumber width) Slider { get; set; }
+
         public bool IsDark
         {
             get
@@ -107,9 +94,24 @@ namespace BlazorComponent
 
         List<ITabItem> ITabs.TabItems => TabItems;
 
+        public override async Task SetParametersAsync(ParameterView parameters)
+        {
+            _prevValue = Value;
+            
+            await base.SetParametersAsync(parameters);
+        }
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            await CallSlider(firstRender);
+            if (firstRender)
+            {
+                await CallSlider();
+            }
+            else if (_prevValue != Value)
+            {
+                _prevValue = Value;
+                await CallSlider();
+            }
         }
 
         public bool IsReversed => Rtl && Vertical;
@@ -132,7 +134,7 @@ namespace BlazorComponent
             TabItems.Remove(tabItem);
         }
 
-        public async Task CallSlider(bool firstRender = false)
+        public async Task CallSlider()
         {
             if (HideSlider) return;
 
@@ -152,12 +154,8 @@ namespace BlazorComponent
 
                 Slider = (height, left, right, top, width);
             }
-
-            if (firstRender || _isModified)
-            {
-                _isModified = false;
-                StateHasChanged();
-            }
+            
+            StateHasChanged();
         }
     }
 }
