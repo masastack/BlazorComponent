@@ -64,7 +64,9 @@ namespace BlazorComponent
             }
         }
 
-        protected string CalculatedTop => !Auto ? CalcTop() : ((StringNumber)CalcYOverflow(CalcTopAuto())).ConvertToUnit();
+        protected string CalculatedTop => !Auto
+            ? CalcTop()
+            : ((StringNumber)CalcYOverflow(CalcTopAuto())).ConvertToUnit();
 
         [Parameter]
         public bool Auto { get; set; }
@@ -166,6 +168,8 @@ namespace BlazorComponent
         {
             if (!OpenOnHover)
             {
+                if (!CloseOnClick) return;
+
                 await JsInvokeAsync(JsInteropConstants.AddOutsideClickEventListener,
                     DotNetObjectReference.Create(new Invoker<object>(OutsideClick)),
                     new[] { Document.GetElementByReference(ContentRef).Selector, ActivatorSelector });
@@ -269,15 +273,11 @@ namespace BlazorComponent
 
         private async Task OutsideClick(object _)
         {
-            if (Value)
-            {
-                await OnOutsideClick.InvokeAsync();
-            }
+            if (!Value || !CloseOnClick) return;
 
-            if (CloseOnClick)
-            {
-                await UpdateValue(false);
-            }
+            await OnOutsideClick.InvokeAsync();
+
+            await UpdateValue(false);
 
             await InvokeStateHasChangedAsync();
         }

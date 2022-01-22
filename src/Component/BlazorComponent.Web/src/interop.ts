@@ -723,6 +723,20 @@ export function getWindow() {
     };
 }
 
+export function getWindowAndDocumentProps(windowProps: string[] = [], documentProps: string[] = []) {
+    const obj = {}
+    
+    if (windowProps) {
+        windowProps.forEach(prop => obj[prop] = window[prop]);
+    }
+    
+    if (documentProps) {
+        documentProps.forEach(prop => obj[prop] = document.documentElement[prop]);
+    }
+    
+    return obj
+}
+
 function debounce(func, wait, immediate) {
     var timeout;
     return () => {

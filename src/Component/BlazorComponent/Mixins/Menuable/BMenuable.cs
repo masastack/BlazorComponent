@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using BlazorComponent.Web;
+﻿using BlazorComponent.Web;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -15,11 +14,14 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
 
     private double _absoluteX;
     private double _absoluteY;
-    private Web.Element _documentElement;
-    private bool _hasWindow;
-    private InternalListenerEvent _internalListenerEvent = InternalListenerEvent.None; // just record the last triggered event
+
+    // just record the last triggered event
+    private InternalListenerEvent _internalListenerEvent = InternalListenerEvent.None; 
+
     private bool _showContentCompleted;
-    private Window _window;
+
+    private bool _hasWindow;
+    private WindowAndDocument _windowAndDocument;
 
     protected (Position activator, Position content) Dimensions = new(new Position(), new Position());
 
@@ -215,20 +217,18 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        await base.OnAfterRenderAsync(firstRender);
+        
         if (firstRender)
         {
-            _window = await JsInvokeAsync<Window>(JsInteropConstants.GetWindow);
-            _documentElement = await JsInvokeAsync<Web.Element>(JsInteropConstants.GetDomInfo, "document");
-
-            _hasWindow = _window != null && _documentElement != null;
+            _windowAndDocument = await RefreshWindowAndDocument();
+            _hasWindow = _windowAndDocument != null;
 
             if (_hasWindow)
             {
                 DomEventJsInterop.AddEventListener<Window>("window", "resize", OnResize, false);
             }
         }
-
-        await base.OnAfterRenderAsync(firstRender);
     }
 
     protected virtual async Task ShowLazyContent()
@@ -239,7 +239,7 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
 
             ShowContent = true;
 
-            await InvokeStateHasChangedAsync();
+            StateHasChanged();
             await Task.Delay(BROWSER_RENDER_INTERVAL);
 
             await AfterShowContent();
@@ -431,21 +431,21 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
     {
         if (!_hasWindow) return 0;
 
-        return _window.InnerHeight > 0 ? _window.InnerHeight : _documentElement.ClientHeight;
+        return _windowAndDocument.InnerHeight > 0 ? _windowAndDocument.InnerHeight : _windowAndDocument.ClientHeight;
     }
 
     private double GetOffsetLeft()
     {
         if (!_hasWindow) return 0;
 
-        return _window.PageXOffset > 0 ? _window.PageXOffset : _documentElement.ScrollLeft;
+        return _windowAndDocument.PageXOffset > 0 ? _windowAndDocument.PageXOffset : _windowAndDocument.ScrollLeft;
     }
 
     private double GetOffsetTop()
     {
         if (!_hasWindow) return 0;
 
-        return _window.PageYOffset > 0 ? _window.PageYOffset : _documentElement.ScrollTop;
+        return _windowAndDocument.PageYOffset > 0 ? _windowAndDocument.PageYOffset : _windowAndDocument.ScrollTop;
     }
 
     private async void OnResize(Window window)
@@ -488,14 +488,13 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
 
     protected async Task UpdateDimensions(Action lazySetter = null)
     {
-        _window = await JsInvokeAsync<Window>(JsInteropConstants.GetWindow);
-        _documentElement = await JsInvokeAsync<Web.Element>(JsInteropConstants.GetDomInfo, "document");
+        await RefreshWindowAndDocument();
 
         await CheckActivatorFixed();
 
         CheckForPageYOffset();
 
-        PageWidth = _documentElement.ClientWidth;
+        PageWidth = _windowAndDocument.ClientWidth;
 
         if (!HasActivator || Absolute)
         {
@@ -526,7 +525,7 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
 
         InternalZIndex = await CalculateZIndex();
 
-        await InvokeStateHasChangedAsync();
+        StateHasChanged();
     }
 
     private Position AbsolutePosition() => new()
@@ -570,6 +569,17 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
     }
 
     private HtmlElement GetContent() => Document.GetElementByReference(ContentRef);
+
+    private async Task<WindowAndDocument> RefreshWindowAndDocument()
+    {
+        string[] windowProps = { "innerHeight", "innerWidth", "pageXOffset", "pageYOffset" };
+        string[] documentProps = { "clientHeight", "clientWidth", "scrollLeft", "scrollTop" };
+
+        _windowAndDocument = await JsInvokeAsync<WindowAndDocument>(JsInteropConstants.GetWindowAndDocumentProps,
+            windowProps, documentProps);
+
+        return _windowAndDocument;
+    }
 
     private async Task DeleteContent()
     {
