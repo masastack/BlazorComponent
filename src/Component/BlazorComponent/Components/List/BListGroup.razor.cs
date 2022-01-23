@@ -13,8 +13,8 @@ namespace BlazorComponent
     {
         private const string PREPEND = "prepend";
         private const string APPEND = "append";
-
         private bool _value;
+        private bool _booted;
 
         [Inject]
         public NavigationManager NavigationManager { get; set; }
@@ -77,6 +77,8 @@ namespace BlazorComponent
 
         protected bool IsActive { get; set; }
 
+        protected bool Booted { get; set; }
+
         protected override void OnInitialized()
         {
             base.OnInitialized();
@@ -103,12 +105,18 @@ namespace BlazorComponent
             _ = UpdateValue(IsActive);
         }
 
-        private void HandleOnClick(EventArgs args)
+        private async Task HandleOnClick(EventArgs args)
         {
             if (Disabled) return;
 
+            if (!Booted)
+            {
+                Booted = true;
+                await Task.Delay(16);
+            }
+
             IsActive = !IsActive;
-            _ = UpdateValue(IsActive);
+            await UpdateValue(IsActive);
         }
 
         private bool MatchRoute(string path)

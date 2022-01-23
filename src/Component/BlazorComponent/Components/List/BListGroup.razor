@@ -34,7 +34,10 @@
         </BListItem>
         <ExpandTransition>
             <Element Show="IsActive" Class="@CssProvider.GetClass("items")" Style="@CssProvider.GetStyle("items")">
-                @ChildContent
+                @if (Booted || IsActive)
+                {
+                    @ChildContent
+                }
             </Element>
         </ExpandTransition>
     </div>

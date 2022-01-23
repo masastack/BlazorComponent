@@ -64,9 +64,9 @@ namespace BlazorComponent
             }
         }
 
-        public override async Task SetParametersAsync(ParameterView parameters)
+        protected override void OnParametersSet()
         {
-            await base.SetParametersAsync(parameters);
+            base.OnParametersSet();
 
             if (_isActive.HasValue) // if setting by [Parameter]IsActive, Matched is not required.
             {

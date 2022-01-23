@@ -63,8 +63,6 @@ namespace BlazorComponent
             // TODO: check exists
             Items.Add(item);
             
-            StateHasChanged();
-
             // if no value provided and mandatory
             // assign first registered item
             if (Mandatory && Value == null)
