@@ -22,21 +22,7 @@ namespace BlazorComponent
 
         protected double ContentWidth { get; set; }
 
-        private double _scrollOffset;
-
-        protected double ScrollOffset
-        {
-            get => _scrollOffset;
-            set
-            {
-                _scrollOffset = value;
-
-                if (ContentRef.Context != null)
-                {
-                    _ = JsInvokeAsync(JsInteropConstants.SetStyle, ContentRef, "transform", $"translateX(-{value}px)");
-                }
-            }
-        }
+        protected double ScrollOffset { get; set; }
 
         protected double StartX { get; set; }
 
@@ -64,15 +50,7 @@ namespace BlazorComponent
         private int _prevItemsLength;
         private StringNumber _prevValue;
         private bool _prevIsOverflowing;
-
-        public override async Task SetParametersAsync(ParameterView parameters)
-        {
-            _prevValue = Value;
-            _prevItemsLength = Items.Count;
-            _prevIsOverflowing = IsOverflowing;
-
-            await base.SetParametersAsync(parameters);
-        }
+        private double _prevScrollOffset;
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -98,6 +76,17 @@ namespace BlazorComponent
                 StateHasChanged();
 
                 await SetWidths(Value);
+            }
+
+            if (_prevScrollOffset != ScrollOffset)
+            {
+                _prevScrollOffset = ScrollOffset;
+
+                if (ContentRef.Context != null)
+                {
+                    await JsInvokeAsync(JsInteropConstants.SetStyle,
+                        ContentRef, "transform", $"translateX(-{ScrollOffset}px)");
+                }
             }
         }
 

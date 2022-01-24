@@ -84,11 +84,6 @@ namespace BlazorComponent
 
         protected async Task HandleOnClick(MouseEventArgs args)
         {
-            if (Matched)
-            {
-                _ = (ItemGroup as BSlideGroup).SetWidths(Value);
-            }
-
             await ToggleAsync();
 
             if (OnClick.HasDelegate)

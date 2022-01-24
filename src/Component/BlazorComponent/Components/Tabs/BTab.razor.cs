@@ -52,8 +52,6 @@ namespace BlazorComponent
         {
             await ToggleAsync();
 
-            await (ItemGroup as BSlideGroup)?.SetWidths(Value);
-
             if (OnClick.HasDelegate)
             {
                 await OnClick.InvokeAsync(args);

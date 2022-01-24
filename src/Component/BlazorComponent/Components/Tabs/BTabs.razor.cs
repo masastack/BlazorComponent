@@ -94,13 +94,6 @@ namespace BlazorComponent
 
         List<ITabItem> ITabs.TabItems => TabItems;
 
-        public override async Task SetParametersAsync(ParameterView parameters)
-        {
-            _prevValue = Value;
-            
-            await base.SetParametersAsync(parameters);
-        }
-
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
