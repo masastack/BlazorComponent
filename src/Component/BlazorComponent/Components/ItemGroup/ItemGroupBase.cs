@@ -56,7 +56,7 @@ namespace BlazorComponent
 
         public List<StringNumber> AllValues => Items.Select(item => item.Value).ToList();
 
-        public void Register(IGroupable item)
+        public virtual void Register(IGroupable item)
         {
             item.Value ??= Items.Count;
 
@@ -75,7 +75,7 @@ namespace BlazorComponent
             }
         }
 
-        public void Unregister(BGroupable<ItemGroupBase> item)
+        public virtual void Unregister(BGroupable<ItemGroupBase> item)
         {
             Items.Remove(item);
 

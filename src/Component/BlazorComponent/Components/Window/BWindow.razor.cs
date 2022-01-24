@@ -81,6 +81,13 @@ namespace BlazorComponent
             UpdateInternalIndex();
         }
 
+        public override void Register(IGroupable item)
+        {
+            base.Register(item);
+            
+            StateHasChanged();
+        }
+
         protected void Next()
         {
             UpdateInternalIndex();
