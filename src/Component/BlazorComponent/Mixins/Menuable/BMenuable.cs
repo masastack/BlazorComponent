@@ -629,7 +629,10 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
 
         listeners[type] = (CreateEventCallback<T>(async e =>
         {
-            beforeInvoke?.Invoke(e);
+            if (beforeInvoke != null)
+            {
+                await beforeInvoke.Invoke(e);
+            }
 
             _internalListenerEvent = @event;
 
