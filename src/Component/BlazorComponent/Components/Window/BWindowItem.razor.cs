@@ -11,21 +11,15 @@ namespace BlazorComponent
         {
         }
 
-        protected bool ShowContent { get; set; }
+        private bool ShowContent { get; set; }
+
+        protected virtual string ComputedTransition { get; }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
 
-            if (!ShowContent && InternalIsActive)
-            {
-                InternalIsActive = false;
-                ShowContent = true;
-                await InvokeStateHasChangedAsync();
-
-                InternalIsActive = true;
-                await InvokeStateHasChangedAsync();
-            }
+            await ShowLazyContent();
         }
 
         protected override async Task OnInitializedAsync()
@@ -38,7 +32,21 @@ namespace BlazorComponent
             }
         }
 
-        protected virtual string ComputedTransition { get; }
+        protected virtual async Task ShowLazyContent()
+        {
+            if (!ShowContent && InternalIsActive)
+            {
+                InternalIsActive = false;
+                ShowContent = true;
+
+                // Make sure the html for content is loaded
+                StateHasChanged();
+                await Task.Delay(BROWSER_RENDER_INTERVAL);
+
+                InternalIsActive = true;
+                StateHasChanged();
+            }
+        }
 
         protected virtual Task OnBeforeTransition()
         {

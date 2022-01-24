@@ -6,8 +6,6 @@ namespace BlazorComponent;
 
 public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
 {
-    private const int BROWSER_RENDER_INTERVAL = 16;
-
     private readonly int _stackMinZIndex = 6;
 
     private bool _delayIsActive;
@@ -399,12 +397,12 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
             {
                 while (!_showContentCompleted)
                 {
-                    await Task.Delay(16);
+                    await Task.Delay(BROWSER_RENDER_INTERVAL);
                 }
 
                 while (_internalListenerEvent == InternalListenerEvent.Mouseenter && !Value)
                 {
-                    await Task.Delay(16);
+                    await Task.Delay(BROWSER_RENDER_INTERVAL);
                 }
 
                 if (cb.HasDelegate)

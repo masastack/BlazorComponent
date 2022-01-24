@@ -12,8 +12,6 @@ namespace BlazorComponent
 {
     public abstract class BDomComponentBase : BComponentBase, IHasProviderComponent
     {
-        private ElementReference _ref;
-
         public BDomComponentBase()
         {
             CssProvider.StaticClass = () => Class;
@@ -21,6 +19,9 @@ namespace BlazorComponent
             Watcher = new PropertyWatcher(GetType());
             OnWatcherInitialized();
         }
+        
+        [Inject]
+        public IComponentIdGenerator ComponentIdGenerator { get; set; }
 
         [Parameter]
         public string Id { get; set; }
@@ -43,8 +44,9 @@ namespace BlazorComponent
         [Parameter(CaptureUnmatchedValues = true)]
         public virtual IDictionary<string, object> Attributes { get; set; } = new Dictionary<string, object>();
 
-        [Inject]
-        public IComponentIdGenerator ComponentIdGenerator { get; set; }
+        protected const int BROWSER_RENDER_INTERVAL = 16;
+
+        private ElementReference _ref;
 
         public ComponentCssProvider CssProvider { get; } = new();
 

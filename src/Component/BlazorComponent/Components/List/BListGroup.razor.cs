@@ -112,7 +112,7 @@ namespace BlazorComponent
             if (!Booted)
             {
                 Booted = true;
-                await Task.Delay(16);
+                await Task.Delay(BROWSER_RENDER_INTERVAL);
             }
 
             IsActive = !IsActive;
