@@ -4,8 +4,8 @@ namespace BlazorComponent.I18n
 {
     public class I18nConfig
     {
-        CookieStorage? _cookieStorage;
-        I18n? _i18n;
+        CookieStorage _cookieStorage;
+        I18n _i18n;
 
         public static string LanguageCookieKey { get; set; } = "Masa_I18nConfig_Language";
 
@@ -40,8 +40,9 @@ namespace BlazorComponent.I18n
                             if (arr.Length == 1) return (arr[0], 1);
                             else return (arr[0], Convert.ToDecimal(arr[1].Split("=")[1]));
                         }).OrderByDescending(lang => lang.Item2).FirstOrDefault(lang => I18n.ContainsLang(lang.Item1)).Item1;
-                    }                    
+                    }
                 }
+                i18n.SetLang(_language);
             }
         }
     }
