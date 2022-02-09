@@ -40,6 +40,10 @@ namespace BlazorComponent.I18n
             return _i18nCache.GetValueOrDefault(language);
         }
 
+        public static IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> ToDictionary() => _i18nCache;
+
+        public static bool ContainsLang(string lang) => _i18nCache.ContainsKey(lang);
+
         public I18n(string? language = null) => SetLang(language ?? DefaultLanguage);
 
         private string? _CurrentLanguage;
@@ -76,8 +80,6 @@ namespace BlazorComponent.I18n
         public string? T(string key)
         {
             return LanguageMap.GetValueOrDefault(key);
-        }
-
-        public IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> ToDictionary() => _i18nCache;
+        }        
     }
 }

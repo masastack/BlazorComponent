@@ -22,6 +22,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<I18n>();
             services.AddScoped<I18nConfig>();
             services.AddScoped<CookieStorage>();
+            services.AddHttpContextAccessor();
 
             return services;
         }
@@ -86,14 +87,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 languageMap.Add((language, map));
             }
             services.AddMasaI18n(languageMap);
-        }
-
-        public static async Task<ParameterView> GetMasaI18nParameterAsync(this IServiceCollection services)
-        {
-            var provider = services.BuildServiceProvider();
-            var i18nConfig = provider.GetRequiredService<I18nConfig>();
-            await i18nConfig.Initialization();
-            return ParameterView.FromDictionary(new Dictionary<string, object?> { [nameof(I18nConfig)] = i18nConfig });
         }
     }
 }
