@@ -1,5 +1,5 @@
 ﻿using System.Collections.Concurrent;
-using System.Text.Json;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BlazorComponent.I18n
 {
@@ -77,9 +77,9 @@ namespace BlazorComponent.I18n
 
         public void SetLang(string language) => CurrentLanguage = language;
 
-        public string? T(string key)
+        public string? T(string key, [DoesNotReturnIf(true)] bool whenNullReturnKey = true)
         {
-            return LanguageMap.GetValueOrDefault(key);
-        }        
+            return LanguageMap.GetValueOrDefault(key) ?? (whenNullReturnKey ? key : null);
+        }
     }
 }
