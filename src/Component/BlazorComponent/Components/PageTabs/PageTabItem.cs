@@ -14,16 +14,34 @@ namespace BlazorComponent
             Url = url ?? throw new ArgumentNullException(nameof(url));
         }
 
+        public PageTabItem(string name, string url, PageTabsMatch match)
+            : this(name, url)
+        {
+            Match = match;
+        }
+
         public PageTabItem(string name, string url, string icon)
             : this(name, url)
         {
             Icon = icon ?? throw new ArgumentNullException(nameof(icon));
         }
 
+        public PageTabItem(string name, string url, string icon, PageTabsMatch match)
+            : this(name, url, icon)
+        {
+            Match = match;
+        }
+
         public PageTabItem(string name, string url, string icon, bool closable)
             : this(name, url, icon)
         {
             Closable = closable;
+        }
+
+        public PageTabItem(string name, string url, string icon, bool closable, PageTabsMatch match)
+            : this(name, url, icon, closable)
+        {
+            Match = match;
         }
 
         public string Name { get; }
@@ -33,6 +51,8 @@ namespace BlazorComponent
         public string Icon { get; }
 
         public bool Closable { get; } = true;
+
+        public PageTabsMatch Match { get; } = PageTabsMatch.All;
 
         internal bool IsOpened { get; set; }
 
