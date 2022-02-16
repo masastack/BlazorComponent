@@ -19,6 +19,8 @@ namespace BlazorComponent
             get
             {
                 var (activator, content) = Dimensions;
+                if (activator == null) return 0;
+
                 var unknown = !Bottom && !Left && !Top && !Right;
                 var activatorLeft = Attach != null ? activator.OffsetLeft : activator.Left;
                 double left = 0;
