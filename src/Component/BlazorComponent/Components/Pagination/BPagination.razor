@@ -2,7 +2,7 @@
 @inherits BDomComponentBase
 
 <CascadingValue Value="IsDark" Name="IsDark">
-    <nav id="@Id" @ref="Ref" class="@Class">
+    <nav id="@Id" @ref="Ref" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">
         @RenderPart(typeof(BPaginationList<>))
     </nav>
 </CascadingValue>
