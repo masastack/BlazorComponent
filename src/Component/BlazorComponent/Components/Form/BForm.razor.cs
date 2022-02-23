@@ -37,6 +37,12 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<bool> ValueChanged { get; set; }
 
+        [Parameter]
+        public EventCallback OnValidSubmit { get; set; }
+
+        [Parameter]
+        public EventCallback OnInvalidSubmit { get; set; }
+
         public EditContext EditContext { get; protected set; }
 
         protected List<IValidatable> Validatables { get; } = new List<IValidatable>();
@@ -77,7 +83,32 @@ namespace BlazorComponent
             Validatables.Add(validatable);
         }
 
-        public async Task ValidateAsync()
+        private async Task HandleOnSubmitAsync(EventArgs args)
+        {
+            var valid = await ValidateAsync();
+
+            if (OnSubmit.HasDelegate)
+            {
+                await OnSubmit.InvokeAsync(args);
+            }
+
+            if (valid)
+            {
+                if (OnValidSubmit.HasDelegate)
+                {
+                    await OnValidSubmit.InvokeAsync();
+                }
+            }
+            else
+            {
+                if (OnInvalidSubmit.HasDelegate)
+                {
+                    await OnInvalidSubmit.InvokeAsync();
+                }
+            }
+        }
+
+        public async Task<bool> ValidateAsync()
         {
             //REVIEW: We should combine this
             var valid = true;
@@ -101,6 +132,8 @@ namespace BlazorComponent
             {
                 await ValueChanged.InvokeAsync(valid);
             }
+
+            return valid;
         }
 
         public async Task ResetAsync()
