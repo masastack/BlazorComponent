@@ -4,7 +4,7 @@
     <metrics statements="635" coveredstatements="85" conditionals="272" coveredconditionals="5" methods="131" coveredmethods="2" elements="1038" coveredelements="92" complexity="0" loc="635" ncloc="635" packages="2" files="3" classes="3"/>
     <package name="src">
       <metrics statements="476" coveredstatements="80" conditionals="229" coveredconditionals="5" methods="105" coveredmethods="2"/>
-      <file name="interop.ts" path="D:\Project\MASA.Blazor\src\BlazorComponent\src\Component\BlazorComponent.JS\src\interop.ts">
+      <file name="interop.ts" path="D:\Project\Masa.Blazor\src\BlazorComponent\src\Component\BlazorComponent.JS\src\interop.ts">
         <metrics statements="476" coveredstatements="80" conditionals="229" coveredconditionals="5" methods="105" coveredmethods="2"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="4" type="cond" truecount="2" falsecount="0"/>
@@ -486,7 +486,7 @@
     </package>
     <package name="src.modules">
       <metrics statements="159" coveredstatements="5" conditionals="43" coveredconditionals="0" methods="26" coveredmethods="0"/>
-      <file name="Caret.ts" path="D:\Project\MASA.Blazor\src\BlazorComponent\src\Component\BlazorComponent.JS\src\modules\Caret.ts">
+      <file name="Caret.ts" path="D:\Project\Masa.Blazor\src\BlazorComponent\src\Component\BlazorComponent.JS\src\modules\Caret.ts">
         <metrics statements="50" coveredstatements="1" conditionals="5" coveredconditionals="0" methods="11" coveredmethods="0"/>
         <line num="7" count="0" type="stmt"/>
         <line num="10" count="0" type="stmt"/>
@@ -539,7 +539,7 @@
         <line num="119" count="0" type="stmt"/>
         <line num="122" count="1" type="stmt"/>
       </file>
-      <file name="dragHelper.ts" path="D:\Project\MASA.Blazor\src\BlazorComponent\src\Component\BlazorComponent.JS\src\modules\dragHelper.ts">
+      <file name="dragHelper.ts" path="D:\Project\Masa.Blazor\src\BlazorComponent\src\Component\BlazorComponent.JS\src\modules\dragHelper.ts">
         <metrics statements="109" coveredstatements="4" conditionals="38" coveredconditionals="0" methods="15" coveredmethods="0"/>
         <line num="2" count="1" type="cond" truecount="0" falsecount="1"/>
         <line num="4" count="0" type="stmt"/>
