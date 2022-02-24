@@ -18,7 +18,7 @@
                 </BIcon>
             }
 
-            <input disabled="@IsDisabled" role="radio" type="radio" checked="@IsActive" value="@Value"
+            <input disabled="@IsDisabled" id="@Id" role="radio" type="radio" checked="@IsActive" value="@Value"
                    @onblur="OnBlur" @onchange="OnChange" @onfocus="OnFocus" @onkeydown="OnKeyDown" @onclick="HandleClick" @onclick:stopPropagation />
 
             @if (Ripple)

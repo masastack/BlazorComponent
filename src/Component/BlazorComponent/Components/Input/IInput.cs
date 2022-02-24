@@ -29,6 +29,8 @@ namespace BlazorComponent
         }
 
         RenderFragment ChildContent { get; }
+        
+        string Id { get; }
 
         string Label => default;
 

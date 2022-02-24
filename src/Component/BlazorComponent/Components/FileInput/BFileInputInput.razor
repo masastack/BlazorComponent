@@ -6,7 +6,9 @@
 
 @RenderPart(typeof(BFileInputSelections<,>))
 <InputFile autofocus="@Autofocus"
-           disabled="@Disabled" placeholder="@Placeholder"
+           disabled="@Disabled" 
+           id="@Id"
+           placeholder="@Placeholder"
            readonly="@Readonly"
            multiple="@Multiple"
            OnChange="HandleOnFileChange"

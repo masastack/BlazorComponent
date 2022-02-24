@@ -22,6 +22,8 @@ namespace BlazorComponent
 
         public bool Readonly => Component.IsReadonly;
 
+        public string Id => Component.Id;
+
         public string InputTag => Component.Tag;
 
         public Dictionary<string, object> InputAttrs => Component.InputAttrs;

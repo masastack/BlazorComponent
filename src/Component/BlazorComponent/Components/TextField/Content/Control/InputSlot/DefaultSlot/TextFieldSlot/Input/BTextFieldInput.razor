@@ -3,12 +3,17 @@
 @typeparam TInput
 @inherits ComponentPartBase<TInput>
 @*TODO:attrs*@
-<Element Tag="@InputTag" value="@InternalValue" @onchange="HandleOnChange" autofocus="@Autofocus"
-         disabled="@Disabled" placeholder="@Placeholder"
+<Element Tag="@InputTag" 
+         autofocus="@Autofocus"
+         disabled="@Disabled" 
+         id="@Id"
+         placeholder="@Placeholder"
          readonly="@Readonly"
+         value="@InternalValue"
+         @onchange="HandleOnChange"
          @onblur="HandleOnBlur"
-         @oninput="HandleOnInput"
          @onfocus="HandleOnFocus"
+         @oninput="HandleOnInput"
          @onkeydown="HandleOnKeyDown"
          ReferenceCaptureAction="r=>Component.InputElement=r"
          @attributes="InputAttrs" />

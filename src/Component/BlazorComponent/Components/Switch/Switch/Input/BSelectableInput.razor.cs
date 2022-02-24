@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.ObjectiveC;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,6 +13,8 @@ namespace BlazorComponent
     {
         [Parameter]
         public string Type { get; set; }
+
+        public string Id => Component.Id;
 
         public bool IsDisabled => Component.IsDisabled;
 
