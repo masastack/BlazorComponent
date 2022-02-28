@@ -8,19 +8,16 @@ namespace BlazorComponent
     public partial class BRadio<TValue>
     {
         [Parameter]
-        public bool IsActive { get; set; }
-
-        [Parameter]
         public string OnIcon { get; set; }
 
         [Parameter]
         public string OffIcon { get; set; }
 
         [Parameter]
-        public bool IsDisabled { get; set; }
+        public bool Disabled { get; set; }
 
         [Parameter]
-        public bool IsReadonly { get; set; }
+        public bool Readonly { get; set; }
         
         [Parameter]
         public RenderFragment LabelContent { get; set; }
@@ -54,6 +51,11 @@ namespace BlazorComponent
 
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
+        
+        [CascadingParameter(Name = "Input_IsDisabled")]
+        protected bool InputIsDisabled { get; set; }
+
+        protected bool IsActive { get; set; }
 
         public bool IsDark
         {
@@ -77,7 +79,7 @@ namespace BlazorComponent
 
         protected virtual async Task HandleClick(MouseEventArgs args)
         {
-            if (IsDisabled || IsReadonly || IsActive)
+            if (Disabled || Readonly || IsActive)
             {
                 return;
             }
