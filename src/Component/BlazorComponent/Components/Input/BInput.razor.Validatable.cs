@@ -96,25 +96,7 @@ namespace BlazorComponent
             }
             set
             {
-                if (EqualityComparer<TValue>.Default.Equals(value, LazyValue))
-                {
-                    return;
-                }
-
-                if (ValueChanged.HasDelegate)
-                {
-                    _ = ValueChanged.InvokeAsync(value);
-                }
-
                 LazyValue = value;
-                HasInput = true;
-
-                if (!ValidateOnBlur)
-                {
-                    //We removed NextTick since it doesn't trigger render
-                    //and validate may not be called
-                    Validate();
-                }
             }
         }
 
@@ -357,6 +339,29 @@ namespace BlazorComponent
             }
 
             InvokeStateHasChanged();
+        }
+
+        protected virtual async Task SetInternalValueAsync(TValue internalValue)
+        {
+            if (EqualityComparer<TValue>.Default.Equals(internalValue, InternalValue))
+            {
+                return;
+            }
+
+            if (!EqualityComparer<TValue>.Default.Equals(internalValue, Value) && ValueChanged.HasDelegate)
+            {
+                await ValueChanged.InvokeAsync(internalValue);
+            }
+
+            InternalValue = internalValue;
+            HasInput = true;
+
+            if (!ValidateOnBlur)
+            {
+                //We removed NextTick since it doesn't trigger render
+                //and validate may not be called
+                Validate();
+            }
         }
 
         protected override void Dispose(bool disposing)
