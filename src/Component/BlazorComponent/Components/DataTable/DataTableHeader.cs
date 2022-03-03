@@ -13,10 +13,19 @@ namespace BlazorComponent
         {
         }
 
-        public DataTableHeader(string text, string value)
+        public DataTableHeader(string text, string value, bool sortable = true)
         {
             Text = text ?? throw new ArgumentNullException(nameof(text));
             Value = value ?? throw new ArgumentNullException(nameof(value));
+            Sortable = sortable;
+        }
+
+        public DataTableHeader(string text, string value, StringNumber width, bool sortable = true)
+        {
+            Text = text ?? throw new ArgumentNullException(nameof(text));
+            Value = value ?? throw new ArgumentNullException(nameof(value));
+            Width = width;
+            Sortable = sortable;
         }
 
         public bool Divider { get; set; }
