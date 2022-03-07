@@ -8,7 +8,7 @@ namespace BlazorComponent
         public RenderFragment ChildContent { get; set; }
 
         [Parameter]
-        public bool InLine { get; set; }
+        public bool Inline { get; set; }
 
         [Parameter]
         public bool Left { get; set; }
