@@ -81,9 +81,6 @@ namespace BlazorComponent
         public RenderFragment ChildContent { get; set; }
 
         [Parameter]
-        public string ContentStyle { get; set; }
-
-        [Parameter]
         public bool DisableKeys { get; set; }
 
         [Parameter]
