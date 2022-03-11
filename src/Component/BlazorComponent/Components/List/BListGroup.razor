@@ -33,12 +33,12 @@
             }
         </BListItem>
         <ExpandTransition>
-            <Element Show="IsActive" Class="@CssProvider.GetClass("items")" Style="@CssProvider.GetStyle("items")">
+            <ShowTransitionElement Value="IsActive" Class="@CssProvider.GetClass("items")" Style="@CssProvider.GetStyle("items")">
                 @if (Booted || IsActive)
                 {
                     @ChildContent
                 }
-            </Element>
+            </ShowTransitionElement>
         </ExpandTransition>
     </div>
 </CascadingValue>
