@@ -9,6 +9,8 @@ on:
     branches:
       - develop
       - feature/*
+env:
+  PATH: ./src/Componet/BlazorComponent/
 
 jobs:
   build:
@@ -24,4 +26,4 @@ jobs:
         dotnet-version: '6.0.x'
         include-prerelease: true
     - name: build
-      run: dotnet build ./src/BlazorComponent.sln
+      run: dotnet build $PATH
