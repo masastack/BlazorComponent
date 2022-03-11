@@ -8,17 +8,17 @@
     {
         <BCascadingValue Value="IsDark" Name="IsDark">
             <Transition Name="@Transition">
-                <Element Show="Value"
-                     id="@Id"
-                     style="@CssProvider.GetStyle("content")"
-                     class="@CssProvider.GetClass("content")"
-                     @onclick="OnContentClick"
-                     @onmouseenter="OnContentMouseenter"
-                     @onmouseleave="OnContentMouseleave"
-                     @attributes="@Attributes"
-                     ReferenceCaptureAction="r => ContentRef = r">
+                <ShowTransitionElement Value="Value"
+                                   id="@Id"
+                                   style="@CssProvider.GetStyle("content")"
+                                   class="@CssProvider.GetClass("content")"
+                                   @onclick="OnContentClick"
+                                   @onmouseenter="OnContentMouseenter"
+                                   @onmouseleave="OnContentMouseleave"
+                                   @attributes="@Attributes"
+                                   ReferenceCaptureAction="r => ContentRef = r">
                     @ChildContent
-                </Element>
+                </ShowTransitionElement>
             </Transition>
         </BCascadingValue>
     }
