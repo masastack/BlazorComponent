@@ -3,8 +3,8 @@
 @inherits ComponentPartBase<TDatePickerTitle>
 
 <Transition Name="@ComputedTransition">
-    <GroupElement Key="Value" Vertical>
+    <KeyTransitionElement Value="Value">
         @((MarkupString)(Date??"&nbsp;"))
-    </GroupElement>
+    </KeyTransitionElement>
 </Transition>
 

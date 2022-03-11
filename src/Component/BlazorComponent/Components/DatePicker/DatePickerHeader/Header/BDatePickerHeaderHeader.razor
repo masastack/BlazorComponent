@@ -4,7 +4,7 @@
 
 <div class="@CssProvider.GetClass("value")">
     <Transition Name="@Transition">
-        <GroupElement Key="Value" class="@CssProvider.GetClass("header")">
+        <KeyTransitionElement Value="Value" class="@CssProvider.GetClass("header")">
             <button @attributes="HeaderAttrs">
                 @if (ComponentChildContent != null)
                 {
@@ -15,7 +15,7 @@
                     @Formatter?.Invoke(Value)
                 }
             </button>
-        </GroupElement>
+        </KeyTransitionElement>
     </Transition>
 </div>
 
