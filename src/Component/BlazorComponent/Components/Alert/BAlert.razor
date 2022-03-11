@@ -5,14 +5,14 @@
     @if (Transition != null)
     {
         <Transition Name="@Transition">
-            <Element Show="Value" Tag="@Tag" role="alert" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id">
+            <ShowTransitionElement Value="Value" Tag="@Tag" role="alert" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id">
                 @RenderPart(typeof(BAlertWrapper<>))
-            </Element>
+            </ShowTransitionElement>
         </Transition>
     }
     else
     {
-        <Element Show="Value" Tag="@Tag" role="alert" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id">
+        <Element Tag="@Tag" role="alert" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id">
             @RenderPart(typeof(BAlertWrapper<>))
         </Element>
     }
