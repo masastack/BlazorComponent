@@ -149,6 +149,9 @@ public abstract class BMenuable : BActivatable, IMenuable, IAsyncDisposable
     [Parameter]
     public string ContentClass { get; set; }
 
+    [Parameter] 
+    public string ContentStyle { get; set; }
+
     [Parameter]
     public bool Left { get; set; }
 
