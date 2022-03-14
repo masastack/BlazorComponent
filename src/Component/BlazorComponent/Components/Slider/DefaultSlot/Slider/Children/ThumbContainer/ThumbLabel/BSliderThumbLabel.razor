@@ -4,11 +4,11 @@
 @inherits ComponentPartBase<TInput>
 
 <ScaleTransition Origin="bottom center">
-    <Element Show="ShowThumbLabelContainer" class="@CssProvider.GetClass("thumb-label-container")" style="@CssProvider.GetStyle("thumb-label-container")">
+    <ShowTransitionElement Value="ShowThumbLabelContainer" class="@CssProvider.GetClass("thumb-label-container")" style="@CssProvider.GetStyle("thumb-label-container")">
         <div class="@CssProvider.GetClass("thumb-label")">
             <div>@ThumbLabelContent(Index)</div>
         </div>
-    </Element>
+    </ShowTransitionElement>
 </ScaleTransition>
 
 
