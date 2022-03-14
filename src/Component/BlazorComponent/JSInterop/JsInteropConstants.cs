@@ -166,6 +166,8 @@
 
         public static string InsertToFirst => $"{Variables.JsInteropFuncNamePrefix}insertToFirst";
 
+        public static string ObserveElement => $"{Variables.JsInteropFuncNamePrefix}observeElement";
+
         #endregion Draggable Modal
     }
 }

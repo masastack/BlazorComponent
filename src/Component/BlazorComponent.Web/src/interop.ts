@@ -1131,7 +1131,7 @@ export function getSize(selectors, sizeProp) {
     el.style.display = "";
     el.style.overflow = "hidden";
 
-    var size = el["offset" + sizeProp] || 0;
+    var size = el["offset" + sizeProp.charAt(0).toUpperCase() + sizeProp.slice(1)] || 0;
 
     el.style.display = display;
     el.style.overflow = overflow;
@@ -1249,4 +1249,28 @@ export function containsActiveElement(selector) {
     }
 
     return null;
+}
+
+export function observeElement(el, sizeProp, expandTransition) {
+    updateSize(el, sizeProp, expandTransition);
+
+    var observer = new MutationObserver(function (mutationsList) {
+        for (let mutation of mutationsList) {
+            if (el.className.indexOf('in-transition')>0) {
+                return;
+            }
+            updateSize(el, sizeProp, expandTransition);
+        }
+    });
+
+    observer.observe(el, { subtree: true, childList: true });
+}
+
+function updateSize(el, sizeProp, expandTransition) {
+    var size = getSize(el, sizeProp);
+
+    if (el['_size'] != size) {
+        el['_size'] = size;
+        expandTransition.invokeMethodAsync('OnSizeChanged', size);
+    }
 }
