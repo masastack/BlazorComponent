@@ -1,20 +1,15 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    internal class ElementWrapper : ComponentBase
+    public class Container : ComponentBase
     {
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public bool Value { get; set; }
 
         [Parameter]
-        public bool Value { get; set; } = true;
+        public RenderFragment ChildContent { get; set; }
 
         protected override bool ShouldRender()
         {

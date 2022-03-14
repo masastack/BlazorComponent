@@ -1,9 +1,6 @@
-﻿using BlazorComponent.Web;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BlazorComponent
@@ -11,45 +8,61 @@ namespace BlazorComponent
     public class ExpandTransition : Transition
     {
         [Inject]
-        public Document Document { get; set; }
+        public IJSRuntime JS { get; set; }
 
-        protected virtual bool X { get; }
+        protected virtual string SizeProp => "height";
 
-        protected double? Size { get; set; }
-
-        protected string SizeProp => X ? "width" : "height";
-
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
-
-            StyleBuilder
-                .AddIf(() => $"{SizeProp}:0px", () => State == TransitionState.Enter || State == TransitionState.LeaveTo)
-                .AddIf("overflow:hidden", () => State != TransitionState.None)
-                .AddIf(() => $"{SizeProp}:{Size}px", () => (State == TransitionState.EnterTo || State == TransitionState.Leave) && Size != null);
-        }
+        protected double Size { get; set; }
 
         protected override void OnParametersSet()
         {
-            Name = X ? "expand-x-transition" : "expand-transition";
+            Name = "expand-transition";
         }
 
-        protected override async Task OnBeforeEnterAsync()
+        public override string GetClass(TransitionState transitionState)
         {
-            var prop = SizeProp[..1].ToUpper() + SizeProp[1..];
-            var el = Document.GetElementByReference(FirstElement.Reference);
-            Size = await el.GetSizeAsync(prop);
-
-            await base.OnBeforeEnterAsync();
+            var transitionClass = base.GetClass(transitionState);
+            return string.Join(" ", transitionClass, transitionState == TransitionState.None ? null : "in-transition");
         }
 
-        protected override async Task OnBeforeLeaveAsync()
+        public override string GetStyle(TransitionState transitionState)
         {
-            var prop = SizeProp[..1].ToUpper() + SizeProp[1..];
-            var el = Document.GetElementByReference(FirstElement.Reference);
-            Size = await el.GetSizeAsync(prop);
+            var styles = new List<string>
+            {
+                base.GetStyle(transitionState)
+            };
 
-            await base.OnBeforeLeaveAsync();
+            switch (transitionState)
+            {
+                case TransitionState.Enter:
+                case TransitionState.LeaveTo:
+                    styles.Add($"{SizeProp}:0px");
+                    break;
+                case TransitionState.EnterTo:
+                case TransitionState.Leave:
+                    styles.Add($"{SizeProp}:{Size}px");
+                    break;
+                default:
+                    break;
+            }
+
+            if (transitionState != TransitionState.None)
+            {
+                styles.Add("overflow:hidden");
+            }
+
+            return string.Join(';', styles);
+        }
+
+        public override async Task OnElementReadyAsync(ToggleableTransitionElement element)
+        {
+            await JS.InvokeVoidAsync(JsInteropConstants.ObserveElement, element.Reference, SizeProp, DotNetObjectReference.Create(this));
+        }
+
+        [JSInvokable]
+        public void OnSizeChanged(double size)
+        {
+            Size = size;
         }
     }
 }
