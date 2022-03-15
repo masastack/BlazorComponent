@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
-using OneOf;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
     public abstract partial class BApp : BDomComponentBase, IThemeable
     {
+        [Inject]
+        private IPopupProvider PopupProvider { get; set; }
+
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
@@ -20,6 +18,13 @@ namespace BlazorComponent
 
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
+
+        protected override void OnInitialized()
+        {
+            PopupProvider.StateChanged += OnStateChanged;
+
+            base.OnInitialized();
+        }
 
         public bool IsDark
         {
@@ -37,6 +42,19 @@ namespace BlazorComponent
 
                 return CascadingIsDark;
             }
+        }
+
+
+        private void OnStateChanged(object? sender, EventArgs e)
+        {
+            InvokeAsync(() => StateHasChanged());
+        }
+
+
+        public override void Dispose()
+        {
+            PopupProvider.StateChanged -= OnStateChanged;
+            base.Dispose();
         }
     }
 }

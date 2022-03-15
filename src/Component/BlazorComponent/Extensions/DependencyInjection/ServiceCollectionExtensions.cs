@@ -2,12 +2,7 @@
 using BlazorComponent.Web;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -19,6 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddScoped<HeadJsInterop>();
             services.TryAddScoped<Document>();
             services.TryAddScoped(serviceProvider => new Window(serviceProvider.GetService<Document>()));
+            services.TryAddScoped<IPopupProvider, PopupProvider>();
             services.TryAddSingleton<IComponentIdGenerator, GuidComponentIdGenerator>();
             CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CurrentCulture;
             services.AddSingleton<IComponentActivator, AbstractComponentActivator>();
