@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public class ExpandXTransition : ExpandTransition
     {
-        protected override bool X => true;
+        protected override string SizeProp => "width";
+
+        protected override void OnParametersSet()
+        {
+            Name = "expand-x-transition";
+        }
     }
 }

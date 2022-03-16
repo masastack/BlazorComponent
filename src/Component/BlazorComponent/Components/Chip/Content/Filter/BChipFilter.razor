@@ -5,11 +5,11 @@
 @if (Filter)
 {
     <ExpandXTransition>
-        <Element Show="IsActive">
+        <ShowTransitionElement Value="IsActive">
             @* TODO: may need an AbstractComponentElement? *@
             <BIcon @attributes="@(GetAttributes(typeof(BIcon),"filter"))">
                 @FilterIcon
             </BIcon>
-        </Element>
+        </ShowTransitionElement>
     </ExpandXTransition>
 }

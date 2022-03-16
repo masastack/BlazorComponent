@@ -3,7 +3,7 @@
 @inherits ComponentPartBase<TDialog>
 
 <Transition Name="@Transition">
-    <Element Show="Value" class="@CssProvider.GetClass("innerContent")" style="@CssProvider.GetStyle("innerContent")" ReferenceCaptureAction="elmentRference=> DialogRef=elmentRference">
+    <ShowTransitionElement Value="IsActive" class="@CssProvider.GetClass("innerContent")" style="@CssProvider.GetStyle("innerContent")" ReferenceCaptureAction="elmentRference=> DialogRef=elmentRference">
         @ComponentChildContent
-    </Element>
+    </ShowTransitionElement>
 </Transition>

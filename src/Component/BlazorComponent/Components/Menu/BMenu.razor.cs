@@ -12,18 +12,82 @@ namespace BlazorComponent
 {
     public partial class BMenu : BMenuable, IDependent
     {
-        private readonly int _defaultOffset = 8;
-        private readonly List<IDependent> _dependents = new();
+        [Parameter]
+        public bool Auto { get; set; }
 
-        protected string CalculatedLeft
+        [Parameter]
+        public bool CloseOnClick { get; set; } = true;
+
+        [Parameter]
+        public bool CloseOnContentClick { get; set; } = true;
+
+        [Parameter]
+        public RenderFragment ChildContent { get; set; }
+
+        [Parameter]
+        public string ContentStyle { get; set; }
+
+        //TODO:fix here
+        [Parameter]
+        public bool DisableKeys { get; set; }
+
+        [Parameter]
+        public StringNumber MaxHeight { get; set; } = "auto";
+
+        [Parameter]
+        public EventCallback<MouseEventArgs> OnOutsideClick { get; set; }
+
+        [Parameter]
+        public string Origin { get; set; }
+
+        [Parameter]
+        public StringBoolean Rounded { get; set; }
+
+        [Parameter]
+        public bool Tile { get; set; }
+
+        [Parameter]
+        public string Transition { get; set; }
+
+        [Parameter]
+        public bool Dark { get; set; }
+
+        [Parameter]
+        public bool Light { get; set; }
+
+        [CascadingParameter]
+        public IDependent CascadingDependent { get; set; }
+
+        [CascadingParameter(Name = "AppIsDark")]
+        public bool AppIsDark { get; set; }
+
+        public bool IsDark
         {
             get
             {
-                var menuWidth = Math.Max(Dimensions.content.Width, NumberHelper.ParseDouble(CalculatedMinWidth));
+                if (Dark)
+                {
+                    return true;
+                }
 
-                if (!Auto) return CalcLeft(menuWidth) ?? "0";
+                if (Light)
+                {
+                    return false;
+                }
 
-                return ((StringNumber)CalcXOverflow(CalcLeftAuto(), menuWidth)).ConvertToUnit() ?? "0";
+                return AppIsDark;
+            }
+        }
+
+        protected StringNumber CalculatedLeft
+        {
+            get
+            {
+                var menuWidth = Math.Max(Dimensions.Content.Width, NumberHelper.ParseDouble(CalculatedMinWidth));
+
+                if (!Auto) return CalcLeft(menuWidth);
+
+                return CalcXOverflow(CalcLeftAuto(), menuWidth);
             }
         }
 
@@ -47,7 +111,7 @@ namespace BlazorComponent
                 }
 
                 var minWidth = Math.Min(
-                    Dimensions.activator.Width + nudgeWidth + (Auto ? 16 : 0),
+                    Dimensions.Activator.Width + nudgeWidth + (Auto ? 16 : 0),
                     Math.Max(PageWidth - 24, 0));
 
                 double calculatedMaxWidth;
@@ -64,78 +128,13 @@ namespace BlazorComponent
             }
         }
 
-        protected string CalculatedTop => !Auto
-            ? CalcTop()
-            : ((StringNumber)CalcYOverflow(CalcTopAuto())).ConvertToUnit();
-
-        [Parameter]
-        public bool Auto { get; set; }
-
-        [Parameter]
-        public bool CloseOnClick { get; set; } = true;
-
-        [Parameter]
-        public bool CloseOnContentClick { get; set; } = true;
-
-        [Parameter]
-        public RenderFragment ChildContent { get; set; }
-
-        [Parameter]
-        public bool DisableKeys { get; set; }
-
-        [Parameter]
-        public StringNumber MaxHeight { get; set; } = "auto";
-
-        [Parameter]
-        public EventCallback<MouseEventArgs> OnOutsideClick { get; set; }
-
-        [Parameter]
-        public string Origin { get; set; }
-
-        [Parameter]
-        public StringBoolean Rounded { get; set; }
-
-        [Parameter]
-        public bool Tile { get; set; }
-
-        [Parameter]
-        public string Transition { get; set; }
-
-        [CascadingParameter]
-        public IDependent CascadingDependent { get; set; }
-
-        [Parameter]
-        public bool Dark { get; set; }
-
-        [Parameter]
-        public bool Light { get; set; }
-
-        [CascadingParameter(Name = "AppIsDark")]
-        public bool AppIsDark { get; set; }
-
-        public bool IsDark
-        {
-            get
-            {
-                if (Dark)
-                {
-                    return true;
-                }
-
-                if (Light)
-                {
-                    return false;
-                }
-
-                return AppIsDark;
-            }
-        }
+        protected StringNumber CalculatedTop => !Auto ? CalcTop() : CalcYOverflow(CalcTopAuto());
 
         public IEnumerable<HtmlElement> DependentElements
         {
             get
             {
-                var elements = _dependents
+                var elements = Dependents
                     .SelectMany(dependent => dependent.DependentElements)
                     .ToList();
 
@@ -145,6 +144,37 @@ namespace BlazorComponent
                 return elements;
             }
         }
+
+        protected Dictionary<string, object> ContentAttributes
+        {
+            get
+            {
+                var attributes = new Dictionary<string, object>(Attributes);
+
+                if (CloseOnContentClick)
+                {
+                    attributes.Add("onclick", CreateEventCallback<MouseEventArgs>(HandleOnContentClickAsync));
+                }
+
+                if (!Disabled && OpenOnHover)
+                {
+                    attributes.Add("onmouseenter", CreateEventCallback<MouseEventArgs>(HandleOnContentMouseenterAsync));
+                }
+
+                if (OpenOnHover)
+                {
+                    attributes.Add("onmouseleave", CreateEventCallback<MouseEventArgs>(HandleOnContentMouseleaveAsync));
+                }
+
+                attributes.Add("close-condition", IsActive && CloseOnClick);
+
+                return attributes;
+            }
+        }
+
+        protected List<IDependent> Dependents { get; } = new();
+
+        protected int DefaultOffset { get; set; } = 8;
 
         protected override void OnInitialized()
         {
@@ -158,97 +188,50 @@ namespace BlazorComponent
 
         public void RegisterChild(IDependent dependent)
         {
-            _dependents.Add(dependent);
+            Dependents.Add(dependent);
         }
 
-        protected override async Task AfterShowContent()
-        {
-            if (!OpenOnHover)
-            {
-                if (!CloseOnClick) return;
+        //TODO:keydow event
 
+        protected override async Task OnIsActiveSettingAsync(bool isActive)
+        {
+            if (CloseOnClick && !OpenOnHover && !Attached)
+            {
                 await JsInvokeAsync(JsInteropConstants.AddOutsideClickEventListener,
-                    DotNetObjectReference.Create(new Invoker<object>(OutsideClick)),
-                    new[] { Document.GetElementByReference(ContentRef).Selector, ActivatorSelector });
+                    DotNetObjectReference.Create(new Invoker<object>(HandleOutsideClickAsync)),
+                    new[] { Document.GetElementByReference(ContentElement).Selector, ActivatorSelector }, null, ContentElement);
             }
-            else
-            {
-                await ActivatorElement.AddEventListenerAsync(
-                    "mouseleave",
-                    CreateEventCallback<MouseEventArgs>(_ => Close()),
-                    false,
-                    new EventListenerActions(Document.GetElementByReference(ContentRef).Selector));
-            }
+
+            await base.OnIsActiveSettingAsync(isActive);
         }
 
-        protected override Task Activate(Action lazySetter)
+        private async Task HandleOutsideClickAsync(object agrs)
         {
-            return UpdateDimensions(lazySetter);
+            if (!IsActive || !CloseOnClick) return;
+
+            await OnOutsideClick.InvokeAsync();
+            await SetIsActiveAsync(false);
+
+            await InvokeStateHasChangedAsync();
         }
 
-        protected override Dictionary<string, (EventCallback<MouseEventArgs>, EventListenerActions)> GenActivatorMouseListeners()
+        protected async Task HandleOnContentClickAsync(MouseEventArgs args)
         {
-            var listeners = base.GenActivatorMouseListeners();
-
-            // if contentRef is null, remove the mouseleave listener.
-            // the mouseleave event will be listened again in AfterShowContent method.
-            if (listeners.ContainsKey("mouseleave") && ContentRef.Context == null)
-            {
-                listeners.Remove("mouseleave");
-            }
-
-            return listeners;
+            await SetIsActiveAsync(false);
+            StateHasChanged();
         }
 
-        protected override Dictionary<string, EventCallback<KeyboardEventArgs>> GenActivatorKeyboardListeners()
+        protected async Task HandleOnContentMouseenterAsync(MouseEventArgs args)
         {
-            var listeners = base.GenActivatorKeyboardListeners();
-
-            if (DisableKeys && listeners.ContainsKey("keydown"))
-            {
-                listeners.Remove("keydown");
-            }
-
-            return listeners;
+            await SetIsActiveAsync(true);
+            StateHasChanged();
         }
 
-        protected virtual async void OnContentClick(MouseEventArgs args)
+        protected async Task HandleOnContentMouseleaveAsync(MouseEventArgs args)
         {
-            // TODO: if clicked element attribute contains 'disabled', return
-            if (CloseOnContentClick)
-            {
-                await UpdateValue(false);
-            }
-            else
-            {
-                PreventRender();
-            }
-        }
-
-        protected virtual async void OnContentMouseenter(MouseEventArgs args)
-        {
-            if (!Disabled && OpenOnHover)
-            {
-                if (Value) await Task.CompletedTask;
-
-                await UpdateValue(true);
-            }
-            else
-            {
-                PreventRender();
-            }
-        }
-
-        protected virtual async void OnContentMouseleave(MouseEventArgs args)
-        {
-            if (OpenOnHover)
-            {
-                await UpdateValue(false);
-            }
-            else
-            {
-                PreventRender();
-            }
+            //TODO:If target is activator
+            await SetIsActiveAsync(false);
+            StateHasChanged();
         }
 
         private double CalcTopAuto()
@@ -258,30 +241,15 @@ namespace BlazorComponent
                 return ComputedTop;
             }
 
-            // ignores some code about List
+            //TODO: check this
+            //ignores some code about List
 
             return ComputedTop - 1;
         }
 
         private double CalcLeftAuto()
         {
-            return Dimensions.activator.Left - _defaultOffset * 2;
-        }
-
-        private async Task OutsideClick(object _)
-        {
-            if (!Value || !CloseOnClick) return;
-
-            await OnOutsideClick.InvokeAsync();
-
-            await UpdateValue(false);
-
-            await InvokeStateHasChangedAsync();
-        }
-
-        protected override Task MoveContentTo()
-        {
-            return Task.CompletedTask;
+            return Dimensions.Activator.Left - DefaultOffset * 2;
         }
     }
 }

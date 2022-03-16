@@ -2,10 +2,10 @@
 @inherits BDomComponentBase
 
 <ExpandTransition>
-    <Element Show="ExpansionPanel.InternalIsActive" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">
+    <ShowTransitionElement Value="ExpansionPanel.InternalIsActive" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">
         <div class="@CssProvider.GetClass("wrap")">
             @ChildContent
         </div>
-    </Element>
+    </ShowTransitionElement>
 </ExpandTransition>
 

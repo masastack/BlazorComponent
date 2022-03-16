@@ -5,31 +5,15 @@ using System.Net;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using BlazorComponent.Web;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 
 namespace BlazorComponent
 {
-    public partial class BDialog : BActivatable, IAsyncDisposable
+    public partial class BDialog : BBootable, IAsyncDisposable
     {
-        private bool _valueChangedToTrue;
-        private int _stackMinZIndex = 200;
-
-        protected virtual string AttachSelector { get; set; }
-
-        public ElementReference ContentRef { get; set; }
-
-        public ElementReference DialogRef { get; set; }
-
-        protected object Overlay { get; set; }
-
-        protected ElementReference? OverlayRef => ((BOverlay)Overlay)?.Ref;
-
-        public virtual bool ShowContent { get; set; }
-
-        protected int ZIndex { get; set; }
-
         [Parameter]
         public string Attach { get; set; }
 
@@ -81,55 +65,68 @@ namespace BlazorComponent
             }
         }
 
-        public override bool Value
-        {
-            get => base.Value;
-            set
-            {
-                if (base.Value == false && value)
-                    _valueChangedToTrue = true;
-
-                base.Value = value;
-            }
-        }
-
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            await base.OnAfterRenderAsync(firstRender);
-
-            await ShowLazyContent();
-
-            if (_valueChangedToTrue)
-            {
-                ZIndex = await ActiveZIndex(true);
-                await Show();
-                await InvokeStateHasChangedAsync();
-                _valueChangedToTrue = false;
-            }
-        }
+        [Inject]
+        public Document Document { get; set; }
 
         protected bool ShowOverlay => !Fullscreen && !HideOverlay;
 
-        private async Task Show()
-        {
-            // TODO: previousActiveElement
-            // https://github.com/vuetifyjs/vuetify/blob/master/packages/vuetify/src/components/VDialog/VDialog.ts#L185
+        protected ElementReference? OverlayRef => ((BOverlay)Overlay)?.Ref;
 
-            var contains = await JsInvokeAsync<bool?>(JsInteropConstants.ContainsActiveElement, ContentRef);
-            if (contains.HasValue && !contains.Value)
+        protected int StackMinZIndex { get; set; } = 200;
+
+        protected virtual string AttachSelector { get; set; }
+
+        public ElementReference ContentRef { get; set; }
+
+        public ElementReference DialogRef { get; set; }
+
+        protected object Overlay { get; set; }
+
+        protected int ZIndex { get; set; }
+
+        protected bool Attached { get; set; }
+
+        protected override async Task OnIsActiveSettingAsync(bool isActive)
+        {
+            if (!Attached)
             {
-                await JsInvokeAsync(JsInteropConstants.Focus, ContentRef);
+                Attached = true;
+
+                await JsInvokeAsync(JsInteropConstants.AddOutsideClickEventListener,
+                DotNetObjectReference.Create(new Invoker<object>(HandleOnOutsideClickAsync)),
+                new[] { Document.GetElementByReference(DialogRef).Selector },
+                new[] { Document.GetElementByReference(OverlayRef!.Value).Selector });
+
+                ZIndex = await GetActiveZIndex(isActive);
+                await JsInvokeAsync(JsInteropConstants.AddElementTo, OverlayRef, AttachSelector);
+                await JsInvokeAsync(JsInteropConstants.AddElementTo, ContentRef, AttachSelector);
             }
         }
 
-        protected override async Task Close()
+        protected async Task HandleOnOutsideClickAsync(object _)
         {
-            if (Persistent) return;
+            if (!CloseConditional()) return;
 
-            await base.Close();
+            if (OnOutsideClick.HasDelegate)
+            {
+                await OnOutsideClick.InvokeAsync();
+            }
+
+            if (Persistent)
+            {
+                return;
+            }
+
+            await SetIsActiveAsync(false);
+            await InvokeStateHasChangedAsync();
         }
 
-        private async Task<int> ActiveZIndex(bool isActive)
+        private bool CloseConditional()
+        {
+            return IsActive;
+        }
+
+        private async Task<int> GetActiveZIndex(bool isActive)
         {
             return !isActive ? await JsInvokeAsync<int>(JsInteropConstants.GetZIndex, ContentRef) : await GetMaxZIndex() + 2;
         }
@@ -138,12 +135,12 @@ namespace BlazorComponent
         {
             var maxZindex = await JsInvokeAsync<int>(JsInteropConstants.GetMenuOrDialogMaxZIndex, new List<ElementReference> { ContentRef }, Ref);
 
-            return maxZindex > _stackMinZIndex ? maxZindex : _stackMinZIndex;
+            return maxZindex > StackMinZIndex ? maxZindex : StackMinZIndex;
         }
 
-        protected virtual Task ShowLazyContent()
+        public async ValueTask DisposeAsync()
         {
-            return Task.CompletedTask;
+            await DeleteContent();
         }
 
         protected virtual async Task DeleteContent()
@@ -164,11 +161,6 @@ namespace BlazorComponent
             {
                 // ignored
             }
-        }
-
-        public async ValueTask DisposeAsync()
-        {
-            await DeleteContent();
         }
     }
 }

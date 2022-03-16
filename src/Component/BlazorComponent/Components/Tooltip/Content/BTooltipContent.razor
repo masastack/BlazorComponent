@@ -2,14 +2,14 @@
 @typeparam TTooltip
 @inherits ComponentPartBase<ITooltip>
 
-@if (ShowContent)
+@if (IsBooted)
 {
     <Transition Name="@TransitionName">
-        <Element Show="Value"
+        <ShowTransitionElement Value="IsActive"
              class="@CssProvider.GetClass("content")"
              style="@CssProvider.GetStyle("content")"
-             ReferenceCaptureAction="r => ContentRef = r">
+             ReferenceCaptureAction="r => ContentElement = r">
             @ComponentChildContent
-        </Element>
+        </ShowTransitionElement>
     </Transition>
 }

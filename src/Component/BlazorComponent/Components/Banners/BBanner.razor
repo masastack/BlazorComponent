@@ -3,8 +3,8 @@
 
 <CascadingValue Value="IsDark" Name="IsDark">
     <ExpandTransition>
-        <Element Show="Value" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">
+        <ShowTransitionElement Value="Value" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">
             @RenderPart(typeof(BBannerWrapper<>))
-        </Element>
+        </ShowTransitionElement>
     </ExpandTransition>
 </CascadingValue>

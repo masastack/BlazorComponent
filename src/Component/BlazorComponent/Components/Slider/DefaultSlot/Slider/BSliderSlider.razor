@@ -4,8 +4,9 @@
 @inherits ComponentPartBase<TInput>
 
 <div class="@CssProvider.GetClass("slider")"
+     return-target
      @onclick="HandleOnSliderClickAsync"
      @onexmousedown="HandleOnSliderMouseDownAsync"
      @onexmousedown:preventDefault>
-     @RenderPart(typeof(BSliderChildren<,>))
+    @RenderPart(typeof(BSliderChildren<,>))
 </div>

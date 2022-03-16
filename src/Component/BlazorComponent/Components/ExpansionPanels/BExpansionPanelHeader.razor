@@ -15,7 +15,7 @@
     @if (!HideActions)
     {
         <FadeTransition>
-            <Element Tag="div" Show="!IsDisabled" Class="@CssProvider.GetClass("headerIcon")">
+            <ShowTransitionElement Tag="div" Value="!IsDisabled" Class="@CssProvider.GetClass("headerIcon")">
                 @if (ActionsContent != null)
                 {
                     @ActionsContent
@@ -26,7 +26,7 @@
                         @ExpandIcon
                     </BIcon>
                 }
-            </Element>
+            </ShowTransitionElement>
         </FadeTransition>
     }
 </button>

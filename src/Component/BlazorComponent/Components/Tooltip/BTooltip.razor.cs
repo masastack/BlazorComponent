@@ -14,11 +14,24 @@ namespace BlazorComponent
             OpenOnFocus = true;
         }
 
+        [Parameter]
+        public string Color { get; set; }
+
+        [Parameter]
+        public RenderFragment ChildContent { get; set; }
+
+        [Parameter]
+        public string Tag { get; set; } = "span";
+
+        [Parameter]
+        public string Transition { get; set; }
+
         protected double CalculatedLeft
         {
             get
             {
-                var (activator, content) = Dimensions;
+                var activator = Dimensions.Activator;
+                var content = Dimensions.Content;
                 if (activator == null || content == null) return 0;
 
                 var unknown = !Bottom && !Left && !Top && !Right;
@@ -54,7 +67,8 @@ namespace BlazorComponent
         {
             get
             {
-                var (activator, content) = Dimensions;
+                var activator = Dimensions.Activator;
+                var content = Dimensions.Content;
                 if (activator == null || content == null) return 0;
 
                 var activatorTop = Attach != null ? activator.OffsetTop : activator.Top;
@@ -88,40 +102,6 @@ namespace BlazorComponent
 
                 return CalcYOverflow(top);
             }
-        }
-
-        [Parameter]
-        public string Color { get; set; }
-
-        [Parameter]
-        public RenderFragment ChildContent { get; set; }
-
-        [Parameter]
-        public string Tag { get; set; } = "span";
-
-        [Parameter]
-        public string Transition { get; set; }
-
-        protected override async Task Activate(Action lazySetter)
-        {
-            await UpdateDimensions(lazySetter);
-        }
-
-        protected override Dictionary<string, (EventCallback<MouseEventArgs>, EventListenerActions)> GenActivatorMouseListeners()
-        {
-            var listeners = base.GenActivatorMouseListeners();
-
-            if (listeners.ContainsKey("click"))
-            {
-                listeners.Remove("click");
-            }
-
-            return listeners;
-        }
-
-        protected override Task MoveContentTo()
-        {
-            return Task.CompletedTask;
         }
     }
 }

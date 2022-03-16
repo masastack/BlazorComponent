@@ -9,9 +9,12 @@ namespace BlazorComponent
 {
     public partial class BTooltipContent<TTooltip> where TTooltip : ITooltip
     {
-        public ElementReference ContentRef
+        public ElementReference ContentElement
         {
-            set { Component.ContentRef = value; }
+            set
+            {
+                Component.ContentElement = value;
+            }
         }
 
         protected string TransitionName
@@ -24,14 +27,14 @@ namespace BlazorComponent
                 }
                 else
                 {
-                    return Value ? "scale-transition" : "fade-transition";
+                    return IsActive ? "scale-transition" : "fade-transition";
                 }
             }
         }
 
-        public bool Value => Component.Value;
+        public bool IsActive => Component.IsActive;
 
-        public bool ShowContent => Component.ShowContent;
+        public bool IsBooted => Component.IsBooted;
 
         public string Transition => Component.Transition;
 

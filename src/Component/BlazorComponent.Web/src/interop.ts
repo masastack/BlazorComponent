@@ -471,7 +471,7 @@ export function removeHtmlElementEventListener(selector, type) {
 
 var outsideClickListenerCaches: { [key: string]: any } = {}
 
-export function addOutsideClickEventListener(invoker, noInvokeSelectors: [], invokeSelectors: []) {
+export function addOutsideClickEventListener(invoker, noInvokeSelectors: [], invokeSelectors: [], contentElement) {
     if (!noInvokeSelectors) return;
 
     var listener = function (args) {
@@ -483,7 +483,9 @@ export function addOutsideClickEventListener(invoker, noInvokeSelectors: [], inv
                 invoker.invokeMethodAsync("Invoke", {});
             }
         } else {
-            invoker.invokeMethodAsync("Invoke", {});
+            if (!contentElement || contentElement.getAttribute('close-condition') != null) {
+                invoker.invokeMethodAsync("Invoke", {});
+            }
         }
     }
 
@@ -725,15 +727,15 @@ export function getWindow() {
 
 export function getWindowAndDocumentProps(windowProps: string[] = [], documentProps: string[] = []) {
     const obj = {}
-    
+
     if (windowProps) {
         windowProps.forEach(prop => obj[prop] = window[prop]);
     }
-    
+
     if (documentProps) {
         documentProps.forEach(prop => obj[prop] = document.documentElement[prop]);
     }
-    
+
     return obj
 }
 
@@ -1131,7 +1133,7 @@ export function getSize(selectors, sizeProp) {
     el.style.display = "";
     el.style.overflow = "hidden";
 
-    var size = el["offset" + sizeProp] || 0;
+    var size = el["offset" + sizeProp.charAt(0).toUpperCase() + sizeProp.slice(1)] || 0;
 
     el.style.display = display;
     el.style.overflow = overflow;
@@ -1192,6 +1194,9 @@ window.onload = function () {
     registerCustomEvent("exmouseleave", "mouseleave");
     registerCustomEvent("exmouseenter", "mouseenter");
     registerCustomEvent("exmousemove", "mousemove");
+    registerCustomEvent("exfocus", "focus");
+    registerCustomEvent("exblur", "blur");
+    registerCustomEvent("exkeydown", "keydown");
     registerDirective();
 }
 
@@ -1206,6 +1211,11 @@ function registerCustomEvent(eventType, eventName) {
                     if (typeof args[k] == 'string' || typeof args[k] == 'number') {
                         e[k] = args[k];
                     } else if (k == 'target') {
+                        var targetElement: HTMLElement = args.target;
+                        if (targetElement.getAttribute('return-target') == null) {
+                            continue;
+                        }
+
                         var target = {
                             attributes: {}
                         };
@@ -1297,4 +1307,133 @@ export function copyText(text) {
     }, function (err) {
         console.error('Async: Could not copy text: ', err);
     });
+}
+
+export function getMenuableDimensions(hasActivator, activatorSelector, attach, contentElement, attached, attachSelector) {
+    if (!attached) {
+        var container = document.querySelector(attachSelector);
+        container.appendChild(contentElement);
+    }
+
+    var dimensions = {
+        activator: {
+        } as any,
+        content: null,
+        relativeYOffset: 0,
+        offsetParentLeft: 0
+    };
+
+    if (hasActivator) {
+        var activator = document.querySelector(activatorSelector);
+        dimensions.activator = measure(activator, attach)
+        dimensions.activator.offsetLeft = activator.offsetLeft
+        if (attach !== null) {
+            // account for css padding causing things to not line up
+            // this is mostly for v-autocomplete, hopefully it won't break anything
+            dimensions.activator.offsetTop = activator.offsetTop
+        } else {
+            dimensions.activator.offsetTop = 0
+        }
+    }
+
+    sneakPeek(() => {
+        if (contentElement) {
+            if (contentElement.offsetParent) {
+                const offsetRect = getRoundedBoundedClientRect(contentElement.offsetParent)
+                dimensions.relativeYOffset = window.pageYOffset + offsetRect.top
+
+                if (hasActivator) {
+                    dimensions.activator.top -= dimensions.relativeYOffset
+                    dimensions.activator.left -= window.pageXOffset + offsetRect.left
+                }
+                else {
+                    dimensions.offsetParentLeft = offsetRect.left
+                }
+            }
+
+            dimensions.content = measure(contentElement, attach)
+        }
+    }, contentElement);
+
+    return dimensions;
+}
+
+function measure(el: HTMLElement, attach) {
+    if (!el) return null
+
+    const rect = getRoundedBoundedClientRect(el)
+
+    // Account for activator margin
+    if (attach !== null) {
+        const style = window.getComputedStyle(el)
+
+        rect.left = parseInt(style.marginLeft!)
+        rect.top = parseInt(style.marginTop!)
+    }
+
+    return rect
+}
+
+function getRoundedBoundedClientRect(el: Element) {
+    const rect = el.getBoundingClientRect()
+    return {
+        top: Math.round(rect.top),
+        left: Math.round(rect.left),
+        bottom: Math.round(rect.bottom),
+        right: Math.round(rect.right),
+        width: Math.round(rect.width),
+        height: Math.round(rect.height),
+    }
+}
+
+function sneakPeek(cb: () => void, el) {
+    if (!el || el.style.display !== 'none') {
+        cb()
+        return
+    }
+
+    el.style.display = 'inline-block'
+    cb()
+    el.style.display = 'none'
+}
+
+
+export function observeElement(el, sizeProp, expandTransition) {
+    updateSize(el, sizeProp, expandTransition);
+
+    var observer = new MutationObserver(function (mutationsList) {
+        for (let mutation of mutationsList) {
+            if (el.className.indexOf('in-transition') > 0) {
+                return;
+            }
+            updateSize(el, sizeProp, expandTransition);
+        }
+    });
+
+    observer.observe(el, { subtree: true, childList: true });
+}
+
+function updateSize(el, sizeProp, expandTransition) {
+    var size = getSize(el, sizeProp);
+
+    if (el['_size'] != size) {
+        el['_size'] = size;
+        expandTransition.invokeMethodAsync('OnSizeChanged', size);
+    }
+}
+
+export function invokeMultipleMethod(windowProps, documentProps, hasActivator, activatorSelector, attach, contentElement, attached, attachSelector, element) {
+    var multipleResult = {
+        windowAndDocument: null,
+        dimensions: null,
+        zIndex: 0
+    };
+
+    multipleResult.windowAndDocument = getWindowAndDocumentProps(windowProps, documentProps);
+    multipleResult.dimensions = getMenuableDimensions(hasActivator, activatorSelector, attach, contentElement, attached, attachSelector);
+    if (!attached) {
+        multipleResult.zIndex = getMenuOrDialogMaxZIndex([contentElement], element);
+    }
+
+    return multipleResult;
 }

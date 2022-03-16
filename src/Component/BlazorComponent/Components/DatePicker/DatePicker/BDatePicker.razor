@@ -13,7 +13,7 @@
 
     <BPicker TitleContent="titleContent" Class="@CssProvider.GetClass()" @attributes="GetAttributes(typeof(BPicker))">
         <ChildContent>
-            <div @key="InternalActivePicker">
+            <KeyTransitionElement Value="InternalActivePicker">
                 @if (InternalActivePicker == DatePickerType.Year)
                 {
                     @RenderPart(typeof(BDatePickerYears<>))
@@ -30,7 +30,7 @@
                         @RenderPart(typeof(BDatePickerMonthTable<>))
                     }
                 }
-            </div>
+            </KeyTransitionElement>
         </ChildContent>
         <ActionsContent>
             @ChildContent

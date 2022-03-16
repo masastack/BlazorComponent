@@ -8,6 +8,6 @@ namespace BlazorComponent
 {
     public interface IMenuable
     {
-        public bool ShowContent { get; }
+        bool IsBooted { get; }
     }
 }
