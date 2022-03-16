@@ -2,56 +2,39 @@
 
 namespace BlazorComponent;
 
-public class BDelayable : BDomComponentBase, IDelayable
+public class BDelayable : BDomComponentBase
 {
-    private IDelayable _delayer;
-
-    private int _openDelay;
-    private bool _openDelayChanged = true;
-
-    private int _closeDelay;
-    private bool _closeDelayChanged = true;
+    private CancellationTokenSource _cancellationTokenSource;
 
     [Parameter]
-    public virtual int OpenDelay
-    {
-        get => _openDelay;
-        set
-        {
-            if (_openDelay == value) return;
-
-            _openDelayChanged = true;
-            _openDelay = value;
-        }
-    }
+    public int OpenDelay { get; set; } = 16;
 
     [Parameter]
-    public virtual int CloseDelay
-    {
-        get => _closeDelay;
-        set
-        {
-            if (_closeDelay == value) return;
+    public int CloseDelay { get; set; } = 16;
 
-            _closeDelayChanged = true;
-            _closeDelay = value;
+    public async Task RunOpenDelayAsync(Func<Task> cb = null)
+    {
+        _cancellationTokenSource?.Cancel();
+        _cancellationTokenSource = new CancellationTokenSource();
+
+        await Task.Delay(OpenDelay, _cancellationTokenSource.Token);
+
+        if (cb != null)
+        {
+            await cb.Invoke();
         }
     }
 
-    protected override void OnParametersSet()
+    public async Task RunCloseDelayAsync(Func<Task> cb = null)
     {
-        base.OnParametersSet();
+        _cancellationTokenSource?.Cancel();
+        _cancellationTokenSource = new CancellationTokenSource();
 
-        if (_openDelayChanged || _closeDelayChanged)
+        await Task.Delay(CloseDelay, _cancellationTokenSource.Token);
+
+        if (cb != null)
         {
-            _delayer = new Delayer(this);
-
-            _openDelayChanged = false;
-            _closeDelayChanged = false;
+            await cb.Invoke();
         }
     }
-
-    public Task RunOpenDelay(Func<Task> cb = null) => _delayer.RunOpenDelay(cb);
-
-    public Task RunCloseDelay(Func<Task> cb = null) => _delayer.RunCloseDelay(cb);
 }
