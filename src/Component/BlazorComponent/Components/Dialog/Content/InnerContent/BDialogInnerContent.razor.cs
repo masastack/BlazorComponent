@@ -14,7 +14,7 @@ namespace BlazorComponent
             set { Component.DialogRef = value; }
         }
 
-        public bool Value => Component.Value;
+        public bool IsActive => Component.IsActive;
 
         public string Transition => Component.Transition;
 

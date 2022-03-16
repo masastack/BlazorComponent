@@ -15,8 +15,8 @@ namespace BlazorComponent
 
         Dictionary<string, object> ContentAttrs { get; }
 
-        bool ShowContent { get; }
-        
+        bool IsBooted { get; }
+
         Task Keydown(KeyboardEventArgs args);
     }
 }

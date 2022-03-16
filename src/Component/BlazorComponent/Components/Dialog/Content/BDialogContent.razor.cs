@@ -7,14 +7,15 @@ namespace BlazorComponent
     {
         public ElementReference ContentRef
         {
-            set { Component.ContentRef = value; }
+            set
+            {
+                Component.ContentRef = value;
+            }
         }
 
         public Dictionary<string, object> ContentAttrs => Component.ContentAttrs;
 
-        public bool ShowContent => Component.ShowContent;
-
-        public bool Value => Component.Value;
+        public bool IsBooted => Component.IsBooted;
 
         protected async Task HandleOnKeyDown(KeyboardEventArgs args)
         {
