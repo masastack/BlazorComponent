@@ -193,18 +193,13 @@ namespace BlazorComponent
             }
         }
 
-        private async Task HandleOnMouseEnterAsync(MouseEventArgs args)
+        private Task HandleOnMouseEnterAsync(MouseEventArgs args)
         {
-            if (IsActive)
-            {
-                return;
-            }
-
-            await RunOpenDelayAsync(async () =>
-            {
-                await SetIsActiveAsync(true);
-            });
-            StateHasChanged();
+            return RunOpenDelayAsync(async () =>
+             {
+                 await SetIsActiveAsync(true);
+                 StateHasChanged();
+             });
         }
 
         protected virtual async Task SetIsActiveAsync(bool isActive)
@@ -236,18 +231,13 @@ namespace BlazorComponent
             }
         }
 
-        private async Task HandleOnMouseLeaveAsync(MouseEventArgs args)
+        private Task HandleOnMouseLeaveAsync(MouseEventArgs args)
         {
-            if (!IsActive)
-            {
-                return;
-            }
-
-            await RunCloseDelayAsync(async () =>
+            return RunCloseDelayAsync(async () =>
             {
                 await SetIsActiveAsync(false);
+                StateHasChanged();
             });
-            StateHasChanged();
         }
 
         protected virtual async Task HandleOnClickAsync(MouseEventArgs args)
