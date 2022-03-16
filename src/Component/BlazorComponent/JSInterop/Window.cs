@@ -41,12 +41,31 @@ namespace BlazorComponent.Web
 
         public Document Document { get; }
 
+        public event Func<Task> OnResize;
+
         public async Task AddEventListenerAsync(string type, Func<Task> listener, OneOf<EventListenerOptions, bool> options)
         {
             await JS.InvokeVoidAsync(JsInteropConstants.AddHtmlElementEventListener, Selector, type, DotNetObjectReference.Create(new Invoker<object>((p) =>
             {
                 listener?.Invoke();
             })), options.Value);
+        }
+
+        /// <summary>
+        /// Subscribe onresize,onscroll event and update window,document props
+        /// </summary>
+        /// <returns></returns>
+        public async Task InitializeAsync()
+        {
+            await AddEventListenerAsync("resize", HandleOnResizeAsync, false);
+        }
+
+        private async Task HandleOnResizeAsync()
+        {
+            if (OnResize != null)
+            {
+                await OnResize.Invoke();
+            }
         }
     }
 }

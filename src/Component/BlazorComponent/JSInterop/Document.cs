@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using BlazorComponent.JSInterop;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,8 @@ namespace BlazorComponent.Web
         {
             Selector = "document";
         }
+
+        public DocumentElement DocumentElement { get; } = new DocumentElement();
 
         public HtmlElement GetElementById(string id)
         {
