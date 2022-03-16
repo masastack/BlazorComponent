@@ -6,9 +6,9 @@ namespace BlazorComponent;
 public class Linker : ILinkable
 {
     public bool Linkage { get; set; }
-    
+
     public bool Exact { get; set; }
-    
+
     public NavigationManager NavigationManager { get; set; }
 
     public Linker(ILinkable linkable)
@@ -20,13 +20,15 @@ public class Linker : ILinkable
 
     public bool MatchRoute(string href)
     {
-        var relativePath = "/" + NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        var baseRelativePath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
 
-        if (Exact)
+        if (Exact || baseRelativePath == string.Empty)
         {
             href += "$";
         }
-        
+
+        var relativePath = "/" + baseRelativePath;
+
         return Regex.Match(relativePath, href, RegexOptions.IgnoreCase).Success;
     }
 }
