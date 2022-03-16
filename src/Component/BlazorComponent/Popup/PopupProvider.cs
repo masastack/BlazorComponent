@@ -1,0 +1,53 @@
+﻿namespace BlazorComponent;
+
+public class PopupProvider : IPopupProvider
+{
+    private readonly List<ProviderItem> _items = new();
+    private readonly object _obj = new();
+
+    public event EventHandler StateChanged;
+    
+    public ProviderItem Add(Type componentType, Dictionary<string, object> attributes, object service, string serviceName)
+    {
+        var item = new ProviderItem()
+        {
+            Provider = this,
+            ComponentType = componentType,
+            Parameters = attributes,
+            Service = service,
+            ServiceName = serviceName,
+        };
+
+        lock (_obj)
+        {
+            _items.Add(item);
+        }
+
+        StateHasChanged();
+
+        return item;
+    }
+
+    public void Remove(ProviderItem item)
+    {
+        lock (_obj)
+        {
+            _items.Remove(item);
+        }
+
+        StateHasChanged();
+    }
+
+    public IEnumerable<ProviderItem> GetItems()
+    {
+        lock (_obj)
+        {
+            return _items;
+        }
+    }
+
+    private void StateHasChanged()
+    {
+        StateChanged?.Invoke(this, EventArgs.Empty);
+    }
+}

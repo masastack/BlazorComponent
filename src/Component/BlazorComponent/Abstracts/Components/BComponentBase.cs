@@ -74,7 +74,7 @@ namespace BlazorComponent
             IsDisposed = true;
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             Dispose(true);
         }

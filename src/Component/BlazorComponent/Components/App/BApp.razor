@@ -7,7 +7,15 @@
             <div class="@CssProvider.GetClass("wrap")">
                 @ChildContent
             </div>
+
+            <BCascadingValue Value="this">
+                @foreach (var item in PopupProvider.GetItems())
+                {
+                    <CascadingValue @key="item" Value="item">
+                        <DynamicComponent Type="item.ComponentType" Parameters="item.Parameters"></DynamicComponent>
+                    </CascadingValue>
+                }
+            </BCascadingValue>
         </div>
     </CascadingValue>
 </CascadingValue>
-

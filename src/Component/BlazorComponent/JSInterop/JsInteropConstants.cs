@@ -148,6 +148,10 @@
 
         public static string ContainsActiveElement => $"{Variables.JsInteropFuncNamePrefix}containsActiveElement";
 
+        public static string CopyChild => $"{Variables.JsInteropFuncNamePrefix}copyChild";
+
+        public static string CopyText => $"{Variables.JsInteropFuncNamePrefix}copyText";
+
         #region Draggable Modal
 
         public static string EnableDraggable => $"{Variables.JsInteropFuncNamePrefix}enableDraggable";
