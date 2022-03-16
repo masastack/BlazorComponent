@@ -76,6 +76,8 @@ namespace BlazorComponent
 
         ElementReference PrependInnerElement { set; }
 
+        Dictionary<string, object> InputSlotAttrs { get; }
+
         Task HandleOnPrependInnerClickAsync(MouseEventArgs args);
 
         Task HandleOnAppendOuterClickAsync(MouseEventArgs args);
