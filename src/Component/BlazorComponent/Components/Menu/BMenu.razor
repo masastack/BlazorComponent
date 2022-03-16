@@ -4,19 +4,16 @@
 @ComputedActivatorContent
 
 <div style="@CssProvider.GetStyle()" class="@CssProvider.GetClass()" @ref="Ref">
-    @if (ShowContent)
+    @if (IsBooted || IsActive)
     {
         <BCascadingValue Value="IsDark" Name="IsDark">
             <Transition Name="@Transition">
-                <ShowTransitionElement Value="Value"
-                                   id="@Id"
-                                   style="@CssProvider.GetStyle("content")"
-                                   class="@CssProvider.GetClass("content")"
-                                   @onclick="OnContentClick"
-                                   @onmouseenter="OnContentMouseenter"
-                                   @onmouseleave="OnContentMouseleave"
-                                   @attributes="@Attributes"
-                                   ReferenceCaptureAction="r => ContentRef = r">
+                <ShowTransitionElement Value="IsActive"
+                     id="@Id"
+                     style="@CssProvider.GetStyle("content")"
+                     class="@CssProvider.GetClass("content")"
+                     @attributes="@ContentAttributes"
+                     ReferenceCaptureAction="el => ContentElement = el">
                     @ChildContent
                 </ShowTransitionElement>
             </Transition>
