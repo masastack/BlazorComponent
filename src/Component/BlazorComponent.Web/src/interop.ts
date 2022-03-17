@@ -1401,7 +1401,7 @@ function sneakPeek(cb: () => void, el) {
 export function observeElement(el, sizeProp, expandTransition) {
     updateSize(el, sizeProp, expandTransition);
 
-    var observer = new MutationObserver(function (mutationsList) {
+    var observer = new ResizeObserver(function (mutationsList) {
         for (let mutation of mutationsList) {
             if (el.className.indexOf('in-transition') > 0) {
                 return;
@@ -1410,7 +1410,7 @@ export function observeElement(el, sizeProp, expandTransition) {
         }
     });
 
-    observer.observe(el, { subtree: true, childList: true });
+    observer.observe(el);
 }
 
 function updateSize(el, sizeProp, expandTransition) {
