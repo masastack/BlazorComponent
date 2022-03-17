@@ -5,7 +5,7 @@
     <Element Tag="@Tag" Class="@CssProvider.GetClass()" Style="@CssProvider.GetStyle()" @attributes="Attributes">
         @if (ChildContent != default)
         {
-            @ChildContent
+            @ChildContent((IsLast, IsDisabled))
         }
         else
         {

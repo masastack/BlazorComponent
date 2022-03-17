@@ -12,6 +12,6 @@ namespace BlazorComponent
         
         bool Disabled { get; }
         
-        RenderFragment ChildContent { get; }
+        RenderFragment<(bool IsLast, bool IsDisabled)> ChildContent { get; }
     }
 }
