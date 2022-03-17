@@ -1,5 +1,4 @@
 ﻿using BlazorComponent.I18n;
-using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;
 using System.Reflection;
 using System.Text.Json;
@@ -10,6 +9,12 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         const string LanguageConfigJson = "languageConfig.json";
         const string DefaultLanguageKey = "$DefaultLanguage";
+
+        static JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions()
+        {
+            ReadCommentHandling = JsonCommentHandling.Skip,
+            AllowTrailingCommas = true
+        };
 
         public static IServiceCollection AddMasaI18n(this IServiceCollection services, IEnumerable<(string language, Dictionary<string, string>)> languageMap)
         {
@@ -58,7 +63,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 var languageConfigPath = Path.Combine(path, LanguageConfigJson);
                 if (File.Exists(languageConfigPath))
                 {
-                    var languages = JsonSerializer.Deserialize<string[]>(File.ReadAllText(languageConfigPath));
+                    var languages = JsonSerializer.Deserialize<string[]>(File.ReadAllText(languageConfigPath), _jsonSerializerOptions);
                     files.AddRange(languages.Select(language => Path.Combine(path, $"{language}.json")));
                 }
                 else
@@ -68,7 +73,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 foreach (var filePath in files)
                 {
                     var language = Path.GetFileNameWithoutExtension(filePath);
-                    var map = JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(filePath));
+                    var map = JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(filePath), _jsonSerializerOptions);
                     languageMap.Add((language, map));
                 }
                 services.AddMasaI18n(languageMap);
@@ -79,11 +84,11 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             using var httpclient = new HttpClient();
             string languageConfigApi = Path.Combine(languageDirectoryApi, LanguageConfigJson);
-            var languages = await httpclient.GetFromJsonAsync<string[]>(languageConfigApi) ?? throw new Exception("Failed to read languageConfig json file data!");
+            var languages = await httpclient.GetFromJsonAsync<string[]>(languageConfigApi, _jsonSerializerOptions) ?? throw new Exception("Failed to read languageConfig json file data!");
             var languageMap = new List<(string language, Dictionary<string, string>)>();
             foreach (var language in languages)
             {
-                var map = await httpclient.GetFromJsonAsync<Dictionary<string, string>>(Path.Combine(languageDirectoryApi, $"{language}.json"));
+                var map = await httpclient.GetFromJsonAsync<Dictionary<string, string>>(Path.Combine(languageDirectoryApi, $"{language}.json"), _jsonSerializerOptions);
                 languageMap.Add((language, map));
             }
             services.AddMasaI18n(languageMap);
