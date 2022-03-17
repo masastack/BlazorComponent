@@ -10,7 +10,7 @@ namespace BlazorComponent
 {
     public partial class BTextFieldInput<TValue, TInput> where TInput : ITextField<TValue>
     {
-        public TValue InternalValue => Component.InternalValue;
+        public TValue InputValue => Component.InputValue;
 
         public bool Autofocus => Component.Autofocus;
 

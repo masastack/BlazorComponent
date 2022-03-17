@@ -198,12 +198,20 @@ namespace BlazorComponent
 
         public virtual bool ExternalError => ErrorMessages.Count > 0 || Error;
 
+        protected TValue InputValue { get; set; }
+
         protected override void OnWatcherInitialized()
         {
             Watcher
                 .Watch<TValue>(nameof(Value), val =>
                 {
-                    LazyValue = val;
+                    if (!EqualityComparer<TValue>.Default.Equals(val, LazyValue))
+                    {
+                        LazyValue = val;
+
+                        //In this case,only outside change value will be set to input element
+                        InputValue = val;
+                    }
                 });
         }
 
