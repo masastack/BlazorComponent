@@ -47,9 +47,9 @@ namespace BlazorComponent
         public string Text { get; set; }
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment<(bool IsLast, bool IsDisabled)> ChildContent { get; set; }
 
-        public bool IsDisabled => Disabled || Matched;
+        protected bool IsDisabled => Disabled || Matched;
 
         public bool IsLinkage => Href != null && (Breadcrumbs?.Linkage ?? Linkage);
 
