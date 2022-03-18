@@ -193,7 +193,7 @@ namespace BlazorComponent
             }
         }
 
-        private Task HandleOnMouseEnterAsync(MouseEventArgs args)
+        protected virtual Task HandleOnMouseEnterAsync(MouseEventArgs args)
         {
             return RunOpenDelayAsync(async () =>
              {
@@ -231,7 +231,7 @@ namespace BlazorComponent
             }
         }
 
-        private Task HandleOnMouseLeaveAsync(MouseEventArgs args)
+        protected virtual Task HandleOnMouseLeaveAsync(MouseEventArgs args)
         {
             return RunCloseDelayAsync(async () =>
             {
