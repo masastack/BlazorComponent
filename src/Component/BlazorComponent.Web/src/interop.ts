@@ -1213,6 +1213,7 @@ function registerCustomEvent(eventType, eventName) {
                     } else if (k == 'target') {
                         var targetElement: HTMLElement = args.target;
                         if (targetElement.getAttribute('return-target') == null) {
+                            e[k] = {};
                             continue;
                         }
 
@@ -1261,7 +1262,7 @@ export function containsActiveElement(selector) {
     return null;
 }
 
-export function copyChild (el) {
+export function copyChild(el) {
     if (typeof el === 'string') {
         el = document.querySelector(el);
     }
