@@ -11,6 +11,8 @@ namespace BlazorComponent
     public class BActivatable : BDelayable, IActivatable, IHandleEvent
     {
         private string _activatorId;
+        private bool _active = false;
+        private ActiveStateMachine _activeStateMachine = new();
 
         [Parameter]
         public bool Disabled
@@ -72,7 +74,18 @@ namespace BlazorComponent
 
         protected bool IsBooted { get; set; }
 
-        protected bool IsActive { get; set; }
+        protected bool IsActive
+        {
+            get
+            {
+                return _active;
+            }
+            set
+            {
+                _active = value;
+                _activeStateMachine.ForceSetActive(_active);
+            }
+        }
 
         protected Dictionary<string, object> ActivatorEvents { get; set; } = new();
 
@@ -197,20 +210,22 @@ namespace BlazorComponent
         {
             return RunOpenDelayAsync(async () =>
              {
-                 await SetIsActiveAsync(true);
-                 StateHasChanged();
+                 if (await SetIsActiveAsync(true))
+                     StateHasChanged();
              });
         }
 
-        protected virtual async Task SetIsActiveAsync(bool isActive)
+        protected virtual async Task<bool> SetIsActiveAsync(bool isActive)
         {
-            if (IsActive == isActive)
+            var shouldRender = _activeStateMachine.SetActive(isActive);
+            
+            if (shouldRender)
             {
-                return;
+                await OnIsActiveSettingAsync(isActive);
+                await OnIsActiveSetAsync(isActive);
             }
 
-            await OnIsActiveSettingAsync(isActive);
-            await OnIsActiveSetAsync(isActive);
+            return shouldRender;
         }
 
         protected virtual Task OnIsActiveSettingAsync(bool isActive)

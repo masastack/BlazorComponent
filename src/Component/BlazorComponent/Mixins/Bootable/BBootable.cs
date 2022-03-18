@@ -23,22 +23,29 @@ namespace BlazorComponent
             });
         }
 
-        protected override async Task SetIsActiveAsync(bool isActive)
+        protected override async Task<bool> SetIsActiveAsync(bool isActive)
         {
             if (isActive && !IsBooted)
             {
                 //Set IsBooted to true and show content
                 //Set isActive in nextTick so we can get content element reference
                 IsBooted = true;
-                NextTick(async () =>
+
+                NextTick(async() =>
                 {
-                    await base.SetIsActiveAsync(isActive);
-                    StateHasChanged();
+                    var shouldRender = await base.SetIsActiveAsync(isActive);
+
+                    if (shouldRender)
+                    {
+                        StateHasChanged();
+                    }
                 });
+
+                return true;
             }
             else
             {
-                await base.SetIsActiveAsync(isActive);
+                return await base.SetIsActiveAsync(isActive);
             }
         }
     }
