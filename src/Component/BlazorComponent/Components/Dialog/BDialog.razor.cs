@@ -86,6 +86,8 @@ namespace BlazorComponent
 
         protected bool Attached { get; set; }
 
+        protected bool Animated { get; set; }
+
         protected override async Task OnIsActiveSettingAsync(bool isActive)
         {
             if (!Attached)
@@ -114,10 +116,20 @@ namespace BlazorComponent
 
             if (Persistent)
             {
-                return;
+                Animated = true;
+                NextTick(async () =>
+                {
+                    //This animated need 150ms
+                    await Task.Delay(150);
+                    Animated = false;
+                    StateHasChanged();
+                });
+            }
+            else
+            {
+                await SetIsActiveAsync(false);
             }
 
-            await SetIsActiveAsync(false);
             await InvokeStateHasChangedAsync();
         }
 

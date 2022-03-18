@@ -47,6 +47,8 @@ namespace BlazorComponent
 
         string Type { get; }
 
+        TValue InputValue { get; }
+
         EventCallback<FocusEventArgs> OnBlur { get; }
 
         EventCallback<FocusEventArgs> OnFocus { get; }

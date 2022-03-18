@@ -8,6 +8,8 @@ namespace BlazorComponent
 {
     public partial class BTooltip : BMenuable
     {
+        private bool _isActive;
+
         public BTooltip()
         {
             OpenOnHover = true;
@@ -102,6 +104,27 @@ namespace BlazorComponent
 
                 return CalcYOverflow(top);
             }
+        }
+
+        protected override Task HandleOnMouseEnterAsync(MouseEventArgs args)
+        {
+            _isActive = true;
+            return base.HandleOnMouseEnterAsync(args);
+        }
+
+        protected override Task HandleOnMouseLeaveAsync(MouseEventArgs args)
+        {
+            _isActive = false;
+            return base.HandleOnMouseLeaveAsync(args);
+        }
+
+        protected override Task OnIsActiveSetAsync(bool isActive)
+        {
+            //When enter and leave been triggered too frequently
+            //Leave may before enter invoke this method
+            //We record isActive
+            //So isActive will always be same to leave or enter state
+            return base.OnIsActiveSetAsync(_isActive);
         }
     }
 }
