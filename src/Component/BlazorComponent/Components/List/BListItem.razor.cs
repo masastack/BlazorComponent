@@ -89,7 +89,7 @@ namespace BlazorComponent
 
         protected RenderFragment ComputedItemContent => ItemContent(GenItemContext());
 
-        public bool IsClickable => _router.IsClickable || ItemGroup != null;
+        public bool IsClickable => _router.IsClickable || Matched;
 
         public bool IsLink => _router.IsLink;
 
