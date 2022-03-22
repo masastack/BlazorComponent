@@ -68,6 +68,12 @@ namespace BlazorComponent
             }
         }
 
+        public bool IsClickable => _router.IsClickable || Matched;
+
+        public bool IsLink => _router.IsLink;
+
+        public int Tabindex => _router.Tabindex;
+
         protected override void OnParametersSet()
         {
             base.OnParametersSet();
