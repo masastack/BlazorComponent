@@ -1,0 +1,11 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
+    <div @ref="@ToolBar" class="@ToolBarClass" style="@ToolBarStyle">
+        @ToolBarContent
+    </div>
+    <div @ref="@EditorElement" class="@ElementClass" style="@ElementStyle">
+        @EditorContent
+    </div>
+</div>
