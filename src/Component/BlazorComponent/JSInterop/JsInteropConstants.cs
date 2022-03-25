@@ -40,6 +40,8 @@
 
         public static string Focus => $"{Variables.JsInteropFuncNamePrefix}focus";
 
+        public static string Select => $"{Variables.JsInteropFuncNamePrefix}select";
+
         public static string Blur => $"{Variables.JsInteropFuncNamePrefix}blur";
 
         public static string BackTop => $"{Variables.JsInteropFuncNamePrefix}backTop";
