@@ -10,30 +10,24 @@ namespace BlazorComponent
     public partial class BEditor : BDomComponentBase, IEditor
     {
         [Parameter]
-        public virtual string Value { get; set; }
+        public string ContentClass { get; set; }
+        [Parameter]
+        public string ContentStyle { get; set; }
         [Parameter]
         public RenderFragment EditorContent { get; set; }
-
-        [Parameter]
-        public RenderFragment ToolBarContent { get; set; }
         [Parameter]
         public string Placeholder { get; set; }
-        protected ElementReference EditorElement { get; set; }
-        protected ElementReference? ToolBar { get; set; }
+        [Parameter]
+        public RenderFragment ToolbarContent { get; set; }
+        [Parameter]
+        public string ToolbarClass { get; set; }
+        [Parameter]
+        public string ToolbarStyle { get; set; }
+        [Parameter]
+        public virtual string Value { get; set; }
+        protected ElementReference ContentRef { get; set; }
+        protected ElementReference? ToolbarRef { get; set; }
 
-        [Parameter]
-        public string ToolBarClass { get; set; }
-        [Parameter]
-        public string ToolBarStyle { get; set; }
-        [Parameter]
-        public string ElementClass { get; set; }
-        [Parameter]
-        public string ElementStyle { get; set; }
-
-        protected override Task OnInitializedAsync()
-        {
-           return base.OnInitializedAsync(); 
-        }
         public virtual Task<string> GetContentAsync()
         {
             throw new NotImplementedException();
