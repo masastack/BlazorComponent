@@ -135,8 +135,8 @@ namespace BlazorComponent
             get
             {
                 var elements = Dependents
-                    .SelectMany(dependent => dependent.DependentElements)
-                    .ToList();
+                               .SelectMany(dependent => dependent.DependentElements)
+                               .ToList();
 
                 var contentElement = Document.GetElementById(Id);
                 elements.Add(contentElement);
@@ -191,9 +191,9 @@ namespace BlazorComponent
             Dependents.Add(dependent);
         }
 
-        //TODO:keydow event
+        //TODO:keydown event
 
-        protected override async Task OnIsActiveSettingAsync(bool isActive)
+        protected override async Task OnActiveUpdated(bool value)
         {
             if (CloseOnClick && !OpenOnHover && !Attached)
             {
@@ -202,7 +202,7 @@ namespace BlazorComponent
                     new[] { Document.GetElementByReference(ContentElement).Selector, ActivatorSelector }, null, ContentElement);
             }
 
-            await base.OnIsActiveSettingAsync(isActive);
+            await base.OnActiveUpdated(value);
         }
 
         private async Task HandleOutsideClickAsync(object agrs)
@@ -210,28 +210,23 @@ namespace BlazorComponent
             if (!IsActive || !CloseOnClick) return;
 
             await OnOutsideClick.InvokeAsync();
-            await SetIsActiveAsync(false);
-
-            await InvokeStateHasChangedAsync();
+            await RunCloseDelayAsync();
         }
 
-        protected async Task HandleOnContentClickAsync(MouseEventArgs args)
+        protected async Task HandleOnContentClickAsync(MouseEventArgs _)
         {
-            await SetIsActiveAsync(false);
-            StateHasChanged();
+            await RunCloseDelayAsync();
         }
 
         protected async Task HandleOnContentMouseenterAsync(MouseEventArgs args)
         {
-            await SetIsActiveAsync(true);
-            StateHasChanged();
+            await RunOpenDelayAsync();
         }
 
         protected async Task HandleOnContentMouseleaveAsync(MouseEventArgs args)
         {
             //TODO:If target is activator
-            await SetIsActiveAsync(false);
-            StateHasChanged();
+            await RunCloseDelayAsync();
         }
 
         private double CalcTopAuto()

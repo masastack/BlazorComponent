@@ -11,59 +11,33 @@ namespace BlazorComponent
     public class BActivatable : BDelayable, IActivatable, IHandleEvent
     {
         private string _activatorId;
-        private bool _active = false;
-        private ActiveStateMachine _activeStateMachine = new();
 
         [Parameter]
         public bool Disabled
         {
-            get
-            {
-                return GetValue<bool>();
-            }
-            set
-            {
-                SetValue(value);
-            }
+            get => GetValue<bool>();
+            set => SetValue(value);
         }
 
         [Parameter]
         public bool OpenOnHover
         {
-            get
-            {
-                return GetValue<bool>();
-            }
-            set
-            {
-                SetValue(value);
-            }
+            get => GetValue<bool>();
+            set => SetValue(value);
         }
 
         [Parameter]
         public bool OpenOnFocus
         {
-            get
-            {
-                return GetValue<bool>();
-            }
-            set
-            {
-                SetValue(value);
-            }
+            get => GetValue<bool>();
+            set => SetValue(value);
         }
 
         [Parameter]
         public bool Value
         {
-            get
-            {
-                return GetValue<bool>();
-            }
-            set
-            {
-                SetValue(value);
-            }
+            get => GetValue<bool>();
+            set => SetValue(value);
         }
 
         [Parameter]
@@ -74,55 +48,19 @@ namespace BlazorComponent
 
         protected bool IsBooted { get; set; }
 
-        protected bool IsActive
-        {
-            get
-            {
-                return _active;
-            }
-            set
-            {
-                _active = value;
-                _activeStateMachine.ForceSetActive(_active);
-            }
-        }
-
         protected Dictionary<string, object> ActivatorEvents { get; set; } = new();
 
-        public virtual Dictionary<string, object> ActivatorAttributes
+        public virtual Dictionary<string, object> ActivatorAttributes => new(ActivatorEvents)
         {
-            get
-            {
-                return new Dictionary<string, object>(ActivatorEvents)
-                {
-                    {ActivatorId,true },
-                    {"role", "button"},
-                    {"aria-haspopup", true},
-                    {"aria-expanded", IsActive}
-                };
-            }
-        }
+            { ActivatorId, true },
+            { "role", "button" },
+            { "aria-haspopup", true },
+            { "aria-expanded", IsActive }
+        };
 
-        protected string ActivatorId
-        {
-            get
-            {
-                if (_activatorId == null)
-                {
-                    _activatorId = $"_activator_{Guid.NewGuid()}";
-                }
+        protected string ActivatorId => _activatorId ??= $"_activator_{Guid.NewGuid()}";
 
-                return _activatorId;
-            }
-        }
-
-        protected string ActivatorSelector
-        {
-            get
-            {
-                return $"[{ActivatorId}]";
-            }
-        }
+        protected string ActivatorSelector => $"[{ActivatorId}]";
 
         protected RenderFragment ComputedActivatorContent
         {
@@ -150,24 +88,20 @@ namespace BlazorComponent
         protected override void OnWatcherInitialized()
         {
             Watcher
-                .Watch<bool>(nameof(Disabled), val =>
-                {
-                    ResetActivatorEvents();
-                })
+                .Watch<bool>(nameof(Disabled), val => { ResetActivatorEvents(); })
                 .Watch<bool>(nameof(Value), OnValueChanged)
-                .Watch<bool>(nameof(OpenOnFocus), () =>
-                {
-                    ResetActivatorEvents();
-                })
-                .Watch<bool>(nameof(OpenOnHover), () =>
-                {
-                    ResetActivatorEvents();
-                });
+                .Watch<bool>(nameof(OpenOnFocus), () => { ResetActivatorEvents(); })
+                .Watch<bool>(nameof(OpenOnHover), () => { ResetActivatorEvents(); });
         }
 
         protected virtual void OnValueChanged(bool value)
         {
-            IsActive = value;
+            if (IsActive != value)
+            {
+                _ = value
+                    ? RunOpenDelayAsync()
+                    : RunCloseDelayAsync();
+            }
         }
 
         private void ResetActivatorEvents()
@@ -191,8 +125,8 @@ namespace BlazorComponent
 
             if (OpenOnHover)
             {
-                ActivatorEvents.Add("onexmouseenter", CreateEventCallback<MouseEventArgs>(HandleOnMouseEnterAsync));
-                ActivatorEvents.Add("onexmouseleave", CreateEventCallback<MouseEventArgs>(HandleOnMouseLeaveAsync));
+                ActivatorEvents.Add("onmouseenter", CreateEventCallback<MouseEventArgs>(HandleOnMouseEnterAsync));
+                ActivatorEvents.Add("onmouseleave", CreateEventCallback<MouseEventArgs>(HandleOnMouseLeaveAsync));
             }
             else
             {
@@ -202,40 +136,20 @@ namespace BlazorComponent
 
             if (OpenOnFocus)
             {
-                ActivatorEvents.Add("onexfocus", CreateEventCallback<FocusEventArgs>(HandleOnFocusAsync));
+                ActivatorEvents.Add("onfocus", CreateEventCallback<FocusEventArgs>(HandleOnFocusAsync));
+                ActivatorEvents.Add("onblur", CreateEventCallback<FocusEventArgs>(HandleOnBlurAsync));
             }
         }
 
-        protected virtual Task HandleOnMouseEnterAsync(MouseEventArgs args)
+        private async Task HandleOnMouseEnterAsync(MouseEventArgs args)
         {
-            return RunOpenDelayAsync(async () =>
-             {
-                 if (await SetIsActiveAsync(true))
-                     StateHasChanged();
-             });
+            await RunOpenDelayAsync();
         }
 
-        protected virtual async Task<bool> SetIsActiveAsync(bool isActive)
+        protected override async Task OnActiveUpdated(bool value)
         {
-            var shouldRender = _activeStateMachine.SetActive(isActive);
+            // await OnIsActiveSettingAsync(value);
             
-            if (shouldRender)
-            {
-                await OnIsActiveSettingAsync(isActive);
-                await OnIsActiveSetAsync(isActive);
-            }
-
-            return shouldRender;
-        }
-
-        protected virtual Task OnIsActiveSettingAsync(bool isActive)
-        {
-            return Task.CompletedTask;
-        }
-
-        protected virtual async Task OnIsActiveSetAsync(bool isActive)
-        {
-            IsActive = isActive;
             if (IsActive != Value && ValueChanged.HasDelegate)
             {
                 await ValueChanged.InvokeAsync(IsActive);
@@ -246,26 +160,31 @@ namespace BlazorComponent
             }
         }
 
-        protected virtual Task HandleOnMouseLeaveAsync(MouseEventArgs args)
+        // protected virtual Task OnIsActiveSettingAsync(bool isActive)
+        // {
+        //     return Task.CompletedTask;
+        // }
+
+        private async Task HandleOnMouseLeaveAsync(MouseEventArgs args)
         {
-            return RunCloseDelayAsync(async () =>
-            {
-                await SetIsActiveAsync(false);
-                StateHasChanged();
-            });
+            await RunCloseDelayAsync();
         }
 
         protected virtual async Task HandleOnClickAsync(MouseEventArgs args)
         {
-            //TODO:focus
-            await SetIsActiveAsync(!IsActive);
-            StateHasChanged();
+            // TODO: focus
+
+            await RunOpenDelayAsync();
         }
 
         private async Task HandleOnFocusAsync(FocusEventArgs args)
         {
-            await SetIsActiveAsync(!IsActive);
-            StateHasChanged();
+            await RunOpenDelayAsync();
+        }
+
+        private async Task HandleOnBlurAsync(FocusEventArgs args)
+        {
+            await RunCloseDelayAsync();
         }
     }
 }
