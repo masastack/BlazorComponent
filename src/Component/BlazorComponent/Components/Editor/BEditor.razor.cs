@@ -11,18 +11,25 @@ namespace BlazorComponent
     {
         [Parameter]
         public string ContentClass { get; set; }
+
         [Parameter]
         public string ContentStyle { get; set; }
+
         [Parameter]
         public string Placeholder { get; set; }
+
         [Parameter]
         public RenderFragment ToolbarContent { get; set; }
+
         [Parameter]
         public string ToolbarClass { get; set; }
+
         [Parameter]
         public string ToolbarStyle { get; set; }
+
         [Parameter]
         public virtual string Value { get; set; }
+
         protected ElementReference ContentRef { get; set; }
         protected ElementReference? ToolbarRef { get; set; }
 
