@@ -110,11 +110,6 @@ namespace BlazorComponent
             await base.OnParametersSetAsync();
         }
 
-        protected override Task OnInitializedAsync()
-        {
-            return base.OnInitializedAsync();
-        }
-
         private async Task FocusAsync(int index)
         {
             if (index < 0)
