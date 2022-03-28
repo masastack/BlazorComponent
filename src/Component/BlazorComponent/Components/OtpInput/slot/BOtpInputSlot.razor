@@ -1,0 +1,31 @@
+﻿@namespace BlazorComponent
+@typeparam TOtpInput
+@inherits ComponentPartBase<TOtpInput>
+
+<div class="@CssProvider.GetClass("content")" style="@CssProvider.GetStyle("content")">
+    <div class="@CssProvider.GetClass("control")" style="@CssProvider.GetStyle("control")">
+        <div class="@CssProvider.GetClass("slot")" style="@CssProvider.GetStyle("slot")">
+            <fieldset aria-hidden="true">
+                <legend style="width: 0px;">
+                    <span>&#8203;</span>
+                </legend>
+            </fieldset>
+            <div class="@CssProvider.GetClass("fieldSlot")" style="@CssProvider.GetStyle("fieldSlot")">
+                <input @ref="InputRefs[Index]" type="@Type.ToString()" readonly="@ReadOnly" min="@(Type== OtpInputType.Number? 0: null)"
+                       value="@Value"
+                       @onfocus="(e=> OnFocusAsync(Index))"
+                       maxlength="1"
+                       autoComplete="@(Type == OtpInputType.Password? "new-password" : "off")"
+                       disabled="@Disabled" @onkeyup="(e=> OnKeyUpAsync(e,Index))"
+                       @onkeyup:preventDefault
+                       @onkeyup:stopPropagation
+                       @oninput="(e=> OnInputAsync(e, Index))"
+                       @oninput:preventDefault
+                       @oninput:stopPropagation
+                       @onpastewithdata="OnPasteWithDataAsync"
+                       @onpastewithdata:preventDefault
+                       @onpastewithdata:stopPropagation />
+            </div>
+        </div>
+    </div>
+</div>
