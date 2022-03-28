@@ -1,11 +1,6 @@
 ﻿using BlazorComponent.Web;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
@@ -386,13 +381,9 @@ namespace BlazorComponent
             }
         }
 
-        /// <summary>
-        /// <inheritdoc/>
-        /// </summary>
-        /// <returns></returns>
-        protected override async Task OnIsActiveSettingAsync(bool isActive)
+        protected override async Task OnActiveUpdated(bool value)
         {
-            if (isActive)
+            if (value)
             {
                 await CallActivateAsync();
             }
@@ -400,6 +391,8 @@ namespace BlazorComponent
             {
                 await CallDeactivateAsync();
             }
+
+            await base.OnActiveUpdated(value);
         }
 
         private async Task CallActivateAsync()
