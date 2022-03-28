@@ -50,12 +50,26 @@ public class BDelayable : BDomComponentBase, IAsyncDisposable
 
     protected async Task RunOpenDelayAsync()
     {
-        await _module!.InvokeVoidAsync("runDelay", _dotNetRef, "open");
+        if (_module is not null)
+        {
+            await _module.InvokeVoidAsync("runDelay", _dotNetRef, "open");
+        }
+        else
+        {
+            await SetActive(true);
+        }
     }
 
     protected async Task RunCloseDelayAsync()
     {
-        await _module!.InvokeVoidAsync("runDelay", _dotNetRef, "close");
+        if (_module is not null)
+        {
+            await _module.InvokeVoidAsync("runDelay", _dotNetRef, "close");
+        }
+        else
+        {
+            await SetActive(false);
+        }
     }
 
     public async ValueTask DisposeAsync()

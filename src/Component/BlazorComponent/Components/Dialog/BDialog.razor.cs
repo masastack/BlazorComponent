@@ -90,6 +90,34 @@ namespace BlazorComponent
 
         protected override async Task OnActiveUpdated(bool value)
         {
+            if (ContentRef.Context is not null)
+            {
+                await AttachAsync(value);
+            }
+            else
+            {
+                NextTick(() => AttachAsync(value));
+            }
+
+            if (value)
+            {
+                NextTick(async () =>
+                {
+                    // TODO: previousActiveElement
+
+                    var contains = await JsInvokeAsync<bool>(JsInteropConstants.ContainsActiveElement, ContentRef);
+                    if (!contains)
+                    {
+                        await JsInvokeAsync(JsInteropConstants.Focus, ContentRef);
+                    }
+                });
+            }
+
+            await base.OnActiveUpdated(value);
+        }
+
+        private async Task AttachAsync(bool value)
+        {
             if (!Attached)
             {
                 Attached = true;
@@ -105,18 +133,7 @@ namespace BlazorComponent
                 await JsInvokeAsync(JsInteropConstants.AddElementTo, ContentRef, AttachSelector);
             }
 
-            NextTick(async () =>
-            {
-                // TODO: previousActiveElement
-                
-                var contains = await JsInvokeAsync<bool>(JsInteropConstants.ContainsActiveElement, ContentRef);
-                if (!contains)
-                {
-                    await JsInvokeAsync(JsInteropConstants.Focus, ContentRef);
-                }
-            });
-
-            await base.OnActiveUpdated(value);
+            StateHasChanged();
         }
 
         protected async Task HandleOnOutsideClickAsync(object _)

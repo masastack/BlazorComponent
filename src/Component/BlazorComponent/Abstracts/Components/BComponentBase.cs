@@ -8,7 +8,7 @@ namespace BlazorComponent
 {
     public abstract class BComponentBase : ComponentBase, IDisposable
     {
-        private readonly Queue<Func<Task>> _nextTickQuene = new();
+        private readonly Queue<Func<Task>> _nextTickQueue = new();
 
         [Parameter]
         public ForwardRef RefBack { get; set; } = new ForwardRef();
@@ -20,10 +20,10 @@ namespace BlazorComponent
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (_nextTickQuene.Count > 0)
+            if (_nextTickQueue.Count > 0)
             {
-                var callbacks = _nextTickQuene.ToArray();
-                _nextTickQuene.Clear();
+                var callbacks = _nextTickQueue.ToArray();
+                _nextTickQueue.Clear();
 
                 foreach (var callback in callbacks)
                 {
@@ -39,7 +39,7 @@ namespace BlazorComponent
 
         protected void NextTick(Func<Task> callback)
         {
-            _nextTickQuene.Enqueue(callback);
+            _nextTickQueue.Enqueue(callback);
         }
 
         protected void InvokeStateHasChanged()
