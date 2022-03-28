@@ -136,7 +136,7 @@ namespace BlazorComponent
                 {
                     var containsActiveElement = await JsInvokeAsync<bool>(JsInteropConstants.ContainsActiveElement, Ref);
 
-                    if (!containsActiveElement)
+                    if (containsActiveElement)
                     {
                         var item = InputRefs[index];
                         await item.FocusAsync();
