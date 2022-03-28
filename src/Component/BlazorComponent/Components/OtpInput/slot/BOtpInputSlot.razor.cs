@@ -12,7 +12,7 @@ namespace BlazorComponent
         [Parameter]
         public string Value { get; set; }
 
-        public BOtpInputType Type => Component.Type;
+        public OtpInputType Type => Component.Type;
 
         public bool ReadOnly => Component.Readonly;
 

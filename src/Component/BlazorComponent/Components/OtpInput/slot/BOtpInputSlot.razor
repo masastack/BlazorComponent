@@ -11,7 +11,7 @@
                 </legend>
             </fieldset>
             <div class="@CssProvider.GetClass("fieldSlot")" style="@CssProvider.GetStyle("fieldSlot")">
-                <input @ref="InputRefs[Index]" type="@Type.ToString()" readonly="@ReadOnly" min="@(Type== BOtpInputType.Number? 0: null)"
+                <input @ref="InputRefs[Index]" type="@Type.ToString()" readonly="@ReadOnly" min="@(Type== OtpInputType.Number? 0: null)"
                        value="@Value"
                        @onfocus="(e=> OnFocusAsync(Index))"
                        maxlength="1"

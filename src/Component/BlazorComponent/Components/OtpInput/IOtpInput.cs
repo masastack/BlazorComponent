@@ -10,7 +10,7 @@ namespace BlazorComponent
 {
     public interface IOtpInput : IHasProviderComponent
     {
-        BOtpInputType Type { get; set; }
+        OtpInputType Type { get; set; }
 
         bool Readonly { get; set; }
 

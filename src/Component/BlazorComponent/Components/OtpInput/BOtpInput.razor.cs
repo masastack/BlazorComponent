@@ -12,7 +12,7 @@ namespace BlazorComponent
         public int Length { get; set; } = 6;
 
         [Parameter]
-        public BOtpInputType Type { get; set; } = BOtpInputType.Text;
+        public OtpInputType Type { get; set; } = OtpInputType.Text;
 
         [Parameter]
         public bool Readonly { get; set; }
@@ -135,17 +135,11 @@ namespace BlazorComponent
 
         public async Task OnKeyUpAsync(BOtpInputEventArgs<KeyboardEventArgs> events)
         {
-            var errorInput = new List<string>() { "Tab", "Shift", "Meta", "Control", "Alt", "Delete" };
-
             if (events.Index < Length)
             {
                 var eventKey = events.Args.Key;
 
-                if (errorInput.Any(p => p == eventKey))
-                {
-                    return;
-                }
-                else if (eventKey == "ArrowLeft" || (eventKey == "Backspace"))
+                if (eventKey == "ArrowLeft" || (eventKey == "Backspace"))
                 {
                     if (eventKey == "Backspace")
                     {
@@ -156,15 +150,12 @@ namespace BlazorComponent
                         }
                     }
                     await FocusAsync(events.Index - 1);
-                    return;
                 }
                 else if (eventKey == "ArrowRight")
                 {
                     await FocusAsync(events.Index + 1);
-                    return;
                 }
             }
-            return;
         }
 
         private int GetFirstEmptyIndex()
@@ -204,7 +195,6 @@ namespace BlazorComponent
             {
                 Values[i] = String.Empty;
             }
-            return;
         }
 
         public async Task OnInputAsync(BOtpInputEventArgs<ChangeEventArgs> events)
@@ -239,7 +229,6 @@ namespace BlazorComponent
                     if (inputValue.Length > 1)
                     {
                         Values[events.Index] = temp;
-
                         return;
                     }
 
@@ -268,7 +257,6 @@ namespace BlazorComponent
                 }
 
             }
-            return;
         }
 
         public async Task OnPasteAsync(BOtpInputEventArgs<PasteWithDataEventArgs> events)
