@@ -5,6 +5,9 @@ namespace BlazorComponent
 {
     public partial class BOtpInput : BDomComponentBase, IOtpInput
     {
+        [CascadingParameter(Name = "IsDark")]
+        public bool CascadingIsDark { get; set; }
+
         [Parameter]
         public int Length { get; set; } = 6;
 
@@ -16,9 +19,6 @@ namespace BlazorComponent
 
         [Parameter]
         public bool Disabled { get; set; }
-
-        [CascadingParameter(Name = "IsDark")]
-        public bool CascadingIsDark { get; set; }
 
         [Parameter]
         public string Value
@@ -82,31 +82,37 @@ namespace BlazorComponent
 
         protected List<string> Values { get; set; } = new();
 
+        private int _prevLength;
+        
         protected override async Task OnParametersSetAsync()
         {
-            if (Values.Count > Length)
+            if (_prevLength != Length)
             {
-                for (int i = Length; i < Values.Count; i++)
+                _prevLength = Length;
+
+                if (Values.Count > Length)
                 {
-                    Values.RemoveAt(i);
+                    for (int i = Length; i < Values.Count; i++)
+                    {
+                        Values.RemoveAt(i);
+                    }
 
                     if (ValueChanged.HasDelegate)
                     {
                         await ValueChanged.InvokeAsync(Value);
                     }
                 }
-            }
-            else
-            {
-                for (int i = 0; i < Length; i++)
+                else
                 {
-                    if (Values.Count() < (i + 1))
-                        Values.Add(string.Empty);
-                    if (InputRefs.Count() < (i + 1))
-                        InputRefs.Add(new ElementReference());
+                    for (int i = 0; i < Length; i++)
+                    {
+                        if (Values.Count() < (i + 1))
+                            Values.Add(string.Empty);
+                        if (InputRefs.Count() < (i + 1))
+                            InputRefs.Add(new ElementReference());
+                    }
                 }
             }
-
             await base.OnParametersSetAsync();
         }
 
