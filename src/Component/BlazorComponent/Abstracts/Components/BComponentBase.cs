@@ -6,7 +6,7 @@ using Microsoft.JSInterop;
 
 namespace BlazorComponent
 {
-    public abstract class BComponentBase : ComponentBase, IDisposable
+    public abstract class BComponentBase : ComponentBase, IDisposable,IHandleEvent
     {
         private readonly Queue<Func<Task>> _nextTickQuene = new();
 
@@ -17,6 +17,11 @@ namespace BlazorComponent
         public virtual IJSRuntime Js { get; set; }
 
         protected bool IsDisposed { get; private set; }
+       
+        protected bool IsNotRender { get; set; }
+        
+        [CascadingParameter]
+        public IErrorLogger? ErrorLogger { get; set; }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -67,6 +72,65 @@ namespace BlazorComponent
         {
             await Js.InvokeVoidAsync(code, args);
         }
+
+        private async Task CallStateHasChangedOnAsyncCompletion(Task task)
+        {
+            try
+            {
+                await task;
+            }
+            catch (Exception ex) // avoiding exception filters for AOT runtime support
+            {
+                // Ignore exceptions from task cancellations, but don't bother issuing a state change.
+                if (task.IsCanceled)
+                {
+                    return;
+                }
+
+                if (ErrorLogger != null)
+                {
+                    IsNotRender = true;
+                    await ErrorLogger.HandlerExceptionAsync(ex);
+                }
+                else
+                {
+                    // 未开启全局捕获
+                    throw;
+                }
+            }
+
+            if (!IsNotRender)
+            {
+                StateHasChanged();
+            }
+            else
+            {
+                IsNotRender = false;
+            }
+        }
+
+        Task IHandleEvent.HandleEventAsync(EventCallbackWorkItem callback, object? arg)
+        {
+            var task = callback.InvokeAsync(arg);
+            var shouldAwaitTask = task.Status != TaskStatus.RanToCompletion &&
+                task.Status != TaskStatus.Canceled;
+
+            if (!IsNotRender)
+            {
+                // After each event, we synchronously re-render (unless !ShouldRender())
+                // This just saves the developer the trouble of putting "StateHasChanged();"
+                // at the end of every event callback.
+                StateHasChanged();
+            }
+            else
+            {
+                IsNotRender = false;
+            }
+
+            return shouldAwaitTask ?
+                CallStateHasChangedOnAsyncCompletion(task) :
+                Task.CompletedTask;
+        }       
 
         protected virtual void Dispose(bool disposing)
         {
