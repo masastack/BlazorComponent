@@ -60,6 +60,10 @@ namespace BlazorComponent
         [Parameter]
         public bool Light { get; set; }
 
+        private int _prevLength;
+
+        private int _prevFocusIndex;
+
         public List<ElementReference> InputRefs { get; set; } = new();
 
         public bool IsDark
@@ -82,8 +86,6 @@ namespace BlazorComponent
 
         protected List<string> Values { get; set; } = new();
 
-        private int _prevLength;
-        
         protected override async Task OnParametersSetAsync()
         {
             if (_prevLength != Length)
@@ -118,18 +120,25 @@ namespace BlazorComponent
 
         private async Task FocusAsync(int index)
         {
-            if (index < 0)
+            if (_prevFocusIndex != index)
             {
-                await FocusAsync(0);
-            }
-            else if (index >= Length)
-            {
-                await FocusAsync(Length - 1);
-            }
-            else
-            {
-                var item = InputRefs[index];
-                await item.FocusAsync();
+                _prevFocusIndex = index;
+
+                if (index < 0)
+                {
+                    await FocusAsync(0);
+                }
+                else if (index >= Length)
+                {
+                    await FocusAsync(Length - 1);
+                }
+                else
+                {
+                    var item = InputRefs[index];
+                    await item.FocusAsync();
+
+                    await JsInvokeAsync(JsInteropConstants.Select, item);
+                }
             }
         }
 
@@ -228,7 +237,15 @@ namespace BlazorComponent
 
                     if (inputValue.Length > 1)
                     {
-                        Values[events.Index] = temp;
+                        if (string.IsNullOrEmpty(temp))
+                        {
+                            Values[events.Index] = inputValue.FirstOrDefault().ToString();
+                        }
+                        else
+                        {
+                            Values[events.Index] = temp;
+                        }
+                        
                         return;
                     }
 
@@ -240,13 +257,13 @@ namespace BlazorComponent
                     await ValueChanged.InvokeAsync(Value);
                 }
 
-                if (OnInput.HasDelegate)
-                    await OnInput.InvokeAsync(events.Args.Value.ToString());
-
                 if (writeIndex + 1 < this.Length)
                 {
                     await FocusAsync((writeIndex + 1));
                 }
+
+                if (OnInput.HasDelegate)
+                    await OnInput.InvokeAsync(events.Args.Value.ToString());
 
                 if (!Values.Any(p => string.IsNullOrEmpty(p)))
                 {
@@ -255,7 +272,6 @@ namespace BlazorComponent
                         await OnFinish.InvokeAsync(Value);
                     }
                 }
-
             }
         }
 
@@ -296,10 +312,14 @@ namespace BlazorComponent
 
         public async Task OnFocusAsync(int index)
         {
-            if (index >= 0 && index <= Length)
+            if(_prevFocusIndex != index)
             {
-                var item = InputRefs[index];
-                await JsInvokeAsync(JsInteropConstants.Select, item);
+                _prevFocusIndex = index;
+                if (index >= 0 && index <= Length)
+                {
+                    var item = InputRefs[index];
+                    await JsInvokeAsync(JsInteropConstants.Select, item);
+                }
             }
         }
     }
