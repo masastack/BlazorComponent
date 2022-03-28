@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public class BMenuable : BBootable, IActivatable
+    public class BMenuable : BBootable, IActivatable, IAsyncDisposable
     {
         [Parameter]
         public bool Absolute { get; set; }
@@ -179,25 +179,13 @@ namespace BlazorComponent
             Width = 0
         };
 
-        protected double AbsoluteYOffset
-        {
-            get
-            {
-                return PageYOffset - RelativeYOffset;
-            }
-        }
+        protected double AbsoluteYOffset => PageYOffset - RelativeYOffset;
 
         protected bool HasActivator => ActivatorContent != null || ExternalActivator;
 
         protected virtual string AttachSelector => Attach;
 
-        protected int ComputedZIndex
-        {
-            get
-            {
-                return ZIndex != null ? ZIndex.ToInt32() : Math.Max(ActivateZIndex, StackMinZIndex);
-            }
-        }
+        protected int ComputedZIndex => ZIndex != null ? ZIndex.ToInt32() : Math.Max(ActivateZIndex, StackMinZIndex);
 
         protected MenuableDimensions Dimensions { get; } = new MenuableDimensions();
 
@@ -325,7 +313,8 @@ namespace BlazorComponent
             var documentProps = new string[] { "clientHeight", "clientWidth", "scrollLeft", "scrollTop" };
 
             var hasActivator = HasActivator && !Absolute;
-            var multipleResult = await JsInvokeAsync<MultipleResult>(JsInteropConstants.InvokeMultipleMethod, windowProps, documentProps, hasActivator, ActivatorSelector, Attach, ContentElement, Attached, AttachSelector, Ref);
+            var multipleResult = await JsInvokeAsync<MultipleResult>(JsInteropConstants.InvokeMultipleMethod, windowProps, documentProps,
+                hasActivator, ActivatorSelector, Attach, ContentElement, Attached, AttachSelector, Ref);
             var windowAndDocument = multipleResult.WindowAndDocument;
 
             //We want to reduce js interop
@@ -425,6 +414,21 @@ namespace BlazorComponent
         {
             Window.OnResize -= HandleOnResizeAsync;
             base.Dispose(disposing);
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            try
+            {
+                if (ContentElement.Context is not null)
+                {
+                    await JsInvokeAsync(JsInteropConstants.DelElementFrom, ContentElement, AttachSelector);
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
     }
 }
