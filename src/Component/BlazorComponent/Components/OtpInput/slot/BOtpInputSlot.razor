@@ -8,23 +8,22 @@
             <fieldset aria-hidden="true">
                 <legend style="width: 0px;">
                     <span>&#8203;</span>
-                </legend>   
+                </legend>
             </fieldset>
             <div class="@CssProvider.GetClass("fieldSlot")" style="@CssProvider.GetStyle("fieldSlot")">
-                <input @ref="Elements[Index]" type="@Type" readonly="@ReadOnly" min="@(Type=="number"? 0: null)" 
-                value="@Value" 
-                @onfocus="(e=> OnFocusAsync(Index))" 
-                maxlength="1" 
-                disabled="@Disabled" @onkeyup="(e=> OnKeyUpAsync(e,Index))" 
-                @onkeyup:preventDefault
-                @onkeyup:stopPropagation
-                @oninput="(e=> OnInputAsync(e, Index))" 
-                @oninput:preventDefault
-                @oninput:stopPropagation
-                @onpastewithdata="OnPasteWithDataAsync" 
-                @onpastewithdata:preventDefault
-                @onpastewithdata:stopPropagation
-                />
+                <input @ref="InputRefs[Index]" type="@Type.ToString()" readonly="@ReadOnly" min="@(Type== BOtpInputType.Number? 0: null)"
+                       value="@Value"
+                       @onfocus="(e=> OnFocusAsync(Index))"
+                       maxlength="1"
+                       disabled="@Disabled" @onkeyup="(e=> OnKeyUpAsync(e,Index))"
+                       @onkeyup:preventDefault
+                       @onkeyup:stopPropagation
+                       @oninput="(e=> OnInputAsync(e, Index))"
+                       @oninput:preventDefault
+                       @oninput:stopPropagation
+                       @onpastewithdata="OnPasteWithDataAsync"
+                       @onpastewithdata:preventDefault
+                       @onpastewithdata:stopPropagation />
             </div>
         </div>
     </div>

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Microsoft.AspNetCore.Components.Web
 {
-    public class PasteWithDataEventArgs: ClipboardEventArgs
+    public class PasteWithDataEventArgs : ClipboardEventArgs
     {
-        public string PastedData{ get; set; }
+        public string PastedData { get; set; }
     }
 }

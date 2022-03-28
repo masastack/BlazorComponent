@@ -6,35 +6,31 @@ namespace BlazorComponent
 {
     public partial class BOtpInputSlot<TOtpInput> : ComponentPartBase<TOtpInput> where TOtpInput : IOtpInput
     {
-
-        public string Type => Component.Type;
-
-        public bool ReadOnly => Component.ReadOnly;
-
-        public bool Disabled => Component.Disabled;
-
-        public List<ElementReference> Elements => Component.Elements;
-
         [Parameter]
         public int Index { get; set; }
 
-        public EventCallback<BOtpInputKeyboardEventArgs> OnKeyup => EventCallback.Factory.Create<BOtpInputKeyboardEventArgs>(Component, Component.OnKeyUpAsync);
-
-        public EventCallback<BOtpInputChangeEventArgs> OnInput => EventCallback.Factory.Create<BOtpInputChangeEventArgs>(Component, Component.OnInputAsync);
-
-        public EventCallback<BOtpInputPasteWithDataEventArgs> OnPaste => EventCallback.Factory.Create<BOtpInputPasteWithDataEventArgs>(Component, Component.OnPasteAsync);
-
-        [CascadingParameter]
-        public List<string> Values { get; set; }
-
         [Parameter]
-        public string Value { get;set; }
+        public string Value { get; set; }
+
+        public BOtpInputType Type => Component.Type;
+
+        public bool ReadOnly => Component.Readonly;
+
+        public bool Disabled => Component.Disabled;
+
+        public List<ElementReference> InputRefs => Component.InputRefs;
+
+        public EventCallback<BOtpInputEventArgs<KeyboardEventArgs>> OnKeyup => EventCallback.Factory.Create<BOtpInputEventArgs<KeyboardEventArgs>>(Component, Component.OnKeyUpAsync);
+
+        public EventCallback<BOtpInputEventArgs<ChangeEventArgs>> OnInput => EventCallback.Factory.Create<BOtpInputEventArgs<ChangeEventArgs>>(Component, Component.OnInputAsync);
+
+        public EventCallback<BOtpInputEventArgs<PasteWithDataEventArgs>> OnPaste => EventCallback.Factory.Create<BOtpInputEventArgs<PasteWithDataEventArgs>>(Component, Component.OnPasteAsync);
 
         public async Task OnKeyUpAsync(KeyboardEventArgs args, int index)
         {
             if (OnKeyup.HasDelegate)
             {
-                await OnKeyup.InvokeAsync(new BOtpInputKeyboardEventArgs() { Args = args, Index = index });
+                await OnKeyup.InvokeAsync(new BOtpInputEventArgs<KeyboardEventArgs>(args, index));
             }
         }
 
@@ -42,7 +38,7 @@ namespace BlazorComponent
         {
             if (OnInput.HasDelegate)
             {
-                await OnInput.InvokeAsync(new BOtpInputChangeEventArgs() { Args = args, Index = index });
+                await OnInput.InvokeAsync(new BOtpInputEventArgs<ChangeEventArgs>(args, index));
             }
         }
 
@@ -51,7 +47,7 @@ namespace BlazorComponent
         {
             if (OnPaste.HasDelegate)
             {
-                await OnPaste.InvokeAsync(new BOtpInputPasteWithDataEventArgs() { Args = args, Index = Index });
+                await OnPaste.InvokeAsync(new BOtpInputEventArgs<PasteWithDataEventArgs>(args));
             }
         }
 

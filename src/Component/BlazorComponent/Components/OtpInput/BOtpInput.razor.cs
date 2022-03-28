@@ -6,23 +6,19 @@ namespace BlazorComponent
     public partial class BOtpInput : BDomComponentBase, IOtpInput
     {
         [Parameter]
-        public StringNumber Length { get; set; } = "6";
+        public int Length { get; set; } = 6;
 
         [Parameter]
-        public string Type { get; set; } = "text";
+        public BOtpInputType Type { get; set; } = BOtpInputType.Text;
 
         [Parameter]
-        public bool ReadOnly { get; set; }
+        public bool Readonly { get; set; }
 
         [Parameter]
         public bool Disabled { get; set; }
 
-        [Parameter]
-        public bool Dark { get; set; }
-
-        public bool Light { get; set; } = true;
-
-        protected List<string> Values { get; set; } = new();
+        [CascadingParameter(Name = "IsDark")]
+        public bool CascadingIsDark { get; set; }
 
         [Parameter]
         public string Value
@@ -33,7 +29,7 @@ namespace BlazorComponent
             }
             set
             {
-                if(value != null)
+                if (value != null)
                 {
                     for (int i = 0; i < value.Length; i++)
                     {
@@ -52,27 +48,70 @@ namespace BlazorComponent
         [Parameter]
         public bool Plain { get; set; }
 
-        public List<ElementReference> Elements { get; set; } = new();
-
         [Parameter]
         public EventCallback<string> OnFinish { get; set; }
 
         [Parameter]
         public EventCallback<string> OnInput { get; set; }
 
-        //[Parameter]
-        //public EventCallback<string> OnChange { get; set; }
+        [Parameter]
+        public bool Dark { get; set; }
+
+        [Parameter]
+        public bool Light { get; set; }
+
+        public List<ElementReference> InputRefs { get; set; } = new();
+
+        public bool IsDark
+        {
+            get
+            {
+                if (Dark)
+                {
+                    return true;
+                }
+
+                if (Light)
+                {
+                    return false;
+                }
+
+                return CascadingIsDark;
+            }
+        }
+
+        protected List<string> Values { get; set; } = new();
+
+        protected override async Task OnParametersSetAsync()
+        {
+            if (Values.Count > Length)
+            {
+                for (int i = Length; i < Values.Count; i++)
+                {
+                    Values.RemoveAt(i);
+
+                    if (ValueChanged.HasDelegate)
+                    {
+                        await ValueChanged.InvokeAsync(Value);
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < Length; i++)
+                {
+                    if (Values.Count() < (i + 1))
+                        Values.Add(string.Empty);
+                    if (InputRefs.Count() < (i + 1))
+                        InputRefs.Add(new ElementReference());
+                }
+            }
+
+            await base.OnParametersSetAsync();
+        }
 
         protected override Task OnInitializedAsync()
         {
-            for (int i = 0; i < Length.ToInt32(); i++)
-            {
-                //SlotItems.Add(new BOtpInputSlotItem());
-                if (Values.Count() < (i + 1))
-                    Values.Add(string.Empty);
-                Elements.Add(new ElementReference());
-            }
-
             return base.OnInitializedAsync();
         }
 
@@ -82,25 +121,22 @@ namespace BlazorComponent
             {
                 await FocusAsync(0);
             }
-            else if(index >= Length.ToInt32())
+            else if (index >= Length)
             {
-                await FocusAsync(Length.ToInt32() - 1);
+                await FocusAsync(Length - 1);
             }
             else
             {
-                //var item = SlotItems[index];
-                //await item.Element.FocusAsync();
-
-                var item = Elements[index];
+                var item = InputRefs[index];
                 await item.FocusAsync();
             }
         }
 
-        public async Task OnKeyUpAsync(BOtpInputKeyboardEventArgs events)
-        {   
+        public async Task OnKeyUpAsync(BOtpInputEventArgs<KeyboardEventArgs> events)
+        {
             var errorInput = new List<string>() { "Tab", "Shift", "Meta", "Control", "Alt", "Delete" };
 
-            if (events.Index < Length.ToInt32())
+            if (events.Index < Length)
             {
                 var eventKey = events.Args.Key;
 
@@ -112,7 +148,7 @@ namespace BlazorComponent
                 {
                     if (eventKey == "Backspace")
                     {
-                        await ApplyValues(Values, events.Index, "");
+                        await ApplyValues(events.Index, "");
                         if (ValueChanged.HasDelegate)
                         {
                             await ValueChanged.InvokeAsync(Value);
@@ -143,35 +179,34 @@ namespace BlazorComponent
             return Values.Count - 1;
         }
 
-        private async Task ApplyValues(List<string> values, int index, string value)
+        private async Task ApplyValues(int index, string value)
         {
-            values[index] = value;
+            Values[index] = value;
 
-            var tempStr = string.Join("", (IEnumerable<string>)this.Values);
+            var tempStr = string.Join("", this.Values);
 
-            var temp = tempStr.Select(p=> p.ToString()).ToList();
+            var temp = tempStr.Select(p => p.ToString()).ToList();
 
-            for (int i = 0; i < values.Count; i++)
+            for (int i = 0; i < Values.Count; i++)
             {
-                values[i] = String.Empty;
+                Values[i] = String.Empty;
             }
 
             await Task.Yield();
 
             for (int i = 0; i < temp.Count; i++)
             {
-                values[i] = temp[i];
+                Values[i] = temp[i];
             }
 
-            for (int i = temp.Count; i < this.Length.ToInt32() - temp.Count; i++)
+            for (int i = temp.Count; i < this.Length - temp.Count; i++)
             {
-                values[i] = String.Empty;
+                Values[i] = String.Empty;
             }
-
             return;
         }
 
-        public async Task OnInputAsync(BOtpInputChangeEventArgs events)
+        public async Task OnInputAsync(BOtpInputEventArgs<ChangeEventArgs> events)
         {
             if (!string.IsNullOrWhiteSpace(events.Args.Value.ToString()))
             {
@@ -179,43 +214,48 @@ namespace BlazorComponent
 
                 var temp = Values[events.Index];
 
-                //https://stackoverflow.com/questions/68901935/reset-input-field-value-if-value-is-invalid-in-blazor
                 var inputValue = events.Args.Value.ToString();
 
-                if (inputValue.Length > 1)
+                var writeIndex = Math.Min(firstEmptyItemIndex, events.Index);
+
+                if (writeIndex != events.Index)
+                {
+                    Values[events.Index] = inputValue;
+
+                    //https://stackoverflow.com/questions/68901935/reset-input-field-value-if-value-is-invalid-in-blazor
+                    await Task.Yield();
+
+                    Values[events.Index] = String.Empty;
+
+                    Values[firstEmptyItemIndex] = inputValue;
+                }
+                else
                 {
                     Values[events.Index] = String.Empty;
 
                     await Task.Yield();
 
-                    Values[events.Index] = temp;
+                    if (inputValue.Length > 1)
+                    {
+                        Values[events.Index] = temp;
 
-                    return;
+                        return;
+                    }
+
+                    Values[events.Index] = inputValue;
                 }
-                
-                Values[events.Index] = events.Args.Value.ToString();
 
-                await Task.Yield();
-
-                var writeIndex = Math.Min(firstEmptyItemIndex, events.Index);
-
-                if(writeIndex != events.Index)
+                if (ValueChanged.HasDelegate)
                 {
-                    Values[events.Index] = String.Empty;
-                    Values[firstEmptyItemIndex] = events.Args.Value.ToString();
+                    await ValueChanged.InvokeAsync(Value);
                 }
 
                 if (OnInput.HasDelegate)
                     await OnInput.InvokeAsync(events.Args.Value.ToString());
 
-                if (writeIndex + 1 < this.Length.ToInt32())
+                if (writeIndex + 1 < this.Length)
                 {
                     await FocusAsync((writeIndex + 1));
-
-                    //var item = SlotItems[writeIndex];
-                    //if (OnChange.HasDelegate && item.Value != events.Args.Value.ToString())
-                    //    await OnChange.InvokeAsync(events.Args.Value.ToString());
-
                 }
 
                 if (!Values.Any(p => string.IsNullOrEmpty(p)))
@@ -223,19 +263,14 @@ namespace BlazorComponent
                     if (OnFinish.HasDelegate)
                     {
                         await OnFinish.InvokeAsync(Value);
-                    }  
+                    }
                 }
 
-                if (ValueChanged.HasDelegate)
-                {
-                    await ValueChanged.InvokeAsync(Value);
-                }
             }
-            
             return;
         }
 
-        public async Task OnPasteAsync(BOtpInputPasteWithDataEventArgs events)
+        public async Task OnPasteAsync(BOtpInputEventArgs<PasteWithDataEventArgs> events)
         {
             var clipboardData = events.Args.PastedData;
 
@@ -249,13 +284,13 @@ namespace BlazorComponent
                 {
                     var changeIndex = startIndex + i;
 
-                    if (changeIndex >= this.Length.ToInt32())
+                    if (changeIndex >= this.Length)
                         break;
 
                     Values[changeIndex] = clipboardData[i].ToString();
                 }
 
-                var newFocusIndex = Math.Min(events.Index + clipboardData.Length - 1, this.Length.ToInt32() - 1);
+                var newFocusIndex = Math.Min(events.Index + clipboardData.Length - 1, this.Length - 1);
                 await FocusAsync(newFocusIndex);
 
                 var hasEmptyValue = Values.Any(p => string.IsNullOrWhiteSpace(p));
@@ -266,34 +301,15 @@ namespace BlazorComponent
                     {
                         await OnFinish.InvokeAsync(Value);
                     }
-                        
-                }
-            }
-        }
-
-        public bool IsDark
-        {
-            get
-            {
-                if (Dark)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
                 }
             }
         }
 
         public async Task OnFocusAsync(int index)
         {
-            if (index >= 0 && index <= Length.ToInt32())
+            if (index >= 0 && index <= Length)
             {
-                //var item = SlotItems[index];
-                //await JsInvokeAsync(JsInteropConstants.Select, item.Element);
-
-                var item = Elements[index];
+                var item = InputRefs[index];
                 await JsInvokeAsync(JsInteropConstants.Select, item);
             }
         }

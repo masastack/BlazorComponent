@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,24 +8,22 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public interface IOtpInput: IHasProviderComponent
+    public interface IOtpInput : IHasProviderComponent
     {
+        BOtpInputType Type { get; set; }
 
-        string Type { get; set; }
-
-        bool ReadOnly { get; set; }
+        bool Readonly { get; set; }
 
         bool Disabled { get; set; }
 
-        Task OnKeyUpAsync(BOtpInputKeyboardEventArgs args);
+        Task OnKeyUpAsync(BOtpInputEventArgs<KeyboardEventArgs> args);
 
-        Task OnInputAsync(BOtpInputChangeEventArgs args);
+        Task OnInputAsync(BOtpInputEventArgs<ChangeEventArgs> args);
 
-        Task OnPasteAsync(BOtpInputPasteWithDataEventArgs args);
+        Task OnPasteAsync(BOtpInputEventArgs<PasteWithDataEventArgs> args);
 
         Task OnFocusAsync(int index);
 
-        List<ElementReference> Elements { get; set; }
-
+        List<ElementReference> InputRefs { get; set; }
     }
 }
