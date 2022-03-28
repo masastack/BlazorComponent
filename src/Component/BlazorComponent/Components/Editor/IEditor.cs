@@ -4,7 +4,6 @@ namespace BlazorComponent
 {
     public interface IEditor : IHasProviderComponent
     {
-        RenderFragment EditorContent { get; }
         RenderFragment ToolbarContent { get; }
         string Placeholder { get; }
         Task<string> GetTextAsync();

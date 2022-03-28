@@ -14,8 +14,6 @@ namespace BlazorComponent
         [Parameter]
         public string ContentStyle { get; set; }
         [Parameter]
-        public RenderFragment EditorContent { get; set; }
-        [Parameter]
         public string Placeholder { get; set; }
         [Parameter]
         public RenderFragment ToolbarContent { get; set; }
