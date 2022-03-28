@@ -134,10 +134,14 @@ namespace BlazorComponent
                 }
                 else
                 {
-                    var item = InputRefs[index];
-                    await item.FocusAsync();
+                    var containsActiveElement = await JsInvokeAsync<bool>(JsInteropConstants.ContainsActiveElement, Ref);
 
-                    await JsInvokeAsync(JsInteropConstants.Select, item);
+                    if (!containsActiveElement)
+                    {
+                        var item = InputRefs[index];
+                        await item.FocusAsync();
+                        await JsInvokeAsync(JsInteropConstants.Select, item);
+                    }
                 }
             }
         }
@@ -312,13 +316,18 @@ namespace BlazorComponent
 
         public async Task OnFocusAsync(int index)
         {
-            if(_prevFocusIndex != index)
+            if (_prevFocusIndex != index)
             {
                 _prevFocusIndex = index;
                 if (index >= 0 && index <= Length)
                 {
-                    var item = InputRefs[index];
-                    await JsInvokeAsync(JsInteropConstants.Select, item);
+                    var containsActiveElement = await JsInvokeAsync<bool>(JsInteropConstants.ContainsActiveElement, Ref);
+
+                    if (containsActiveElement)
+                    {
+                        var item = InputRefs[index];
+                        await JsInvokeAsync(JsInteropConstants.Select, item);
+                    }
                 }
             }
         }

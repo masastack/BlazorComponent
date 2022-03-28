@@ -15,7 +15,7 @@
                        value="@Value"
                        @onfocus="(e=> OnFocusAsync(Index))"
                        maxlength="1"
-                       autoComplete="@(Type == OtpInputType.Password? "new-password" : "new-text")"
+                       autoComplete="@(Type == OtpInputType.Password? "new-password" : "off")"
                        disabled="@Disabled" @onkeyup="(e=> OnKeyUpAsync(e,Index))"
                        @onkeyup:preventDefault
                        @onkeyup:stopPropagation
