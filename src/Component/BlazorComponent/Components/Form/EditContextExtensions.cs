@@ -25,7 +25,7 @@ namespace BlazorComponent
 
         private sealed class ValidationEventSubscriptions : IDisposable
         {
-            private static readonly ConcurrentDictionary<Type, Action<object, ValidationMessageStore, string>> _map;
+            private static readonly ConcurrentDictionary<Type, Action<object, ValidationMessageStore, FieldIdentifier>> _map;
             private static readonly List<Type> _types;
 
             static ValidationEventSubscriptions()
@@ -61,15 +61,15 @@ namespace BlazorComponent
 
             private void OnFieldChanged(object? sender, FieldChangedEventArgs eventArgs)
             {
-                Validate(eventArgs.FieldIdentifier.FieldName);
+                Validate(eventArgs.FieldIdentifier);
             }
 
             private void OnValidationRequested(object? sender, ValidationRequestedEventArgs e)
             {
-                Validate("");
+                Validate(new FieldIdentifier(new(), ""));
             }
 
-            private void Validate(string fieldName)
+            private void Validate(FieldIdentifier field)
             {
                 var type = _editContext.Model.GetType();
                 if (_map.TryGetValue(type, out var validateAction) is false)
@@ -85,17 +85,17 @@ namespace BlazorComponent
                     }
                     validateAction = _map[type];
                 }
-                validateAction(_editContext.Model, _messageStore, fieldName);
+                validateAction(_editContext.Model, _messageStore, field);
                 _editContext.NotifyValidationStateChanged();
             }
 
-            private void DataAnnotationsValidate(object model, ValidationMessageStore messageStore, string fieldName)
+            private void DataAnnotationsValidate(object model, ValidationMessageStore messageStore, FieldIdentifier field)
             {
-                var validationContext = new ValidationContext(model);
                 var validationResults = new List<ValidationResult>();
-                Validator.TryValidateObject(_editContext.Model, validationContext, validationResults, true);
-                if (fieldName == "")
+                if (field.FieldName == "")
                 {
+                    var validationContext = new ValidationContext(model);
+                    Validator.TryValidateObject(model, validationContext, validationResults, true);
                     messageStore.Clear();
 
                     foreach (var validationResult in validationResults)
@@ -129,27 +129,28 @@ namespace BlazorComponent
                 }
                 else
                 {
-                    var fieldIdentifier = new FieldIdentifier(model, fieldName);
-                    messageStore.Clear(fieldIdentifier);
+                    var validationContext = new ValidationContext(field.Model);
+                    Validator.TryValidateObject(field.Model, validationContext, validationResults, true);
+                    messageStore.Clear(field);
                     foreach (var validationResult in validationResults)
                     {
-                        if (validationResult.MemberNames.Contains(fieldName))
+                        if (validationResult.MemberNames.Contains(field.FieldName))
                         {
-                            messageStore.Add(fieldIdentifier, validationResult.ErrorMessage);
+                            messageStore.Add(field, validationResult.ErrorMessage);
                             return;
                         }
                     }
                 }
             }
 
-            private Action<object, ValidationMessageStore, string> BuildFluentValidate(Type modelType, Type validatorType)
+            private Action<object, ValidationMessageStore, FieldIdentifier> BuildFluentValidate(Type modelType, Type validatorType)
             {
                 var model = Expr.BlockParam(typeof(object)).Convert(modelType);
                 Var messageStore = Expr.Param<ValidationMessageStore>();
-                var fieldName = Expr.BlockParam<string>();
+                var field = Expr.BlockParam<FieldIdentifier>();
                 var validator = Expr.New(validatorType);
                 var validationResult = validator.Method("Validate", model);
-                Expr.IfThenElse(fieldName == "", () =>
+                Expr.IfThenElse(field[nameof(FieldIdentifier.FieldName)] == "", () =>
                 {
                     messageStore.BlockMethod(nameof(ValidationMessageStore.Clear));
                     Expr.Foreach(validationResult[nameof(FluentValidationResult.Errors)], (item, @continue, @return) =>
@@ -159,18 +160,18 @@ namespace BlazorComponent
                     });
                 }, () =>
                 {
-                    var fieldIdentifier = Expr.New<FieldIdentifier>(model, fieldName);
-                    messageStore.BlockMethod(nameof(ValidationMessageStore.Clear), fieldIdentifier);
+                    messageStore.BlockMethod(nameof(ValidationMessageStore.Clear), field);
                     Expr.Foreach(validationResult[nameof(FluentValidationResult.Errors)], (item, @continue, @return) =>
                     {
-                        Expr.IfThen(item[nameof(ValidationFailure.PropertyName)] == fieldName, () =>
+                        var index = item[nameof(ValidationFailure.PropertyName)].Method(nameof(string.IndexOf), '.');
+                        Expr.IfThen(item[nameof(ValidationFailure.PropertyName)].Method(nameof(string.Substring), index + 1) == field[nameof(FieldIdentifier.FieldName)], () =>
                         {
-                            messageStore.BlockMethod(nameof(ValidationMessageStore.Add), fieldIdentifier, item[nameof(ValidationFailure.ErrorMessage)]);
+                            messageStore.BlockMethod(nameof(ValidationMessageStore.Add), field, item[nameof(ValidationFailure.ErrorMessage)]);
                             @return();
                         });
                     });
                 });
-                var validateAction = messageStore.BuildDefaultDelegate<Action<object, ValidationMessageStore, string>>();
+                var validateAction = messageStore.BuildDefaultDelegate<Action<object, ValidationMessageStore, FieldIdentifier>>();
                 return validateAction;
             }
 
