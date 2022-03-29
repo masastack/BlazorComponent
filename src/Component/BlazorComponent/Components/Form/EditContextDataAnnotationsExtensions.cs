@@ -1,14 +1,13 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
-using System;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using Microsoft.AspNetCore.Components.Forms;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
+using Util.Reflection.Expressions;
+using FluentValidationResult = FluentValidation.Results.ValidationResult;
+using ValidationResult = System.ComponentModel.DataAnnotations.ValidationResult;
 
 namespace BlazorComponent
 {
@@ -26,15 +25,35 @@ namespace BlazorComponent
 
         private sealed class DataAnnotationsEventSubscriptions : IDisposable
         {
-            private static readonly ConcurrentDictionary<(Type ModelType, string FieldName), PropertyInfo> _propertyInfoCache = new();
+            private static readonly ConcurrentDictionary<Type, Action<object, ValidationMessageStore, string>> _map;
+            private static readonly List<Type> _types;
+
+            static DataAnnotationsEventSubscriptions()
+            {
+                _map = new();
+                _types = new();
+                try
+                {
+                    var assembly = Assembly.GetEntryAssembly();
+                    var referenceAssemblys = assembly.GetReferencedAssemblies().Select(name => Assembly.Load(name)).ToList();
+                    referenceAssemblys.Add(assembly);
+                    foreach (var referenceAssembly in referenceAssemblys)
+                    {
+                        _types.AddRange(referenceAssembly.GetTypes().Where(t => t.BaseType?.IsGenericType == true && t.BaseType == typeof(AbstractValidator<>).MakeGenericType(t.BaseType.GenericTypeArguments[0])).ToArray());
+                    }
+                }
+                catch (Exception e)
+                {
+                }
+            }
 
             private readonly EditContext _editContext;
-            private readonly ValidationMessageStore _messages;
+            private readonly ValidationMessageStore _messageStore;
 
             public DataAnnotationsEventSubscriptions(EditContext editContext)
             {
                 _editContext = editContext ?? throw new ArgumentNullException(nameof(editContext));
-                _messages = new ValidationMessageStore(_editContext);
+                _messageStore = new ValidationMessageStore(_editContext);
 
                 _editContext.OnFieldChanged += OnFieldChanged;
                 _editContext.OnValidationRequested += OnValidationRequested;
@@ -42,98 +61,125 @@ namespace BlazorComponent
 
             private void OnFieldChanged(object? sender, FieldChangedEventArgs eventArgs)
             {
-                var fieldIdentifier = eventArgs.FieldIdentifier;
-                if (TryGetValidatableProperty(fieldIdentifier, out var propertyInfo))
-                {
-                    var propertyValue = propertyInfo.GetValue(fieldIdentifier.Model);
-                    var validationContext = new ValidationContext(fieldIdentifier.Model)
-                    {
-                        MemberName = propertyInfo.Name
-                    };
-                    var results = new List<ValidationResult>();
-
-                    Validator.TryValidateProperty(propertyValue, validationContext, results);
-                    _messages.Clear(fieldIdentifier);
-                    foreach (var result in CollectionsMarshal.AsSpan(results))
-                    {
-                        _messages.Add(fieldIdentifier, result.ErrorMessage!);
-                    }
-
-                    // We have to notify even if there were no messages before and are still no messages now,
-                    // because the "state" that changed might be the completion of some async validation task
-                    _editContext.NotifyValidationStateChanged();
-                }
+                Validate(eventArgs.FieldIdentifier.FieldName);
             }
 
             private void OnValidationRequested(object? sender, ValidationRequestedEventArgs e)
             {
-                var validationContext = new ValidationContext(_editContext.Model);
-                var validationResults = new List<ValidationResult>();
-                Validator.TryValidateObject(_editContext.Model, validationContext, validationResults, true);
+                Validate("");
+            }
 
-                // Transfer results to the ValidationMessageStore
-                _messages.Clear();
-                foreach (var validationResult in validationResults)
+            private void Validate(string fieldName)
+            {
+                var type = _editContext.Model.GetType();
+                if (_map.TryGetValue(type, out var validateAction) is false)
                 {
-                    if (validationResult == null)
+                    var fluentValidatorType = _types.Where(t => t.BaseType == typeof(AbstractValidator<>).MakeGenericType(type)).FirstOrDefault();
+                    if (fluentValidatorType is not null)
                     {
-                        continue;
-                    }
-
-                    if (validationResult is EnumerableValidationResult enumerableValidationResult)
-                    {
-                        foreach (var descriptor in enumerableValidationResult.Descriptors)
-                        {
-                            foreach (var result in descriptor.Results)
-                            {
-                                foreach (var memberName in result.MemberNames)
-                                {
-                                    _messages.Add(new FieldIdentifier(descriptor.ObjectInstance, memberName), result.ErrorMessage!);
-                                }
-                            }
-                        }
+                        _map[type] = BuildFluentValidate(type, fluentValidatorType);
                     }
                     else
                     {
-                        var hasMemberNames = false;
-                        foreach (var memberName in validationResult.MemberNames)
+                        _map[type] = DataAnnotationsValidate;
+                    }
+                    validateAction = _map[type];
+                }
+                validateAction(_editContext.Model, _messageStore, fieldName);
+                _editContext.NotifyValidationStateChanged();
+            }
+
+            private void DataAnnotationsValidate(object model, ValidationMessageStore messageStore, string fieldName)
+            {
+                var validationContext = new ValidationContext(model);
+                var validationResults = new List<ValidationResult>();
+                Validator.TryValidateObject(_editContext.Model, validationContext, validationResults, true);
+                if (fieldName == "")
+                {
+                    messageStore.Clear();
+
+                    foreach (var validationResult in validationResults)
+                    {
+                        if (validationResult == null)
                         {
-                            hasMemberNames = true;
-                            _messages.Add(_editContext.Field(memberName), validationResult.ErrorMessage!);
+                            continue;
                         }
 
-                        if (!hasMemberNames)
+                        if (validationResult is EnumerableValidationResult enumerableValidationResult)
                         {
-                            _messages.Add(new FieldIdentifier(_editContext.Model, fieldName: string.Empty), validationResult.ErrorMessage!);
+                            foreach (var descriptor in enumerableValidationResult.Descriptors)
+                            {
+                                foreach (var result in descriptor.Results)
+                                {
+                                    foreach (var memberName in result.MemberNames)
+                                    {
+                                        messageStore.Add(new FieldIdentifier(descriptor.ObjectInstance, memberName), result.ErrorMessage!);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (var memberName in validationResult.MemberNames)
+                            {
+                                messageStore.Add(new FieldIdentifier(model, memberName), validationResult.ErrorMessage);
+                            }
                         }
                     }
                 }
+                else
+                {
+                    var fieldIdentifier = new FieldIdentifier(model, fieldName);
+                    messageStore.Clear(fieldIdentifier);
+                    foreach (var validationResult in validationResults)
+                    {
+                        if (validationResult.MemberNames.Contains(fieldName))
+                        {
+                            messageStore.Add(fieldIdentifier, validationResult.ErrorMessage);
+                            return;
+                        }
+                    }
+                }
+            }
 
-                _editContext.NotifyValidationStateChanged();
+            private Action<object, ValidationMessageStore, string> BuildFluentValidate(Type modelType, Type validatorType)
+            {
+                var model = Expr.BlockParam(typeof(object)).Convert(modelType);
+                Var messageStore = Expr.Param<ValidationMessageStore>();
+                var fieldName = Expr.BlockParam<string>();
+                var validator = Expr.New(validatorType);
+                var validationResult = validator.Method("Validate", model);
+                Expr.IfThenElse(fieldName == "", () =>
+                {
+                    messageStore.BlockMethod(nameof(ValidationMessageStore.Clear));
+                    Expr.Foreach(validationResult[nameof(FluentValidationResult.Errors)], (item, @continue, @return) =>
+                    {
+                        var fieldIdentifier = Expr.New<FieldIdentifier>(model, item[nameof(ValidationFailure.PropertyName)]);
+                        messageStore.BlockMethod(nameof(ValidationMessageStore.Add), fieldIdentifier, item[nameof(ValidationFailure.ErrorMessage)]);
+                    });
+                }, () =>
+                {
+                    var fieldIdentifier = Expr.New<FieldIdentifier>(model, fieldName);
+                    messageStore.BlockMethod(nameof(ValidationMessageStore.Clear), fieldIdentifier);
+                    Expr.Foreach(validationResult[nameof(FluentValidationResult.Errors)], (item, @continue, @return) =>
+                    {
+                        Expr.IfThen(item[nameof(ValidationFailure.PropertyName)] == fieldName, () =>
+                        {
+                            messageStore.BlockMethod(nameof(ValidationMessageStore.Add), fieldIdentifier, item[nameof(ValidationFailure.ErrorMessage)]);
+                            @return();
+                        });
+                    });
+                });
+                var validateAction = messageStore.BuildDefaultDelegate<Action<object, ValidationMessageStore, string>>();
+                return validateAction;
             }
 
             public void Dispose()
             {
-                _messages.Clear();
+                _messageStore.Clear();
                 _editContext.OnFieldChanged -= OnFieldChanged;
                 _editContext.OnValidationRequested -= OnValidationRequested;
                 _editContext.NotifyValidationStateChanged();
-            }
-
-            private static bool TryGetValidatableProperty(in FieldIdentifier fieldIdentifier, [NotNullWhen(true)] out PropertyInfo? propertyInfo)
-            {
-                var cacheKey = (ModelType: fieldIdentifier.Model.GetType(), fieldIdentifier.FieldName);
-                if (!_propertyInfoCache.TryGetValue(cacheKey, out propertyInfo))
-                {
-                    // DataAnnotations only validates public properties, so that's all we'll look for
-                    // If we can't find it, cache 'null' so we don't have to try again next time
-                    propertyInfo = cacheKey.ModelType.GetProperty(cacheKey.FieldName);
-
-                    // No need to lock, because it doesn't matter if we write the same value twice
-                    _propertyInfoCache[cacheKey] = propertyInfo;
-                }
-
-                return propertyInfo != null;
             }
         }
     }
