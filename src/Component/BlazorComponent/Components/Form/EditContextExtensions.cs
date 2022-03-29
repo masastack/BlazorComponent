@@ -11,24 +11,24 @@ using ValidationResult = System.ComponentModel.DataAnnotations.ValidationResult;
 
 namespace BlazorComponent
 {
-    public static class EditContextDataAnnotationsExtensions
+    public static class EditContextExtensions
     {
         /// <summary>
         /// Enables DataAnnotations validation support for the <see cref="EditContext"/>.
         /// </summary>
         /// <param name="editContext">The <see cref="EditContext"/>.</param>
         /// <returns>A disposable object whose disposal will remove DataAnnotations validation support from the <see cref="EditContext"/>.</returns>
-        public static IDisposable EnableDataAnnotationsValidation(this EditContext editContext)
+        public static IDisposable EnableValidation(this EditContext editContext)
         {
-            return new DataAnnotationsEventSubscriptions(editContext);
+            return new ValidationEventSubscriptions(editContext);
         }
 
-        private sealed class DataAnnotationsEventSubscriptions : IDisposable
+        private sealed class ValidationEventSubscriptions : IDisposable
         {
             private static readonly ConcurrentDictionary<Type, Action<object, ValidationMessageStore, string>> _map;
             private static readonly List<Type> _types;
 
-            static DataAnnotationsEventSubscriptions()
+            static ValidationEventSubscriptions()
             {
                 _map = new();
                 _types = new();
@@ -50,7 +50,7 @@ namespace BlazorComponent
             private readonly EditContext _editContext;
             private readonly ValidationMessageStore _messageStore;
 
-            public DataAnnotationsEventSubscriptions(EditContext editContext)
+            public ValidationEventSubscriptions(EditContext editContext)
             {
                 _editContext = editContext ?? throw new ArgumentNullException(nameof(editContext));
                 _messageStore = new ValidationMessageStore(_editContext);

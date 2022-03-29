@@ -23,7 +23,7 @@ namespace BlazorComponent
         public object Model { get; set; }
 
         [Parameter]
-        public bool EnableDataAnnotationsValidation { get; set; }
+        public bool EnableValidation { get; set; }
 
         [Parameter]
         public bool Disabled { get; set; }
@@ -60,9 +60,9 @@ namespace BlazorComponent
                 EditContext = new EditContext(Model);
                 EditContext.OnValidationStateChanged += OnValidationStateChanged;
 
-                if (EnableDataAnnotationsValidation)
+                if (EnableValidation)
                 {
-                    EditContext.EnableDataAnnotationsValidation();
+                    EditContext.EnableValidation();
                 }
 
                 _oldModel = Model;
