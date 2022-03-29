@@ -6,7 +6,7 @@ using Microsoft.JSInterop;
 
 namespace BlazorComponent
 {
-    public abstract class BComponentBase : ComponentBase, IDisposable,IHandleEvent
+    public abstract class BComponentBase : ComponentBase, IDisposable, IHandleEvent
     {
         private readonly Queue<Func<Task>> _nextTickQuene = new();
 
@@ -17,11 +17,11 @@ namespace BlazorComponent
         public virtual IJSRuntime Js { get; set; }
 
         protected bool IsDisposed { get; private set; }
-       
+
         protected bool IsNotRender { get; set; }
-        
+
         [CascadingParameter]
-        public IErrorLogger? ErrorLogger { get; set; }
+        public IErrorHandler? ErrorHandler { get; set; }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -87,10 +87,10 @@ namespace BlazorComponent
                     return;
                 }
 
-                if (ErrorLogger != null)
+                if (ErrorHandler != null)
                 {
                     IsNotRender = true;
-                    await ErrorLogger.HandlerExceptionAsync(ex);
+                    await ErrorHandler.HandlerExceptionAsync(ex);
                 }
                 else
                 {
@@ -130,7 +130,7 @@ namespace BlazorComponent
             return shouldAwaitTask ?
                 CallStateHasChangedOnAsyncCompletion(task) :
                 Task.CompletedTask;
-        }       
+        }
 
         protected virtual void Dispose(bool disposing)
         {

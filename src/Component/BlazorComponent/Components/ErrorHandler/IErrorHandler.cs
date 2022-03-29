@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public interface IErrorLogger
+    public interface IErrorHandler
     {
         /// <summary>
         /// 自定义 Error 处理方法
