@@ -1,4 +1,4 @@
-<img src="https://github.com/BlazorComponent/BlazorComponent/raw/develop/docs/logo-v.png" alt="logo" style="zoom:50%;" />
+<img src="docs/logo-v.png" alt="logo" style="zoom:50%;" />
 
 > 早期借鉴于 [ant-design-blazor](https://github.com/ant-design-blazor/ant-design-blazor) 的组件库部分核心功能。
 
