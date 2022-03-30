@@ -1,0 +1,14 @@
+﻿@namespace BlazorComponent
+@typeparam TValue
+@typeparam TInput
+@inherits ComponentPartBase<TInput>
+
+@if (Type == "number" && Props.ShowControl)
+{
+    var upButtonchildContent = RenderPart(typeof(BInputIcon<,>), "append-icon-number-up", "mdi-chevron-up", HandleOnNumberUpClickAsync, arg0Name: "Type", arg1Name: "Icon", arg2Name: "OnClick");
+    var downButtonChildContent = RenderPart(typeof(BInputIcon<,>), "append-icon-number-down", "mdi-chevron-down", HandleOnNumberDownClickAsync, arg0Name: "Type", arg1Name: "Icon", arg2Name: "OnClick");
+    <div class="@CssProvider.GetClass("number-wrap")">
+        @RenderPart(typeof(BInputSlot<,>),"append","inner",downButtonChildContent,arg0Name:"Type","Location","ChildContent")
+        @RenderPart(typeof(BInputSlot<,>),"append","inner",upButtonchildContent,arg0Name:"Type","Location","ChildContent")
+    </div>
+}
