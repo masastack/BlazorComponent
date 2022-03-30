@@ -1,9 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
@@ -18,7 +13,7 @@ namespace BlazorComponent
         [Parameter]
         public bool IsOtherMonth { get; set; }
 
-        public Func<DateOnly,Dictionary<string, object>> GetButtonAttrs => Component.GetButtonAttrs;
+        public Func<DateOnly, Dictionary<string, object>> GetButtonAttrs => Component.GetButtonAttrs;
 
         public Func<DateOnly, string> Formatter => Component.Formatter;
     }

@@ -5,7 +5,7 @@ public class ProviderItem
     public Type ComponentType { get; set; }
 
     public PopupProvider Provider { get; set; }
-    
+
     public TaskCompletionSource<object> TaskCompletionSource { get; set; }
 
     public object Service { get; set; }

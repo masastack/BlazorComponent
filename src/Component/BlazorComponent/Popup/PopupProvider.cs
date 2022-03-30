@@ -6,7 +6,7 @@ public class PopupProvider : IPopupProvider
     private readonly object _obj = new();
 
     public event EventHandler StateChanged;
-    
+
     public ProviderItem Add(Type componentType, Dictionary<string, object> attributes, object service, string serviceName)
     {
         var item = new ProviderItem()

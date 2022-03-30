@@ -1,6 +1,6 @@
 ﻿namespace BlazorComponent
 {
-    public partial class BBadgeWrapper<TBadge> where TBadge: IBadge
+    public partial class BBadgeWrapper<TBadge> where TBadge : IBadge
     {
 
     }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BTimePickerPickerBody<TTimePicker> where TTimePicker : ITimePicker
     {
@@ -12,6 +6,6 @@ namespace BlazorComponent
 
         public bool AmPmInTitle => Component.AmPmInTitle;
 
-        public bool IsAmPm=>Component.IsAmPm;
+        public bool IsAmPm => Component.IsAmPm;
     }
 }

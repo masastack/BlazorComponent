@@ -25,7 +25,7 @@ public interface IRoutable
 
     public int Tabindex => Attributes.TryGetValue("tabindex", out var tabindex) ? Convert.ToInt32(tabindex) : 0;
 
-    public(string tag, Dictionary<string, object>) GenerateRouteLink()
+    public (string tag, Dictionary<string, object>) GenerateRouteLink()
     {
         string tag;
         Dictionary<string, object> attrs = new(Attributes);

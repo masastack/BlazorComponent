@@ -67,7 +67,7 @@ namespace BlazorComponent
         public bool CascadingIsDark { get; set; }
 
         private StringNumber _prevValue;
-        
+
         private List<ITabItem> TabItems { get; set; }
 
         private object TabsBarRef { get; set; }
@@ -147,7 +147,7 @@ namespace BlazorComponent
 
                 Slider = (height, left, right, top, width);
             }
-            
+
             StateHasChanged();
         }
     }

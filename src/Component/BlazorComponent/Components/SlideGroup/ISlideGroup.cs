@@ -15,11 +15,11 @@ namespace BlazorComponent
         bool Multiple { get; }
 
         string NextIcon { get; }
-        
+
         RenderFragment NextContent { get; set; }
 
         string PrevIcon { get; }
-        
+
         RenderFragment PrevContent { get; set; }
 
         internal Task OnAffixClick(string direction);

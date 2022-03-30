@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
@@ -12,9 +7,9 @@ namespace BlazorComponent
     {
         public bool AmPmReadonly => Component.AmPmReadonly;
 
-        public TimePeriod Period=>Component.Period;
+        public TimePeriod Period => Component.Period;
 
-        public EventCallback<MouseEventArgs> OnAmClick=>CreateEventCallback<MouseEventArgs>(Component.HandleOnAmClickAsync);
+        public EventCallback<MouseEventArgs> OnAmClick => CreateEventCallback<MouseEventArgs>(Component.HandleOnAmClickAsync);
 
         public EventCallback<MouseEventArgs> OnPmClick => CreateEventCallback<MouseEventArgs>(Component.HandleOnPmClickAsync);
     }

@@ -4,31 +4,31 @@ namespace BlazorComponent
 {
     public partial class BResponsive : BDomComponentBase, IResponsive
     {
-        [Parameter] 
+        [Parameter]
         public StringNumber AspectRatio { get; set; }
 
-        [Parameter] 
+        [Parameter]
         public string ContentClass { get; set; }
 
-        [Parameter] 
+        [Parameter]
         public StringNumber Height { get; set; }
 
-        [Parameter] 
+        [Parameter]
         public StringNumber MaxHeight { get; set; }
 
-        [Parameter] 
+        [Parameter]
         public StringNumber MinHeight { get; set; }
 
-        [Parameter] 
+        [Parameter]
         public StringNumber Width { get; set; }
 
-        [Parameter] 
+        [Parameter]
         public StringNumber MaxWidth { get; set; }
 
-        [Parameter] 
+        [Parameter]
         public StringNumber MinWidth { get; set; }
-        
-        [Parameter] 
+
+        [Parameter]
         public RenderFragment ChildContent { get; set; }
 
         [Parameter]
