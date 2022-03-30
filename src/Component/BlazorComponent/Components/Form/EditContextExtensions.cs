@@ -25,13 +25,15 @@ namespace BlazorComponent
 
         private sealed class ValidationEventSubscriptions : IDisposable
         {
-            private static readonly ConcurrentDictionary<Type, Action<object, ValidationMessageStore, FieldIdentifier>> _map;
-            private static readonly List<Type> _types;
+            private static readonly ConcurrentDictionary<Type, Func<object, Dictionary<string, object>>> _modelMap;
+            private static readonly ConcurrentDictionary<Type, Func<object, FluentValidationResult>> _validationResultMap;
+            private static readonly Dictionary<Type, Type> _fluentValidationTypeMap;
 
             static ValidationEventSubscriptions()
             {
-                _map = new();
-                _types = new();
+                _modelMap = new();
+                _validationResultMap = new();
+                _fluentValidationTypeMap = new();
                 try
                 {
                     var assembly = Assembly.GetEntryAssembly();
@@ -39,7 +41,11 @@ namespace BlazorComponent
                     referenceAssemblys.Add(assembly);
                     foreach (var referenceAssembly in referenceAssemblys)
                     {
-                        _types.AddRange(referenceAssembly.GetTypes().Where(t => t.BaseType?.IsGenericType == true && t.BaseType == typeof(AbstractValidator<>).MakeGenericType(t.BaseType.GenericTypeArguments[0])).ToArray());
+                        var types = referenceAssembly.GetTypes().Where(t => t.BaseType?.IsGenericType == true && t.BaseType == typeof(AbstractValidator<>).MakeGenericType(t.BaseType.GenericTypeArguments[0])).ToArray();
+                        foreach (var type in types)
+                        {
+                            _fluentValidationTypeMap.Add(type.BaseType.GenericTypeArguments[0], type);
+                        }
                     }
                 }
                 catch (Exception e)
@@ -71,21 +77,15 @@ namespace BlazorComponent
 
             private void Validate(FieldIdentifier field)
             {
-                var type = _editContext.Model.GetType();
-                if (_map.TryGetValue(type, out var validateAction) is false)
+                if (_fluentValidationTypeMap.ContainsKey(_editContext.Model.GetType()))
                 {
-                    var fluentValidatorType = _types.Where(t => t.BaseType == typeof(AbstractValidator<>).MakeGenericType(type)).FirstOrDefault();
-                    if (fluentValidatorType is not null)
-                    {
-                        _map[type] = BuildFluentValidate(type, fluentValidatorType);
-                    }
-                    else
-                    {
-                        _map[type] = DataAnnotationsValidate;
-                    }
-                    validateAction = _map[type];
+                    FluentValidate(_editContext.Model, _messageStore, field);
                 }
-                validateAction(_editContext.Model, _messageStore, field);
+                else
+                {
+                    DataAnnotationsValidate(_editContext.Model, _messageStore, field);
+                }
+
                 _editContext.NotifyValidationStateChanged();
             }
 
@@ -143,36 +143,103 @@ namespace BlazorComponent
                 }
             }
 
-            private Action<object, ValidationMessageStore, FieldIdentifier> BuildFluentValidate(Type modelType, Type validatorType)
+            private void FluentValidate(object model, ValidationMessageStore messageStore, FieldIdentifier field)
             {
-                var model = Expr.BlockParam(typeof(object)).Convert(modelType);
-                Var messageStore = Expr.Param<ValidationMessageStore>();
-                var field = Expr.BlockParam<FieldIdentifier>();
-                var validator = Expr.New(validatorType);
-                var validationResult = validator.Method("Validate", model);
-                Expr.IfThenElse(field[nameof(FieldIdentifier.FieldName)] == "", () =>
+                var validationResult = GetValidationResult(model);
+                if (field.FieldName == "")
                 {
-                    messageStore.BlockMethod(nameof(ValidationMessageStore.Clear));
-                    Expr.Foreach(validationResult[nameof(FluentValidationResult.Errors)], (item, @continue, @return) =>
+                    messageStore.Clear();
+                    var propertyMap = GetPropertyMap(model);
+                    foreach (var error in validationResult.Errors)
                     {
-                        var fieldIdentifier = Expr.New<FieldIdentifier>(model, item[nameof(ValidationFailure.PropertyName)]);
-                        messageStore.BlockMethod(nameof(ValidationMessageStore.Add), fieldIdentifier, item[nameof(ValidationFailure.ErrorMessage)]);
-                    });
-                }, () =>
-                {
-                    messageStore.BlockMethod(nameof(ValidationMessageStore.Clear), field);
-                    Expr.Foreach(validationResult[nameof(FluentValidationResult.Errors)], (item, @continue, @return) =>
-                    {
-                        var index = item[nameof(ValidationFailure.PropertyName)].Method(nameof(string.IndexOf), '.');
-                        Expr.IfThen(item[nameof(ValidationFailure.PropertyName)].Method(nameof(string.Substring), index + 1) == field[nameof(FieldIdentifier.FieldName)], () =>
+                        if (error.PropertyName.Contains("."))
                         {
-                            messageStore.BlockMethod(nameof(ValidationMessageStore.Add), field, item[nameof(ValidationFailure.ErrorMessage)]);
-                            @return();
-                        });
-                    });
-                });
-                var validateAction = messageStore.BuildDefaultDelegate<Action<object, ValidationMessageStore, FieldIdentifier>>();
-                return validateAction;
+                            var propertyName = error.PropertyName.Substring(0, error.PropertyName.IndexOf('.'));
+                            if (propertyMap.ContainsKey(propertyName))
+                            {
+                                var modelItem = propertyMap[propertyName];
+                                var modelItemPropertyName = error.FormattedMessagePlaceholderValues["PropertyName"].ToString();
+                                messageStore.Add(new FieldIdentifier(modelItem, modelItemPropertyName), error.ErrorMessage);
+                            }
+                        }
+                        else
+                        {
+                            messageStore.Add(new FieldIdentifier(model, error.PropertyName), error.ErrorMessage);
+                        }
+                    }
+                }
+                else
+                {
+                    messageStore.Clear(field);
+                    if (field.Model == model)
+                    {
+                        var error = validationResult.Errors.FirstOrDefault(e => e.PropertyName == field.FieldName);
+                        if (error is not null)
+                        {
+                            messageStore.Add(field, error.ErrorMessage);
+                        }
+                    }
+                    else
+                    {
+                        var propertyMap = GetPropertyMap(model);
+                        var key = propertyMap.FirstOrDefault(pm => pm.Value == field.Model).Key;
+                        var errorMessage = validationResult.Errors.FirstOrDefault(e => e.PropertyName==($"{key}.{field.FieldName}"))?.ErrorMessage;
+                        if(errorMessage is not null)
+                        {
+                            messageStore.Add(field, errorMessage);
+                        }                       
+                    }
+                }
+            }
+
+            private Dictionary<string, object> GetPropertyMap(object model)
+            {
+                var type = model.GetType();
+                if (_modelMap.TryGetValue(type, out var func) is false)
+                {
+                    var modelParamter = Expr.BlockParam<object>().Convert(type);
+                    Var map = Expr.New<Dictionary<string, object>>();
+                    var properties = type.GetProperties();
+                    foreach (var property in properties)
+                    {
+                        if (property.PropertyType.IsValueType || property.PropertyType == typeof(string))
+                            continue;
+                        else
+                        {
+                            if (property.PropertyType.GetInterfaces().Any(gt => gt == typeof(System.Collections.IEnumerable)))
+                            {
+                                Var index = -1;
+                                Expr.Foreach(modelParamter[property.Name], (item, @continue, @return) =>
+                                {
+                                    index++;
+                                    map[property.Name + "[" + index + "]"] = item.Convert<object>();
+                                });
+                            }
+                            else
+                            {
+                                map[$"[{property.Name}]"] = modelParamter[property.Name].Convert<object>();
+                            }
+                        }
+                    }
+                    func = map.BuildDelegate<Func<object, Dictionary<string, object>>>();
+                    _modelMap[type] = func;
+                }
+                return func(model);
+            }
+
+            private FluentValidationResult GetValidationResult(object model)
+            {
+                var type = model.GetType();
+                if (_validationResultMap.TryGetValue(type, out var func) is false)
+                {
+                    var validatorType = _fluentValidationTypeMap[type];
+                    var modelParamter = Expr.BlockParam(typeof(object)).Convert(type);
+                    var validator = Expr.New(validatorType);
+                    Var validationResult = validator.Method("Validate", modelParamter);
+                    func = validationResult.BuildDefaultDelegate<Func<object, FluentValidationResult>>();
+                    _validationResultMap[type] = func;
+                }
+                return func(model);
             }
 
             public void Dispose()
@@ -182,6 +249,21 @@ namespace BlazorComponent
                 _editContext.OnValidationRequested -= OnValidationRequested;
                 _editContext.NotifyValidationStateChanged();
             }
+        }
+
+        private class IndexMatch
+        {
+            public bool IsMatch { get; set; }
+
+            public int Index { get; set; } = -1;
+
+            public string PropertyName { get; set; }
+        }
+
+        enum ValidationType
+        {
+            DataAnnotations,
+            FluentValidation
         }
     }
 }
