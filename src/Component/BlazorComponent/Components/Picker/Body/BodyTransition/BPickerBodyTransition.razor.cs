@@ -1,9 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
@@ -11,7 +6,7 @@ namespace BlazorComponent
     {
         public string Transition => Component.Transition;
 
-        public bool NoTitle=>Component.NoTitle;
+        public bool NoTitle => Component.NoTitle;
 
         public RenderFragment ComponentChildContent => Component.ChildContent;
     }

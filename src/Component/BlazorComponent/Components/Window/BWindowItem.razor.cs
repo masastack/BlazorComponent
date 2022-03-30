@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using System.Collections.Generic;
-using System.Reflection.Metadata;
-using System.Threading.Tasks;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BWindowItem : BGroupItem<ItemGroupBase>
     {

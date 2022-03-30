@@ -1,11 +1,6 @@
 ﻿using Microsoft.JSInterop;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
@@ -37,7 +32,7 @@ namespace BlazorComponent
         public virtual void AddEventListener<T>(object dom, string eventName, Action<T> callback, bool preventDefault = false)
         {
             string key = FormatKey(dom, eventName);
-            
+
             if (!_domEventListeners.ContainsKey(key) && _domEventListeners.TryAdd(key, new List<DomEventSub>()))
             {
                 _jsRuntime.InvokeAsync<string>(JsInteropConstants.AddDomEventListener, dom, eventName, preventDefault, DotNetObjectReference.Create(
@@ -78,7 +73,7 @@ namespace BlazorComponent
         public void RemoveEventListener<T>(object dom, string eventName, Action<T> callback)
         {
             string key = FormatKey(dom, eventName);
-            
+
             if (_domEventListeners.ContainsKey(key))
             {
                 var subscription = _domEventListeners[key].SingleOrDefault(s => s.Delegate == (Delegate)callback);

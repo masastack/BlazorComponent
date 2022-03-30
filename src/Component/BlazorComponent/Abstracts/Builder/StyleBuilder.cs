@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public class StyleBuilder : BuilderBase
     {

@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using System;
-using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
@@ -18,7 +16,7 @@ namespace BlazorComponent
 
         [Parameter]
         public bool Readonly { get; set; }
-        
+
         [Parameter]
         public RenderFragment LabelContent { get; set; }
 
@@ -51,7 +49,7 @@ namespace BlazorComponent
 
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
-        
+
         [CascadingParameter(Name = "Input_IsDisabled")]
         protected bool InputIsDisabled { get; set; }
 

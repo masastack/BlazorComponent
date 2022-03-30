@@ -1,8 +1,4 @@
-﻿using System;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using BlazorComponent.Web;
+﻿using BlazorComponent.Web;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
@@ -84,7 +80,7 @@ namespace BlazorComponent
         public override void Register(IGroupable item)
         {
             base.Register(item);
-            
+
             StateHasChanged();
         }
 

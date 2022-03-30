@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using BlazorComponent.Abstracts;
+using Microsoft.AspNetCore.Components;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using BlazorComponent.Abstracts;
-using BlazorComponent.Components;
-using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
@@ -19,7 +14,7 @@ namespace BlazorComponent
             Watcher = new PropertyWatcher(GetType());
             OnWatcherInitialized();
         }
-        
+
         [Inject]
         public IComponentIdGenerator ComponentIdGenerator { get; set; }
 
@@ -231,7 +226,7 @@ namespace BlazorComponent
             _preventRender = false;
             return false;
         }
-        
+
         #endregion
     }
 }

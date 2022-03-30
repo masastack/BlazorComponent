@@ -15,7 +15,7 @@ namespace BlazorComponent
         StringNumber Height { get; }
 
         RenderFragment LoaderContent { get; }
-        
+
         bool Loading { get; }
 
         StringNumber MaxHeight { get; }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface ICascader<TItem, TValue> : ISelect<TItem, TValue, TValue>
     {

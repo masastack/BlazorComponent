@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
@@ -62,7 +59,7 @@ namespace BlazorComponent
 
             // TODO: check exists
             Items.Add(item);
-            
+
             // if no value provided and mandatory
             // assign first registered item
             if (Mandatory && Value == null)

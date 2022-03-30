@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations;
@@ -25,14 +24,14 @@ namespace BlazorComponent
 
         private sealed class ValidationEventSubscriptions : IDisposable
         {
-            private static readonly ConcurrentDictionary<Type, Func<object, Dictionary<string, object>>> _modelMap;
             private static readonly ConcurrentDictionary<Type, Func<object, FluentValidationResult>> _validationResultMap;
+            private static readonly ConcurrentDictionary<Type, Func<object, Dictionary<string, object>>> _modelPropertiesMap;
             private static readonly Dictionary<Type, Type> _fluentValidationTypeMap;
 
             static ValidationEventSubscriptions()
             {
-                _modelMap = new();
                 _validationResultMap = new();
+                _modelPropertiesMap = new();
                 _fluentValidationTypeMap = new();
                 try
                 {
@@ -183,19 +182,34 @@ namespace BlazorComponent
                     {
                         var propertyMap = GetPropertyMap(model);
                         var key = propertyMap.FirstOrDefault(pm => pm.Value == field.Model).Key;
-                        var errorMessage = validationResult.Errors.FirstOrDefault(e => e.PropertyName==($"{key}.{field.FieldName}"))?.ErrorMessage;
-                        if(errorMessage is not null)
+                        var errorMessage = validationResult.Errors.FirstOrDefault(e => e.PropertyName == ($"{key}.{field.FieldName}"))?.ErrorMessage;
+                        if (errorMessage is not null)
                         {
                             messageStore.Add(field, errorMessage);
-                        }                       
+                        }
                     }
                 }
+            }
+
+            private FluentValidationResult GetValidationResult(object model)
+            {
+                var type = model.GetType();
+                if (_validationResultMap.TryGetValue(type, out var func) is false)
+                {
+                    var validatorType = _fluentValidationTypeMap[type];
+                    var modelParamter = Expr.BlockParam(typeof(object)).Convert(type);
+                    var validator = Expr.New(validatorType);
+                    Var validationResult = validator.Method("Validate", modelParamter);
+                    func = validationResult.BuildDefaultDelegate<Func<object, FluentValidationResult>>();
+                    _validationResultMap[type] = func;
+                }
+                return func(model);
             }
 
             private Dictionary<string, object> GetPropertyMap(object model)
             {
                 var type = model.GetType();
-                if (_modelMap.TryGetValue(type, out var func) is false)
+                if (_modelPropertiesMap.TryGetValue(type, out var func) is false)
                 {
                     var modelParamter = Expr.BlockParam<object>().Convert(type);
                     Var map = Expr.New<Dictionary<string, object>>();
@@ -222,22 +236,7 @@ namespace BlazorComponent
                         }
                     }
                     func = map.BuildDelegate<Func<object, Dictionary<string, object>>>();
-                    _modelMap[type] = func;
-                }
-                return func(model);
-            }
-
-            private FluentValidationResult GetValidationResult(object model)
-            {
-                var type = model.GetType();
-                if (_validationResultMap.TryGetValue(type, out var func) is false)
-                {
-                    var validatorType = _fluentValidationTypeMap[type];
-                    var modelParamter = Expr.BlockParam(typeof(object)).Convert(type);
-                    var validator = Expr.New(validatorType);
-                    Var validationResult = validator.Method("Validate", modelParamter);
-                    func = validationResult.BuildDefaultDelegate<Func<object, FluentValidationResult>>();
-                    _validationResultMap[type] = func;
+                    _modelPropertiesMap[type] = func;
                 }
                 return func(model);
             }
@@ -249,21 +248,6 @@ namespace BlazorComponent
                 _editContext.OnValidationRequested -= OnValidationRequested;
                 _editContext.NotifyValidationStateChanged();
             }
-        }
-
-        private class IndexMatch
-        {
-            public bool IsMatch { get; set; }
-
-            public int Index { get; set; } = -1;
-
-            public string PropertyName { get; set; }
-        }
-
-        enum ValidationType
-        {
-            DataAnnotations,
-            FluentValidation
         }
     }
 }

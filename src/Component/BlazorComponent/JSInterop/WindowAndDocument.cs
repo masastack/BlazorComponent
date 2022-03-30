@@ -6,7 +6,7 @@ public class WindowAndDocument
     public double InnerWidth { get; set; }
     public double PageXOffset { get; set; }
     public double PageYOffset { get; set; }
-    
+
     public double ClientHeight { get; set; }
     public double ClientWidth { get; set; }
     public double ScrollLeft { get; set; }

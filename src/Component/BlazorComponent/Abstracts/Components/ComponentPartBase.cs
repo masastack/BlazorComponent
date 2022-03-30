@@ -1,9 +1,7 @@
 ﻿using BlazorComponent.Abstracts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
-using System;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 namespace BlazorComponent
 {

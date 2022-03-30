@@ -4,7 +4,7 @@ namespace BlazorComponent
 {
     public partial class BCardTitle : BDomComponentBase
     {
-        [Parameter] 
+        [Parameter]
         public RenderFragment ChildContent { get; set; }
     }
 }
