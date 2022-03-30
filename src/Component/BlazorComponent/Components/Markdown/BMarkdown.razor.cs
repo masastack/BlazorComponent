@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Components;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,9 @@ namespace BlazorComponent
 {
     public partial class BMarkdown : BDomComponentBase, IMarkdown
     {
-        
+        [Parameter]
+        public virtual string Value { get; set; }
+        [Parameter]
+        public virtual string Html { get; set; }
     }
 }
