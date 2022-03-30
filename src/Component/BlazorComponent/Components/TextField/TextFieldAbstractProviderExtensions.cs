@@ -15,6 +15,7 @@ namespace BlazorComponent
                 .Apply(typeof(BTextFieldAffix<,>), typeof(BTextFieldAffix<TValue, ITextField<TValue>>))
                 .Merge(typeof(BInputAppendSlot<,>), typeof(BTextFieldAppendSlot<TValue>))
                 .Apply(typeof(BTextFieldClearIcon<,>), typeof(BTextFieldClearIcon<TValue, ITextField<TValue>>))
+                .Apply(typeof(BTextFieldNumberIconSlot<,>), typeof(BTextFieldNumberIconSlot<TValue, ITextField<TValue>>))
                 .Apply(typeof(BTextFieldCounter<,>), typeof(BTextFieldCounter<TValue, ITextField<TValue>>))
                 .Merge(typeof(BInputDefaultSlot<,>), typeof(BTextFieldDefaultSlot<TValue, ITextField<TValue>>))
                 .Apply(typeof(BTextFieldFieldset<,>), typeof(BTextFieldFieldset<TValue, ITextField<TValue>>))
