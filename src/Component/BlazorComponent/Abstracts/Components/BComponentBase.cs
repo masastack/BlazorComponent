@@ -18,11 +18,6 @@ namespace BlazorComponent
 
         protected bool IsDisposed { get; private set; }
 
-        protected bool IsNotRender { get; set; }
-
-        [CascadingParameter]
-        public IErrorHandler? ErrorHandler { get; set; }
-
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (_nextTickQuene.Count > 0)
@@ -71,65 +66,6 @@ namespace BlazorComponent
         protected async Task JsInvokeAsync(string code, params object[] args)
         {
             await Js.InvokeVoidAsync(code, args);
-        }
-
-        private async Task CallStateHasChangedOnAsyncCompletion(Task task)
-        {
-            try
-            {
-                await task;
-            }
-            catch (Exception ex) // avoiding exception filters for AOT runtime support
-            {
-                // Ignore exceptions from task cancellations, but don't bother issuing a state change.
-                if (task.IsCanceled)
-                {
-                    return;
-                }
-
-                if (ErrorHandler != null)
-                {
-                    IsNotRender = true;
-                    await ErrorHandler.HandlerExceptionAsync(ex);
-                }
-                else
-                {
-                    // 未开启全局捕获
-                    throw;
-                }
-            }
-
-            if (!IsNotRender)
-            {
-                StateHasChanged();
-            }
-            else
-            {
-                IsNotRender = false;
-            }
-        }
-
-        Task IHandleEvent.HandleEventAsync(EventCallbackWorkItem callback, object? arg)
-        {
-            var task = callback.InvokeAsync(arg);
-            var shouldAwaitTask = task.Status != TaskStatus.RanToCompletion &&
-                task.Status != TaskStatus.Canceled;
-
-            if (!IsNotRender)
-            {
-                // After each event, we synchronously re-render (unless !ShouldRender())
-                // This just saves the developer the trouble of putting "StateHasChanged();"
-                // at the end of every event callback.
-                StateHasChanged();
-            }
-            else
-            {
-                IsNotRender = false;
-            }
-
-            return shouldAwaitTask ?
-                CallStateHasChangedOnAsyncCompletion(task) :
-                Task.CompletedTask;
         }
 
         protected virtual void Dispose(bool disposing)
