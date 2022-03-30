@@ -563,6 +563,13 @@ export function focus(selector, noScroll: boolean = false) {
     })
 }
 
+export function select(selector){
+    let dom = getDom(selector);
+    if(!(dom instanceof HTMLInputElement || dom instanceof HTMLTextAreaElement))
+        throw new Error("Unable to select an invalid element")
+    dom.select()
+}
+
 export function hasFocus(selector) {
     let dom = getDom(selector);
     return (document.activeElement === dom);
@@ -1197,7 +1204,22 @@ window.onload = function () {
     registerCustomEvent("exfocus", "focus");
     registerCustomEvent("exblur", "blur");
     registerCustomEvent("exkeydown", "keydown");
+    registerPasteWithData("pastewithdata")
     registerDirective();
+}
+
+function registerPasteWithData(customEventName){
+    if(Blazor){
+        Blazor.registerCustomEventType(customEventName, {
+            browserEventName: 'paste',
+            createEventArgs: event => {
+              return {
+                type: event.type,
+                pastedData: event.clipboardData.getData('text')
+              };
+            }
+        });
+    }
 }
 
 function registerCustomEvent(eventType, eventName) {
