@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components.Routing;
 
 namespace BlazorComponent
 {
-    public partial class BListItem : BGroupItem<ItemGroupBase>, IRoutable, ILinkable
+    public partial class BListItem : BGroupItem<ItemGroupBase>, IRoutable, ILinkable, IHandleEvent
     {
         private Linker _linker;
         private IRoutable _router;
@@ -126,6 +126,11 @@ namespace BlazorComponent
             {
                 InvokeStateHasChanged();
             }
+        }
+
+        async Task IHandleEvent.HandleEventAsync(EventCallbackWorkItem item, object? arg)
+        {
+            await item.InvokeAsync(arg);
         }
 
         protected virtual async Task HandleOnClick(MouseEventArgs args)

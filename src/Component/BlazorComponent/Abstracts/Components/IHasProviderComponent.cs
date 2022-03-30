@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public interface IHasProviderComponent : IComponent, IHandleAfterRender
+    public interface IHasProviderComponent : IComponent, IHandleEvent,IHandleAfterRender
     {
         ComponentCssProvider CssProvider { get; }
 

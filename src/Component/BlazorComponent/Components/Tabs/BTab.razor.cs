@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public partial class BTab : BGroupItem<ItemGroupBase>, IRoutable
+    public partial class BTab : BGroupItem<ItemGroupBase>, IRoutable,IHandleEvent
     {
         public BTab() : base(GroupType.SlideGroup)
         {
@@ -41,6 +41,11 @@ namespace BlazorComponent
 
             IRoutable router = new Router(this);
             (Tag, Attributes) = router.GenerateRouteLink();
+        }
+
+        async Task IHandleEvent.HandleEventAsync(EventCallbackWorkItem item, object? arg)
+        {
+            await item.InvokeAsync(arg);
         }
 
         private async Task HandleOnClick(MouseEventArgs args)

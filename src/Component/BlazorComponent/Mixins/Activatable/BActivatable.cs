@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
-    public class BActivatable : BDelayable, IActivatable
+    public class BActivatable : BDelayable, IActivatable,IHandleEvent
     {
         private string _activatorId;
 
@@ -79,6 +79,11 @@ namespace BlazorComponent
         bool IActivatable.IsActive => IsActive;
 
         RenderFragment IActivatable.ComputedActivatorContent => ComputedActivatorContent;
+
+        async Task IHandleEvent.HandleEventAsync(EventCallbackWorkItem item, object? arg)
+        {
+            await item.InvokeAsync(arg);
+        }
 
         protected override void OnWatcherInitialized()
         {

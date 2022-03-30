@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public partial class BButton : BGroupItem<ItemGroupBase>, IThemeable, IButton, IRoutable
+    public partial class BButton : BGroupItem<ItemGroupBase>, IThemeable, IButton, IRoutable, IHandleEvent
     {
         protected BButton() : base(GroupType.ButtonGroup)
         {
@@ -104,7 +104,12 @@ namespace BlazorComponent
             IRoutable router = new Router(this);
 
             (Tag, Attributes) = router.GenerateRouteLink();
-        }       
+        }
+
+        async Task IHandleEvent.HandleEventAsync(EventCallbackWorkItem item, object? arg)
+        {
+            await item.InvokeAsync(arg);
+        }
 
         protected virtual async Task HandleOnClick(MouseEventArgs args)
         {
