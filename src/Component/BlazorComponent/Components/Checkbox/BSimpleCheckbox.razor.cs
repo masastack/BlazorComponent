@@ -35,6 +35,9 @@ namespace BlazorComponent
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
 
+        [Parameter]
+        public bool Ripple { get; set; } = true;
+
         public bool IsDark
         {
             get
@@ -70,9 +73,6 @@ namespace BlazorComponent
                 return OffIcon;
             }
         }
-
-        [Parameter]
-        public bool Ripple { get; set; } = true;
 
         public virtual async Task HandleOnClickAsync(MouseEventArgs args)
         {

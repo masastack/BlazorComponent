@@ -7,15 +7,15 @@
          @onclick="HandleOnClickAsync"
          @onclick:stopPropagation>
         <div class="@CssProvider.GetClass("input")">
-            <BIcon @attributes="GetAttributes(typeof(BIcon))">
+            <BIcon @attributes="@GetAttributes(typeof(BIcon))">
                 @ComputedIcon
             </BIcon>
             @if (Ripple && !Disabled)
             {
-                <div class="@CssProvider.GetClass("ripple")" style="@CssProvider.GetStyle("ripple")"></div>
+                <div class="@CssProvider.GetClass("ripple")"
+                     style="@CssProvider.GetStyle("ripple")">
+                </div>
             }
         </div>
     </div>
 </CascadingValue>
-
-
