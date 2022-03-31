@@ -1,10 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
@@ -93,7 +88,7 @@ namespace BlazorComponent
         public bool HasChildren => Children != null && (Children.Count > 0 || LoadChildren != null);
 
         public bool Disabled => (ItemDisabled != null && ItemDisabled.Invoke(Item)) || (ParentIsDisabled && SelectionType == SelectionType.Leaf);
-        
+
         public bool IsActive => Key != null && Treeview.IsActive(Key);
 
         public bool IsIndeterminate => Treeview.IsIndeterminate(Key);
@@ -101,7 +96,7 @@ namespace BlazorComponent
         public bool IsLeaf => Children != null;
 
         public bool IsSelected => Treeview.IsSelected(Key);
-        
+
         public string Text => ItemText?.Invoke(Item);
 
         public string ComputedIcon

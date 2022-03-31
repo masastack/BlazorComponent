@@ -1,9 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
@@ -11,6 +6,6 @@ namespace BlazorComponent
     {
         public string Caption => Component.Caption;
 
-        public RenderFragment CaptionContent=>Component.CaptionContent;
+        public RenderFragment CaptionContent => Component.CaptionContent;
     }
 }

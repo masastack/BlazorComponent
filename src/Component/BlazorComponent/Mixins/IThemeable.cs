@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface IThemeable
     {

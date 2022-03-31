@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
@@ -10,7 +9,7 @@ namespace BlazorComponent
         IReadOnlyList<BreadcrumbItem> Items { get; }
 
         RenderFragment<BreadcrumbItem> ItemContent { get; }
-        
+
         RenderFragment ChildContent { get; }
     }
 }

@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using BlazorComponent.Web;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {

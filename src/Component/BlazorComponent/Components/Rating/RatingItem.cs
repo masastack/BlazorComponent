@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using System;
+﻿using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {

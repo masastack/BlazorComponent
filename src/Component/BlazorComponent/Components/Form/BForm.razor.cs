@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 
 namespace BlazorComponent
@@ -23,7 +17,7 @@ namespace BlazorComponent
         public object Model { get; set; }
 
         [Parameter]
-        public bool EnableDataAnnotationsValidation { get; set; }
+        public bool EnableValidation { get; set; }
 
         [Parameter]
         public bool Disabled { get; set; }
@@ -60,9 +54,9 @@ namespace BlazorComponent
                 EditContext = new EditContext(Model);
                 EditContext.OnValidationStateChanged += OnValidationStateChanged;
 
-                if (EnableDataAnnotationsValidation)
+                if (EnableValidation)
                 {
-                    EditContext.EnableDataAnnotationsValidation();
+                    EditContext.EnableValidation();
                 }
 
                 _oldModel = Model;

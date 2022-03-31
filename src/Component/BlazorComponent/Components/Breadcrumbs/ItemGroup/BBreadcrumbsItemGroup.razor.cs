@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
@@ -21,7 +19,7 @@ namespace BlazorComponent
         protected string Divider => Component.Divider;
 
         protected RenderFragment DividerContent => Component.DividerContent;
-        
+
         protected bool RenderDivider => Component.RenderDivider;
 
         protected bool IsLast => Items.Last() == Item;

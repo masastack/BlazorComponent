@@ -1,11 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Routing;
+using System.Text.RegularExpressions;
 
 namespace BlazorComponent
 {

@@ -2,7 +2,7 @@
 
 namespace BlazorComponent
 {
-    public interface IBreadcrumbsDivider: IHasProviderComponent
+    public interface IBreadcrumbsDivider : IHasProviderComponent
     {
         string Divider { get; }
 
