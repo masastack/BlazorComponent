@@ -1,9 +1,7 @@
 ﻿@namespace BlazorComponent
 @inherits BGroupItem<ItemGroupBase>
 
-<Transition Name="@ComputedTransition"
-            OnLeave="OnLeave"
-            OnEnterTo="OnEnterTo">
+<Transition Name="@ComputedTransition">
     <ShowTransitionElement Value="InternalIsActive" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" ReferenceCaptureAction="_ => Ref = _">
         @ChildContent
     </ShowTransitionElement>
