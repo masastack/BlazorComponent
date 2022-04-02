@@ -22,7 +22,7 @@ public class Linker : ILinkable
     {
         var baseRelativePath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
 
-        if (Exact || baseRelativePath == string.Empty)
+        if (Exact || href == "/")
         {
             href += "$";
         }
