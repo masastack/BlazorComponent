@@ -89,8 +89,6 @@
         /// remove css 
         /// </summary>
         /// <param name="name"></param>
-        /// <param name="mergeCssAction"></param>
-        /// <param name="mergeStyleAction"></param>
         /// <returns></returns>
         public ComponentCssProvider Remove(string name)
         {
@@ -103,11 +101,11 @@
         /// <summary>
         /// Get class of default element
         /// </summary>
-        /// <param name="withoutDefaultCss"></param>
+        /// <param name="addDefaultCssImplicitly"></param>
         /// <returns></returns>
-        public string GetClass(bool withoutDefaultCss = false)
+        public string GetClass(bool addDefaultCssImplicitly = true)
         {
-            return GetClass("default", withoutDefaultCss: withoutDefaultCss);
+            return GetClass("default", addDefaultCssImplicitly: addDefaultCssImplicitly);
         }
 
         /// <summary>
@@ -122,9 +120,9 @@
         /// <param name="name"></param>
         /// <param name="index"></param>
         /// <param name="data"></param>
-        /// <param name="withoutDefaultCss"></param>
+        /// <param name="addDefaultCssImplicitly"></param>
         /// <returns></returns>
-        public string GetClass(string name, int index = 0, object data = null, bool withoutDefaultCss = false)
+        public string GetClass(string name, int index = 0, object data = null, bool addDefaultCssImplicitly = true)
         {
             var action = _cssConfig.GetValueOrDefault(name);
 
@@ -136,7 +134,7 @@
 
             action?.Invoke(builder);
 
-            if (name == "default" && !withoutDefaultCss)
+            if (name == "default" && addDefaultCssImplicitly)
             {
                 builder.Add(StaticClass);
             }
