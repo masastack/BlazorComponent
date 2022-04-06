@@ -103,29 +103,28 @@
         /// <summary>
         /// Get class of default element
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="withoutDefaultCss"></param>
         /// <returns></returns>
-        public string GetClass()
+        public string GetClass(bool withoutDefaultCss = false)
         {
-            return GetClass("default");
+            return GetClass("default", withoutDefaultCss: withoutDefaultCss);
         }
 
         /// <summary>
         /// Get style of default element
         /// </summary>
-        /// <param name="name"></param>
         /// <returns></returns>
-        public string GetStyle()
-        {
-            return GetStyle("default");
-        }
+        public string GetStyle() => GetStyle("default");
 
         /// <summary>
         /// Get class of named element
         /// </summary>
         /// <param name="name"></param>
+        /// <param name="index"></param>
+        /// <param name="data"></param>
+        /// <param name="withoutDefaultCss"></param>
         /// <returns></returns>
-        public string GetClass(string name = "default", int index = 0, object data = null)
+        public string GetClass(string name, int index = 0, object data = null, bool withoutDefaultCss = false)
         {
             var action = _cssConfig.GetValueOrDefault(name);
 
@@ -134,9 +133,10 @@
                 Index = index,
                 Data = data
             };
+
             action?.Invoke(builder);
 
-            if (name == "default")
+            if (name == "default" && !withoutDefaultCss)
             {
                 builder.Add(StaticClass);
             }
@@ -148,8 +148,10 @@
         /// Get style of named element
         /// </summary>
         /// <param name="name"></param>
+        /// <param name="index"></param>
+        /// <param name="data"></param>
         /// <returns></returns>
-        public string GetStyle(string name = "default", int index = 0, object data = null)
+        public string GetStyle(string name, int index = 0, object data = null)
         {
             var action = _styleConfig.GetValueOrDefault(name);
 
@@ -158,6 +160,7 @@
                 Index = index,
                 Data = data
             };
+
             action?.Invoke(builder);
 
             if (name == "default")

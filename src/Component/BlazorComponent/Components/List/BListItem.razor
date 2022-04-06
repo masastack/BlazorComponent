@@ -2,7 +2,7 @@
 @inherits BGroupItem<ItemGroupBase>
 
 <CascadingValue Value="IsDark" Name="IsDark">
-    <Element Class="@CssProvider.GetClass()"
+    <Element Class="@CssProvider.GetClass(withoutDefaultCss: true)"
              Style="@CssProvider.GetStyle()"
              Tag="@Tag"
              ReferenceCaptureAction="_ => Ref = _"
