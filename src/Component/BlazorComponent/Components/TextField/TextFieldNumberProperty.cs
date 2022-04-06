@@ -14,6 +14,6 @@ namespace BlazorComponent
 
         public decimal Step { get; set; } = 1;
 
-        public bool HideControl { get; set; } = false;
+        public bool HideControl { get; set; }
     }
 }
