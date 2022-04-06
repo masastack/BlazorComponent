@@ -4,10 +4,10 @@
     {
         public static ComponentAbstractProvider ApplyProgressCircularDefault(this ComponentAbstractProvider abstractProvider)
         {
-           return abstractProvider
-                .Apply(typeof(BProgressCircularSvg<>), typeof(BProgressCircularSvg<IProgressCircular>))
-                .Apply(typeof(BProgressCircularInfo<>), typeof(BProgressCircularInfo<IProgressCircular>))
-                .Apply(typeof(BProgressCircularCircle<>), typeof(BProgressCircularCircle<IProgressCircular>));
+            return abstractProvider
+                 .Apply(typeof(BProgressCircularSvg<>), typeof(BProgressCircularSvg<IProgressCircular>))
+                 .Apply(typeof(BProgressCircularInfo<>), typeof(BProgressCircularInfo<IProgressCircular>))
+                 .Apply(typeof(BProgressCircularCircle<>), typeof(BProgressCircularCircle<IProgressCircular>));
         }
     }
 }

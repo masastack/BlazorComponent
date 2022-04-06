@@ -74,7 +74,7 @@ public class Scroller : IScrollable
     {
         PreviousScroll = CurrentScroll;
 
-        var dom  = await Target.GetDomInfoAsync();
+        var dom = await Target.GetDomInfoAsync();
         if (dom != null)
         {
             CurrentScroll = dom.ScrollTop;

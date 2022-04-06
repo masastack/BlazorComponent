@@ -1,9 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
@@ -15,6 +10,6 @@ namespace BlazorComponent
 
         public RenderFragment<ItemProps<TItem>> ItemContent => Component.ItemContent;
 
-        public IEnumerable<TItem> ComputedItems =>Component.ComputedItems;
+        public IEnumerable<TItem> ComputedItems => Component.ComputedItems;
     }
 }

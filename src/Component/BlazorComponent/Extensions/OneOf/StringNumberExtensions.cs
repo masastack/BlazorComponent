@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public static class StringNumberExtensions
     {
@@ -24,7 +18,7 @@ namespace BlazorComponent
 
         // TODO: ConvertToUnit更接近vuetify源码
         // TODO: 是否可以把上面的ToUnit删掉
-        
+
         public static string ConvertToUnit(this StringNumber stringNumber, string unit = "px")
         {
             if (stringNumber == null)

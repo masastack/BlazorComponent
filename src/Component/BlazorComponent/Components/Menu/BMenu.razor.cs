@@ -1,12 +1,8 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using BlazorComponent.Mixins;
 using BlazorComponent.Web;
-using Microsoft.AspNetCore.Components.Routing;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
-using BlazorComponent.Mixins;
 
 namespace BlazorComponent
 {

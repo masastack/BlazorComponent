@@ -269,7 +269,7 @@ namespace BlazorComponent
                 if (OnInput.HasDelegate)
                     await OnInput.InvokeAsync(events.Args.Value.ToString());
 
-                if (!Values.Any(p => string.IsNullOrEmpty(p)))
+                if (writeIndex + 1 >= Length)
                 {
                     if (OnFinish.HasDelegate)
                     {

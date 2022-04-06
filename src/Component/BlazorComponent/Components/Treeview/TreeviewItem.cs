@@ -4,7 +4,7 @@ public class TreeviewItem<TItem>
 {
     public TItem Item { get; set; }
 
-    public bool Leaf { get; set; } 
+    public bool Leaf { get; set; }
 
     public bool Selected { get; set; }
 

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public class ItemContext
     {

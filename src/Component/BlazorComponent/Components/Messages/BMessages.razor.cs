@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
@@ -13,7 +8,7 @@ namespace BlazorComponent
         public List<string> Value { get; set; }
 
         [Parameter]
-        public RenderFragment<string> ChildContent{ get; set; }
+        public RenderFragment<string> ChildContent { get; set; }
 
         [Parameter]
         public bool Dark { get; set; }

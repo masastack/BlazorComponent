@@ -1,5 +1,5 @@
-﻿using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
+using System.Text.RegularExpressions;
 
 namespace BlazorComponent;
 
@@ -22,7 +22,7 @@ public class Linker : ILinkable
     {
         var baseRelativePath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
 
-        if (Exact || baseRelativePath == string.Empty)
+        if (Exact || href == "/")
         {
             href += "$";
         }

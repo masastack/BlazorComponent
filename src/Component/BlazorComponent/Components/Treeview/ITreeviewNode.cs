@@ -1,11 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Web;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BlazorComponent
 {
@@ -24,7 +18,7 @@ namespace BlazorComponent
         string ComputedIcon { get; }
 
         bool HasChildren { get; }
-        
+
         bool IsLoading { get; }
 
         string LoadingIcon { get; }
@@ -42,7 +36,7 @@ namespace BlazorComponent
         Task HandleOnClick(MouseEventArgs args);
 
         TKey Key { get; }
-        
+
         bool IsLeaf { get; }
 
         bool IsActive { get; }
