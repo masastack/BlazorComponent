@@ -157,7 +157,7 @@ namespace BlazorComponent
                             if (propertyMap.ContainsKey(propertyName))
                             {
                                 var modelItem = propertyMap[propertyName];
-                                var modelItemPropertyName = error.FormattedMessagePlaceholderValues["PropertyName"].ToString();
+                                var modelItemPropertyName = error.FormattedMessagePlaceholderValues["PropertyName"].ToString().Replace(" ","");
                                 messageStore.Add(new FieldIdentifier(modelItem, modelItemPropertyName), error.ErrorMessage);
                             }
                         }
