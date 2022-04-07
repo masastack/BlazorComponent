@@ -89,8 +89,6 @@
         /// remove css 
         /// </summary>
         /// <param name="name"></param>
-        /// <param name="mergeCssAction"></param>
-        /// <param name="mergeStyleAction"></param>
         /// <returns></returns>
         public ComponentCssProvider Remove(string name)
         {
@@ -103,29 +101,28 @@
         /// <summary>
         /// Get class of default element
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="addDefaultCssImplicitly"></param>
         /// <returns></returns>
-        public string GetClass()
+        public string GetClass(bool addDefaultCssImplicitly = true)
         {
-            return GetClass("default");
+            return GetClass("default", addDefaultCssImplicitly: addDefaultCssImplicitly);
         }
 
         /// <summary>
         /// Get style of default element
         /// </summary>
-        /// <param name="name"></param>
         /// <returns></returns>
-        public string GetStyle()
-        {
-            return GetStyle("default");
-        }
+        public string GetStyle() => GetStyle("default");
 
         /// <summary>
         /// Get class of named element
         /// </summary>
         /// <param name="name"></param>
+        /// <param name="index"></param>
+        /// <param name="data"></param>
+        /// <param name="addDefaultCssImplicitly"></param>
         /// <returns></returns>
-        public string GetClass(string name = "default", int index = 0, object data = null)
+        public string GetClass(string name, int index = 0, object data = null, bool addDefaultCssImplicitly = true)
         {
             var action = _cssConfig.GetValueOrDefault(name);
 
@@ -134,9 +131,10 @@
                 Index = index,
                 Data = data
             };
+
             action?.Invoke(builder);
 
-            if (name == "default")
+            if (name == "default" && addDefaultCssImplicitly)
             {
                 builder.Add(StaticClass);
             }
@@ -148,8 +146,10 @@
         /// Get style of named element
         /// </summary>
         /// <param name="name"></param>
+        /// <param name="index"></param>
+        /// <param name="data"></param>
         /// <returns></returns>
-        public string GetStyle(string name = "default", int index = 0, object data = null)
+        public string GetStyle(string name, int index = 0, object data = null)
         {
             var action = _styleConfig.GetValueOrDefault(name);
 
@@ -158,6 +158,7 @@
                 Index = index,
                 Data = data
             };
+
             action?.Invoke(builder);
 
             if (name == "default")
