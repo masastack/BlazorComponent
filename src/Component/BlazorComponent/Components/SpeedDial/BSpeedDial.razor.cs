@@ -6,13 +6,16 @@ using Microsoft.JSInterop;
 
 namespace BlazorComponent
 {
-    public partial class BSpeedDial<TButton>: BBootable where TButton : BButton
+    public partial class BSpeedDial : BBootable
     {
         [Inject]
         public Document Document { get; set; }
 
         [Parameter]
-        public string Direction { get; set; }
+        public RenderFragment ChildContent { get; set; }
+
+        [Parameter]
+        public string Direction { get; set; } = "top";
 
         [Parameter]
         public bool Top { get; set; }
@@ -33,18 +36,12 @@ namespace BlazorComponent
         public bool Absolute { get; set; }
 
         [Parameter]
-        public string Transition { get; set; }
+        public string Transition { get; set; } = "scale-transition";
 
-        public List<TButton> Buttons { get; } = new();
+        [Parameter]
+        public string Origin { get; set; }
 
-        public Task AddButton(TButton button)
-        {
-            Buttons.Add(button);
-
-            StateHasChanged();
-
-            return Task.CompletedTask;
-        }
+        private string Tag { get; set; } = "div";
 
         protected override async Task OnActiveUpdated(bool value)
         {
@@ -65,6 +62,16 @@ namespace BlazorComponent
             await RunCloseDelayAsync();
         }
 
+        protected override async Task HandleOnClickAsync(MouseEventArgs args)
+        {
+            if (Value)
+            {
+                await RunCloseDelayAsync();
+            }
+            else
+            {
+                await RunOpenDelayAsync();
+            }
+        }
     }
 }
- 
