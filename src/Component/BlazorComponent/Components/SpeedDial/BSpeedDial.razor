@@ -7,7 +7,7 @@
     @if (Transition != null)
     {
         <Transition Name="@Transition" Origin="@Origin">
-            <ShowTransitionElement Value="Value" Tag="@Tag" class="@CssProvider.GetClass("dial-list")" style="@CssProvider.GetStyle("dial-list")" id="@Id">
+            <ShowTransitionElement Value="Value" Tag="@Tag" class="@CssProvider.GetClass("dial-list")" style="@CssProvider.GetStyle("dial-list")" id="@Id" ReferenceCaptureAction="el => ContentElement = el">
                 @ChildContent
             </ShowTransitionElement>
         </Transition>

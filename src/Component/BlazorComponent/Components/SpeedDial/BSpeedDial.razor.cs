@@ -41,6 +41,8 @@ namespace BlazorComponent
         [Parameter]
         public string Origin { get; set; }
 
+        protected ElementReference ContentElement { get; set; }
+
         private string Tag { get; set; } = "div";
 
         protected override async Task OnActiveUpdated(bool value)
@@ -49,7 +51,7 @@ namespace BlazorComponent
             {
                 await JsInvokeAsync(JsInteropConstants.AddOutsideClickEventListener,
                     DotNetObjectReference.Create(new Invoker<object>(HandleOutsideClickAsync)),
-                    new[] { Document.GetElementByReference(Ref).Selector, ActivatorSelector }, null, Ref);
+                    new[] { Document.GetElementByReference(ContentElement).Selector, ActivatorSelector }, null, ContentElement);
             }
 
             await base.OnActiveUpdated(value);
