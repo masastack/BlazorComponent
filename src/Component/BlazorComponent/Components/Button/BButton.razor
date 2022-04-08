@@ -2,9 +2,10 @@
 @inherits BGroupItem<ItemGroupBase>
 
 <CascadingValue Value="IsDark" Name="IsDark">
-    <Element Tag="@Tag" type="@TypeAttribute"
+    <ShowTransitionElement Tag="@Tag" type="@TypeAttribute"
              class="@CssProvider.GetClass()"
              style="@CssProvider.GetStyle()"
+             Value ="Show"
              id="@Id"
              ReferenceCaptureAction="reference=>Ref=reference"
              @onclick="HandleOnClick"
@@ -17,5 +18,5 @@
         }
 
         @RenderPart(typeof(BButtonContent<>))
-    </Element>
+    </ShowTransitionElement>
 </CascadingValue>

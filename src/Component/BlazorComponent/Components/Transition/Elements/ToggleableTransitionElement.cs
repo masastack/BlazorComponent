@@ -26,8 +26,15 @@ namespace BlazorComponent
         {
             get
             {
-                var transitionClass = Transition.GetClass(TransitionState);
-                return string.Join(" ", Class, transitionClass);
+                if(Transition != null)
+                {
+                    var transitionClass = Transition.GetClass(TransitionState);
+                    return string.Join(" ", Class, transitionClass);
+                }
+                else
+                {
+                    return Class;
+                }
             }
         }
 
@@ -35,8 +42,15 @@ namespace BlazorComponent
         {
             get
             {
-                var transitionStyle = Transition.GetStyle(TransitionState);
-                return string.Join(';', Style, transitionStyle);
+                if(Transition != null)
+                {
+                    var transitionStyle = Transition.GetStyle(TransitionState);
+                    return string.Join(';', Style, transitionStyle);
+                }
+                else
+                {
+                    return Style;
+                }
             }
         }
 
@@ -85,27 +99,30 @@ namespace BlazorComponent
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (firstRender)
+            if(Transition != null)
             {
-                await Transition.OnElementReadyAsync(this);
-            }
+                if (firstRender)
+                {
+                    await Transition.OnElementReadyAsync(this);
+                }
 
-            switch (TransitionState)
-            {
-                case TransitionState.Enter:
-                    await OnEnterAsync();
-                    break;
-                case TransitionState.EnterTo:
-                    await OnEnterToAsync();
-                    break;
-                case TransitionState.Leave:
-                    await OnLeaveAsync();
-                    break;
-                case TransitionState.LeaveTo:
-                    await OnLeaveToAsync();
-                    break;
-                default:
-                    break;
+                switch (TransitionState)
+                {
+                    case TransitionState.Enter:
+                        await OnEnterAsync();
+                        break;
+                    case TransitionState.EnterTo:
+                        await OnEnterToAsync();
+                        break;
+                    case TransitionState.Leave:
+                        await OnLeaveAsync();
+                        break;
+                    case TransitionState.LeaveTo:
+                        await OnLeaveToAsync();
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 

@@ -49,7 +49,7 @@ namespace BlazorComponent
             {
                 await JsInvokeAsync(JsInteropConstants.AddOutsideClickEventListener,
                     DotNetObjectReference.Create(new Invoker<object>(HandleOutsideClickAsync)),
-                    new[] { Document.GetElementByReference(Ref).Selector }, null, Ref);
+                    new[] { Document.GetElementByReference(Ref).Selector, ActivatorSelector }, null, Ref);
             }
 
             await base.OnActiveUpdated(value);
