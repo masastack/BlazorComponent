@@ -26,7 +26,7 @@ namespace BlazorComponent
         {
             get
             {
-                if(Transition != null)
+                if (Transition != null)
                 {
                     var transitionClass = Transition.GetClass(TransitionState);
                     return string.Join(" ", Class, transitionClass);
@@ -42,7 +42,7 @@ namespace BlazorComponent
         {
             get
             {
-                if(Transition != null)
+                if (Transition != null)
                 {
                     var transitionStyle = Transition.GetStyle(TransitionState);
                     return string.Join(';', Style, transitionStyle);
@@ -99,7 +99,7 @@ namespace BlazorComponent
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if(Transition != null)
+            if (Transition != null)
             {
                 if (firstRender)
                 {
