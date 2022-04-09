@@ -57,6 +57,46 @@ namespace BlazorComponent
             await base.OnActiveUpdated(value);
         }
 
+        protected Dictionary<string, object> ContentAttributes
+        {
+            get
+            {
+                var attributes = new Dictionary<string, object>(Attributes);
+
+                attributes.Add("onclick", CreateEventCallback<MouseEventArgs>(HandleOnContentClickAsync));
+
+                if (!Disabled && OpenOnHover)
+                {
+                    attributes.Add("onmouseenter", CreateEventCallback<MouseEventArgs>(HandleOnContentMouseenterAsync));
+                }
+
+                if (OpenOnHover)
+                {
+                    attributes.Add("onmouseleave", CreateEventCallback<MouseEventArgs>(HandleOnContentMouseleaveAsync));
+                }
+
+                attributes.Add("close-condition", IsActive);
+
+                return attributes;
+            }
+        }
+
+        protected async Task HandleOnContentClickAsync(MouseEventArgs _)
+        {
+            await RunCloseDelayAsync();
+        }
+
+        protected async Task HandleOnContentMouseenterAsync(MouseEventArgs args)
+        {
+            await RunOpenDelayAsync();
+        }
+
+        protected async Task HandleOnContentMouseleaveAsync(MouseEventArgs args)
+        {
+            //TODO:If target is activator
+            await RunCloseDelayAsync();
+        }
+
         private async Task HandleOutsideClickAsync(object agrs)
         {
             if (!IsActive) return;
