@@ -6,6 +6,8 @@
      @onclick="HandleOnClickAsync"
      @onmousedown="HandleOnMouseDownAsync"
      @onmouseup="HandleOnMouseUpAsync"
+     @onmousedown:preventDefault
+     @onmousedown:stopPropagation
      @attributes="InputSlotAttrs"
      @ref="InputSlotRef">
      @RenderPart(typeof(BTextFieldPrependInnerSlot<,>))
