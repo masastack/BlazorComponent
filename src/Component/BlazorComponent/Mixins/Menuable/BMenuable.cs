@@ -416,7 +416,7 @@ namespace BlazorComponent
             base.Dispose(disposing);
         }
 
-        public async ValueTask DisposeAsync()
+        public new async ValueTask DisposeAsync()
         {
             try
             {
