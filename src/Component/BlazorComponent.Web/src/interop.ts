@@ -563,9 +563,9 @@ export function focus(selector, noScroll: boolean = false) {
     })
 }
 
-export function select(selector){
+export function select(selector) {
     let dom = getDom(selector);
-    if(!(dom instanceof HTMLInputElement || dom instanceof HTMLTextAreaElement))
+    if (!(dom instanceof HTMLInputElement || dom instanceof HTMLTextAreaElement))
         throw new Error("Unable to select an invalid element")
     dom.select()
 }
@@ -1208,15 +1208,15 @@ window.onload = function () {
     registerDirective();
 }
 
-function registerPasteWithData(customEventName){
-    if(Blazor){
+function registerPasteWithData(customEventName) {
+    if (Blazor) {
         Blazor.registerCustomEventType(customEventName, {
             browserEventName: 'paste',
             createEventArgs: event => {
-              return {
-                type: event.type,
-                pastedData: event.clipboardData.getData('text')
-              };
+                return {
+                    type: event.type,
+                    pastedData: event.clipboardData.getData('text')
+                };
             }
         });
     }
@@ -1460,3 +1460,74 @@ export function invokeMultipleMethod(windowProps, documentProps, hasActivator, a
 
     return multipleResult;
 }
+
+export function registerOTPInputOnInputEvent(elementList, callback) {
+    for (let i = 0; i < elementList.length; i++) {
+        elementList[i].addEventListener('input', (e: Event) => otpInputOnInputEvent(e, i, elementList, callback));
+        elementList[i].addEventListener('focus', (e: Event) => otpInputFocusEvent(e, i, elementList));
+        elementList[i].addEventListener('keyup', (e: KeyboardEvent) => otpInputKeyupEvent(e, i, elementList, callback));
+    }
+}
+
+export function otpInputKeyupEvent(e: KeyboardEvent, otpIdx: number, elementList, callback) {
+    e.preventDefault();
+    const eventKey = e.key;
+    if (eventKey === 'ArrowLeft' || eventKey === 'Backspace') {
+        if (eventKey === 'Backspace') {
+            const obj = {
+                type: eventKey,
+                index: otpIdx,
+                value: ''
+            }
+            if (callback) {
+                callback.invokeMethodAsync('Invoke', JSON.stringify(obj));
+            }
+        }
+        otpInputFocus(otpIdx - 1, elementList);
+    }
+    else if (eventKey === 'ArrowRight') {
+        otpInputFocus(otpIdx + 1, elementList);
+    }
+}
+
+export function otpInputFocus(focusIndex: number, elementList) {
+    if (focusIndex < 0) {
+        otpInputFocus(0, elementList);
+    }
+    else if (focusIndex >= elementList.length) {
+        otpInputFocus(elementList.length - 1, elementList);
+    }
+    else {
+        if (document.activeElement !== elementList[focusIndex]) {
+            const element = getDom(elementList[focusIndex])
+            element.focus();
+        }
+    }
+}
+
+export function otpInputFocusEvent(e: Event, otpIdx: number, elementList) {
+    const element = getDom(elementList[otpIdx]);
+    if (element && document.activeElement === element) {
+        element.select();
+    }
+}
+
+export function otpInputOnInputEvent(e: Event, otpIdx: number, elementList, callback) {
+    const target = e.target as HTMLInputElement;
+    const value = target.value;
+
+    if (value && value !== '') {
+        otpInputFocus(otpIdx + 1, elementList);
+
+        if (callback) {
+            const obj = {
+                type: 'Input',
+                index: otpIdx,
+                value: value
+            }
+            callback.invokeMethodAsync('Invoke', JSON.stringify(obj));
+        }
+    }
+}
+
+

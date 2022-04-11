@@ -152,6 +152,8 @@
 
         public static string ContainsActiveElement => $"{Variables.JsInteropFuncNamePrefix}containsActiveElement";
 
+        public static string RegisterOTPInputOnInputEvent => $"{Variables.JsInteropFuncNamePrefix}registerOTPInputOnInputEvent";
+
         public static string CopyChild => $"{Variables.JsInteropFuncNamePrefix}copyChild";
 
         public static string CopyText => $"{Variables.JsInteropFuncNamePrefix}copyText";
