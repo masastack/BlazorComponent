@@ -188,7 +188,7 @@ namespace BlazorComponent
             }
         }
 
-        public async ValueTask DisposeAsync()
+        public new async ValueTask DisposeAsync()
         {
             await DeleteContent();
         }

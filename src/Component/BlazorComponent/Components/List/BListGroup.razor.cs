@@ -9,7 +9,7 @@ namespace BlazorComponent
         private const string PREPEND = "prepend";
         private const string APPEND = "append";
         private bool _value;
-        private bool _booted;
+        //private bool _booted;
 
         [Inject]
         public NavigationManager NavigationManager { get; set; }
