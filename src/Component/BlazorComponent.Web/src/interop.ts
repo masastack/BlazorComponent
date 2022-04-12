@@ -1222,6 +1222,40 @@ function registerPasteWithData(customEventName){
     }
 }
 
+export function registerTextFieldOnMouseDown(element, inputElement, callback) {
+    element.addEventListener('mousedown', (e: MouseEvent) => {
+        const target = e.target;
+        const inputDom = getDom(inputElement);
+        if(target !== inputDom) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        if(callback){
+            const mouseEventArgs = {
+                Detail: e.detail,
+                ScreenX: e.screenX,
+                ScreenY: e.screenY,
+                ClientX: e.clientX,
+                ClientY: e.clientY,
+                OffsetX: e.offsetX,
+                OffsetY: e.offsetY,
+                PageX: e.pageX,
+                PageY: e.pageY,
+                Button: e.button,
+                Buttons: e.buttons,
+                CtrlKey: e.ctrlKey,
+                ShiftKey: e.shiftKey,
+                AltKey: e.altKey,
+                MetaKey: e.metaKey,
+                Type: e.type
+            }
+
+            callback.invokeMethodAsync('Invoke', mouseEventArgs);
+        }
+    })
+}
+
 function registerCustomEvent(eventType, eventName) {
     if (Blazor) {
         Blazor.registerCustomEventType(eventType, {
