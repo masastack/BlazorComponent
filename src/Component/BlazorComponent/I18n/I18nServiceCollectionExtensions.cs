@@ -52,13 +52,13 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     AddMasaI18n(i18nPath);
                 }
-                else if(languageDirectory.StartsWith("wwwroot"))
-                {                    
-                    var wwwrootpath= Path.Combine(Path.Combine(assemblyPath, "wwwroot"));
-                    if(Directory.Exists(wwwrootpath))
+                else if (languageDirectory.StartsWith("wwwroot"))
+                {
+                    var wwwrootPath = Path.Combine(Path.Combine(assemblyPath, "wwwroot"));
+                    if (Directory.Exists(wwwrootPath))
                     {
                         var i18nDirectory = languageDirectory.Split('/').Last();
-                        i18nPath = Directory.GetDirectories(wwwrootpath, i18nDirectory, SearchOption.AllDirectories).FirstOrDefault();
+                        i18nPath = Directory.GetDirectories(wwwrootPath, i18nDirectory, SearchOption.AllDirectories).FirstOrDefault();
                         if (i18nPath is not null)
                         {
                             AddMasaI18n(i18nPath);
