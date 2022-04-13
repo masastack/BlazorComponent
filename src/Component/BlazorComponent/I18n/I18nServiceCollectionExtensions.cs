@@ -46,10 +46,25 @@ namespace Microsoft.Extensions.DependencyInjection
             }
             else
             {
-                var absolutePath = Path.Combine(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), languageDirectory));
-                if (Directory.Exists(absolutePath))
+                var assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                var i18nPath = Path.Combine(Path.Combine(assemblyPath, languageDirectory));
+                if (Directory.Exists(i18nPath))
                 {
-                    AddMasaI18n(absolutePath);
+                    AddMasaI18n(i18nPath);
+                }
+                else if(languageDirectory.StartsWith("wwwroot"))
+                {                    
+                    var wwwrootpath= Path.Combine(Path.Combine(assemblyPath, "wwwroot"));
+                    if(Directory.Exists(wwwrootpath))
+                    {
+                        var i18nDirectory = languageDirectory.Split('/').Last();
+                        i18nPath = Directory.GetDirectories(wwwrootpath, i18nDirectory, SearchOption.AllDirectories).FirstOrDefault();
+                        if (i18nPath is not null)
+                        {
+                            AddMasaI18n(i18nPath);
+                        }
+                        else throw new Exception($"Can't find path：{languageDirectory}");
+                    }
                 }
                 else throw new Exception($"Can't find path：{languageDirectory}");
             }
