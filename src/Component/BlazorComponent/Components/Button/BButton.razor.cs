@@ -76,6 +76,12 @@ namespace BlazorComponent
         [Parameter]
         public bool Light { get; set; }
 
+        [Parameter]
+        public bool? Show { get; set; }
+
+        [Parameter]
+        public string? Key { get; set; }
+
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
 

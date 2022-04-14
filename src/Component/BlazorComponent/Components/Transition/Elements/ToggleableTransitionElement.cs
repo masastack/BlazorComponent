@@ -16,18 +16,22 @@ namespace BlazorComponent
 
                 return attributes;
             }
-            set
-            {
-                base.AdditionalAttributes = value;
-            }
+            set { base.AdditionalAttributes = value; }
         }
 
         protected override string ComputedClass
         {
             get
             {
-                var transitionClass = Transition.GetClass(TransitionState);
-                return string.Join(" ", Class, transitionClass);
+                if (Transition != null)
+                {
+                    var transitionClass = Transition.GetClass(TransitionState);
+                    return string.Join(" ", Class, transitionClass);
+                }
+                else
+                {
+                    return Class;
+                }
             }
         }
 
@@ -35,8 +39,15 @@ namespace BlazorComponent
         {
             get
             {
-                var transitionStyle = Transition.GetStyle(TransitionState);
-                return string.Join(';', Style, transitionStyle);
+                if (Transition != null)
+                {
+                    var transitionStyle = Transition.GetStyle(TransitionState);
+                    return string.Join(';', Style, transitionStyle);
+                }
+                else
+                {
+                    return Style;
+                }
             }
         }
 
@@ -78,40 +89,59 @@ namespace BlazorComponent
             LazyValue = true;
         }
 
-        protected override bool ShouldRender()
-        {
-            return TransitionState == TransitionState.None || TransitionStateChanged;
-        }
-
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (firstRender)
+            await base.OnAfterRenderAsync(firstRender);
+
+            if (Transition != null)
             {
-                await Transition.OnElementReadyAsync(this);
+                if (firstRender)
+                {
+                    await Transition.OnElementReadyAsync(this);
+                }
+
+                switch (TransitionState)
+                {
+                    case TransitionState.Enter:
+                        await OnEnterAsync();
+                        break;
+                    case TransitionState.Leave:
+                        await OnLeaveAsync();
+                        break;
+                }
+            }
+        }
+
+        protected override async Task OnTransitionEnd(string referenceId, LeaveOrEnter transition)
+        {
+            if (referenceId != Reference.Id)
+            {
+                return;
             }
 
-            switch (TransitionState)
+            Console.WriteLine($"referenceId:{referenceId}, Reference.Id:{Reference.Id}, transition:{transition.ToString()}");
+
+            if (transition == LeaveOrEnter.Leave)
             {
-                case TransitionState.Enter:
-                    await OnEnterAsync();
-                    break;
-                case TransitionState.EnterTo:
-                    await OnEnterToAsync();
-                    break;
-                case TransitionState.Leave:
-                    await OnLeaveAsync();
-                    break;
-                case TransitionState.LeaveTo:
-                    await OnLeaveToAsync();
-                    break;
-                default:
-                    break;
+                await OnLeaveToAsync();
             }
+            else if (transition == LeaveOrEnter.Enter)
+            {
+                await OnEnterToAsync();
+            }
+
+            Console.WriteLine($"{DateTime.Now.Second},toggle transition ends.");
+        }
+
+        protected override Task OnTransitionCancel()
+        {
+            Console.WriteLine($"{DateTime.Now.Second},toggle transition cancel.");
+            return base.OnTransitionCancel();
         }
 
         protected virtual async Task OnEnterAsync()
         {
-            if (Transition.OnEnter.HasDelegate)
+            if (Transition is not null && Transition.OnEnter.HasDelegate)
             {
                 await Transition.OnEnter.InvokeAsync(this);
             }
@@ -126,26 +156,31 @@ namespace BlazorComponent
         private void NextState(TransitionState transitionState)
         {
             TransitionState = transitionState;
-
-            TransitionStateChanged = true;
             StateHasChanged();
-            TransitionStateChanged = false;
         }
 
         protected virtual async Task OnEnterToAsync()
         {
-            if (Transition.OnEnterTo.HasDelegate)
+            if (Transition is not null)
             {
-                await Transition.OnEnterTo.InvokeAsync(this);
+                if (Transition.OnEnterTo.HasDelegate)
+                {
+                    await Transition.OnEnterTo.InvokeAsync(this);
+                }
+
+                await Task.Delay(Transition.Duration);
             }
 
-            await Delay(Transition.Duration);
-            NextState(TransitionState.None);
+            await RequestAnimationFrameAsync(() =>
+            {
+                NextState(TransitionState.None);
+                return Task.CompletedTask;
+            });
         }
 
         protected virtual async Task OnLeaveAsync()
         {
-            if (Transition.OnLeave.HasDelegate)
+            if (Transition is not null && Transition.OnLeave.HasDelegate)
             {
                 await Transition.OnLeave.InvokeAsync(this);
             }
@@ -159,20 +194,48 @@ namespace BlazorComponent
 
         protected virtual async Task OnLeaveToAsync()
         {
-            if (Transition.OnLeaveTo.HasDelegate)
+            if (Transition is not null)
             {
-                await Transition.OnLeaveTo.InvokeAsync(this);
+                if (Transition.OnLeaveTo.HasDelegate)
+                {
+                    await Transition.OnLeaveTo.InvokeAsync(this);
+                }
+
+                await Task.Delay(Transition.Duration);
             }
 
-            await Delay(Transition.Duration);
-
             HideElement();
-            NextState(TransitionState.None);
+            await RequestAnimationFrameAsync(() =>
+            {
+                NextState(TransitionState.None);
+                return Task.CompletedTask;
+            });
         }
 
         protected void HideElement()
         {
             LazyValue = false;
+        }
+    }
+
+    public static class Test
+    {
+        public static  Func<Func<Task>, Task> Debounce(this  Func<Func<Task>, Task> func, int milliseconds = 300)
+        {
+            var last = 0;
+            return arg =>
+            {
+                var current = Interlocked.Increment(ref last);
+                return Task.Delay(milliseconds).ContinueWith(task =>
+                {
+                    if (current == last)
+                    {
+                        func(arg);
+                    }
+
+                    task.Dispose();
+                });
+            };
         }
     }
 }

@@ -12,7 +12,10 @@ namespace BlazorComponent
         public string Origin { get; set; }
 
         [Parameter]
-        public int Duration { get; set; } = 300;
+        public int Duration { get; set; } // TODO: 先实现css的动画时间
+
+        [Parameter] 
+        public TransitionMode? Mode { get; set; }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
