@@ -56,8 +56,8 @@ namespace BlazorComponent.I18n
             }
             private set
             {
-                _CurrentLanguage = value;
-                _languageMap = GetLang(value);
+                _CurrentLanguage = value ?? DefaultLanguage;
+                _languageMap = GetLang(_CurrentLanguage);
             }
         }
 
