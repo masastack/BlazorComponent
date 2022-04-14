@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.JSInterop;
 using Util.Reflection.Expressions.IntelligentGeneration.Extensions;
 
 namespace BlazorComponent
@@ -7,7 +8,6 @@ namespace BlazorComponent
     public class KeyTransitionElement<TValue> : TransitionElementBase<TValue>
     {
         private KeyTransitionElementState<TValue>[] _states;
-
 
         protected IEnumerable<KeyTransitionElementState<TValue>> ComputedStates =>
             States.Where(state => !state.IsEmpty);
@@ -44,7 +44,9 @@ namespace BlazorComponent
             {
                 return;
             }
-
+            
+            NextState(0, TransitionState.Leave);
+            
             States[0].TransitionState = TransitionState.Leave;
             States[1].TransitionState = TransitionState.Enter;
         }
@@ -166,7 +168,7 @@ namespace BlazorComponent
             });
         }
 
-        protected override async Task OnTransitionEnd(string referenceId, LeaveOrEnter transition)
+        protected override async Task OnTransitionEnd(string referenceId, LeaveEnter transition)
         {
             if (referenceId != Reference.Id)
             {
@@ -179,8 +181,6 @@ namespace BlazorComponent
             {
                 if (States[0].TransitionState == TransitionState.LeaveTo)
                 {
-                    // await InteropCall();
-
                     NextState(TransitionState.None, TransitionState.Enter);
                 }
             }
@@ -205,7 +205,6 @@ namespace BlazorComponent
             return base.OnTransitionCancel();
         }
 
-
         private void NextState(TransitionState oldTransitionState, TransitionState newTransitionState)
         {
             States[0].TransitionState = oldTransitionState;
@@ -214,8 +213,19 @@ namespace BlazorComponent
             StateHasChanged();
         }
 
-        private void NextState(int index, TransitionState state)
+        private async Task NextState(int index, TransitionState state)
         {
+            if (index == 0 && state == TransitionState.Leave)
+            {
+                // TODO: await?
+
+                // if (Transition!.LeaveAbsolute)
+                // {
+                //     Transition!.Element = await Js.InvokeAsync<BlazorComponent.Web.Element>(JsInteropConstants.GetDomInfo, Reference);
+                //     Transition!.Leave();
+                // }
+            }
+            
             States[index].TransitionState = state;
             StateHasChanged();
         }
@@ -244,6 +254,8 @@ namespace BlazorComponent
 
             foreach (var state in filteredStates)
             {
+                Console.WriteLine(state.Key);
+
                 builder.OpenElement(sequence++, Tag);
 
                 builder.AddMultipleAttributes(sequence++, AdditionalAttributes);
@@ -255,7 +267,7 @@ namespace BlazorComponent
                     ReferenceCaptureAction?.Invoke(reference);
                     Reference = reference;
                 });
-                builder.SetKey(state.Key);
+                // builder.SetKey(state.Key);
 
                 builder.CloseComponent();
             }

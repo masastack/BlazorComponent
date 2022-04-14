@@ -1,6 +1,6 @@
 ﻿namespace BlazorComponent;
 
-public enum LeaveOrEnter
+public enum LeaveEnter
 {
     Leave,
     Enter

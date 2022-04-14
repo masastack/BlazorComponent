@@ -65,7 +65,7 @@ namespace BlazorComponent
             }
         }
 
-        protected virtual Task OnTransitionEnd(string referenceId, LeaveOrEnter transition) => Task.CompletedTask;
+        protected virtual Task OnTransitionEnd(string referenceId, LeaveEnter transition) => Task.CompletedTask;
 
         protected virtual Task OnTransitionCancel() => Task.CompletedTask;
 

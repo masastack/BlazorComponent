@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace BlazorComponent
 {
@@ -112,7 +113,7 @@ namespace BlazorComponent
             }
         }
 
-        protected override async Task OnTransitionEnd(string referenceId, LeaveOrEnter transition)
+        protected override async Task OnTransitionEnd(string referenceId, LeaveEnter transition)
         {
             if (referenceId != Reference.Id)
             {
@@ -121,11 +122,11 @@ namespace BlazorComponent
 
             Console.WriteLine($"referenceId:{referenceId}, Reference.Id:{Reference.Id}, transition:{transition.ToString()}");
 
-            if (transition == LeaveOrEnter.Leave)
+            if (transition == LeaveEnter.Leave)
             {
                 await OnLeaveToAsync();
             }
-            else if (transition == LeaveOrEnter.Enter)
+            else if (transition == LeaveEnter.Enter)
             {
                 await OnEnterToAsync();
             }
@@ -215,27 +216,6 @@ namespace BlazorComponent
         protected void HideElement()
         {
             LazyValue = false;
-        }
-    }
-
-    public static class Test
-    {
-        public static  Func<Func<Task>, Task> Debounce(this  Func<Func<Task>, Task> func, int milliseconds = 300)
-        {
-            var last = 0;
-            return arg =>
-            {
-                var current = Interlocked.Increment(ref last);
-                return Task.Delay(milliseconds).ContinueWith(task =>
-                {
-                    if (current == last)
-                    {
-                        func(arg);
-                    }
-
-                    task.Dispose();
-                });
-            };
         }
     }
 }

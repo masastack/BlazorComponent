@@ -8,6 +8,13 @@
 }
 else
 {
-    <Element Tag="@Tag" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" ReferenceCaptureAction="_ => Ref = _" @attributes="Attrs">@NewChildren</Element>
+    <IfTransitionElement
+        Value="@ComputedIfElse"
+        Tag="@Tag"
+        class="@CssProvider.GetClass()"
+        style="@CssProvider.GetStyle()"
+        ReferenceCaptureAction="_ => Ref = _"
+        @attributes="@Attrs">
+        @NewChildren
+    </IfTransitionElement>
 }
-

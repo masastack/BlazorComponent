@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.JSInterop;
 
 namespace BlazorComponent
 {
@@ -14,7 +15,10 @@ namespace BlazorComponent
         [Parameter]
         public int Duration { get; set; } // TODO: 先实现css的动画时间
 
-        [Parameter] 
+        [Parameter]
+        public bool LeaveAbsolute { get; set; }
+
+        [Parameter]
         public TransitionMode? Mode { get; set; }
 
         [Parameter]
@@ -32,6 +36,9 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<Element> OnLeaveTo { get; set; }
 
+        private StyleBuilder StyleBuilder { get; set; } = new();
+        internal BlazorComponent.Web.Element? Element = null;
+
         public virtual string GetClass(TransitionState transitionState)
         {
             return transitionState switch
@@ -48,10 +55,31 @@ namespace BlazorComponent
         {
             if (Origin != null && transitionState != TransitionState.None)
             {
-                return $"transform-origin:{Origin}";
+                // return $"transform-origin:{Origin}";
+                StyleBuilder.Add($"transform-origin:{Origin}");
+            }
+
+            if (transitionState == TransitionState.Leave)
+            {
+                // TODO: leaveAbsolute 
+                if (Element is not null)
+                {
+                    Console.WriteLine(Element);
+                    
+                    StyleBuilder.Add("position:absolute");
+                    StyleBuilder.Add($"top:{Element.OffsetTop}px");
+                    StyleBuilder.Add($"left:{Element.OffsetLeft}px");
+                    StyleBuilder.Add($"width:{Element.OffsetWidth}px");
+                    StyleBuilder.Add($"height:{Element.OffsetHeight}px");
+                }
             }
 
             return null;
+        }
+
+        public void Leave()
+        {
+            StateHasChanged();
         }
 
         public virtual Task OnElementReadyAsync(ToggleableTransitionElement element)
