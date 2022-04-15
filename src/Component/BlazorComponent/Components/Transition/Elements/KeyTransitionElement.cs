@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Reflection.Metadata;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.JSInterop;
 using Util.Reflection.Expressions.IntelligentGeneration.Extensions;
@@ -10,24 +11,14 @@ namespace BlazorComponent
         private KeyTransitionElementState<TValue>[] _states;
 
         protected IEnumerable<KeyTransitionElementState<TValue>> ComputedStates =>
-            States.Where(state => !state.IsEmpty);
+            States.Where(state => !state.IsEmpty && !state.IsHook);
 
-        protected KeyTransitionElementState<TValue>[] States
-        {
-            get
+        protected KeyTransitionElementState<TValue>[] States =>
+            _states ??= new KeyTransitionElementState<TValue>[]
             {
-                if (_states == null)
-                {
-                    _states = new KeyTransitionElementState<TValue>[]
-                    {
-                        new KeyTransitionElementState<TValue>(this),
-                        new KeyTransitionElementState<TValue>(this)
-                    };
-                }
-
-                return _states;
-            }
-        }
+                new(this),
+                new(this)
+            };
 
         protected override void StartTransition()
         {
@@ -44,21 +35,14 @@ namespace BlazorComponent
             {
                 return;
             }
-            
-            NextState(0, TransitionState.Leave);
-            
-            States[0].TransitionState = TransitionState.Leave;
-            States[1].TransitionState = TransitionState.Enter;
+
+            States[0].TransitionState = TransitionState.BeforeLeave;
+            States[1].TransitionState = TransitionState.BeforeEnter;
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
-
-            if (Transition.Name.StartsWith("picker-"))
-            {
-                Console.WriteLine($"{_referenceChanged} {Reference.Id}");
-            }
 
             if (_referenceChanged)
             {
@@ -69,7 +53,12 @@ namespace BlazorComponent
 
             if (Transition.Mode == TransitionMode.OutIn)
             {
-                if (States[0].TransitionState == TransitionState.Leave)
+                if (States[0].TransitionState == TransitionState.BeforeLeave)
+                {
+                    // TODO: check
+                    await BeforeLeaveAsync();
+                }
+                else if (States[0].TransitionState == TransitionState.Leave)
                 {
                     await OnLeaveAsync();
                 }
@@ -82,15 +71,106 @@ namespace BlazorComponent
             {
                 if (States[0].TransitionState != TransitionState.None)
                 {
-                    if (States[0].TransitionState == TransitionState.Leave)
+                    if (States[0].TransitionState == TransitionState.BeforeLeave)
                     {
-                        await OnLeaveAsync(0);
+                        await BeforeLeaveEnterAsync();
                     }
+                    else if (States[0].TransitionState == TransitionState.Leave)
+                    {
+                        await OnLeaveAndEnterAsync();
+                    }
+                }
+            }
+        }
 
-                    if (States[1].TransitionState == TransitionState.Enter)
-                    {
-                        await OnEnterAsync(1);
-                    }
+        private async Task BeforeLeaveEnterAsync()
+        {
+            if (Transition is not null)
+            {
+                if (Transition.LeaveAbsolute)
+                {
+                    Element = await Js.InvokeAsync<BlazorComponent.Web.Element>(JsInteropConstants.GetDomInfo, Reference);
+                }
+            }
+
+            await RequestAnimationFrameAsync(() =>
+            {
+                NextState(TransitionState.Leave, TransitionState.Enter);
+                return Task.CompletedTask;
+            });
+        }
+
+        private void NextAsync(TransitionState state)
+        {
+            if (Transition is null)
+            {
+                return;
+            }
+
+            if (!Transition.Mode.HasValue)
+            {
+                switch (state)
+                {
+                    case TransitionState.BeforeLeave:
+                    case TransitionState.BeforeEnter:
+                        NextState(TransitionState.Leave, TransitionState.Enter);
+                        break;
+                    case TransitionState.Leave:
+                    case TransitionState.Enter:
+                        NextState(TransitionState.LeaveTo, TransitionState.EnterTo);
+                        break;
+                    case TransitionState.LeaveTo:
+                    case TransitionState.EnterTo:
+                        NextState(TransitionState.None, TransitionState.None);
+                        break;
+                }
+            }
+            else if (Transition.Mode == TransitionMode.OutIn)
+            {
+                switch (state)
+                {
+                    case TransitionState.BeforeEnter:
+                        NextState(TransitionState.None, TransitionState.Enter);
+                        break;
+                    case TransitionState.Enter:
+                        NextState(TransitionState.None, TransitionState.EnterTo);
+                        break;
+                    case TransitionState.EnterTo:
+                        NextState(TransitionState.None, TransitionState.None);
+                        break;
+                    case TransitionState.BeforeLeave:
+                        NextState(TransitionState.Leave, TransitionState.None);
+                        break;
+                    case TransitionState.Leave:
+                        NextState(TransitionState.LeaveTo, TransitionState.None);
+                        break;
+                    case TransitionState.LeaveTo:
+                        NextState(TransitionState.None, TransitionState.BeforeEnter);
+                        break;
+                }
+            }
+            else if (Transition.Mode == TransitionMode.InOut)
+            {
+                switch (state)
+                {
+                    case TransitionState.BeforeEnter:
+                        NextState(TransitionState.None, TransitionState.Enter);
+                        break;
+                    case TransitionState.Enter:
+                        NextState(TransitionState.None, TransitionState.EnterTo);
+                        break;
+                    case TransitionState.EnterTo:
+                        NextState(TransitionState.BeforeLeave, TransitionState.None);
+                        break;
+                    case TransitionState.BeforeLeave:
+                        NextState(TransitionState.Leave, TransitionState.None);
+                        break;
+                    case TransitionState.Leave:
+                        NextState(TransitionState.LeaveTo, TransitionState.None);
+                        break;
+                    case TransitionState.LeaveTo:
+                        NextState(TransitionState.None, TransitionState.None);
+                        break;
                 }
             }
         }
@@ -106,13 +186,36 @@ namespace BlazorComponent
 
         private async Task OnLeaveToAndEnterToAsync()
         {
-            // await Delay(Transition.Duration);
-
             //Remove old element and set new element to first position
             States[1].CopyTo(States[0]);
             States[1].Reset();
 
             NextState(TransitionState.None, TransitionState.None);
+        }
+
+        private async Task BeforeLeaveAsync(int? index = null)
+        {
+            if (Transition is not null)
+            {
+                if (Transition.LeaveAbsolute)
+                {
+                    Element = await Js.InvokeAsync<BlazorComponent.Web.Element>(JsInteropConstants.GetDomInfo, Reference);
+                }
+            }
+
+            await RequestAnimationFrameAsync(() =>
+            {
+                if (index.HasValue)
+                {
+                    NextState(index.Value, TransitionState.Leave);
+                }
+                else
+                {
+                    NextState(TransitionState.Leave, TransitionState.None);
+                }
+
+                return Task.CompletedTask;
+            });
         }
 
         private async Task OnLeaveAsync(int? index = null)
@@ -125,7 +228,28 @@ namespace BlazorComponent
                 }
                 else
                 {
-                    NextState(TransitionState.LeaveTo, TransitionState.Enter);
+                    NextState(TransitionState.LeaveTo, TransitionState.BeforeEnter);
+                }
+
+                return Task.CompletedTask;
+            });
+        }
+
+        private async Task BeforeEnterAsync(int? index = null)
+        {
+            if (Transition is not null)
+            {
+            }
+
+            await RequestAnimationFrameAsync(() =>
+            {
+                if (index.HasValue)
+                {
+                    NextState(index.Value, TransitionState.Enter);
+                }
+                else
+                {
+                    NextState(TransitionState.None, TransitionState.Enter);
                 }
 
                 return Task.CompletedTask;
@@ -192,8 +316,9 @@ namespace BlazorComponent
                 if (States[0].TransitionState == TransitionState.LeaveTo)
                 {
                     // NextState(TransitionState.None, States[1].TransitionState);
-                    NextState(0, TransitionState.None);
-                    await OnEnterToAsync();
+                    // NextState(0, TransitionState.None);
+                    // await OnEnterToAsync();
+                    await OnLeaveToAndEnterToAsync();
                 }
             }
         }
@@ -213,19 +338,8 @@ namespace BlazorComponent
             StateHasChanged();
         }
 
-        private async Task NextState(int index, TransitionState state)
+        private void NextState(int index, TransitionState state)
         {
-            if (index == 0 && state == TransitionState.Leave)
-            {
-                // TODO: await?
-
-                // if (Transition!.LeaveAbsolute)
-                // {
-                //     Transition!.Element = await Js.InvokeAsync<BlazorComponent.Web.Element>(JsInteropConstants.GetDomInfo, Reference);
-                //     Transition!.Leave();
-                // }
-            }
-            
             States[index].TransitionState = state;
             StateHasChanged();
         }

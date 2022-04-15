@@ -55,23 +55,7 @@ namespace BlazorComponent
         {
             if (Origin != null && transitionState != TransitionState.None)
             {
-                // return $"transform-origin:{Origin}";
-                StyleBuilder.Add($"transform-origin:{Origin}");
-            }
-
-            if (transitionState == TransitionState.Leave)
-            {
-                // TODO: leaveAbsolute 
-                if (Element is not null)
-                {
-                    Console.WriteLine(Element);
-                    
-                    StyleBuilder.Add("position:absolute");
-                    StyleBuilder.Add($"top:{Element.OffsetTop}px");
-                    StyleBuilder.Add($"left:{Element.OffsetLeft}px");
-                    StyleBuilder.Add($"width:{Element.OffsetWidth}px");
-                    StyleBuilder.Add($"height:{Element.OffsetHeight}px");
-                }
+                return $"transform-origin:{Origin}";
             }
 
             return null;

@@ -181,9 +181,17 @@ namespace BlazorComponent
 
         protected virtual async Task OnLeaveAsync()
         {
-            if (Transition is not null && Transition.OnLeave.HasDelegate)
+            if (Transition is not null)
             {
-                await Transition.OnLeave.InvokeAsync(this);
+                if (Transition.LeaveAbsolute)
+                {
+                    // TODO: LeaveAbsolute
+                }
+                
+                if (Transition.OnLeave.HasDelegate)
+                {
+                    await Transition.OnLeave.InvokeAsync(this);
+                }
             }
 
             await RequestAnimationFrameAsync(() =>

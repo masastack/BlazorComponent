@@ -17,6 +17,12 @@
 
         protected string Style => Element.Style;
 
+        protected bool IsLeaveTransitionState => TransitionState is TransitionState.Leave or TransitionState.LeaveTo;
+
+        protected bool IsEnterTransitionState => TransitionState is TransitionState.Enter or TransitionState.EnterTo;
+
+        public bool IsHook => TransitionState is TransitionState.BeforeLeave or TransitionState.BeforeEnter;
+
         protected KeyTransitionElement<TValue> Element { get; }
 
         /// <summary>
@@ -26,10 +32,7 @@
 
         public TValue Key
         {
-            get
-            {
-                return _key;
-            }
+            get { return _key; }
             set
             {
                 _key = value;
@@ -55,8 +58,9 @@
                     TransitionState.EnterTo => $"{transitionName}-enter-active {transitionName}-enter-to",
                     TransitionState.Leave => $"{transitionName}-leave {transitionName}-leave-active",
                     TransitionState.LeaveTo => $"{transitionName}-leave-active {transitionName}-leave-to",
-                    _ => throw new InvalidOperationException()
+                    _ => string.Empty
                 };
+
                 return string.Join(" ", Class, transitionClass);
             }
         }
@@ -70,6 +74,15 @@
                 if (Style != null)
                 {
                     styles.Add(Style);
+                }
+
+                if (IsLeaveTransitionState && Transition.LeaveAbsolute && Element.Element is not null)
+                {
+                    styles.Add("position:absolute");
+                    styles.Add($"top:{Element.Element.OffsetTop}px");
+                    styles.Add($"left:{Element.Element.OffsetLeft}px");
+                    styles.Add($"width:{Element.Element.OffsetWidth}px");
+                    styles.Add($"height:{Element.Element.OffsetHeight}px");
                 }
 
                 return string.Join(';', styles);

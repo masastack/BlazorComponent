@@ -13,11 +13,13 @@ namespace BlazorComponent
 
         [CascadingParameter]
         public Transition? Transition { get; set; }
-
+        
         private TValue _preValue;
         private TransitionJsInvoker? _transitionJsInvoker;
 
         protected bool FirstRender { get; set; } = true;
+        
+        internal BlazorComponent.Web.Element? Element { get; set; }
 
         protected override void OnParametersSet()
         {
