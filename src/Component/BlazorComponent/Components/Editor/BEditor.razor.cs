@@ -30,8 +30,8 @@ namespace BlazorComponent
         [Parameter]
         public virtual string Value { get; set; }
 
-        protected ElementReference ContentRef { get; set; }
-        protected ElementReference? ToolbarRef { get; set; }
+        public ElementReference ContentRef { get; set; }
+        public ElementReference ToolbarRef { get; set; }
 
         public virtual Task<string> GetContentAsync()
         {
