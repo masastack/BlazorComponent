@@ -64,8 +64,17 @@ namespace BlazorComponent
         [Parameter]
         public bool Light { get; set; }
 
+        [Parameter]
+        public virtual int DebounceMilliseconds { get; set; } = 250;
+
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
+
+        private bool DebounceEnabled => DebounceMilliseconds != 0;
+
+        private Timer _debounceTimer;
+
+        public virtual Func<Task> DebounceTimerRun { get; set; }
 
         public virtual bool IsDark
         {
@@ -120,6 +129,39 @@ namespace BlazorComponent
 
         //We want InternalValue to be protected
         TValue IInput<TValue>.InternalValue => InternalValue;
+
+        public virtual Task ChangeValue(bool ignoreDebounce = false)
+        {
+            if (DebounceEnabled && DebounceTimerRun != null && !ignoreDebounce)
+            {
+                DebounceChangeValue();
+                return Task.CompletedTask;
+            }
+
+            DebounceTimerRun?.Invoke();
+
+            return Task.CompletedTask;
+        }
+        protected void DebounceChangeValue()
+        {
+            if(_debounceTimer == null)
+            {
+                _debounceTimer = new Timer(DebounceTimerIntervalOnTick, null, DebounceMilliseconds, DebounceMilliseconds);
+            }
+        }
+
+        protected void DebounceTimerIntervalOnTick(object state)
+        {
+            InvokeAsync(async () =>
+            {
+                await ChangeValue(true);
+                if(_debounceTimer != null)
+                {
+                    await _debounceTimer.DisposeAsync();
+                    _debounceTimer = null;
+                }
+            });
+        }
 
         public virtual async Task HandleOnPrependClickAsync(MouseEventArgs args)
         {

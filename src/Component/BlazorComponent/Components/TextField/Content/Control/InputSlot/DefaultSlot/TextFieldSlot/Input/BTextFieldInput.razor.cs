@@ -32,5 +32,7 @@ namespace BlazorComponent
         public EventCallback<FocusEventArgs> HandleOnFocus => EventCallback.Factory.Create<FocusEventArgs>(Component, Component.HandleOnFocusAsync);
 
         public EventCallback<KeyboardEventArgs> HandleOnKeyDown => EventCallback.Factory.Create<KeyboardEventArgs>(Component, Component.HandleOnKeyDownAsync);
+
+        public EventCallback<KeyboardEventArgs> HandleOnKeyUp => EventCallback.Factory.Create<KeyboardEventArgs>(Component, Component.HandleOnKeyUpAsync);
     }
 }
