@@ -13,19 +13,48 @@ namespace BlazorComponent
 
         [CascadingParameter]
         public Transition? Transition { get; set; }
-        
+
         private TValue _preValue;
         private TransitionJsInvoker? _transitionJsInvoker;
 
         protected bool FirstRender { get; set; } = true;
-        
+
+        protected virtual TransitionState CurrentState { get; }
+
         internal BlazorComponent.Web.Element? Element { get; set; }
 
-        protected override void OnParametersSet()
+        protected override async Task OnParametersSetAsync()
         {
             if (!EqualityComparer<TValue>.Default.Equals(Value, _preValue))
             {
                 _preValue = Value;
+
+                switch (CurrentState)
+                {
+                    case TransitionState.None:
+                        if (Transition?.Mode is TransitionMode.InOut)
+                        {
+                            // before enter
+                        }
+                        else
+                        {
+                            await BeforeLeave();
+                        }
+
+                        break;
+                    case TransitionState.Leave:
+                        break;
+                    case TransitionState.Enter:
+                        break;
+                    case TransitionState.EnterTo:
+                        break;
+                    case TransitionState.LeaveTo:
+                        break;
+                    case TransitionState.Completed:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
 
                 StartTransition();
             }
@@ -70,6 +99,8 @@ namespace BlazorComponent
         protected virtual Task OnTransitionEnd(string referenceId, LeaveEnter transition) => Task.CompletedTask;
 
         protected virtual Task OnTransitionCancel() => Task.CompletedTask;
+
+        protected virtual Task BeforeLeave() => Task.CompletedTask;
 
         public async ValueTask DisposeAsync()
         {

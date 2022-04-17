@@ -21,8 +21,6 @@
 
         protected bool IsEnterTransitionState => TransitionState is TransitionState.Enter or TransitionState.EnterTo;
 
-        public bool IsHook => TransitionState is TransitionState.BeforeLeave or TransitionState.BeforeEnter;
-
         protected KeyTransitionElement<TValue> Element { get; }
 
         /// <summary>
