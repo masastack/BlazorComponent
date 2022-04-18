@@ -70,7 +70,7 @@ namespace BlazorComponent
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
 
-        private bool DebounceEnabled => DebounceMilliseconds != 0;
+        private bool DebounceEnabled => DebounceMilliseconds > 0;
 
         private Timer _debounceTimer;
 
@@ -132,13 +132,16 @@ namespace BlazorComponent
 
         public virtual Task ChangeValue(bool ignoreDebounce = false)
         {
-            if (DebounceEnabled && DebounceTimerRun != null && !ignoreDebounce)
+            if (DebounceEnabled)
             {
-                DebounceChangeValue();
-                return Task.CompletedTask;
-            }
+                if (DebounceTimerRun != null && !ignoreDebounce)
+                {
+                    DebounceChangeValue();
+                    return Task.CompletedTask;
+                }
 
-            DebounceTimerRun?.Invoke();
+                DebounceTimerRun?.Invoke();
+            }
 
             return Task.CompletedTask;
         }
