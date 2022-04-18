@@ -92,6 +92,8 @@ namespace BlazorComponent
 
         Task HandleOnKeyDownAsync(KeyboardEventArgs args);
 
+        Task HandleOnKeyUpAsync(KeyboardEventArgs args);
+
         Task HandleOnClearClickAsync(MouseEventArgs args);
 
         Task HandleOnNumberUpClickAsync(MouseEventArgs args);
