@@ -145,6 +145,7 @@ namespace BlazorComponent
 
             return Task.CompletedTask;
         }
+
         protected void DebounceChangeValue()
         {
             if(_debounceTimer == null)
