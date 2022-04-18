@@ -6,10 +6,7 @@
     if (!element) return;
 
     element.addEventListener("transitionend", (e) => {
-        let _bl_ = e.target.getAttributeNames().find(a => a.startsWith('_bl_'))
-        if (_bl_) {
-            _bl_ = _bl_.substring(4);
-        }
+        if (typeof e.target.className !== "string") return;
 
         const classNames = e.target.className.split(' ');
         let transition;
@@ -25,8 +22,12 @@
 
         if (!transition) return;
 
-        console.log('end', _bl_, e.elapsedTime, classNames.filter(c => c.includes('transition')))
+        let _bl_ = e.target.getAttributeNames().find(a => a.startsWith('_bl_'))
+        if (_bl_) {
+            _bl_ = _bl_.substring(4);
+        }
 
+        console.log('end', _bl_, e.elapsedTime, classNames.filter(c => c.includes('transition')))
 
         dotNet.invokeMethodAsync('OnTransitionEnd', _bl_, transition)
     })

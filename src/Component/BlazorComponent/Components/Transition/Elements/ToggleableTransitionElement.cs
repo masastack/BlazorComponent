@@ -120,7 +120,7 @@ namespace BlazorComponent
                 return;
             }
 
-            Console.WriteLine($"referenceId:{referenceId}, Reference.Id:{Reference.Id}, transition:{transition.ToString()}");
+            Console.WriteLine($"2: referenceId:{referenceId}, Reference.Id:{Reference.Id}, transition:{transition.ToString()}");
 
             if (transition == LeaveEnter.Leave)
             {

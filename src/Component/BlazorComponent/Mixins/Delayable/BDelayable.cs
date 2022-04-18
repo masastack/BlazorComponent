@@ -18,6 +18,8 @@ public class BDelayable : BDomComponentBase, IAsyncDisposable
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        Console.WriteLine($"{DateTime.Now.Ticks} delayble render...");
+
         if (firstRender)
         {
             _dotNetRef = DotNetObjectReference.Create(this);
@@ -32,9 +34,17 @@ public class BDelayable : BDomComponentBase, IAsyncDisposable
     [JSInvokable]
     public async Task SetActive(bool value)
     {
+        Console.WriteLine($"{DateTime.Now.Second} SetActive:{value}");
+
         await OnActiveUpdating(value);
-        IsActive = value;
         await OnActiveUpdated(value);
+
+        // while (value == false && IsActive == false)
+        // {
+        //     await Task.Delay(16);
+        // }
+
+        IsActive = value;
         StateHasChanged();
     }
 

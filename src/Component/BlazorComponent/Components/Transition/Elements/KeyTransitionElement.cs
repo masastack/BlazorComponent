@@ -52,7 +52,6 @@ namespace BlazorComponent
             if (_referenceChanged)
             {
                 _referenceChanged = false;
-
                 await InteropCall();
             }
 
@@ -152,9 +151,14 @@ namespace BlazorComponent
             {
                 if (CurrentState == TransitionState.LeaveTo)
                 {
+                    Console.WriteLine($"States[0]:{States[0].Element.Reference.Id}");
+                    Console.WriteLine($"States[1]:{States[1].Element.Reference.Id}");
+
                     //Remove old element and set new element to first position
-                    States[1].CopyTo(States[0]);
-                    States[1].Reset();
+                    // States[1].CopyTo(States[0]);
+                    // States[1].Reset();
+                    States[0].Reset();
+
 
                     NextState(TransitionState.None, TransitionState.None);
                 }
@@ -182,8 +186,6 @@ namespace BlazorComponent
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
-            var sequence = 0;
-
             List<KeyTransitionElementState<TValue>> filteredStates = new();
 
             if (Transition.Mode == TransitionMode.OutIn)
@@ -205,6 +207,8 @@ namespace BlazorComponent
 
             foreach (var state in filteredStates)
             {
+                var sequence = 0;
+
                 builder.OpenElement(sequence++, Tag);
 
                 builder.AddMultipleAttributes(sequence++, AdditionalAttributes);
@@ -216,6 +220,8 @@ namespace BlazorComponent
                     ReferenceCaptureAction?.Invoke(reference);
                     Reference = reference;
                 });
+
+                builder.SetKey(state.Key);
 
                 builder.CloseComponent();
             }

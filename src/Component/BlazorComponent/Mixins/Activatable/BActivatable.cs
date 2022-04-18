@@ -143,22 +143,15 @@ namespace BlazorComponent
 
         protected override async Task OnActiveUpdated(bool value)
         {
-            // await OnIsActiveSettingAsync(value);
-
-            if (IsActive != Value && ValueChanged.HasDelegate)
+            if (value != Value && ValueChanged.HasDelegate)
             {
-                await ValueChanged.InvokeAsync(IsActive);
+                await ValueChanged.InvokeAsync(value);
             }
-            else
-            {
-                StateHasChanged();
-            }
+            // else
+            // {
+            //     StateHasChanged();
+            // }
         }
-
-        // protected virtual Task OnIsActiveSettingAsync(bool isActive)
-        // {
-        //     return Task.CompletedTask;
-        // }
 
         private async Task HandleOnMouseLeaveAsync(MouseEventArgs args)
         {
