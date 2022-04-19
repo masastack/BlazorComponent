@@ -483,9 +483,7 @@ export function addOutsideClickEventListener(invoker, noInvokeSelectors: [], inv
                 invoker.invokeMethodAsync("Invoke", {});
             }
         } else {
-            if (!contentElement || contentElement.getAttribute('close-condition') != null) {
-                invoker.invokeMethodAsync("Invoke", {});
-            }
+            invoker.invokeMethodAsync("Invoke", {});
         }
     }
 

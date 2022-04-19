@@ -159,8 +159,6 @@ namespace BlazorComponent
                     NextState(TransitionState.None, TransitionState.None);
                 }
             }
-
-            Console.WriteLine("invoke on transition end");
         }
 
         private void NextState(TransitionState oldTransitionState, TransitionState newTransitionState)

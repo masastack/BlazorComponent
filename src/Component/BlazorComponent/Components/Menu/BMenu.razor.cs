@@ -162,8 +162,6 @@ namespace BlazorComponent
                     attributes.Add("onmouseleave", CreateEventCallback<MouseEventArgs>(HandleOnContentMouseleaveAsync));
                 }
 
-                attributes.Add("close-condition", IsActive && CloseOnClick);
-
                 return attributes;
             }
         }
@@ -203,15 +201,21 @@ namespace BlazorComponent
 
         private async Task HandleOutsideClickAsync(object agrs)
         {
+            Console.WriteLine($"OutsideClick: {ContentElement.Id} {IsActive}");
+
             if (!IsActive || !CloseOnClick) return;
 
             await OnOutsideClick.InvokeAsync();
-            await RunCloseDelayAsync();
+            // await RunCloseDelayAsync();
+            IsActive = false;
+            StateHasChanged();
         }
 
         protected async Task HandleOnContentClickAsync(MouseEventArgs _)
         {
-            await RunCloseDelayAsync();
+            // await RunCloseDelayAsync();
+            IsActive = false;
+            StateHasChanged();
         }
 
         protected async Task HandleOnContentMouseenterAsync(MouseEventArgs args)

@@ -14,7 +14,7 @@ public class BDelayable : BDomComponentBase, IAsyncDisposable
     private IJSObjectReference? _module;
     private DotNetObjectReference<BDelayable> _dotNetRef;
 
-    protected bool IsActive { get; private set; }
+    protected bool IsActive { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -33,8 +33,8 @@ public class BDelayable : BDomComponentBase, IAsyncDisposable
     public async Task SetActive(bool value)
     {
         await OnActiveUpdating(value);
-        IsActive = value;
         await OnActiveUpdated(value);
+        IsActive = value;
         StateHasChanged();
     }
 

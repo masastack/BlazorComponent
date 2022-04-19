@@ -120,8 +120,6 @@ namespace BlazorComponent
                 return;
             }
 
-            Console.WriteLine($"referenceId:{referenceId}, Reference.Id:{Reference.Id}, transition:{transition.ToString()}");
-
             if (transition == LeaveEnter.Leave)
             {
                 await OnLeaveToAsync();
@@ -130,14 +128,6 @@ namespace BlazorComponent
             {
                 await OnEnterToAsync();
             }
-
-            Console.WriteLine($"{DateTime.Now.Second},toggle transition ends.");
-        }
-
-        protected override Task OnTransitionCancel()
-        {
-            Console.WriteLine($"{DateTime.Now.Second},toggle transition cancel.");
-            return base.OnTransitionCancel();
         }
 
         protected virtual async Task OnEnterAsync()
