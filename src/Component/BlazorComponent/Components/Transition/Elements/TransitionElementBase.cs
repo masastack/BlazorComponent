@@ -55,8 +55,6 @@ namespace BlazorComponent
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
-                
-                Console.WriteLine($"{DateTime.Now.Ticks} start transition");
 
                 StartTransition();
             }
@@ -94,11 +92,6 @@ namespace BlazorComponent
         {
             if (Reference.Context is not null && _transitionJsInvoker is not null)
             {
-                if (Transition?.Name is not null && Transition.Name.StartsWith("tab-"))
-                {
-                    Console.WriteLine($"interop call: {Reference.Id}");
-                }
-
                 await _transitionJsInvoker.AddTransitionEvents(Reference);
             }
         }

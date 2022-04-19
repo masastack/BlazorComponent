@@ -370,11 +370,6 @@ namespace BlazorComponent
             }
         }
 
-        protected override async Task OnActiveUpdating(bool value)
-        {
-            await base.OnActiveUpdating(value);
-        }
-
         protected override async Task OnActiveUpdated(bool value)
         {
             if (value)
@@ -400,8 +395,8 @@ namespace BlazorComponent
 
             //Wait for left and top update
             //Otherwise,we may get a flash
-            // StateHasChanged();
-            await Task.Delay(10);
+            StateHasChanged();
+            await Task.Delay(16);
         }
 
         private Task CallDeactivateAsync()

@@ -21,7 +21,7 @@
 
         protected bool IsEnterTransitionState => TransitionState is TransitionState.Enter or TransitionState.EnterTo;
 
-        internal KeyTransitionElement<TValue> Element { get; private set; }
+        protected KeyTransitionElement<TValue> Element { get; }
 
         /// <summary>
         /// Save transition state for element
