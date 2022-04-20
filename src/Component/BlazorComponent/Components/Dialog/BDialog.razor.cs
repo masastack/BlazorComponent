@@ -184,7 +184,8 @@ namespace BlazorComponent
             }
             else
             {
-                await RunCloseDelayAsync();
+                // await RunCloseDelayAsync();
+                IsActive = false;
             }
         }
 

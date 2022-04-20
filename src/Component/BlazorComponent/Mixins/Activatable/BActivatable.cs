@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public class BActivatable : BDelayable, IActivatable, IHandleEvent
+    public class BActivatable : BToggleable, IActivatable, IHandleEvent
     {
         private string _activatorId;
 
@@ -27,16 +27,6 @@ namespace BlazorComponent
             get => GetValue<bool>();
             set => SetValue(value);
         }
-
-        [Parameter]
-        public bool Value
-        {
-            get => GetValue<bool>();
-            set => SetValue(value);
-        }
-
-        [Parameter]
-        public EventCallback<bool> ValueChanged { get; set; }
 
         [Parameter]
         public RenderFragment<ActivatorProps> ActivatorContent { get; set; }
@@ -82,14 +72,16 @@ namespace BlazorComponent
 
         protected override void OnWatcherInitialized()
         {
+            base.OnWatcherInitialized();
+
             Watcher
                 .Watch<bool>(nameof(Disabled), val => { ResetActivatorEvents(); })
-                .Watch<bool>(nameof(Value), OnValueChanged)
+                // .Watch<bool>(nameof(Value), OnValueChanged)
                 .Watch<bool>(nameof(OpenOnFocus), () => { ResetActivatorEvents(); })
                 .Watch<bool>(nameof(OpenOnHover), () => { ResetActivatorEvents(); });
         }
 
-        protected virtual async void OnValueChanged(bool value)
+        protected override async void OnValueChanged(bool value)
         {
             if (_isFromOnActiveUpdated)
             {
