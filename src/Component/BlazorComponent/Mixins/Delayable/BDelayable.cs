@@ -32,8 +32,12 @@ public class BDelayable : BDomComponentBase, IAsyncDisposable
     [JSInvokable]
     public async Task SetActive(bool value)
     {
-        await OnActiveUpdating(value);
-        await OnActiveUpdated(value);
+        if (value)
+        {
+            await OnActiveUpdating(value);
+            await OnActiveUpdated(value);
+        }
+
         IsActive = value;
         StateHasChanged();
     }

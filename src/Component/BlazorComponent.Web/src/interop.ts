@@ -1333,7 +1333,9 @@ export function copyText(text) {
 export function getMenuableDimensions(hasActivator, activatorSelector, attach, contentElement, attached, attachSelector) {
     if (!attached) {
         var container = document.querySelector(attachSelector);
-        container.appendChild(contentElement);
+        if (contentElement.nodeType) {
+            container.appendChild(contentElement);
+        }
     }
 
     var dimensions = {
@@ -1396,6 +1398,10 @@ function measure(el: HTMLElement, attach) {
 }
 
 function getRoundedBoundedClientRect(el: Element) {
+    if (!el || !el.nodeType) {
+        return null
+    }
+
     const rect = el.getBoundingClientRect()
     return {
         top: Math.round(rect.top),
@@ -1408,7 +1414,7 @@ function getRoundedBoundedClientRect(el: Element) {
 }
 
 function sneakPeek(cb: () => void, el) {
-    if (!el || el.style.display !== 'none') {
+    if (!el || !el.style || el.style.display !== 'none') {
         cb()
         return
     }
@@ -1420,6 +1426,8 @@ function sneakPeek(cb: () => void, el) {
 
 
 export function observeElement(el, sizeProp, expandTransition) {
+    if (!el) return;
+
     updateSize(el, sizeProp, expandTransition);
 
     var observer = new ResizeObserver(function (mutationsList) {

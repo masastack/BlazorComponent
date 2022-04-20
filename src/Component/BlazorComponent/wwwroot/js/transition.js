@@ -1,4 +1,4 @@
-﻿function addTransitionEnd(element, dotNet) {
+﻿function registerTransitionEvents(element, dotNet) {
     if (typeof element === 'string') {
         element = document.querySelector(element);
     }
@@ -25,13 +25,10 @@
 
         if (!transition) return;
 
-        console.log('end', _bl_, e.elapsedTime, classNames.filter(c => c.includes('transition')))
-
-
         dotNet.invokeMethodAsync('OnTransitionEnd', _bl_, transition)
     })
 }
 
 export {
-    addTransitionEnd,
+    registerTransitionEvents,
 }

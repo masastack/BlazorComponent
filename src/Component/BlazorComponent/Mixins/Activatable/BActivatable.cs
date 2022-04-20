@@ -89,13 +89,21 @@ namespace BlazorComponent
                 .Watch<bool>(nameof(OpenOnHover), () => { ResetActivatorEvents(); });
         }
 
-        protected virtual void OnValueChanged(bool value)
+        protected virtual async void OnValueChanged(bool value)
         {
-            if (IsActive != value)
+            if (_isFromOnActiveUpdated)
             {
-                _ = value
-                    ? RunOpenDelayAsync()
-                    : RunCloseDelayAsync();
+                _isFromOnActiveUpdated = false;
+                return;
+            }
+
+            if (!IsBooted)
+            {
+                NextTick(() => SetActive(value));
+            }
+            else
+            {
+                await SetActive(value);
             }
         }
 
@@ -141,24 +149,16 @@ namespace BlazorComponent
             await RunOpenDelayAsync();
         }
 
+        private bool _isFromOnActiveUpdated;
+
         protected override async Task OnActiveUpdated(bool value)
         {
-            // await OnIsActiveSettingAsync(value);
-
-            if (IsActive != Value && ValueChanged.HasDelegate)
+            if (value != Value && ValueChanged.HasDelegate)
             {
-                await ValueChanged.InvokeAsync(IsActive);
-            }
-            else
-            {
-                StateHasChanged();
+                _isFromOnActiveUpdated = true;
+                await ValueChanged.InvokeAsync(value);
             }
         }
-
-        // protected virtual Task OnIsActiveSettingAsync(bool isActive)
-        // {
-        //     return Task.CompletedTask;
-        // }
 
         private async Task HandleOnMouseLeaveAsync(MouseEventArgs args)
         {

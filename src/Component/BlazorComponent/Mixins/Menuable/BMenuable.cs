@@ -288,6 +288,19 @@ namespace BlazorComponent
             Window.OnResize += HandleOnResizeAsync;
         }
 
+        protected override void OnParametersSet()
+        {
+            if (OpenDelay < 48)
+            {
+                OpenDelay = 48;
+            }
+
+            if (CloseDelay < 48)
+            {
+                CloseDelay = 48;
+            }
+        }
+
         private async Task HandleOnResizeAsync()
         {
             if (!IsActive)

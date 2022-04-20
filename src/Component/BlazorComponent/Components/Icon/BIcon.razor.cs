@@ -118,17 +118,25 @@ namespace BlazorComponent
 #pragma warning restore BL0006 // Do not use RenderTree types
         }
 
-        // TODO: format
-        private bool _isRegisterClickEvent;
-
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
 
-            if (!_isRegisterClickEvent && Ref.Context is not null && OnClick.HasDelegate)
+            if (firstRender)
             {
-                _isRegisterClickEvent = true;
+                await TryRegisterClickEvent();
+            }
+        }
 
+        protected override async Task OnElementReferenceChangedAsync()
+        {
+            await TryRegisterClickEvent();
+        }
+
+        private async Task TryRegisterClickEvent()
+        {
+            if (Ref.Context is not null && OnClick.HasDelegate)
+            {
                 var button = Document.GetElementByReference(Ref);
                 await button.AddEventListenerAsync("click", CreateEventCallback<MouseEventArgs>(HandleOnClick), false, new EventListenerActions
                 {

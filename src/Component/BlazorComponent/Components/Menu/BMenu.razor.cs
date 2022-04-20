@@ -201,8 +201,6 @@ namespace BlazorComponent
 
         private async Task HandleOutsideClickAsync(object agrs)
         {
-            Console.WriteLine($"OutsideClick: {ContentElement.Id} {IsActive}");
-
             if (!IsActive || !CloseOnClick) return;
 
             await OnOutsideClick.InvokeAsync();

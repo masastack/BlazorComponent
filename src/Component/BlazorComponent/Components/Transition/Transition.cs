@@ -25,7 +25,7 @@ namespace BlazorComponent
         public RenderFragment ChildContent { get; set; }
 
         [Parameter]
-        public EventCallback<Element> OnEnter { get; set; }
+        public EventCallback<Element> OnEnter { get; set; } // TODO: hooks
 
         [Parameter]
         public EventCallback<Element> OnLeave { get; set; }

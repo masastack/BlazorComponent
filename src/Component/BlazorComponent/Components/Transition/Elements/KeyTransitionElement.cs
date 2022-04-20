@@ -10,10 +10,10 @@ namespace BlazorComponent
     {
         private KeyTransitionElementState<TValue>[] _states;
 
-        protected IEnumerable<KeyTransitionElementState<TValue>> ComputedStates =>
+        private IEnumerable<KeyTransitionElementState<TValue>> ComputedStates =>
             States.Where(state => !state.IsEmpty);
 
-        protected KeyTransitionElementState<TValue>[] States =>
+        private KeyTransitionElementState<TValue>[] States =>
             _states ??= new KeyTransitionElementState<TValue>[]
             {
                 new(this),
@@ -45,20 +45,6 @@ namespace BlazorComponent
             }
         }
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            await base.OnAfterRenderAsync(firstRender);
-
-            if (_referenceChanged)
-            {
-                _referenceChanged = false;
-
-                await InteropCall();
-            }
-
-            await NextAsync(CurrentState);
-        }
-
         protected override void StartTransition()
         {
             if (!States[1].IsEmpty)
@@ -79,22 +65,17 @@ namespace BlazorComponent
             States[1].TransitionState = TransitionState.Enter;
         }
 
-        protected override async Task BeforeLeave()
+        protected override async Task BeforeLeaveAsync()
         {
-            if (!FirstRender && Transition.LeaveAbsolute)
+            if (!FirstRender && Transition!.LeaveAbsolute)
             {
                 Element = await Js.InvokeAsync<BlazorComponent.Web.Element>(JsInteropConstants.GetDomInfo, Reference);
             }
         }
 
-        private async Task NextAsync(TransitionState state)
+        protected override async Task NextAsync(TransitionState state)
         {
-            if (Transition is null)
-            {
-                return;
-            }
-
-            if (!Transition.Mode.HasValue)
+            if (!Transition!.Mode.HasValue)
             {
                 switch (state)
                 {
@@ -130,18 +111,22 @@ namespace BlazorComponent
             }
         }
 
-        protected override async Task OnTransitionEnd(string referenceId, LeaveEnter transition)
+        protected override Task OnTransitionEndAsync(string referenceId, LeaveEnter transition)
         {
             if (referenceId != Reference.Id)
             {
-                return;
+                return Task.CompletedTask;
             }
 
-            if (Transition.Mode == TransitionMode.OutIn)
+            if (Transition!.Mode == TransitionMode.OutIn)
             {
                 if (CurrentState == TransitionState.LeaveTo)
                 {
                     NextState(TransitionState.None, TransitionState.Enter);
+                }
+                else if (CurrentState == TransitionState.EnterTo)
+                {
+                    NextState(TransitionState.None, TransitionState.None);
                 }
             }
             else if (Transition.Mode == TransitionMode.InOut)
@@ -153,12 +138,13 @@ namespace BlazorComponent
                 if (CurrentState == TransitionState.LeaveTo)
                 {
                     //Remove old element and set new element to first position
-                    States[1].CopyTo(States[0]);
-                    States[1].Reset();
+                    States[0].Reset();
 
                     NextState(TransitionState.None, TransitionState.None);
                 }
             }
+
+            return Task.CompletedTask;
         }
 
         private void NextState(TransitionState oldTransitionState, TransitionState newTransitionState)
@@ -180,29 +166,36 @@ namespace BlazorComponent
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
-            var sequence = 0;
-
             List<KeyTransitionElementState<TValue>> filteredStates = new();
 
-            if (Transition.Mode == TransitionMode.OutIn)
+            switch (Transition?.Mode)
             {
-                var state = ComputedStates.FirstOrDefault(s => s.TransitionState != TransitionState.None);
-
-                state ??= ComputedStates.LastOrDefault();
-
-                if (state is not null)
+                case TransitionMode.OutIn:
                 {
-                    filteredStates.Add(state);
+                    var state = ComputedStates.FirstOrDefault(s => s.TransitionState != TransitionState.None);
+
+                    state ??= ComputedStates.LastOrDefault();
+
+                    if (state is not null)
+                    {
+                        filteredStates.Add(state);
+                    }
+
+                    break;
                 }
-            }
-            else
-            {
-                filteredStates = ComputedStates
-                    .ToList();
+                case TransitionMode.InOut:
+                    // TODO: in-out
+                    break;
+                default:
+                    filteredStates = ComputedStates
+                        .ToList();
+                    break;
             }
 
             foreach (var state in filteredStates)
             {
+                var sequence = 0;
+
                 builder.OpenElement(sequence++, Tag);
 
                 builder.AddMultipleAttributes(sequence++, AdditionalAttributes);
@@ -214,6 +207,7 @@ namespace BlazorComponent
                     ReferenceCaptureAction?.Invoke(reference);
                     Reference = reference;
                 });
+                builder.SetKey(state.Key);
 
                 builder.CloseComponent();
             }

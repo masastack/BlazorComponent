@@ -8,18 +8,18 @@ namespace BlazorComponent
         [Inject]
         protected IJSRuntime Js { get; set; }
 
-        [Parameter]
-        public TValue Value { get; set; }
-
         [CascadingParameter]
         public Transition? Transition { get; set; }
+
+        [Parameter]
+        public TValue Value { get; set; }
 
         private TValue _preValue;
         private TransitionJsInvoker? _transitionJsInvoker;
 
-        protected bool FirstRender { get; set; } = true;
+        protected bool FirstRender { get; private set; } = true;
 
-        protected virtual TransitionState CurrentState { get; }
+        protected abstract TransitionState CurrentState { get; }
 
         internal BlazorComponent.Web.Element? Element { get; set; }
 
@@ -38,7 +38,7 @@ namespace BlazorComponent
                         }
                         else
                         {
-                            await BeforeLeave();
+                            await BeforeLeaveAsync();
                         }
 
                         break;
@@ -67,20 +67,43 @@ namespace BlazorComponent
                 FirstRender = false;
             }
 
-            if (_transitionJsInvoker is null)
+            if (Transition is not null)
             {
-                if (Reference.Context is null)
+                if (_transitionJsInvoker is null)
                 {
-                    return;
+                    if (Reference.Context is null)
+                    {
+                        return;
+                    }
+
+                    _transitionJsInvoker = new TransitionJsInvoker(Js);
+                    await _transitionJsInvoker.Init(OnTransitionEndAsync);
+                    await RegisterTransitionEventsAsync();
                 }
 
-                _transitionJsInvoker = new TransitionJsInvoker(Js);
-                await _transitionJsInvoker.Init(OnTransitionEnd, OnTransitionCancel);
-                await InteropCall();
+                if (ElementReferenceChanged)
+                {
+                    ElementReferenceChanged = false;
+
+                    await RegisterTransitionEventsAsync();
+                }
+
+                await NextAsync(CurrentState);
             }
         }
 
         protected abstract void StartTransition();
+
+        /// <summary>
+        /// Update to the next transition state.
+        /// </summary>
+        /// <param name="currentState"></param>
+        /// <returns></returns>
+        protected abstract Task NextAsync(TransitionState currentState);
+
+        protected virtual Task BeforeLeaveAsync() => Task.CompletedTask;
+
+        protected virtual Task OnTransitionEndAsync(string referenceId, LeaveEnter transition) => Task.CompletedTask;
 
         protected async Task RequestAnimationFrameAsync(Func<Task> callback)
         {
@@ -88,19 +111,13 @@ namespace BlazorComponent
             await callback();
         }
 
-        protected async Task InteropCall() // TODO: rename method
+        private async Task RegisterTransitionEventsAsync()
         {
             if (Reference.Context is not null && _transitionJsInvoker is not null)
             {
-                await _transitionJsInvoker.AddTransitionEvents(Reference);
+                await _transitionJsInvoker.RegisterTransitionEvents(Reference);
             }
         }
-
-        protected virtual Task OnTransitionEnd(string referenceId, LeaveEnter transition) => Task.CompletedTask;
-
-        protected virtual Task OnTransitionCancel() => Task.CompletedTask;
-
-        protected virtual Task BeforeLeave() => Task.CompletedTask;
 
         public async ValueTask DisposeAsync()
         {

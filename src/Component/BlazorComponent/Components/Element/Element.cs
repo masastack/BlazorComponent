@@ -24,7 +24,8 @@ namespace BlazorComponent
         public virtual IDictionary<string, object> AdditionalAttributes { get; set; } = new Dictionary<string, object>();
 
         private ElementReference _reference;
-        protected bool _referenceChanged;
+
+        protected bool ElementReferenceChanged { get; set; }
 
         protected string Id => AdditionalAttributes.TryGetValue("id", out var id) ? id.ToString() : string.Empty;
 
@@ -39,7 +40,7 @@ namespace BlazorComponent
             {
                 if (_reference.Id != value.Id)
                 {
-                    _referenceChanged = true;
+                    ElementReferenceChanged = true;
                 }
 
                 _reference = value;
