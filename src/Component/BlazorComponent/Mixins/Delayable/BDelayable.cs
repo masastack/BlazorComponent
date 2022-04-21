@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
+﻿using Microsoft.JSInterop;
 
 namespace BlazorComponent;
 
@@ -14,7 +13,7 @@ public class BDelayable : BDomComponentBase, IAsyncDisposable
     private IJSObjectReference? _module;
     private DotNetObjectReference<BDelayable> _dotNetRef;
 
-    protected bool IsActive { get; set; } // TODO: private set;
+    protected bool IsActive { get; private set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -29,15 +28,14 @@ public class BDelayable : BDomComponentBase, IAsyncDisposable
         await base.OnAfterRenderAsync(firstRender);
     }
 
-    [JSInvokable]
-    public async Task SetActive(bool value)
+    [JSInvokable("SetActive")]
+    public async Task SetIsActive(bool value)
     {
         if (value)
         {
-            await OnActiveUpdating(value);
-            await OnActiveUpdated(value); // TODO: try to combine to onactiveupdating
+            ShowLazyContent();
         }
-        
+
         await WhenIsActiveUpdating(value);
 
         IsActive = value;
@@ -45,17 +43,11 @@ public class BDelayable : BDomComponentBase, IAsyncDisposable
         StateHasChanged();
     }
 
-    protected virtual Task WhenIsActiveUpdating(bool val)
+    protected virtual void ShowLazyContent()
     {
-        return Task.CompletedTask;
     }
 
-    protected virtual Task OnActiveUpdating(bool value)
-    {
-        return Task.CompletedTask;
-    }
-
-    protected virtual Task OnActiveUpdated(bool value)
+    protected virtual Task WhenIsActiveUpdating(bool value)
     {
         return Task.CompletedTask;
     }
@@ -68,7 +60,7 @@ public class BDelayable : BDomComponentBase, IAsyncDisposable
         }
         else
         {
-            await SetActive(true);
+            await SetIsActive(true);
         }
     }
 
@@ -80,7 +72,7 @@ public class BDelayable : BDomComponentBase, IAsyncDisposable
         }
         else
         {
-            await SetActive(false);
+            await SetIsActive(false);
         }
     }
 

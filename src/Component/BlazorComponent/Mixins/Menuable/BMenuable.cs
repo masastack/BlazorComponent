@@ -383,7 +383,7 @@ namespace BlazorComponent
             }
         }
 
-        protected override async Task OnActiveUpdated(bool value)
+        protected override async Task WhenIsActiveUpdating(bool value)
         {
             if (value)
             {
@@ -394,7 +394,7 @@ namespace BlazorComponent
                 await CallDeactivateAsync();
             }
 
-            await base.OnActiveUpdated(value);
+            await base.WhenIsActiveUpdating(value);
         }
 
         private async Task CallActivateAsync()
