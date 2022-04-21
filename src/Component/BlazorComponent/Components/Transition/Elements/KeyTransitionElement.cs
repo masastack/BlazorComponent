@@ -65,14 +65,6 @@ namespace BlazorComponent
             States[1].TransitionState = TransitionState.Enter;
         }
 
-        protected override async Task BeforeLeaveAsync()
-        {
-            if (!FirstRender && Transition!.LeaveAbsolute)
-            {
-                Element = await Js.InvokeAsync<BlazorComponent.Web.Element>(JsInteropConstants.GetDomInfo, Reference);
-            }
-        }
-
         protected override async Task NextAsync(TransitionState state)
         {
             if (!Transition!.Mode.HasValue)

@@ -57,8 +57,6 @@
 
         protected override void StartTransition()
         {
-            Console.WriteLine($"StartTransition: {Reference.Id}; FirstRender:{FirstRender}");
-
             //Don't trigger transition in first render
             if (FirstRender)
             {
@@ -86,8 +84,6 @@
 
         protected override async Task NextAsync(TransitionState state)
         {
-            Console.WriteLine($"{Reference.Id}: {state} to next state");
-
             switch (state)
             {
                 case TransitionState.Enter:
@@ -101,8 +97,6 @@
 
         protected override Task OnTransitionEndAsync(string referenceId, LeaveEnter transition)
         {
-            Console.WriteLine($"{Reference.Id} OnTransitionEnd {referenceId} {transition}");
-            
             if (referenceId != Reference.Id)
             {
                 return Task.CompletedTask;

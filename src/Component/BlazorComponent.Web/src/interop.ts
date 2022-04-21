@@ -1466,3 +1466,12 @@ export function invokeMultipleMethod(windowProps, documentProps, hasActivator, a
 
     return multipleResult;
 }
+
+function getBlazorId(el) {
+    console.log(el, el.target);
+    // TODO: test...
+    let _bl_ = el.target.getAttributeNames().find(a => a.startsWith('_bl_'))
+    if (_bl_) {
+        _bl_ = _bl_.substring(4);
+    }
+}

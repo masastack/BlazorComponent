@@ -23,14 +23,8 @@ namespace BlazorComponent
 
         internal BlazorComponent.Web.Element? Element { get; set; }
 
-        protected override void OnInitialized()
-        {
-            Console.WriteLine($"{Reference.Id} OnInitialized...");
-        }
-
         protected override async Task OnParametersSetAsync()
         {
-            Console.WriteLine($"{Reference.Id} OnParametersSetAsync FirstRender:{FirstRender}");
             if (!EqualityComparer<TValue>.Default.Equals(Value, _preValue))
             {
                 _preValue = Value;
@@ -46,21 +40,41 @@ namespace BlazorComponent
                     case TransitionState.None:
                         if (Transition?.Mode is TransitionMode.InOut)
                         {
-                            // before enter
+                            if (Transition.OnBeforeEnter.HasDelegate)
+                            {
+                                await Transition.OnBeforeEnter.InvokeAsync();
+                            }
                         }
                         else
                         {
-                            await BeforeLeaveAsync();
+                            if (Transition is not null)
+                            {
+                                if (Transition.OnBeforeLeave.HasDelegate)
+                                {
+                                    await Transition.OnBeforeLeave.InvokeAsync();
+                                }
+
+                                await BeforeLeaveAsync();
+                            }
                         }
 
                         break;
                     case TransitionState.Leave:
+                        if (Transition is not null && Transition.OnLeave.HasDelegate)
+                        {
+                            await Transition.OnLeave.InvokeAsync();
+                        }
+
                         break;
                     case TransitionState.Enter:
-                        Console.WriteLine($"OnParametersSet: {CurrentState}");
                         if (Transition is not null)
                         {
-                            await Transition.EnterAsync(Reference);
+                            if (Transition.OnEnter.HasDelegate)
+                            {
+                                await Transition.OnEnter.InvokeAsync();
+                            }
+
+                            await Transition.EnterAsync(Reference); // TODO: how to replace this?
                         }
 
                         break;
@@ -69,12 +83,24 @@ namespace BlazorComponent
                         {
                             _transitionRunning = false;
                         }
+
+                        if (Transition is not null && Transition.OnAfterEnter.HasDelegate)
+                        {
+                            await Transition.OnAfterEnter.InvokeAsync();
+                        }
+
                         break;
                     case TransitionState.LeaveTo:
                         if (Value is false || Transition?.Mode is TransitionMode.InOut)
                         {
                             _transitionRunning = false;
                         }
+
+                        if (Transition is not null && Transition.OnAfterLeave.HasDelegate)
+                        {
+                            await Transition.OnAfterLeave.InvokeAsync();
+                        }
+
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -84,8 +110,6 @@ namespace BlazorComponent
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            Console.WriteLine($"{Reference.Id} firstRender:{firstRender}");
-
             if (firstRender)
             {
                 FirstRender = false;
@@ -125,14 +149,20 @@ namespace BlazorComponent
         /// <returns></returns>
         protected abstract Task NextAsync(TransitionState currentState);
 
-        protected virtual Task BeforeLeaveAsync() => Task.CompletedTask;
-
         protected virtual Task OnTransitionEndAsync(string referenceId, LeaveEnter transition) => Task.CompletedTask;
 
         protected async Task RequestAnimationFrameAsync(Func<Task> callback)
         {
             await Task.Delay(16);
             await callback();
+        }
+
+        private async Task BeforeLeaveAsync()
+        {
+            if (!FirstRender && Transition!.LeaveAbsolute)
+            {
+                Element = await Js.InvokeAsync<BlazorComponent.Web.Element>(JsInteropConstants.GetDomInfo, Reference);
+            }
         }
 
         private async Task RegisterTransitionEventsAsync()
