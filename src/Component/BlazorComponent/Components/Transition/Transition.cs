@@ -25,19 +25,22 @@ namespace BlazorComponent
         public RenderFragment ChildContent { get; set; }
 
         [Parameter]
-        public EventCallback<Element> OnEnter { get; set; } // TODO: hooks
+        public EventCallback<Element> OnBeforeEnter { get; set; }
+
+        [Parameter]
+        public EventCallback<Element> OnEnter { get; set; }
+
+        [Parameter]
+        public EventCallback<Element> OnAfterEnter { get; set; }
+
+        [Parameter]
+        public EventCallback<Element> OnBeforeLeave { get; set; }
 
         [Parameter]
         public EventCallback<Element> OnLeave { get; set; }
 
         [Parameter]
-        public EventCallback<Element> OnEnterTo { get; set; }
-
-        [Parameter]
-        public EventCallback<Element> OnLeaveTo { get; set; }
-
-        private StyleBuilder StyleBuilder { get; set; } = new();
-        internal BlazorComponent.Web.Element? Element = null;
+        public EventCallback<Element> OnAfterLeave { get; set; }
 
         public virtual string GetClass(TransitionState transitionState)
         {
@@ -61,12 +64,12 @@ namespace BlazorComponent
             return null;
         }
 
-        public void Leave()
+        public virtual Task OnElementReadyAsync(ToggleableTransitionElement element)
         {
-            StateHasChanged();
+            return Task.CompletedTask;
         }
 
-        public virtual Task OnElementReadyAsync(ToggleableTransitionElement element)
+        internal virtual Task EnterAsync(ElementReference el)
         {
             return Task.CompletedTask;
         }

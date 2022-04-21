@@ -6,7 +6,6 @@
         Enter,
         EnterTo,
         Leave,
-        LeaveTo,
-        Completed // TODO: need?
+        LeaveTo
     }
 }

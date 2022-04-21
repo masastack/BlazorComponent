@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public abstract class ToggleableTransitionElement : TransitionElementBase<bool>
     {
@@ -59,6 +57,8 @@ namespace BlazorComponent
 
         protected override void StartTransition()
         {
+            Console.WriteLine($"StartTransition: {Reference.Id}; FirstRender:{FirstRender}");
+
             //Don't trigger transition in first render
             if (FirstRender)
             {
@@ -86,6 +86,8 @@ namespace BlazorComponent
 
         protected override async Task NextAsync(TransitionState state)
         {
+            Console.WriteLine($"{Reference.Id}: {state} to next state");
+
             switch (state)
             {
                 case TransitionState.Enter:
@@ -99,6 +101,8 @@ namespace BlazorComponent
 
         protected override Task OnTransitionEndAsync(string referenceId, LeaveEnter transition)
         {
+            Console.WriteLine($"{Reference.Id} OnTransitionEnd {referenceId} {transition}");
+            
             if (referenceId != Reference.Id)
             {
                 return Task.CompletedTask;

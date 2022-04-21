@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
+﻿using Microsoft.JSInterop;
 
 namespace BlazorComponent
 {
@@ -16,6 +15,7 @@ namespace BlazorComponent
 
         private TValue _preValue;
         private TransitionJsInvoker? _transitionJsInvoker;
+        private bool _transitionRunning;
 
         protected bool FirstRender { get; private set; } = true;
 
@@ -23,12 +23,24 @@ namespace BlazorComponent
 
         internal BlazorComponent.Web.Element? Element { get; set; }
 
+        protected override void OnInitialized()
+        {
+            Console.WriteLine($"{Reference.Id} OnInitialized...");
+        }
+
         protected override async Task OnParametersSetAsync()
         {
+            Console.WriteLine($"{Reference.Id} OnParametersSetAsync FirstRender:{FirstRender}");
             if (!EqualityComparer<TValue>.Default.Equals(Value, _preValue))
             {
                 _preValue = Value;
 
+                StartTransition();
+                _transitionRunning = true;
+            }
+
+            if (_transitionRunning)
+            {
                 switch (CurrentState)
                 {
                     case TransitionState.None:
@@ -45,23 +57,35 @@ namespace BlazorComponent
                     case TransitionState.Leave:
                         break;
                     case TransitionState.Enter:
+                        Console.WriteLine($"OnParametersSet: {CurrentState}");
+                        if (Transition is not null)
+                        {
+                            await Transition.EnterAsync(Reference);
+                        }
+
                         break;
                     case TransitionState.EnterTo:
+                        if (Value is true || Transition?.Mode is TransitionMode.OutIn)
+                        {
+                            _transitionRunning = false;
+                        }
                         break;
                     case TransitionState.LeaveTo:
-                        break;
-                    case TransitionState.Completed:
+                        if (Value is false || Transition?.Mode is TransitionMode.InOut)
+                        {
+                            _transitionRunning = false;
+                        }
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
-
-                StartTransition();
             }
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
+            Console.WriteLine($"{Reference.Id} firstRender:{firstRender}");
+
             if (firstRender)
             {
                 FirstRender = false;

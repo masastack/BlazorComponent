@@ -6,7 +6,7 @@ namespace BlazorComponent
     public class ExpandTransition : Transition
     {
         [Inject]
-        public IJSRuntime JS { get; set; }
+        public IJSRuntime Js { get; set; }
 
         protected virtual string SizeProp => "height";
 
@@ -20,7 +20,8 @@ namespace BlazorComponent
         public override string GetClass(TransitionState transitionState)
         {
             var transitionClass = base.GetClass(transitionState);
-            return string.Join(" ", transitionClass, transitionState == TransitionState.None ? null : "in-transition");
+            // return string.Join(" ", transitionClass, transitionState == TransitionState.None ? null : "in-transition");
+            return string.Join(" ", transitionClass);
         }
 
         public override string GetStyle(TransitionState transitionState)
@@ -34,11 +35,11 @@ namespace BlazorComponent
             {
                 case TransitionState.Enter:
                 case TransitionState.LeaveTo:
-                    styles.Add($"{SizeProp}:0px");
+                    // styles.Add($"{SizeProp}:0px");
                     break;
                 case TransitionState.EnterTo:
                 case TransitionState.Leave:
-                    styles.Add($"{SizeProp}:{Size}px");
+                    // styles.Add($"{SizeProp}:{Size}px");
                     break;
                 default:
                     break;
@@ -52,15 +53,22 @@ namespace BlazorComponent
             return string.Join(';', styles);
         }
 
-        public override async Task OnElementReadyAsync(ToggleableTransitionElement element)
+        // public override async Task OnElementReadyAsync(ToggleableTransitionElement element)
+        // {
+        //     await Js.InvokeVoidAsync(JsInteropConstants.ObserveElement, element.Reference, SizeProp, DotNetObjectReference.Create(this));
+        // }
+
+        internal override async Task EnterAsync(ElementReference el)
         {
-            await JS.InvokeVoidAsync(JsInteropConstants.ObserveElement, element.Reference, SizeProp, DotNetObjectReference.Create(this));
+            var element = await Js.InvokeAsync<BlazorComponent.Web.Element>(JsInteropConstants.GetDomInfo, el);
+            Console.WriteLine($"element:{element.OffsetHeight}");
+            Size = element.OffsetHeight;
         }
 
-        [JSInvokable]
-        public void OnSizeChanged(double size)
-        {
-            Size = size;
-        }
+        // [JSInvokable]
+        // public void OnSizeChanged(double size)
+        // {
+        //     Size = size;
+        // }
     }
 }
