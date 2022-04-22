@@ -4,7 +4,7 @@
 @ComputedActivatorContent
 
 <div style="@CssProvider.GetStyle()" class="@CssProvider.GetClass()" @ref="Ref">
-    @if (IsBooted)
+    @if (IsBooted || IsActive)
     {
         <BCascadingValue Value="IsDark" Name="IsDark">
             <Transition Name="@Transition">

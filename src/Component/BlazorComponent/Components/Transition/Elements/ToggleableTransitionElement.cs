@@ -21,9 +21,10 @@
         {
             await base.OnAfterRenderAsync(firstRender);
 
-            if (firstRender && Transition is not null)
+            if (firstRender && Transition?.Name is "expand-transition" or "expand-x-transition")
             {
-                await Transition.OnElementReadyAsync(this);
+                // Only Expand(X)Transition needs to register observer
+                await Transition.OnElementReadyAsync(this.Reference);
             }
         }
 

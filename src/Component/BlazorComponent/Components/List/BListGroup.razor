@@ -33,9 +33,8 @@
             }
         </BListItem>
         
-        @if (IsBooted)
+        @if (IsBooted || IsActive)
         {
-            @IsActive
             <ExpandTransition>
                 <ShowTransitionElement Value="IsActive"
                                        class="@CssProvider.GetClass("items")"

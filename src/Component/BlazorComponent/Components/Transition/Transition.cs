@@ -42,6 +42,13 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<Element> OnAfterLeave { get; set; }
 
+        /// <summary>
+        /// The only child element that running the transition in the Transition's ChildContent.
+        /// </summary>
+        internal ElementReference? ElementReference { get; set; }
+        
+        internal TransitionElementBase? TransitionElement { get; set; }
+
         public virtual string GetClass(TransitionState transitionState)
         {
             return transitionState switch
@@ -64,12 +71,7 @@ namespace BlazorComponent
             return null;
         }
 
-        public virtual Task OnElementReadyAsync(ToggleableTransitionElement element)
-        {
-            return Task.CompletedTask;
-        }
-
-        internal virtual Task EnterAsync(ElementReference el)
+        public virtual Task OnElementReadyAsync(ElementReference elementReference)
         {
             return Task.CompletedTask;
         }

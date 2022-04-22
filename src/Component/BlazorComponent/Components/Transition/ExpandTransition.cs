@@ -1,76 +1,79 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
-namespace BlazorComponent
+namespace BlazorComponent;
+
+/// <summary>
+/// The ExpandTransition.
+/// </summary>
+public class ExpandTransition : Transition
 {
-    public class ExpandTransition : Transition
+    // BUG: Unable to get height/width for the first time.
+    // TODO: Try to rewrite ExpandTransition with hooks.
+    // https://github.com/vuetifyjs/vuetify/blob/aa68dd2d9c/packages/vuetify/src/components/transitions/expand-transition.ts
+
+    [Inject]
+    public IJSRuntime Js { get; set; }
+
+    protected virtual string SizeProp => "height";
+
+    private double Size { get; set; }
+
+    protected override void OnParametersSet()
     {
-        [Inject]
-        public IJSRuntime Js { get; set; }
+        Name = "expand-transition";
+    }
 
-        protected virtual string SizeProp => "height";
+    public override string GetClass(TransitionState transitionState)
+    {
+        var transitionClass = base.GetClass(transitionState);
 
-        protected double Size { get; set; }
+        return string.Join(
+            " ",
+            transitionClass,
+            transitionState == TransitionState.None ? null : "in-transition");
+    }
 
-        protected override void OnParametersSet()
+    public override string GetStyle(TransitionState transitionState)
+    {
+        var styles = new List<string>
         {
-            Name = "expand-transition";
+            base.GetStyle(transitionState)
+        };
+
+        switch (transitionState)
+        {
+            case TransitionState.Enter:
+            case TransitionState.LeaveTo:
+                styles.Add($"{SizeProp}:0px");
+                break;
+            case TransitionState.EnterTo:
+            case TransitionState.Leave:
+                styles.Add($"{SizeProp}:{Size}px");
+                break;
         }
 
-        public override string GetClass(TransitionState transitionState)
+        if (transitionState != TransitionState.None)
         {
-            var transitionClass = base.GetClass(transitionState);
-            return string.Join(" ", transitionClass, transitionState == TransitionState.None ? null : "in-transition");
-            return string.Join(" ", transitionClass);
+            styles.Add("overflow:hidden");
         }
 
-        public override string GetStyle(TransitionState transitionState)
+        return string.Join(';', styles);
+    }
+
+    public override async Task OnElementReadyAsync(ElementReference elementReference)
+    {
+        await Js.InvokeVoidAsync(JsInteropConstants.ObserveElement, elementReference, SizeProp, DotNetObjectReference.Create(this));
+    }
+
+    [JSInvokable]
+    public void OnSizeChanged(double size, string blazorId)
+    {
+        Console.WriteLine($"blazorId:{blazorId}");
+        Console.WriteLine($"ElementReference?.Id:{ElementReference?.Id}");
+        Console.WriteLine($"size:{size}");
+        if (ElementReference?.Id == blazorId)
         {
-            var styles = new List<string>
-            {
-                base.GetStyle(transitionState)
-            };
-
-            switch (transitionState)
-            {
-                case TransitionState.Enter:
-                case TransitionState.LeaveTo:
-                    styles.Add($"{SizeProp}:0px");
-                    break;
-                case TransitionState.EnterTo:
-                case TransitionState.Leave:
-                    styles.Add($"{SizeProp}:{Size}px");
-                    break;
-                default:
-                    break;
-            }
-
-            if (transitionState != TransitionState.None)
-            {
-                styles.Add("overflow:hidden");
-            }
-
-            return string.Join(';', styles);
-        }
-
-        public override async Task OnElementReadyAsync(ToggleableTransitionElement element)
-        {
-            // TODO: record this element. go to #72
-            await Js.InvokeVoidAsync(JsInteropConstants.ObserveElement, element.Reference, SizeProp, DotNetObjectReference.Create(this));
-        }
-
-        // internal override async Task EnterAsync(ElementReference el)
-        // {
-        //     var element = await Js.InvokeAsync<BlazorComponent.Web.Element>(JsInteropConstants.GetDomInfo, el);
-        //     Console.WriteLine($"element:{element.OffsetHeight}");
-        //     Size = element.OffsetHeight;
-        // }
-
-        [JSInvokable]
-        public void OnSizeChanged(double size)
-        {
-            // TODO: 触发的ID不一样？试试把referenceid传进来
-            Console.WriteLine($"Size:{Size}");
             Size = size;
         }
     }

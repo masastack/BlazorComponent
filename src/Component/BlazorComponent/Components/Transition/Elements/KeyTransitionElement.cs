@@ -158,6 +158,12 @@ namespace BlazorComponent
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
+            if (Transition is null)
+            {
+                base.BuildRenderTree(builder);
+                return;
+            }
+
             List<KeyTransitionElementState<TValue>> filteredStates = new();
 
             switch (Transition?.Mode)
@@ -197,7 +203,10 @@ namespace BlazorComponent
                 builder.AddElementReferenceCapture(sequence++, reference =>
                 {
                     ReferenceCaptureAction?.Invoke(reference);
-                    Reference = reference;
+                    if (ActiveTransitionElement)
+                    {
+                        Reference = reference;
+                    }
                 });
                 builder.SetKey(state.Key);
 

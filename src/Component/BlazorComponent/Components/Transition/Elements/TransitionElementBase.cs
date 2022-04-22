@@ -2,7 +2,11 @@
 
 namespace BlazorComponent
 {
-    public abstract class TransitionElementBase<TValue> : Element, IAsyncDisposable
+    public abstract class TransitionElementBase : Element
+    {
+    }
+
+    public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAsyncDisposable
     {
         [Inject]
         protected IJSRuntime Js { get; set; }
@@ -23,8 +27,27 @@ namespace BlazorComponent
 
         internal BlazorComponent.Web.Element? Element { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        protected bool ActiveTransitionElement => Transition?.TransitionElement == this;
+
+        protected override void OnInitialized()
+        {
+            if (Transition is not null && Transition.TransitionElement is null)
+            {
+                Transition.TransitionElement = this;
+            }
+        }
+
         protected override async Task OnParametersSetAsync()
         {
+            if (Transition is null)
+            {
+                // TODO: 给所有过渡的Element的加个默认的BuildRenderTree();
+                return;
+            }
+
             if (!EqualityComparer<TValue>.Default.Equals(Value, _preValue))
             {
                 _preValue = Value;
@@ -60,9 +83,12 @@ namespace BlazorComponent
 
                         break;
                     case TransitionState.Leave:
-                        if (Transition is not null && Transition.OnLeave.HasDelegate)
+                        if (Transition is not null)
                         {
-                            await Transition.OnLeave.InvokeAsync();
+                            if (Transition.OnLeave.HasDelegate)
+                            {
+                                await Transition.OnLeave.InvokeAsync();
+                            }
                         }
 
                         break;
@@ -73,8 +99,6 @@ namespace BlazorComponent
                             {
                                 await Transition.OnEnter.InvokeAsync();
                             }
-
-                            await Transition.EnterAsync(Reference); // TODO: how to replace this?
                         }
 
                         break;
@@ -84,9 +108,12 @@ namespace BlazorComponent
                             _transitionRunning = false;
                         }
 
-                        if (Transition is not null && Transition.OnAfterEnter.HasDelegate)
+                        if (Transition is not null)
                         {
-                            await Transition.OnAfterEnter.InvokeAsync();
+                            if (Transition.OnAfterEnter.HasDelegate)
+                            {
+                                await Transition.OnAfterEnter.InvokeAsync();
+                            }
                         }
 
                         break;
@@ -96,9 +123,12 @@ namespace BlazorComponent
                             _transitionRunning = false;
                         }
 
-                        if (Transition is not null && Transition.OnAfterLeave.HasDelegate)
+                        if (Transition is not null)
                         {
-                            await Transition.OnAfterLeave.InvokeAsync();
+                            if (Transition.OnAfterLeave.HasDelegate)
+                            {
+                                await Transition.OnAfterLeave.InvokeAsync();
+                            }
                         }
 
                         break;
@@ -115,7 +145,7 @@ namespace BlazorComponent
                 FirstRender = false;
             }
 
-            if (Transition is not null)
+            if (Transition is not null && ActiveTransitionElement)
             {
                 if (_transitionJsInvoker is null)
                 {
@@ -123,6 +153,8 @@ namespace BlazorComponent
                     {
                         return;
                     }
+
+                    Transition.ElementReference = Reference;
 
                     _transitionJsInvoker = new TransitionJsInvoker(Js);
                     await _transitionJsInvoker.Init(OnTransitionEndAsync);
@@ -132,6 +164,8 @@ namespace BlazorComponent
                 if (ElementReferenceChanged)
                 {
                     ElementReferenceChanged = false;
+
+                    Transition!.ElementReference = Reference;
 
                     await RegisterTransitionEventsAsync();
                 }

@@ -68,7 +68,7 @@ export function initStepperWrapper(element: HTMLElement) {
         }
     });
 
-    observer.observe(element, { attributes: true, attributeFilter: ['class'] });
+    observer.observe(element, {attributes: true, attributeFilter: ['class']});
 }
 
 function onTransition(e: TransitionEvent, isActive: Boolean, element: HTMLElement) {
@@ -561,9 +561,9 @@ export function focus(selector, noScroll: boolean = false) {
     })
 }
 
-export function select(selector){
+export function select(selector) {
     let dom = getDom(selector);
-    if(!(dom instanceof HTMLInputElement || dom instanceof HTMLTextAreaElement))
+    if (!(dom instanceof HTMLInputElement || dom instanceof HTMLTextAreaElement))
         throw new Error("Unable to select an invalid element")
     dom.select()
 }
@@ -797,7 +797,7 @@ export function elementScrollIntoView(selector: Element | string) {
     if (!element)
         return;
 
-    element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    element.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'start'});
 }
 
 const oldBodyCacheStack = [];
@@ -852,7 +852,7 @@ export function createIconFromfontCN(scriptUrl) {
 }
 
 export function getScroll() {
-    return { x: window.pageXOffset, y: window.pageYOffset };
+    return {x: window.pageXOffset, y: window.pageYOffset};
 }
 
 export function getInnerText(element) {
@@ -1002,7 +1002,7 @@ function mentionsOnWindowClick(e) {
 
 //#endregion
 
-export { disableDraggable, enableDraggable, resetModalPosition } from "./modules/dragHelper";
+export {disableDraggable, enableDraggable, resetModalPosition} from "./modules/dragHelper";
 
 export function bindTableHeaderAndBodyScroll(bodyRef, headerRef) {
     bodyRef.bindScrollLeftToHeader = () => {
@@ -1206,15 +1206,15 @@ window.onload = function () {
     registerDirective();
 }
 
-function registerPasteWithData(customEventName){
-    if(Blazor){
+function registerPasteWithData(customEventName) {
+    if (Blazor) {
         Blazor.registerCustomEventType(customEventName, {
             browserEventName: 'paste',
             createEventArgs: event => {
-              return {
-                type: event.type,
-                pastedData: event.clipboardData.getData('text')
-              };
+                return {
+                    type: event.type,
+                    pastedData: event.clipboardData.getData('text')
+                };
             }
         });
     }
@@ -1339,8 +1339,7 @@ export function getMenuableDimensions(hasActivator, activatorSelector, attach, c
     }
 
     var dimensions = {
-        activator: {
-        } as any,
+        activator: {} as any,
         content: null,
         relativeYOffset: 0,
         offsetParentLeft: 0
@@ -1368,8 +1367,7 @@ export function getMenuableDimensions(hasActivator, activatorSelector, attach, c
                 if (hasActivator) {
                     dimensions.activator.top -= dimensions.relativeYOffset
                     dimensions.activator.left -= window.pageXOffset + offsetRect.left
-                }
-                else {
+                } else {
                     dimensions.offsetParentLeft = offsetRect.left
                 }
             }
@@ -1447,7 +1445,9 @@ function updateSize(el, sizeProp, expandTransition) {
 
     if (el['_size'] != size) {
         el['_size'] = size;
-        expandTransition.invokeMethodAsync('OnSizeChanged', size);
+
+        var blazorId = getBlazorId(el);
+        expandTransition.invokeMethodAsync('OnSizeChanged', size, blazorId);
     }
 }
 
@@ -1468,10 +1468,10 @@ export function invokeMultipleMethod(windowProps, documentProps, hasActivator, a
 }
 
 function getBlazorId(el) {
-    console.log(el, el.target);
-    // TODO: test...
-    let _bl_ = el.target.getAttributeNames().find(a => a.startsWith('_bl_'))
+    let _bl_ = el.getAttributeNames().find(a => a.startsWith('_bl_'))
     if (_bl_) {
         _bl_ = _bl_.substring(4);
     }
+
+    return _bl_;
 }

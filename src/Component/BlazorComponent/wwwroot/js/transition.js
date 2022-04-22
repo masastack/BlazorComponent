@@ -3,8 +3,6 @@
         element = document.querySelector(element);
     }
 
-    console.log('element', element)
-
     if (!element) return;
 
     element.addEventListener("transitionend", (e) => {
@@ -13,8 +11,6 @@
         if (_bl_) {
             _bl_ = _bl_.substring(4);
         }
-
-        console.log(`_bl_:${_bl_}, dotNet:${Boolean(dotNet)}`)
 
         const classNames = e.target.className.split(' ');
         let transition;
