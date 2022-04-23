@@ -21,10 +21,19 @@
         {
             await base.OnAfterRenderAsync(firstRender);
 
-            if (firstRender && Transition?.Name is "expand-transition" or "expand-x-transition")
+            if (firstRender)
             {
-                // Only Expand(X)Transition needs to register observer
-                await Transition.OnElementReadyAsync(this.Reference);
+                if (NoTransition)
+                {
+                    LazyValue = Value;
+                    StateHasChanged();
+                }
+
+                if (Transition?.Name is "expand-transition" or "expand-x-transition")
+                {
+                    // Only Expand(X)Transition needs to register observer
+                    await Transition.OnElementReadyAsync(this.Reference);
+                }
             }
         }
 

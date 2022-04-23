@@ -74,13 +74,13 @@
                     styles.Add(Style);
                 }
 
-                if (IsLeaveTransitionState && Transition.LeaveAbsolute && Element.Element is not null)
+                if (IsLeaveTransitionState && Transition.LeaveAbsolute && Element.ElementInfo is not null)
                 {
                     styles.Add("position:absolute");
-                    styles.Add($"top:{Element.Element.OffsetTop}px");
-                    styles.Add($"left:{Element.Element.OffsetLeft}px");
-                    styles.Add($"width:{Element.Element.OffsetWidth}px");
-                    styles.Add($"height:{Element.Element.OffsetHeight}px");
+                    styles.Add($"top:{Element.ElementInfo.OffsetTop}px");
+                    styles.Add($"left:{Element.ElementInfo.OffsetLeft}px");
+                    styles.Add($"width:{Element.ElementInfo.OffsetWidth}px");
+                    styles.Add($"height:{Element.ElementInfo.OffsetHeight}px");
                 }
 
                 return string.Join(';', styles);

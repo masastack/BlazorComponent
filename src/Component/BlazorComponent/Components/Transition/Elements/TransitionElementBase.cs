@@ -25,12 +25,20 @@ namespace BlazorComponent
 
         protected abstract TransitionState CurrentState { get; }
 
-        internal BlazorComponent.Web.Element? Element { get; set; }
+        /// <summary>
+        /// The dom information about the transitional element.
+        /// </summary>
+        internal BlazorComponent.Web.Element? ElementInfo { get; private set; }
 
         /// <summary>
-        /// 
+        /// Whether it is a transitional element.
         /// </summary>
-        protected bool ActiveTransitionElement => Transition?.TransitionElement == this;
+        protected bool HavingTransition => Transition?.TransitionElement == this;
+
+        /// <summary>
+        /// No transition or is not a transitional element.
+        /// </summary>
+        protected bool NoTransition => !HavingTransition;
 
         protected override void OnInitialized()
         {
@@ -42,9 +50,8 @@ namespace BlazorComponent
 
         protected override async Task OnParametersSetAsync()
         {
-            if (Transition is null)
+            if (NoTransition)
             {
-                // TODO: 给所有过渡的Element的加个默认的BuildRenderTree();
                 return;
             }
 
@@ -53,15 +60,18 @@ namespace BlazorComponent
                 _preValue = Value;
 
                 StartTransition();
+
                 _transitionRunning = true;
             }
 
+            // hooks
+            // TODO: but it hasn't been tested yet
             if (_transitionRunning)
             {
                 switch (CurrentState)
                 {
                     case TransitionState.None:
-                        if (Transition?.Mode is TransitionMode.InOut)
+                        if (Transition!.Mode is TransitionMode.InOut)
                         {
                             if (Transition.OnBeforeEnter.HasDelegate)
                             {
@@ -70,65 +80,50 @@ namespace BlazorComponent
                         }
                         else
                         {
-                            if (Transition is not null)
+                            if (Transition!.OnBeforeLeave.HasDelegate)
                             {
-                                if (Transition.OnBeforeLeave.HasDelegate)
-                                {
-                                    await Transition.OnBeforeLeave.InvokeAsync();
-                                }
-
-                                await BeforeLeaveAsync();
+                                await Transition.OnBeforeLeave.InvokeAsync();
                             }
+
+                            await BeforeLeaveAsync();
                         }
 
                         break;
                     case TransitionState.Leave:
-                        if (Transition is not null)
+                        if (Transition!.OnLeave.HasDelegate)
                         {
-                            if (Transition.OnLeave.HasDelegate)
-                            {
-                                await Transition.OnLeave.InvokeAsync();
-                            }
+                            await Transition.OnLeave.InvokeAsync();
                         }
 
                         break;
                     case TransitionState.Enter:
-                        if (Transition is not null)
+                        if (Transition!.OnEnter.HasDelegate)
                         {
-                            if (Transition.OnEnter.HasDelegate)
-                            {
-                                await Transition.OnEnter.InvokeAsync();
-                            }
+                            await Transition.OnEnter.InvokeAsync();
                         }
 
                         break;
                     case TransitionState.EnterTo:
-                        if (Value is true || Transition?.Mode is TransitionMode.OutIn)
+                        if (Value is true || Transition!.Mode is TransitionMode.OutIn)
                         {
                             _transitionRunning = false;
                         }
 
-                        if (Transition is not null)
+                        if (Transition!.OnAfterEnter.HasDelegate)
                         {
-                            if (Transition.OnAfterEnter.HasDelegate)
-                            {
-                                await Transition.OnAfterEnter.InvokeAsync();
-                            }
+                            await Transition.OnAfterEnter.InvokeAsync();
                         }
 
                         break;
                     case TransitionState.LeaveTo:
-                        if (Value is false || Transition?.Mode is TransitionMode.InOut)
+                        if (Value is false || Transition!.Mode is TransitionMode.InOut)
                         {
                             _transitionRunning = false;
                         }
 
-                        if (Transition is not null)
+                        if (Transition!.OnAfterLeave.HasDelegate)
                         {
-                            if (Transition.OnAfterLeave.HasDelegate)
-                            {
-                                await Transition.OnAfterLeave.InvokeAsync();
-                            }
+                            await Transition.OnAfterLeave.InvokeAsync();
                         }
 
                         break;
@@ -145,7 +140,7 @@ namespace BlazorComponent
                 FirstRender = false;
             }
 
-            if (Transition is not null && ActiveTransitionElement)
+            if (HavingTransition)
             {
                 if (_transitionJsInvoker is null)
                 {
@@ -154,7 +149,7 @@ namespace BlazorComponent
                         return;
                     }
 
-                    Transition.ElementReference = Reference;
+                    Transition!.ElementReference = Reference;
 
                     _transitionJsInvoker = new TransitionJsInvoker(Js);
                     await _transitionJsInvoker.Init(OnTransitionEndAsync);
@@ -195,7 +190,7 @@ namespace BlazorComponent
         {
             if (!FirstRender && Transition!.LeaveAbsolute)
             {
-                Element = await Js.InvokeAsync<BlazorComponent.Web.Element>(JsInteropConstants.GetDomInfo, Reference);
+                ElementInfo = await Js.InvokeAsync<BlazorComponent.Web.Element>(JsInteropConstants.GetDomInfo, Reference);
             }
         }
 
