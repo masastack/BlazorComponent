@@ -2,11 +2,13 @@
 @typeparam TIcon
 @inherits ComponentPartBase<TIcon>
 
-@*//this will change*@
-<button type="button"
-        class="@CssProvider.GetClass()"
-        style="@CssProvider.GetStyle()"
-        @attributes="Attrs"
-        @ref="Ref">
+<IfTransitionElement
+    Tag="button"
+    Value="@ComputedIfElse"
+    type="button"
+    class="@CssProvider.GetClass()"
+    style="@CssProvider.GetStyle()"
+    ReferenceCaptureAction="_ => Ref = _"
+    @attributes="@Attrs">
     @NewChildren
-</button>
+</IfTransitionElement>

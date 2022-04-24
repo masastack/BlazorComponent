@@ -288,6 +288,19 @@ namespace BlazorComponent
             Window.OnResize += HandleOnResizeAsync;
         }
 
+        protected override void OnParametersSet()
+        {
+            if (OpenDelay < 48)
+            {
+                OpenDelay = 48;
+            }
+
+            if (CloseDelay < 48)
+            {
+                CloseDelay = 48;
+            }
+        }
+
         private async Task HandleOnResizeAsync()
         {
             if (!IsActive)
@@ -370,7 +383,7 @@ namespace BlazorComponent
             }
         }
 
-        protected override async Task OnActiveUpdated(bool value)
+        protected override async Task WhenIsActiveUpdating(bool value)
         {
             if (value)
             {
@@ -381,7 +394,7 @@ namespace BlazorComponent
                 await CallDeactivateAsync();
             }
 
-            await base.OnActiveUpdated(value);
+            await base.WhenIsActiveUpdating(value);
         }
 
         private async Task CallActivateAsync()
@@ -416,7 +429,7 @@ namespace BlazorComponent
             base.Dispose(disposing);
         }
 
-        public async ValueTask DisposeAsync()
+        public new async ValueTask DisposeAsync()
         {
             try
             {
