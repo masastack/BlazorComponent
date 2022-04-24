@@ -1,101 +1,100 @@
-﻿namespace BlazorComponent
+﻿namespace BlazorComponent;
+
+public class KeyTransitionElementState<TValue>
 {
-    public class KeyTransitionElementState<TValue>
+    private TValue _key;
+
+    public KeyTransitionElementState(KeyTransitionElement<TValue> element)
     {
-        private TValue _key;
+        Element = element;
+    }
 
-        public KeyTransitionElementState(KeyTransitionElement<TValue> element)
+    protected object Value => Element.Value;
+
+    protected Transition Transition => Element.Transition;
+
+    protected string Class => Element.Class;
+
+    protected string Style => Element.Style;
+
+    protected bool IsLeaveTransitionState => TransitionState is TransitionState.Leave or TransitionState.LeaveTo;
+
+    protected bool IsEnterTransitionState => TransitionState is TransitionState.Enter or TransitionState.EnterTo;
+
+    protected KeyTransitionElement<TValue> Element { get; }
+
+    /// <summary>
+    /// Save transition state for element
+    /// </summary>
+    public TransitionState TransitionState { get; set; }
+
+    public TValue Key
+    {
+        get { return _key; }
+        set
         {
-            Element = element;
+            _key = value;
+            IsEmpty = false;
         }
+    }
 
-        protected object Value => Element.Value;
+    public bool IsEmpty { get; set; } = true;
 
-        protected Transition Transition => Element.Transition;
-
-        protected string Class => Element.Class;
-
-        protected string Style => Element.Style;
-
-        protected bool IsLeaveTransitionState => TransitionState is TransitionState.Leave or TransitionState.LeaveTo;
-
-        protected bool IsEnterTransitionState => TransitionState is TransitionState.Enter or TransitionState.EnterTo;
-
-        protected KeyTransitionElement<TValue> Element { get; }
-
-        /// <summary>
-        /// Save transition state for element
-        /// </summary>
-        public TransitionState TransitionState { get; set; }
-
-        public TValue Key
+    public string ComputedClass
+    {
+        get
         {
-            get { return _key; }
-            set
+            var transitionName = Transition.Name;
+            if (transitionName == null || TransitionState == TransitionState.None)
             {
-                _key = value;
-                IsEmpty = false;
+                return Class;
             }
-        }
 
-        public bool IsEmpty { get; set; } = true;
-
-        public string ComputedClass
-        {
-            get
+            var transitionClass = TransitionState switch
             {
-                var transitionName = Transition.Name;
-                if (transitionName == null || TransitionState == TransitionState.None)
-                {
-                    return Class;
-                }
+                TransitionState.Enter => $"{transitionName}-enter {transitionName}-enter-active",
+                TransitionState.EnterTo => $"{transitionName}-enter-active {transitionName}-enter-to",
+                TransitionState.Leave => $"{transitionName}-leave {transitionName}-leave-active",
+                TransitionState.LeaveTo => $"{transitionName}-leave-active {transitionName}-leave-to",
+                _ => string.Empty
+            };
 
-                var transitionClass = TransitionState switch
-                {
-                    TransitionState.Enter => $"{transitionName}-enter {transitionName}-enter-active",
-                    TransitionState.EnterTo => $"{transitionName}-enter-active {transitionName}-enter-to",
-                    TransitionState.Leave => $"{transitionName}-leave {transitionName}-leave-active",
-                    TransitionState.LeaveTo => $"{transitionName}-leave-active {transitionName}-leave-to",
-                    _ => string.Empty
-                };
-
-                return string.Join(" ", Class, transitionClass);
-            }
+            return string.Join(" ", Class, transitionClass);
         }
+    }
 
-        public string ComputedStyle
+    public string ComputedStyle
+    {
+        get
         {
-            get
+            var styles = new List<string>();
+
+            if (Style != null)
             {
-                var styles = new List<string>();
-
-                if (Style != null)
-                {
-                    styles.Add(Style);
-                }
-
-                if (IsLeaveTransitionState && Transition.LeaveAbsolute && Element.ElementInfo is not null)
-                {
-                    styles.Add("position:absolute");
-                    styles.Add($"top:{Element.ElementInfo.OffsetTop}px");
-                    styles.Add($"left:{Element.ElementInfo.OffsetLeft}px");
-                    styles.Add($"width:{Element.ElementInfo.OffsetWidth}px");
-                    styles.Add($"height:{Element.ElementInfo.OffsetHeight}px");
-                }
-
-                return string.Join(';', styles);
+                styles.Add(Style);
             }
-        }
 
-        public void CopyTo(KeyTransitionElementState<TValue> state)
-        {
-            state.Key = Key;
-            state.TransitionState = TransitionState;
-        }
+            if (IsLeaveTransitionState && Transition.LeaveAbsolute && Element.ElementInfo is not null)
+            {
+                styles.Add("position:absolute");
+                styles.Add($"top:{Element.ElementInfo.OffsetTop}px");
+                styles.Add($"left:{Element.ElementInfo.OffsetLeft}px");
+                styles.Add($"width:{Element.ElementInfo.OffsetWidth}px");
+                styles.Add($"height:{Element.ElementInfo.OffsetHeight}px");
+            }
 
-        public void Reset()
-        {
-            IsEmpty = true;
+            return string.Join(';', styles);
         }
+    }
+
+    public void CopyTo(KeyTransitionElementState<TValue> state)
+    {
+        state.Key = Key;
+        state.TransitionState = TransitionState;
+    }
+
+    public void Reset()
+    {
+        IsEmpty = true;
     }
 }

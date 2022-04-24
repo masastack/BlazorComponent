@@ -1,153 +1,147 @@
-﻿namespace BlazorComponent
+﻿namespace BlazorComponent;
+
+public abstract class ToggleableTransitionElement : TransitionElementBase<bool>
 {
-    public abstract class ToggleableTransitionElement : TransitionElementBase<bool>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public override IDictionary<string, object> AdditionalAttributes
     {
-        [Parameter(CaptureUnmatchedValues = true)]
-        public override IDictionary<string, object> AdditionalAttributes
+        get
         {
-            get
-            {
-                var attributes = base.AdditionalAttributes ?? new Dictionary<string, object>();
+            var attributes = base.AdditionalAttributes ?? new Dictionary<string, object>();
 
-                attributes["class"] = ComputedClass;
-                attributes["style"] = ComputedStyle;
+            attributes["class"] = ComputedClass;
+            attributes["style"] = ComputedStyle;
 
-                return attributes;
-            }
-            set => base.AdditionalAttributes = value;
+            return attributes;
         }
+        set => base.AdditionalAttributes = value;
+    }
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+    private TransitionState State { get;  set; }
+
+    protected bool LazyValue { get; private set; }
+
+    protected override string ComputedClass
+    {
+        get
         {
-            await base.OnAfterRenderAsync(firstRender);
+            if (Transition == null) return Class;
 
-            if (firstRender)
-            {
-                if (NoTransition)
-                {
-                    LazyValue = Value;
-                    StateHasChanged();
-                }
-
-                if (Transition?.Name is "expand-transition" or "expand-x-transition")
-                {
-                    // Only Expand(X)Transition needs to register observer
-                    await Transition.OnElementReadyAsync(this.Reference);
-                }
-            }
+            var transitionClass = Transition.GetClass(State);
+            return string.Join(" ", Class, transitionClass);
         }
+    }
 
-        private TransitionState State { get;  set; }
-
-        protected bool LazyValue { get; private set; }
-
-        protected override string ComputedClass
+    protected override string ComputedStyle
+    {
+        get
         {
-            get
-            {
-                if (Transition == null) return Class;
+            if (Transition == null) return Style;
 
-                var transitionClass = Transition.GetClass(State);
-                return string.Join(" ", Class, transitionClass);
-            }
+            var transitionStyle = Transition.GetStyle(State);
+            return string.Join(';', Style, transitionStyle);
         }
+    }
 
-        protected override string ComputedStyle
+    protected override TransitionState CurrentState => State;
+
+    protected override void OnParametersSet()
+    {
+        if (NoTransition)
         {
-            get
-            {
-                if (Transition == null) return Style;
-
-                var transitionStyle = Transition.GetStyle(State);
-                return string.Join(';', Style, transitionStyle);
-            }
+            LazyValue = Value;
         }
+    }
 
-        protected override TransitionState CurrentState => State;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
 
-        protected override void StartTransition()
+        if (firstRender)
         {
-            //Don't trigger transition in first render
-            if (FirstRender)
+            if (Transition?.Name is "expand-transition" or "expand-x-transition")
             {
-                LazyValue = Value;
-                return;
-            }
-
-            //No transition
-            if (Transition == null || string.IsNullOrEmpty(Transition.Name))
-            {
-                LazyValue = Value;
-                return;
-            }
-
-            if (Value)
-            {
-                ShowElement();
-                State = TransitionState.Enter;
-            }
-            else
-            {
-                State = TransitionState.Leave;
+                // Only Expand(X)Transition needs to register observer
+                await Transition.OnElementReadyAsync(this.Reference);
             }
         }
+    }
 
-        protected override async Task NextAsync(TransitionState state)
+    protected override void StartTransition()
+    {
+        //Don't trigger transition in first render
+        if (FirstRender)
         {
-            switch (state)
-            {
-                case TransitionState.Enter:
-                    await RequestNextStateAsync(TransitionState.EnterTo);
-                    break;
-                case TransitionState.Leave:
-                    await RequestNextStateAsync(TransitionState.LeaveTo);
-                    break;
-            }
+            LazyValue = Value;
+            return;
         }
 
-        protected override Task OnTransitionEndAsync(string referenceId, LeaveEnter transition)
+        if (Value)
         {
-            if (referenceId != Reference.Id)
-            {
-                return Task.CompletedTask;
-            }
+            ShowElement();
+            State = TransitionState.Enter;
+        }
+        else
+        {
+            State = TransitionState.Leave;
+        }
+    }
 
-            if (transition == LeaveEnter.Enter && CurrentState == TransitionState.EnterTo)
-            {
-                NextState(TransitionState.None);
-            }
-            else if (transition == LeaveEnter.Leave && CurrentState == TransitionState.LeaveTo)
-            {
-                HideElement();
-                NextState(TransitionState.None);
-            }
+    protected override async Task NextAsync(TransitionState state)
+    {
+        switch (state)
+        {
+            case TransitionState.Enter:
+                await RequestNextStateAsync(TransitionState.EnterTo);
+                break;
+            case TransitionState.Leave:
+                await RequestNextStateAsync(TransitionState.LeaveTo);
+                break;
+        }
+    }
 
+    protected override Task OnTransitionEndAsync(string referenceId, LeaveEnter transition)
+    {
+        if (referenceId != Reference.Id)
+        {
             return Task.CompletedTask;
         }
 
-        private void NextState(TransitionState transitionState)
+        if (transition == LeaveEnter.Enter && CurrentState == TransitionState.EnterTo)
         {
-            State = transitionState;
-            StateHasChanged();
+            NextState(TransitionState.None);
+        }
+        else if (transition == LeaveEnter.Leave && CurrentState == TransitionState.LeaveTo)
+        {
+            HideElement();
+            NextState(TransitionState.None);
         }
 
-        private async Task RequestNextStateAsync(TransitionState state)
-        {
-            await RequestAnimationFrameAsync(() =>
-            {
-                NextState(state);
-                return Task.CompletedTask;
-            });
-        }
+        return Task.CompletedTask;
+    }
 
-        private void HideElement()
-        {
-            LazyValue = false;
-        }
+    private void NextState(TransitionState transitionState)
+    {
+        State = transitionState;
+        StateHasChanged();
+    }
 
-        private void ShowElement()
+    private async Task RequestNextStateAsync(TransitionState state)
+    {
+        await RequestAnimationFrameAsync(() =>
         {
-            LazyValue = true;
-        }
+            NextState(state);
+            return Task.CompletedTask;
+        });
+    }
+
+    private void HideElement()
+    {
+        LazyValue = false;
+    }
+
+    private void ShowElement()
+    {
+        LazyValue = true;
     }
 }
