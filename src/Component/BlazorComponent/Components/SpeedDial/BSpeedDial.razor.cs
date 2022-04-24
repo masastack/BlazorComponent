@@ -41,14 +41,18 @@ namespace BlazorComponent
         [Parameter]
         public string Origin { get; set; }
 
-        protected ElementReference ContentElement { get; set; }
-
         private string Tag { get; set; } = "div";
 
+        private bool _isAttached;
+
+        protected ElementReference ContentElement { get; set; }
+        
         protected override async Task WhenIsActiveUpdating(bool value)
         {
-            if (!OpenOnHover)
+            if (!OpenOnHover && !_isAttached)
             {
+                _isAttached = true;
+
                 await JsInvokeAsync(JsInteropConstants.AddOutsideClickEventListener,
                     DotNetObjectReference.Create(new Invoker<object>(HandleOutsideClickAsync)),
                     new[] { Document.GetElementByReference(ContentElement).Selector, ActivatorSelector }, null, ContentElement);
@@ -101,19 +105,7 @@ namespace BlazorComponent
         {
             if (!IsActive) return;
 
-            await RunCloseDelayAsync();
-        }
-
-        protected override async Task HandleOnClickAsync(MouseEventArgs args)
-        {
-            if (Value)
-            {
-                await RunCloseDelayAsync();
-            }
-            else
-            {
-                await RunOpenDelayAsync();
-            }
+            await SetIsActive(false);
         }
     }
 }

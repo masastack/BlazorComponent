@@ -4,22 +4,11 @@
 <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" @ref="Ref">
     @ComputedActivatorContent
 
-    @if (Transition != null)
-    {
-        <Transition Name="@Transition" Origin="@Origin">
-            <ShowTransitionElement @attributes="@ContentAttributes" Value="Value" Tag="@Tag" class="@CssProvider.GetClass("dial-list")" style="@CssProvider.GetStyle("dial-list")" id="@Id" ReferenceCaptureAction="el => ContentElement = el">
-                @ChildContent
-            </ShowTransitionElement>
-        </Transition>
-    }
-    else
-    {
-        <div class="@CssProvider.GetClass("dial-list")" style="@CssProvider.GetStyle("dial-list")">
-            @if (Value)
-            {
-                @ChildContent
-            }
-        </div>
-    }
+    @*TODO: implement TransitionGroup*@
+    <Transition Name="@Transition" Origin="@Origin">
+        <ShowTransitionElement @attributes="@ContentAttributes" Value="Value" Tag="@Tag" class="@CssProvider.GetClass("dial-list")" style="@CssProvider.GetStyle("dial-list")" id="@Id" ReferenceCaptureAction="el => ContentElement = el">
+            @ChildContent
+        </ShowTransitionElement>
+    </Transition>
 </div>
 
