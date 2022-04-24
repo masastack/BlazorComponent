@@ -21,13 +21,31 @@ namespace BlazorComponent
         public Action<ElementReference> ReferenceCaptureAction { get; set; }
 
         [Parameter(CaptureUnmatchedValues = true)]
-        public virtual IDictionary<string, object> AdditionalAttributes { get; set; }
+        public virtual IDictionary<string, object> AdditionalAttributes { get; set; } = new Dictionary<string, object>();
+
+        private ElementReference _reference;
+
+        protected bool ElementReferenceChanged { get; set; }
+
+        protected string Id => AdditionalAttributes.TryGetValue("id", out var id) ? id.ToString() : string.Empty;
 
         protected virtual string ComputedClass => Class;
 
         protected virtual string ComputedStyle => Style;
 
-        public ElementReference Reference { get; protected set; }
+        public ElementReference Reference
+        {
+            get => _reference;
+            protected set
+            {
+                if (_reference.Id != value.Id)
+                {
+                    ElementReferenceChanged = true;
+                }
+
+                _reference = value;
+            }
+        }
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {

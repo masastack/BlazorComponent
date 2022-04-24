@@ -1,64 +1,78 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
-namespace BlazorComponent
+namespace BlazorComponent;
+
+/// <summary>
+/// The ExpandTransition.
+/// </summary>
+public class ExpandTransition : Transition
 {
-    public class ExpandTransition : Transition
+    // BUG: Unable to get height/width for the first time.
+    // TODO: Try to rewrite ExpandTransition with hooks.
+    // https://github.com/vuetifyjs/vuetify/blob/aa68dd2d9c/packages/vuetify/src/components/transitions/expand-transition.ts
+
+    [Inject]
+    public IJSRuntime Js { get; set; }
+
+    protected virtual string SizeProp => "height";
+
+    private double Size { get; set; }
+
+    protected override void OnParametersSet()
     {
-        [Inject]
-        public IJSRuntime JS { get; set; }
+        Name = "expand-transition";
+    }
 
-        protected virtual string SizeProp => "height";
+    public override string GetClass(TransitionState transitionState)
+    {
+        var transitionClass = base.GetClass(transitionState);
 
-        protected double Size { get; set; }
+        return string.Join(
+            " ",
+            transitionClass,
+            transitionState == TransitionState.None ? null : "in-transition");
+    }
 
-        protected override void OnParametersSet()
+    public override string GetStyle(TransitionState transitionState)
+    {
+        var styles = new List<string>
         {
-            Name = "expand-transition";
+            base.GetStyle(transitionState)
+        };
+
+        switch (transitionState)
+        {
+            case TransitionState.Enter:
+            case TransitionState.LeaveTo:
+                styles.Add($"{SizeProp}:0px");
+                break;
+            case TransitionState.EnterTo:
+            case TransitionState.Leave:
+                styles.Add($"{SizeProp}:{Size}px");
+                break;
         }
 
-        public override string GetClass(TransitionState transitionState)
+        if (transitionState != TransitionState.None)
         {
-            var transitionClass = base.GetClass(transitionState);
-            return string.Join(" ", transitionClass, transitionState == TransitionState.None ? null : "in-transition");
+            styles.Add("overflow:hidden");
         }
 
-        public override string GetStyle(TransitionState transitionState)
-        {
-            var styles = new List<string>
-            {
-                base.GetStyle(transitionState)
-            };
+        return string.Join(';', styles);
+    }
 
-            switch (transitionState)
-            {
-                case TransitionState.Enter:
-                case TransitionState.LeaveTo:
-                    styles.Add($"{SizeProp}:0px");
-                    break;
-                case TransitionState.EnterTo:
-                case TransitionState.Leave:
-                    styles.Add($"{SizeProp}:{Size}px");
-                    break;
-                default:
-                    break;
-            }
+    public override async Task OnElementReadyAsync(ElementReference elementReference)
+    {
+        await Js.InvokeVoidAsync(JsInteropConstants.ObserveElement, elementReference, SizeProp, DotNetObjectReference.Create(this));
+    }
 
-            if (transitionState != TransitionState.None)
-            {
-                styles.Add("overflow:hidden");
-            }
-
-            return string.Join(';', styles);
-        }
-
-        public override async Task OnElementReadyAsync(ToggleableTransitionElement element)
-        {
-            await JS.InvokeVoidAsync(JsInteropConstants.ObserveElement, element.Reference, SizeProp, DotNetObjectReference.Create(this));
-        }
-
-        [JSInvokable]
-        public void OnSizeChanged(double size)
+    [JSInvokable]
+    public void OnSizeChanged(double size, string blazorId)
+    {
+        Console.WriteLine($"blazorId:{blazorId}");
+        Console.WriteLine($"ElementReference?.Id:{ElementReference?.Id}");
+        Console.WriteLine($"size:{size}");
+        if (ElementReference?.Id == blazorId)
         {
             Size = size;
         }

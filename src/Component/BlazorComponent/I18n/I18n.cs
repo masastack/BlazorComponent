@@ -46,18 +46,18 @@ namespace BlazorComponent.I18n
 
         public I18n(string? language = null) => SetLang(language ?? DefaultLanguage);
 
-        private string? _CurrentLanguage;
+        private string? _currentLanguage;
 
         public string CurrentLanguage
         {
             get
             {
-                return _CurrentLanguage ?? DefaultLanguage;
+                return _currentLanguage ?? DefaultLanguage;
             }
             private set
             {
-                _CurrentLanguage = value;
-                _languageMap = GetLang(value);
+                _currentLanguage = value ?? DefaultLanguage;
+                _languageMap = GetLang(_currentLanguage);
             }
         }
 
