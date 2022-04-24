@@ -42,6 +42,8 @@ namespace BlazorComponent
         protected const int BROWSER_RENDER_INTERVAL = 16;
 
         private ElementReference _ref;
+        private ElementReference _prevRef;
+        private bool _elementReferenceChanged;
 
         public ComponentCssProvider CssProvider { get; } = new();
 
@@ -57,6 +59,12 @@ namespace BlazorComponent
             get => _ref;
             set
             {
+                if (_prevRef.Id != value.Id)
+                {
+                    _prevRef = value;
+                    _elementReferenceChanged = true;
+                }
+
                 _ref = value;
                 RefBack?.Set(value);
             }
@@ -76,6 +84,22 @@ namespace BlazorComponent
         {
             SetComponentClass();
             return base.OnInitializedAsync();
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            await base.OnAfterRenderAsync(firstRender);
+
+            if (_elementReferenceChanged)
+            {
+                _elementReferenceChanged = false;
+                await OnElementReferenceChangedAsync();
+            }
+        }
+
+        protected virtual Task OnElementReferenceChangedAsync()
+        {
+            return Task.CompletedTask;
         }
 
         protected virtual void SetComponentClass()

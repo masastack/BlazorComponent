@@ -7,10 +7,13 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public partial class BIcon : IThemeable
+    public partial class BIcon : IThemeable, ITransitionIfElse
     {
         [Parameter]
         public RenderFragment ChildContent { get; set; }
+
+        [Parameter]
+        public bool? IfElse { get; set; }
 
         #region IIcon
 
@@ -98,7 +101,8 @@ namespace BlazorComponent
 #pragma warning disable BL0006 // Do not use RenderTree types
             var frames = builder.GetFrames().Array;
             //todo Array will change
-            var frame = builder.GetFrames().Array.FirstOrDefault(u => u.FrameType == RenderTreeFrameType.Text || u.FrameType == RenderTreeFrameType.Markup);
+            var frame = builder.GetFrames().Array
+                               .FirstOrDefault(u => u.FrameType == RenderTreeFrameType.Text || u.FrameType == RenderTreeFrameType.Markup);
 
             char[] charsToTrim = { '\r', ' ', '\n' };
             Icon = frame.TextContent.Trim(charsToTrim);
@@ -118,7 +122,20 @@ namespace BlazorComponent
         {
             await base.OnAfterRenderAsync(firstRender);
 
-            if (firstRender && OnClick.HasDelegate)
+            if (firstRender)
+            {
+                await TryRegisterClickEvent();
+            }
+        }
+
+        protected override async Task OnElementReferenceChangedAsync()
+        {
+            await TryRegisterClickEvent();
+        }
+
+        private async Task TryRegisterClickEvent()
+        {
+            if (Ref.Context is not null && OnClick.HasDelegate)
             {
                 var button = Document.GetElementByReference(Ref);
                 await button.AddEventListenerAsync("click", CreateEventCallback<MouseEventArgs>(HandleOnClick), false, new EventListenerActions

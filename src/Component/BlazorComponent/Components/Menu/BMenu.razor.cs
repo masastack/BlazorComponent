@@ -162,8 +162,6 @@ namespace BlazorComponent
                     attributes.Add("onmouseleave", CreateEventCallback<MouseEventArgs>(HandleOnContentMouseleaveAsync));
                 }
 
-                attributes.Add("close-condition", IsActive && CloseOnClick);
-
                 return attributes;
             }
         }
@@ -189,7 +187,7 @@ namespace BlazorComponent
 
         //TODO:keydown event
 
-        protected override async Task OnActiveUpdated(bool value)
+        protected override async Task WhenIsActiveUpdating(bool value)
         {
             if (CloseOnClick && !OpenOnHover && !Attached)
             {
@@ -198,7 +196,7 @@ namespace BlazorComponent
                     new[] { Document.GetElementByReference(ContentElement).Selector, ActivatorSelector }, null, ContentElement);
             }
 
-            await base.OnActiveUpdated(value);
+            await base.WhenIsActiveUpdating(value);
         }
 
         private async Task HandleOutsideClickAsync(object agrs)
@@ -206,12 +204,12 @@ namespace BlazorComponent
             if (!IsActive || !CloseOnClick) return;
 
             await OnOutsideClick.InvokeAsync();
-            await RunCloseDelayAsync();
+            await SetIsActive(false);
         }
 
         protected async Task HandleOnContentClickAsync(MouseEventArgs _)
         {
-            await RunCloseDelayAsync();
+            await SetIsActive(false);
         }
 
         protected async Task HandleOnContentMouseenterAsync(MouseEventArgs args)

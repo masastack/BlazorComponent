@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
+﻿using Microsoft.JSInterop;
 
 namespace BlazorComponent;
 
@@ -29,21 +28,26 @@ public class BDelayable : BDomComponentBase, IAsyncDisposable
         await base.OnAfterRenderAsync(firstRender);
     }
 
-    [JSInvokable]
-    public async Task SetActive(bool value)
+    [JSInvokable("SetActive")]
+    public async Task SetIsActive(bool value)
     {
-        await OnActiveUpdating(value);
+        if (value)
+        {
+            ShowLazyContent();
+        }
+
+        await WhenIsActiveUpdating(value);
+
         IsActive = value;
-        await OnActiveUpdated(value);
+
         StateHasChanged();
     }
 
-    protected virtual Task OnActiveUpdating(bool value)
+    protected virtual void ShowLazyContent()
     {
-        return Task.CompletedTask;
     }
 
-    protected virtual Task OnActiveUpdated(bool value)
+    protected virtual Task WhenIsActiveUpdating(bool value)
     {
         return Task.CompletedTask;
     }
@@ -56,7 +60,7 @@ public class BDelayable : BDomComponentBase, IAsyncDisposable
         }
         else
         {
-            await SetActive(true);
+            await SetIsActive(true);
         }
     }
 
@@ -68,7 +72,7 @@ public class BDelayable : BDomComponentBase, IAsyncDisposable
         }
         else
         {
-            await SetActive(false);
+            await SetIsActive(false);
         }
     }
 
