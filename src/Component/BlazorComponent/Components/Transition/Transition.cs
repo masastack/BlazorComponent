@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.JSInterop;
 
 namespace BlazorComponent
 {
@@ -12,22 +13,41 @@ namespace BlazorComponent
         public string Origin { get; set; }
 
         [Parameter]
-        public int Duration { get; set; } = 300;
+        public int Duration { get; set; } // TODO: 先实现css的动画时间
+
+        [Parameter]
+        public bool LeaveAbsolute { get; set; }
+
+        [Parameter]
+        public TransitionMode? Mode { get; set; }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
         [Parameter]
+        public EventCallback<Element> OnBeforeEnter { get; set; }
+
+        [Parameter]
         public EventCallback<Element> OnEnter { get; set; }
+
+        [Parameter]
+        public EventCallback<Element> OnAfterEnter { get; set; }
+
+        [Parameter]
+        public EventCallback<Element> OnBeforeLeave { get; set; }
 
         [Parameter]
         public EventCallback<Element> OnLeave { get; set; }
 
         [Parameter]
-        public EventCallback<Element> OnEnterTo { get; set; }
+        public EventCallback<Element> OnAfterLeave { get; set; }
 
-        [Parameter]
-        public EventCallback<Element> OnLeaveTo { get; set; }
+        /// <summary>
+        /// The only child element that running the transition in the Transition's ChildContent.
+        /// </summary>
+        internal ElementReference? ElementReference { get; set; }
+        
+        internal TransitionElementBase? TransitionElement { get; set; }
 
         public virtual string GetClass(TransitionState transitionState)
         {
@@ -51,7 +71,7 @@ namespace BlazorComponent
             return null;
         }
 
-        public virtual Task OnElementReadyAsync(ToggleableTransitionElement element)
+        public virtual Task OnElementReadyAsync(ElementReference elementReference)
         {
             return Task.CompletedTask;
         }

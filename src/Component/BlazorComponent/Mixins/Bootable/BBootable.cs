@@ -1,17 +1,14 @@
-﻿namespace BlazorComponent
-{
-    public class BBootable : BActivatable
-    {
-        protected override Task OnActiveUpdating(bool value)
-        {
-            if (value && !IsBooted)
-            {
-                //Set IsBooted to true and show content
-                IsBooted = true;
-                StateHasChanged();
-            }
+﻿namespace BlazorComponent;
 
-            return Task.CompletedTask;
+public class BBootable : BActivatable
+{
+    protected override void ShowLazyContent()
+    {
+        if (!IsBooted)
+        {
+            //Set IsBooted to true and show content
+            IsBooted = true;
+            StateHasChanged();
         }
     }
 }

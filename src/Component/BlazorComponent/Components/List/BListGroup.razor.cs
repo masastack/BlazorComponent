@@ -8,8 +8,9 @@ namespace BlazorComponent
     {
         private const string PREPEND = "prepend";
         private const string APPEND = "append";
+
         private bool _value;
-        private bool _booted;
+        //private bool _booted;
 
         [Inject]
         public NavigationManager NavigationManager { get; set; }
@@ -72,7 +73,7 @@ namespace BlazorComponent
 
         protected bool IsActive { get; set; }
 
-        protected bool Booted { get; set; }
+        protected bool IsBooted { get; set; }
 
         protected override void OnInitialized()
         {
@@ -104,10 +105,11 @@ namespace BlazorComponent
         {
             if (Disabled) return;
 
-            if (!Booted)
+            if (!IsBooted)
             {
-                Booted = true;
-                await Task.Delay(BROWSER_RENDER_INTERVAL);
+                IsBooted = true;
+                // await Task.Delay(BROWSER_RENDER_INTERVAL);
+                StateHasChanged();
             }
 
             IsActive = !IsActive;

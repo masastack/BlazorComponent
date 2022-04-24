@@ -45,7 +45,7 @@ namespace BlazorComponent
 
         private string Tag { get; set; } = "div";
 
-        protected override async Task OnActiveUpdated(bool value)
+        protected override async Task WhenIsActiveUpdating(bool value)
         {
             if (!OpenOnHover)
             {
@@ -54,7 +54,7 @@ namespace BlazorComponent
                     new[] { Document.GetElementByReference(ContentElement).Selector, ActivatorSelector }, null, ContentElement);
             }
 
-            await base.OnActiveUpdated(value);
+            await base.WhenIsActiveUpdating(value);
         }
 
         protected Dictionary<string, object> ContentAttributes

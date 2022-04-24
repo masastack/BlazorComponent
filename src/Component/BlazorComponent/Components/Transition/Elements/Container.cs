@@ -1,24 +1,22 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
+﻿using Microsoft.AspNetCore.Components.Rendering;
 
-namespace BlazorComponent
+namespace BlazorComponent;
+
+public class Container : ComponentBase
 {
-    public class Container : ComponentBase
+    [Parameter]
+    public bool Value { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    protected override bool ShouldRender()
     {
-        [Parameter]
-        public bool Value { get; set; }
+        return Value;
+    }
 
-        [Parameter]
-        public RenderFragment ChildContent { get; set; }
-
-        protected override bool ShouldRender()
-        {
-            return Value;
-        }
-
-        protected override void BuildRenderTree(RenderTreeBuilder builder)
-        {
-            builder.AddContent(0, ChildContent);
-        }
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        builder.AddContent(0, ChildContent);
     }
 }

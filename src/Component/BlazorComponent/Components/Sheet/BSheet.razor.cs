@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Reflection.Metadata;
+using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
@@ -9,6 +10,9 @@ namespace BlazorComponent
 
         [Parameter]
         public virtual string Tag { get; set; } = "div";
+
+        [Parameter]
+        public bool? Show { get; set; }
 
         [Parameter]
         public bool Dark { get; set; }

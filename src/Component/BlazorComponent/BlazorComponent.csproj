@@ -35,7 +35,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
 		<PackageReference Include="Microsoft.Extensions.Localization" Version="6.0.0-preview.7.21378.6" />
 		<PackageReference Include="OneOf" Version="3.0.178" />
-		<PackageReference Include="Util.Reflection" Version="1.0.2" />
+		<PackageReference Include="Util.Reflection" Version="1.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>

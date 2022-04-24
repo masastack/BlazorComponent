@@ -81,7 +81,7 @@ namespace BlazorComponent
 
         protected bool Animated { get; set; }
 
-        protected override async Task OnActiveUpdated(bool value)
+        protected override async Task WhenIsActiveUpdating(bool value)
         {
             if (ContentRef.Context is not null)
             {
@@ -105,8 +105,10 @@ namespace BlazorComponent
                     }
                 });
             }
+            
+            // TODO: hideScroll
 
-            await base.OnActiveUpdated(value);
+            await base.WhenIsActiveUpdating(value);
         }
 
         private async Task AttachAsync(bool value)
@@ -184,11 +186,11 @@ namespace BlazorComponent
             }
             else
             {
-                await RunCloseDelayAsync();
+                await SetIsActive(false);
             }
         }
 
-        public async ValueTask DisposeAsync()
+        public new async ValueTask DisposeAsync()
         {
             await DeleteContent();
         }

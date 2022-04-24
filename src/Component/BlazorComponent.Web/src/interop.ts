@@ -68,7 +68,7 @@ export function initStepperWrapper(element: HTMLElement) {
         }
     });
 
-    observer.observe(element, { attributes: true, attributeFilter: ['class'] });
+    observer.observe(element, {attributes: true, attributeFilter: ['class']});
 }
 
 function onTransition(e: TransitionEvent, isActive: Boolean, element: HTMLElement) {
@@ -483,9 +483,7 @@ export function addOutsideClickEventListener(invoker, noInvokeSelectors: [], inv
                 invoker.invokeMethodAsync("Invoke", {});
             }
         } else {
-            if (!contentElement || contentElement.getAttribute('close-condition') != null) {
-                invoker.invokeMethodAsync("Invoke", {});
-            }
+            invoker.invokeMethodAsync("Invoke", {});
         }
     }
 
@@ -563,9 +561,9 @@ export function focus(selector, noScroll: boolean = false) {
     })
 }
 
-export function select(selector){
+export function select(selector) {
     let dom = getDom(selector);
-    if(!(dom instanceof HTMLInputElement || dom instanceof HTMLTextAreaElement))
+    if (!(dom instanceof HTMLInputElement || dom instanceof HTMLTextAreaElement))
         throw new Error("Unable to select an invalid element")
     dom.select()
 }
@@ -799,7 +797,7 @@ export function elementScrollIntoView(selector: Element | string) {
     if (!element)
         return;
 
-    element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    element.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'start'});
 }
 
 const oldBodyCacheStack = [];
@@ -854,7 +852,7 @@ export function createIconFromfontCN(scriptUrl) {
 }
 
 export function getScroll() {
-    return { x: window.pageXOffset, y: window.pageYOffset };
+    return {x: window.pageXOffset, y: window.pageYOffset};
 }
 
 export function getInnerText(element) {
@@ -1004,7 +1002,7 @@ function mentionsOnWindowClick(e) {
 
 //#endregion
 
-export { disableDraggable, enableDraggable, resetModalPosition } from "./modules/dragHelper";
+export {disableDraggable, enableDraggable, resetModalPosition} from "./modules/dragHelper";
 
 export function bindTableHeaderAndBodyScroll(bodyRef, headerRef) {
     bodyRef.bindScrollLeftToHeader = () => {
@@ -1208,15 +1206,15 @@ window.onload = function () {
     registerDirective();
 }
 
-function registerPasteWithData(customEventName){
-    if(Blazor){
+function registerPasteWithData(customEventName) {
+    if (Blazor) {
         Blazor.registerCustomEventType(customEventName, {
             browserEventName: 'paste',
             createEventArgs: event => {
-              return {
-                type: event.type,
-                pastedData: event.clipboardData.getData('text')
-              };
+                return {
+                    type: event.type,
+                    pastedData: event.clipboardData.getData('text')
+                };
             }
         });
     }
@@ -1335,12 +1333,13 @@ export function copyText(text) {
 export function getMenuableDimensions(hasActivator, activatorSelector, attach, contentElement, attached, attachSelector) {
     if (!attached) {
         var container = document.querySelector(attachSelector);
-        container.appendChild(contentElement);
+        if (contentElement.nodeType) {
+            container.appendChild(contentElement);
+        }
     }
 
     var dimensions = {
-        activator: {
-        } as any,
+        activator: {} as any,
         content: null,
         relativeYOffset: 0,
         offsetParentLeft: 0
@@ -1368,8 +1367,7 @@ export function getMenuableDimensions(hasActivator, activatorSelector, attach, c
                 if (hasActivator) {
                     dimensions.activator.top -= dimensions.relativeYOffset
                     dimensions.activator.left -= window.pageXOffset + offsetRect.left
-                }
-                else {
+                } else {
                     dimensions.offsetParentLeft = offsetRect.left
                 }
             }
@@ -1398,6 +1396,10 @@ function measure(el: HTMLElement, attach) {
 }
 
 function getRoundedBoundedClientRect(el: Element) {
+    if (!el || !el.nodeType) {
+        return null
+    }
+
     const rect = el.getBoundingClientRect()
     return {
         top: Math.round(rect.top),
@@ -1410,7 +1412,7 @@ function getRoundedBoundedClientRect(el: Element) {
 }
 
 function sneakPeek(cb: () => void, el) {
-    if (!el || el.style.display !== 'none') {
+    if (!el || !el.style || el.style.display !== 'none') {
         cb()
         return
     }
@@ -1422,6 +1424,8 @@ function sneakPeek(cb: () => void, el) {
 
 
 export function observeElement(el, sizeProp, expandTransition) {
+    if (!el) return;
+
     updateSize(el, sizeProp, expandTransition);
 
     var observer = new ResizeObserver(function (mutationsList) {
@@ -1441,7 +1445,9 @@ function updateSize(el, sizeProp, expandTransition) {
 
     if (el['_size'] != size) {
         el['_size'] = size;
-        expandTransition.invokeMethodAsync('OnSizeChanged', size);
+
+        var blazorId = getBlazorId(el);
+        expandTransition.invokeMethodAsync('OnSizeChanged', size, blazorId);
     }
 }
 
@@ -1459,4 +1465,13 @@ export function invokeMultipleMethod(windowProps, documentProps, hasActivator, a
     }
 
     return multipleResult;
+}
+
+function getBlazorId(el) {
+    let _bl_ = el.getAttributeNames().find(a => a.startsWith('_bl_'))
+    if (_bl_) {
+        _bl_ = _bl_.substring(4);
+    }
+
+    return _bl_;
 }
