@@ -146,12 +146,12 @@ namespace BlazorComponent
 
                     if (jsResult.type == "input" && OnInput.HasDelegate)
                     {
-                        await OnInput.InvokeAsync();
+                        await OnInput.InvokeAsync(jsResult.value);
                     }
 
                     if (jsResult.index >= Length - 1 && !Values.Any(p => string.IsNullOrEmpty(p)) && OnFinish.HasDelegate)
                     {
-                        await OnFinish.InvokeAsync();
+                        await OnFinish.InvokeAsync(Value);
                     }
                     break;
                 default:
