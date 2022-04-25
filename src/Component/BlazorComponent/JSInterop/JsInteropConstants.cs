@@ -118,6 +118,8 @@
 
         public static string RegisterResizeTextArea => $"{Variables.JsInteropFuncNamePrefix}registerResizeTextArea";
 
+        public static string RegisterTextFieldOnMouseDown => $"{Variables.JsInteropFuncNamePrefix}registerTextFieldOnMouseDown";
+
         public static string DisposeResizeTextArea => $"{Variables.JsInteropFuncNamePrefix}disposeResizeTextArea";
 
         public static string InsertAdjacentHTML => $"{Variables.JsInteropFuncNamePrefix}insertAdjacentHTML";
