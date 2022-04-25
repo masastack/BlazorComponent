@@ -16,13 +16,7 @@ namespace BlazorComponent
 
         bool Disabled { get; set; }
 
-        Task OnKeyUpAsync(BOtpInputEventArgs<KeyboardEventArgs> args);
-
-        Task OnInputAsync(BOtpInputEventArgs<ChangeEventArgs> args);
-
         Task OnPasteAsync(BOtpInputEventArgs<PasteWithDataEventArgs> args);
-
-        Task OnFocusAsync(int index);
 
         List<ElementReference> InputRefs { get; set; }
     }
