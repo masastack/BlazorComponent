@@ -42,7 +42,7 @@ namespace BlazorComponent
         protected const int BROWSER_RENDER_INTERVAL = 16;
 
         private ElementReference _ref;
-        private ElementReference _prevRef;
+        private ElementReference? _prevRef;
         private bool _elementReferenceChanged;
 
         public ComponentCssProvider CssProvider { get; } = new();
@@ -59,10 +59,17 @@ namespace BlazorComponent
             get => _ref;
             set
             {
-                if (_prevRef.Id != value.Id)
+                if (_prevRef.HasValue)
+                {
+                    if (_prevRef.Value.Id != value.Id)
+                    {
+                        _prevRef = value;
+                        _elementReferenceChanged = true;
+                    }
+                }
+                else
                 {
                     _prevRef = value;
-                    _elementReferenceChanged = true;
                 }
 
                 _ref = value;
