@@ -79,6 +79,29 @@ namespace BlazorComponent
         [Inject]
         public Document Document { get; set; }
 
+        private bool _clickEventRegistered;
+
+        protected override Task OnParametersSetAsync()
+        {
+            InitIcon();
+            return base.OnParametersSetAsync();
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            await base.OnAfterRenderAsync(firstRender);
+
+            if (!_clickEventRegistered)
+            {
+                await TryRegisterClickEvent();
+            }
+        }
+
+        protected override async Task OnElementReferenceChangedAsync()
+        {
+            await TryRegisterClickEvent();
+        }
+
         public virtual async Task HandleOnClick(MouseEventArgs args)
         {
             if (OnClick.HasDelegate)
@@ -87,10 +110,19 @@ namespace BlazorComponent
             }
         }
 
-        protected override Task OnParametersSetAsync()
+        private async Task TryRegisterClickEvent()
         {
-            InitIcon();
-            return base.OnParametersSetAsync();
+            if (Ref.Context is not null && OnClick.HasDelegate)
+            {
+                _clickEventRegistered = true;
+
+                var button = Document.GetElementByReference(Ref);
+                await button.AddEventListenerAsync("click", CreateEventCallback<MouseEventArgs>(HandleOnClick), false, new EventListenerActions
+                {
+                    PreventDefault = true,
+                    StopPropagation = true
+                });
+            }
         }
 
         private void InitIcon()
@@ -116,34 +148,6 @@ namespace BlazorComponent
                 NewChildren = string.Empty;
             }
 #pragma warning restore BL0006 // Do not use RenderTree types
-        }
-
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            await base.OnAfterRenderAsync(firstRender);
-
-            if (firstRender)
-            {
-                await TryRegisterClickEvent();
-            }
-        }
-
-        protected override async Task OnElementReferenceChangedAsync()
-        {
-            await TryRegisterClickEvent();
-        }
-
-        private async Task TryRegisterClickEvent()
-        {
-            if (Ref.Context is not null && OnClick.HasDelegate)
-            {
-                var button = Document.GetElementByReference(Ref);
-                await button.AddEventListenerAsync("click", CreateEventCallback<MouseEventArgs>(HandleOnClick), false, new EventListenerActions
-                {
-                    PreventDefault = true,
-                    StopPropagation = true
-                });
-            }
         }
     }
 }
