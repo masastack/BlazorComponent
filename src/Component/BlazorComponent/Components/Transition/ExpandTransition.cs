@@ -8,13 +8,6 @@ namespace BlazorComponent;
 /// </summary>
 public class ExpandTransition : Transition
 {
-    // BUG: Unable to get height/width for the first time.
-    // TODO: Try to rewrite ExpandTransition with hooks.
-    // https://github.com/vuetifyjs/vuetify/blob/aa68dd2d9c/packages/vuetify/src/components/transitions/expand-transition.ts
-
-    [Inject]
-    public IJSRuntime Js { get; set; }
-
     protected virtual string SizeProp => "height";
 
     private double Size { get; set; }
@@ -45,36 +38,32 @@ public class ExpandTransition : Transition
         {
             case TransitionState.Enter:
             case TransitionState.LeaveTo:
+                styles.Add("overflow:hidden");
                 styles.Add($"{SizeProp}:0px");
                 break;
             case TransitionState.EnterTo:
             case TransitionState.Leave:
                 styles.Add($"{SizeProp}:{Size}px");
+                styles.Add("overflow:hidden");
                 break;
-        }
-
-        if (transitionState != TransitionState.None)
-        {
-            styles.Add("overflow:hidden");
         }
 
         return string.Join(';', styles);
     }
 
-    public override async Task OnElementReadyAsync(ElementReference elementReference)
+    public override Task Enter(TransitionElementBase element)
     {
-        await Js.InvokeVoidAsync(JsInteropConstants.ObserveElement, elementReference, SizeProp, DotNetObjectReference.Create(this));
+        return UpdateSize(element.Reference);
     }
 
-    [JSInvokable]
-    public void OnSizeChanged(double size, string blazorId)
+    public override Task Leave(TransitionElementBase element)
     {
-        Console.WriteLine($"blazorId:{blazorId}");
-        Console.WriteLine($"ElementReference?.Id:{ElementReference?.Id}");
-        Console.WriteLine($"size:{size}");
-        if (ElementReference?.Id == blazorId)
-        {
-            Size = size;
-        }
+        return UpdateSize(element.Reference);
+    }
+
+    private async Task UpdateSize(ElementReference elementReference)
+    {
+        var elementInfo = await Js.InvokeAsync<BlazorComponent.Web.Element>(JsInteropConstants.GetDomInfo, elementReference);
+        Size = elementInfo.OffsetHeight;
     }
 }

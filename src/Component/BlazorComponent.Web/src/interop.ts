@@ -132,11 +132,11 @@ export function getDomInfo(element, selector = "body") {
       var cloned = dom.cloneNode(true);
       cloned.style['display'] = 'inline-block';
       cloned.style['z-index'] = -1000;
-      document.querySelector(selector).appendChild(cloned);
+      dom.parentElement.appendChild(cloned);
 
       result = getDomInfoObj(cloned);
 
-      document.querySelector(selector).removeChild(cloned);
+      dom.parentElement.removeChild(cloned);
     } else {
       result = getDomInfoObj(dom);
     }

@@ -4,6 +4,10 @@ namespace BlazorComponent;
 
 public abstract class TransitionElementBase : Element
 {
+    /// <summary>
+    /// The dom information about the transitional element.
+    /// </summary>
+    internal BlazorComponent.Web.Element? ElementInfo { get; set; }
 }
 
 public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAsyncDisposable
@@ -24,11 +28,6 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
     protected bool FirstRender { get; private set; } = true;
 
     protected abstract TransitionState CurrentState { get; }
-
-    /// <summary>
-    /// The dom information about the transitional element.
-    /// </summary>
-    internal BlazorComponent.Web.Element? ElementInfo { get; private set; }
 
     /// <summary>
     /// Whether it is a transitional element.
@@ -73,34 +72,21 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
                 case TransitionState.None:
                     if (Transition!.Mode is TransitionMode.InOut)
                     {
-                        if (Transition.OnBeforeEnter.HasDelegate)
-                        {
-                            await Transition.OnBeforeEnter.InvokeAsync();
-                        }
+                        await Transition!.BeforeEnter(this);
                     }
                     else
                     {
-                        if (Transition!.OnBeforeLeave.HasDelegate)
-                        {
-                            await Transition.OnBeforeLeave.InvokeAsync();
-                        }
-
-                        await BeforeLeaveAsync();
+                        await Transition!.BeforeLeave(this);
                     }
 
                     break;
                 case TransitionState.Leave:
-                    if (Transition!.OnLeave.HasDelegate)
-                    {
-                        await Transition.OnLeave.InvokeAsync();
-                    }
+                    await Transition!.Leave(this);
 
                     break;
                 case TransitionState.Enter:
-                    if (Transition!.OnEnter.HasDelegate)
-                    {
-                        await Transition.OnEnter.InvokeAsync();
-                    }
+                    Console.WriteLine("transition state: enter");
+                    await Transition!.Enter(this);
 
                     break;
                 case TransitionState.EnterTo:
@@ -109,10 +95,7 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
                         _transitionRunning = false;
                     }
 
-                    if (Transition!.OnAfterEnter.HasDelegate)
-                    {
-                        await Transition.OnAfterEnter.InvokeAsync();
-                    }
+                    await Transition!.AfterEnter(this);
 
                     break;
                 case TransitionState.LeaveTo:
@@ -121,10 +104,7 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
                         _transitionRunning = false;
                     }
 
-                    if (Transition!.OnAfterLeave.HasDelegate)
-                    {
-                        await Transition.OnAfterLeave.InvokeAsync();
-                    }
+                    await Transition!.AfterLeave(this);
 
                     break;
                 default:
@@ -184,14 +164,6 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
     {
         await Task.Delay(16);
         await callback();
-    }
-
-    private async Task BeforeLeaveAsync()
-    {
-        if (Reference.Context is not null && Transition!.LeaveAbsolute)
-        {
-            ElementInfo = await Js.InvokeAsync<BlazorComponent.Web.Element>(JsInteropConstants.GetDomInfo, Reference);
-        }
     }
 
     private async Task RegisterTransitionEventsAsync()
