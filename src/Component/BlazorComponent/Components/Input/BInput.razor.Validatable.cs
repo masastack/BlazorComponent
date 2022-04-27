@@ -204,7 +204,6 @@ namespace BlazorComponent
                     {
                         LazyValue = val;
 
-                        //In this case,only outside change value will be set to input element
                         InputValue = val;
                     }
                 });
@@ -346,17 +345,18 @@ namespace BlazorComponent
 
         protected virtual async Task SetInternalValueAsync(TValue internalValue)
         {
-            if (EqualityComparer<TValue>.Default.Equals(internalValue, InternalValue))
+            if (EqualityComparer<TValue>.Default.Equals(internalValue, Value))
             {
                 return;
             }
 
-            if (!EqualityComparer<TValue>.Default.Equals(internalValue, Value) && ValueChanged.HasDelegate)
+            Value = internalValue;
+
+            if (ValueChanged.HasDelegate)
             {
                 await ValueChanged.InvokeAsync(internalValue);
             }
 
-            InternalValue = internalValue;
             HasInput = true;
 
             if (!ValidateOnBlur)

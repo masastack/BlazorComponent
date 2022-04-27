@@ -6,6 +6,9 @@ namespace BlazorComponent
 {
     public partial class Transition : ComponentBase
     {
+        [Inject]
+        protected IJSRuntime Js { get; set; }
+
         [Parameter]
         public string Name { get; set; }
 
@@ -46,7 +49,7 @@ namespace BlazorComponent
         /// The only child element that running the transition in the Transition's ChildContent.
         /// </summary>
         internal ElementReference? ElementReference { get; set; }
-        
+
         internal TransitionElementBase? TransitionElement { get; set; }
 
         public virtual string GetClass(TransitionState transitionState)
@@ -71,9 +74,57 @@ namespace BlazorComponent
             return null;
         }
 
-        public virtual Task OnElementReadyAsync(ElementReference elementReference)
+        public virtual async Task BeforeLeave(TransitionElementBase element)
         {
-            return Task.CompletedTask;
+            if (OnBeforeLeave.HasDelegate)
+            {
+                await OnBeforeLeave.InvokeAsync();
+            }
+        }
+
+        public virtual async Task Leave(TransitionElementBase element)
+        {
+            if (LeaveAbsolute)
+            {
+                element.ElementInfo = await Js.InvokeAsync<BlazorComponent.Web.Element>(JsInteropConstants.GetDomInfo, element.Reference);
+            }
+
+            if (OnLeave.HasDelegate)
+            {
+                await OnLeave.InvokeAsync();
+            }
+        }
+
+        public virtual async Task AfterLeave(TransitionElementBase element)
+        {
+            if (OnAfterLeave.HasDelegate)
+            {
+                await OnAfterLeave.InvokeAsync();
+            }
+        }
+
+        public virtual async Task BeforeEnter(TransitionElementBase element)
+        {
+            if (OnBeforeEnter.HasDelegate)
+            {
+                await OnBeforeEnter.InvokeAsync();
+            }
+        }
+
+        public virtual async Task Enter(TransitionElementBase element)
+        {
+            if (OnEnter.HasDelegate)
+            {
+                await OnEnter.InvokeAsync();
+            }
+        }
+
+        public virtual async Task AfterEnter(TransitionElementBase element)
+        {
+            if (OnAfterEnter.HasDelegate)
+            {
+                await OnAfterEnter.InvokeAsync();
+            }
         }
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)

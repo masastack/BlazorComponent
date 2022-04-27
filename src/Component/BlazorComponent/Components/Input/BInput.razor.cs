@@ -130,28 +130,30 @@ namespace BlazorComponent
         //We want InternalValue to be protected
         TValue IInput<TValue>.InternalValue => InternalValue;
 
-        public virtual Task ChangeValue(bool ignoreDebounce = false)
+        public virtual async Task ChangeValue(bool ignoreDebounce = false)
         {
             if (DebounceEnabled)
             {
                 if (DebounceTimerRun != null && !ignoreDebounce)
                 {
                     DebounceChangeValue();
-                    return Task.CompletedTask;
+                    return;
                 }
 
-                DebounceTimerRun?.Invoke();
+                if (_debounceTimer != null)
+                {
+                    await _debounceTimer.DisposeAsync();
+                    _debounceTimer = null;
+                }
             }
 
-            return Task.CompletedTask;
+            DebounceTimerRun?.Invoke();
         }
 
         protected void DebounceChangeValue()
         {
-            if(_debounceTimer == null)
-            {
-                _debounceTimer = new Timer(DebounceTimerIntervalOnTick, null, DebounceMilliseconds, DebounceMilliseconds);
-            }
+            _debounceTimer?.Dispose();
+            _debounceTimer = new Timer(DebounceTimerIntervalOnTick, null, DebounceMilliseconds, DebounceMilliseconds);
         }
 
         protected void DebounceTimerIntervalOnTick(object state)
@@ -159,11 +161,6 @@ namespace BlazorComponent
             InvokeAsync(async () =>
             {
                 await ChangeValue(true);
-                if(_debounceTimer != null)
-                {
-                    await _debounceTimer.DisposeAsync();
-                    _debounceTimer = null;
-                }
             });
         }
 

@@ -49,21 +49,7 @@ public abstract class ToggleableTransitionElement : TransitionElementBase<bool>
     {
         if (NoTransition)
         {
-            LazyValue = Value;
-        }
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await base.OnAfterRenderAsync(firstRender);
-
-        if (firstRender)
-        {
-            if (Transition?.Name is "expand-transition" or "expand-x-transition")
-            {
-                // Only Expand(X)Transition needs to register observer
-                await Transition.OnElementReadyAsync(this.Reference);
-            }
+            ShowElement();
         }
     }
 
@@ -72,7 +58,7 @@ public abstract class ToggleableTransitionElement : TransitionElementBase<bool>
         //Don't trigger transition in first render
         if (FirstRender)
         {
-            LazyValue = Value;
+            ShowElement();
             return;
         }
 
