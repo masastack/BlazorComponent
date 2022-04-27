@@ -33,7 +33,7 @@ public class BDelayable : BDomComponentBase, IAsyncDisposable
     {
         if (value)
         {
-            ShowLazyContent();
+            await ShowLazyContent();
         }
 
         await WhenIsActiveUpdating(value);
@@ -43,8 +43,9 @@ public class BDelayable : BDomComponentBase, IAsyncDisposable
         StateHasChanged();
     }
 
-    protected virtual void ShowLazyContent()
+    protected virtual Task ShowLazyContent()
     {
+        return Task.CompletedTask;
     }
 
     protected virtual Task WhenIsActiveUpdating(bool value)
