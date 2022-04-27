@@ -108,7 +108,7 @@ namespace BlazorComponent
             if (!IsBooted)
             {
                 IsBooted = true;
-                // await Task.Delay(BROWSER_RENDER_INTERVAL);
+                await Task.Delay(16);
                 StateHasChanged();
             }
 
