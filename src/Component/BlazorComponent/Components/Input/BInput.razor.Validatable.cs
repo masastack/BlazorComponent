@@ -203,6 +203,8 @@ namespace BlazorComponent
                     if (!EqualityComparer<TValue>.Default.Equals(val, LazyValue))
                     {
                         LazyValue = val;
+
+                        InputValue = val;
                     }
                 });
         }
