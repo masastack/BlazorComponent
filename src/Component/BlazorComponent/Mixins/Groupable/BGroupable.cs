@@ -43,7 +43,7 @@ namespace BlazorComponent
 
         protected bool ValueMatched => Matched && ItemGroup.Values.Contains(Value);
 
-        public bool InternalIsActive { get; protected set; }
+        public bool InternalIsActive { get; private set; }
 
         [Parameter]
         public bool IsActive
@@ -70,11 +70,13 @@ namespace BlazorComponent
 
             if (_isActive.HasValue) // if setting by [Parameter]IsActive, Matched is not required.
             {
-                InternalIsActive = _isActive.Value;
+                // InternalIsActive = _isActive.Value;
+                SetInternalIsActive(_isActive.Value);
             }
             else if (Matched)
             {
-                InternalIsActive = ValueMatched;
+                // InternalIsActive = ValueMatched;
+                SetInternalIsActive(ValueMatched);
             }
         }
 
@@ -83,6 +85,46 @@ namespace BlazorComponent
             if (!Matched) return;
 
             await ItemGroup.ToggleAsync(Value);
+        }
+
+        protected virtual void ShowLazyContent()
+        {
+        }
+
+        protected bool IsBooted { get; set; }
+
+        protected void SetInternalIsActive(bool val)
+        {
+            if (!IsBooted)
+            {
+                if (val)
+                {
+                    IsBooted = true;
+                    InternalIsActive = false;
+
+                    // TODO: fix here
+
+                    NextTick(async () =>
+                    {
+                        await Task.Delay(16);
+                        InternalIsActive = true;
+                        StateHasChanged();
+                    });
+
+                    StateHasChanged();
+
+                    return;
+                }
+            }
+
+            InternalIsActive = val;
+
+            StateHasChanged();
+
+            // if (val)
+            // {
+            //     ShowLazyContent();
+            // }
         }
 
         protected override void Dispose(bool disposing)

@@ -193,7 +193,7 @@ namespace BlazorComponent
 
             if (IsLinkage)
             {
-                InternalIsActive = _linker.MatchRoute(Href);
+                SetInternalIsActive(_linker.MatchRoute(Href));
             }
 
             return isActive != InternalIsActive;

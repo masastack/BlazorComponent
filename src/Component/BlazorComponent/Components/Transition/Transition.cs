@@ -28,22 +28,22 @@ namespace BlazorComponent
         public RenderFragment ChildContent { get; set; }
 
         [Parameter]
-        public EventCallback<Element> OnBeforeEnter { get; set; }
+        public Func<ElementReference, Task>? OnBeforeEnter { get; set; }
 
         [Parameter]
-        public EventCallback<Element> OnEnter { get; set; }
+        public Func<ElementReference, Task>? OnEnter { get; set; }
 
         [Parameter]
-        public EventCallback<Element> OnAfterEnter { get; set; }
+        public Func<ElementReference, Task>? OnAfterEnter { get; set; }
 
         [Parameter]
-        public EventCallback<Element> OnBeforeLeave { get; set; }
+        public Func<ElementReference, Task>? OnBeforeLeave { get; set; }
 
         [Parameter]
-        public EventCallback<Element> OnLeave { get; set; }
+        public Func<ElementReference, Task>? OnLeave { get; set; }
 
         [Parameter]
-        public EventCallback<Element> OnAfterLeave { get; set; }
+        public Func<ElementReference, Task>? OnAfterLeave { get; set; }
 
         /// <summary>
         /// The only child element that running the transition in the Transition's ChildContent.
@@ -76,9 +76,9 @@ namespace BlazorComponent
 
         public virtual async Task BeforeLeave(TransitionElementBase element)
         {
-            if (OnBeforeLeave.HasDelegate)
+            if (OnBeforeLeave is not null)
             {
-                await OnBeforeLeave.InvokeAsync();
+                await OnBeforeLeave.Invoke(element.Reference);
             }
         }
 
@@ -89,41 +89,41 @@ namespace BlazorComponent
                 element.ElementInfo = await Js.InvokeAsync<BlazorComponent.Web.Element>(JsInteropConstants.GetDomInfo, element.Reference);
             }
 
-            if (OnLeave.HasDelegate)
+            if (OnLeave is not null)
             {
-                await OnLeave.InvokeAsync();
+                await OnLeave.Invoke(element.Reference);
             }
         }
 
         public virtual async Task AfterLeave(TransitionElementBase element)
         {
-            if (OnAfterLeave.HasDelegate)
+            if (OnAfterLeave is not null)
             {
-                await OnAfterLeave.InvokeAsync();
+                await OnAfterLeave.Invoke(element.Reference);
             }
         }
 
         public virtual async Task BeforeEnter(TransitionElementBase element)
         {
-            if (OnBeforeEnter.HasDelegate)
+            if (OnBeforeEnter is not null)
             {
-                await OnBeforeEnter.InvokeAsync();
+                await OnBeforeEnter.Invoke(element.Reference);
             }
         }
 
         public virtual async Task Enter(TransitionElementBase element)
         {
-            if (OnEnter.HasDelegate)
+            if (OnEnter is not null)
             {
-                await OnEnter.InvokeAsync();
+                await OnEnter.Invoke(element.Reference);
             }
         }
 
         public virtual async Task AfterEnter(TransitionElementBase element)
         {
-            if (OnAfterEnter.HasDelegate)
+            if (OnAfterEnter is not null)
             {
-                await OnAfterEnter.InvokeAsync();
+                await OnAfterEnter.Invoke(element.Reference);
             }
         }
 

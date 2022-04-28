@@ -51,6 +51,8 @@ public abstract class ToggleableTransitionElement : TransitionElementBase<bool>
         {
             ShowElement();
         }
+
+        Console.WriteLine($"{Id}: {State}");
     }
 
     protected override void StartTransition()

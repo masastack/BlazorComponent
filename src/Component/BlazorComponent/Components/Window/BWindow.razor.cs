@@ -1,5 +1,4 @@
-﻿using BlazorComponent.Web;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
@@ -36,9 +35,6 @@ namespace BlazorComponent
 
         [Parameter]
         public bool Vertical { get; set; }
-
-        [Inject]
-        public Document Document { get; set; }
 
         protected bool IsReverse { get; set; }
 

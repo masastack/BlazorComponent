@@ -70,23 +70,32 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
             switch (CurrentState)
             {
                 case TransitionState.None:
-                    if (Transition!.Mode is TransitionMode.InOut)
+                    if (!FirstRender)
                     {
-                        await Transition!.BeforeEnter(this);
-                    }
-                    else
-                    {
-                        await Transition!.BeforeLeave(this);
+                        if (Transition!.Mode is TransitionMode.InOut)
+                        {
+                            await Transition!.BeforeEnter(this);
+                        }
+                        else
+                        {
+                            await Transition!.BeforeLeave(this);
+                        }
                     }
 
                     break;
                 case TransitionState.Leave:
-                    await Transition!.Leave(this);
+                    if (!FirstRender)
+                    {
+                        await Transition!.Leave(this);
+                    }
 
                     break;
                 case TransitionState.Enter:
-                    Console.WriteLine("transition state: enter");
-                    await Transition!.Enter(this);
+                    if (!FirstRender)
+                    {
+                        Console.WriteLine($"{DateTime.Now:HH:mm:ss tt zz} transition state: enter");
+                        await Transition!.Enter(this);
+                    }
 
                     break;
                 case TransitionState.EnterTo:
@@ -95,7 +104,10 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
                         _transitionRunning = false;
                     }
 
-                    await Transition!.AfterEnter(this);
+                    if (!FirstRender)
+                    {
+                        await Transition!.AfterEnter(this);
+                    }
 
                     break;
                 case TransitionState.LeaveTo:
@@ -104,7 +116,10 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
                         _transitionRunning = false;
                     }
 
-                    await Transition!.AfterLeave(this);
+                    if (!FirstRender)
+                    {
+                        await Transition!.AfterLeave(this);
+                    }
 
                     break;
                 default:
