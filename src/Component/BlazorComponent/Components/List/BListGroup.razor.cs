@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Routing;
+﻿using Microsoft.AspNetCore.Components.Routing;
 using System.Text.RegularExpressions;
 
 namespace BlazorComponent
@@ -10,7 +9,6 @@ namespace BlazorComponent
         private const string APPEND = "append";
 
         private bool _value;
-        //private bool _booted;
 
         [Inject]
         public NavigationManager NavigationManager { get; set; }
@@ -86,6 +84,14 @@ namespace BlazorComponent
             UpdateActiveForLinkage();
         }
 
+        protected override void OnParametersSet()
+        {
+            if (IsActive && !IsBooted)
+            {
+                IsBooted = true;
+            }
+        }
+
         private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
         {
             var shouldRender = UpdateActiveForLinkage();
@@ -108,7 +114,7 @@ namespace BlazorComponent
             if (!IsBooted)
             {
                 IsBooted = true;
-                await Task.Delay(16);
+                //await Task.Delay(16);
                 StateHasChanged();
             }
 

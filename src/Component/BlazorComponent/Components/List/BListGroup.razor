@@ -10,11 +10,11 @@
             }
             else
             {
-                <BListItemIcon @attributes="GetAttributes(typeof(BListItemIcon),PREPEND)">
-                    <BIcon @attributes="GetAttributes(typeof(BIcon))">
+                    <BListItemIcon @attributes="GetAttributes(typeof(BListItemIcon),PREPEND)">
+                        <BIcon @attributes="GetAttributes(typeof(BIcon))">
                         @PrependIcon
-                    </BIcon>
-                </BListItemIcon>
+                        </BIcon>
+                    </BListItemIcon>
             }
 
             @ActivatorContent
@@ -25,23 +25,23 @@
             }
             else if (!string.IsNullOrEmpty(AppendIcon))
             {
-                <BListItemIcon @attributes="GetAttributes(typeof(BListItemIcon),APPEND)">
-                    <BIcon @attributes="GetAttributes(typeof(BIcon))">
+                    <BListItemIcon @attributes="GetAttributes(typeof(BListItemIcon),APPEND)">
+                        <BIcon @attributes="GetAttributes(typeof(BIcon))">
                         @AppendIcon
-                    </BIcon>
-                </BListItemIcon>
+                        </BIcon>
+                    </BListItemIcon>
             }
         </BListItem>
-        
-        @if (IsBooted || IsActive)
+
+        @if (IsBooted)
         {
-            <ExpandTransition>
-                <ShowTransitionElement Value="IsActive"
+                <ExpandTransition>
+                    <ShowTransitionElement Value="IsActive"
                                        class="@CssProvider.GetClass("items")"
                                        Style="@CssProvider.GetStyle("items")">
                     @ChildContent
-                </ShowTransitionElement>
-            </ExpandTransition>
+                    </ShowTransitionElement>
+                </ExpandTransition>
         }
     </div>
 </CascadingValue>

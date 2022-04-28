@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+﻿using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent;
 
-public class BActivatable : BToggleable, IActivatable, IHandleEvent
+public class BActivatable : BToggleable, IActivatable
 {
     private string _activatorId;
 
@@ -65,10 +64,7 @@ public class BActivatable : BToggleable, IActivatable, IHandleEvent
 
     RenderFragment IActivatable.ComputedActivatorContent => ComputedActivatorContent;
 
-    async Task IHandleEvent.HandleEventAsync(EventCallbackWorkItem item, object? arg)
-    {
-        await item.InvokeAsync(arg);
-    }
+    protected override bool AfterHandleEventShouldRender() => false;
 
     protected override void OnWatcherInitialized()
     {
