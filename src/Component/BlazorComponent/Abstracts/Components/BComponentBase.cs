@@ -78,10 +78,10 @@ namespace BlazorComponent
             var shouldAwaitTask = task.Status != TaskStatus.RanToCompletion &&
                                   task.Status != TaskStatus.Canceled;
 
-            // if (AfterHandleEventShouldRender())
-            // {
-            //     StateHasChanged();
-            // }
+            if (AfterHandleEventShouldRender())
+            {
+                StateHasChanged();
+            }
 
             return shouldAwaitTask
                 ? CallStateHasChangedOnAsyncCompletion(task)
@@ -111,6 +111,11 @@ namespace BlazorComponent
                     throw;
                 }
             }
+
+            if (AfterHandleEventShouldRender())
+            {
+                StateHasChanged();
+            }            
         }
 
         protected virtual void Dispose(bool disposing)
