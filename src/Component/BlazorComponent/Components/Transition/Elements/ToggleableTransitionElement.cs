@@ -43,7 +43,11 @@ public abstract class ToggleableTransitionElement : TransitionElementBase<bool>
         }
     }
 
-    protected override TransitionState CurrentState => State;
+    internal override TransitionState CurrentState
+    {
+        get => State;
+        set => State = value;
+    }
 
     protected override void OnParametersSet()
     {
@@ -58,8 +62,6 @@ public abstract class ToggleableTransitionElement : TransitionElementBase<bool>
                 HideElement();
             }
         }
-
-        Console.WriteLine($"{Id}: {State}");
     }
 
     protected override void StartTransition()
@@ -102,6 +104,8 @@ public abstract class ToggleableTransitionElement : TransitionElementBase<bool>
             return Task.CompletedTask;
         }
 
+        Console.WriteLine($"{referenceId}: END!!! {transition}");
+
         if (transition == LeaveEnter.Enter && CurrentState == TransitionState.EnterTo)
         {
             NextState(TransitionState.None);
@@ -115,10 +119,32 @@ public abstract class ToggleableTransitionElement : TransitionElementBase<bool>
         return Task.CompletedTask;
     }
 
+    protected override Task OnTransitionCancelAsync(string referenceId, LeaveEnter transition)
+    {
+        if (referenceId != Reference.Id)
+        {
+            return Task.CompletedTask;
+        }
+
+        // Console.WriteLine($"{referenceId}: CANCEL!!! {transition}");
+
+        // if (transition == LeaveEnter.Enter && CurrentState == TransitionState.EnterTo)
+        // {
+        //     NextState(TransitionState.EnterCancelled);
+        // }
+        // else if (transition == LeaveEnter.Leave && CurrentState == TransitionState.LeaveTo)
+        // {
+        //     NextState(TransitionState.LeaveCancelled);
+        // }
+
+        return Task.CompletedTask;
+    }
+
     private void NextState(TransitionState transitionState)
     {
         State = transitionState;
-        StateHasChanged();
+        // StateHasChanged();
+        Transition?.InvokeStateHasChanged();
     }
 
     private async Task RequestNextStateAsync(TransitionState state)

@@ -19,7 +19,7 @@ public class KeyTransitionElement<TValue> : TransitionElementBase<TValue>
             new(this)
         };
 
-    protected override TransitionState CurrentState
+    internal override TransitionState CurrentState
     {
         get
         {
@@ -41,6 +41,11 @@ public class KeyTransitionElement<TValue> : TransitionElementBase<TValue>
 
                 return States[1].TransitionState;
             }
+        }
+        set
+        {
+            States[0].TransitionState = value;
+            States[1].TransitionState = value;
         }
     }
 

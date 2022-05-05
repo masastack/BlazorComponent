@@ -10,7 +10,7 @@ public class ExpandTransition : Transition
 {
     protected virtual string SizeProp => "height";
 
-    private double Size { get; set; }
+    private double? Size { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -39,12 +39,20 @@ public class ExpandTransition : Transition
             case TransitionState.Enter:
             case TransitionState.LeaveTo:
                 styles.Add("overflow:hidden");
-                styles.Add($"{SizeProp}:0px");
+                if (Size.HasValue)
+                {
+                    styles.Add($"{SizeProp}:0px");
+                }
+
                 break;
             case TransitionState.EnterTo:
             case TransitionState.Leave:
-                styles.Add($"{SizeProp}:{Size}px");
                 styles.Add("overflow:hidden");
+                if (Size.HasValue)
+                {
+                    styles.Add($"{SizeProp}:{Size}px");
+                }
+
                 break;
         }
 
@@ -53,12 +61,57 @@ public class ExpandTransition : Transition
 
     public override Task Enter(TransitionElementBase element)
     {
+        Console.WriteLine($"{element.Reference.Id} enter");
         return UpdateSize(element.Reference);
     }
 
     public override Task Leave(TransitionElementBase element)
     {
+        Console.WriteLine($"{element.Reference.Id} leave");
         return UpdateSize(element.Reference);
+    }
+
+    public override Task AfterEnter(TransitionElementBase element)
+    {
+        Console.WriteLine($"{element.Reference.Id} after enter");
+        // return base.AfterEnter(element);
+        Size = null;
+        return Task.CompletedTask;
+    }
+
+    public override Task AfterLeave(TransitionElementBase element)
+    {
+        Console.WriteLine($"{element.Reference.Id} after leave");
+        Size = null;
+        return Task.CompletedTask;
+    }
+
+    public override Task EnterCancelled(TransitionElementBase element)
+    {
+        Console.WriteLine($"{element.Reference.Id} enter cancel");
+        Size = null;
+
+        if (TransitionElement is not null)
+        {
+            TransitionElement.CurrentState = TransitionState.None;
+            StateHasChanged();
+        }
+
+        return Task.CompletedTask;
+    }
+
+    public override Task LeaveCancelled(TransitionElementBase element)
+    {
+        Console.WriteLine($"{element.Reference.Id} leave cancel");
+        Size = null;
+
+        if (TransitionElement is not null)
+        {
+            TransitionElement.CurrentState = TransitionState.None;
+            StateHasChanged();
+        }
+
+        return Task.CompletedTask;
     }
 
     private async Task UpdateSize(ElementReference elementReference)

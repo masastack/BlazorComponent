@@ -4,6 +4,8 @@ namespace BlazorComponent;
 
 public abstract class TransitionElementBase : Element
 {
+    internal abstract TransitionState CurrentState {  get; set; }
+
     /// <summary>
     /// The dom information about the transitional element.
     /// </summary>
@@ -21,13 +23,14 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
     [Parameter]
     public TValue Value { get; set; }
 
+    [CascadingParameter(Name = "Transition_Ticks_For_Element")]
+    public long Ticks { get; set; }
+
     private TValue _preValue;
     private TransitionJsInvoker? _transitionJsInvoker;
     private bool _transitionRunning;
 
     protected bool FirstRender { get; private set; } = true;
-
-    protected abstract TransitionState CurrentState { get; }
 
     /// <summary>
     /// Whether it is a transitional element.
@@ -47,8 +50,17 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
         }
     }
 
+    public override async Task SetParametersAsync(ParameterView parameters)
+    {
+        // Console.WriteLine($"{Reference.Id} SetParametersAsync:{Ticks}");
+
+        await base.SetParametersAsync(parameters);
+    }
+
     protected override async Task OnParametersSetAsync()
     {
+        // Console.WriteLine($"{Reference.Id} OnParametersSetAsync:{Ticks}");
+
         if (NoTransition)
         {
             return;
@@ -57,6 +69,24 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
         if (!EqualityComparer<TValue>.Default.Equals(Value, _preValue))
         {
             _preValue = Value;
+
+            if (!FirstRender)
+            {
+                bool? boolValue = null;
+                if (Value is bool @bool)
+                {
+                    boolValue = @bool;
+                }
+
+                if (Transition!.Mode is TransitionMode.InOut || (boolValue.HasValue && boolValue.Value))
+                {
+                    await Transition!.BeforeEnter(this);
+                }
+                else
+                {
+                    await Transition!.BeforeLeave(this);
+                }
+            }
 
             StartTransition();
 
@@ -70,16 +100,30 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
             switch (CurrentState)
             {
                 case TransitionState.None:
+                    break;
+                case TransitionState.Enter:
                     if (!FirstRender)
                     {
-                        if (Transition!.Mode is TransitionMode.InOut)
-                        {
-                            await Transition!.BeforeEnter(this);
-                        }
-                        else
-                        {
-                            await Transition!.BeforeLeave(this);
-                        }
+                        await Transition!.Enter(this);
+                    }
+
+                    break;
+                case TransitionState.EnterTo:
+                    // if (Value is true || Transition!.Mode is TransitionMode.OutIn)
+                    // {
+                    //     _transitionRunning = false;
+                    // }
+
+                    if (!FirstRender)
+                    {
+                        await Transition!.AfterEnter(this);
+                    }
+
+                    break;
+                case TransitionState.EnterCancelled:
+                    if (!FirstRender)
+                    {
+                        await Transition!.EnterCancelled(this);
                     }
 
                     break;
@@ -90,35 +134,22 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
                     }
 
                     break;
-                case TransitionState.Enter:
-                    if (!FirstRender)
-                    {
-                        Console.WriteLine($"{DateTime.Now:HH:mm:ss tt zz} transition state: enter");
-                        await Transition!.Enter(this);
-                    }
-
-                    break;
-                case TransitionState.EnterTo:
-                    if (Value is true || Transition!.Mode is TransitionMode.OutIn)
-                    {
-                        _transitionRunning = false;
-                    }
-
-                    if (!FirstRender)
-                    {
-                        await Transition!.AfterEnter(this);
-                    }
-
-                    break;
                 case TransitionState.LeaveTo:
-                    if (Value is false || Transition!.Mode is TransitionMode.InOut)
-                    {
-                        _transitionRunning = false;
-                    }
+                    // if (Value is false || Transition!.Mode is TransitionMode.InOut)
+                    // {
+                    //     _transitionRunning = false;
+                    // }
 
                     if (!FirstRender)
                     {
                         await Transition!.AfterLeave(this);
+                    }
+
+                    break;
+                case TransitionState.LeaveCancelled:
+                    if (!FirstRender)
+                    {
+                        await Transition!.LeaveCancelled(this);
                     }
 
                     break;
@@ -130,6 +161,8 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        // Console.WriteLine($"{Reference.Id} OnAfterRenderAsync:{Ticks}");
+
         if (firstRender)
         {
             FirstRender = false;
@@ -147,7 +180,7 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
                 Transition!.ElementReference = Reference;
 
                 _transitionJsInvoker = new TransitionJsInvoker(Js);
-                await _transitionJsInvoker.Init(OnTransitionEndAsync);
+                await _transitionJsInvoker.Init(OnTransitionEndAsync, OnTransitionCancelAsync);
                 await RegisterTransitionEventsAsync();
             }
 
@@ -174,6 +207,8 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
     protected abstract Task NextAsync(TransitionState currentState);
 
     protected virtual Task OnTransitionEndAsync(string referenceId, LeaveEnter transition) => Task.CompletedTask;
+
+    protected virtual Task OnTransitionCancelAsync(string referenceId, LeaveEnter transition) => Task.CompletedTask;
 
     protected async Task RequestAnimationFrameAsync(Func<Task> callback)
     {

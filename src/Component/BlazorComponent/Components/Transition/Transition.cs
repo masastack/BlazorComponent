@@ -37,6 +37,9 @@ namespace BlazorComponent
         public Func<ElementReference, Task>? OnAfterEnter { get; set; }
 
         [Parameter]
+        public Func<ElementReference, Task>? OnEnterCancelled { get; set; }
+
+        [Parameter]
         public Func<ElementReference, Task>? OnBeforeLeave { get; set; }
 
         [Parameter]
@@ -44,6 +47,9 @@ namespace BlazorComponent
 
         [Parameter]
         public Func<ElementReference, Task>? OnAfterLeave { get; set; }
+
+        [Parameter]
+        public Func<ElementReference, Task>? OnLeaveCancelled { get; set; }
 
         /// <summary>
         /// The only child element that running the transition in the Transition's ChildContent.
@@ -74,35 +80,6 @@ namespace BlazorComponent
             return null;
         }
 
-        public virtual async Task BeforeLeave(TransitionElementBase element)
-        {
-            if (OnBeforeLeave is not null)
-            {
-                await OnBeforeLeave.Invoke(element.Reference);
-            }
-        }
-
-        public virtual async Task Leave(TransitionElementBase element)
-        {
-            if (LeaveAbsolute)
-            {
-                element.ElementInfo = await Js.InvokeAsync<BlazorComponent.Web.Element>(JsInteropConstants.GetDomInfo, element.Reference);
-            }
-
-            if (OnLeave is not null)
-            {
-                await OnLeave.Invoke(element.Reference);
-            }
-        }
-
-        public virtual async Task AfterLeave(TransitionElementBase element)
-        {
-            if (OnAfterLeave is not null)
-            {
-                await OnAfterLeave.Invoke(element.Reference);
-            }
-        }
-
         public virtual async Task BeforeEnter(TransitionElementBase element)
         {
             if (OnBeforeEnter is not null)
@@ -127,14 +104,64 @@ namespace BlazorComponent
             }
         }
 
+        public virtual async Task EnterCancelled(TransitionElementBase element)
+        {
+            if (OnEnterCancelled is not null)
+            {
+                await OnEnterCancelled.Invoke(element.Reference);
+            }
+        }
+
+        public virtual async Task BeforeLeave(TransitionElementBase element)
+        {
+            if (OnBeforeLeave is not null)
+            {
+                await OnBeforeLeave.Invoke(element.Reference);
+            }
+        }
+
+        public virtual async Task Leave(TransitionElementBase element)
+        {
+            if (LeaveAbsolute)
+            {
+                element.ElementInfo = await Js.InvokeAsync<BlazorComponent.Web.Element>(JsInteropConstants.GetDomInfo, element.Reference);
+            }
+
+            if (OnLeave is not null)
+            {
+                await OnLeave.Invoke(element.Reference);
+            }
+        }
+
+        public virtual async Task LeaveCancelled(TransitionElementBase element)
+        {
+            if (OnLeaveCancelled is not null)
+            {
+                await OnLeaveCancelled.Invoke(element.Reference);
+            }
+        }
+
+        public virtual async Task AfterLeave(TransitionElementBase element)
+        {
+            if (OnAfterLeave is not null)
+            {
+                await OnAfterLeave.Invoke(element.Reference);
+            }
+        }
+
+        internal void InvokeStateHasChanged()
+        {
+            StateHasChanged();
+        }
+
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
             var sequence = 0;
             builder.OpenComponent<CascadingValue<Transition>>(sequence++);
 
-            builder.AddAttribute(sequence++, "Value", this);
-            builder.AddAttribute(sequence++, "IsFixed", true);
-            builder.AddAttribute(sequence++, "ChildContent", ChildContent);
+            builder.AddAttribute(sequence++, nameof(CascadingValue<Transition>.Value), this);
+            builder.AddAttribute(sequence++, nameof(CascadingValue<Transition>.IsFixed), true);
+            builder.AddAttribute(sequence++, nameof(CascadingValue<Transition>.ChildContent), ChildContent);
 
             builder.CloseComponent();
         }
