@@ -15,6 +15,7 @@ namespace BlazorComponent
     [EventHandler("onexkeydown", typeof(KeyboardEventArgs), true, true)]
     [EventHandler("onoutsideclick", typeof(MouseEventArgs), true, true)]
     [EventHandler("onpastewithdata", typeof(PasteWithDataEventArgs), true, true)]
+    [EventHandler("onextouchstart", typeof(ExTouchEventArgs), true, true)]
     public static class EventHandlers
     {
     }

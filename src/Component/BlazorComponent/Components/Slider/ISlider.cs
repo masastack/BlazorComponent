@@ -47,6 +47,16 @@ namespace BlazorComponent
             return Task.CompletedTask;
         }
 
+        Task HandleOnTouchStartAsync(ExTouchEventArgs args)
+        {
+            return Task.CompletedTask;
+        }
+
         Task HandleOnKeyDownAsync(KeyboardEventArgs args);
+
+        Task HandleOnSliderMouseUpAsync(MouseEventArgs args)
+        {
+            return Task.CompletedTask;
+        }
     }
 }
