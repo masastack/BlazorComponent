@@ -6,7 +6,11 @@
 <div class="@CssProvider.GetClass("slider")"
      return-target
      @onclick="HandleOnSliderClickAsync"
+     @onextouchstart="HandleOnSliderTouchStartAsync"
      @onexmousedown="HandleOnSliderMouseDownAsync"
+     @onmouseup="HandleOnSliderMouseUpAsync"
+     @onmouseup:preventDefault
+     @onmouseup:stopPropagation
      @onexmousedown:preventDefault>
     @RenderPart(typeof(BSliderChildren<,>))
 </div>

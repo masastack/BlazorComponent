@@ -425,6 +425,20 @@ export function addHtmlElementEventListener(selector, type, invoker, options, ac
           target.attributes[attr.name] = attr.value;
         }
         obj[k] = target;
+      } else if (k == 'touches' || k == 'targetTouches' || k == 'changedTouches'){
+        var list = [];
+        args[k].forEach(touch => {
+          var item = {};
+
+          for (var attr in touch) {
+            if(typeof(touch[attr]) == 'string' || typeof(touch[attr]) == 'number') {
+              item[attr] = touch[attr];
+            }
+          }
+          list.push(item);
+        });
+
+        obj[k] = list;
       }
     }
 
@@ -1203,6 +1217,7 @@ window.onload = function () {
   registerCustomEvent("exblur", "blur");
   registerCustomEvent("exkeydown", "keydown");
   registerPasteWithData("pastewithdata")
+  registerCustomEvent("extouchstart", "touchstart");
   registerDirective();
 }
 
@@ -1280,6 +1295,20 @@ function registerCustomEvent(eventType, eventName) {
               target.attributes[attr.name] = attr.value;
             }
             e[k] = target;
+          } else if (k == 'touches' || k == 'targetTouches' || k == 'changedTouches'){
+            var list = [];
+            args[k].forEach(touch => {
+              var item = {};
+
+              for (var attr in touch) {
+                if(typeof(touch[attr]) == 'string' || typeof(touch[attr]) == 'number') {
+                  item[attr] = touch[attr];
+                }
+              }
+              list.push(item);
+            });
+
+            e[k] = list;
           }
         }
 
