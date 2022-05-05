@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Routing;
+﻿using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public partial class BListItem : BGroupItem<ItemGroupBase>, IRoutable, ILinkable, IHandleEvent
+    public partial class BListItem : BGroupItem<ItemGroupBase>, IRoutable, ILinkable
     {
         private Linker _linker;
         private IRoutable _router;
@@ -126,10 +125,7 @@ namespace BlazorComponent
             }
         }
 
-        async Task IHandleEvent.HandleEventAsync(EventCallbackWorkItem item, object? arg)
-        {
-            await item.InvokeAsync(arg);
-        }
+        protected override bool AfterHandleEventShouldRender() => false;
 
         protected virtual async Task HandleOnClick(MouseEventArgs args)
         {

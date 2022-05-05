@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+﻿using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public partial class BButton : BGroupItem<ItemGroupBase>, IThemeable, IButton, IRoutable, IHandleEvent
+    public partial class BButton : BGroupItem<ItemGroupBase>, IThemeable, IButton, IRoutable
     {
         protected BButton() : base(GroupType.ButtonGroup)
         {
@@ -112,10 +111,7 @@ namespace BlazorComponent
             (Tag, Attributes) = router.GenerateRouteLink();
         }
 
-        async Task IHandleEvent.HandleEventAsync(EventCallbackWorkItem item, object? arg)
-        {
-            await item.InvokeAsync(arg);
-        }
+        protected override bool AfterHandleEventShouldRender() => false;
 
         protected virtual async Task HandleOnClick(MouseEventArgs args)
         {

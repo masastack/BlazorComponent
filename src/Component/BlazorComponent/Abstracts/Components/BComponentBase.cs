@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
+﻿using Microsoft.JSInterop;
 
 namespace BlazorComponent
 {
-    public abstract class BComponentBase : ComponentBase, IDisposable
+    public abstract class BComponentBase : ComponentBase, IDisposable, IHandleEvent
     {
         private readonly Queue<Func<Task>> _nextTickQueue = new();
 
@@ -63,6 +62,60 @@ namespace BlazorComponent
         protected async Task JsInvokeAsync(string code, params object[] args)
         {
             await Js.InvokeVoidAsync(code, args);
+        }
+
+        [CascadingParameter]
+        protected IErrorHandler? ErrorHandler { get; set; }
+
+        protected virtual bool AfterHandleEventShouldRender()
+        {
+            return true;
+        }
+
+        Task IHandleEvent.HandleEventAsync(EventCallbackWorkItem callback, object? arg)
+        {
+            var task = callback.InvokeAsync(arg);
+            var shouldAwaitTask = task.Status != TaskStatus.RanToCompletion &&
+                                  task.Status != TaskStatus.Canceled;
+
+            if (AfterHandleEventShouldRender())
+            {
+                StateHasChanged();
+            }
+
+            return shouldAwaitTask
+                ? CallStateHasChangedOnAsyncCompletion(task)
+                : Task.CompletedTask;
+        }
+
+        private async Task CallStateHasChangedOnAsyncCompletion(Task task)
+        {
+            try
+            {
+                await task;
+            }
+            catch (Exception ex) // avoiding exception filters for AOT runtime support
+            {
+                // Ignore exceptions from task cancellations, but don't bother issuing a state change.
+                if (task.IsCanceled)
+                {
+                    return;
+                }
+
+                if (ErrorHandler != null)
+                {
+                    await ErrorHandler.HandleExceptionAsync(ex);
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            if (AfterHandleEventShouldRender())
+            {
+                StateHasChanged();
+            }            
         }
 
         protected virtual void Dispose(bool disposing)

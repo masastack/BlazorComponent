@@ -49,7 +49,14 @@ public abstract class ToggleableTransitionElement : TransitionElementBase<bool>
     {
         if (NoTransition)
         {
-            ShowElement();
+            if (Value)
+            {
+                ShowElement();
+            }
+            else
+            {
+                HideElement();
+            }
         }
 
         Console.WriteLine($"{Id}: {State}");
