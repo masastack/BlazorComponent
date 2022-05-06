@@ -2,17 +2,19 @@
 @typeparam TTabs
 @inherits ComponentPartBase<TTabs>
 
-@foreach (var item in ComputedItems)
+@if (ComputedItems.Any())
 {
-    var isActive = IsActive(item);
-    <div @key="item.Url" class="@CssProvider.GetClass("page-item",data:isActive)" style="@CssProvider.GetStyle("page-item",data:isActive)">
-        <PageContainer Value="isActive">
-            @ComponentChildContent
-        </PageContainer>
-    </div>
+    @foreach (var item in ComputedItems)
+    {
+        var isActive = IsActive(item);
+        <div @key="item.Url" class="@CssProvider.GetClass("page-item",data:isActive)" style="@CssProvider.GetStyle("page-item",data:isActive)">
+            <PageContainer Value="isActive">
+                @ComponentChildContent
+            </PageContainer>
+        </div>
+    }
 }
-@if (NoActiveItem)
+else
 {
     @ComponentChildContent
 }
-
