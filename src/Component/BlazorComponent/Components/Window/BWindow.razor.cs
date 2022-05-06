@@ -80,6 +80,11 @@ namespace BlazorComponent
             StateHasChanged();
         }
 
+        public void RenderState()
+        {
+            StateHasChanged();
+        }
+
         protected void Next()
         {
             UpdateInternalIndex();

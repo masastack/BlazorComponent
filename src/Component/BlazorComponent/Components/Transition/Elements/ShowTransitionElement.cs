@@ -6,7 +6,7 @@ public class ShowTransitionElement : ToggleableTransitionElement
     {
         get
         {
-            Console.WriteLine($"LazyValue:{LazyValue}");
+            // Console.WriteLine($"LazyValue:{LazyValue}");
             if (!LazyValue)
             {
                 return string.Join(";", base.ComputedStyle, "display:none");

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public abstract class BGroupable<TGroup> : BDomComponentBase, IGroupable
         where TGroup : ItemGroupBase
@@ -64,19 +62,15 @@ namespace BlazorComponent
             }
         }
 
-        protected override void OnParametersSet()
+        protected override async Task OnParametersSetAsync()
         {
-            base.OnParametersSet();
-
             if (_isActive.HasValue) // if setting by [Parameter]IsActive, Matched is not required.
             {
-                // InternalIsActive = _isActive.Value;
-                SetInternalIsActive(_isActive.Value);
+                await SetInternalIsActive(_isActive.Value);
             }
             else if (Matched)
             {
-                // InternalIsActive = ValueMatched;
-                SetInternalIsActive(ValueMatched);
+                await SetInternalIsActive(ValueMatched);
             }
         }
 
@@ -87,44 +81,34 @@ namespace BlazorComponent
             await ItemGroup.ToggleAsync(Value);
         }
 
-        protected virtual void ShowLazyContent()
-        {
-        }
-
         protected bool IsBooted { get; set; }
+        private bool _afterFirstBooted;
 
-        protected void SetInternalIsActive(bool val)
+        protected async Task SetInternalIsActive(bool val)
         {
             if (!IsBooted)
             {
                 if (val)
                 {
                     IsBooted = true;
-                    InternalIsActive = false;
 
-                    // TODO: fix here
+                    _afterFirstBooted = true;
 
-                    NextTick(async () =>
-                    {
-                        await Task.Delay(16);
-                        InternalIsActive = true;
-                        StateHasChanged();
-                    });
+                    await Task.Delay(16);
 
                     StateHasChanged();
-
-                    return;
                 }
             }
+            else if (InternalIsActive != val)
+            {
+                if (_afterFirstBooted)
+                {
+                    await Task.Delay(16);
+                    _afterFirstBooted = false;
+                }
 
-            InternalIsActive = val;
-
-            StateHasChanged();
-
-            // if (val)
-            // {
-            //     ShowLazyContent();
-            // }
+                InternalIsActive = val;
+            }
         }
 
         protected override void Dispose(bool disposing)

@@ -21,10 +21,7 @@ public class ExpandTransition : Transition
     {
         var transitionClass = base.GetClass(transitionState);
 
-        return string.Join(
-            " ",
-            transitionClass,
-            transitionState == TransitionState.None ? null : "in-transition");
+        return string.Join(" ", transitionClass);
     }
 
     public override string GetStyle(TransitionState transitionState)
@@ -71,52 +68,57 @@ public class ExpandTransition : Transition
         return UpdateSize(element.Reference);
     }
 
-    public override Task AfterEnter(TransitionElementBase element)
-    {
-        Console.WriteLine($"{element.Reference.Id} after enter");
-        // return base.AfterEnter(element);
-        Size = null;
-        return Task.CompletedTask;
-    }
+    // public override Task AfterEnter(TransitionElementBase element)
+    // {
+    //     Console.WriteLine($"{element.Reference.Id} after enter");
+    //     Size = null;
+    //     return Task.CompletedTask;
+    // }
+    //
+    // public override Task AfterLeave(TransitionElementBase element)
+    // {
+    //     Console.WriteLine($"{element.Reference.Id} after leave");
+    //     Size = null;
+    //     return Task.CompletedTask;
+    // }
 
-    public override Task AfterLeave(TransitionElementBase element)
-    {
-        Console.WriteLine($"{element.Reference.Id} after leave");
-        Size = null;
-        return Task.CompletedTask;
-    }
-
-    public override Task EnterCancelled(TransitionElementBase element)
-    {
-        Console.WriteLine($"{element.Reference.Id} enter cancel");
-        Size = null;
-
-        if (TransitionElement is not null)
-        {
-            TransitionElement.CurrentState = TransitionState.None;
-            StateHasChanged();
-        }
-
-        return Task.CompletedTask;
-    }
-
-    public override Task LeaveCancelled(TransitionElementBase element)
-    {
-        Console.WriteLine($"{element.Reference.Id} leave cancel");
-        Size = null;
-
-        if (TransitionElement is not null)
-        {
-            TransitionElement.CurrentState = TransitionState.None;
-            StateHasChanged();
-        }
-
-        return Task.CompletedTask;
-    }
+    // public override Task EnterCancelled(TransitionElementBase element)
+    // {
+    //     Console.WriteLine($"{element.Reference.Id} enter cancel");
+    //     Size = null;
+    //
+    //     if (TransitionElement is not null)
+    //     {
+    //         TransitionElement.CurrentState = TransitionState.None;
+    //         StateHasChanged();
+    //     }
+    //
+    //     return Task.CompletedTask;
+    // }
+    //
+    // public override Task LeaveCancelled(TransitionElementBase element)
+    // {
+    //     Console.WriteLine($"{element.Reference.Id} leave cancel");
+    //     Size = null;
+    //
+    //     if (TransitionElement is not null)
+    //     {
+    //         TransitionElement.CurrentState = TransitionState.None;
+    //         StateHasChanged();
+    //     }
+    //
+    //     return Task.CompletedTask;
+    // }
 
     private async Task UpdateSize(ElementReference elementReference)
     {
         var elementInfo = await Js.InvokeAsync<BlazorComponent.Web.Element>(JsInteropConstants.GetDomInfo, elementReference);
-        Size = elementInfo.OffsetHeight;
+        var size = elementInfo.OffsetHeight;
+        if (size != 0)
+        {
+            Size = size;
+        }
+
+        Console.WriteLine($"Size:{Size}");
     }
 }

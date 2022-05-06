@@ -23,9 +23,6 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
     [Parameter]
     public TValue Value { get; set; }
 
-    [CascadingParameter(Name = "Transition_Ticks_For_Element")]
-    public long Ticks { get; set; }
-
     private TValue _preValue;
     private TransitionJsInvoker? _transitionJsInvoker;
     private bool _transitionRunning;
@@ -48,13 +45,6 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
         {
             Transition.TransitionElement = this;
         }
-    }
-
-    public override async Task SetParametersAsync(ParameterView parameters)
-    {
-        // Console.WriteLine($"{Reference.Id} SetParametersAsync:{Ticks}");
-
-        await base.SetParametersAsync(parameters);
     }
 
     protected override async Task OnParametersSetAsync()
@@ -91,8 +81,13 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
             StartTransition();
 
             _transitionRunning = true;
-        }
 
+            await Hooks();
+        }
+    }
+
+    protected async Task Hooks()
+    {
         // hooks
         // TODO: but it hasn't been tested yet
         if (_transitionRunning)
@@ -156,8 +151,12 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            // StateHasChanged();
         }
     }
+
+    private bool _requestingAnimationFrame;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -184,7 +183,7 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
                 await RegisterTransitionEventsAsync();
             }
 
-            if (ElementReferenceChanged)
+            if (!firstRender && ElementReferenceChanged)
             {
                 ElementReferenceChanged = false;
 
@@ -193,7 +192,10 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
                 await RegisterTransitionEventsAsync();
             }
 
-            await NextAsync(CurrentState);
+            if (!_requestingAnimationFrame)
+            {
+                await NextAsync(CurrentState);
+            }
         }
     }
 
@@ -212,7 +214,9 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
 
     protected async Task RequestAnimationFrameAsync(Func<Task> callback)
     {
+        _requestingAnimationFrame = true;
         await Task.Delay(16);
+        _requestingAnimationFrame = false;
         await callback();
     }
 

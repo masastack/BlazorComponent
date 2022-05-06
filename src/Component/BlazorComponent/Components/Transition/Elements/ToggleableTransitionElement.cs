@@ -97,63 +97,56 @@ public abstract class ToggleableTransitionElement : TransitionElementBase<bool>
         }
     }
 
-    protected override Task OnTransitionEndAsync(string referenceId, LeaveEnter transition)
+    protected override async Task OnTransitionEndAsync(string referenceId, LeaveEnter transition)
     {
         if (referenceId != Reference.Id)
         {
-            return Task.CompletedTask;
+            return;
         }
 
         Console.WriteLine($"{referenceId}: END!!! {transition}");
 
         if (transition == LeaveEnter.Enter && CurrentState == TransitionState.EnterTo)
         {
-            NextState(TransitionState.None);
+            await NextState(TransitionState.None);
         }
         else if (transition == LeaveEnter.Leave && CurrentState == TransitionState.LeaveTo)
         {
             HideElement();
-            NextState(TransitionState.None);
+            await NextState(TransitionState.None);
         }
-
-        return Task.CompletedTask;
     }
 
-    protected override Task OnTransitionCancelAsync(string referenceId, LeaveEnter transition)
+    protected override async Task OnTransitionCancelAsync(string referenceId, LeaveEnter transition)
     {
         if (referenceId != Reference.Id)
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        // Console.WriteLine($"{referenceId}: CANCEL!!! {transition}");
+        Console.WriteLine($"{referenceId}: CANCEL!!! {transition}");
 
         // if (transition == LeaveEnter.Enter && CurrentState == TransitionState.EnterTo)
         // {
-        //     NextState(TransitionState.EnterCancelled);
+        //     await NextState(TransitionState.EnterCancelled);
         // }
         // else if (transition == LeaveEnter.Leave && CurrentState == TransitionState.LeaveTo)
         // {
-        //     NextState(TransitionState.LeaveCancelled);
+        //     await NextState(TransitionState.LeaveCancelled);
         // }
-
-        return Task.CompletedTask;
     }
 
-    private void NextState(TransitionState transitionState)
+    private async Task NextState(TransitionState transitionState)
     {
         State = transitionState;
-        // StateHasChanged();
-        Transition?.InvokeStateHasChanged();
+        StateHasChanged();
+        await Hooks();
+        // Transition?.InvokeStateHasChanged();
     }
 
     private async Task RequestNextStateAsync(TransitionState state)
     {
-        await RequestAnimationFrameAsync(() =>
-        {
-            NextState(state);
-            return Task.CompletedTask;
-        });
+        await RequestAnimationFrameAsync(async () => await NextState(state));
     }
 
     private void HideElement()

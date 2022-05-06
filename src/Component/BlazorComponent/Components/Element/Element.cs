@@ -23,7 +23,7 @@ namespace BlazorComponent
         [Parameter(CaptureUnmatchedValues = true)]
         public virtual IDictionary<string, object> AdditionalAttributes { get; set; } = new Dictionary<string, object>();
 
-        private ElementReference _reference;
+        private ElementReference? _reference;
 
         protected bool ElementReferenceChanged { get; set; }
 
@@ -35,13 +35,18 @@ namespace BlazorComponent
 
         public ElementReference Reference
         {
-            get => _reference;
+            get => _reference ?? new ElementReference();
             protected set
             {
-                if (_reference.Id != value.Id)
+                if (_reference.HasValue && _reference.Value.Id != value.Id)
                 {
                     ElementReferenceChanged = true;
                 }
+
+                // if (_reference.Id != value.Id)
+                // {
+                //     ElementReferenceChanged = true;
+                // }
 
                 _reference = value;
             }
