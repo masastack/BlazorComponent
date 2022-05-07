@@ -26,8 +26,6 @@
 
         if (!transition) return;
         
-        console.log(_bl_, transition, 'transitionend~~~~~~~~~~')
-
         dotNet.invokeMethodAsync('OnTransitionEnd', _bl_, transition)
     })
 
@@ -50,8 +48,6 @@
         }
 
         if (!transition) return;
-
-        console.log(_bl_, transition, 'transitioncancel~~~~~~~~~~')
 
         dotNet.invokeMethodAsync('OnTransitionCancel', _bl_, transition)
     })

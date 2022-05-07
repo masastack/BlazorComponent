@@ -149,11 +149,6 @@ namespace BlazorComponent
             }
         }
 
-        // internal void InvokeStateHasChanged()
-        // {
-        //     StateHasChanged();
-        // }
-
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
             var sequence = 0;

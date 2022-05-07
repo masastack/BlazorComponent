@@ -3,6 +3,9 @@
 public enum TransitionMode
 {
     OutIn,
-    // TODO: not implemented
+
+    /// <summary>
+    /// TODO: not implemented
+    /// </summary>
     InOut
 }

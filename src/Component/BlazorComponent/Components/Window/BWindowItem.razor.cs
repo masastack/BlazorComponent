@@ -2,7 +2,7 @@
 {
     public partial class BWindowItem : BGroupItem<ItemGroupBase>
     {
-        protected BWindowItem() : base(GroupType.Window)
+        protected BWindowItem() : base(GroupType.Window, bootable: true)
         {
         }
 

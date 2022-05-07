@@ -104,8 +104,6 @@ public abstract class ToggleableTransitionElement : TransitionElementBase<bool>
             return;
         }
 
-        Console.WriteLine($"{referenceId}: END!!! {transition}");
-
         if (transition == LeaveEnter.Enter && CurrentState == TransitionState.EnterTo)
         {
             await NextState(TransitionState.None);
@@ -117,31 +115,11 @@ public abstract class ToggleableTransitionElement : TransitionElementBase<bool>
         }
     }
 
-    protected override async Task OnTransitionCancelAsync(string referenceId, LeaveEnter transition)
-    {
-        if (referenceId != Reference.Id)
-        {
-            return;
-        }
-
-        Console.WriteLine($"{referenceId}: CANCEL!!! {transition}");
-
-        // if (transition == LeaveEnter.Enter && CurrentState == TransitionState.EnterTo)
-        // {
-        //     await NextState(TransitionState.EnterCancelled);
-        // }
-        // else if (transition == LeaveEnter.Leave && CurrentState == TransitionState.LeaveTo)
-        // {
-        //     await NextState(TransitionState.LeaveCancelled);
-        // }
-    }
-
     private async Task NextState(TransitionState transitionState)
     {
         State = transitionState;
         StateHasChanged();
         await Hooks();
-        // Transition?.InvokeStateHasChanged();
     }
 
     private async Task RequestNextStateAsync(TransitionState state)

@@ -36,18 +36,6 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<bool> ValueChanged { get; set; }
 
-        private async Task UpdateValue(bool value)
-        {
-            if (ValueChanged.HasDelegate)
-            {
-                await ValueChanged.InvokeAsync(value);
-            }
-            else
-            {
-                Value = value;
-            }
-        }
-
         [Parameter]
         public string PrependIcon { get; set; }
 
@@ -114,7 +102,10 @@ namespace BlazorComponent
             if (!IsBooted)
             {
                 IsBooted = true;
-                //await Task.Delay(16);
+
+                // waiting for 1ms to make sure the element has been rendered,
+                await Task.Delay(1);
+
                 StateHasChanged();
             }
 
@@ -138,6 +129,18 @@ namespace BlazorComponent
             }
 
             return isActive != IsActive;
+        }
+
+        private async Task UpdateValue(bool value)
+        {
+            if (ValueChanged.HasDelegate)
+            {
+                await ValueChanged.InvokeAsync(value);
+            }
+            else
+            {
+                Value = value;
+            }
         }
 
         protected override void Dispose(bool disposing)

@@ -25,7 +25,6 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
 
     private TValue _preValue;
     private TransitionJsInvoker? _transitionJsInvoker;
-    private bool _transitionRunning;
 
     protected bool FirstRender { get; private set; } = true;
 
@@ -49,8 +48,6 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
 
     protected override async Task OnParametersSetAsync()
     {
-        // Console.WriteLine($"{Reference.Id} OnParametersSetAsync:{Ticks}");
-
         if (NoTransition)
         {
             return;
@@ -80,8 +77,6 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
 
             StartTransition();
 
-            _transitionRunning = true;
-
             await Hooks();
         }
     }
@@ -90,69 +85,55 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
     {
         // hooks
         // TODO: but it hasn't been tested yet
-        if (_transitionRunning)
+
+        switch (CurrentState)
         {
-            switch (CurrentState)
-            {
-                case TransitionState.None:
-                    break;
-                case TransitionState.Enter:
-                    if (!FirstRender)
-                    {
-                        await Transition!.Enter(this);
-                    }
+            case TransitionState.None:
+                break;
+            case TransitionState.Enter:
+                if (!FirstRender)
+                {
+                    await Transition!.Enter(this);
+                }
 
-                    break;
-                case TransitionState.EnterTo:
-                    // if (Value is true || Transition!.Mode is TransitionMode.OutIn)
-                    // {
-                    //     _transitionRunning = false;
-                    // }
+                break;
+            case TransitionState.EnterTo:
+                if (!FirstRender)
+                {
+                    await Transition!.AfterEnter(this);
+                }
 
-                    if (!FirstRender)
-                    {
-                        await Transition!.AfterEnter(this);
-                    }
+                break;
+            case TransitionState.EnterCancelled:
+                if (!FirstRender)
+                {
+                    await Transition!.EnterCancelled(this);
+                }
 
-                    break;
-                case TransitionState.EnterCancelled:
-                    if (!FirstRender)
-                    {
-                        await Transition!.EnterCancelled(this);
-                    }
+                break;
+            case TransitionState.Leave:
+                if (!FirstRender)
+                {
+                    await Transition!.Leave(this);
+                }
 
-                    break;
-                case TransitionState.Leave:
-                    if (!FirstRender)
-                    {
-                        await Transition!.Leave(this);
-                    }
+                break;
+            case TransitionState.LeaveTo:
+                if (!FirstRender)
+                {
+                    await Transition!.AfterLeave(this);
+                }
 
-                    break;
-                case TransitionState.LeaveTo:
-                    // if (Value is false || Transition!.Mode is TransitionMode.InOut)
-                    // {
-                    //     _transitionRunning = false;
-                    // }
+                break;
+            case TransitionState.LeaveCancelled:
+                if (!FirstRender)
+                {
+                    await Transition!.LeaveCancelled(this);
+                }
 
-                    if (!FirstRender)
-                    {
-                        await Transition!.AfterLeave(this);
-                    }
-
-                    break;
-                case TransitionState.LeaveCancelled:
-                    if (!FirstRender)
-                    {
-                        await Transition!.LeaveCancelled(this);
-                    }
-
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            // StateHasChanged();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 
@@ -160,8 +141,6 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        // Console.WriteLine($"{Reference.Id} OnAfterRenderAsync:{Ticks}");
-
         if (firstRender)
         {
             FirstRender = false;

@@ -8,6 +8,10 @@ namespace BlazorComponent;
 /// </summary>
 public class ExpandTransition : Transition
 {
+    // BUG: Unable to get height/width for the first time.
+    // TODO: Try to rewrite ExpandTransition with hooks.
+    // https://github.com/vuetifyjs/vuetify/blob/aa68dd2d9c/packages/vuetify/src/components/transitions/expand-transition.ts
+
     protected virtual string SizeProp => "height";
 
     private double? Size { get; set; }
@@ -36,11 +40,7 @@ public class ExpandTransition : Transition
             case TransitionState.Enter:
             case TransitionState.LeaveTo:
                 styles.Add("overflow:hidden");
-                if (Size.HasValue)
-                {
-                    styles.Add($"{SizeProp}:0px");
-                }
-
+                styles.Add($"{SizeProp}:0px");
                 break;
             case TransitionState.EnterTo:
             case TransitionState.Leave:
@@ -67,48 +67,6 @@ public class ExpandTransition : Transition
         Console.WriteLine($"{element.Reference.Id} leave");
         return UpdateSize(element.Reference);
     }
-
-    // public override Task AfterEnter(TransitionElementBase element)
-    // {
-    //     Console.WriteLine($"{element.Reference.Id} after enter");
-    //     Size = null;
-    //     return Task.CompletedTask;
-    // }
-    //
-    // public override Task AfterLeave(TransitionElementBase element)
-    // {
-    //     Console.WriteLine($"{element.Reference.Id} after leave");
-    //     Size = null;
-    //     return Task.CompletedTask;
-    // }
-
-    // public override Task EnterCancelled(TransitionElementBase element)
-    // {
-    //     Console.WriteLine($"{element.Reference.Id} enter cancel");
-    //     Size = null;
-    //
-    //     if (TransitionElement is not null)
-    //     {
-    //         TransitionElement.CurrentState = TransitionState.None;
-    //         StateHasChanged();
-    //     }
-    //
-    //     return Task.CompletedTask;
-    // }
-    //
-    // public override Task LeaveCancelled(TransitionElementBase element)
-    // {
-    //     Console.WriteLine($"{element.Reference.Id} leave cancel");
-    //     Size = null;
-    //
-    //     if (TransitionElement is not null)
-    //     {
-    //         TransitionElement.CurrentState = TransitionState.None;
-    //         StateHasChanged();
-    //     }
-    //
-    //     return Task.CompletedTask;
-    // }
 
     private async Task UpdateSize(ElementReference elementReference)
     {
