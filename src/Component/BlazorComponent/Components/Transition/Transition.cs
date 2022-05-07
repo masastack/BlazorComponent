@@ -28,22 +28,28 @@ namespace BlazorComponent
         public RenderFragment ChildContent { get; set; }
 
         [Parameter]
-        public EventCallback<Element> OnBeforeEnter { get; set; }
+        public Func<ElementReference, Task>? OnBeforeEnter { get; set; }
 
         [Parameter]
-        public EventCallback<Element> OnEnter { get; set; }
+        public Func<ElementReference, Task>? OnEnter { get; set; }
 
         [Parameter]
-        public EventCallback<Element> OnAfterEnter { get; set; }
+        public Func<ElementReference, Task>? OnAfterEnter { get; set; }
 
         [Parameter]
-        public EventCallback<Element> OnBeforeLeave { get; set; }
+        public Func<ElementReference, Task>? OnEnterCancelled { get; set; }
 
         [Parameter]
-        public EventCallback<Element> OnLeave { get; set; }
+        public Func<ElementReference, Task>? OnBeforeLeave { get; set; }
 
         [Parameter]
-        public EventCallback<Element> OnAfterLeave { get; set; }
+        public Func<ElementReference, Task>? OnLeave { get; set; }
+
+        [Parameter]
+        public Func<ElementReference, Task>? OnAfterLeave { get; set; }
+
+        [Parameter]
+        public Func<ElementReference, Task>? OnLeaveCancelled { get; set; }
 
         /// <summary>
         /// The only child element that running the transition in the Transition's ChildContent.
@@ -74,11 +80,43 @@ namespace BlazorComponent
             return null;
         }
 
+        public virtual async Task BeforeEnter(TransitionElementBase element)
+        {
+            if (OnBeforeEnter is not null)
+            {
+                await OnBeforeEnter.Invoke(element.Reference);
+            }
+        }
+
+        public virtual async Task Enter(TransitionElementBase element)
+        {
+            if (OnEnter is not null)
+            {
+                await OnEnter.Invoke(element.Reference);
+            }
+        }
+
+        public virtual async Task AfterEnter(TransitionElementBase element)
+        {
+            if (OnAfterEnter is not null)
+            {
+                await OnAfterEnter.Invoke(element.Reference);
+            }
+        }
+
+        public virtual async Task EnterCancelled(TransitionElementBase element)
+        {
+            if (OnEnterCancelled is not null)
+            {
+                await OnEnterCancelled.Invoke(element.Reference);
+            }
+        }
+
         public virtual async Task BeforeLeave(TransitionElementBase element)
         {
-            if (OnBeforeLeave.HasDelegate)
+            if (OnBeforeLeave is not null)
             {
-                await OnBeforeLeave.InvokeAsync();
+                await OnBeforeLeave.Invoke(element.Reference);
             }
         }
 
@@ -89,41 +127,25 @@ namespace BlazorComponent
                 element.ElementInfo = await Js.InvokeAsync<BlazorComponent.Web.Element>(JsInteropConstants.GetDomInfo, element.Reference);
             }
 
-            if (OnLeave.HasDelegate)
+            if (OnLeave is not null)
             {
-                await OnLeave.InvokeAsync();
+                await OnLeave.Invoke(element.Reference);
+            }
+        }
+
+        public virtual async Task LeaveCancelled(TransitionElementBase element)
+        {
+            if (OnLeaveCancelled is not null)
+            {
+                await OnLeaveCancelled.Invoke(element.Reference);
             }
         }
 
         public virtual async Task AfterLeave(TransitionElementBase element)
         {
-            if (OnAfterLeave.HasDelegate)
+            if (OnAfterLeave is not null)
             {
-                await OnAfterLeave.InvokeAsync();
-            }
-        }
-
-        public virtual async Task BeforeEnter(TransitionElementBase element)
-        {
-            if (OnBeforeEnter.HasDelegate)
-            {
-                await OnBeforeEnter.InvokeAsync();
-            }
-        }
-
-        public virtual async Task Enter(TransitionElementBase element)
-        {
-            if (OnEnter.HasDelegate)
-            {
-                await OnEnter.InvokeAsync();
-            }
-        }
-
-        public virtual async Task AfterEnter(TransitionElementBase element)
-        {
-            if (OnAfterEnter.HasDelegate)
-            {
-                await OnAfterEnter.InvokeAsync();
+                await OnAfterLeave.Invoke(element.Reference);
             }
         }
 
@@ -132,9 +154,9 @@ namespace BlazorComponent
             var sequence = 0;
             builder.OpenComponent<CascadingValue<Transition>>(sequence++);
 
-            builder.AddAttribute(sequence++, "Value", this);
-            builder.AddAttribute(sequence++, "IsFixed", true);
-            builder.AddAttribute(sequence++, "ChildContent", ChildContent);
+            builder.AddAttribute(sequence++, nameof(CascadingValue<Transition>.Value), this);
+            builder.AddAttribute(sequence++, nameof(CascadingValue<Transition>.IsFixed), true);
+            builder.AddAttribute(sequence++, nameof(CascadingValue<Transition>.ChildContent), ChildContent);
 
             builder.CloseComponent();
         }

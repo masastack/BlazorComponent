@@ -8,9 +8,13 @@ namespace BlazorComponent;
 /// </summary>
 public class ExpandTransition : Transition
 {
+    // BUG: Unable to get height/width for the first time.
+    // TODO: Try to rewrite ExpandTransition with hooks.
+    // https://github.com/vuetifyjs/vuetify/blob/aa68dd2d9c/packages/vuetify/src/components/transitions/expand-transition.ts
+
     protected virtual string SizeProp => "height";
 
-    private double Size { get; set; }
+    private double? Size { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -21,10 +25,7 @@ public class ExpandTransition : Transition
     {
         var transitionClass = base.GetClass(transitionState);
 
-        return string.Join(
-            " ",
-            transitionClass,
-            transitionState == TransitionState.None ? null : "in-transition");
+        return string.Join(" ", transitionClass);
     }
 
     public override string GetStyle(TransitionState transitionState)
@@ -43,8 +44,12 @@ public class ExpandTransition : Transition
                 break;
             case TransitionState.EnterTo:
             case TransitionState.Leave:
-                styles.Add($"{SizeProp}:{Size}px");
                 styles.Add("overflow:hidden");
+                if (Size.HasValue)
+                {
+                    styles.Add($"{SizeProp}:{Size}px");
+                }
+
                 break;
         }
 
@@ -53,17 +58,25 @@ public class ExpandTransition : Transition
 
     public override Task Enter(TransitionElementBase element)
     {
+        Console.WriteLine($"{element.Reference.Id} enter");
         return UpdateSize(element.Reference);
     }
 
     public override Task Leave(TransitionElementBase element)
     {
+        Console.WriteLine($"{element.Reference.Id} leave");
         return UpdateSize(element.Reference);
     }
 
     private async Task UpdateSize(ElementReference elementReference)
     {
         var elementInfo = await Js.InvokeAsync<BlazorComponent.Web.Element>(JsInteropConstants.GetDomInfo, elementReference);
-        Size = elementInfo.OffsetHeight;
+        var size = elementInfo.OffsetHeight;
+        if (size != 0)
+        {
+            Size = size;
+        }
+
+        Console.WriteLine($"Size:{Size}");
     }
 }

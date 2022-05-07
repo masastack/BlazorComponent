@@ -4,6 +4,8 @@ namespace BlazorComponent;
 
 public abstract class TransitionElementBase : Element
 {
+    internal abstract TransitionState CurrentState {  get; set; }
+
     /// <summary>
     /// The dom information about the transitional element.
     /// </summary>
@@ -23,11 +25,8 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
 
     private TValue _preValue;
     private TransitionJsInvoker? _transitionJsInvoker;
-    private bool _transitionRunning;
 
     protected bool FirstRender { get; private set; } = true;
-
-    protected abstract TransitionState CurrentState { get; }
 
     /// <summary>
     /// Whether it is a transitional element.
@@ -58,60 +57,87 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
         {
             _preValue = Value;
 
+            if (!FirstRender)
+            {
+                bool? boolValue = null;
+                if (Value is bool @bool)
+                {
+                    boolValue = @bool;
+                }
+
+                if (Transition!.Mode is TransitionMode.InOut || (boolValue.HasValue && boolValue.Value))
+                {
+                    await Transition!.BeforeEnter(this);
+                }
+                else
+                {
+                    await Transition!.BeforeLeave(this);
+                }
+            }
+
             StartTransition();
 
-            _transitionRunning = true;
-        }
-
-        // hooks
-        // TODO: but it hasn't been tested yet
-        if (_transitionRunning)
-        {
-            switch (CurrentState)
-            {
-                case TransitionState.None:
-                    if (Transition!.Mode is TransitionMode.InOut)
-                    {
-                        await Transition!.BeforeEnter(this);
-                    }
-                    else
-                    {
-                        await Transition!.BeforeLeave(this);
-                    }
-
-                    break;
-                case TransitionState.Leave:
-                    await Transition!.Leave(this);
-
-                    break;
-                case TransitionState.Enter:
-                    Console.WriteLine("transition state: enter");
-                    await Transition!.Enter(this);
-
-                    break;
-                case TransitionState.EnterTo:
-                    if (Value is true || Transition!.Mode is TransitionMode.OutIn)
-                    {
-                        _transitionRunning = false;
-                    }
-
-                    await Transition!.AfterEnter(this);
-
-                    break;
-                case TransitionState.LeaveTo:
-                    if (Value is false || Transition!.Mode is TransitionMode.InOut)
-                    {
-                        _transitionRunning = false;
-                    }
-
-                    await Transition!.AfterLeave(this);
-
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            await Hooks();
         }
     }
+
+    protected async Task Hooks()
+    {
+        // hooks
+        // TODO: but it hasn't been tested yet
+
+        switch (CurrentState)
+        {
+            case TransitionState.None:
+                break;
+            case TransitionState.Enter:
+                if (!FirstRender)
+                {
+                    await Transition!.Enter(this);
+                }
+
+                break;
+            case TransitionState.EnterTo:
+                if (!FirstRender)
+                {
+                    await Transition!.AfterEnter(this);
+                }
+
+                break;
+            case TransitionState.EnterCancelled:
+                if (!FirstRender)
+                {
+                    await Transition!.EnterCancelled(this);
+                }
+
+                break;
+            case TransitionState.Leave:
+                if (!FirstRender)
+                {
+                    await Transition!.Leave(this);
+                }
+
+                break;
+            case TransitionState.LeaveTo:
+                if (!FirstRender)
+                {
+                    await Transition!.AfterLeave(this);
+                }
+
+                break;
+            case TransitionState.LeaveCancelled:
+                if (!FirstRender)
+                {
+                    await Transition!.LeaveCancelled(this);
+                }
+
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    private bool _requestingAnimationFrame;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -132,11 +158,11 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
                 Transition!.ElementReference = Reference;
 
                 _transitionJsInvoker = new TransitionJsInvoker(Js);
-                await _transitionJsInvoker.Init(OnTransitionEndAsync);
+                await _transitionJsInvoker.Init(OnTransitionEndAsync, OnTransitionCancelAsync);
                 await RegisterTransitionEventsAsync();
             }
 
-            if (ElementReferenceChanged)
+            if (!firstRender && ElementReferenceChanged)
             {
                 ElementReferenceChanged = false;
 
@@ -145,7 +171,10 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
                 await RegisterTransitionEventsAsync();
             }
 
-            await NextAsync(CurrentState);
+            if (!_requestingAnimationFrame)
+            {
+                await NextAsync(CurrentState);
+            }
         }
     }
 
@@ -160,9 +189,13 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
 
     protected virtual Task OnTransitionEndAsync(string referenceId, LeaveEnter transition) => Task.CompletedTask;
 
+    protected virtual Task OnTransitionCancelAsync(string referenceId, LeaveEnter transition) => Task.CompletedTask;
+
     protected async Task RequestAnimationFrameAsync(Func<Task> callback)
     {
+        _requestingAnimationFrame = true;
         await Task.Delay(16);
+        _requestingAnimationFrame = false;
         await callback();
     }
 

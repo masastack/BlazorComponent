@@ -43,7 +43,11 @@ public abstract class ToggleableTransitionElement : TransitionElementBase<bool>
         }
     }
 
-    protected override TransitionState CurrentState => State;
+    internal override TransitionState CurrentState
+    {
+        get => State;
+        set => State = value;
+    }
 
     protected override void OnParametersSet()
     {
@@ -93,39 +97,34 @@ public abstract class ToggleableTransitionElement : TransitionElementBase<bool>
         }
     }
 
-    protected override Task OnTransitionEndAsync(string referenceId, LeaveEnter transition)
+    protected override async Task OnTransitionEndAsync(string referenceId, LeaveEnter transition)
     {
         if (referenceId != Reference.Id)
         {
-            return Task.CompletedTask;
+            return;
         }
 
         if (transition == LeaveEnter.Enter && CurrentState == TransitionState.EnterTo)
         {
-            NextState(TransitionState.None);
+            await NextState(TransitionState.None);
         }
         else if (transition == LeaveEnter.Leave && CurrentState == TransitionState.LeaveTo)
         {
             HideElement();
-            NextState(TransitionState.None);
+            await NextState(TransitionState.None);
         }
-
-        return Task.CompletedTask;
     }
 
-    private void NextState(TransitionState transitionState)
+    private async Task NextState(TransitionState transitionState)
     {
         State = transitionState;
         StateHasChanged();
+        await Hooks();
     }
 
     private async Task RequestNextStateAsync(TransitionState state)
     {
-        await RequestAnimationFrameAsync(() =>
-        {
-            NextState(state);
-            return Task.CompletedTask;
-        });
+        await RequestAnimationFrameAsync(async () => await NextState(state));
     }
 
     private void HideElement()

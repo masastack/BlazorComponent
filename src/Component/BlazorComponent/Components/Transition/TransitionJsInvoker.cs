@@ -12,10 +12,10 @@ public class TransitionJsInvoker : IAsyncDisposable
 
     public TransitionJsInvoker(IJSRuntime js) => _js = js;
 
-    public async Task Init(Func<string, LeaveEnter, Task> onTransitionEnd)
+    public async Task Init(Func<string, LeaveEnter, Task> onTransitionEnd, Func<string, LeaveEnter, Task> onTransitionCancel)
     {
         _module = await _js.InvokeAsync<IJSObjectReference>("import", "./_content/BlazorComponent/js/transition.js");
-        _objRef = DotNetObjectReference.Create(new TransitionJsHelper(onTransitionEnd));
+        _objRef = DotNetObjectReference.Create(new TransitionJsHelper(onTransitionEnd, onTransitionCancel));
     }
 
     public async Task RegisterTransitionEvents(object reference, CancellationToken token = default)

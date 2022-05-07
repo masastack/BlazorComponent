@@ -92,15 +92,15 @@ namespace BlazorComponent
 
         public bool IsLinkage => Href != null && (List?.Linkage ?? Linkage);
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
-            base.OnInitialized();
+            await base.OnInitializedAsync();
 
             _linker = new Linker(this);
 
             NavigationManager.LocationChanged += OnLocationChanged;
 
-            UpdateActiveForLinkage();
+            await UpdateActiveForLinkage();
         }
 
         protected override void OnParametersSet()
@@ -116,12 +116,12 @@ namespace BlazorComponent
         }
 
 
-        private void OnLocationChanged(object sender, LocationChangedEventArgs e)
+        private async void OnLocationChanged(object sender, LocationChangedEventArgs e)
         {
-            var shouldRender = UpdateActiveForLinkage();
+            var shouldRender = await UpdateActiveForLinkage();
             if (shouldRender)
             {
-                InvokeStateHasChanged();
+                await InvokeStateHasChangedAsync();
             }
         }
 
@@ -183,13 +183,13 @@ namespace BlazorComponent
             };
         }
 
-        private bool UpdateActiveForLinkage()
+        private async Task<bool> UpdateActiveForLinkage()
         {
             var isActive = InternalIsActive;
 
             if (IsLinkage)
             {
-                InternalIsActive = _linker.MatchRoute(Href);
+                await SetInternalIsActive(_linker.MatchRoute(Href));
             }
 
             return isActive != InternalIsActive;
