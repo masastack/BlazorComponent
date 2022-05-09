@@ -1,0 +1,5 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<InputFile @ref="InputFileRef" OnChange=OnInputFileChange accept="image/*" multiple=@Multiple />

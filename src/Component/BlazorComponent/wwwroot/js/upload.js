@@ -9,3 +9,11 @@ export async function GetImageUsingStreaming(imageStreams) {
     }
     return imageUrls;
 }
+
+export function InputFileChanged(fileInput, callback) {
+    callback(fileInput.files);
+}
+
+export function InputFileUpload(fileInput,callback) {
+    return callback(fileInput.files);
+}
