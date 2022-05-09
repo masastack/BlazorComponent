@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Routing;
+﻿using Microsoft.AspNetCore.Components.Routing;
 using System.Text.RegularExpressions;
 
 namespace BlazorComponent
@@ -8,8 +7,8 @@ namespace BlazorComponent
     {
         private const string PREPEND = "prepend";
         private const string APPEND = "append";
+
         private bool _value;
-        private bool _booted;
 
         [Inject]
         public NavigationManager NavigationManager { get; set; }
@@ -37,18 +36,6 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<bool> ValueChanged { get; set; }
 
-        private async Task UpdateValue(bool value)
-        {
-            if (ValueChanged.HasDelegate)
-            {
-                await ValueChanged.InvokeAsync(value);
-            }
-            else
-            {
-                Value = value;
-            }
-        }
-
         [Parameter]
         public string PrependIcon { get; set; }
 
@@ -72,7 +59,7 @@ namespace BlazorComponent
 
         protected bool IsActive { get; set; }
 
-        protected bool Booted { get; set; }
+        protected bool IsBooted { get; set; }
 
         protected override void OnInitialized()
         {
@@ -83,6 +70,14 @@ namespace BlazorComponent
             NavigationManager.LocationChanged += OnLocationChanged;
 
             UpdateActiveForLinkage();
+        }
+
+        protected override void OnParametersSet()
+        {
+            if (IsActive && !IsBooted)
+            {
+                IsBooted = true;
+            }
         }
 
         private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
@@ -104,10 +99,14 @@ namespace BlazorComponent
         {
             if (Disabled) return;
 
-            if (!Booted)
+            if (!IsBooted)
             {
-                Booted = true;
-                await Task.Delay(BROWSER_RENDER_INTERVAL);
+                IsBooted = true;
+
+                // waiting for one frame(16ms) to make sure the element has been rendered,
+                await Task.Delay(16);
+
+                StateHasChanged();
             }
 
             IsActive = !IsActive;
@@ -130,6 +129,18 @@ namespace BlazorComponent
             }
 
             return isActive != IsActive;
+        }
+
+        private async Task UpdateValue(bool value)
+        {
+            if (ValueChanged.HasDelegate)
+            {
+                await ValueChanged.InvokeAsync(value);
+            }
+            else
+            {
+                Value = value;
+            }
         }
 
         protected override void Dispose(bool disposing)

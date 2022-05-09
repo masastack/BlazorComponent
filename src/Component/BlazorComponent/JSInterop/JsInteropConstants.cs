@@ -34,6 +34,8 @@
 
         public static string MatchMedia => $"{Variables.JsInteropFuncNamePrefix}matchMedia";
 
+        public static string Contains => $"{Variables.JsInteropFuncNamePrefix}contains";
+
         public static string Copy => $"{Variables.JsInteropFuncNamePrefix}copy";
 
         public static string Log => $"{Variables.JsInteropFuncNamePrefix}log";
@@ -118,6 +120,8 @@
 
         public static string RegisterResizeTextArea => $"{Variables.JsInteropFuncNamePrefix}registerResizeTextArea";
 
+        public static string RegisterTextFieldOnMouseDown => $"{Variables.JsInteropFuncNamePrefix}registerTextFieldOnMouseDown";
+
         public static string DisposeResizeTextArea => $"{Variables.JsInteropFuncNamePrefix}disposeResizeTextArea";
 
         public static string InsertAdjacentHTML => $"{Variables.JsInteropFuncNamePrefix}insertAdjacentHTML";
@@ -151,6 +155,8 @@
         public static string UpdateCanvas => $"{Variables.JsInteropFuncNamePrefix}updateCanvas";
 
         public static string ContainsActiveElement => $"{Variables.JsInteropFuncNamePrefix}containsActiveElement";
+
+        public static string RegisterOTPInputOnInputEvent => $"{Variables.JsInteropFuncNamePrefix}registerOTPInputOnInputEvent";
 
         public static string CopyChild => $"{Variables.JsInteropFuncNamePrefix}copyChild";
 

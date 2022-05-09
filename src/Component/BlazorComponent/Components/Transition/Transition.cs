@@ -1,10 +1,14 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.JSInterop;
 
 namespace BlazorComponent
 {
     public partial class Transition : ComponentBase
     {
+        [Inject]
+        protected IJSRuntime Js { get; set; }
+
         [Parameter]
         public string Name { get; set; }
 
@@ -12,22 +16,47 @@ namespace BlazorComponent
         public string Origin { get; set; }
 
         [Parameter]
-        public int Duration { get; set; } = 300;
+        public int Duration { get; set; } // TODO: 先实现css的动画时间
+
+        [Parameter]
+        public bool LeaveAbsolute { get; set; }
+
+        [Parameter]
+        public TransitionMode? Mode { get; set; }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
         [Parameter]
-        public EventCallback<Element> OnEnter { get; set; }
+        public Func<ElementReference, Task>? OnBeforeEnter { get; set; }
 
         [Parameter]
-        public EventCallback<Element> OnLeave { get; set; }
+        public Func<ElementReference, Task>? OnEnter { get; set; }
 
         [Parameter]
-        public EventCallback<Element> OnEnterTo { get; set; }
+        public Func<ElementReference, Task>? OnAfterEnter { get; set; }
 
         [Parameter]
-        public EventCallback<Element> OnLeaveTo { get; set; }
+        public Func<ElementReference, Task>? OnEnterCancelled { get; set; }
+
+        [Parameter]
+        public Func<ElementReference, Task>? OnBeforeLeave { get; set; }
+
+        [Parameter]
+        public Func<ElementReference, Task>? OnLeave { get; set; }
+
+        [Parameter]
+        public Func<ElementReference, Task>? OnAfterLeave { get; set; }
+
+        [Parameter]
+        public Func<ElementReference, Task>? OnLeaveCancelled { get; set; }
+
+        /// <summary>
+        /// The only child element that running the transition in the Transition's ChildContent.
+        /// </summary>
+        internal ElementReference? ElementReference { get; set; }
+
+        internal TransitionElementBase? TransitionElement { get; set; }
 
         public virtual string GetClass(TransitionState transitionState)
         {
@@ -51,9 +80,73 @@ namespace BlazorComponent
             return null;
         }
 
-        public virtual Task OnElementReadyAsync(ToggleableTransitionElement element)
+        public virtual async Task BeforeEnter(TransitionElementBase element)
         {
-            return Task.CompletedTask;
+            if (OnBeforeEnter is not null)
+            {
+                await OnBeforeEnter.Invoke(element.Reference);
+            }
+        }
+
+        public virtual async Task Enter(TransitionElementBase element)
+        {
+            if (OnEnter is not null)
+            {
+                await OnEnter.Invoke(element.Reference);
+            }
+        }
+
+        public virtual async Task AfterEnter(TransitionElementBase element)
+        {
+            if (OnAfterEnter is not null)
+            {
+                await OnAfterEnter.Invoke(element.Reference);
+            }
+        }
+
+        public virtual async Task EnterCancelled(TransitionElementBase element)
+        {
+            if (OnEnterCancelled is not null)
+            {
+                await OnEnterCancelled.Invoke(element.Reference);
+            }
+        }
+
+        public virtual async Task BeforeLeave(TransitionElementBase element)
+        {
+            if (OnBeforeLeave is not null)
+            {
+                await OnBeforeLeave.Invoke(element.Reference);
+            }
+        }
+
+        public virtual async Task Leave(TransitionElementBase element)
+        {
+            if (LeaveAbsolute)
+            {
+                element.ElementInfo = await Js.InvokeAsync<BlazorComponent.Web.Element>(JsInteropConstants.GetDomInfo, element.Reference);
+            }
+
+            if (OnLeave is not null)
+            {
+                await OnLeave.Invoke(element.Reference);
+            }
+        }
+
+        public virtual async Task LeaveCancelled(TransitionElementBase element)
+        {
+            if (OnLeaveCancelled is not null)
+            {
+                await OnLeaveCancelled.Invoke(element.Reference);
+            }
+        }
+
+        public virtual async Task AfterLeave(TransitionElementBase element)
+        {
+            if (OnAfterLeave is not null)
+            {
+                await OnAfterLeave.Invoke(element.Reference);
+            }
         }
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
@@ -61,9 +154,9 @@ namespace BlazorComponent
             var sequence = 0;
             builder.OpenComponent<CascadingValue<Transition>>(sequence++);
 
-            builder.AddAttribute(sequence++, "Value", this);
-            builder.AddAttribute(sequence++, "IsFixed", true);
-            builder.AddAttribute(sequence++, "ChildContent", ChildContent);
+            builder.AddAttribute(sequence++, nameof(CascadingValue<Transition>.Value), this);
+            builder.AddAttribute(sequence++, nameof(CascadingValue<Transition>.IsFixed), true);
+            builder.AddAttribute(sequence++, nameof(CascadingValue<Transition>.ChildContent), ChildContent);
 
             builder.CloseComponent();
         }

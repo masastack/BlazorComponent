@@ -5,7 +5,9 @@
         None = 0,
         Enter,
         EnterTo,
+        EnterCancelled,
         Leave,
-        LeaveTo
+        LeaveTo,
+        LeaveCancelled
     }
 }

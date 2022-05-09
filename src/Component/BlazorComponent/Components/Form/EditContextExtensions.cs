@@ -35,11 +35,12 @@ namespace BlazorComponent
                 _fluentValidationTypeMap = new();
                 try
                 {
-                    var assembly = Assembly.GetEntryAssembly();
-                    var referenceAssemblys = assembly.GetReferencedAssemblies().Select(name => Assembly.Load(name)).ToList();
-                    referenceAssemblys.Add(assembly);
+                    var referenceAssemblys = AppDomain.CurrentDomain.GetAssemblies();
                     foreach (var referenceAssembly in referenceAssemblys)
                     {
+                        if (referenceAssembly.FullName.StartsWith("Microsoft.") || referenceAssembly.FullName.StartsWith("System."))
+                            continue;
+
                         var types = referenceAssembly.GetTypes().Where(t => t.BaseType?.IsGenericType == true && t.BaseType == typeof(AbstractValidator<>).MakeGenericType(t.BaseType.GenericTypeArguments[0])).ToArray();
                         foreach (var type in types)
                         {
@@ -47,7 +48,7 @@ namespace BlazorComponent
                         }
                     }
                 }
-                catch (Exception e)
+                catch
                 {
                 }
             }
@@ -157,7 +158,7 @@ namespace BlazorComponent
                             if (propertyMap.ContainsKey(propertyName))
                             {
                                 var modelItem = propertyMap[propertyName];
-                                var modelItemPropertyName = error.FormattedMessagePlaceholderValues["PropertyName"].ToString();
+                                var modelItemPropertyName = error.FormattedMessagePlaceholderValues["PropertyName"].ToString().Replace(" ","");
                                 messageStore.Add(new FieldIdentifier(modelItem, modelItemPropertyName), error.ErrorMessage);
                             }
                         }

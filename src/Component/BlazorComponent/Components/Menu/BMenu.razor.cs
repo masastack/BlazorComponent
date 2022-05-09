@@ -162,8 +162,6 @@ namespace BlazorComponent
                     attributes.Add("onmouseleave", CreateEventCallback<MouseEventArgs>(HandleOnContentMouseleaveAsync));
                 }
 
-                attributes.Add("close-condition", IsActive && CloseOnClick);
-
                 return attributes;
             }
         }
@@ -189,29 +187,40 @@ namespace BlazorComponent
 
         //TODO:keydown event
 
-        protected override async Task OnActiveUpdated(bool value)
+        protected override async Task WhenIsActiveUpdating(bool value)
         {
             if (CloseOnClick && !OpenOnHover && !Attached)
             {
                 await JsInvokeAsync(JsInteropConstants.AddOutsideClickEventListener,
-                    DotNetObjectReference.Create(new Invoker<object>(HandleOutsideClickAsync)),
+                    DotNetObjectReference.Create(new Invoker<ClickOutsideArgs>(HandleOutsideClickAsync)),
                     new[] { Document.GetElementByReference(ContentElement).Selector, ActivatorSelector }, null, ContentElement);
             }
 
-            await base.OnActiveUpdated(value);
+            await base.WhenIsActiveUpdating(value);
         }
 
-        private async Task HandleOutsideClickAsync(object agrs)
-        {
-            if (!IsActive || !CloseOnClick) return;
+        public Func<ClickOutsideArgs, Task<bool>>? CloseConditional { get; set; }
 
-            await OnOutsideClick.InvokeAsync();
-            await RunCloseDelayAsync();
+        public Func<Task>? Handler { get; set; }
+
+        private async Task HandleOutsideClickAsync(ClickOutsideArgs args)
+        {
+            CloseConditional ??= _ => Task.FromResult(IsActive && CloseOnClick);
+
+            Handler ??= async () =>
+            {
+                await OnOutsideClick.InvokeAsync();
+                await SetIsActive(false);
+            };
+
+            if (!await CloseConditional!(args)) return;
+
+            await Handler();
         }
 
         protected async Task HandleOnContentClickAsync(MouseEventArgs _)
         {
-            await RunCloseDelayAsync();
+            await SetIsActive(false);
         }
 
         protected async Task HandleOnContentMouseenterAsync(MouseEventArgs args)

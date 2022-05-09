@@ -1,15 +1,14 @@
 ﻿using Microsoft.AspNetCore.Components.Rendering;
 
-namespace BlazorComponent
+namespace BlazorComponent;
+
+public class IfTransitionElement : ToggleableTransitionElement
 {
-    public class IfTransitionElement : ToggleableTransitionElement
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        protected override void BuildRenderTree(RenderTreeBuilder builder)
+        if (LazyValue)
         {
-            if (LazyValue)
-            {
-                base.BuildRenderTree(builder);
-            }
+            base.BuildRenderTree(builder);
         }
     }
 }

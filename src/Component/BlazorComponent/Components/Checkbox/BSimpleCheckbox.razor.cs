@@ -9,10 +9,10 @@ namespace BlazorComponent
         public bool Disabled { get; set; }
 
         [Parameter]
-        public EventCallback<bool> OnInput { get; set; }
+        public bool Value { get; set; }
 
         [Parameter]
-        public bool Value { get; set; }
+        public EventCallback<bool> ValueChanged { get; set; }
 
         [Parameter]
         public bool Indeterminate { get; set; }
@@ -34,6 +34,9 @@ namespace BlazorComponent
 
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
+
+        [Parameter]
+        public bool Ripple { get; set; } = true;
 
         public bool IsDark
         {
@@ -71,14 +74,20 @@ namespace BlazorComponent
             }
         }
 
-        [Parameter]
-        public bool Ripple { get; set; } = true;
-
         public virtual async Task HandleOnClickAsync(MouseEventArgs args)
         {
-            if (OnInput.HasDelegate && !Disabled)
+            if (Disabled)
             {
-                await OnInput.InvokeAsync(!Value);
+                return;
+            }
+
+            if (ValueChanged.HasDelegate)
+            {
+                await ValueChanged.InvokeAsync(!Value);
+            }
+            else
+            {
+                Value = !Value;
             }
         }
     }

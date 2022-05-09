@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public interface IIcon : IHasProviderComponent
+    public interface IIcon : IHasProviderComponent, ITransitionIfElse
     {
         bool Dense { get; set; }
 

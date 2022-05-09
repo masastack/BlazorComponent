@@ -9,6 +9,10 @@ namespace BlazorComponent
         {
         }
 
+        protected BGroupItem(GroupType groupType, bool bootable) : base(groupType, bootable)
+        {
+        }
+
         [Parameter]
         public RenderFragment ChildContent { get; set; }
     }

@@ -2,18 +2,23 @@
 {
     public partial class BWindowItem : BGroupItem<ItemGroupBase>
     {
-        public BWindowItem() : base(GroupType.Window)
+        protected BWindowItem() : base(GroupType.Window, bootable: true)
         {
         }
 
         protected virtual string ComputedTransition { get; }
 
-        protected virtual Task OnLeave(Element element)
+        protected virtual Task HandleOnBefore(ElementReference el)
+        {
+            return Task.CompletedTask;
+        }
+        
+        protected virtual Task HandleOnAfter(ElementReference el)
         {
             return Task.CompletedTask;
         }
 
-        protected virtual Task OnEnterTo(Element element)
+        protected virtual Task HandleOnEnter(ElementReference el)
         {
             return Task.CompletedTask;
         }

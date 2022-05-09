@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+﻿using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public partial class BChip : BGroupItem<ItemGroupBase>, IRoutable, IHandleEvent
+    public partial class BChip : BGroupItem<ItemGroupBase>, IRoutable
     {
         protected IRoutable _router;
 
@@ -83,10 +82,7 @@ namespace BlazorComponent
             (Tag, Attributes) = _router.GenerateRouteLink();
         }
 
-        async Task IHandleEvent.HandleEventAsync(EventCallbackWorkItem item, object? arg)
-        {
-            await item.InvokeAsync(arg);
-        }
+        protected override bool AfterHandleEventShouldRender() => false;
 
         protected async Task HandleOnClick(MouseEventArgs args)
         {

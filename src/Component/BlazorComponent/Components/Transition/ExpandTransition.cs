@@ -1,66 +1,82 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
-namespace BlazorComponent
+namespace BlazorComponent;
+
+/// <summary>
+/// The ExpandTransition.
+/// </summary>
+public class ExpandTransition : Transition
 {
-    public class ExpandTransition : Transition
+    // BUG: Unable to get height/width for the first time.
+    // TODO: Try to rewrite ExpandTransition with hooks.
+    // https://github.com/vuetifyjs/vuetify/blob/aa68dd2d9c/packages/vuetify/src/components/transitions/expand-transition.ts
+
+    protected virtual string SizeProp => "height";
+
+    private double? Size { get; set; }
+
+    protected override void OnParametersSet()
     {
-        [Inject]
-        public IJSRuntime JS { get; set; }
+        Name = "expand-transition";
+    }
 
-        protected virtual string SizeProp => "height";
+    public override string GetClass(TransitionState transitionState)
+    {
+        var transitionClass = base.GetClass(transitionState);
 
-        protected double Size { get; set; }
+        return string.Join(" ", transitionClass);
+    }
 
-        protected override void OnParametersSet()
+    public override string GetStyle(TransitionState transitionState)
+    {
+        var styles = new List<string>
         {
-            Name = "expand-transition";
-        }
+            base.GetStyle(transitionState)
+        };
 
-        public override string GetClass(TransitionState transitionState)
+        switch (transitionState)
         {
-            var transitionClass = base.GetClass(transitionState);
-            return string.Join(" ", transitionClass, transitionState == TransitionState.None ? null : "in-transition");
-        }
-
-        public override string GetStyle(TransitionState transitionState)
-        {
-            var styles = new List<string>
-            {
-                base.GetStyle(transitionState)
-            };
-
-            switch (transitionState)
-            {
-                case TransitionState.Enter:
-                case TransitionState.LeaveTo:
-                    styles.Add($"{SizeProp}:0px");
-                    break;
-                case TransitionState.EnterTo:
-                case TransitionState.Leave:
-                    styles.Add($"{SizeProp}:{Size}px");
-                    break;
-                default:
-                    break;
-            }
-
-            if (transitionState != TransitionState.None)
-            {
+            case TransitionState.Enter:
+            case TransitionState.LeaveTo:
                 styles.Add("overflow:hidden");
-            }
+                styles.Add($"{SizeProp}:0px");
+                break;
+            case TransitionState.EnterTo:
+            case TransitionState.Leave:
+                styles.Add("overflow:hidden");
+                if (Size.HasValue)
+                {
+                    styles.Add($"{SizeProp}:{Size}px");
+                }
 
-            return string.Join(';', styles);
+                break;
         }
 
-        public override async Task OnElementReadyAsync(ToggleableTransitionElement element)
-        {
-            await JS.InvokeVoidAsync(JsInteropConstants.ObserveElement, element.Reference, SizeProp, DotNetObjectReference.Create(this));
-        }
+        return string.Join(';', styles);
+    }
 
-        [JSInvokable]
-        public void OnSizeChanged(double size)
+    public override Task Enter(TransitionElementBase element)
+    {
+        Console.WriteLine($"{element.Reference.Id} enter");
+        return UpdateSize(element.Reference);
+    }
+
+    public override Task Leave(TransitionElementBase element)
+    {
+        Console.WriteLine($"{element.Reference.Id} leave");
+        return UpdateSize(element.Reference);
+    }
+
+    private async Task UpdateSize(ElementReference elementReference)
+    {
+        var elementInfo = await Js.InvokeAsync<BlazorComponent.Web.Element>(JsInteropConstants.GetDomInfo, elementReference);
+        var size = elementInfo.OffsetHeight;
+        if (size != 0)
         {
             Size = size;
         }
+
+        Console.WriteLine($"Size:{Size}");
     }
 }

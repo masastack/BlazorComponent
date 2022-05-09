@@ -32,10 +32,13 @@
                 </BListItemIcon>
             }
         </BListItem>
-        @if (Booted || IsActive)
+
+        @if (IsBooted)
         {
             <ExpandTransition>
-                <ShowTransitionElement Value="IsActive" Class="@CssProvider.GetClass("items")" Style="@CssProvider.GetStyle("items")">
+                <ShowTransitionElement Value="IsActive"
+                                       class="@CssProvider.GetClass("items")"
+                                       Style="@CssProvider.GetStyle("items")">
                     @ChildContent
                 </ShowTransitionElement>
             </ExpandTransition>

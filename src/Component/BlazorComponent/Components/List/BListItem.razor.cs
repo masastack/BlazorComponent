@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Routing;
+﻿using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public partial class BListItem : BGroupItem<ItemGroupBase>, IRoutable, ILinkable, IHandleEvent
+    public partial class BListItem : BGroupItem<ItemGroupBase>, IRoutable, ILinkable
     {
         private Linker _linker;
         private IRoutable _router;
@@ -93,15 +92,15 @@ namespace BlazorComponent
 
         public bool IsLinkage => Href != null && (List?.Linkage ?? Linkage);
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
-            base.OnInitialized();
+            await base.OnInitializedAsync();
 
             _linker = new Linker(this);
 
             NavigationManager.LocationChanged += OnLocationChanged;
 
-            UpdateActiveForLinkage();
+            await UpdateActiveForLinkage();
         }
 
         protected override void OnParametersSet()
@@ -117,19 +116,16 @@ namespace BlazorComponent
         }
 
 
-        private void OnLocationChanged(object sender, LocationChangedEventArgs e)
+        private async void OnLocationChanged(object sender, LocationChangedEventArgs e)
         {
-            var shouldRender = UpdateActiveForLinkage();
+            var shouldRender = await UpdateActiveForLinkage();
             if (shouldRender)
             {
-                InvokeStateHasChanged();
+                await InvokeStateHasChangedAsync();
             }
         }
 
-        async Task IHandleEvent.HandleEventAsync(EventCallbackWorkItem item, object? arg)
-        {
-            await item.InvokeAsync(arg);
-        }
+        protected override bool AfterHandleEventShouldRender() => false;
 
         protected virtual async Task HandleOnClick(MouseEventArgs args)
         {
@@ -187,13 +183,13 @@ namespace BlazorComponent
             };
         }
 
-        private bool UpdateActiveForLinkage()
+        private async Task<bool> UpdateActiveForLinkage()
         {
             var isActive = InternalIsActive;
 
             if (IsLinkage)
             {
-                InternalIsActive = _linker.MatchRoute(Href);
+                await SetInternalIsActive(_linker.MatchRoute(Href));
             }
 
             return isActive != InternalIsActive;

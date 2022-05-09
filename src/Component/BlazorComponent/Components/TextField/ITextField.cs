@@ -17,6 +17,10 @@ namespace BlazorComponent
 
         RenderFragment PrependInnerContent { get; }
 
+        Action<TextFieldNumberProperty> NumberProps { get; set; }
+
+        TextFieldNumberProperty Props { get; set; }
+
         bool Outlined { get; }
 
         string LegendInnerHTML { get; }
@@ -88,6 +92,12 @@ namespace BlazorComponent
 
         Task HandleOnKeyDownAsync(KeyboardEventArgs args);
 
+        Task HandleOnKeyUpAsync(KeyboardEventArgs args);
+
         Task HandleOnClearClickAsync(MouseEventArgs args);
+
+        Task HandleOnNumberUpClickAsync(MouseEventArgs args);
+
+        Task HandleOnNumberDownClickAsync(MouseEventArgs args);
     }
 }

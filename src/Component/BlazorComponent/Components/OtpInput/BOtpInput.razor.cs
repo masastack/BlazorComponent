@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.JSInterop;
+using System.Text.Json;
 
 namespace BlazorComponent
 {
@@ -118,6 +120,45 @@ namespace BlazorComponent
             await base.OnParametersSetAsync();
         }
 
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                await JsInvokeAsync(JsInteropConstants.RegisterOTPInputOnInputEvent, InputRefs, DotNetObjectReference.Create(new Invoker<string>(GetResultFromJs)));
+            }
+
+            await base.OnAfterRenderAsync(firstRender);
+        }
+
+        public async Task GetResultFromJs(string result)
+        {
+            var jsResult = JsonSerializer.Deserialize<OtpJsResult>(result);
+
+            switch (jsResult.type)
+            {
+                case "Backspace":
+                case "Input":
+                    await ApplyValues(jsResult.index, jsResult.value);
+                    if (ValueChanged.HasDelegate)
+                    {
+                        await ValueChanged.InvokeAsync(Value);
+                    }
+
+                    if (jsResult.type == "input" && OnInput.HasDelegate)
+                    {
+                        await OnInput.InvokeAsync(jsResult.value);
+                    }
+
+                    if (jsResult.index >= Length - 1 && !Values.Any(p => string.IsNullOrEmpty(p)) && OnFinish.HasDelegate)
+                    {
+                        await OnFinish.InvokeAsync(Value);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
         private async Task FocusAsync(int index)
         {
             if (_prevFocusIndex != index)
@@ -139,34 +180,8 @@ namespace BlazorComponent
                     if (containsActiveElement)
                     {
                         var item = InputRefs[index];
-                        await item.FocusAsync();
-                        await JsInvokeAsync(JsInteropConstants.Select, item);
+                        await JsInvokeAsync(JsInteropConstants.Focus, item);
                     }
-                }
-            }
-        }
-
-        public async Task OnKeyUpAsync(BOtpInputEventArgs<KeyboardEventArgs> events)
-        {
-            if (events.Index < Length)
-            {
-                var eventKey = events.Args.Key;
-
-                if (eventKey == "ArrowLeft" || (eventKey == "Backspace"))
-                {
-                    if (eventKey == "Backspace")
-                    {
-                        await ApplyValues(events.Index, "");
-                        if (ValueChanged.HasDelegate)
-                        {
-                            await ValueChanged.InvokeAsync(Value);
-                        }
-                    }
-                    await FocusAsync(events.Index - 1);
-                }
-                else if (eventKey == "ArrowRight")
-                {
-                    await FocusAsync(events.Index + 1);
                 }
             }
         }
@@ -186,98 +201,29 @@ namespace BlazorComponent
 
         private async Task ApplyValues(int index, string value)
         {
+            var temp = new List<string>(Values.ToArray());
+            temp[index] = value;
+            temp.RemoveAll(p => string.IsNullOrEmpty(p));
+
             Values[index] = value;
 
-            var tempStr = string.Join("", this.Values);
-
-            var temp = tempStr.Select(p => p.ToString()).ToList();
-
-            for (int i = 0; i < Values.Count; i++)
-            {
-                Values[i] = String.Empty;
-            }
-
             await Task.Yield();
+            await InvokeAsync(StateHasChanged);
 
-            for (int i = 0; i < temp.Count; i++)
+            Values[index] = String.Empty;
+
+            Values = temp;
+
+            var count = temp.Count;
+
+            for (int i = 0; i < this.Length - count; i++)
             {
-                Values[i] = temp[i];
+                Values.Add(String.Empty);
             }
 
-            for (int i = temp.Count; i < this.Length - temp.Count; i++)
-            {
-                Values[i] = String.Empty;
-            }
+            await InvokeAsync(StateHasChanged);
         }
 
-        public async Task OnInputAsync(BOtpInputEventArgs<ChangeEventArgs> events)
-        {
-            if (!string.IsNullOrWhiteSpace(events.Args.Value.ToString()))
-            {
-                var firstEmptyItemIndex = GetFirstEmptyIndex();
-
-                var temp = Values[events.Index];
-
-                var inputValue = events.Args.Value.ToString();
-
-                var writeIndex = Math.Min(firstEmptyItemIndex, events.Index);
-
-                if (writeIndex != events.Index)
-                {
-                    Values[events.Index] = inputValue;
-
-                    //https://stackoverflow.com/questions/68901935/reset-input-field-value-if-value-is-invalid-in-blazor
-                    await Task.Yield();
-
-                    Values[events.Index] = String.Empty;
-
-                    Values[firstEmptyItemIndex] = inputValue;
-                }
-                else
-                {
-                    Values[events.Index] = String.Empty;
-
-                    await Task.Yield();
-
-                    if (inputValue.Length > 1)
-                    {
-                        if (string.IsNullOrEmpty(temp))
-                        {
-                            Values[events.Index] = inputValue.FirstOrDefault().ToString();
-                        }
-                        else
-                        {
-                            Values[events.Index] = temp;
-                        }
-                        
-                        return;
-                    }
-
-                    Values[events.Index] = inputValue;
-                }
-
-                if (ValueChanged.HasDelegate)
-                {
-                    await ValueChanged.InvokeAsync(Value);
-                }
-
-                if (writeIndex + 1 < this.Length)
-                {
-                    await FocusAsync((writeIndex + 1));
-                }
-
-                if (OnInput.HasDelegate)
-                    await OnInput.InvokeAsync(events.Args.Value.ToString());
-
-                if (!Values.Any(p => string.IsNullOrEmpty(p)))
-                {
-                    if (OnFinish.HasDelegate)
-                    {
-                        await OnFinish.InvokeAsync(Value);
-                    }
-                }
-            }
-        }
 
         public async Task OnPasteAsync(BOtpInputEventArgs<PasteWithDataEventArgs> events)
         {
@@ -309,24 +255,6 @@ namespace BlazorComponent
                     if (OnFinish.HasDelegate)
                     {
                         await OnFinish.InvokeAsync(Value);
-                    }
-                }
-            }
-        }
-
-        public async Task OnFocusAsync(int index)
-        {
-            if (_prevFocusIndex != index)
-            {
-                _prevFocusIndex = index;
-                if (index >= 0 && index <= Length)
-                {
-                    var containsActiveElement = await JsInvokeAsync<bool>(JsInteropConstants.ContainsActiveElement, Ref);
-
-                    if (containsActiveElement)
-                    {
-                        var item = InputRefs[index];
-                        await JsInvokeAsync(JsInteropConstants.Select, item);
                     }
                 }
             }

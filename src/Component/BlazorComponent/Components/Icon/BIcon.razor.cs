@@ -7,10 +7,13 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public partial class BIcon : IThemeable
+    public partial class BIcon : IThemeable, ITransitionIfElse
     {
         [Parameter]
         public RenderFragment ChildContent { get; set; }
+
+        [Parameter]
+        public bool? IfElse { get; set; }
 
         #region IIcon
 
@@ -76,6 +79,29 @@ namespace BlazorComponent
         [Inject]
         public Document Document { get; set; }
 
+        private bool _clickEventRegistered;
+
+        protected override Task OnParametersSetAsync()
+        {
+            InitIcon();
+            return base.OnParametersSetAsync();
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            await base.OnAfterRenderAsync(firstRender);
+
+            if (!_clickEventRegistered)
+            {
+                await TryRegisterClickEvent();
+            }
+        }
+
+        protected override async Task OnElementReferenceChangedAsync()
+        {
+            await TryRegisterClickEvent();
+        }
+
         public virtual async Task HandleOnClick(MouseEventArgs args)
         {
             if (OnClick.HasDelegate)
@@ -84,10 +110,19 @@ namespace BlazorComponent
             }
         }
 
-        protected override Task OnParametersSetAsync()
+        private async Task TryRegisterClickEvent()
         {
-            InitIcon();
-            return base.OnParametersSetAsync();
+            if (Ref.Context is not null && OnClick.HasDelegate)
+            {
+                _clickEventRegistered = true;
+
+                var button = Document.GetElementByReference(Ref);
+                await button.AddEventListenerAsync("click", CreateEventCallback<MouseEventArgs>(HandleOnClick), false, new EventListenerActions
+                {
+                    PreventDefault = true,
+                    StopPropagation = true
+                });
+            }
         }
 
         private void InitIcon()
@@ -98,7 +133,8 @@ namespace BlazorComponent
 #pragma warning disable BL0006 // Do not use RenderTree types
             var frames = builder.GetFrames().Array;
             //todo Array will change
-            var frame = builder.GetFrames().Array.FirstOrDefault(u => u.FrameType == RenderTreeFrameType.Text || u.FrameType == RenderTreeFrameType.Markup);
+            var frame = builder.GetFrames().Array
+                               .FirstOrDefault(u => u.FrameType == RenderTreeFrameType.Text || u.FrameType == RenderTreeFrameType.Markup);
 
             char[] charsToTrim = { '\r', ' ', '\n' };
             Icon = frame.TextContent.Trim(charsToTrim);
@@ -112,21 +148,6 @@ namespace BlazorComponent
                 NewChildren = string.Empty;
             }
 #pragma warning restore BL0006 // Do not use RenderTree types
-        }
-
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            await base.OnAfterRenderAsync(firstRender);
-
-            if (firstRender && OnClick.HasDelegate)
-            {
-                var button = Document.GetElementByReference(Ref);
-                await button.AddEventListenerAsync("click", CreateEventCallback<MouseEventArgs>(HandleOnClick), false, new EventListenerActions
-                {
-                    PreventDefault = true,
-                    StopPropagation = true
-                });
-            }
         }
     }
 }
