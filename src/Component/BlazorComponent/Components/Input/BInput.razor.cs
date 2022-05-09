@@ -64,9 +64,6 @@ namespace BlazorComponent
         [Parameter]
         public bool Light { get; set; }
 
-        [Parameter]
-        public virtual int DebounceMilliseconds { get; set; } = 250;
-
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
 
@@ -75,6 +72,8 @@ namespace BlazorComponent
         private Timer _debounceTimer;
 
         public virtual Func<Task> DebounceTimerRun { get; set; }
+
+        public virtual int DebounceMilliseconds { get; set; } = 250;
 
         public virtual bool IsDark
         {
