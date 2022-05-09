@@ -201,7 +201,7 @@ namespace BlazorComponent
 
         protected bool ActivatorFixed { get; set; }
 
-        protected ElementReference ContentElement { get; set; }
+        public ElementReference ContentElement { get; protected set; }
 
         protected int ActivateZIndex { get; set; }
 

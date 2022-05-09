@@ -64,6 +64,16 @@ public class BActivatable : BToggleable, IActivatable
 
     RenderFragment IActivatable.ComputedActivatorContent => ComputedActivatorContent;
 
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        if (!IsBooted && IsActive)
+        {
+            IsBooted = true;
+        }
+    }
+
     protected override bool AfterHandleEventShouldRender() => false;
 
     protected override void OnWatcherInitialized()

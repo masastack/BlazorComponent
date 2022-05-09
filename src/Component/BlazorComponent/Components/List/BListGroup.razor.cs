@@ -103,8 +103,8 @@ namespace BlazorComponent
             {
                 IsBooted = true;
 
-                // waiting for 1ms to make sure the element has been rendered,
-                await Task.Delay(1);
+                // waiting for one frame(16ms) to make sure the element has been rendered,
+                await Task.Delay(16);
 
                 StateHasChanged();
             }
