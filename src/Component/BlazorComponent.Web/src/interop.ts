@@ -492,12 +492,14 @@ export function addOutsideClickEventListener(invoker, noInvokeSelectors: [], inv
     var exists = noInvokeSelectors.some(s => getDom(s)?.contains(args.target));
     if (exists) return;
 
+    var pointerSelector = getElementSelector(args.target)
+
     if (invokeSelectors) {
       if (invokeSelectors.some(s => getDom(s)?.contains(args.target))) {
-        invoker.invokeMethodAsync("Invoke", {});
+        invoker.invokeMethodAsync("Invoke", {pointerSelector});
       }
     } else {
-      invoker.invokeMethodAsync("Invoke", {});
+      invoker.invokeMethodAsync("Invoke", {pointerSelector});
     }
   }
 
@@ -524,6 +526,10 @@ export function addMouseleaveEventListener(selector) {
   if (htmlElement) {
     htmlElement.addEventListener()
   }
+}
+
+export function contains(e1, e2) {
+  return getDom(e1)?.contains(getDom(e2));
 }
 
 export function matchMedia(query) {
@@ -1606,4 +1612,29 @@ function getBlazorId(el) {
   }
 
   return _bl_;
+}
+
+function getElementSelector(el) {
+  if (!(el instanceof Element))
+    return;
+  var path = [];
+  while (el.nodeType === Node.ELEMENT_NODE) {
+    var selector = el.nodeName.toLowerCase();
+    if (el.id) {
+      selector += '#' + el.id;
+      path.unshift(selector);
+      break;
+    } else {
+      var sib = el, nth = 1;
+      while (sib = sib.previousElementSibling) {
+        if (sib.nodeName.toLowerCase() == selector)
+          nth++;
+      }
+      if (nth != 1)
+        selector += ":nth-of-type(" + nth + ")";
+    }
+    path.unshift(selector);
+    el = el.parentNode;
+  }
+  return path.join(" > ");
 }

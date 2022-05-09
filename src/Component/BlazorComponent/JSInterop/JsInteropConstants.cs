@@ -34,6 +34,8 @@
 
         public static string MatchMedia => $"{Variables.JsInteropFuncNamePrefix}matchMedia";
 
+        public static string Contains => $"{Variables.JsInteropFuncNamePrefix}contains";
+
         public static string Copy => $"{Variables.JsInteropFuncNamePrefix}copy";
 
         public static string Log => $"{Variables.JsInteropFuncNamePrefix}log";
