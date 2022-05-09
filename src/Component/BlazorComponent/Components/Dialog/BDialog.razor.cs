@@ -94,6 +94,8 @@ namespace BlazorComponent
 
             if (value)
             {
+                ZIndex = await GetActiveZIndex(value);
+
                 NextTick(async () =>
                 {
                     // TODO: previousActiveElement
@@ -121,8 +123,6 @@ namespace BlazorComponent
                     DotNetObjectReference.Create(new Invoker<object>(HandleOnOutsideClickAsync)),
                     new[] { Document.GetElementByReference(DialogRef).Selector },
                     new[] { Document.GetElementByReference(OverlayRef!.Value).Selector });
-
-                ZIndex = await GetActiveZIndex(value);
 
                 await JsInvokeAsync(JsInteropConstants.AddElementTo, OverlayRef, AttachSelector);
                 await JsInvokeAsync(JsInteropConstants.AddElementTo, ContentRef, AttachSelector);
