@@ -345,18 +345,17 @@ namespace BlazorComponent
 
         protected virtual async Task SetInternalValueAsync(TValue internalValue)
         {
-            if (EqualityComparer<TValue>.Default.Equals(internalValue, Value))
+            if (EqualityComparer<TValue>.Default.Equals(internalValue, InternalValue))
             {
                 return;
             }
 
-            Value = internalValue;
-
-            if (ValueChanged.HasDelegate)
+            if (!EqualityComparer<TValue>.Default.Equals(internalValue, Value) && ValueChanged.HasDelegate)
             {
                 await ValueChanged.InvokeAsync(internalValue);
             }
 
+            InternalValue = internalValue;
             HasInput = true;
 
             if (!ValidateOnBlur)
