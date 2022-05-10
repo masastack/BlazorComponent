@@ -23,29 +23,27 @@ public class FileChangeCallBack
         return new FileChangeCallBack { JsCallback = callback };
     }
 
-    public static implicit operator string(FileChangeCallBack onUpload)
-    {
-        return onUpload.JsCallback;
-    }
-
     public static implicit operator FileChangeCallBack(EventCallback<IReadOnlyList<IBrowserFile>> callback)
     {
         return new FileChangeCallBack { EventCallback = callback };
     }
 
-    public static implicit operator EventCallback<IReadOnlyList<IBrowserFile>>(FileChangeCallBack onUpload)
+    public static FileChangeCallBack CreateCallback(string callback)
     {
-        return onUpload.EventCallback;
+        return new FileChangeCallBack { JsCallback = callback };
     }
 
-    public static implicit operator FileChangeCallBack(Func<IReadOnlyList<IBrowserFile>, Task> callback)
+    public static FileChangeCallBack CreateCallback(ComponentBase receiver, Action<IReadOnlyList<IBrowserFile>> callback)
+    {
+        return new FileChangeCallBack
+        {
+            EventCallback = Microsoft.AspNetCore.Components.EventCallback.Factory.Create(receiver, callback)
+        };
+    }
+
+    public static FileChangeCallBack CreateCallback(Func<IReadOnlyList<IBrowserFile>, Task> callback)
     {
         return new FileChangeCallBack { DelegateCallback = callback };
-    }
-
-    public static implicit operator Func<IReadOnlyList<IBrowserFile>, Task>(FileChangeCallBack onUpload)
-    {
-        return onUpload.DelegateCallback;
     }
 }
 
