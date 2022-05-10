@@ -1,31 +1,22 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.JSInterop;
+﻿using System.Text.Json;
 
 namespace BlazorComponent
 {
-    public partial class BUploadImage
+    public partial class BUploadImage : BUpload
     {
-        string? _defaultImageUrl;
-
         [Parameter]
         public RenderFragment<List<string>>? ChildContent { get; set; }
 
         [Parameter]
-        public int MaximumFileCount { get; set; } = 10;
-
-        [Parameter]
-        public string DefaultImageUrl
+        public string DefaultImage
         {
-            get => _defaultImageUrl ?? throw new Exception("Please set parameter DefaultImageUrl value");
             set
             {
-                if ((ImageUrls.FirstOrDefault() ?? _defaultImageUrl) == _defaultImageUrl)
+                if (Value.Count == 0)
                 {
-                    ImageUrls.Clear();
-                    ImageUrls.Add(value);
+                    Value.Add(value);
+                    PreviewImageUrls.Add(value);
                 }
-                _defaultImageUrl = value;
             }
         }
 
@@ -36,43 +27,25 @@ namespace BlazorComponent
         public int PreviewImageHeight { get; set; } = 100;
 
         [Parameter]
-        public bool Multiple { get; set; }
+        public string Icon { get; set; } = "./_content/Masa.Blazor/images/upload/upload.svg";
 
         [Parameter]
-        public EventCallback<IReadOnlyList<IBrowserFile>> OnChange { get; set; }
+        public string ImageClass { get; set; } = "mr-4";
 
-        Func<List<DotNetStreamReference>, Task<List<string>>> GetImageUsingStreaming { get; set; }
+        public List<string> PreviewImageUrls { get; set; } = new();
 
-        List<string> ImageUrls { get; set; } = new();
-
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+        protected override void OnInitialized()
         {
-            if (firstRender)
-            {
-                var upload = await Js.InvokeAsync<IJSObjectReference>("import", "./_content/BlazorComponent/js/upload.js");
-                GetImageUsingStreaming = async streams => await upload.InvokeAsync<List<string>>("GetImageUsingStreaming", streams);
-            }
+            Accept = "image/*";
+            OnInputFileChanged = "GetPreviewImageUrls";
         }
 
-        async Task OnInputFileChange(InputFileChangeEventArgs e)
+        protected override async Task OnInputFileChange(InputFileChangeEventArgs e)
         {
-            var images = e.GetMultipleFiles(MaximumFileCount);
-            if (OnChange.HasDelegate)
+            await base.OnInputFileChange(e);
+            if (OnInputFileChanged.JsCallbackValue.Equals(default) is false)
             {
-                await OnChange.InvokeAsync(images);
-            }
-            if (images.Count > 0)
-            {
-                var imageStreams = new List<DotNetStreamReference>();
-                foreach (var image in images)
-                {
-                    var resizedImage = await image.RequestImageFileAsync(image.ContentType, PreviewImageWith, PreviewImageHeight);
-                    var imageStream = new DotNetStreamReference(resizedImage.OpenReadStream());
-                    imageStreams.Add(imageStream);
-                }
-                ImageUrls.Clear();
-                var imageUrls = await GetImageUsingStreaming(imageStreams);
-                ImageUrls.AddRange(imageUrls);
+                PreviewImageUrls = OnInputFileChanged.JsCallbackValue.Deserialize<List<string>>();
             }
         }
     }

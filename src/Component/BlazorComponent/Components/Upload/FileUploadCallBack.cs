@@ -2,11 +2,11 @@
 
 public class FileUploadCallBack
 {
-    string JsCallback { get; set; }
+    public string JsCallback { get; init; }
 
-    EventCallback<(IReadOnlyList<IBrowserFile>, List<string>)> EventCallback { get; set; }
+    public EventCallback<(IReadOnlyList<IBrowserFile>, Action<List<string>>)> EventCallback { get; init; }
 
-    Func<IReadOnlyList<IBrowserFile>, Task<List<string>>> DelegateCallback { get; set; }
+    public Func<IReadOnlyList<IBrowserFile>, Task<List<string>>> DelegateCallback { get; init; }
 
     public bool IsJsCallback => JsCallback is not null;
 
@@ -19,29 +19,27 @@ public class FileUploadCallBack
         return new FileUploadCallBack { JsCallback = callback };
     }
 
-    public static implicit operator string(FileUploadCallBack onUpload)
-    {
-        return onUpload.JsCallback;
-    }
-
-    public static implicit operator FileUploadCallBack(EventCallback<(IReadOnlyList<IBrowserFile>, List<string>)> callback)
+    public static implicit operator FileUploadCallBack(EventCallback<(IReadOnlyList<IBrowserFile>, Action<List<string>>)> callback)
     {
         return new FileUploadCallBack { EventCallback = callback };
     }
 
-    public static implicit operator EventCallback<(IReadOnlyList<IBrowserFile>, List<string>)>(FileUploadCallBack onUpload)
+    public static FileUploadCallBack CreateCallback(string callback)
     {
-        return onUpload.EventCallback;
+        return new FileUploadCallBack { JsCallback = callback };
     }
 
-    public static implicit operator FileUploadCallBack(Func<IReadOnlyList<IBrowserFile>, Task<List<string>>> callback)
+    public static FileUploadCallBack CreateCallback(ComponentBase receiver, Action<(IReadOnlyList<IBrowserFile>, Action<List<string>>)> callback)
+    {
+        return new FileUploadCallBack
+        {
+            EventCallback = Microsoft.AspNetCore.Components.EventCallback.Factory.Create(receiver, callback)
+        };
+    }
+
+    public static FileUploadCallBack CreateCallback(Func<IReadOnlyList<IBrowserFile>, Task<List<string>>> callback)
     {
         return new FileUploadCallBack { DelegateCallback = callback };
-    }
-
-    public static implicit operator Func<IReadOnlyList<IBrowserFile>, Task<List<string>>>(FileUploadCallBack onUpload)
-    {
-        return onUpload.DelegateCallback;
     }
 }
 

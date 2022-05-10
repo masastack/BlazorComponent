@@ -1,19 +1,18 @@
-export async function GetImageUsingStreaming(imageStreams) {
+export function InputFileChanged(inputFile, callback) {
+    return eval(`${callback}(inputFile.files)`)
+}
 
+export function InputFileUpload(inputFile, callback) {
+    return eval(`${callback}(inputFile.files)`)
+}
+
+export async function GetPreviewImageUrls(imageFiles) {
     const imageUrls = [];
-    for (var imageStream of imageStreams) {
-        const arrayBuffer = await imageStream.arrayBuffer();
+    for (var imageFile of imageFiles) {
+        const arrayBuffer = await imageFile.arrayBuffer();
         const blob = new Blob([arrayBuffer]);
         const url = URL.createObjectURL(blob);
         imageUrls.push(url);
     }
     return imageUrls;
-}
-
-export function InputFileChanged(fileInput, callback) {
-    callback(fileInput.files);
-}
-
-export function InputFileUpload(fileInput,callback) {
-    return callback(fileInput.files);
 }

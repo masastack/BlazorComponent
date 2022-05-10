@@ -1,6 +1,4 @@
-﻿using Microsoft.JSInterop;
-
-namespace BlazorComponent;
+﻿namespace BlazorComponent;
 
 public partial class BUpload
 {
@@ -17,7 +15,7 @@ public partial class BUpload
     public int MaximumFileCount { get; set; } = 10;
 
     [Parameter]
-    public List<string> Value { get; set; }
+    public List<string> Value { get; set; } = new();
 
     [Parameter]
     public EventCallback<List<string>> ValueChanged { get; set; }
@@ -28,50 +26,57 @@ public partial class BUpload
     [Parameter]
     public FileUploadCallBack OnInputFileUpload { get; set; }
 
+    [Parameter]
+    public bool WhenFileChangeUpload { get; set; }
+
     public InputFile InputFileRef { get; set; }
 
     public IReadOnlyList<IBrowserFile> Files { get; set; }
 
-    async Task OnInputFileChange(InputFileChangeEventArgs e)
+    IJSObjectReference UploadJs { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            UploadJs = await Js.InvokeAsync<IJSObjectReference>("import", "./_content/BlazorComponent/js/upload.js");
+        }
+    }
+
+    protected virtual async Task OnInputFileChange(InputFileChangeEventArgs e)
     {
         Files = e.GetMultipleFiles(MaximumFileCount);
         if (OnInputFileChanged is null) return;
         if (OnInputFileChanged.IsJsCallback)
         {
-            string callback = OnInputFileChanged;
-            var upload = await Js.InvokeAsync<IJSObjectReference>("import", "./_content/BlazorComponent/js/upload.js");
-            await upload.InvokeVoidAsync("InputFileChanged", callback);
+            OnInputFileChanged.JsCallbackValue = await UploadJs.InvokeAsync<JsonElement>("InputFileChanged", InputFileRef.Element, OnInputFileChanged.JsCallback);
         }
         else if (OnInputFileChanged.IsDelegateCallback)
         {
-            Func<IReadOnlyList<IBrowserFile>, Task> callback = OnInputFileChanged;
-            await callback(Files);
+            await OnInputFileChanged.DelegateCallback(Files);
         }
         else if (OnInputFileUpload.IsEventCallback)
         {
-            EventCallback<IReadOnlyList<IBrowserFile>> callback = OnInputFileChanged;
-            await callback.InvokeAsync(Files);
+            await OnInputFileChanged.EventCallback.InvokeAsync(Files);
         }
+
+        if (WhenFileChangeUpload) await Upload();
     }
 
-    protected async Task InputFileUpload()
+    public async Task Upload()
     {
         if (OnInputFileUpload is null) return;
         if (OnInputFileUpload.IsJsCallback)
         {
-            string callback = OnInputFileUpload;
-            var upload = await Js.InvokeAsync<IJSObjectReference>("import", "./_content/BlazorComponent/js/upload.js");
-            Value = await upload.InvokeAsync<List<string>>("InputFileUpload", callback);
+            Value = await UploadJs.InvokeAsync<List<string>>("InputFileUpload", InputFileRef.Element, OnInputFileUpload.JsCallback);
         }
         else if (OnInputFileUpload.IsDelegateCallback)
         {
-            Func<IReadOnlyList<IBrowserFile>, Task<List<string>>> callback = OnInputFileUpload;
-            Value = await callback(Files);
+            Value = await OnInputFileUpload.DelegateCallback(Files);
         }
         else if (OnInputFileUpload.IsEventCallback)
         {
-            EventCallback<(IReadOnlyList<IBrowserFile>, List<string>)> callback = OnInputFileUpload;
-            await callback.InvokeAsync((Files, Value));
+            await OnInputFileUpload.EventCallback.InvokeAsync((Files, value => Value = value));
         }
 
         if (ValueChanged.HasDelegate) await ValueChanged.InvokeAsync(Value);

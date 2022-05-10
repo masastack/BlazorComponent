@@ -1,18 +1,22 @@
-﻿namespace BlazorComponent;
+﻿using System.Text.Json;
+
+namespace BlazorComponent;
 
 public class FileChangeCallBack
 {
-    string JsCallback { get; set; }
+    public string JsCallback { get; init; }
 
-    EventCallback<IReadOnlyList<IBrowserFile>> EventCallback { get; set; }
+    public EventCallback<IReadOnlyList<IBrowserFile>> EventCallback { get; init; }
 
-    Func<IReadOnlyList<IBrowserFile>, Task> DelegateCallback { get; set; }
+    public Func<IReadOnlyList<IBrowserFile>, Task> DelegateCallback { get; init; }
 
     public bool IsJsCallback => JsCallback is not null;
 
     public bool IsEventCallback => EventCallback.Equals(default);
 
     public bool IsDelegateCallback => DelegateCallback is not null;
+
+    public JsonElement JsCallbackValue { get; internal set; }
 
     public static implicit operator FileChangeCallBack(string callback)
     {

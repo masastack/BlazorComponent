@@ -1,18 +1,21 @@
-﻿@using Microsoft.AspNetCore.Components.Forms
-@namespace BlazorComponent
-@inherits BDomComponentBase
+﻿@namespace BlazorComponent
+@inherits BUpload
 
 <label class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()"> 
-    <InputFile OnChange=OnInputFileChange accept="image/*" multiple=@Multiple />
+    <InputFile @ref="InputFileRef" OnChange=OnInputFileChange accept="@Accept" multiple=@Multiple />
     @if(ChildContent is not null)
     {
-        @ChildContent(ImageUrls);
+        @ChildContent(PreviewImageUrls);
     }
     else
     {
-        @foreach(var imageUrl in ImageUrls)
+        @if(PreviewImageUrls.Count == 0)
         {
-            <img src="@imageUrl" width="@PreviewImageWith" height="@PreviewImageHeight" />
+            <img src="@Icon" width="@PreviewImageWith" height="@PreviewImageHeight" class="@ImageClass" />
+        }
+        @foreach(var imageUrl in PreviewImageUrls)
+        {
+            <img src="@imageUrl" width="@PreviewImageWith" height="@PreviewImageHeight" class="@ImageClass" />
         }
     }
 </label>
