@@ -31,7 +31,7 @@ public partial class BUpload
 
     public InputFile InputFileRef { get; set; }
 
-    public IReadOnlyList<IBrowserFile> Files { get; set; }
+    public IReadOnlyList<IBrowserFile> Files { get; set; } = new List<IBrowserFile>();
 
     IJSObjectReference UploadJs { get; set; }
 
@@ -63,7 +63,7 @@ public partial class BUpload
         if (WhenFileChangeUpload) await Upload();
     }
 
-    public async Task Upload()
+    public virtual async Task Upload()
     {
         if (OnInputFileUpload is null) return;
         if (OnInputFileUpload.IsJsCallback)
