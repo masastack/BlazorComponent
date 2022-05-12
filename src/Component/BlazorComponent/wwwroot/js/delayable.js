@@ -12,13 +12,13 @@ class Delayable {
         this.#closeDelay = closeDelay;
     }
 
-    #clearDelay() {
+    clearDelay() {
         clearTimeout(this.#openTimeout);
         clearTimeout(this.#closeTimeout);
     }
 
     runDelay(type, cb) {
-        this.#clearDelay();
+        this.clearDelay();
 
         if (type === "open") {
             const delay = parseInt(this.#openDelay, 10);
