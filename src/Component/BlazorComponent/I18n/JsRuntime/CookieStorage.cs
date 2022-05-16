@@ -15,9 +15,15 @@ namespace BlazorComponent.I18n
 
         const string SetCookieJs = "(function(name,value){ var Days = 30;var exp = new Date();exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);document.cookie = `${name}=${escape(value.toString())};path=/;expires=${exp.toUTCString()}`;})";
 
-        public async Task<string> GetCookie(string key)
+        public async Task<string> GetCookieAsync(string key)
         {
             return await _jsRuntime.InvokeAsync<string>("eval", $"{GetCookieJs}('{key}')");
+        }
+
+        public string GetCookie(string key)
+        {
+            var jsInProcess = (IJSInProcessRuntime)_jsRuntime;
+            return jsInProcess.Invoke<string>("eval", $"{GetCookieJs}('{key}')");
         }
 
         public async void SetItemAsync<T>(string key, T? value)
