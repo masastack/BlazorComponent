@@ -14,7 +14,7 @@
             }
             private set
             {
-                _currentLanguage = value;
+                _currentLanguage = value ?? I18nCache.DefaultLanguage;
                 _languageMap = I18nCache.GetLang(_currentLanguage);
             }
         }

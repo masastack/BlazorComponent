@@ -20,7 +20,7 @@ namespace BlazorComponent.I18n
             return await _jsRuntime.InvokeAsync<string>("eval", $"{GetCookieJs}('{key}')");
         }
 
-        public string GetCookie(string key)
+        public string? GetCookie(string key)
         {
             var jsInProcess = (IJSInProcessRuntime)_jsRuntime;
             return jsInProcess.Invoke<string>("eval", $"{GetCookieJs}('{key}')");
