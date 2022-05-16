@@ -195,6 +195,8 @@ namespace BlazorComponent
 
         protected TValue InputValue { get; set; }
 
+        protected TValue TempValue { get; set; }
+
         protected override void OnWatcherInitialized()
         {
             Watcher
