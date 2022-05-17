@@ -312,6 +312,7 @@ namespace BlazorComponent
             //We will change this and InternalValue
             ErrorBucket.Clear();
 
+            InputValue = default;
             LazyValue = default;
             if (ValueChanged.HasDelegate)
             {
