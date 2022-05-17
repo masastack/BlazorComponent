@@ -35,9 +35,9 @@
 
         public void SetLang(string language) => CurrentLanguage = language;
 
-        public string? T(string key, bool onlyMatchLastLevel = false, [DoesNotReturnIf(true)] bool whenNullReturnKey = true)
+        public string? T(string key, bool matchLastLevel = false, [DoesNotReturnIf(true)] bool whenNullReturnKey = true)
         {
-            if(onlyMatchLastLevel is true) return LanguageMap.FirstOrDefault(kv => kv.Key.EndsWith($".{key}") || kv.Key == key).Value ?? (whenNullReturnKey ? key : null);
+            if(matchLastLevel is true) return LanguageMap.FirstOrDefault(kv => kv.Key.EndsWith($".{key}") || kv.Key == key).Value ?? (whenNullReturnKey ? key : null);
             return LanguageMap.GetValueOrDefault(key) ?? (whenNullReturnKey ? key : null);
         }
 
