@@ -35,6 +35,11 @@
 
         public void SetLang(string language) => CurrentLanguage = language;
 
+        public void AddLang(string language, IReadOnlyDictionary<string, string>? langMap, bool isDefaultLanguage = false)
+        {
+            I18nCache.AddLang(language, langMap, isDefaultLanguage);
+        }
+
         public string? T(string key, bool matchLastLevel = false, [DoesNotReturnIf(true)] bool whenNullReturnKey = true)
         {
             if(matchLastLevel is true) return LanguageMap.FirstOrDefault(kv => kv.Key.EndsWith($".{key}") || kv.Key == key).Value ?? (whenNullReturnKey ? key : null);
