@@ -334,9 +334,10 @@ namespace BlazorComponent
             //And we attach content-element in last step
             if (!Attached)
             {
-                ActivateZIndex = multipleResult.ZIndex;
                 Attached = true;
             }
+
+            ActivateZIndex = multipleResult.ZIndex;
 
             //Window props
             Window.InnerHeight = windowAndDocument.InnerHeight;

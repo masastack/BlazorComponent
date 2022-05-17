@@ -1529,9 +1529,7 @@ export function invokeMultipleMethod(windowProps, documentProps, hasActivator, a
 
   multipleResult.windowAndDocument = getWindowAndDocumentProps(windowProps, documentProps);
   multipleResult.dimensions = getMenuableDimensions(hasActivator, activatorSelector, attach, contentElement, attached, attachSelector);
-  if (!attached) {
-    multipleResult.zIndex = getMenuOrDialogMaxZIndex([contentElement], element);
-  }
+  multipleResult.zIndex = getMenuOrDialogMaxZIndex([contentElement], element);
 
   return multipleResult;
 }
