@@ -23,20 +23,14 @@ public static class I18nReader
         while (reader.Read())
         {
             if (reader.TokenType is JsonTokenType.StartArray) reader.Skip();
-            else if (reader.TokenType is JsonTokenType.EndObject)
-            {
-                break;
-            }
+            else if (reader.TokenType is JsonTokenType.EndObject) break;
             else if (reader.TokenType is JsonTokenType.PropertyName)
             {
                 var key = reader.GetString()!;
                 var newkey = baseKey is null ? key : $"{baseKey}.{key}";
                 reader.Read();
                 if (reader.TokenType is JsonTokenType.StartArray) reader.Skip();
-                else if (reader.TokenType is JsonTokenType.StartObject)
-                {
-                    BuildMap(ref reader, map, newkey);
-                }
+                else if (reader.TokenType is JsonTokenType.StartObject) BuildMap(ref reader, map, newkey);
                 else map[newkey] = ReadString(reader);
             }
         }
