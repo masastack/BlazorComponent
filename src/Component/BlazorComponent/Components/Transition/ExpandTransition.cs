@@ -76,7 +76,5 @@ public class ExpandTransition : Transition
         {
             Size = size;
         }
-
-        Console.WriteLine($"Size:{Size}");
     }
 }
