@@ -15,6 +15,8 @@ public class BDelayable : BDomComponentBase, IAsyncDisposable
 
     protected bool IsActive { get; private set; }
 
+    public Func<Task>? AfterShowContent { get; set; }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -41,6 +43,11 @@ public class BDelayable : BDomComponentBase, IAsyncDisposable
         IsActive = value;
 
         StateHasChanged();
+
+        if (AfterShowContent is not null)
+        {
+            await AfterShowContent();
+        }
     }
 
     protected virtual Task ShowLazyContent()
