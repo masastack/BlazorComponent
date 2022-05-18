@@ -648,7 +648,7 @@ export function scrollToActiveElement(container, target) {
 
 export function scrollToPosition(container, position) {
   var dom = getDom(container);
-  dom.scrollTop = position;
+  dom.scrollTo({ top: position, behavior: 'smooth'})
 }
 
 export function getFirstChildDomInfo(element, selector = "body") {
