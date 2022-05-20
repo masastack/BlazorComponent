@@ -27,6 +27,9 @@ namespace BlazorComponent
         public string OffIcon { get; set; } = "mdi-checkbox-blank-outline";
 
         [Parameter]
+        public bool Readonly { get; set; }
+
+        [Parameter]
         public bool Dark { get; set; }
 
         [Parameter]
@@ -76,7 +79,7 @@ namespace BlazorComponent
 
         public virtual async Task HandleOnClickAsync(MouseEventArgs args)
         {
-            if (Disabled)
+            if (Disabled || Readonly)
             {
                 return;
             }
