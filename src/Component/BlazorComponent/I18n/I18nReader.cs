@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Text;
+using System.Text.Json;
 
 namespace BlazorComponent.I18n;
 
@@ -10,9 +11,9 @@ public static class I18nReader
         AllowTrailingCommas = true
     };
 
-    public static Dictionary<string, string> Read(ReadOnlySpan<byte> jsonData)
+    public static Dictionary<string, string> Read(string jsonData)
     {
-        var reader = new Utf8JsonReader(jsonData, _jsonReaderOptions);
+        var reader = new Utf8JsonReader(Encoding.Default.GetBytes(jsonData), _jsonReaderOptions);
         var map = new Dictionary<string, string>();
         BuildMap(ref reader, map);
         return map;
