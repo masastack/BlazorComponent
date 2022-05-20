@@ -82,7 +82,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 foreach (var filePath in files)
                 {
                     var language = Path.GetFileNameWithoutExtension(filePath);
-                    var map = I18nReader.Read(File.ReadAllBytes(filePath));
+                    var json = File.ReadAllText(filePath);
+                    var map = I18nReader.Read(json);
                     languageMap.Add((language, map));
                 }
                 services.AddMasaI18n(languageMap);
@@ -98,9 +99,8 @@ namespace Microsoft.Extensions.DependencyInjection
             foreach (var language in languages)
             {
                 using var stream = await httpclient.GetStreamAsync(Path.Combine(languageDirectoryApi, $"{language}.json"));
-                byte[] bytes = new byte[stream.Length];
-                stream.Read(bytes, 0, bytes.Length);
-                var map = I18nReader.Read(bytes);
+                using StreamReader reader = new StreamReader(stream);
+                var map = I18nReader.Read(reader.ReadToEnd());
                 languageMap.Add((language, map));
             }
             services.AddMasaI18n(languageMap);

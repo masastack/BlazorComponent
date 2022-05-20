@@ -4,6 +4,8 @@
     {
         public I18n(string? language = null) => SetLang(language ?? I18nCache.DefaultLanguage);
 
+        public IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> Languages => I18nCache.ToDictionary();
+
         private string? _currentLanguage;
 
         public string CurrentLanguage
