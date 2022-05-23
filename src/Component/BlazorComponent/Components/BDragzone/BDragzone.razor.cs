@@ -20,6 +20,11 @@
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
 
+        protected override void OnAfterRender(bool firstRender)
+        {
+            //base.OnAfterRender(firstRender);
+        }
+
         public bool IsDark
         {
             get

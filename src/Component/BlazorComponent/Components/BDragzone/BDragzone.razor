@@ -26,30 +26,12 @@
     }
 </style>
 <CascadingValue Value="IsDark" Name="IsDark">
-    <div class="@CssProvider.GetClass() dragItem-container" style="@CssProvider.GetStyle()" id="@Id"
-         @ondragover:preventDefault
-         @ondragover="()=> { }"
-         @ondragenter:preventDefault
-         @ondragenter="()=> { }"
-         @ondrop="()=>OnDrop()"
-         @ondrop:preventDefault
-         ondragstart="event.dataTransfer.setData('text', event.target.id);"
-         @ondrop:stopPropagation
-         @ondragenter:stopPropagation
-         @ondragend:stopPropagation
-         @ondragover:stopPropagation
-         @ondragleave:stopPropagation
-         @ondragstart:stopPropagation>
+    <div class="@CssProvider.GetClass() dragItem-container" style="@CssProvider.GetStyle()" id="@Id">         
         @if (Items != null && Items.Any())
         {
             foreach (var item in Items)
             {
-                <div draggable="@AllowSwap(item).ToString().ToLower()"
-             @ondragstart="()=>OnDragStart(item)"
-             @ondragend="()=>OnDragEnd()"
-             @ondragenter="()=>OnDragEnter(item)"
-             @ondragleave="()=>OnDragLeave()"
-             class="@item.CssClass" style="@item.CssStyle">
+                <div draggable="@AllowSwap(item).ToString().ToLower()" class="@item.CssClass" style="@item.CssStyle">
                     @if (item.Item is ComponentBase component)
                     {
                         <DynamicComponent Type="item.Item.GetType()" Parameters="item.Item.ToParameters()"></DynamicComponent>
