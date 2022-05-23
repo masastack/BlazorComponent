@@ -34,12 +34,12 @@ namespace BlazorComponent.I18n
                     var acceptLanguage = httpContextAccessor.HttpContext.Request.Headers["accept-language"].FirstOrDefault();
                     if (acceptLanguage is not null)
                     {
-                        _language = acceptLanguage.Split(",").Select(lang =>
-                        {
-                            var arr = lang.Split(';');
-                            if (arr.Length == 1) return (arr[0], 1);
-                            else return (arr[0], Convert.ToDecimal(arr[1].Split("=")[1]));
-                        }).OrderByDescending(lang => lang.Item2).FirstOrDefault(lang => I18n.ContainsLang(lang.Item1)).Item1;
+                        //_language = acceptLanguage.Split(",").Select(lang =>
+                        //{
+                        //    var arr = lang.Split(';');
+                        //    if (arr.Length == 1) return (arr[0], 1);
+                        //    else return (arr[0], Convert.ToDecimal(arr[1].Split("=")[1]));
+                        //}).OrderByDescending(lang => lang.Item2).FirstOrDefault(lang => I18n.ContainsLang(lang.Item1)).Item1;
                     }
                 }
                 i18n.SetLang(_language);
