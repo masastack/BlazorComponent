@@ -2,36 +2,13 @@
 @namespace BlazorComponent
 @using Microsoft.AspNetCore.Components.Web
 @inherits BDomComponentBase
-@inject BDragDropService<TItem> dragDropService
-<style>
-    .dragItem-container {
-        display: block;
-        margin: 10px;
-        background-color: #ffffee;
-        transition: opacity 0.4s ease-in-out;
-    }
-
-        .dragItem-container > div {
-            cursor: move;
-            margin: 5px 0 0 5px;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.2);
-            transition: opacity 0.4s ease-in-out;
-        }
-
-    .dragItem-active {
-        opacity: 0.2;
-        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
-        filter: alpha(opacity=20);
-    }
-</style>
 <CascadingValue Value="IsDark" Name="IsDark">
     <div class="@CssProvider.GetClass() dragItem-container" style="@CssProvider.GetStyle()" id="@Id">         
         @if (Items != null && Items.Any())
         {
             foreach (var item in Items)
             {
-                <div draggable="@AllowSwap(item).ToString().ToLower()" class="@item.CssClass" style="@item.CssStyle">
+                <div class="@item.CssClass" style="@item.CssStyle">
                     @if (item.Item is ComponentBase component)
                     {
                         <DynamicComponent Type="item.Item.GetType()" Parameters="item.Item.ToParameters()"></DynamicComponent>
