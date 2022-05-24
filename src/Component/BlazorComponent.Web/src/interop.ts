@@ -458,7 +458,6 @@ export function addHtmlElementEventListener(selector, type, invoker, options, ac
   }
 }
 
-
 export function removeHtmlElementEventListener(selector, type) {
   let htmlElement: any
 
@@ -779,13 +778,14 @@ function debounce(func, wait, immediate) {
   };
 };
 
-export function css(element: HTMLElement, name: string | object, value: string | null = null) {
+export function css(element: any, name: string | object, value: string | null = null) {
+  var dom = getDom(element);
   if (typeof name === 'string') {
-    element.style[name] = value;
+    dom.style[name] = value;
   } else {
     for (let key in name) {
       if (name.hasOwnProperty(key)) {
-        element.style[key] = name[key];
+        dom.style[key] = name[key];
       }
     }
   }

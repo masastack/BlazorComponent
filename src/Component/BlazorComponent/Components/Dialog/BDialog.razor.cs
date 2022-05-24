@@ -7,6 +7,12 @@ namespace BlazorComponent
 {
     public partial class BDialog : BBootable, IAsyncDisposable
     {
+        [Inject]
+        public Document Document { get; set; }
+
+        [Inject]
+        public Window Window { get; set; }
+
         [Parameter]
         public string Attach { get; set; }
 
@@ -58,9 +64,6 @@ namespace BlazorComponent
             }
         }
 
-        [Inject]
-        public Document Document { get; set; }
-
         protected bool ShowOverlay => !Fullscreen && !HideOverlay;
 
         protected ElementReference? OverlayRef => ((BOverlay)Overlay)?.Ref;
@@ -94,7 +97,9 @@ namespace BlazorComponent
 
             if (value)
             {
-                ZIndex = await GetActiveZIndex(value);
+                ZIndex = await GetActiveZIndex(true);
+
+                await HideScroll();
 
                 NextTick(async () =>
                 {
@@ -107,8 +112,10 @@ namespace BlazorComponent
                     }
                 });
             }
-            
-            // TODO: hideScroll
+            else
+            {
+                await ShowScroll();
+            }
 
             await base.WhenIsActiveUpdating(value);
         }
@@ -129,6 +136,30 @@ namespace BlazorComponent
             }
 
             StateHasChanged();
+        }
+
+        private async Task HideScroll()
+        {
+            if (Fullscreen)
+            {
+                await JsInvokeAsync(JsInteropConstants.SetStyle, "document", "overflow-y", "hidden");
+            }
+            else
+            {
+                await JsInvokeAsync(JsInteropConstants.AddWheelEventListener, OverlayRef.GetSelector(), ContentRef, DialogRef);
+            }
+        }
+
+        private async Task ShowScroll()
+        {
+            await JsInvokeAsync(JsInteropConstants.SetStyle, "document", "overflow-y", "auto");
+
+            await JsInvokeAsync(JsInteropConstants.RemoveWheelEventListener, OverlayRef.GetSelector());
+        }
+
+        private Task ScrollListener()
+        {
+            return Task.CompletedTask;
         }
 
         protected async Task HandleOnOutsideClickAsync(object _)
