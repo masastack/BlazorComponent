@@ -1,6 +1,6 @@
 ﻿namespace BlazorComponent
 {
-    public partial class BDragzone<TItem> : BDomComponentBase, IThemeable
+    public partial class BDragZone<TItem> : BDomComponentBase, IThemeable
     {
         [Parameter]
         public bool Dark { get; set; }
