@@ -166,6 +166,10 @@
 
         public static string CopyText => $"{Variables.JsInteropFuncNamePrefix}copyText";
 
+        public static string GetListIndexWhereAttributeExists => $"{Variables.JsInteropFuncNamePrefix}getListIndexWhereAttributeExists";
+
+        public static string ScrollToTile => $"{Variables.JsInteropFuncNamePrefix}scrollToTile";
+
         #region Draggable Modal
 
         public static string EnableDraggable => $"{Variables.JsInteropFuncNamePrefix}enableDraggable";
