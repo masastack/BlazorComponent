@@ -1636,3 +1636,38 @@ function getElementSelector(el) {
   }
   return path.join(" > ");
 }
+
+export function getListIndexWhereAttributeExists(selector: string, attribute:string, value: string) {
+  const doms = document.querySelectorAll(selector);
+  if (!doms) {
+    return -1;
+  }
+  
+  const attrValues:string[] = [];
+  doms.forEach(dom => attrValues.push(dom.getAttribute(attribute)))
+  return attrValues.findIndex(val => val === value);
+}
+
+export function scrollToTile(contentSelector: string, tilesSelector: string, index: number) {
+  var tiles = document.querySelectorAll(tilesSelector)
+  if (!tiles) return;
+
+  const tile = tiles[index] as HTMLElement;
+  if (!tile) return;
+
+  const content = document.querySelector(contentSelector);
+  if (!content) return;
+  const scrollTop = content.scrollTop;
+  const contentHeight = content.clientHeight;
+
+  const startLocation = scrollTop;
+
+  let top = tile.offsetTop + 8 - contentHeight + tile.clientHeight
+
+  if (scrollTop > tile.offsetTop - 8) {
+    if (top < 0) top = 0
+    content.scrollTo({top, behavior: "smooth"})
+  } else if (scrollTop + contentHeight < tile.offsetTop + tile.clientHeight + 8) {
+    content.scrollTo({top, behavior: "smooth"})
+  }
+}
