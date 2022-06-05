@@ -16,8 +16,6 @@
             }
             else
             {
-                @ChildContent
-
                 @if (DynicItems != null && DynicItems.Any())
                 {
                     foreach (var item in DynicItems)
@@ -25,6 +23,7 @@
                         <DynamicComponent Type=item.GetType() Parameters=item.ToParameters()></DynamicComponent>
                     }
                 }
+                @ChildContent
             }             
         </div>
     </CascadingValue>
