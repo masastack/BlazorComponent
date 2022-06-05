@@ -1,12 +1,15 @@
 ﻿namespace BlazorComponent
 {
-    public class BDragDropService<T>
+    public class BDragDropService
     {
-        public T DragItem { get; set; }
+        public BDragItem DragItem { get; set; }
+
+        public bool IsClone { get; set; }
 
         public void Reset()
         {
             DragItem = default;
+            IsClone= false;
         }
     }
 }

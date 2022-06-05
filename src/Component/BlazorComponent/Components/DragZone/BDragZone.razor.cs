@@ -12,7 +12,7 @@
         public bool CascadingIsDark { get; set; }
 
         [Inject]
-        public BDragDropService<BDragItem> DragDropService { get; set; }
+        public BDragDropService DragDropService { get; set; }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
@@ -44,19 +44,25 @@
 
         public void Register(BDragItem item)
         {
-            Add(Items, item, Items.Count);
+            if (!Contains(item, Items))
+            {
+                Add(Items, item, Items.Count);
+                SetIndex();
+            }
         }
 
         public void Add(BDragItem item, int position = -1)
         {
             Add(Items, item, position);
-            Add(DynicItems, item, position);
+            Add(DynicItems, item);
+            SetIndex();
         }
 
         public void AddRange(IEnumerable<BDragItem> sources, int position = -1)
         {
             AddRange(sources, Items, position);
             AddRange(sources, DynicItems, position);
+            SetIndex();
         }
 
         public void Remove(params BDragItem[] items)
@@ -68,16 +74,57 @@
                 Remove(Items, item);
                 Remove(DynicItems, item);
             }
+            SetIndex();
+        }
+
+        public bool Contains(BDragItem item, List<BDragItem> list)
+        {
+            if (item == null || string.IsNullOrEmpty(item.Id))
+                return true;
+            return list.Any(it => it.Id == item.Id);
+        }
+
+        public int GetIndex(BDragItem item)
+        {
+            if (item == null || string.IsNullOrEmpty(item.Id))
+                return -1;
+            return Items.FindIndex(it => it.Id == item.Id);
+        }
+
+        public bool Update(BDragItem item, int oldIndex, int newIndex)
+        {
+            if (oldIndex - newIndex < 0)
+            {
+
+                if (newIndex - Items.Count == 0)
+                {
+                    Items.Append(item);
+                }
+                else
+                {
+                    Items.Insert(newIndex + 1, item);
+                }
+                Items.RemoveAt(oldIndex);
+            }
+            else
+            {
+                Items.RemoveAt(oldIndex);
+                Items.Insert(newIndex, item);
+            }
+
+            SetIndex();
+            return true;
         }
 
         private void AddRange(IEnumerable<BDragItem> sources, List<BDragItem> target, int position = -1)
         {
-            int total = target.Count;
-            if (position < 0)
-                position = 0;
-            if (position - total > 0)
-                position = total;
-            target.InsertRange(position, sources);
+            //int total = target.Count;
+            //if (position < 0)
+            //    position = 0;
+            //if (position - total > 0)
+            //    position = total;
+            //target.InsertRange(position, sources);
+            target.AddRange(sources);
         }
 
         private bool Add(List<BDragItem> list, BDragItem item, int position = -1)
@@ -85,37 +132,35 @@
             if (item == null)
                 return false;
 
-            int index = list.IndexOf(item), total = list.Count;
-            if (position < 0)
-                position = 0;
-            if (position - total > 0)
-                position = total;
-
-            if (index < 0)
-            {
+            if (position >= 0 && position - list.Count < 0)
                 list.Insert(position, item);
-            }
             else
-            {
-                if (position - total == 0)
-                    position--;
-
-                list.RemoveAt(index);
-                list.Insert(position, item);
-            }
+                list.Add(item);
             return true;
         }
 
         private bool Remove(List<BDragItem> list, BDragItem item)
         {
-            if (item == null || !list.Any())
+            if (item == null || string.IsNullOrEmpty(item.Id) || !list.Any())
                 return false;
-            var index = list.IndexOf(item);
+            var index = list.FindIndex(it => it.Id == item.Id);
             if (index < 0)
                 return false;
 
             list.RemoveAt(index);
             return true;
+        }
+
+        private void SetIndex()
+        {
+            StateHasChanged();
+            //int index = 0, count = Items.Count;
+            //while (count - index > 0)
+            //{
+            //    if (Items[index].Value - index != 0)
+            //        Items[index].Value = index;
+            //    index++;
+            //}
         }
     }
 }
