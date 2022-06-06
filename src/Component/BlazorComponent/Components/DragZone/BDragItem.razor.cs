@@ -5,7 +5,16 @@
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            DragZone.Register(this);
+           
+        }
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            if (firstRender)
+            {
+                DragZone.Register(this);
+            }
+            base.OnAfterRender(firstRender);
         }
 
         [CascadingParameter]
@@ -18,7 +27,7 @@
 
         public override void Dispose()
         {
-            DragZone.Remove(this);
+            //DragZone.Remove(this);
             base.Dispose();
         }
     }
