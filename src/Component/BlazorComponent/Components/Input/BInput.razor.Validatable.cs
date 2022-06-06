@@ -92,6 +92,7 @@ namespace BlazorComponent
             set
             {
                 LazyValue = value;
+                InternalValueSetter(value);
             }
         }
 
@@ -194,6 +195,10 @@ namespace BlazorComponent
         public virtual bool ExternalError => ErrorMessages.Count > 0 || Error;
 
         protected TValue InputValue { get; set; }
+
+        protected virtual void InternalValueSetter(TValue val)
+        {
+        }
 
         protected override void OnWatcherInitialized()
         {
