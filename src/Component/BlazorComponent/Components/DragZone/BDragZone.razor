@@ -4,27 +4,17 @@
 <CascadingValue Value="IsDark" Name="IsDark">
     <CascadingValue Value="this" IsFixed>
         <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @attributes="Attributes">
-            @if (LoadItems)
+            @if (Items != null && Items.Any())
             {
-                @if (Items != null && Items.Any())
+                foreach (var item in Items)
                 {
-                    foreach (var item in Items)
-                    {
-                        <DynamicComponent Type=item.GetType() Parameters=item.ToParameters()></DynamicComponent>
-                    }
+                    <DynamicComponent Type=item.GetType() Parameters=item.ToParameters()></DynamicComponent>
                 }
             }
             else
             {
-                @if (DynicItems != null && DynicItems.Any())
-                {
-                    foreach (var item in DynicItems)
-                    {
-                        <DynamicComponent Type=item.GetType() Parameters=item.ToParameters()></DynamicComponent>
-                    }
-                }
                 @ChildContent
-            }             
+            }
         </div>
     </CascadingValue>
 </CascadingValue>
