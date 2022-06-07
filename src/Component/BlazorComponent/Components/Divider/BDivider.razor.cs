@@ -45,5 +45,7 @@ namespace BlazorComponent
                 return CascadingIsDark;
             }
         }
+
+        public string Display => ChildContent is null ? "display:contents;" : "";
     }
 }
