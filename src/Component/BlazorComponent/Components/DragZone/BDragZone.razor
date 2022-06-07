@@ -4,6 +4,7 @@
 <CascadingValue Value="IsDark" Name="IsDark">
     <CascadingValue Value="this" IsFixed>
         <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @attributes="Attributes">
+           id:@Id
             @if (Items != null && Items.Any())
             {
                 foreach (var item in Items)
