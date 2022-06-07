@@ -22,7 +22,25 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
-        [Parameter]
+        protected bool _isRender = true;
+
+        protected override void OnParametersSet()
+        {
+            _isRender = true;
+            base.OnParametersSet();
+        }
+
+        protected override Task OnParametersSetAsync()
+        {
+            _isRender = true;
+            return base.OnParametersSetAsync();
+        }
+
+        protected override bool ShouldRender()
+        {
+            return base.ShouldRender() && _isRender;
+        }
+
         public bool LoadItems { get; set; }
 
         public bool IsDark
@@ -96,10 +114,19 @@ namespace BlazorComponent
             return Items.FindIndex(it => it.Id == item.Id);
         }
 
+        public bool Update(string oldId, string newId)
+        {
+            var find = Items.FirstOrDefault(it => it.Id == oldId);
+            if (find == null)
+                return false;
+            find.Id = newId;
+            return true;
+        }
+
         public bool Update(BDragItem item, int oldIndex, int newIndex)
         {
 
-            Logger.LogInformation($"update start ids : { string.Join(",", Items.Select(m => m.Id))}");
+            //Logger.LogInformation($"update start ids : { string.Join(",", Items.Select(m => m.Id))}");
             //var list = Items.ToArray().ToList();
             ////Items.Clear();
             //list[oldIndex] = null;
@@ -119,7 +146,7 @@ namespace BlazorComponent
 
             //Items = list;
 
-           
+
             //var array = Items.ToArray();
             //array[oldIndex] = null;
             //array.r
@@ -161,7 +188,7 @@ namespace BlazorComponent
                 Items.RemoveAt(oldIndex);
                 Items.Insert(newIndex, item);
             }
-            Logger.LogInformation($"update end ids : { string.Join(",", Items.Select(m => m.Id))}");
+            //Logger.LogInformation($"update end ids : { string.Join(",", Items.Select(m => m.Id))}");
             SetIndex();
             return true;
         }
@@ -174,7 +201,7 @@ namespace BlazorComponent
 
         protected override void OnAfterRender(bool firstRender)
         {
-            Logger.LogInformation($"OnAfterRender ids : { string.Join(",", Items.Select(m => m.Id))}");           
+            Logger.LogInformation($"OnAfterRender ids : { string.Join(",", Items.Select(m => m.Id))}");
             base.OnAfterRender(firstRender);
         }
 
@@ -198,6 +225,7 @@ namespace BlazorComponent
                 list.Insert(position, item);
             else
                 list.Add(item);
+
             return true;
         }
 
@@ -223,7 +251,7 @@ namespace BlazorComponent
             //        Items[index].Value = index;
             //    index++;
             //}
-            //StateHasChanged();
+            StateHasChanged();
         }
     }
 }
