@@ -207,7 +207,7 @@ namespace BlazorComponent
 
         protected int StackMinZIndex { get; set; } = 6;
 
-        protected bool Attached { get; set; }
+        public bool Attached { get; protected set; }
 
         protected StringNumber CalcLeft(double menuWidth)
         {
