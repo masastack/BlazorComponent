@@ -85,6 +85,17 @@ namespace BlazorComponent
 
             return this;
         }
+        
+        public ComponentAbstractProvider Merge<TComponent, TImplementComponent>(string name, Action<AttributesDictionary> mergeAttributesAction = null)
+            where TImplementComponent : TComponent
+        {
+            var key = ComponentKey.Get<TComponent>(name);
+
+            _typeConfig[key] = typeof(TImplementComponent);
+            Merge(key, mergeAttributesAction);
+
+            return this;
+        }
 
         public ComponentAbstractProvider Merge(Type type, Type implementType, Action<AttributesDictionary> mergeAttributesAction = null)
         {
@@ -212,7 +223,7 @@ namespace BlazorComponent
             //Part has parameters,We may always creat a new obj
 
             //TODO: change type config
-            var partType = _typeConfig.GetValueOrDefault(new ComponentKey(key.Type));
+            var partType = _typeConfig.GetValueOrDefault(key);
             if (partType == null)
             {
                 _partsConfig[key] = null;
