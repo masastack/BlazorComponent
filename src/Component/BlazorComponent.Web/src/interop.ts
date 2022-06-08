@@ -484,8 +484,10 @@ export function removeHtmlElementEventListener(selector, type) {
 
 var outsideClickListenerCaches: { [key: string]: any } = {}
 
-export function addOutsideClickEventListener(invoker, noInvokeSelectors: [], invokeSelectors: [], contentElement) {
+export function addOutsideClickEventListener(invoker, noInvokeSelectors: string[], invokeSelectors: string[], contentElement) {
   if (!noInvokeSelectors) return;
+
+  noInvokeSelectors = noInvokeSelectors.filter(s => !!s)
 
   var listener = function (args) {
     var exists = noInvokeSelectors.some(s => getDom(s)?.contains(args.target));
@@ -509,10 +511,12 @@ export function addOutsideClickEventListener(invoker, noInvokeSelectors: [], inv
   outsideClickListenerCaches[key] = listener;
 }
 
-export function removeOutsideClickEventListener(insideSelectors: string[]) {
-  if (!insideSelectors) return;
+export function removeOutsideClickEventListener(noInvokeSelectors: string[]) {
+  if (!noInvokeSelectors) return;
 
-  var key = `(${insideSelectors.join(',')})document:click`
+  noInvokeSelectors = noInvokeSelectors.filter(s => !!s)
+
+  var key = `(${noInvokeSelectors.join(',')})document:click`
 
   if (outsideClickListenerCaches[key]) {
     document.removeEventListener('click', outsideClickListenerCaches[key], true);
