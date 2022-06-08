@@ -5,6 +5,7 @@
         protected override void OnInitialized()
         {
             base.OnInitialized();
+            DragZone.Register(this);
         }
 
         //protected override void OnWatcherInitialized()
@@ -23,8 +24,8 @@
         {
             //if (firstRender)
             //{
-            //}
-            DragZone.Register(this);
+                
+            //}            
             base.OnAfterRender(firstRender);
         }
 
