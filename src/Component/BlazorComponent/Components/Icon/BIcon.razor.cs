@@ -76,6 +76,12 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<MouseEventArgs> OnClick { get; set; }
 
+        [Parameter]
+        public bool OnClickPreventDefault { get; set; }
+
+        [Parameter]
+        public bool OnClickStopPropagation { get; set; }
+
         [Inject]
         public Document Document { get; set; }
 
@@ -119,8 +125,8 @@ namespace BlazorComponent
                 var button = Document.GetElementByReference(Ref);
                 await button.AddEventListenerAsync("click", CreateEventCallback<MouseEventArgs>(HandleOnClick), false, new EventListenerActions
                 {
-                    PreventDefault = true,
-                    StopPropagation = true
+                    PreventDefault = OnClickPreventDefault,
+                    StopPropagation = OnClickStopPropagation
                 });
             }
         }

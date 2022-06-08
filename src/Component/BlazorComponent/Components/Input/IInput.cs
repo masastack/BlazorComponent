@@ -65,6 +65,8 @@ namespace BlazorComponent
 
         TValue InternalValue { get; }
 
+        EventCallback<MouseEventArgs> OnAppendClick { get; }
+
         Task HandleOnPrependClickAsync(MouseEventArgs args)
         {
             return Task.CompletedTask;
