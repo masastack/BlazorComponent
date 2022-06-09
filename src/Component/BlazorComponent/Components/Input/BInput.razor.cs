@@ -42,13 +42,13 @@ namespace BlazorComponent
         public RenderFragment<string> MessageContent { get; set; }
 
         [Parameter]
-        public EventCallback<MouseEventArgs> OnClick { get; set; }
+        public EventCallback<ExMouseEventArgs> OnClick { get; set; }
 
         [Parameter]
         public EventCallback<MouseEventArgs> OnMouseDown { get; set; }
 
         [Parameter]
-        public EventCallback<MouseEventArgs> OnMouseUp { get; set; }
+        public EventCallback<ExMouseEventArgs> OnMouseUp { get; set; }
 
         public ElementReference InputSlotElement { get; set; }
 
@@ -179,7 +179,7 @@ namespace BlazorComponent
             }
         }
 
-        public virtual async Task HandleOnClickAsync(MouseEventArgs args)
+        public virtual async Task HandleOnClickAsync(ExMouseEventArgs args)
         {
             if (OnClick.HasDelegate)
             {
@@ -196,7 +196,7 @@ namespace BlazorComponent
             }
         }
 
-        public virtual async Task HandleOnMouseUpAsync(MouseEventArgs args)
+        public virtual async Task HandleOnMouseUpAsync(ExMouseEventArgs args)
         {
             HasMouseDown = false;
             if (OnMouseUp.HasDelegate)

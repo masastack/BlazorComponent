@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+﻿using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
@@ -18,10 +17,10 @@ namespace BlazorComponent
             }
         }
 
-        public EventCallback<MouseEventArgs> HandleOnClickAsync => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnClickAsync);
+        public EventCallback<ExMouseEventArgs> HandleOnClickAsync => EventCallback.Factory.Create<ExMouseEventArgs>(Component, Component.HandleOnClickAsync);
 
         public EventCallback<MouseEventArgs> HandleOnMouseDownAsync => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnMouseDownAsync);
 
-        public EventCallback<MouseEventArgs> HandleOnMouseUpAsync => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnMouseUpAsync);
+        public EventCallback<ExMouseEventArgs> HandleOnMouseUpAsync => EventCallback.Factory.Create<ExMouseEventArgs>(Component, Component.HandleOnMouseUpAsync);
     }
 }
