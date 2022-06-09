@@ -1,7 +1,7 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div class="@CssProvider.GetClass()" style="@Display @CssProvider.GetStyle()">
+<div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">
     <hr class="@CssProvider.GetClass("hr")" style="@CssProvider.GetStyle("hr")" id="@Id" @ref="Ref" />
     @if (ChildContent is not null)
     {
