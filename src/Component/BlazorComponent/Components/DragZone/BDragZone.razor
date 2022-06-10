@@ -9,7 +9,7 @@
             {
                 foreach (var item in Items)
                 {
-                    <DynamicComponent Type=item.GetType() Parameters=item.ToParameters()></DynamicComponent>
+                    <DynamicComponent Type=item.GetType() Parameters=item.ToParameters() @key="@item"></DynamicComponent>
                 }
             }
             else

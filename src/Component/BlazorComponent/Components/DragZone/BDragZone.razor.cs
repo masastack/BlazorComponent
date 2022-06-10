@@ -61,9 +61,10 @@ namespace BlazorComponent
             }
         }
 
-        public List<BDragItem> Items { get; protected set; } = new();
+        [Parameter]
+        public List<BDragItem> Value { get; set; }
 
-        public List<BDragItem> DynicItems { get; protected set; } = new();
+        public List<BDragItem> Items { get; protected set; } = new();
 
         public void Register(BDragItem item)
         {
@@ -77,14 +78,12 @@ namespace BlazorComponent
         public void Add(BDragItem item, int position = -1)
         {
             Add(Items, item, position);
-            //Add(DynicItems, item);
             SetIndex();
         }
 
         public void AddRange(IEnumerable<BDragItem> sources, int position = -1)
         {
             AddRange(sources, Items, position);
-            //AddRange(sources, DynicItems, position);
             SetIndex();
         }
 
@@ -95,7 +94,6 @@ namespace BlazorComponent
             foreach (var item in items)
             {
                 Remove(Items, item);
-                //Remove(DynicItems, item);
             }
             SetIndex();
         }
@@ -125,51 +123,11 @@ namespace BlazorComponent
 
         public bool Update(BDragItem item, int oldIndex, int newIndex)
         {
-
-            //Logger.LogInformation($"update start ids : { string.Join(",", Items.Select(m => m.Id))}");
-            //var list = Items.ToArray().ToList();
-            ////Items.Clear();
-            //list[oldIndex] = null;
-            //list.RemoveAt(oldIndex);
-
-            //bool isAppend = false;
-            //if (newIndex - oldIndex > 0)
-            //{
-            //    newIndex--;
-            //    isAppend = true;
-            //}
-
-            //if (isAppend && list.Count - newIndex - 1 == 0)
-            //    list.Add(item);
-            //else
-            //    list.Insert(newIndex, item);
-
-            //Items = list;
-
-
-            //var array = Items.ToArray();
-            //array[oldIndex] = null;
-            //array.r
-
-
-
-
-
-            //var array = Items.ToArray();
-            //var temp = array[newIndex];
-            //array[oldIndex] = null;
-
-            //int index = 0, count = array.Length;
-
-            //while (count - index > 0)
-            //{ 
-            //    if()
-            //}
-
-
-
-
-
+            var index = Items.FindIndex(it => it.Id == item.Id);
+            if (index < 0)
+                return false;
+            if (index - newIndex == 0)
+                return true;
 
             if (oldIndex - newIndex < 0)
             {
@@ -188,7 +146,6 @@ namespace BlazorComponent
                 Items.RemoveAt(oldIndex);
                 Items.Insert(newIndex, item);
             }
-            //Logger.LogInformation($"update end ids : { string.Join(",", Items.Select(m => m.Id))}");
             SetIndex();
             return true;
         }
@@ -207,12 +164,6 @@ namespace BlazorComponent
 
         private void AddRange(IEnumerable<BDragItem> sources, List<BDragItem> target, int position = -1)
         {
-            //int total = target.Count;
-            //if (position < 0)
-            //    position = 0;
-            //if (position - total > 0)
-            //    position = total;
-            //target.InsertRange(position, sources);
             target.AddRange(sources);
         }
 
@@ -241,14 +192,26 @@ namespace BlazorComponent
             return true;
         }
 
-        private void SetIndex()
+        protected void SetIndex()
         {
             //Logger.LogInformation($"SetIndex ids : { string.Join(",", Items.Select(m => m.Id))}");
-            //int index = 0, count = Items.Count;
+            int index = 0, count = Items.Count;
+            foreach (var item in Items)
+            {
+                if (item.Value - index != 0)
+                    item.Value = index;
+                index++;
+            }
+
+
+            //var total = 0;
             //while (count - index > 0)
             //{
             //    if (Items[index].Value - index != 0)
+            //    {
             //        Items[index].Value = index;
+            //        total++;
+            //    }
             //    index++;
             //}
             StateHasChanged();
