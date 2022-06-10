@@ -20,8 +20,6 @@ export function registerExtraTouchEvent(eventType: string, eventName: string) {
 }
 
 function sharedCreateEventArgs(type: "mouse" | "touch", e: Event,) {
-  console.log("000000000000000")
-
   let args = { target: {} }
   if (type === 'mouse') {
     args = {
@@ -35,8 +33,6 @@ function sharedCreateEventArgs(type: "mouse" | "touch", e: Event,) {
     }
   }
 
-  console.log("111111111111111")
-
   if (e.target) {
     const target = e.target as HTMLElement;
     const _bl_ = target.getAttributeNames().find(a => a.startsWith('_bl_'));
@@ -48,8 +44,6 @@ function sharedCreateEventArgs(type: "mouse" | "touch", e: Event,) {
 
     args.target['class'] = target.getAttribute('class')
   }
-
-  console.log("2222222222222222", args)
 
   return args;
 }
