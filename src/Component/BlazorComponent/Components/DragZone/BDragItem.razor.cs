@@ -8,31 +8,16 @@
             DragZone.Register(this);
         }
 
-        //protected override void OnWatcherInitialized()
-        //{
-        //    Watcher
-        //        .Watch<string>(nameof(Id), val =>
-        //        {
-        //            if (!EqualityComparer<string>.Default.Equals(val, Id))
-        //            {
-        //                Id = val;
-        //            }
-        //        });
-        //}
-
         protected override void OnAfterRender(bool firstRender)
-        {
-            //if (firstRender)
-            //{
-                
-            //}            
+        {            
             base.OnAfterRender(firstRender);
         }
 
         [CascadingParameter]
         public BDragZone DragZone { get; set; }
 
-        public int Value { get { return DragZone.GetIndex(this); } }
+        //[Parameter]
+        public int Value { get; set; }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
@@ -44,7 +29,7 @@
 
         public override void Dispose()
         {
-            DragZone.Remove(this);
+            //DragZone.Remove(this);
             base.Dispose();
         }
     }
