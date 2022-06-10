@@ -2,10 +2,10 @@
 @typeparam TValue
 @inherits BInputInputSlot<TValue,ITextField<TValue>>
 
-<div class="@CssProvider.GetClass("input-slot")" style="@CssProvider.GetStyle("input-slot")"
-     @onclick="HandleOnClickAsync"
-
-     @onmouseup="HandleOnMouseUpAsync"
+<div class="@CssProvider.GetClass("input-slot")"
+     style="@CssProvider.GetStyle("input-slot")"
+     @onexclick="HandleOnClickAsync"
+     @onexmouseup="HandleOnMouseUpAsync"
      @attributes="InputSlotAttrs"
      @ref="InputSlotRef">
      @RenderPart(typeof(BTextFieldPrependInnerSlot<,>))

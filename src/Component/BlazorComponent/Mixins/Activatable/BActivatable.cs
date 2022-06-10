@@ -21,6 +21,9 @@ public class BActivatable : BToggleable, IActivatable
     }
 
     [Parameter]
+    public bool OpenOnClick { get; set; } = true;
+
+    [Parameter]
     public bool OpenOnFocus
     {
         get => GetValue<bool>();
@@ -122,7 +125,7 @@ public class BActivatable : BToggleable, IActivatable
             ActivatorEvents.Add("onmouseenter", CreateEventCallback<MouseEventArgs>(HandleOnMouseEnterAsync));
             ActivatorEvents.Add("onmouseleave", CreateEventCallback<MouseEventArgs>(HandleOnMouseLeaveAsync));
         }
-        else
+        else if (OpenOnClick)
         {
             ActivatorEvents.Add("onexclick", CreateEventCallback<MouseEventArgs>(HandleOnClickAsync));
             ActivatorEvents.Add("__internal_stopPropagation_onexclick", true);

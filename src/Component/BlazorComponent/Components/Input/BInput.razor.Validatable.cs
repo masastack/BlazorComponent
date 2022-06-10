@@ -136,8 +136,6 @@ namespace BlazorComponent
             }
         }
 
-        public bool IsInteractive => !IsDisabled && !IsReadonly;
-
         public virtual bool HasMessages => ValidationTarget.Count > 0;
 
         public List<string> ValidationTarget
@@ -169,6 +167,8 @@ namespace BlazorComponent
         }
 
         public virtual bool IsDisabled => Disabled || (Form != null && Form.Disabled);
+
+        public bool IsInteractive => !IsDisabled && !IsReadonly;
 
         public virtual bool IsReadonly => Readonly || (Form != null && Form.Readonly);
 

@@ -191,12 +191,32 @@ namespace BlazorComponent
         {
             if (CloseOnClick && !OpenOnHover && !Attached)
             {
-                await JsInvokeAsync(JsInteropConstants.AddOutsideClickEventListener,
-                    DotNetObjectReference.Create(new Invoker<ClickOutsideArgs>(HandleOutsideClickAsync)),
-                    new[] { Document.GetElementByReference(ContentElement).Selector, ActivatorSelector }, null, ContentElement);
+                // in the Select component, outside-click events for activator are registered.
+                // In order to ensure that only one event per component is registered,
+                // need to delete all registered outside-click events
+                // and then add new outside-click event.
+                await RemoveOutsideClickEventListener();
+
+                await AddOutsideClickEventListener();
             }
 
             await base.WhenIsActiveUpdating(value);
+        }
+
+        public async Task AddOutsideClickEventListener()
+        {
+            await JsInvokeAsync(JsInteropConstants.AddOutsideClickEventListener,
+                DotNetObjectReference.Create(new Invoker<ClickOutsideArgs>(HandleOutsideClickAsync)),
+                new[] { ContentElement.GetSelector(), ActivatorSelector }, null, ContentElement);
+        }
+
+        public async Task RemoveOutsideClickEventListener()
+        {
+            string[] activatorSelectors = { ActivatorSelector };
+            await JsInvokeAsync(JsInteropConstants.RemoveOutsideClickEventListener, (object)activatorSelectors);
+
+            string[] noInvokeSelectors = { ContentElement.GetSelector(), ActivatorSelector };
+            await JsInvokeAsync(JsInteropConstants.RemoveOutsideClickEventListener, (object)noInvokeSelectors);
         }
 
         public Func<ClickOutsideArgs, Task<bool>>? CloseConditional { get; set; }

@@ -40,9 +40,6 @@ namespace BlazorComponent
         public bool OffsetOverflow { get; set; }
 
         [Parameter]
-        public bool OpenOnClick { get; set; } = true;
-
-        [Parameter]
         public double? PositionX { get; set; }
 
         [Parameter]
@@ -207,7 +204,7 @@ namespace BlazorComponent
 
         protected int StackMinZIndex { get; set; } = 6;
 
-        protected bool Attached { get; set; }
+        public bool Attached { get; protected set; }
 
         protected StringNumber CalcLeft(double menuWidth)
         {

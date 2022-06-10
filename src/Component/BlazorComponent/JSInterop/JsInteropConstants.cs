@@ -40,6 +40,8 @@
 
         public static string Contains => $"{Variables.JsInteropFuncNamePrefix}contains";
 
+        public static string EqualsOrContains => $"{Variables.JsInteropFuncNamePrefix}equalsOrContains";
+
         public static string Copy => $"{Variables.JsInteropFuncNamePrefix}copy";
 
         public static string Log => $"{Variables.JsInteropFuncNamePrefix}log";
