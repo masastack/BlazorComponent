@@ -6,17 +6,11 @@
         {
             base.OnInitialized();
             DragZone.Register(this);
-        }
-
-        protected override void OnAfterRender(bool firstRender)
-        {            
-            base.OnAfterRender(firstRender);
-        }
+        }       
 
         [CascadingParameter]
         public BDragZone DragZone { get; set; }
-
-        //[Parameter]
+        
         public int Value { get; set; }
 
         [Parameter]
@@ -29,7 +23,6 @@
 
         public override void Dispose()
         {
-            //DragZone.Remove(this);
             base.Dispose();
         }
     }
