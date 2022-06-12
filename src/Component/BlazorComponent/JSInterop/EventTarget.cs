@@ -1,37 +1,17 @@
-﻿namespace Microsoft.AspNetCore.Components.Web
+﻿using System.Text.Json.Serialization;
+
+namespace Microsoft.AspNetCore.Components.Web;
+
+public class EventTarget
 {
-    public class EventTarget
-    {
-        public string Id => GetAttribute("id");
+    public string Selector { get; set; }
 
-        private string GetAttribute(string name)
-        {
-            if (Attributes != null && Attributes.TryGetValue(name, out var value))
-            {
-                return value;
-            }
+    [JsonPropertyName("_bl_")]
+    public string? ElementReferenceId { get; set; }
 
-            return string.Empty;
-        }
+    public string Class { get; set; }
 
-        public string Class => GetAttribute("class");
-
-        public string Style => GetAttribute("style");
-
-        public ElementReference ElementReference
-        {
-            get
-            {
-                if (Attributes != null)
-                {
-                    var identify = Attributes.FirstOrDefault(attr => attr.Key.StartsWith("_bl_"));
-                    return new ElementReference(identify.Key?[4..]);
-                }
-
-                return default;
-            }
-        }
-
-        public Dictionary<string, string> Attributes { get; set; }
-    }
+    public ElementReference ElementReference => ElementReferenceId is not null
+        ? new ElementReference(ElementReferenceId[4..])
+        : default;
 }

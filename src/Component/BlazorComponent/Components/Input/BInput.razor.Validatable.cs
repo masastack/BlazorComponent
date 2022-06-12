@@ -92,6 +92,7 @@ namespace BlazorComponent
             set
             {
                 LazyValue = value;
+                InternalValueSetter(value);
             }
         }
 
@@ -135,8 +136,6 @@ namespace BlazorComponent
             }
         }
 
-        public bool IsInteractive => !IsDisabled && !IsReadonly;
-
         public virtual bool HasMessages => ValidationTarget.Count > 0;
 
         public List<string> ValidationTarget
@@ -169,6 +168,8 @@ namespace BlazorComponent
 
         public virtual bool IsDisabled => Disabled || (Form != null && Form.Disabled);
 
+        public bool IsInteractive => !IsDisabled && !IsReadonly;
+
         public virtual bool IsReadonly => Readonly || (Form != null && Form.Readonly);
 
         protected bool FirstValidate { get; set; } = true;
@@ -194,6 +195,10 @@ namespace BlazorComponent
         public virtual bool ExternalError => ErrorMessages.Count > 0 || Error;
 
         protected TValue InputValue { get; set; }
+
+        protected virtual void InternalValueSetter(TValue val)
+        {
+        }
 
         protected override void OnWatcherInitialized()
         {

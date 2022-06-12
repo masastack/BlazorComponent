@@ -65,6 +65,8 @@ namespace BlazorComponent
 
         TValue InternalValue { get; }
 
+        EventCallback<MouseEventArgs> OnAppendClick { get; }
+
         Task HandleOnPrependClickAsync(MouseEventArgs args)
         {
             return Task.CompletedTask;
@@ -75,7 +77,7 @@ namespace BlazorComponent
             return Task.CompletedTask;
         }
 
-        Task HandleOnClickAsync(MouseEventArgs args)
+        Task HandleOnClickAsync(ExMouseEventArgs args)
         {
             return Task.CompletedTask;
         }
@@ -85,7 +87,7 @@ namespace BlazorComponent
             return Task.CompletedTask;
         }
 
-        Task HandleOnMouseUpAsync(MouseEventArgs args)
+        Task HandleOnMouseUpAsync(ExMouseEventArgs args)
         {
             return Task.CompletedTask;
         }

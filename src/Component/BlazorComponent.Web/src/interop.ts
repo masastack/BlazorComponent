@@ -1,4 +1,6 @@
-﻿import registerDirective from './directive/index'
+﻿import { getBlazorId, getElementSelector } from "./utils/index";
+import registerDirective from './directive/index'
+import { registerExtraEvents } from "./events/index";
 
 export function updateCanvas(element, hue: number) {
   const canvas = element as HTMLCanvasElement
@@ -339,7 +341,7 @@ export function getFirstChildBoundingClientRect(element, selector = "body") {
   return null;
 }
 
-export function addDomEventListener(element, eventName, preventDefault, invoker) {
+export function addDomEventListener(element, eventName, preventDefault, invoker: DotNet.DotNetObject) {
   let callback = args => {
     const obj = {};
     for (let k in args) {
@@ -484,8 +486,10 @@ export function removeHtmlElementEventListener(selector, type) {
 
 var outsideClickListenerCaches: { [key: string]: any } = {}
 
-export function addOutsideClickEventListener(invoker, noInvokeSelectors: [], invokeSelectors: [], contentElement) {
+export function addOutsideClickEventListener(invoker, noInvokeSelectors: string[], invokeSelectors: string[], contentElement) {
   if (!noInvokeSelectors) return;
+
+  noInvokeSelectors = noInvokeSelectors.filter(s => !!s)
 
   var listener = function (args) {
     var exists = noInvokeSelectors.some(s => getDom(s)?.contains(args.target));
@@ -509,10 +513,12 @@ export function addOutsideClickEventListener(invoker, noInvokeSelectors: [], inv
   outsideClickListenerCaches[key] = listener;
 }
 
-export function removeOutsideClickEventListener(insideSelectors: string[]) {
-  if (!insideSelectors) return;
+export function removeOutsideClickEventListener(noInvokeSelectors: string[]) {
+  if (!noInvokeSelectors) return;
 
-  var key = `(${insideSelectors.join(',')})document:click`
+  noInvokeSelectors = noInvokeSelectors.filter(s => !!s)
+
+  var key = `(${noInvokeSelectors.join(',')})document:click`
 
   if (outsideClickListenerCaches[key]) {
     document.removeEventListener('click', outsideClickListenerCaches[key], true);
@@ -529,6 +535,12 @@ export function addMouseleaveEventListener(selector) {
 
 export function contains(e1, e2) {
   return getDom(e1)?.contains(getDom(e2));
+}
+
+export function equalsOrContains(e1: any, e2: any) {
+  const dom1 = getDom(e1);
+  const dom2 = getDom(e2);
+  return !!dom1 && !!dom2 && (dom1 == dom2 || dom1.contains(dom2));
 }
 
 export function matchMedia(query) {
@@ -1214,16 +1226,8 @@ export function insertToFirst(element: HTMLElement) {
 
 //register custom events
 window.onload = function () {
-  registerCustomEvent("exmousedown", "mousedown");
-  registerCustomEvent("exclick", "click");
-  registerCustomEvent("exmouseleave", "mouseleave");
-  registerCustomEvent("exmouseenter", "mouseenter");
-  registerCustomEvent("exmousemove", "mousemove");
-  registerCustomEvent("exfocus", "focus");
-  registerCustomEvent("exblur", "blur");
-  registerCustomEvent("exkeydown", "keydown");
+  registerExtraEvents();
   registerPasteWithData("pastewithdata")
-  registerCustomEvent("extouchstart", "touchstart");
   registerDirective();
 }
 
@@ -1231,7 +1235,7 @@ function registerPasteWithData(customEventName) {
   if (Blazor) {
     Blazor.registerCustomEventType(customEventName, {
       browserEventName: 'paste',
-      createEventArgs: event => {
+      createEventArgs: (event: ClipboardEvent) => {
         return {
           type: event.type,
           pastedData: event.clipboardData.getData('text')
@@ -1242,86 +1246,37 @@ function registerPasteWithData(customEventName) {
 }
 
 export function registerTextFieldOnMouseDown(element, inputElement, callback) {
-    element.addEventListener('mousedown', (e: MouseEvent) => {
-        const target = e.target;
-        const inputDom = getDom(inputElement);
-        if(target !== inputDom) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
+  element.addEventListener('mousedown', (e: MouseEvent) => {
+    const target = e.target;
+    const inputDom = getDom(inputElement);
+    if (target !== inputDom) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
 
-        if(callback){
-            const mouseEventArgs = {
-                Detail: e.detail,
-                ScreenX: e.screenX,
-                ScreenY: e.screenY,
-                ClientX: e.clientX,
-                ClientY: e.clientY,
-                OffsetX: e.offsetX,
-                OffsetY: e.offsetY,
-                PageX: e.pageX,
-                PageY: e.pageY,
-                Button: e.button,
-                Buttons: e.buttons,
-                CtrlKey: e.ctrlKey,
-                ShiftKey: e.shiftKey,
-                AltKey: e.altKey,
-                MetaKey: e.metaKey,
-                Type: e.type
-            }
-
-            callback.invokeMethodAsync('Invoke', mouseEventArgs);
-        }
-    })
-}
-
-function registerCustomEvent(eventType, eventName) {
-  if (Blazor) {
-    Blazor.registerCustomEventType(eventType, {
-      browserEventName: eventName,
-      createEventArgs: args => {
-        var e = {};
-
-        for (var k in args) {
-          if (typeof args[k] == 'string' || typeof args[k] == 'number') {
-            e[k] = args[k];
-          } else if (k == 'target') {
-            var targetElement: HTMLElement = args.target;
-            if (targetElement.getAttribute('return-target') == null) {
-              e[k] = {};
-              continue;
-            }
-
-            var target = {
-              attributes: {}
-            };
-
-            for (let index = 0; index < args.target.attributes.length; index++) {
-              const attr = args.target.attributes[index];
-              target.attributes[attr.name] = attr.value;
-            }
-            e[k] = target;
-          } else if (k == 'touches' || k == 'targetTouches' || k == 'changedTouches'){
-            var list = [];
-            args[k].forEach(touch => {
-              var item = {};
-
-              for (var attr in touch) {
-                if(typeof(touch[attr]) == 'string' || typeof(touch[attr]) == 'number') {
-                  item[attr] = touch[attr];
-                }
-              }
-              list.push(item);
-            });
-
-            e[k] = list;
-          }
-        }
-
-        return e;
+    if (callback) {
+      const mouseEventArgs = {
+        Detail: e.detail,
+        ScreenX: e.screenX,
+        ScreenY: e.screenY,
+        ClientX: e.clientX,
+        ClientY: e.clientY,
+        OffsetX: e.offsetX,
+        OffsetY: e.offsetY,
+        PageX: e.pageX,
+        PageY: e.pageY,
+        Button: e.button,
+        Buttons: e.buttons,
+        CtrlKey: e.ctrlKey,
+        ShiftKey: e.shiftKey,
+        AltKey: e.altKey,
+        MetaKey: e.metaKey,
+        Type: e.type
       }
-    })
-  }
+
+      callback.invokeMethodAsync('Invoke', mouseEventArgs);
+    }
+  })
 }
 
 export function isMobile() {
@@ -1603,36 +1558,37 @@ export function otpInputOnInputEvent(e: Event, otpIdx: number, elementList, call
   }
 }
 
-function getBlazorId(el) {
-  let _bl_ = el.getAttributeNames().find(a => a.startsWith('_bl_'))
-  if (_bl_) {
-    _bl_ = _bl_.substring(4);
+export function getListIndexWhereAttributeExists(selector: string, attribute:string, value: string) {
+  const doms = document.querySelectorAll(selector);
+  if (!doms) {
+    return -1;
   }
-
-  return _bl_;
+  
+  const attrValues:string[] = [];
+  doms.forEach(dom => attrValues.push(dom.getAttribute(attribute)))
+  return attrValues.findIndex(val => val === value);
 }
 
-function getElementSelector(el) {
-  if (!(el instanceof Element))
-    return;
-  var path = [];
-  while (el.nodeType === Node.ELEMENT_NODE) {
-    var selector = el.nodeName.toLowerCase();
-    if (el.id) {
-      selector += '#' + el.id;
-      path.unshift(selector);
-      break;
-    } else {
-      var sib = el, nth = 1;
-      while (sib = sib.previousElementSibling) {
-        if (sib.nodeName.toLowerCase() == selector)
-          nth++;
-      }
-      if (nth != 1)
-        selector += ":nth-of-type(" + nth + ")";
-    }
-    path.unshift(selector);
-    el = el.parentNode;
+export function scrollToTile(contentSelector: string, tilesSelector: string, index: number) {
+  var tiles = document.querySelectorAll(tilesSelector)
+  if (!tiles) return;
+
+  const tile = tiles[index] as HTMLElement;
+  if (!tile) return;
+
+  const content = document.querySelector(contentSelector);
+  if (!content) return;
+  const scrollTop = content.scrollTop;
+  const contentHeight = content.clientHeight;
+
+  const startLocation = scrollTop;
+
+  let top = tile.offsetTop + 8 - contentHeight + tile.clientHeight
+
+  if (scrollTop > tile.offsetTop - 8) {
+    if (top < 0) top = 0
+    content.scrollTo({top, behavior: "smooth"})
+  } else if (scrollTop + contentHeight < tile.offsetTop + tile.clientHeight + 8) {
+    content.scrollTo({top, behavior: "smooth"})
   }
-  return path.join(" > ");
 }

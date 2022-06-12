@@ -1,18 +1,24 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+﻿using Microsoft.AspNetCore.Components.Web;
 
-namespace BlazorComponent
+namespace BlazorComponent;
+
+public partial class BInputIcon<TValue, TInput> : ComponentPartBase<TInput>
+    where TInput : IInput<TValue>
 {
-    public partial class BInputIcon<TValue, TInput> : ComponentPartBase<TInput>
-        where TInput : IInput<TValue>
+    [Parameter]
+    public string Icon { get; set; }
+
+    [Parameter]
+    public string Type { get; set; }
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+    [Parameter]
+    public Action<ElementReference> ReferenceCapture { get; set; }
+
+    private ElementReference Element
     {
-        [Parameter]
-        public string Icon { get; set; }
-
-        [Parameter]
-        public string Type { get; set; }
-
-        [Parameter]
-        public EventCallback<MouseEventArgs> OnClick { get; set; }
+        set => ReferenceCapture?.Invoke(value);
     }
 }

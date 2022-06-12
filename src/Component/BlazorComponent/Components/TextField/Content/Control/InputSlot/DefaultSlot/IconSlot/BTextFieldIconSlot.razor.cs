@@ -1,14 +1,16 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+﻿using Microsoft.AspNetCore.Components.Web;
 
-namespace BlazorComponent
+namespace BlazorComponent;
+
+public partial class BTextFieldIconSlot<TValue, TInput> where TInput : ITextField<TValue>
 {
-    public partial class BTextFieldIconSlot<TValue, TInput> where TInput : ITextField<TValue>
-    {
-        public string AppendIcon => Component.AppendIcon;
+    public string AppendIcon => Component.AppendIcon;
 
-        public RenderFragment AppendContent => Component.AppendContent;
+    public RenderFragment AppendContent => Component.AppendContent;
 
-        public EventCallback<MouseEventArgs> HandleOnAppendClickAsync => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnAppendClickAsync);
-    }
+    public EventCallback<MouseEventArgs> HandleOnAppendClickAsync => Component.OnAppendClick.HasDelegate
+        ? EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnAppendClickAsync)
+        : default;
+
+    public Action<ElementReference> AppendInnerReferenceCapture => element => Component.AppendInnerElement = element;
 }

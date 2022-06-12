@@ -40,6 +40,8 @@
 
         public static string Contains => $"{Variables.JsInteropFuncNamePrefix}contains";
 
+        public static string EqualsOrContains => $"{Variables.JsInteropFuncNamePrefix}equalsOrContains";
+
         public static string Copy => $"{Variables.JsInteropFuncNamePrefix}copy";
 
         public static string Log => $"{Variables.JsInteropFuncNamePrefix}log";
@@ -165,6 +167,10 @@
         public static string CopyChild => $"{Variables.JsInteropFuncNamePrefix}copyChild";
 
         public static string CopyText => $"{Variables.JsInteropFuncNamePrefix}copyText";
+
+        public static string GetListIndexWhereAttributeExists => $"{Variables.JsInteropFuncNamePrefix}getListIndexWhereAttributeExists";
+
+        public static string ScrollToTile => $"{Variables.JsInteropFuncNamePrefix}scrollToTile";
 
         #region Draggable Modal
 

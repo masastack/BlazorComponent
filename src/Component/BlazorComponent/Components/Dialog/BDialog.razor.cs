@@ -230,6 +230,11 @@ namespace BlazorComponent
         {
             try
             {
+                if (IsActive)
+                {
+                    await ShowScroll();
+                }
+
                 if (ContentRef.Context != null)
                 {
                     await JsInvokeAsync(JsInteropConstants.DelElementFrom, ContentRef, AttachSelector);

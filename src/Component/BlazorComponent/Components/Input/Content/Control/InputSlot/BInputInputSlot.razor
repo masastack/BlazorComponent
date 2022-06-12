@@ -3,10 +3,11 @@
 @typeparam TInput
 @inherits ComponentPartBase<TInput>
 
-<div class="@CssProvider.GetClass("input-slot")" style="@CssProvider.GetStyle("input-slot")"
-     @onclick="HandleOnClickAsync"
+<div class="@CssProvider.GetClass("input-slot")"
+     style="@CssProvider.GetStyle("input-slot")"
+     @onexclick="HandleOnClickAsync"
      @onmousedown="HandleOnMouseDownAsync"
-     @onmouseup="HandleOnMouseUpAsync"
+     @onexmouseup="HandleOnMouseUpAsync"
      @ref="InputSlotRef">
-     @RenderPart(typeof(BInputDefaultSlot<,>))
+    @RenderPart(typeof(BInputDefaultSlot<,>))
 </div>

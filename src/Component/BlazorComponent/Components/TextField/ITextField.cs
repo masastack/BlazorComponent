@@ -75,6 +75,8 @@ namespace BlazorComponent
         ElementReference PrefixElement { set; }
 
         ElementReference PrependInnerElement { set; }
+        
+        ElementReference AppendInnerElement { set; }
 
         Dictionary<string, object> InputSlotAttrs { get; }
 

@@ -2,33 +2,39 @@
 @inherits BDomComponentBase
 
 <CascadingValue Value="this" IsFixed>
-    <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
+    <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @attributes="@Attributes">
         <BListItem @onclick="@HandleOnClick" @attributes="GetAttributes(typeof(BListItem))">
-            @if (PrependIconContent != default)
-            {
-                @PrependIconContent
-            }
-            else
+            @if (PrependIcon is not null || PrependIconContent != default)
             {
                 <BListItemIcon @attributes="GetAttributes(typeof(BListItemIcon),PREPEND)">
-                    <BIcon @attributes="GetAttributes(typeof(BIcon))">
-                        @PrependIcon
-                    </BIcon>
+                    @if (PrependIconContent != default)
+                    {
+                        @PrependIconContent
+                    }
+                    else
+                    {
+                        <BIcon @attributes="GetAttributes(typeof(BIcon))">
+                            @PrependIcon
+                        </BIcon>
+                    }
                 </BListItemIcon>
             }
 
             @ActivatorContent
 
-            @if (AppendIconContent != default)
-            {
-                @AppendIconContent
-            }
-            else if (!string.IsNullOrEmpty(AppendIcon))
+            @if (AppendIcon is not null || AppendIconContent != default)
             {
                 <BListItemIcon @attributes="GetAttributes(typeof(BListItemIcon),APPEND)">
-                    <BIcon @attributes="GetAttributes(typeof(BIcon))">
-                        @AppendIcon
-                    </BIcon>
+                    @if (AppendIconContent != default)
+                    {
+                        @AppendIconContent
+                    }
+                    else
+                    {
+                        <BIcon @attributes="GetAttributes(typeof(BIcon))">
+                            @AppendIcon
+                        </BIcon>
+                    }
                 </BListItemIcon>
             }
         </BListItem>
