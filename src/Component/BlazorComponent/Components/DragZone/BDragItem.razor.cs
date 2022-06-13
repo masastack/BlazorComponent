@@ -6,12 +6,20 @@
         {
             base.OnInitialized();
             DragZone.Register(this);
-        }       
+        }
 
         [CascadingParameter]
         public BDragZone DragZone { get; set; }
-        
-        public int Value { get; set; }
+
+        public int Value
+        {
+            get
+            {
+                if (DragZone != null)
+                    return DragZone.GetIndex(this);
+                return -1;
+            }
+        }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
