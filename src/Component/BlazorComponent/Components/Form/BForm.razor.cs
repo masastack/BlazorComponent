@@ -7,6 +7,9 @@ namespace BlazorComponent
     {
         private object _oldModel;
 
+        [Inject]
+        public IServiceProvider ServiceProvider { get;set; }
+
         [Parameter]
         public RenderFragment<EditContext> ChildContent { get; set; }
 
@@ -56,7 +59,7 @@ namespace BlazorComponent
 
                 if (EnableValidation)
                 {
-                    EditContext.EnableValidation();
+                    EditContext.EnableValidation(ServiceProvider);
                 }
 
                 _oldModel = Model;

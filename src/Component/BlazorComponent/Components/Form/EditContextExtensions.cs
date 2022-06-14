@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Components.Forms;
 using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations;
-using System.Reflection;
 using System.Text;
 using Util.Reflection.Expressions;
 using FluentValidationResult = FluentValidation.Results.ValidationResult;
@@ -17,14 +16,14 @@ namespace BlazorComponent
         /// </summary>
         /// <param name="editContext">The <see cref="EditContext"/>.</param>
         /// <returns>A disposable object whose disposal will remove DataAnnotations validation support from the <see cref="EditContext"/>.</returns>
-        public static IDisposable EnableValidation(this EditContext editContext)
+        public static IDisposable EnableValidation(this EditContext editContext, IServiceProvider serviceProvider)
         {
-            return new ValidationEventSubscriptions(editContext);
+            return new ValidationEventSubscriptions(editContext, serviceProvider);
         }
 
         private sealed class ValidationEventSubscriptions : IDisposable
         {
-            private static readonly ConcurrentDictionary<Type, Func<object, FluentValidationResult>> _validationResultMap;
+            private static readonly ConcurrentDictionary<Type, Func<IServiceProvider, object, FluentValidationResult>> _validationResultMap;
             private static readonly ConcurrentDictionary<Type, Func<object, Dictionary<string, object>>> _modelPropertiesMap;
             private static readonly Dictionary<Type, Type> _fluentValidationTypeMap;
 
@@ -41,10 +40,12 @@ namespace BlazorComponent
                         if (referenceAssembly.FullName.StartsWith("Microsoft.") || referenceAssembly.FullName.StartsWith("System."))
                             continue;
 
-                        var types = referenceAssembly.GetTypes().Where(t => t.BaseType?.IsGenericType == true && t.BaseType == typeof(AbstractValidator<>).MakeGenericType(t.BaseType.GenericTypeArguments[0])).ToArray();
+                        var types = referenceAssembly.GetTypes().Where(t => t.BaseType?.IsGenericType == true && t.BaseType.GetGenericTypeDefinition() == typeof(AbstractValidator<>)).ToArray();
                         foreach (var type in types)
                         {
-                            _fluentValidationTypeMap.Add(type.BaseType.GenericTypeArguments[0], type);
+                            var modelType = type.BaseType.GenericTypeArguments[0];
+                            var validatoType = typeof(IValidator<>).MakeGenericType(modelType);
+                            _fluentValidationTypeMap.Add(modelType, validatoType);
                         }
                     }
                 }
@@ -55,9 +56,11 @@ namespace BlazorComponent
 
             private readonly EditContext _editContext;
             private readonly ValidationMessageStore _messageStore;
+            private readonly IServiceProvider _serviceProvider;
 
-            public ValidationEventSubscriptions(EditContext editContext)
+            public ValidationEventSubscriptions(EditContext editContext, IServiceProvider serviceProvider)
             {
+                _serviceProvider = serviceProvider;
                 _editContext = editContext ?? throw new ArgumentNullException(nameof(editContext));
                 _messageStore = new ValidationMessageStore(_editContext);
 
@@ -158,7 +161,7 @@ namespace BlazorComponent
                             if (propertyMap.ContainsKey(propertyName))
                             {
                                 var modelItem = propertyMap[propertyName];
-                                var modelItemPropertyName = error.FormattedMessagePlaceholderValues["PropertyName"].ToString().Replace(" ","");
+                                var modelItemPropertyName = error.FormattedMessagePlaceholderValues["PropertyName"].ToString().Replace(" ", "");
                                 messageStore.Add(new FieldIdentifier(modelItem, modelItemPropertyName), error.ErrorMessage);
                             }
                         }
@@ -192,19 +195,22 @@ namespace BlazorComponent
                 }
             }
 
+
+
             private FluentValidationResult GetValidationResult(object model)
             {
                 var type = model.GetType();
                 if (_validationResultMap.TryGetValue(type, out var func) is false)
                 {
                     var validatorType = _fluentValidationTypeMap[type];
+                    var serviceProvider = Expr.BlockParam<IServiceProvider>();
+                    var validator = serviceProvider.Method("GetService", Expr.Constant(validatorType)).Convert(validatorType);
                     var modelParamter = Expr.BlockParam(typeof(object)).Convert(type);
-                    var validator = Expr.New(validatorType);
                     Var validationResult = validator.Method("Validate", modelParamter);
-                    func = validationResult.BuildDefaultDelegate<Func<object, FluentValidationResult>>();
+                    func = validationResult.BuildDefaultDelegate<Func<IServiceProvider, object, FluentValidationResult>>();
                     _validationResultMap[type] = func;
                 }
-                return func(model);
+                return func(_serviceProvider, model);
             }
 
             private Dictionary<string, object> GetPropertyMap(object model)
