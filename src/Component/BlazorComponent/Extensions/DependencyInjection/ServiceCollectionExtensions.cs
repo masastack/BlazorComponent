@@ -36,7 +36,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     var types = referenceAssembly.GetTypes().Where(t => t.BaseType?.IsGenericType == true && t.BaseType.GetGenericTypeDefinition() == typeof(AbstractValidator<>)).ToArray();
                     foreach (var type in types)
                     {
-                        services.AddTransient(type);
+                        services.AddScoped(type);
                     }
                 }
             }
