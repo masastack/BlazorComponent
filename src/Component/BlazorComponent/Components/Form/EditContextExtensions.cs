@@ -43,7 +43,9 @@ namespace BlazorComponent
                         var types = referenceAssembly.GetTypes().Where(t => t.BaseType?.IsGenericType == true && t.BaseType.GetGenericTypeDefinition() == typeof(AbstractValidator<>)).ToArray();
                         foreach (var type in types)
                         {
-                            _fluentValidationTypeMap.Add(type.BaseType.GenericTypeArguments[0], type);
+                            var modelType = type.BaseType.GenericTypeArguments[0];
+                            var validatoType = typeof(IValidator<>).MakeGenericType(modelType);
+                            _fluentValidationTypeMap.Add(modelType, validatoType);
                         }
                     }
                 }
