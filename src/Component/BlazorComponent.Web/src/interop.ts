@@ -1123,13 +1123,27 @@ export function getImageDimensions(src: string) {
   })
 }
 
-export function preventDefaultOnArrowUpDown(element) {
-  let dom: Element = getDom(element);
-  dom.addEventListener("keydown", function (e: KeyboardEvent) {
-    if (e.code == "ArrowUp" || e.code == "ArrowDown" || e.code == "Enter") {
-      e.preventDefault();
-    }
-  })
+export function enablePreventDefaultForEvent(element: any, event: string, condition?: any) {
+  const dom = getDom(element);
+  if (!dom) return;
+  if (event === 'keydown') {
+    dom.addEventListener(event, (e: KeyboardEvent) => {
+      if (Array.isArray(condition)) {
+        var codes = condition as string[];
+        if (codes.includes(e.code)) {
+          e.preventDefault();
+        }
+      } else {
+        e.preventDefault();
+      }
+    })
+  } else {
+    dom.addEventListener(event, e => {
+      if (e.preventDefault) {
+        e.preventDefault();
+      }
+    })
+  }
 }
 
 export function observer(element, invoker) {
