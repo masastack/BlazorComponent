@@ -22,8 +22,6 @@
 
         public static string GetFirstChildBoundingClientRect => $"{Variables.JsInteropFuncNamePrefix}getFirstChildBoundingClientRect";
 
-        public static string AddDomEventListener => $"{Variables.JsInteropFuncNamePrefix}addDomEventListener";
-
         public static string AddHtmlElementEventListener => $"{Variables.JsInteropFuncNamePrefix}addHtmlElementEventListener";
 
         public static string RemoveHtmlElementEventListener => $"{Variables.JsInteropFuncNamePrefix}removeHtmlElementEventListener";
@@ -71,8 +69,6 @@
         public static string RemoveCls => $"{Variables.JsInteropFuncNamePrefix}removeCls";
 
         public static string RemoveClsFromFirstChild => $"{Variables.JsInteropFuncNamePrefix}removeClsFromFirstChild";
-
-        public static string AddDomEventListenerToFirstChild => $"{Variables.JsInteropFuncNamePrefix}addDomEventListenerToFirstChild";
 
         public static string AddElementToBody => $"{Variables.JsInteropFuncNamePrefix}addElementToBody";
 
@@ -136,7 +132,9 @@
 
         public static string PreventDefaultOnArrowUpDown => $"{Variables.JsInteropFuncNamePrefix}preventDefaultOnArrowUpDown";
 
-        public static string Observer => $"{Variables.JsInteropFuncNamePrefix}observer";
+        public static string ResizeObserver => $"{Variables.JsInteropFuncNamePrefix}resizeObserver";
+
+        public static string IntersectionObserver => $"{Variables.JsInteropFuncNamePrefix}intersectionObserver";
 
         public static string GetBoundingClientRects => $"{Variables.JsInteropFuncNamePrefix}getBoundingClientRects";
 
@@ -185,14 +183,6 @@
         public static string ScrollHeightWithoutHeight => $"{Variables.JsInteropFuncNamePrefix}getScrollHeightWithoutHeight";
 
         public static string UpdateWindowTransition => $"{Variables.JsInteropFuncNamePrefix}updateWindowTransition";
-
-        public static string CheckElementFixed => $"{Variables.JsInteropFuncNamePrefix}checkElementFixed";
-
-        public static string InsertToFirst => $"{Variables.JsInteropFuncNamePrefix}insertToFirst";
-
-        public static string GetMenuableDimensions => $"{Variables.JsInteropFuncNamePrefix}getMenuableDimensions";
-
-        public static string ObserveElement => $"{Variables.JsInteropFuncNamePrefix}observeElement";
 
         public static string InvokeMultipleMethod => $"{Variables.JsInteropFuncNamePrefix}invokeMultipleMethod";
 

@@ -1,100 +1,76 @@
 ﻿using Microsoft.JSInterop;
-using System.Collections.Concurrent;
-using System.Text.Json;
 
 namespace BlazorComponent
 {
-    public class DomEventJsInterop
+    public class DomEventJsInterop : IDisposable
     {
-        private ConcurrentDictionary<string, List<DomEventSub>> _domEventListeners = new ConcurrentDictionary<string, List<DomEventSub>>();
-
         private readonly IJSRuntime _jsRuntime;
+        private readonly List<DotNetObjectReference<Invoker>> _references = new();
 
         public DomEventJsInterop(IJSRuntime jsRuntime)
         {
             _jsRuntime = jsRuntime;
         }
 
-        private void AddEventListenerToFirstChildInternal<T>(object dom, string eventName, bool preventDefault, Action<T> callback)
+        public async Task IntersectionObserver(string selector, params Func<Task>[] funcList)
         {
-            if (!_domEventListeners.ContainsKey(FormatKey(dom, eventName)))
+            List<DotNetObjectReference<Invoker>> invokers = new();
+
+            foreach (var func in funcList)
             {
-                _jsRuntime.InvokeAsync<string>(JsInteropConstants.AddDomEventListenerToFirstChild, dom, eventName, preventDefault,
-                    DotNetObjectReference.Create(new Invoker<T>((p) => { callback?.Invoke(p); })));
-            }
-        }
-
-        public void AddEventListener(object dom, string eventName, Action<JsonElement> callback, bool preventDefault = false)
-        {
-            AddEventListener<JsonElement>(dom, eventName, callback, preventDefault);
-        }
-
-        public virtual void AddEventListener<T>(object dom, string eventName, Action<T> callback, bool preventDefault = false)
-        {
-            string key = FormatKey(dom, eventName);
-
-            if (!_domEventListeners.ContainsKey(key) && _domEventListeners.TryAdd(key, new List<DomEventSub>()))
-            {
-                _jsRuntime.InvokeAsync<string>(JsInteropConstants.AddDomEventListener, dom, eventName, preventDefault, DotNetObjectReference.Create(
-                    new Invoker<string>((p) =>
-                    {
-                        for (var i = 0; i < _domEventListeners[key].Count; i++)
-                        {
-                            var sub = _domEventListeners[key][i];
-                            var args = JsonSerializer.Deserialize(p, sub.Type);
-                            sub.Delegate.DynamicInvoke(args);
-                        }
-                    })));
+                invokers.Add(DotNetObjectReference.Create(new Invoker(func)));
             }
 
-            _domEventListeners[key].Add(new DomEventSub(callback, typeof(T)));
+            _references.AddRange(invokers);
+
+            await _jsRuntime.InvokeVoidAsync(
+                JsInteropConstants.IntersectionObserver,
+                selector,
+                invokers);
         }
 
-        public void AddEventListenerToFirstChild(object dom, string eventName, Action<JsonElement> callback, bool preventDefault = false)
+        public void Dispose()
         {
-            AddEventListenerToFirstChildInternal<string>(dom, eventName, preventDefault, (e) =>
+            foreach (var reference in _references)
             {
-                var jsonElement = JsonDocument.Parse(e).RootElement;
-                callback(jsonElement);
-            });
-        }
-
-        public void AddEventListenerToFirstChild<T>(object dom, string eventName, Action<T> callback, bool preventDefault = false)
-        {
-            AddEventListenerToFirstChildInternal<string>(dom, eventName, preventDefault, (e) =>
-            {
-                var obj = JsonSerializer.Deserialize<T>(e);
-                callback(obj);
-            });
-        }
-
-        private static string FormatKey(object dom, string eventName) => $"{dom}-{eventName}";
-
-        public void RemoveEventListener<T>(object dom, string eventName, Action<T> callback)
-        {
-            string key = FormatKey(dom, eventName);
-
-            if (_domEventListeners.ContainsKey(key))
-            {
-                var subscription = _domEventListeners[key].SingleOrDefault(s => s.Delegate == (Delegate)callback);
-                if (subscription != null)
-                {
-                    _domEventListeners[key].Remove(subscription);
-                }
+                reference.Dispose();
             }
         }
+    }
 
-        public void ResizeObserver<T>(object dom, Action<T> callback)
+    public class Invoker
+    {
+        private readonly Action _action;
+        private readonly Func<Task> _func;
+
+        public Invoker(Action action)
         {
-            _jsRuntime.InvokeAsync<string>(JsInteropConstants.Observer, dom,
-                DotNetObjectReference.Create(new Invoker<T>((p) => { callback?.Invoke(p); })));
+            _action = action;
+        }
+
+        public Invoker(Func<Task> func)
+        {
+            _func = func;
+        }
+
+        [JSInvokable]
+        public async Task Invoke()
+        {
+            if (_action != null)
+            {
+                _action.Invoke();
+            }
+            else if (_func != null)
+            {
+                await _func.Invoke();
+            }
         }
     }
 
     public class Invoker<T>
     {
-        private Action<T> _action;
-        private Func<T, Task> _func;
+        private readonly Action<T> _action;
+        private readonly Func<T, Task> _func;
 
         public Invoker(Action<T> action)
         {
