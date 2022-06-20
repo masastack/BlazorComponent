@@ -12,6 +12,7 @@
         [Parameter]
         public virtual bool Disabled { get; set; }
 
+        // TODO: use Value instead of IsActive
         [Parameter]
         public bool IsActive
         {

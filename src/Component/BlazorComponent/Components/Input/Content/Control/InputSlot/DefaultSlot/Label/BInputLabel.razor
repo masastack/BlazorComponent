@@ -5,7 +5,7 @@
 
 @if (HasLabel)
 {
-    <BLabel @attributes="GetAttributes(typeof(BLabel))">
+    <BLabel @attributes="@GetAttributes(typeof(BLabel))">
         @if (LabelContent != null)
         {
             @LabelContent

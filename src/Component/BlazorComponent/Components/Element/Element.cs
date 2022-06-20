@@ -27,8 +27,6 @@ namespace BlazorComponent
 
         protected bool ElementReferenceChanged { get; set; }
 
-        protected string Id => AdditionalAttributes.TryGetValue("id", out var id) ? id.ToString() : string.Empty;
-
         protected virtual string ComputedClass => Class;
 
         protected virtual string ComputedStyle => Style;
@@ -42,11 +40,6 @@ namespace BlazorComponent
                 {
                     ElementReferenceChanged = true;
                 }
-
-                // if (_reference.Id != value.Id)
-                // {
-                //     ElementReferenceChanged = true;
-                // }
 
                 _reference = value;
             }
