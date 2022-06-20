@@ -39,10 +39,12 @@ namespace BlazorComponent.Web
 
         public async Task AddEventListenerAsync(string type, Func<Task> listener, OneOf<EventListenerOptions, bool> options)
         {
-            await JS.InvokeVoidAsync(JsInteropConstants.AddHtmlElementEventListener, Selector, type, DotNetObjectReference.Create(new Invoker<object>((p) =>
-            {
-                listener?.Invoke();
-            })), options.Value);
+            await JS.InvokeVoidAsync(
+                JsInteropConstants.AddHtmlElementEventListener,
+                Selector,
+                type,
+                DotNetObjectReference.Create(new Invoker<object>(_ => { listener?.Invoke(); })),
+                options.Value);
         }
 
         /// <summary>
