@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+﻿using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
@@ -13,7 +12,7 @@ namespace BlazorComponent
 
         Task HandleOnBlur(FocusEventArgs args);
 
-        Task HandleOnChange(ChangeEventArgs args);
+        Task HandleOnChange();
 
         Task HandleOnFocus(FocusEventArgs args);
 

@@ -25,9 +25,10 @@ public class EventListenerActions
     {
     }
 
-    public EventListenerActions(bool stopPropagation)
+    public EventListenerActions(bool stopPropagation, bool preventDefault)
     {
         StopPropagation = stopPropagation;
+        PreventDefault = preventDefault;
     }
 
     public EventListenerActions(string relatedTarget)

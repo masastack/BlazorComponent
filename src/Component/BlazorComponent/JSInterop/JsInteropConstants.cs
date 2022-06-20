@@ -130,7 +130,7 @@
 
         public static string GetImageDimensions => $"{Variables.JsInteropFuncNamePrefix}getImageDimensions";
 
-        public static string PreventDefaultOnArrowUpDown => $"{Variables.JsInteropFuncNamePrefix}preventDefaultOnArrowUpDown";
+        public static string EnablePreventDefaultForEvent => $"{Variables.JsInteropFuncNamePrefix}enablePreventDefaultForEvent";
 
         public static string ResizeObserver => $"{Variables.JsInteropFuncNamePrefix}resizeObserver";
 

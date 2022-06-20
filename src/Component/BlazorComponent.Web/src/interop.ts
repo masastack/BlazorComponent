@@ -103,7 +103,7 @@ function leave(element: HTMLElement) {
 
 export function getDom(element) {
   if (!element) {
-    element = document.body;
+    element = document.body;  // TODO: really ???
   } else if (typeof element === 'string') {
     if (element === 'document') {
       return document.documentElement;
@@ -522,13 +522,17 @@ export function addMouseleaveEventListener(selector) {
 }
 
 export function contains(e1, e2) {
-  return getDom(e1)?.contains(getDom(e2));
+  const dom1 = getDom(e1);
+  if (dom1 && dom1.contains) {
+    return dom1.contains(getDom(e2));
+  }
+  return false;
 }
 
 export function equalsOrContains(e1: any, e2: any) {
   const dom1 = getDom(e1);
   const dom2 = getDom(e2);
-  return !!dom1 && !!dom2 && (dom1 == dom2 || dom1.contains(dom2));
+  return !!dom1 && dom1.contains && !!dom2 && (dom1 == dom2 || dom1.contains(dom2));
 }
 
 export function matchMedia(query) {
@@ -1103,13 +1107,27 @@ export function getImageDimensions(src: string) {
   })
 }
 
-export function preventDefaultOnArrowUpDown(element) {
-  let dom: Element = getDom(element);
-  dom.addEventListener("keydown", function (e: KeyboardEvent) {
-    if (e.code == "ArrowUp" || e.code == "ArrowDown" || e.code == "Enter") {
-      e.preventDefault();
-    }
-  })
+export function enablePreventDefaultForEvent(element: any, event: string, condition?: any) {
+  const dom = getDom(element);
+  if (!dom) return;
+  if (event === 'keydown') {
+    dom.addEventListener(event, (e: KeyboardEvent) => {
+      if (Array.isArray(condition)) {
+        var codes = condition as string[];
+        if (codes.includes(e.code)) {
+          e.preventDefault();
+        }
+      } else {
+        e.preventDefault();
+      }
+    })
+  } else {
+    dom.addEventListener(event, e => {
+      if (e.preventDefault) {
+        e.preventDefault();
+      }
+    })
+  }
 }
 
 export function resizeObserver(selector: string, invoker: DotNet.DotNetObject) {

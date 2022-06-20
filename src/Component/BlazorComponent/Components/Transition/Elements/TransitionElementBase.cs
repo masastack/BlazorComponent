@@ -178,6 +178,37 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
         }
     }
 
+    protected bool IsLeaveTransitionState => CurrentState is TransitionState.Leave or TransitionState.LeaveTo;
+
+    protected override string ComputedStyle
+    {
+        get
+        {
+            if (Transition is null)
+            {
+                return base.ComputedStyle;
+            }
+
+            var styles = new List<string>();
+
+            if (Style != null)
+            {
+                styles.Add(Style);
+            }
+
+            if (IsLeaveTransitionState && Transition.LeaveAbsolute && ElementInfo is not null)
+            {
+                styles.Add("position:absolute");
+                styles.Add($"top:{ElementInfo.OffsetTop}px");
+                styles.Add($"left:{ElementInfo.OffsetLeft}px");
+                styles.Add($"width:{ElementInfo.OffsetWidth}px");
+                styles.Add($"height:{ElementInfo.OffsetHeight}px");
+            }
+
+            return string.Join(';', styles);
+        }
+    }
+
     protected abstract void StartTransition();
 
     /// <summary>
