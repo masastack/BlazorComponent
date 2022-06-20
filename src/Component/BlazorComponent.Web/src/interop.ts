@@ -103,7 +103,7 @@ function leave(element: HTMLElement) {
 
 export function getDom(element) {
   if (!element) {
-    element = document.body;
+    element = document.body;  // TODO: really ???
   } else if (typeof element === 'string') {
     if (element === 'document') {
       return document.documentElement;
@@ -534,13 +534,17 @@ export function addMouseleaveEventListener(selector) {
 }
 
 export function contains(e1, e2) {
-  return getDom(e1)?.contains(getDom(e2));
+  const dom1 = getDom(e1);
+  if (dom1 && dom1.contains) {
+    return dom1.contains(getDom(e2));
+  }
+  return false;
 }
 
 export function equalsOrContains(e1: any, e2: any) {
   const dom1 = getDom(e1);
   const dom2 = getDom(e2);
-  return !!dom1 && !!dom2 && (dom1 == dom2 || dom1.contains(dom2));
+  return !!dom1 && dom1.contains && !!dom2 && (dom1 == dom2 || dom1.contains(dom2));
 }
 
 export function matchMedia(query) {
