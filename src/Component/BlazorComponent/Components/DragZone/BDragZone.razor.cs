@@ -17,26 +17,25 @@
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
-        [Parameter]
         public List<BDragItem> Value
         {
-            get { return _items; }
+            get { return _value; }
             set
             {
                 if (value == null || !value.Any())
                 {
-                    if (!_items.Any())
+                    if (!_value.Any())
                         return;
-                    _items.Clear();
+                    _value.Clear();
                 }
                 else
                 {
-                    _items = value;
+                    _value = value;
                 }
             }
         }
 
-        private List<BDragItem> _items = new();
+        private List<BDragItem> _value = new();
 
         protected bool _isRender = true;
 
@@ -137,20 +136,25 @@
 
             if (oldIndex - newIndex < 0)
             {
-                Value.RemoveAt(oldIndex);
-                if (newIndex - Value.Count == 0)
+                int start = oldIndex, end = newIndex;
+                do
                 {
-                    Value = Value.Append(item).ToList();
+                    Value[start] = Value[start + 1];
+                    start++;
                 }
-                else
-                {
-                    Value.Insert(newIndex, item);
-                }
+                while (end - start > 0);
+                Value[end] = item;
             }
             else
             {
-                Value.RemoveAt(oldIndex);
-                Value.Insert(newIndex, item);
+                int start = newIndex, end = oldIndex;
+                do
+                {
+                    Value[end] = Value[end - 1];
+                    end--;
+                }
+                while (end - start > 0);
+                Value[start] = item;
             }
             FreshRender();
             return true;
@@ -160,7 +164,8 @@
         {
             if (item == null)
                 return false;
-
+            if (list.Any(it => it.Id == item.Id))
+                return false;
             if (position >= 0 && position - list.Count < 0)
                 list.Insert(position, item);
             else
