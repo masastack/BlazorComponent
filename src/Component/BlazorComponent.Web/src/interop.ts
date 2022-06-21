@@ -31,19 +31,23 @@ export function getZIndex(el?: Element | null): number {
 }
 
 export function addStepperEventListener(element: HTMLElement, isActive: Boolean) {
-  element.addEventListener(
-    'transitionend',
-    e => onTransition(e, isActive, element),
-    false
-  );
+  if (element?.addEventListener) {
+    element.addEventListener(
+      'transitionend',
+      e => onTransition(e, isActive, element),
+      false
+    );
+  }
 }
 
 export function removeStepperEventListener(element: HTMLElement, isActive: Boolean) {
-  element.removeEventListener(
-    'transitionend',
-    e => onTransition(e, isActive, element),
-    false
-  );
+  if (element?.removeEventListener) {
+    element.removeEventListener(
+      'transitionend',
+      e => onTransition(e, isActive, element),
+      false
+    );
+  }
 }
 
 export function initStepperWrapper(element: HTMLElement) {
