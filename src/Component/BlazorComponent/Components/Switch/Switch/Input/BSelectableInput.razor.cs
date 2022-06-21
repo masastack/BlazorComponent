@@ -20,7 +20,7 @@ namespace BlazorComponent
 
         public Func<FocusEventArgs, Task> HandleOnBlur => Component.HandleOnBlur;
 
-        public Func<ChangeEventArgs, Task> HandleOnChange => Component.HandleOnChange;
+        public Func<Task> HandleOnChange => Component.HandleOnChange;
 
         public Func<FocusEventArgs, Task> HandleOnFocus => Component.HandleOnFocus;
 

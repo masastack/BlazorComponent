@@ -16,18 +16,33 @@ public class EventListenerActions
     public string RelatedTarget { get; set; }
 
     public bool PreventDefault { get; set; }
+    
+    public int Throttle { get; set; }
+    
+    public int Debounce { get; set; }
 
     public EventListenerActions()
     {
     }
 
-    public EventListenerActions(bool stopPropagation)
+    public EventListenerActions(bool stopPropagation, bool preventDefault)
     {
         StopPropagation = stopPropagation;
+        PreventDefault = preventDefault;
     }
 
     public EventListenerActions(string relatedTarget)
     {
         RelatedTarget = relatedTarget;
+    }
+
+    public EventListenerActions(int debounce)
+    {
+        Debounce = debounce;
+    }
+    
+    public EventListenerActions(int debounce, int throttle) : this(debounce)
+    {
+        Throttle = throttle;
     }
 }

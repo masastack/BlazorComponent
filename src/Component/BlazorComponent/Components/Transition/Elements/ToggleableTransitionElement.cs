@@ -1,6 +1,6 @@
 ﻿namespace BlazorComponent;
 
-public abstract class ToggleableTransitionElement : TransitionElementBase<bool>
+public class ToggleableTransitionElement : TransitionElementBase<bool>
 {
     [Parameter(CaptureUnmatchedValues = true)]
     public override IDictionary<string, object> AdditionalAttributes
@@ -36,10 +36,10 @@ public abstract class ToggleableTransitionElement : TransitionElementBase<bool>
     {
         get
         {
-            if (Transition == null) return Style;
+            var style = base.ComputedStyle;
 
-            var transitionStyle = Transition.GetStyle(State);
-            return string.Join(';', Style, transitionStyle);
+            var transitionStyle = Transition?.GetStyle(State);
+            return string.Join(';', style, transitionStyle);
         }
     }
 

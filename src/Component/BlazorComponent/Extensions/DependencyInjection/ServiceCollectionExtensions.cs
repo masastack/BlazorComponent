@@ -1,6 +1,6 @@
 ﻿using BlazorComponent;
 using BlazorComponent.Web;
-using Microsoft.AspNetCore.Components;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Globalization;
 
@@ -19,6 +19,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped(typeof(BDragDropService));
             CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CurrentCulture;
             services.AddSingleton<IComponentActivator, AbstractComponentActivator>();
+            services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies(), ServiceLifetime.Scoped, includeInternalTypes: true);
 
             return services;
         }

@@ -92,6 +92,7 @@ namespace BlazorComponent
             set
             {
                 LazyValue = value;
+
                 InternalValueSetter(value);
             }
         }
@@ -286,18 +287,26 @@ namespace BlazorComponent
             }
         }
 
-        public Task<bool> ValidateAsync()
+        public Task<bool> ValidateAsync(bool force = false, TValue? val = default)
         {
             //No rules should be valid. 
             var valid = true;
 
+            if (force)
+            {
+                HasInput = true;
+                HasFocused = true;
+            }
+
             if (Rules != null)
             {
+                var value = val is null ? InternalValue : val;
+                
                 ErrorBucket.Clear();
 
                 foreach (var rule in Rules)
                 {
-                    var result = rule(InternalValue);
+                    var result = rule(value);
                     if (result.IsT0)
                     {
                         ErrorBucket.Add(result.AsT0);
@@ -308,6 +317,11 @@ namespace BlazorComponent
             }
 
             return Task.FromResult(valid);
+        }
+
+        public Task<bool> ValidateAsync()
+        {
+            return ValidateAsync(false);
         }
 
         public async Task ResetAsync()
