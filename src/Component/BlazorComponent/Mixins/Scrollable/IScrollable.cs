@@ -5,12 +5,12 @@ namespace BlazorComponent
 {
     public interface IScrollable
     {
-        public string ScrollTarget { get; }
+        bool CanScroll { get; }
 
-        public double ScrollThreshold { get; }
+        string ScrollTarget { get; }
+
+        double ScrollThreshold { get; }
 
         IJSRuntime Js { get; }
-
-        HtmlElement Target { get; }
     }
 }
