@@ -23,6 +23,9 @@ namespace BlazorComponent
         public bool EnableValidation { get; set; }
 
         [Parameter]
+        public bool EnableI18n { get; set; }
+
+        [Parameter]
         public bool Disabled { get; set; }
 
         [Parameter]
@@ -59,7 +62,7 @@ namespace BlazorComponent
 
                 if (EnableValidation)
                 {
-                    EditContext.EnableValidation(ServiceProvider);
+                    EditContext.EnableValidation(ServiceProvider, EnableI18n);
                 }
 
                 _oldModel = Model;
