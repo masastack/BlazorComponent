@@ -11,6 +11,7 @@
         [CascadingParameter]
         public BDragZone DragZone { get; set; }
 
+        //[Parameter]
         public int Value
         {
             get
@@ -18,6 +19,10 @@
                 if (DragZone != null)
                     return DragZone.GetIndex(this);
                 return -1;
+            }
+            set
+            {
+
             }
         }
 

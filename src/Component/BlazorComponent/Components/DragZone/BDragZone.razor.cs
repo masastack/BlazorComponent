@@ -17,6 +17,7 @@
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
+        [Parameter]
         public List<BDragItem> Value
         {
             get { return _value; }
@@ -133,29 +134,75 @@
                 return false;
             if (index - newIndex == 0)
                 return true;
+            if (oldIndex - index != 0)
+            {
 
-            if (oldIndex - newIndex < 0)
-            {
-                int start = oldIndex, end = newIndex;
-                do
-                {
-                    Value[start] = Value[start + 1];
-                    start++;
-                }
-                while (end - start > 0);
-                Value[end] = item;
             }
-            else
-            {
-                int start = newIndex, end = oldIndex;
-                do
-                {
-                    Value[end] = Value[end - 1];
-                    end--;
-                }
-                while (end - start > 0);
-                Value[start] = item;
-            }
+
+            Value.RemoveAt(index);
+            Value.Insert(newIndex, item);
+
+            //if (index - newIndex < 0)
+            //{
+
+            //    //Value[index] = null;
+            //    //Value.Insert(newIndex + 1, item);
+            //    //Value.RemoveAt(index);
+
+            //    //Value.RemoveAt(index);
+            //    //Value.Insert(newIndex, item);
+
+            //    //if (newIndex - Value.Count == 0)
+            //    //{
+            //    //    Value.Add(item);
+            //    //    //Value.Insert(newIndex, item);
+            //    //}
+            //    //else
+            //    //{
+            //    //    Value.Insert(newIndex, item);
+            //    //}
+
+
+            //    //int start = index, end = newIndex;
+            //    //do
+            //    //{
+            //    //    Value[start] = Value[start + 1];
+            //    //    start++;
+            //    //}
+            //    //while (end - start > 0);
+            //    //Value[end] = item;
+
+            //}
+            //else
+            //{
+            //    Value.RemoveAt(index);
+            //    Value.Insert(newIndex, item);
+            //}
+
+            //if (index - newIndex < 0)
+            //{
+            //    int start = index, end = newIndex;
+            //    do
+            //    {
+            //        Value[start] = Value[start + 1];
+            //        start++;
+            //    }
+            //    while (end - start > 0);
+            //    Value[end] = item;
+            //}
+            //else
+            //{
+            //    int start = newIndex, end = index;
+            //    do
+            //    {
+            //        Value[end] = Value[end - 1];
+            //        end--;
+            //    }
+            //    while (end - start > 0);
+            //    Value[start] = item;
+            //}
+            //Value.RemoveAt(index);
+            //Value.Insert(newIndex, item);
             FreshRender();
             return true;
         }
