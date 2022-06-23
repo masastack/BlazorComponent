@@ -7,6 +7,10 @@ namespace BlazorComponent
         SelectingTimes Selecting { get; }
 
         bool AmPmInTitle { get; }
+        
+        string AmText { get; }
+        
+        string PmText { get; }
 
         bool IsAmPm { get; }
 

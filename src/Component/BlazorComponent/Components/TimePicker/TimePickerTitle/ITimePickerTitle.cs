@@ -5,6 +5,10 @@ namespace BlazorComponent
     public interface ITimePickerTitle : IHasProviderComponent
     {
         bool AmPmReadonly { get; }
+        
+        string AmText { get; }
+        
+        string PmText { get; }
 
         TimePeriod Period { get; }
 

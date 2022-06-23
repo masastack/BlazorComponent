@@ -2,6 +2,7 @@
 using System.Net.Http.Json;
 using System.Reflection;
 using System.Text.Json;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -17,10 +18,10 @@ namespace Microsoft.Extensions.DependencyInjection
                 I18nCache.AddLang(language, map);
                 if (map.TryGetValue(DefaultLanguageKey, out string defaultLanguage) && defaultLanguage == "true") I18nCache.DefaultLanguage = language;
             }
-
-            services.AddScoped<I18n>();
-            services.AddScoped<I18nConfig>();
-            services.AddScoped<CookieStorage>();
+            
+            services.TryAddScoped<I18n>();
+            services.TryAddScoped<I18nConfig>();
+            services.TryAddScoped<CookieStorage>();
             services.AddHttpContextAccessor();
 
             return services;
@@ -41,7 +42,7 @@ namespace Microsoft.Extensions.DependencyInjection
             else
             {
                 var assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                var i18nPath = Path.Combine(Path.Combine(assemblyPath, languageDirectory));
+                var i18nPath = Path.Combine(assemblyPath, languageDirectory);
                 if (Directory.Exists(i18nPath))
                 {
                     AddMasaI18n(i18nPath);

@@ -4,14 +4,14 @@ namespace BlazorComponent.I18n;
 
 public static class I18nCache
 {
-    private static ConcurrentDictionary<string, IReadOnlyDictionary<string, string>> _i18nCache;
+    private static readonly ConcurrentDictionary<string, IReadOnlyDictionary<string, string>> _i18nCache;
+
+    private static string? _defaultLanguage;
 
     static I18nCache()
     {
         _i18nCache = new ConcurrentDictionary<string, IReadOnlyDictionary<string, string>>();
     }
-
-    private static string? _defaultLanguage;
 
     public static string DefaultLanguage
     {
@@ -31,7 +31,7 @@ public static class I18nCache
 
         if (isDefaultLanguage) DefaultLanguage = language;
 
-        _i18nCache.AddOrUpdate(language, langMap, (name, original) => langMap);
+        _i18nCache.AddOrUpdate(language, langMap, (_,  dictionary) => Merge(dictionary, langMap));
     }
 
     public static IReadOnlyDictionary<string, string>? GetLang(string language)
@@ -42,5 +42,16 @@ public static class I18nCache
     public static IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> ToDictionary() => _i18nCache;
 
     public static bool ContainsLang(string lang) => _i18nCache.ContainsKey(lang);
+    
+    private static IReadOnlyDictionary<TK, TV> Merge<TK, TV>(params IReadOnlyDictionary<TK, TV>[] dictionaries)
+    {
+        var result = new Dictionary<TK, TV>();
+ 
+        foreach (var dict in dictionaries) {
+            dict.ToList().ForEach(pair => result[pair.Key] = pair.Value);
+        }
+ 
+        return result;
+    }
 }
 

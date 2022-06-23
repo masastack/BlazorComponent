@@ -3,7 +3,7 @@
 @inherits ComponentPartBase<TTimePicker>
 
 <div class="@CssProvider.GetClass("ampm")">
-    @RenderPart(typeof(BPickerTitlePickerButton<>),"picker-button-am",OnAmClick,RenderText("AM"),arg0Name:"Name",arg1Name:"OnClick",arg2Name:"ChildContent")
-    @RenderPart(typeof(BPickerTitlePickerButton<>),"picker-button-pm",OnPmClick,RenderText("PM"),arg0Name:"Name",arg1Name:"OnClick",arg2Name:"ChildContent")
+    @RenderPart(typeof(BPickerTitlePickerButton<>),"picker-button-am",OnAmClick,RenderText(AmText),arg0Name:"Name",arg1Name:"OnClick",arg2Name:"ChildContent")
+    @RenderPart(typeof(BPickerTitlePickerButton<>),"picker-button-pm",OnPmClick,RenderText(PmText),arg0Name:"Name",arg1Name:"OnClick",arg2Name:"ChildContent")
 </div>
 
