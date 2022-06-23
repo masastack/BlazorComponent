@@ -2,20 +2,20 @@
 {
     public partial class BDragZone : BDomComponentBase, IThemeable
     {
-        [Parameter]
-        public bool Dark { get; set; }
-
-        [Parameter]
-        public bool Light { get; set; }
+        [Inject]
+        public BDragDropService DragDropService { get; set; }
 
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
 
-        [Inject]
-        public BDragDropService DragDropService { get; set; }
-
         [Parameter]
         public RenderFragment ChildContent { get; set; }
+
+        [Parameter]
+        public bool Dark { get; set; }
+
+        [Parameter]
+        public bool Light { get; set; }           
 
         [Parameter]
         public List<BDragItem> Value
@@ -33,6 +33,22 @@
                 {
                     _value = value;
                 }
+            }
+        }
+
+        private SortedList<int, BDragItem> Sorts
+        {
+            get
+            {
+                var index = 0;
+                var result = new SortedList<int, BDragItem>();
+                do
+                {
+                    result.Add(index, _value[index]);
+                    index++;
+                }
+                while (_value.Count - index > 0);
+                return result;
             }
         }
 
@@ -79,20 +95,20 @@
         {
             if (!Contains(item))
             {
-                Add(Value, item);
+                Add(_value, item);
                 FreshRender();
             }
         }
 
         public void Add(BDragItem item, int position = -1)
         {
-            Add(Value, item, position);
+            Add(_value, item, position);
             FreshRender();
         }
 
         public void AddRange(IEnumerable<BDragItem> sources)
         {
-            Value.AddRange(sources);
+            _value.AddRange(sources);
             FreshRender();
         }
 
@@ -102,14 +118,14 @@
                 return;
             foreach (var item in items)
             {
-                Remove(Value, item);
+                Remove(_value, item);
             }
             FreshRender();
         }
 
         public void Clear()
         {
-            Value.Clear();
+            _value.Clear();
             FreshRender();
         }
 
@@ -117,19 +133,19 @@
         {
             if (item == null || string.IsNullOrEmpty(item.Id))
                 return true;
-            return Value.Any(it => it.Id == item.Id);
+            return _value.Any(it => it.Id == item.Id);
         }
 
         public int GetIndex(BDragItem item)
         {
             if (item == null || string.IsNullOrEmpty(item.Id))
                 return -1;
-            return Value.FindIndex(it => it.Id == item.Id);
+            return _value.FindIndex(it => it.Id == item.Id);
         }
 
         public bool Update(BDragItem item, int oldIndex, int newIndex)
         {
-            var index = Value.FindIndex(it => it.Id == item.Id);
+            var index = _value.FindIndex(it => it.Id == item.Id);
             if (index < 0)
                 return false;
             if (index - newIndex == 0)
@@ -140,69 +156,7 @@
             }
 
             Value.RemoveAt(index);
-            Value.Insert(newIndex, item);
-
-            //if (index - newIndex < 0)
-            //{
-
-            //    //Value[index] = null;
-            //    //Value.Insert(newIndex + 1, item);
-            //    //Value.RemoveAt(index);
-
-            //    //Value.RemoveAt(index);
-            //    //Value.Insert(newIndex, item);
-
-            //    //if (newIndex - Value.Count == 0)
-            //    //{
-            //    //    Value.Add(item);
-            //    //    //Value.Insert(newIndex, item);
-            //    //}
-            //    //else
-            //    //{
-            //    //    Value.Insert(newIndex, item);
-            //    //}
-
-
-            //    //int start = index, end = newIndex;
-            //    //do
-            //    //{
-            //    //    Value[start] = Value[start + 1];
-            //    //    start++;
-            //    //}
-            //    //while (end - start > 0);
-            //    //Value[end] = item;
-
-            //}
-            //else
-            //{
-            //    Value.RemoveAt(index);
-            //    Value.Insert(newIndex, item);
-            //}
-
-            //if (index - newIndex < 0)
-            //{
-            //    int start = index, end = newIndex;
-            //    do
-            //    {
-            //        Value[start] = Value[start + 1];
-            //        start++;
-            //    }
-            //    while (end - start > 0);
-            //    Value[end] = item;
-            //}
-            //else
-            //{
-            //    int start = newIndex, end = index;
-            //    do
-            //    {
-            //        Value[end] = Value[end - 1];
-            //        end--;
-            //    }
-            //    while (end - start > 0);
-            //    Value[start] = item;
-            //}
-            //Value.RemoveAt(index);
-            //Value.Insert(newIndex, item);
+            Value.Insert(newIndex, item);            
             FreshRender();
             return true;
         }

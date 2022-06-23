@@ -6,12 +6,9 @@
         <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @attributes="Attributes">
             @if (Value != null && Value.Any())
             {
-                @string.Join("@",Value.Select(item=>item.Id))
-                @string.Join("@",Value.Select(item=>item.Value))
-                foreach (var item in Value)
+                foreach (var item in Sorts)
                 {
-                   @*<BDragItem Attributes=item.Attributes ChildContent=item.ChildContent Class=item.Class Id=item.Id Style=item.Style @key=item.Id></BDragItem>*@
-                    <DynamicComponent Type=item.GetType() Parameters=item.ToParameters() @key=item></DynamicComponent>
+                    <DynamicComponent Type=item.Value.GetType() Parameters=item.Value.ToParameters() @key=item></DynamicComponent>
                 }
             }
             else

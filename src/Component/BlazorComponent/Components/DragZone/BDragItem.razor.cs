@@ -2,16 +2,18 @@
 {
     public partial class BDragItem : BDomComponentBase, IDisposable
     {
+        [CascadingParameter]
+        public BDragZone DragZone { get; set; }
+
+        [Parameter]
+        public RenderFragment ChildContent { get; set; }
+
         protected override void OnInitialized()
         {
             base.OnInitialized();
             DragZone.Register(this);
         }
 
-        [CascadingParameter]
-        public BDragZone DragZone { get; set; }
-
-        //[Parameter]
         public int Value
         {
             get
@@ -20,14 +22,7 @@
                     return DragZone.GetIndex(this);
                 return -1;
             }
-            set
-            {
-
-            }
         }
-
-        [Parameter]
-        public RenderFragment ChildContent { get; set; }
 
         public BDragItem Clone()
         {
