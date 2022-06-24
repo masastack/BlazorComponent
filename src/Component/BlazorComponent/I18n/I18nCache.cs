@@ -2,7 +2,7 @@
 
 namespace BlazorComponent.I18n;
 
-public static class I18nCache
+internal static class I18nCache
 {
     private static readonly ConcurrentDictionary<string, IReadOnlyDictionary<string, string>> _i18nCache;
 

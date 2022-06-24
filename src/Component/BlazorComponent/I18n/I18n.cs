@@ -1,19 +1,49 @@
-﻿namespace BlazorComponent.I18n
+﻿using Microsoft.AspNetCore.Http;
+
+namespace BlazorComponent.I18n
 {
     public class I18n
     {
-        public I18n(string? language = null) => SetLang(language ?? I18nCache.DefaultLanguage);
+        private static string LanguageCookieKey { get; set; } = "Masa_I18nConfig_Language";
 
-        public IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> Languages => I18nCache.ToDictionary();
-
+        private readonly CookieStorage _cookieStorage;
+        
         private string? _currentLanguage;
+        private IReadOnlyDictionary<string, string>? _languageMap;
 
+        public I18n(CookieStorage cookieStorage, IHttpContextAccessor httpContextAccessor)
+        {
+            _cookieStorage = cookieStorage;
+
+            if (httpContextAccessor.HttpContext is not null)
+            {
+                _currentLanguage = httpContextAccessor.HttpContext.Request.Cookies[LanguageCookieKey];
+                if (_currentLanguage is not null) return;
+
+                var acceptLanguage = httpContextAccessor.HttpContext.Request.Headers["accept-language"].FirstOrDefault();
+                if (acceptLanguage is not null)
+                {
+                    _currentLanguage = acceptLanguage.Split(",").Select(lang =>
+                    {
+                        var arr = lang.Split(';');
+                        if (arr.Length == 1) return (arr[0], 1);
+                        else return (arr[0], Convert.ToDecimal(arr[1].Split("=")[1]));
+                    }).OrderByDescending(lang => lang.Item2).FirstOrDefault(lang => I18nCache.ContainsLang(lang.Item1)).Item1;
+                }
+            }
+            else
+            {
+                _currentLanguage = _cookieStorage.GetCookie(LanguageCookieKey);
+            }
+
+            SetLang(I18nCache.DefaultLanguage);
+        }
+
+        public string Language => CurrentLanguage;
+        
         public string CurrentLanguage
         {
-            get
-            {
-                return _currentLanguage ?? I18nCache.DefaultLanguage;
-            }
+            get => _currentLanguage ?? I18nCache.DefaultLanguage;
             private set
             {
                 _currentLanguage = value ?? I18nCache.DefaultLanguage;
@@ -21,21 +51,19 @@
             }
         }
 
-        public IReadOnlyDictionary<string, string>? _languageMap;
-
         public IReadOnlyDictionary<string, string> LanguageMap
         {
-            get
-            {
-                return _languageMap ?? (_languageMap = I18nCache.GetLang(CurrentLanguage)) ?? throw new Exception($"Not has {CurrentLanguage} language !");
-            }
-            private set
-            {
-                _languageMap = value;
-            }
+            get => _languageMap ?? (_languageMap = I18nCache.GetLang(CurrentLanguage)) ??
+                throw new Exception($"Not has {CurrentLanguage} language !");
+            private set => _languageMap = value;
         }
 
-        public void SetLang(string language) => CurrentLanguage = language;
+        public void SetLang(string language)
+        {
+            LanguageMap = LocalesHelper.TryGetSpecifiedLocale(language);
+            _cookieStorage?.SetItemAsync(LanguageCookieKey, language);
+            CurrentLanguage = language;
+        }
 
         public void AddLang(string language, IReadOnlyDictionary<string, string>? langMap, bool isDefaultLanguage = false)
         {
@@ -44,7 +72,11 @@
 
         public string? T(string key, bool matchLastLevel = false, [DoesNotReturnIf(true)] bool whenNullReturnKey = true)
         {
-            if(matchLastLevel is true) return LanguageMap.FirstOrDefault(kv => kv.Key.EndsWith($".{key}") || kv.Key == key).Value ?? (whenNullReturnKey ? key : null);
+            if (matchLastLevel)
+            {
+                return LanguageMap.FirstOrDefault(kv => kv.Key.EndsWith($".{key}") || kv.Key == key).Value ?? (whenNullReturnKey ? key : null);
+            }
+
             return LanguageMap.GetValueOrDefault(key) ?? (whenNullReturnKey ? key : null);
         }
 

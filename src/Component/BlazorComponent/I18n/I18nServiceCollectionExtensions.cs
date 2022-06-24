@@ -20,7 +20,6 @@ namespace Microsoft.Extensions.DependencyInjection
             }
             
             services.TryAddScoped<I18n>();
-            services.TryAddScoped<I18nConfig>();
             services.TryAddScoped<CookieStorage>();
             services.AddHttpContextAccessor();
 
