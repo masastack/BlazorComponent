@@ -16,6 +16,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddScoped(serviceProvider => new Window(serviceProvider.GetService<Document>()));
             services.TryAddScoped<IPopupProvider, PopupProvider>();
             services.TryAddSingleton<IComponentIdGenerator, GuidComponentIdGenerator>();
+            services.AddScoped(typeof(BDragDropService));
             CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CurrentCulture;
             services.AddSingleton<IComponentActivator, AbstractComponentActivator>();
             services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies(), ServiceLifetime.Scoped, includeInternalTypes: true);
