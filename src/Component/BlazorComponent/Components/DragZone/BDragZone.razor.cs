@@ -150,10 +150,6 @@
                 return false;
             if (index - newIndex == 0)
                 return true;
-            if (oldIndex - index != 0)
-            {
-
-            }
 
             Value.RemoveAt(index);
             Value.Insert(newIndex, item);            
