@@ -13,11 +13,13 @@ public class Scroller : IScrollable
         ScrollTarget = scrollable.ScrollTarget;
         ScrollThreshold = scrollable.ScrollThreshold;
 
-        Target = scrollable.Target;
         Js = scrollable.Js;
     }
 
     #region Parameters, should reset in OnParametersSet()
+
+    // typeof window !== 'undefined' in vuetify, but is always true in Blazor
+    public bool CanScroll => true;
 
     public string ScrollTarget { get; set; }
 
@@ -66,15 +68,16 @@ public class Scroller : IScrollable
 
     public double SavedScroll { get; set; }
 
-    public HtmlElement Target { get; set; }
+    public double ComputedScrollThreshold => ScrollThreshold != 0 ? ScrollThreshold : 300;
 
-    private double ComputedScrollThreshold => ScrollThreshold != 0 ? ScrollThreshold : 300;
-
-    public async Task OnScroll(Action thresholdMet)
+    public async Task OnScroll(Action<Scroller> thresholdMet)
     {
+        if (!CanScroll) return;
+
         PreviousScroll = CurrentScroll;
 
-        var dom = await Target.GetDomInfoAsync();
+        // TODO: Merge the following two js interops
+        var dom = await Js.InvokeAsync<Web.Element>(JsInteropConstants.GetDomInfo, ScrollTarget);
         if (dom != null)
         {
             CurrentScroll = dom.ScrollTop;
@@ -90,7 +93,7 @@ public class Scroller : IScrollable
 
         if (Math.Abs(CurrentScroll - SavedScroll) > ComputedScrollThreshold)
         {
-            thresholdMet.Invoke();
+            thresholdMet.Invoke(this);
         }
     }
 }

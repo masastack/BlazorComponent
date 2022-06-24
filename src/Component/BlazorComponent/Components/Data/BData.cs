@@ -270,7 +270,7 @@ namespace BlazorComponent
             get
             {
                 return GetComputedValue(() =>
-                     InternalOptions.ItemsPerPage <= 0 ? 1 : Convert.ToInt32(Math.Ceiling(ItemsLength / (InternalOptions.ItemsPerPage * 1.0))));
+                     InternalOptions.ItemsPerPage <= 0 ? 1 : (int)Math.Ceiling(ItemsLength / (InternalOptions.ItemsPerPage * 1.0)));
             }
         }
 
@@ -574,7 +574,7 @@ namespace BlazorComponent
         {
             if (ServerItemsLength == -1 && items.Count() <= PageStart)
             {
-                InternalOptions.Page = Math.Max(1, Convert.ToInt32(Math.Ceiling(items.Count() / (InternalOptions.ItemsPerPage * 1.0))));
+                InternalOptions.Page = Math.Max(1, (int)Math.Ceiling(items.Count() / (InternalOptions.ItemsPerPage * 1.0)));
             }
 
             return items.Skip(PageStart).Take(PageStop - PageStart);

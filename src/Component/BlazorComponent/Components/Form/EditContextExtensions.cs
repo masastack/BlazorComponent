@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -16,9 +17,9 @@ namespace BlazorComponent
         /// </summary>
         /// <param name="editContext">The <see cref="EditContext"/>.</param>
         /// <returns>A disposable object whose disposal will remove DataAnnotations validation support from the <see cref="EditContext"/>.</returns>
-        public static IDisposable EnableValidation(this EditContext editContext, IServiceProvider serviceProvider)
+        public static IDisposable EnableValidation(this EditContext editContext, IServiceProvider serviceProvider, bool enableI18n)
         {
-            return new ValidationEventSubscriptions(editContext, serviceProvider);
+            return new ValidationEventSubscriptions(editContext, serviceProvider, enableI18n);
         }
 
         private sealed class ValidationEventSubscriptions : IDisposable
@@ -57,8 +58,13 @@ namespace BlazorComponent
             private readonly EditContext _editContext;
             private readonly ValidationMessageStore _messageStore;
             private readonly IServiceProvider _serviceProvider;
+            private I18n.I18n? _i18n;
 
-            public ValidationEventSubscriptions(EditContext editContext, IServiceProvider serviceProvider)
+
+            [MemberNotNullWhen(true, nameof(_i18n))]
+            private bool EnableI18n { get; set; }
+
+            public ValidationEventSubscriptions(EditContext editContext, IServiceProvider serviceProvider, bool enableI18n)
             {
                 _serviceProvider = serviceProvider;
                 _editContext = editContext ?? throw new ArgumentNullException(nameof(editContext));
@@ -66,6 +72,11 @@ namespace BlazorComponent
 
                 _editContext.OnFieldChanged += OnFieldChanged;
                 _editContext.OnValidationRequested += OnValidationRequested;
+                EnableI18n = enableI18n;
+                if (EnableI18n)
+                {
+                    _i18n = _serviceProvider.GetService<I18n.I18n>();
+                }
             }
 
             private void OnFieldChanged(object? sender, FieldChangedEventArgs eventArgs)
@@ -116,7 +127,7 @@ namespace BlazorComponent
                                 {
                                     foreach (var memberName in result.MemberNames)
                                     {
-                                        messageStore.Add(new FieldIdentifier(descriptor.ObjectInstance, memberName), result.ErrorMessage!);
+                                        AddValidationMessage(new FieldIdentifier(descriptor.ObjectInstance, memberName), result.ErrorMessage!);
                                     }
                                 }
                             }
@@ -125,7 +136,7 @@ namespace BlazorComponent
                         {
                             foreach (var memberName in validationResult.MemberNames)
                             {
-                                messageStore.Add(new FieldIdentifier(model, memberName), validationResult.ErrorMessage);
+                                AddValidationMessage(new FieldIdentifier(model, memberName), validationResult.ErrorMessage);
                             }
                         }
                     }
@@ -139,7 +150,7 @@ namespace BlazorComponent
                     {
                         if (validationResult.MemberNames.Contains(field.FieldName))
                         {
-                            messageStore.Add(field, validationResult.ErrorMessage);
+                            AddValidationMessage(field, validationResult.ErrorMessage);
                             return;
                         }
                     }
@@ -162,12 +173,12 @@ namespace BlazorComponent
                             {
                                 var modelItem = propertyMap[propertyName];
                                 var modelItemPropertyName = error.FormattedMessagePlaceholderValues["PropertyName"].ToString().Replace(" ", "");
-                                messageStore.Add(new FieldIdentifier(modelItem, modelItemPropertyName), error.ErrorMessage);
+                                AddValidationMessage(new FieldIdentifier(modelItem, modelItemPropertyName), error.ErrorMessage);
                             }
                         }
                         else
                         {
-                            messageStore.Add(new FieldIdentifier(model, error.PropertyName), error.ErrorMessage);
+                            AddValidationMessage(new FieldIdentifier(model, error.PropertyName), error.ErrorMessage);
                         }
                     }
                 }
@@ -179,7 +190,7 @@ namespace BlazorComponent
                         var error = validationResult.Errors.FirstOrDefault(e => e.PropertyName == field.FieldName);
                         if (error is not null)
                         {
-                            messageStore.Add(field, error.ErrorMessage);
+                            AddValidationMessage(field, error.ErrorMessage);
                         }
                     }
                     else
@@ -189,13 +200,11 @@ namespace BlazorComponent
                         var errorMessage = validationResult.Errors.FirstOrDefault(e => e.PropertyName == ($"{key}.{field.FieldName}"))?.ErrorMessage;
                         if (errorMessage is not null)
                         {
-                            messageStore.Add(field, errorMessage);
+                            AddValidationMessage(field, errorMessage);
                         }
                     }
                 }
             }
-
-
 
             private FluentValidationResult GetValidationResult(object model)
             {
@@ -246,6 +255,15 @@ namespace BlazorComponent
                     _modelPropertiesMap[type] = func;
                 }
                 return func(model);
+            }
+
+            private void AddValidationMessage(in FieldIdentifier fieldIdentifier, string message)
+            {
+                if (EnableI18n)
+                {
+                    message = _i18n.T(message, true);
+                }
+                _messageStore.Add(fieldIdentifier, message);
             }
 
             public void Dispose()
