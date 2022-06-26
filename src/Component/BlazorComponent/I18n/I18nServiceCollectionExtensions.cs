@@ -15,8 +15,8 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             foreach (var (language, map) in languageMap)
             {
-                I18nCache.AddLang(language, map);
-                if (map.TryGetValue(DefaultLanguageKey, out string defaultLanguage) && defaultLanguage == "true") I18nCache.DefaultLanguage = language;
+                I18nCache.AddLocale(language, map);
+                if (map.TryGetValue(DefaultLanguageKey, out string defaultLanguage) && defaultLanguage == "true") I18nCache.DefaultCulture = language;
             }
             
             services.TryAddScoped<I18n>();
