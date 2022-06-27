@@ -3,6 +3,7 @@ using BlazorComponent.Web;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Globalization;
+using BlazorComponent.I18n;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -20,6 +21,8 @@ namespace Microsoft.Extensions.DependencyInjection
             CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CurrentCulture;
             services.AddSingleton<IComponentActivator, AbstractComponentActivator>();
             services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies(), ServiceLifetime.Scoped, includeInternalTypes: true);
+
+            EmbeddedLocales.Init();
 
             return services;
         }

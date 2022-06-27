@@ -7,28 +7,28 @@
         <BListItem @onclick="OnReload" @attributes="GetAttributes(typeof(BListItem))">
             <BListItemContent>
                 <BListItemTitle>
-                    重新加载
+                    @ReloadText
                 </BListItemTitle>
             </BListItemContent>
         </BListItem>
         <BListItem @onclick="OnCloseLeft" @attributes="GetAttributes(typeof(BListItem))">
             <BListItemContent>
                 <BListItemTitle>
-                    关闭左边
+                    @CloseLeftText
                 </BListItemTitle>
             </BListItemContent>
         </BListItem>
         <BListItem @onclick="OnCloseRight" @attributes="GetAttributes(typeof(BListItem))">
             <BListItemContent>
                 <BListItemTitle>
-                    关闭右边
+                    @CloseRightText
                 </BListItemTitle>
             </BListItemContent>
         </BListItem>
         <BListItem @onclick="OnCloseOther" @attributes="GetAttributes(typeof(BListItem))">
             <BListItemContent>
                 <BListItemTitle>
-                    关闭其它
+                    @CloseOthersText
                 </BListItemTitle>
             </BListItemContent>
         </BListItem>

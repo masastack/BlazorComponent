@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+﻿using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
@@ -13,5 +12,13 @@ namespace BlazorComponent
         EventCallback<MouseEventArgs> OnCloseRight => CreateEventCallback<MouseEventArgs>(Component.HandleOnCloseRightAsync);
 
         EventCallback<MouseEventArgs> OnCloseOther => CreateEventCallback<MouseEventArgs>(Component.HandleOnCloseOtherAsync);
+
+        string ReloadText => Component.ReloadTabText;
+
+        string CloseLeftText => Component.CloseTabsToTheLeftText;
+
+        string CloseRightText => Component.CloseTabsToTheRightText;
+
+        string CloseOthersText => Component.CloseOtherTabsText;
     }
 }

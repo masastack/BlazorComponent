@@ -2,45 +2,50 @@
 
 namespace BlazorComponent.I18n;
 
-public static class I18nCache
+internal static class I18nCache
 {
-    private static ConcurrentDictionary<string, IReadOnlyDictionary<string, string>> _i18nCache;
+    private static readonly ConcurrentDictionary<string, IReadOnlyDictionary<string, string>> _i18nCache;
+
+    private static string? _defaultCulture;
 
     static I18nCache()
     {
         _i18nCache = new ConcurrentDictionary<string, IReadOnlyDictionary<string, string>>();
     }
 
-    private static string? _defaultLanguage;
-
-    public static string DefaultLanguage
+    public static string DefaultCulture
     {
-        get
-        {
-            return _defaultLanguage ?? _i18nCache.Keys.FirstOrDefault() ?? throw new Exception("Please add Language !");
-        }
-        set
-        {
-            _defaultLanguage = value;
-        }
+        get => _defaultCulture ?? _i18nCache.Keys.FirstOrDefault() ?? throw new Exception("Please add Language !");
+        set => _defaultCulture = value;
     }
 
-    public static void AddLang(string language, IReadOnlyDictionary<string, string>? langMap, bool isDefaultLanguage = false)
+    public static void AddLocale(string culture, IReadOnlyDictionary<string, string>? locale, bool isDefault = false)
     {
-        if (langMap is null) return;
+        if (locale is null) return;
 
-        if (isDefaultLanguage) DefaultLanguage = language;
+        if (isDefault) DefaultCulture = culture;
 
-        _i18nCache.AddOrUpdate(language, langMap, (name, original) => langMap);
+        _i18nCache.AddOrUpdate(culture, locale, (_,  dictionary) => Merge(dictionary, locale));
     }
 
-    public static IReadOnlyDictionary<string, string>? GetLang(string language)
+    public static IReadOnlyDictionary<string, string>? GetLocale(string culture)
     {
-        return _i18nCache.GetValueOrDefault(language);
+        return _i18nCache.GetValueOrDefault(culture);
     }
 
     public static IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> ToDictionary() => _i18nCache;
 
-    public static bool ContainsLang(string lang) => _i18nCache.ContainsKey(lang);
-}
+    public static bool ContainsCulture(string culture) => _i18nCache.ContainsKey(culture);
 
+    private static IReadOnlyDictionary<TK, TV> Merge<TK, TV>(params IReadOnlyDictionary<TK, TV>[] dictionaries)
+    {
+        var result = new Dictionary<TK, TV>();
+
+        foreach (var dict in dictionaries)
+        {
+            dict.ToList().ForEach(pair => result[pair.Key] = pair.Value);
+        }
+
+        return result;
+    }
+}

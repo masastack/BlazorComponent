@@ -15,5 +15,9 @@ namespace BlazorComponent
         Task HandleOnCloseLeftAsync(MouseEventArgs arg);
         Task HandleOnCloseRightAsync(MouseEventArgs arg);
         Task HandleOnCloseOtherAsync(MouseEventArgs arg);
+        string ReloadTabText { get; }
+        string CloseTabsToTheLeftText { get; }
+        string CloseTabsToTheRightText { get; }
+        string CloseOtherTabsText { get; }
     }
 }
