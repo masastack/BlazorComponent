@@ -3,13 +3,12 @@ using BlazorComponent.Web;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Globalization;
-using BlazorComponent.I18n;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddBlazorComponent(this IServiceCollection services)
+        public static IBlazorComponentBuilder AddBlazorComponent(this IServiceCollection services)
         {
             services.TryAddScoped<DomEventJsInterop>();
             services.TryAddScoped<HeadJsInterop>();
@@ -22,7 +21,9 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IComponentActivator, AbstractComponentActivator>();
             services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies(), ServiceLifetime.Scoped, includeInternalTypes: true);
 
-            return services;
+            services.AddI18n();
+
+            return new BlazorComponentBuilder(services);
         }
     }
 }
