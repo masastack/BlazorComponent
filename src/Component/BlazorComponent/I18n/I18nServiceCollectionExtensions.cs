@@ -8,17 +8,18 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class I18nServiceCollectionExtensions
     {
-        const string LanguageConfigJson = "languageConfig.json";
-        const string DefaultCultureKey = "$DefaultLanguage";
+        const string SupportedCulturesJson = "supportedCultures.json";
+        const string DefaultCultureKey = "$DefaultCulture";
 
-        public static IServiceCollection AddMasaI18n(this IServiceCollection services, IEnumerable<(string language, Dictionary<string, string>)> locales)
+        public static IServiceCollection AddMasaI18n(this IServiceCollection services,
+            IEnumerable<(string culture, Dictionary<string, string>)> locales)
         {
             foreach (var (locale, map) in locales)
             {
                 I18nCache.AddLocale(locale, map);
                 if (map.TryGetValue(DefaultCultureKey, out string defaultCulture) && defaultCulture == "true") I18nCache.DefaultCulture = locale;
             }
-            
+
             services.TryAddScoped<I18n>();
             services.TryAddScoped<CookieStorage>();
             services.AddHttpContextAccessor();
@@ -30,7 +31,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Add MasaI18n service according to the physical path of the folder where the i18n resource file is located
         /// </summary>
         /// <param name="services"></param>
-        /// <param name="localeDirectory">i18n resource folder physical path,i18n resource file name will be used as language name</param>
+        /// <param name="localeDirectory">i18n resource folder physical path,i18n resource file name will be used as culture name</param>
         /// <returns></returns>
         public static IServiceCollection AddMasaI18nForServer(this IServiceCollection services, string localeDirectory)
         {
@@ -68,42 +69,50 @@ namespace Microsoft.Extensions.DependencyInjection
             void AddMasaI18n(string path)
             {
                 var files = new List<string>();
-                var languageMap = new List<(string language, Dictionary<string, string>)>();
-                var languageConfigPath = Path.Combine(path, LanguageConfigJson);
-                if (File.Exists(languageConfigPath))
+                var locales = new List<(string culture, Dictionary<string, string>)>();
+                var supportedCulturesPath = Path.Combine(path, SupportedCulturesJson);
+                if (File.Exists(supportedCulturesPath))
                 {
-                    var languages = JsonSerializer.Deserialize<string[]>(File.ReadAllText(languageConfigPath));
-                    files.AddRange(languages.Select(language => Path.Combine(path, $"{language}.json")));
+                    var cultures = JsonSerializer.Deserialize<string[]>(File.ReadAllText(supportedCulturesPath));
+                    files.AddRange(cultures.Select(culture => Path.Combine(path, $"{culture}.json")));
                 }
                 else
                 {
                     files.AddRange(Directory.GetFiles(path));
                 }
+
                 foreach (var filePath in files)
                 {
-                    var language = Path.GetFileNameWithoutExtension(filePath);
+                    var culture = Path.GetFileNameWithoutExtension(filePath);
                     var json = File.ReadAllText(filePath);
-                    var map = I18nReader.Read(json);
-                    languageMap.Add((language, map));
+                    var locale = I18nReader.Read(json);
+                    locales.Add((culture, locale));
                 }
-                services.AddMasaI18n(languageMap);
+
+                services.AddMasaI18n(locales);
             }
         }
 
-        public static async Task AddMasaI18nForWasmAsync(this IServiceCollection services, string languageDirectoryApi)
+        public static async Task AddMasaI18nForWasmAsync(this IServiceCollection services, string localesDirectoryApi)
         {
             using var httpclient = new HttpClient();
-            string languageConfigApi = Path.Combine(languageDirectoryApi, LanguageConfigJson);
-            var languages = await httpclient.GetFromJsonAsync<string[]>(languageConfigApi) ?? throw new Exception("Failed to read languageConfig json file data!");
-            var languageMap = new List<(string language, Dictionary<string, string>)>();
-            foreach (var language in languages)
+
+            string supportedCulturesApi = Path.Combine(localesDirectoryApi, SupportedCulturesJson);
+
+            var cultures = await httpclient.GetFromJsonAsync<string[]>(supportedCulturesApi) ??
+                           throw new Exception("Failed to read supportedCultures json file data!");
+
+            var locales = new List<(string culture, Dictionary<string, string>)>();
+
+            foreach (var culture in cultures)
             {
-                using var stream = await httpclient.GetStreamAsync(Path.Combine(languageDirectoryApi, $"{language}.json"));
+                await using var stream = await httpclient.GetStreamAsync(Path.Combine(localesDirectoryApi, $"{culture}.json"));
                 using StreamReader reader = new StreamReader(stream);
                 var map = I18nReader.Read(reader.ReadToEnd());
-                languageMap.Add((language, map));
+                locales.Add((culture, map));
             }
-            services.AddMasaI18n(languageMap);
+
+            services.AddMasaI18n(locales);
         }
     }
 }
