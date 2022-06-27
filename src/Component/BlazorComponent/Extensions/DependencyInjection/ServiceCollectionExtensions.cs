@@ -22,8 +22,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IComponentActivator, AbstractComponentActivator>();
             services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies(), ServiceLifetime.Scoped, includeInternalTypes: true);
 
-            EmbeddedLocales.Init();
-
             return services;
         }
     }

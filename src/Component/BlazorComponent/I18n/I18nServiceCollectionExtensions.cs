@@ -1,4 +1,5 @@
-﻿using BlazorComponent.I18n;
+﻿using System.Globalization;
+using BlazorComponent.I18n;
 using System.Net.Http.Json;
 using System.Reflection;
 using System.Text.Json;
@@ -14,10 +15,18 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddMasaI18n(this IServiceCollection services,
             IEnumerable<(string culture, Dictionary<string, string>)> locales)
         {
-            foreach (var (locale, map) in locales)
+            foreach (var (cultureName, map) in locales)
             {
-                I18nCache.AddLocale(locale, map);
-                if (map.TryGetValue(DefaultCultureKey, out string defaultCulture) && defaultCulture == "true") I18nCache.DefaultCulture = locale;
+                var culture = CultureInfo.CreateSpecificCulture(cultureName);
+                if (string.IsNullOrEmpty(culture.Name))
+                {
+                    continue;
+                }
+
+                I18nCache.AddLocale(culture, map);
+
+                if (map.TryGetValue(DefaultCultureKey, out string defaultCulture) && defaultCulture == "true")
+                    I18nCache.DefaultCulture = culture;
             }
 
             services.TryAddScoped<I18n>();
