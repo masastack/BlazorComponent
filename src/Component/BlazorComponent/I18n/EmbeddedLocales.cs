@@ -1,12 +1,12 @@
-﻿using System.Globalization;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace BlazorComponent.I18n;
 
-internal static class LocalesHelper
+internal static class EmbeddedLocales
 {
     private static Dictionary<string, string> _availableResources = new();
+    private static Dictionary<string, Dictionary<string, string>> _localeCaches = new();
 
     private static readonly Assembly ResourcesAssembly = typeof(I18n).Assembly;
 
@@ -17,14 +17,15 @@ internal static class LocalesHelper
                               .Select(s => Regex.Match(s, @"^.*Locales\.(.+)\.json"))
                               .Where(s => s.Success)
                               .ToDictionary(s => s.Groups[1].Value, s => s.Value);
-
-        TryGetSpecifiedLocale(CultureInfo.CurrentCulture.Name);
     }
 
-    public static IReadOnlyDictionary<string, string> TryGetSpecifiedLocale(string cultureName)
+    public static IReadOnlyDictionary<string, string> GetSpecifiedLocale(string cultureName)
     {
         if (!_availableResources.ContainsKey(cultureName))
-            return I18nCache.GetLang(cultureName);
+            return I18nCache.GetLocale(cultureName);
+
+        if (_localeCaches.ContainsKey(cultureName))
+            return _localeCaches[cultureName];
 
         string fileName = _availableResources[cultureName];
         using var fileStream = ResourcesAssembly.GetManifestResourceStream(fileName);
@@ -32,9 +33,17 @@ internal static class LocalesHelper
         using var streamReader = new StreamReader(fileStream);
         var content = streamReader.ReadToEnd();
 
-        var map = I18nReader.Read(content);
-        I18nCache.AddLang(cultureName, map);
+        var locale = I18nReader.Read(content);
+        
+        _localeCaches.Add(cultureName, locale);
+        
+        I18nCache.AddLocale(cultureName, locale);
 
-        return map;
+        return locale;
+    }
+
+    public static bool ContainsLocale(string culture)
+    {
+        return _localeCaches.ContainsKey(culture);
     }
 }

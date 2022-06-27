@@ -1,88 +1,101 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Http;
 
-namespace BlazorComponent.I18n
+namespace BlazorComponent.I18n;
+
+public class I18n
 {
-    public class I18n
+    private const string CultureCookieKey = "Masa_I18nConfig_Culture";
+
+    private readonly CookieStorage _cookieStorage;
+
+    private string? _culture;
+    private IReadOnlyDictionary<string, string>? _locale;
+
+    public I18n(CookieStorage cookieStorage, IHttpContextAccessor httpContextAccessor)
     {
-        private static string LanguageCookieKey { get; set; } = "Masa_I18nConfig_Language";
+        _cookieStorage = cookieStorage;
 
-        private readonly CookieStorage _cookieStorage;
-        
-        private string? _currentLanguage;
-        private IReadOnlyDictionary<string, string>? _languageMap;
-
-        public I18n(CookieStorage cookieStorage, IHttpContextAccessor httpContextAccessor)
+        string culture;
+        if (httpContextAccessor.HttpContext is not null)
         {
-            _cookieStorage = cookieStorage;
+            culture = httpContextAccessor.HttpContext.Request.Cookies[CultureCookieKey];
 
-            if (httpContextAccessor.HttpContext is not null)
+            if (culture is null)
             {
-                _currentLanguage = httpContextAccessor.HttpContext.Request.Cookies[LanguageCookieKey];
-                if (_currentLanguage is not null) return;
-
                 var acceptLanguage = httpContextAccessor.HttpContext.Request.Headers["accept-language"].FirstOrDefault();
                 if (acceptLanguage is not null)
                 {
-                    _currentLanguage = acceptLanguage.Split(",").Select(lang =>
-                    {
-                        var arr = lang.Split(';');
-                        if (arr.Length == 1) return (arr[0], 1);
-                        else return (arr[0], Convert.ToDecimal(arr[1].Split("=")[1]));
-                    }).OrderByDescending(lang => lang.Item2).FirstOrDefault(lang => I18nCache.ContainsLang(lang.Item1)).Item1;
+                    culture = acceptLanguage
+                              .Split(",")
+                              .Select(lang =>
+                              {
+                                  var arr = lang.Split(';');
+                                  if (arr.Length == 1) return (arr[0], 1);
+                                  else return (arr[0], Convert.ToDecimal(arr[1].Split("=")[1]));
+                              })
+                              .OrderByDescending(lang => lang.Item2)
+                              .FirstOrDefault(lang => I18nCache.ContainsCulture(lang.Item1)).Item1;
                 }
             }
-            else
-            {
-                _currentLanguage = _cookieStorage.GetCookie(LanguageCookieKey);
-            }
-
-            SetLang(I18nCache.DefaultLanguage);
         }
-
-        public string Language => CurrentLanguage;
-        
-        public string CurrentLanguage
+        else
         {
-            get => _currentLanguage ?? I18nCache.DefaultLanguage;
-            private set
-            {
-                _currentLanguage = value ?? I18nCache.DefaultLanguage;
-                _languageMap = I18nCache.GetLang(_currentLanguage);
-            }
+            culture = _cookieStorage.GetCookie(CultureCookieKey);
         }
 
-        public IReadOnlyDictionary<string, string> LanguageMap
+        culture ??= CultureInfo.CurrentCulture.Name;
+
+        if (!EmbeddedLocales.ContainsLocale(culture))
         {
-            get => _languageMap ?? (_languageMap = I18nCache.GetLang(CurrentLanguage)) ??
-                throw new Exception($"Not has {CurrentLanguage} language !");
-            private set => _languageMap = value;
+            AddCulture(culture, EmbeddedLocales.GetSpecifiedLocale(culture));
         }
 
-        public void SetLang(string language)
+        _culture = culture;
+    }
+
+    public string Culture
+    {
+        get => _culture ?? I18nCache.DefaultCulture;
+        private set
         {
-            LanguageMap = LocalesHelper.TryGetSpecifiedLocale(language);
-            _cookieStorage?.SetItemAsync(LanguageCookieKey, language);
-            CurrentLanguage = language;
+            _culture = value ?? I18nCache.DefaultCulture;
+            _locale = I18nCache.GetLocale(_culture);
         }
+    }
 
-        public void AddLang(string language, IReadOnlyDictionary<string, string>? langMap, bool isDefaultLanguage = false)
+    public IReadOnlyDictionary<string, string> Locale => _locale ?? (_locale = I18nCache.GetLocale(Culture)) ??
+        throw new Exception($"Not has {Culture} language !");
+
+    public void SetCulture(string culture)
+    {
+        if (!EmbeddedLocales.ContainsLocale(culture))
         {
-            I18nCache.AddLang(language, langMap, isDefaultLanguage);
+            AddCulture(culture, EmbeddedLocales.GetSpecifiedLocale(culture));
         }
 
-        public string? T(string key, bool matchLastLevel = false, [DoesNotReturnIf(true)] bool whenNullReturnKey = true)
+        _cookieStorage?.SetItemAsync(CultureCookieKey, culture);
+
+        Culture = culture;
+    }
+
+    public void AddCulture(string culture, IReadOnlyDictionary<string, string>? locale, bool isDefaultLanguage = false)
+    {
+        I18nCache.AddLocale(culture, locale, isDefaultLanguage);
+    }
+
+    public string? T(string key, bool matchLastLevel = false, [DoesNotReturnIf(true)] bool whenNullReturnKey = true)
+    {
+        if (matchLastLevel)
         {
-            if (matchLastLevel)
-            {
-                return LanguageMap.FirstOrDefault(kv => kv.Key.EndsWith($".{key}") || kv.Key == key).Value ?? (whenNullReturnKey ? key : null);
-            }
-
-            return LanguageMap.GetValueOrDefault(key) ?? (whenNullReturnKey ? key : null);
+            return Locale.FirstOrDefault(kv => kv.Key.EndsWith($".{key}") || kv.Key == key).Value ?? (whenNullReturnKey ? key : null);
         }
 
-        public string? T(string scope, string key, [DoesNotReturnIf(true)] bool whenNullReturnKey = true)
-        {
-            return LanguageMap.GetValueOrDefault($"{scope}.{key}") ?? (whenNullReturnKey ? key : null);
-        }
+        return Locale.GetValueOrDefault(key) ?? (whenNullReturnKey ? key : null);
+    }
+
+    public string? T(string scope, string key, [DoesNotReturnIf(true)] bool whenNullReturnKey = true)
+    {
+        return Locale.GetValueOrDefault($"{scope}.{key}") ?? (whenNullReturnKey ? key : null);
     }
 }

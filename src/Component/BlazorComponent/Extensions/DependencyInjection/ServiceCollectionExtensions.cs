@@ -22,7 +22,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IComponentActivator, AbstractComponentActivator>();
             services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies(), ServiceLifetime.Scoped, includeInternalTypes: true);
 
-            LocalesHelper.Init();
+            EmbeddedLocales.Init();
 
             return services;
         }
