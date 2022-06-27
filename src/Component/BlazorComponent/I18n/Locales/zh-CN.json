@@ -39,7 +39,7 @@
       "prev": "上一张",
       "next": "下一张",
       "ariaLabel": {
-        "delimiter": "Carousel slide {0} of {1}"
+        "delimiter": "第 {0} 张幻灯片（共 {1} 张）"
       }
     },
     "calendar": {
@@ -64,7 +64,7 @@
     },
     "rating": {
       "ariaLabel": {
-        "icon": "Rating {0} of {1}"
+        "icon": "评级 {0}（满分 {1}）"
       }
     },
     "pageTabs": {
