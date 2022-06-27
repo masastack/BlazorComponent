@@ -48,7 +48,7 @@ public class I18n
 
         if (!EmbeddedLocales.ContainsLocale(culture))
         {
-            AddCulture(culture, EmbeddedLocales.GetSpecifiedLocale(culture));
+            AddLocale(culture, EmbeddedLocales.GetSpecifiedLocale(culture));
         }
 
         _culture = culture;
@@ -71,7 +71,7 @@ public class I18n
     {
         if (!EmbeddedLocales.ContainsLocale(culture))
         {
-            AddCulture(culture, EmbeddedLocales.GetSpecifiedLocale(culture));
+            AddLocale(culture, EmbeddedLocales.GetSpecifiedLocale(culture));
         }
 
         _cookieStorage?.SetItemAsync(CultureCookieKey, culture);
@@ -79,9 +79,9 @@ public class I18n
         Culture = culture;
     }
 
-    public void AddCulture(string culture, IReadOnlyDictionary<string, string>? locale, bool isDefaultLanguage = false)
+    public void AddLocale(string culture, IReadOnlyDictionary<string, string>? locale, bool isDefault = false)
     {
-        I18nCache.AddLocale(culture, locale, isDefaultLanguage);
+        I18nCache.AddLocale(culture, locale, isDefault);
     }
 
     public string? T(string key, bool matchLastLevel = false, [DoesNotReturnIf(true)] bool whenNullReturnKey = true)

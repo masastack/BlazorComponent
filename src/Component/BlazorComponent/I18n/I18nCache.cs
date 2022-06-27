@@ -19,13 +19,13 @@ internal static class I18nCache
         set => _defaultCulture = value;
     }
 
-    public static void AddLocale(string culture, IReadOnlyDictionary<string, string>? langMap, bool isDefaultLanguage = false)
+    public static void AddLocale(string culture, IReadOnlyDictionary<string, string>? locale, bool isDefault = false)
     {
-        if (langMap is null) return;
+        if (locale is null) return;
 
-        if (isDefaultLanguage) DefaultCulture = culture;
+        if (isDefault) DefaultCulture = culture;
 
-        _i18nCache.AddOrUpdate(culture, langMap, (_,  dictionary) => Merge(dictionary, langMap));
+        _i18nCache.AddOrUpdate(culture, locale, (_,  dictionary) => Merge(dictionary, locale));
     }
 
     public static IReadOnlyDictionary<string, string>? GetLocale(string culture)

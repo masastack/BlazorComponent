@@ -9,14 +9,14 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class I18nServiceCollectionExtensions
     {
         const string LanguageConfigJson = "languageConfig.json";
-        const string DefaultLanguageKey = "$DefaultLanguage";
+        const string DefaultCultureKey = "$DefaultLanguage";
 
-        public static IServiceCollection AddMasaI18n(this IServiceCollection services, IEnumerable<(string language, Dictionary<string, string>)> languageMap)
+        public static IServiceCollection AddMasaI18n(this IServiceCollection services, IEnumerable<(string language, Dictionary<string, string>)> locales)
         {
-            foreach (var (language, map) in languageMap)
+            foreach (var (locale, map) in locales)
             {
-                I18nCache.AddLocale(language, map);
-                if (map.TryGetValue(DefaultLanguageKey, out string defaultLanguage) && defaultLanguage == "true") I18nCache.DefaultCulture = language;
+                I18nCache.AddLocale(locale, map);
+                if (map.TryGetValue(DefaultCultureKey, out string defaultCulture) && defaultCulture == "true") I18nCache.DefaultCulture = locale;
             }
             
             services.TryAddScoped<I18n>();
@@ -30,37 +30,37 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Add MasaI18n service according to the physical path of the folder where the i18n resource file is located
         /// </summary>
         /// <param name="services"></param>
-        /// <param name="languageDirectory">i18n resource folder physical path,i18n resource file name will be used as language name</param>
+        /// <param name="localeDirectory">i18n resource folder physical path,i18n resource file name will be used as language name</param>
         /// <returns></returns>
-        public static IServiceCollection AddMasaI18nForServer(this IServiceCollection services, string languageDirectory)
+        public static IServiceCollection AddMasaI18nForServer(this IServiceCollection services, string localeDirectory)
         {
-            if (Directory.Exists(languageDirectory))
+            if (Directory.Exists(localeDirectory))
             {
-                AddMasaI18n(languageDirectory);
+                AddMasaI18n(localeDirectory);
             }
             else
             {
                 var assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                var i18nPath = Path.Combine(assemblyPath, languageDirectory);
+                var i18nPath = Path.Combine(assemblyPath, localeDirectory);
                 if (Directory.Exists(i18nPath))
                 {
                     AddMasaI18n(i18nPath);
                 }
-                else if (languageDirectory.StartsWith("wwwroot"))
+                else if (localeDirectory.StartsWith("wwwroot"))
                 {
                     var wwwrootPath = Path.Combine(Path.Combine(assemblyPath, "wwwroot"));
                     if (Directory.Exists(wwwrootPath))
                     {
-                        var i18nDirectory = languageDirectory.Split('/').Last();
+                        var i18nDirectory = localeDirectory.Split('/').Last();
                         i18nPath = Directory.GetDirectories(wwwrootPath, i18nDirectory, SearchOption.AllDirectories).FirstOrDefault();
                         if (i18nPath is not null)
                         {
                             AddMasaI18n(i18nPath);
                         }
-                        else throw new Exception($"Can't find path：{languageDirectory}");
+                        else throw new Exception($"Can't find path：{localeDirectory}");
                     }
                 }
-                else throw new Exception($"Can't find path：{languageDirectory}");
+                else throw new Exception($"Can't find path：{localeDirectory}");
             }
 
             return services;
