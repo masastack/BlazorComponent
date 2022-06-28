@@ -9,42 +9,42 @@ public class I18n
 
     private readonly CookieStorage _cookieStorage;
 
-    private string? _culture;
+    private CultureInfo? _culture;
     private IReadOnlyDictionary<string, string>? _locale;
 
     public I18n(CookieStorage cookieStorage, IHttpContextAccessor httpContextAccessor)
     {
         _cookieStorage = cookieStorage;
 
-        string culture;
+        string cultureName;
         if (httpContextAccessor.HttpContext is not null)
         {
-            culture = httpContextAccessor.HttpContext.Request.Cookies[CultureCookieKey];
+            cultureName = httpContextAccessor.HttpContext.Request.Cookies[CultureCookieKey];
 
-            if (culture is null)
+            if (cultureName is null)
             {
                 var acceptLanguage = httpContextAccessor.HttpContext.Request.Headers["accept-language"].FirstOrDefault();
                 if (acceptLanguage is not null)
                 {
-                    culture = acceptLanguage
-                              .Split(",")
-                              .Select(lang =>
-                              {
-                                  var arr = lang.Split(';');
-                                  if (arr.Length == 1) return (arr[0], 1);
-                                  else return (arr[0], Convert.ToDecimal(arr[1].Split("=")[1]));
-                              })
-                              .OrderByDescending(lang => lang.Item2)
-                              .FirstOrDefault(lang => I18nCache.ContainsCulture(lang.Item1)).Item1;
+                    cultureName = acceptLanguage
+                                  .Split(",")
+                                  .Select(lang =>
+                                  {
+                                      var arr = lang.Split(';');
+                                      if (arr.Length == 1) return (arr[0], 1);
+                                      else return (arr[0], Convert.ToDecimal(arr[1].Split("=")[1]));
+                                  })
+                                  .OrderByDescending(lang => lang.Item2)
+                                  .FirstOrDefault(lang => I18nCache.ContainsCulture(lang.Item1)).Item1;
                 }
             }
         }
         else
         {
-            culture = _cookieStorage.GetCookie(CultureCookieKey);
+            cultureName = _cookieStorage.GetCookie(CultureCookieKey);
         }
 
-        culture ??= CultureInfo.CurrentCulture.Name;
+        var culture = !string.IsNullOrEmpty(cultureName) ? new CultureInfo(cultureName) : CultureInfo.CurrentCulture;
 
         if (!EmbeddedLocales.ContainsLocale(culture))
         {
@@ -54,7 +54,7 @@ public class I18n
         _culture = culture;
     }
 
-    public string Culture
+    public CultureInfo Culture
     {
         get => _culture ?? I18nCache.DefaultCulture;
         private set
@@ -64,10 +64,10 @@ public class I18n
         }
     }
 
-    public IReadOnlyDictionary<string, string> Locale => _locale ?? (_locale = I18nCache.GetLocale(Culture)) ??
-        throw new Exception($"Not has {Culture} language !");
+    public IReadOnlyDictionary<string, string> Locale =>
+        _locale ?? (_locale = I18nCache.GetLocale(Culture)) ?? throw new Exception($"Not has {Culture} language !");
 
-    public void SetCulture(string culture)
+    public void SetCulture(CultureInfo culture)
     {
         if (!EmbeddedLocales.ContainsLocale(culture))
         {
@@ -77,12 +77,16 @@ public class I18n
         _cookieStorage?.SetItemAsync(CultureCookieKey, culture);
 
         Culture = culture;
+
+        CultureInfo.DefaultThreadCurrentUICulture = culture;
     }
 
-    public void AddLocale(string culture, IReadOnlyDictionary<string, string>? locale, bool isDefault = false)
+    public void AddLocale(CultureInfo culture, IReadOnlyDictionary<string, string>? locale, bool isDefault = false)
     {
         I18nCache.AddLocale(culture, locale, isDefault);
     }
+
+    public IEnumerable<CultureInfo> SupportedCultures => I18nCache.GetCultures();
 
     public string? T(string key, bool matchLastLevel = false, [DoesNotReturnIf(true)] bool whenNullReturnKey = true)
     {
