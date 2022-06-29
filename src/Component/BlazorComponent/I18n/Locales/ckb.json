@@ -2,6 +2,11 @@
   "$masaBlazor": {
     "badge": "باج",
     "close": "داخستن",
+    "copy": "کۆپیکردن",
+    "save": "هەڵگرتن",
+    "cancel": "هەڵوەشاندنەوه",
+    "delete": "سڕینەوە",
+    "ok": "باشه",
     "dataIterator": {
       "noResultsText": "هیچ تۆمارێکی هاوتا نەدۆزرایەوە",
       "loadingText": "بارکردنی ئایتمەکان..."

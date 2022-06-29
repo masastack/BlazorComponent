@@ -2,6 +2,11 @@
   "$masaBlazor": {
     "badge": "nişan",
     "close": "Bağla",
+    "copy": "Köçür",
+    "save": "Qeyd Et",
+    "cancel": "Ləğv etmək",
+    "delete": "Sil",
+    "ok": "Yaxşı",
     "dataIterator": {
       "noResultsText": "Uyğun məlumat tapılmadı",
       "loadingText": "Yüklənir... Zəhmət olmasa, gözləyin."

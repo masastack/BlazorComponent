@@ -2,6 +2,11 @@
   "$masaBlazor": {
     "badge": "شارة",
     "close": "إغلاق",
+    "copy": "نسخ",
+    "save": "أنقذ",
+    "cancel": "إلغاء الأمر",
+    "delete": "حذف",
+    "ok": "حسنًا",
     "dataIterator": {
       "noResultsText": "لا توجد سجلات مطابقة",
       "loadingText": "تحميل العنصر..."

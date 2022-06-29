@@ -2,6 +2,11 @@
   "$masaBlazor": {
     "badge": "Abzeichen",
     "close": "Schließen",
+    "copy": "Copy",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "ok": "OK",
     "dataIterator": {
       "noResultsText": "Keine Elemente gefunden",
       "loadingText": "Lade Elemente..."
