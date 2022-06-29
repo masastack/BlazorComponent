@@ -35,9 +35,10 @@ function sharedCreateEventArgs(type: "mouse" | "touch", e: Event,) {
 
   if (e.target) {
     const target = e.target as HTMLElement;
-    const _bl_ = target.getAttributeNames().find(a => a.startsWith('_bl_'));
-    if (_bl_) {
-      args.target['selector'] = `[${_bl_}]`
+    const elementReferenceId = target.getAttributeNames().find(a => a.startsWith('_bl_'));
+    if (elementReferenceId) {
+      args.target['elementReferenceId'] = elementReferenceId
+      args.target['selector'] = `[${elementReferenceId}]`
     } else {
       args.target['selector'] = getElementSelector(target)
     }
