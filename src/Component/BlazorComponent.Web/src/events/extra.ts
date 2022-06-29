@@ -20,7 +20,6 @@ export function registerExtraTouchEvent(eventType: string, eventName: string) {
 }
 
 function sharedCreateEventArgs(type: "mouse" | "touch", e: Event,) {
-  console.log('sharedCreateEventArgs')
   let args = { target: {} }
   if (type === 'mouse') {
     args = {
@@ -44,7 +43,7 @@ function sharedCreateEventArgs(type: "mouse" | "touch", e: Event,) {
       args.target['selector'] = getElementSelector(target)
     }
 
-    args.target['class'] = "testtest " + target.getAttribute('class')
+    args.target['class'] = target.getAttribute('class')
   }
 
   return args;
