@@ -29,7 +29,7 @@ public class CookieStorage
             return jsInProcess.Invoke<string>("eval", $"{GetCookieJs}('{key}')");
         }
 
-        // TODO: how to read cookie in MAUI?
+        // TODO: how to read config in MAUI?
 
         return null;
     }
