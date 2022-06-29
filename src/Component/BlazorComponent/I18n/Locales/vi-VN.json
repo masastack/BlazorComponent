@@ -2,6 +2,11 @@
   "$masaBlazor": {
     "badge": "Huy hiệu",
     "close": "Đóng",
+    "copy": "Copy",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "ok": "OK",
     "dataIterator": {
       "noResultsText": "Không tìm thấy kết quả nào",
       "loadingText": "Đang tải..."

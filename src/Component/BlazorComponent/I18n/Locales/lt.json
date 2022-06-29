@@ -2,6 +2,11 @@
   "$masaBlazor": {
     "badge": "Ženklelis",
     "close": "Uždaryti",
+    "copy": "Copy",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "ok": "OK",
     "dataIterator": {
       "noResultsText": "Nerasta atitinkančių įrašų",
       "loadingText": "Kraunama..."

@@ -2,6 +2,11 @@
   "$masaBlazor": {
     "badge": "徽章",
     "close": "關閉",
+    "copy": "複製",
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "刪除",
+    "ok": "確認",
     "dataIterator": {
       "noResultsText": "沒有符合條件的結果",
       "loadingText": "讀取中..."

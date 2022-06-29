@@ -2,6 +2,11 @@
   "$masaBlazor": {
     "badge": "Placa",
     "close": "Cerrar",
+    "copy": "Copy",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "ok": "OK",
     "dataIterator": {
       "noResultsText": "Ningún elemento coincide con la búsqueda",
       "loadingText": "Cargando..."

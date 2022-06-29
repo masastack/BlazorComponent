@@ -2,6 +2,11 @@
   "$masaBlazor": {
     "badge": "สัญลักษณ์",
     "close": "ปิด",
+    "copy": "Copy",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "ok": "OK",
     "dataIterator": {
       "noResultsText": "ไม่พบข้อมูลที่ค้นหา",
       "loadingText": "กำลังโหลดข้อมูล..."

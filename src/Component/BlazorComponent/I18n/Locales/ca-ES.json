@@ -2,6 +2,11 @@
   "$masaBlazor": {
     "badge": "Insígnia",
     "close": "Tancar",
+    "copy": "Copiar",
+    "save": "Salvar",
+    "cancel": "Cancel·lar",
+    "delete": "esborrar",
+    "ok": "Bé",
     "dataIterator": {
       "noResultsText": "Sense dades per mostrar",
       "loadingText": "Carregant..."
