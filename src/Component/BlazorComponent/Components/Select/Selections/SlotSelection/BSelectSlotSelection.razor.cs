@@ -11,6 +11,9 @@ namespace BlazorComponent
         public int Index { get; set; }
 
         [Parameter]
+        public bool Selected { get; set; }
+
+        [Parameter]
         public bool Last { get; set; }
 
         protected RenderFragment<SelectSelectionProps<TItem>> SelectionContent => Component.SelectionContent;

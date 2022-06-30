@@ -8,6 +8,7 @@ namespace BlazorComponent
         IList<TItemValue> InternalValues { get; }
         IList<TItem> ComputedItems { get; }
         IList<TItem> SelectedItems { get; }
+        int SelectedIndex { get; set; }
         object Menu { set; }
         bool HasChips { get; }
         RenderFragment PrependItemContent { get; }
