@@ -15,46 +15,14 @@
         public bool Dark { get; set; }
 
         [Parameter]
-        public bool Light { get; set; }           
+        public bool Light { get; set; }
 
         [Parameter]
-        public List<BDragItem> Value
-        {
-            get { return _value; }
-            set
-            {
-                if (value == null || !value.Any())
-                {
-                    if (!_value.Any())
-                        return;
-                    _value.Clear();
-                }
-                else
-                {
-                    _value = value;
-                }
-            }
-        }
-
-        private SortedList<int, BDragItem> Sorts
-        {
-            get
-            {
-                var index = 0;
-                var result = new SortedList<int, BDragItem>();
-                do
-                {
-                    result.Add(index, _value[index]);
-                    index++;
-                }
-                while (_value.Count - index > 0);
-                return result;
-            }
-        }
-
-        private List<BDragItem> _value = new();
+        public List<BDragItem> Value { get; set; } = new();
 
         protected bool _isRender = true;
+
+        
 
         protected override void OnParametersSet()
         {
@@ -71,6 +39,11 @@
         protected override bool ShouldRender()
         {
             return base.ShouldRender() && _isRender;
+        }
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            base.OnAfterRender(firstRender);
         }
 
         public bool IsDark
@@ -95,20 +68,20 @@
         {
             if (!Contains(item))
             {
-                Add(_value, item);
+                Add(Value, item);
                 FreshRender();
             }
         }
 
         public void Add(BDragItem item, int position = -1)
         {
-            Add(_value, item, position);
+            Add(Value, item, position);
             FreshRender();
         }
 
         public void AddRange(IEnumerable<BDragItem> sources)
         {
-            _value.AddRange(sources);
+            Value.AddRange(sources);
             FreshRender();
         }
 
@@ -118,14 +91,14 @@
                 return;
             foreach (var item in items)
             {
-                Remove(_value, item);
+                Remove(Value, item);
             }
             FreshRender();
         }
 
         public void Clear()
         {
-            _value.Clear();
+            Value.Clear();
             FreshRender();
         }
 
@@ -133,27 +106,30 @@
         {
             if (item == null || string.IsNullOrEmpty(item.Id))
                 return true;
-            return _value.Any(it => it.Id == item.Id);
+            return Value.Any(it => it.Id == item.Id);
         }
 
         public int GetIndex(BDragItem item)
         {
             if (item == null || string.IsNullOrEmpty(item.Id))
                 return -1;
-            return _value.FindIndex(it => it.Id == item.Id);
+            return Value.FindIndex(it => it.Id == item.Id);
         }
 
         public bool Update(BDragItem item, int oldIndex, int newIndex)
         {
-            var index = _value.FindIndex(it => it.Id == item.Id);
+            var index = Value.FindIndex(it => it.Id == item.Id);
             if (index < 0)
                 return false;
             if (index - newIndex == 0)
                 return true;
 
             Value.RemoveAt(index);
-            Value.Insert(newIndex, item);            
-            FreshRender();
+            if (newIndex - Value.Count == 0)
+                Value.Add(item);
+            else
+                Value.Insert(newIndex, item);
+            UpdateIndex();
             return true;
         }
 
@@ -183,8 +159,20 @@
             return true;
         }
 
+        private void UpdateIndex()
+        {
+            var index = 0;
+            foreach (var item in Value)
+            {
+                if (item.Value - index != 0)
+                    item.SetValue(index);
+                index++;
+            }
+        }
+
         protected void FreshRender()
         {
+            UpdateIndex();
             StateHasChanged();
         }
     }

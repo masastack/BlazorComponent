@@ -1,6 +1,6 @@
 ﻿namespace BlazorComponent
 {
-    public partial class BDragItem : BDomComponentBase, IDisposable
+    public partial class BDragItem : BDomComponentBase, IDisposable, IComparable<BDragItem>
     {
         [CascadingParameter]
         public BDragZone DragZone { get; set; }
@@ -14,14 +14,16 @@
             DragZone.Register(this);
         }
 
-        public int Value
+        public override Task SetParametersAsync(ParameterView parameters)
         {
-            get
-            {
-                if (DragZone != null)
-                    return DragZone.GetIndex(this);
-                return -1;
-            }
+            return base.SetParametersAsync(parameters);
+        }
+
+        
+        public int Value { get; private set; }
+
+        internal void SetValue(int val) {
+            Value = val;
         }
 
         public BDragItem Clone()
@@ -32,6 +34,11 @@
         public override void Dispose()
         {
             base.Dispose();
+        }
+
+        public int CompareTo(BDragItem other)
+        {
+            return this.Value - other.Value;
         }
     }
 }

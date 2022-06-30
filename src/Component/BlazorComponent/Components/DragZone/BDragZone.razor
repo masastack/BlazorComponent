@@ -4,17 +4,19 @@
 <CascadingValue Value="IsDark" Name="IsDark">
     <CascadingValue Value="this" IsFixed>
         <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @attributes="Attributes">
+
             @if (Value != null && Value.Any())
             {
-                foreach (var item in Sorts)
+                foreach (var item in Value)
                 {
-                    <DynamicComponent Type=item.Value.GetType() Parameters=item.Value.ToParameters() @key=item></DynamicComponent>
+                    <DynamicComponent Type=item.GetType() Parameters=item.ToParameters() @key=item></DynamicComponent>
                 }
             }
             else
             {
                 @ChildContent
             }
+
         </div>
     </CascadingValue>
 </CascadingValue>
