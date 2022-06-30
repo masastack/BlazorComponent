@@ -72,11 +72,9 @@ namespace BlazorComponent
             }
         }
 
-        public virtual void Unregister(BGroupable<ItemGroupBase> item)
+        public virtual void Unregister(IGroupable item)
         {
             Items.Remove(item);
-
-            // TODO: other code
         }
 
         private async Task UpdateMandatoryAsync(bool last = false)
