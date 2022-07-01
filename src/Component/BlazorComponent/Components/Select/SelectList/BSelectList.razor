@@ -4,7 +4,7 @@
 @typeparam TItemValue
 @typeparam TValue
 
-<BList @attributes="GetAttributes(typeof(BList))">
+<BList @attributes="@GetAttributes(typeof(BList))">
     @{
         var children = new List<RenderFragment>();
 
@@ -50,6 +50,7 @@
             children.Add(AppendItemContent);
         }
 
+        @SelectedIndex @Items.Count
         foreach (var child in children)
         {
             @child

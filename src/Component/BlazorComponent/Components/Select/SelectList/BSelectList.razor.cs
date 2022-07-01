@@ -41,6 +41,9 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment AppendItemContent { get; set; }
 
+        [Parameter]
+        public int SelectedIndex { get; set; }
+
         protected IList<TItemValue> ParsedItems
         {
             get

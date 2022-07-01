@@ -99,23 +99,8 @@ namespace BlazorComponent
 
         public bool IsFocused
         {
-            get
-            {
-                return _isFocused;
-            }
-            protected set
-            {
-                _isFocused = value;
-
-                if (!_isFocused && !IsDisabled)
-                {
-                    HasFocused = true;
-                    if (ValidateOnBlur)
-                    {
-                        Validate();
-                    }
-                }
-            }
+            get => GetValue<bool>();
+            protected set => SetValue(value);
         }
 
         public List<string> ErrorBucket { get; protected set; } = new();
@@ -212,6 +197,21 @@ namespace BlazorComponent
 
                         InputValue = val;
                     }
+                })
+                .Watch<bool>(nameof(IsFocused), async val =>
+                {
+                    _isFocused = val;
+
+                    if (!_isFocused && !IsDisabled)
+                    {
+                        HasFocused = true;
+                        if (ValidateOnBlur)
+                        {
+                            Validate();
+                        }
+                    }
+
+                    await OnIsFocusedChanged(val);
                 });
         }
 
@@ -230,6 +230,11 @@ namespace BlazorComponent
             SubscribeValidationStateChanged();
         }
 
+        protected virtual Task OnIsFocusedChanged(bool val)
+        {
+            return Task.CompletedTask;
+        }
+        
         protected virtual void Validate()
         {
             if (FirstValidate)
