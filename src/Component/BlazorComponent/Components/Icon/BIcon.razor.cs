@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public partial class BIcon : IThemeable, ITransitionIfElse
+    public partial class BIcon : IThemeable, ITransitionIf
     {
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
         [Parameter]
-        public bool? IfElse { get; set; }
+        public bool If { get; set; } = true;
 
         #region IIcon
 

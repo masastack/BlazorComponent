@@ -17,8 +17,6 @@ namespace BlazorComponent
 
         public IDictionary<string, object> Attrs => Component.Attrs;
 
-        public bool? IfElse => Component.IfElse;
-
-        public bool ComputedIfElse => IfElse ?? true;
+        public bool If => Component.If;
     }
 }

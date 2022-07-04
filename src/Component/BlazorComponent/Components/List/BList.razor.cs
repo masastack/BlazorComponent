@@ -2,7 +2,7 @@
 
 namespace BlazorComponent
 {
-    public partial class BList : BDomComponentBase
+    public partial class BList : BDomComponentBase, ITransitionIf
     {
         // TODO: add cascading value in Menu
         [CascadingParameter(Name = "IsInMenu")]
@@ -33,6 +33,9 @@ namespace BlazorComponent
 
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
+
+        [Parameter]
+        public bool If { get; set; } = true;
 
         public bool IsDark
         {
