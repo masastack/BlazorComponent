@@ -22,7 +22,7 @@
 
         private bool _firstRender = true;
 
-        protected bool _isRender = true;        
+        protected bool _isRender = true;
 
         protected override void OnParametersSet()
         {
@@ -43,7 +43,7 @@
 
         protected override void OnAfterRender(bool firstRender)
         {
-            _firstRender=firstRender;
+            _firstRender = firstRender;
             base.OnAfterRender(firstRender);
         }
 
