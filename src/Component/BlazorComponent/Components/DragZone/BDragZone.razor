@@ -2,19 +2,19 @@
 @inherits BDomComponentBase
 
 <CascadingValue Value="IsDark" Name="IsDark">
-    <CascadingValue Value="this" IsFixed>
-        <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @attributes="Attributes">
-            @if (Value != null && Value.Any())
+    <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @attributes="Attributes">
+        <CascadingValue Value="this" IsFixed=true>
+            @if (Items != null && Items.Any())
             {
-                foreach (var item in Sorts)
+                foreach (var item in Items)
                 {
-                    <DynamicComponent Type=item.Value.GetType() Parameters=item.Value.ToParameters() @key=item></DynamicComponent>
+                    <DynamicComponent Type=item.GetType() Parameters=item.ToParameters() @key=item></DynamicComponent>
                 }
             }
-            else
+            else if(_firstRender)
             {
                 @ChildContent
             }
-        </div>
-    </CascadingValue>
+        </CascadingValue>
+    </div>
 </CascadingValue>
