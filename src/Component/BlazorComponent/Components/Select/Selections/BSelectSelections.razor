@@ -24,7 +24,9 @@
     @for (var index = 0; index < SelectedItems.Count; index++)
     {
         var item = SelectedItems[index];
-        @RenderPart(selection,item,index,index==SelectedItems.Count-1,arg2Name:"Last")
+        var selected = index == SelectedIndex;
+        var last = index == SelectedItems.Count - 1;
+        @RenderPart(selection, item, index, selected ,last)
     }
     @*When SelectedItems changed,blazor will create a new input element*@
     @*This will trigger blur event,so we and a wrapper div and key to avoid it*@
@@ -32,5 +34,3 @@
         @RenderPart(typeof(BTextFieldInput<,>))
     </div>
 </div>
-
-

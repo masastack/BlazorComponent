@@ -86,7 +86,7 @@ namespace BlazorComponent
             });
         }
 
-        protected RenderFragment RenderPart(Type keyType, object arg0, object arg1, object arg2, object arg3, [CallerArgumentExpression("arg0")] string arg0Name = null, [CallerArgumentExpression("arg1")] string arg1Name = null, [CallerArgumentExpression("arg2")] string arg2Name = null, [CallerArgumentExpression("arg2")] string arg3Name = null)
+        protected RenderFragment RenderPart(Type keyType, object arg0, object arg1, object arg2, object arg3, [CallerArgumentExpression("arg0")] string arg0Name = null, [CallerArgumentExpression("arg1")] string arg1Name = null, [CallerArgumentExpression("arg2")] string arg2Name = null, [CallerArgumentExpression("arg3")] string arg3Name = null)
         {
             return AbstractProvider.GetPartContent(keyType, Component, builder =>
             {

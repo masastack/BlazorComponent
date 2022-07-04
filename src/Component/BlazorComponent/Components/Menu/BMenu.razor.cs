@@ -23,7 +23,6 @@ namespace BlazorComponent
         [Parameter]
         public string ContentStyle { get; set; }
 
-        //TODO:fix here
         [Parameter]
         public bool DisableKeys { get; set; }
 

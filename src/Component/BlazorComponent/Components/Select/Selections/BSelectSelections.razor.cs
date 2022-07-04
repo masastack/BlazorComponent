@@ -9,5 +9,7 @@ namespace BlazorComponent
         protected RenderFragment<SelectSelectionProps<TItem>> SelectionContent => Component.SelectionContent;
 
         protected IList<TItem> SelectedItems => Component.SelectedItems;
+
+        protected int SelectedIndex => Component.SelectedIndex;
     }
 }

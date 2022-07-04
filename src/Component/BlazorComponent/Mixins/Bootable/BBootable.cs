@@ -2,7 +2,7 @@
 
 public class BBootable : BActivatable
 {
-    protected override async Task ShowLazyContent()
+    protected override async Task<bool> ShowLazyContent()
     {
         if (!IsBooted)
         {
@@ -10,6 +10,10 @@ public class BBootable : BActivatable
             IsBooted = true;
             await Task.Delay(16);
             StateHasChanged();
+
+            return true;
         }
+
+        return false;
     }
 }
