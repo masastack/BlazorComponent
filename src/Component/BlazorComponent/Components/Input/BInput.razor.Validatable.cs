@@ -211,7 +211,7 @@ namespace BlazorComponent
                         }
                     }
 
-                    await OnIsFocusedChanged(val);
+                    await OnIsFocusedChange(val);
                 });
         }
 
@@ -230,7 +230,7 @@ namespace BlazorComponent
             SubscribeValidationStateChanged();
         }
 
-        protected virtual Task OnIsFocusedChanged(bool val)
+        protected virtual Task OnIsFocusedChange(bool val)
         {
             return Task.CompletedTask;
         }
