@@ -2,6 +2,11 @@
   "$masaBlazor": {
     "badge": "Jelvény",
     "close": "Bezárás",
+    "copy": "Copy",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "ok": "OK",
     "dataIterator": {
       "noResultsText": "Nincs egyező találat",
       "loadingText": "Betöltés..."

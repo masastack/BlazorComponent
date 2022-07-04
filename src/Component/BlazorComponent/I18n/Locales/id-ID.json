@@ -2,6 +2,11 @@
   "$masaBlazor": {
     "badge": "Lencana",
     "close": "Tutup",
+    "copy": "Copy",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "ok": "OK",
     "dataIterator": {
       "noResultsText": "Tidak ditemukan catatan yang cocok",
       "loadingText": "Memuat data..."

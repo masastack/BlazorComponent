@@ -2,6 +2,11 @@
   "$masaBlazor": {
     "badge": "Значка",
     "close": "Затвори",
+    "copy": "Copy",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "ok": "OK",
     "dataIterator": {
       "noResultsText": "Ни један запис није пронађен",
       "loadingText": "Учитавање ставке..."

@@ -1537,25 +1537,47 @@ export function otpInputOnInputEvent(e: Event, otpIdx: number, elementList, call
 }
 
 export function getListIndexWhereAttributeExists(selector: string, attribute:string, value: string) {
-  const doms = document.querySelectorAll(selector);
-  if (!doms) {
+  const tiles = document.querySelectorAll(selector);
+  if (!tiles) {
     return -1;
   }
-  
-  const attrValues:string[] = [];
-  doms.forEach(dom => attrValues.push(dom.getAttribute(attribute)))
-  return attrValues.findIndex(val => val === value);
+
+  let index = -1;
+  for (let i = 0; i < tiles.length; i++) {
+    if (tiles[i].getAttribute(attribute) === value) {
+      index = i;
+      break;
+    }
+  }
+
+  return index;
 }
 
-export function scrollToTile(contentSelector: string, tilesSelector: string, index: number) {
+export function scrollToTile(contentSelector: string, tilesSelector: string, index: number, keyCode: string) {
   var tiles = document.querySelectorAll(tilesSelector)
-  if (!tiles) return;
+  if (!tiles) return index;
 
-  const tile = tiles[index] as HTMLElement;
-  if (!tile) return;
+  let tile = tiles[index] as HTMLElement;
+
+  while (!!tile && tile.tabIndex === -1) {
+    if (keyCode === 'ArrowDown') { 
+      index++;
+    } else if (keyCode === 'ArrowUp') {
+      index--;
+      if (index == -1) {
+        index = tiles.length - 1;
+      }
+    } else {
+      break;
+    }
+    tile = tiles[index] as HTMLElement;
+  }
+
+  if (!tile) return index;
 
   const content = document.querySelector(contentSelector);
-  if (!content) return;
+  if (!content) return index;
+
   const scrollTop = content.scrollTop;
   const contentHeight = content.clientHeight;
 
@@ -1569,4 +1591,6 @@ export function scrollToTile(contentSelector: string, tilesSelector: string, ind
   } else if (scrollTop + contentHeight < tile.offsetTop + tile.clientHeight + 8) {
     content.scrollTo({top, behavior: "smooth"})
   }
+
+  return index;
 }

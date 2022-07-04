@@ -2,6 +2,11 @@
   "$masaBlazor": {
     "badge": "תג",
     "close": "סגור",
+    "copy": "Copy",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "ok": "OK",
     "dataIterator": {
       "noResultsText": "לא נמצאו תוצאות מתאימות",
       "loadingText": "טוען פריט..."

@@ -4,9 +4,14 @@
 <CascadingValue Value="IsDark" Name="IsDark">
     <CascadingValue Value="this" IsFixed>
         <CascadingValue Value="true" Name="IsInList">
-            <Element Tag="@Tag" Class="@CssProvider.GetClass()" Style="@CssProvider.GetStyle()" ReferenceCaptureAction="@((_) => Ref = _)" @attributes="Attributes">
+            <ToggleableTransitionElement Tag="@Tag"
+                                         Class="@CssProvider.GetClass()"
+                                         Style="@CssProvider.GetStyle()"
+                                         ReferenceCaptureAction="@((_) => Ref = _)"
+                                         Value="If"
+                                         @attributes="Attributes">
                 @ChildContent
-            </Element>
+            </ToggleableTransitionElement>
         </CascadingValue>
     </CascadingValue>
 </CascadingValue>

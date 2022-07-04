@@ -15,7 +15,10 @@ public class BDelayable : BDomComponentBase, IAsyncDisposable
 
     protected bool IsActive { get; private set; }
 
-    public Func<Task>? AfterShowContent { get; set; }
+    /// <summary>
+    /// 
+    /// </summary>
+    public Func<bool, Task>? AfterShowContent { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -33,9 +36,11 @@ public class BDelayable : BDomComponentBase, IAsyncDisposable
     [JSInvokable("SetActive")]
     public async Task SetIsActive(bool value)
     {
+        bool isLazyContent = false;
+
         if (value)
         {
-            await ShowLazyContent();
+            isLazyContent = await ShowLazyContent();
         }
 
         await WhenIsActiveUpdating(value);
@@ -46,13 +51,17 @@ public class BDelayable : BDomComponentBase, IAsyncDisposable
 
         if (AfterShowContent is not null)
         {
-            await AfterShowContent();
+            await AfterShowContent(isLazyContent);
         }
     }
 
-    protected virtual Task ShowLazyContent()
+    /// <summary>
+    /// Show lazy content
+    /// </summary>
+    /// <returns>shown for the first time if true</returns>
+    protected virtual Task<bool> ShowLazyContent()
     {
-        return Task.CompletedTask;
+        return Task.FromResult(false);
     }
 
     protected virtual Task WhenIsActiveUpdating(bool value)

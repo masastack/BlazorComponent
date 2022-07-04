@@ -2,6 +2,11 @@
   "$masaBlazor": {
     "badge": "Distintivo",
     "close": "Chiudi",
+    "copy": "Copy",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "ok": "OK",
     "dataIterator": {
       "noResultsText": "Nessun risultato trovato",
       "loadingText": "Caricamento in corso..."
@@ -12,9 +17,7 @@
         "sortDescending": "Ordinati in ordine decrescente.",
         "sortAscending": "Ordinati in ordine crescente.",
         "sortNone": "Non ordinato.",
-        "activateNone": "`Attiva",
-        "per" "rimuovere",
-        "l'ordinamento.`,": null,
+        "activateNone": "Attiva per rimuovere l'ordinamento.",
         "activateDescending": "Attiva per ordinare in ordine decrescente.",
         "activateAscending": "Attiva per ordinare in ordine crescente."
       },

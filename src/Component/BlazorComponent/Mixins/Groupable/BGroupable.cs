@@ -141,7 +141,7 @@
 
         protected override void Dispose(bool disposing)
         {
-            if (Matched && this is BGroupable<ItemGroupBase> item)
+            if (Matched && this is IGroupable item)
             {
                 ItemGroup.Unregister(item);
             }

@@ -2,6 +2,11 @@
   "$masaBlazor": {
     "badge": "Skilt",
     "close": "Lukk",
+    "copy": "Copy",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "ok": "OK",
     "dataIterator": {
       "noResultsText": "Fant ingen matchende elementer.",
       "loadingText": "Laster elementer..."

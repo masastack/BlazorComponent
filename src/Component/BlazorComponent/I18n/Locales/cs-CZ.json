@@ -2,6 +2,11 @@
   "$masaBlazor": {
     "badge": "Odznak",
     "close": "Zavřít",
+    "copy": "Copy",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "ok": "OK",
     "dataIterator": {
       "noResultsText": "Nenalezeny žádné záznamy",
       "loadingText": "Načítám položky..."

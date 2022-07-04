@@ -2,6 +2,11 @@
   "$masaBlazor": {
     "badge": "バッジ",
     "close": "閉じる",
+    "copy": "Copy",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "ok": "OK",
     "dataIterator": {
       "noResultsText": "検索結果が見つかりません。",
       "loadingText": "項目をロード中です..."

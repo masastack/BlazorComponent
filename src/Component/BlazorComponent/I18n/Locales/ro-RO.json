@@ -2,6 +2,11 @@
   "$masaBlazor": {
     "badge": "Insignă",
     "close": "Închideți",
+    "copy": "Copy",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "ok": "OK",
     "dataIterator": {
       "noResultsText": "Nu s-au găsit înregistrări corespunzătoare",
       "loadingText": "Se încarcă articolele..."

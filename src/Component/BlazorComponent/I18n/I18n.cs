@@ -88,18 +88,40 @@ public class I18n
 
     public IEnumerable<CultureInfo> SupportedCultures => I18nCache.GetCultures();
 
-    public string? T(string key, bool matchLastLevel = false, [DoesNotReturnIf(true)] bool whenNullReturnKey = true)
+    public string? T(string? key, bool matchLastLevel = false, [DoesNotReturnIf(true)] bool whenNullReturnKey = true)
     {
+        if (key is null)
+        {
+            return null;
+        }
+
         if (matchLastLevel)
         {
             return Locale.FirstOrDefault(kv => kv.Key.EndsWith($".{key}") || kv.Key == key).Value ?? (whenNullReturnKey ? key : null);
         }
 
-        return Locale.GetValueOrDefault(key) ?? (whenNullReturnKey ? key : null);
+        var value = Locale.GetValueOrDefault(key);
+        if (value is not null)
+        {
+            return value;
+        }
+
+        return whenNullReturnKey ? key.Split('.').Last() : null;
     }
 
-    public string? T(string scope, string key, [DoesNotReturnIf(true)] bool whenNullReturnKey = true)
+    public string? T(string? scope, string? key, [DoesNotReturnIf(true)] bool whenNullReturnKey = true)
     {
-        return Locale.GetValueOrDefault($"{scope}.{key}") ?? (whenNullReturnKey ? key : null);
+        if (key is null)
+        {
+            return null;
+        }
+
+        var value = Locale.GetValueOrDefault($"{scope}.{key}");
+        if (value is not null)
+        {
+            return value;
+        }
+
+        return whenNullReturnKey ? key.Split('.').Last() : null;
     }
 }

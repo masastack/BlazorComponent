@@ -2,6 +2,8 @@
 {
     public class BMenuProps
     {
+        public bool Auto { get; set; }
+        
         public bool Bottom { get; set; }
 
         public bool CloseOnClick { get; set; }
