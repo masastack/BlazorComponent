@@ -85,16 +85,8 @@ namespace BlazorComponent
 
         protected TValue InternalValue
         {
-            get
-            {
-                return LazyValue;
-            }
-            set
-            {
-                LazyValue = value;
-
-                InternalValueSetter(value);
-            }
+            get => LazyValue;
+            set => LazyValue = value;
         }
 
         public bool IsFocused
@@ -182,7 +174,7 @@ namespace BlazorComponent
 
         protected TValue InputValue { get; set; }
 
-        protected virtual void InternalValueSetter(TValue val)
+        protected virtual void OnValueChange(TValue val)
         {
         }
 
@@ -196,6 +188,8 @@ namespace BlazorComponent
                         LazyValue = val;
 
                         InputValue = val;
+                        
+                        OnValueChange(val);
                     }
                 })
                 .Watch<bool>(nameof(IsFocused), async val =>

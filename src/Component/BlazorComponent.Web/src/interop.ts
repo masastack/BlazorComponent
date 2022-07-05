@@ -1,6 +1,8 @@
-﻿import { getBlazorId, getElementSelector } from "./utils/index";
-import registerDirective from './directive/index'
+﻿import registerDirective from "./directive/index";
 import { registerExtraEvents } from "./events/index";
+//#region mentions
+import getOffset from "./modules/Caret";
+import { getBlazorId, getElementSelector } from "./utils/index";
 
 export function updateCanvas(element, hue: number) {
   const canvas = element as HTMLCanvasElement
@@ -998,10 +1000,6 @@ export function disposeObj(objReferenceName) {
   delete objReferenceDict[objReferenceName];
 }
 
-//#region mentions
-
-import getOffset from "./modules/Caret";
-
 export function getCursorXY(element, objReference) {
   objReferenceDict["mentions"] = objReference;
   window.addEventListener("click", mentionsOnWindowClick);
@@ -1560,12 +1558,17 @@ export function scrollToTile(contentSelector: string, tilesSelector: string, ind
   let tile = tiles[index] as HTMLElement;
 
   while (!!tile && tile.tabIndex === -1) {
-    if (keyCode === 'ArrowDown') { 
+    if (keyCode === 'ArrowDown') {
       index++;
     } else if (keyCode === 'ArrowUp') {
       index--;
       if (index == -1) {
-        index = tiles.length - 1;
+        var i = tiles.length - 1;
+        if (i == 0) {
+          break;
+        }
+
+        index = i;
       }
     } else {
       break;
