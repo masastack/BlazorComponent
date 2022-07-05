@@ -67,19 +67,34 @@ public class I18n
     public IReadOnlyDictionary<string, string> Locale =>
         _locale ?? (_locale = I18nCache.GetLocale(Culture)) ?? throw new Exception($"Not has {Culture} language !");
 
-    public void SetCulture(CultureInfo culture)
+    public void SetCulture(CultureInfo uiCulture)
     {
-        if (!EmbeddedLocales.ContainsLocale(culture))
+        if (!EmbeddedLocales.ContainsLocale(uiCulture))
         {
-            AddLocale(culture, EmbeddedLocales.GetSpecifiedLocale(culture));
+            AddLocale(uiCulture, EmbeddedLocales.GetSpecifiedLocale(uiCulture));
         }
 
-        _cookieStorage?.SetItemAsync(CultureCookieKey, culture);
+        _cookieStorage?.SetItemAsync(CultureCookieKey, uiCulture);
 
-        Culture = culture;
+        Culture = uiCulture;
+
+        CultureInfo.DefaultThreadCurrentCulture = uiCulture;
+        CultureInfo.DefaultThreadCurrentUICulture = uiCulture;
+    }
+
+    public void SetCulture(CultureInfo uiCulture, CultureInfo culture)
+    {
+        if (!EmbeddedLocales.ContainsLocale(uiCulture))
+        {
+            AddLocale(uiCulture, EmbeddedLocales.GetSpecifiedLocale(uiCulture));
+        }
+
+        _cookieStorage?.SetItemAsync(CultureCookieKey, uiCulture);
+
+        Culture = uiCulture;
 
         CultureInfo.DefaultThreadCurrentCulture = culture;
-        CultureInfo.DefaultThreadCurrentUICulture = culture;
+        CultureInfo.DefaultThreadCurrentUICulture = uiCulture;
     }
 
     public void AddLocale(CultureInfo culture, IReadOnlyDictionary<string, string>? locale, bool isDefault = false)
