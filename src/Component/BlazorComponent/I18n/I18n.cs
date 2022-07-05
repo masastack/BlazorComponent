@@ -67,18 +67,24 @@ public class I18n
     public IReadOnlyDictionary<string, string> Locale =>
         _locale ?? (_locale = I18nCache.GetLocale(Culture)) ?? throw new Exception($"Not has {Culture} language !");
 
-    public void SetCulture(CultureInfo culture)
+    public void SetCulture(CultureInfo uiCulture)
     {
-        if (!EmbeddedLocales.ContainsLocale(culture))
+        SetCulture(uiCulture, uiCulture);
+    }
+
+    public void SetCulture(CultureInfo uiCulture, CultureInfo culture)
+    {
+        if (!EmbeddedLocales.ContainsLocale(uiCulture))
         {
-            AddLocale(culture, EmbeddedLocales.GetSpecifiedLocale(culture));
+            AddLocale(uiCulture, EmbeddedLocales.GetSpecifiedLocale(uiCulture));
         }
 
-        _cookieStorage?.SetItemAsync(CultureCookieKey, culture);
+        _cookieStorage?.SetItemAsync(CultureCookieKey, uiCulture);
 
-        Culture = culture;
+        Culture = uiCulture;
 
-        CultureInfo.DefaultThreadCurrentUICulture = culture;
+        CultureInfo.DefaultThreadCurrentUICulture = uiCulture;
+        CultureInfo.DefaultThreadCurrentCulture = culture;
     }
 
     public void AddLocale(CultureInfo culture, IReadOnlyDictionary<string, string>? locale, bool isDefault = false)
