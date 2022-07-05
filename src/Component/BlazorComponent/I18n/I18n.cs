@@ -78,6 +78,7 @@ public class I18n
 
         Culture = culture;
 
+        CultureInfo.DefaultThreadCurrentCulture = culture;
         CultureInfo.DefaultThreadCurrentUICulture = culture;
     }
 
