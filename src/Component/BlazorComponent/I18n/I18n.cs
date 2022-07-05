@@ -69,17 +69,7 @@ public class I18n
 
     public void SetCulture(CultureInfo uiCulture)
     {
-        if (!EmbeddedLocales.ContainsLocale(uiCulture))
-        {
-            AddLocale(uiCulture, EmbeddedLocales.GetSpecifiedLocale(uiCulture));
-        }
-
-        _cookieStorage?.SetItemAsync(CultureCookieKey, uiCulture);
-
-        Culture = uiCulture;
-
-        CultureInfo.DefaultThreadCurrentCulture = uiCulture;
-        CultureInfo.DefaultThreadCurrentUICulture = uiCulture;
+        SetCulture(uiCulture, uiCulture);
     }
 
     public void SetCulture(CultureInfo uiCulture, CultureInfo culture)
@@ -93,8 +83,8 @@ public class I18n
 
         Culture = uiCulture;
 
-        CultureInfo.DefaultThreadCurrentCulture = culture;
         CultureInfo.DefaultThreadCurrentUICulture = uiCulture;
+        CultureInfo.DefaultThreadCurrentCulture = culture;
     }
 
     public void AddLocale(CultureInfo culture, IReadOnlyDictionary<string, string>? locale, bool isDefault = false)
