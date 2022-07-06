@@ -354,7 +354,7 @@ export function addHtmlElementEventListener<K extends keyof HTMLElementTagNameMa
   type: string,
   invoker: DotNet.DotNetObject,
   options?: boolean | AddEventListenerOptions,
-  actions?: Partial<Pick<Event, "stopPropagation" | "preventDefault">> & { relatedTarget?: string, throttle?: number, debounce?: number }) {
+  extras?: Partial<Pick<Event, "stopPropagation" | "preventDefault">> & { relatedTarget?: string, throttle?: number, debounce?: number, key?: string }) {
   let htmlElement: HTMLElement | Window
 
   if (selector == "window") {
@@ -365,22 +365,22 @@ export function addHtmlElementEventListener<K extends keyof HTMLElementTagNameMa
     htmlElement = document.querySelector(selector);
   }
 
-  var key = `${selector}:${type}`;
+  var key = extras?.key || `${selector}:${type}`;
 
   //save for remove
   var config = {};
 
   var listener = (args: any): void => {
-    if (actions?.stopPropagation) {
+    if (extras?.stopPropagation) {
       args.stopPropagation();
     }
 
-    if (actions?.preventDefault) {
+    if (extras?.preventDefault) {
       args.preventDefault();
     }
 
     // mouseleave relatedTarget
-    if (actions?.relatedTarget && document.querySelector(actions.relatedTarget)?.contains(args.relatedTarget)) {
+    if (extras?.relatedTarget && document.querySelector(extras.relatedTarget)?.contains(args.relatedTarget)) {
       return;
     }
 
@@ -419,14 +419,14 @@ export function addHtmlElementEventListener<K extends keyof HTMLElementTagNameMa
     invoker.invokeMethodAsync('Invoke', obj);
   };
 
-  if (actions?.debounce && actions.debounce > 0) {
+  if (extras?.debounce && extras.debounce > 0) {
     let timeout: NodeJS.Timeout;
     config["listener"] = function (args: any) {
       clearTimeout(timeout)
-      timeout = setTimeout(() => listener(args), actions.debounce);
+      timeout = setTimeout(() => listener(args), extras.debounce);
     }
   }
-  else if (actions?.throttle && actions.throttle > 0) {
+  else if (extras?.throttle && extras.throttle > 0) {
     let throttled: boolean;
     config["listener"] = function (args: any) {
       if (!throttled) {
@@ -434,7 +434,7 @@ export function addHtmlElementEventListener<K extends keyof HTMLElementTagNameMa
         throttled = true;
         setTimeout(() => {
           throttled = false;
-        }, (actions?.throttle ?? 0));
+        }, (extras?.throttle ?? 0));
       }
     }
   } else {
@@ -454,7 +454,7 @@ export function addHtmlElementEventListener<K extends keyof HTMLElementTagNameMa
   }
 }
 
-export function removeHtmlElementEventListener(selector, type) {
+export function removeHtmlElementEventListener(selector, type, k?: string) {
   let htmlElement: any
 
   if (selector == "window") {
@@ -465,16 +465,16 @@ export function removeHtmlElementEventListener(selector, type) {
     htmlElement = document.querySelector(selector);
   }
 
-  var key = `${selector}:${type}`;
+  var k = k || `${selector}:${type}`;
 
-  var configs = htmlElementEventListennerConfigs[key];
+  var configs = htmlElementEventListennerConfigs[k];
 
   if (configs) {
     configs.forEach(item => {
       htmlElement?.removeEventListener(type, item["listener"], item['options']);
     });
 
-    htmlElementEventListennerConfigs[key] = []
+    htmlElementEventListennerConfigs[k] = []
   }
 }
 

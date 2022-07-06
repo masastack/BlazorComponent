@@ -9,39 +9,45 @@ public class EventListenerOptions
     public bool Passive { get; set; }
 }
 
-public class EventListenerActions
+public class EventListenerExtras
 {
+    public string Key { get; set; }
+
     public bool StopPropagation { get; set; }
 
-    public string RelatedTarget { get; set; }
-
     public bool PreventDefault { get; set; }
-    
+
     public int Throttle { get; set; }
-    
+
     public int Debounce { get; set; }
 
-    public EventListenerActions()
+    public EventListenerExtras()
     {
     }
 
-    public EventListenerActions(bool stopPropagation, bool preventDefault)
+    public EventListenerExtras(bool stopPropagation, bool preventDefault)
     {
         StopPropagation = stopPropagation;
         PreventDefault = preventDefault;
     }
 
-    public EventListenerActions(string relatedTarget)
+    public EventListenerExtras(string key)
     {
-        RelatedTarget = relatedTarget;
+        Key = key;
     }
 
-    public EventListenerActions(int debounce)
+    public EventListenerExtras(int debounce)
     {
         Debounce = debounce;
     }
-    
-    public EventListenerActions(int debounce, int throttle) : this(debounce)
+
+    public EventListenerExtras(string key, int debounce)
+    {
+        Key = key;
+        Debounce = debounce;
+    }
+
+    public EventListenerExtras(int debounce, int throttle) : this(debounce)
     {
         Throttle = throttle;
     }
