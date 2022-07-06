@@ -123,7 +123,7 @@ namespace BlazorComponent
                 _clickEventRegistered = true;
 
                 var button = Document.GetElementByReference(Ref);
-                await button.AddEventListenerAsync("click", CreateEventCallback<MouseEventArgs>(HandleOnClick), false, new EventListenerActions
+                await button.AddEventListenerAsync("click", CreateEventCallback<MouseEventArgs>(HandleOnClick), false, new EventListenerExtras
                 {
                     PreventDefault = OnClickPreventDefault,
                     StopPropagation = OnClickStopPropagation
