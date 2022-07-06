@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
+﻿using Microsoft.JSInterop;
 using OneOf;
 
 namespace BlazorComponent.Web
@@ -64,7 +63,7 @@ namespace BlazorComponent.Web
         }
 
         public async Task AddEventListenerAsync(string type, EventCallback listener, OneOf<EventListenerOptions, bool> options,
-            EventListenerActions actions = null)
+            EventListenerExtras extras = null)
         {
             await JS.InvokeVoidAsync(JsInteropConstants.AddHtmlElementEventListener, Selector, type, DotNetObjectReference.Create(
                 new Invoker<object>(
@@ -74,7 +73,7 @@ namespace BlazorComponent.Web
                         {
                             await listener.InvokeAsync();
                         }
-                    })), options.Value, actions);
+                    })), options.Value, extras);
         }
 
         public async Task AddEventListenerAsync(string type, EventCallback listener, bool preventDefault = false, bool stopPropagation = false)
@@ -87,7 +86,7 @@ namespace BlazorComponent.Web
                         {
                             await listener.InvokeAsync();
                         }
-                    })), false, new EventListenerActions
+                    })), false, new EventListenerExtras
                     {
                         PreventDefault = preventDefault,
                         StopPropagation = stopPropagation
@@ -95,7 +94,7 @@ namespace BlazorComponent.Web
         }
 
         public async Task AddEventListenerAsync<T>(string type, EventCallback<T> listener, OneOf<EventListenerOptions, bool> options,
-            EventListenerActions actions = null)
+            EventListenerExtras extras = null)
         {
             await JS.InvokeVoidAsync(JsInteropConstants.AddHtmlElementEventListener, Selector, type, DotNetObjectReference.Create(
                 new Invoker<T>(
@@ -105,7 +104,7 @@ namespace BlazorComponent.Web
                         {
                             await listener.InvokeAsync(p);
                         }
-                    })), options.Value, actions);
+                    })), options.Value, extras);
         }
 
         public async Task AddEventListenerAsync<T>(string type, Func<T, Task> listener, OneOf<EventListenerOptions, bool> options)
