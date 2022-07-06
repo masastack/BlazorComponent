@@ -11,14 +11,14 @@ public class EventListenerOptions
 
 public class EventListenerActions
 {
+    public string Key { get; set; }
+
     public bool StopPropagation { get; set; }
 
-    public string RelatedTarget { get; set; }
-
     public bool PreventDefault { get; set; }
-    
+
     public int Throttle { get; set; }
-    
+
     public int Debounce { get; set; }
 
     public EventListenerActions()
@@ -31,16 +31,22 @@ public class EventListenerActions
         PreventDefault = preventDefault;
     }
 
-    public EventListenerActions(string relatedTarget)
+    public EventListenerActions(string key)
     {
-        RelatedTarget = relatedTarget;
+        Key = key;
     }
 
     public EventListenerActions(int debounce)
     {
         Debounce = debounce;
     }
-    
+
+    public EventListenerActions(string key, int debounce)
+    {
+        Key = key;
+        Debounce = debounce;
+    }
+
     public EventListenerActions(int debounce, int throttle) : this(debounce)
     {
         Throttle = throttle;
