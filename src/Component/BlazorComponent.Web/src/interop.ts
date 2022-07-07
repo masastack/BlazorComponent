@@ -1565,14 +1565,9 @@ export function scrollToTile(contentSelector: string, tilesSelector: string, ind
   const scrollTop = content.scrollTop;
   const contentHeight = content.clientHeight;
 
-  const startLocation = scrollTop;
-
-  let top = tile.offsetTop + 8 - contentHeight + tile.clientHeight
-
   if (scrollTop > tile.offsetTop - 8) {
-    if (top < 0) top = 0
-    content.scrollTo({top, behavior: "smooth"})
+    content.scrollTo({ top: tile.offsetTop - tile.clientHeight, behavior: "smooth" })
   } else if (scrollTop + contentHeight < tile.offsetTop + tile.clientHeight + 8) {
-    content.scrollTo({top, behavior: "smooth"})
+    content.scrollTo({ top: tile.offsetTop - contentHeight + tile.clientHeight * 2, behavior: "smooth" })
   }
 }

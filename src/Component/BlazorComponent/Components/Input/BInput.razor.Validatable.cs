@@ -70,7 +70,7 @@ namespace BlazorComponent
 
         protected TValue InternalValue
         {
-            get => GetValue<TValue>(LazyValue);
+            get => LazyValue;
             set => SetValue(value);
         }
 
