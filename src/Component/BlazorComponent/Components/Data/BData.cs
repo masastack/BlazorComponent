@@ -303,7 +303,7 @@ namespace BlazorComponent
                 }
 
                 var selector = itemValue.Factory;
-                var desc = sortDesc[i];
+                var desc = sortDesc.ElementAtOrDefault(i);
 
                 if (i == 0)
                 {

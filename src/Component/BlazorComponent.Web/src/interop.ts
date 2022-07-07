@@ -1553,47 +1553,21 @@ export function getListIndexWhereAttributeExists(selector: string, attribute:str
 
 export function scrollToTile(contentSelector: string, tilesSelector: string, index: number, keyCode: string) {
   var tiles = document.querySelectorAll(tilesSelector)
-  if (!tiles) return index;
+  if (!tiles) return;
 
   let tile = tiles[index] as HTMLElement;
 
-  while (!!tile && tile.tabIndex === -1) {
-    if (keyCode === 'ArrowDown') {
-      index++;
-    } else if (keyCode === 'ArrowUp') {
-      index--;
-      if (index == -1) {
-        var i = tiles.length - 1;
-        if (i == 0) {
-          break;
-        }
-
-        index = i;
-      }
-    } else {
-      break;
-    }
-    tile = tiles[index] as HTMLElement;
-  }
-
-  if (!tile) return index;
+  if (!tile) return;
 
   const content = document.querySelector(contentSelector);
-  if (!content) return index;
+  if (!content) return;
 
   const scrollTop = content.scrollTop;
   const contentHeight = content.clientHeight;
 
-  const startLocation = scrollTop;
-
-  let top = tile.offsetTop + 8 - contentHeight + tile.clientHeight
-
   if (scrollTop > tile.offsetTop - 8) {
-    if (top < 0) top = 0
-    content.scrollTo({top, behavior: "smooth"})
+    content.scrollTo({ top: tile.offsetTop - tile.clientHeight, behavior: "smooth" })
   } else if (scrollTop + contentHeight < tile.offsetTop + tile.clientHeight + 8) {
-    content.scrollTo({top, behavior: "smooth"})
+    content.scrollTo({ top: tile.offsetTop - contentHeight + tile.clientHeight * 2, behavior: "smooth" })
   }
-
-  return index;
 }
