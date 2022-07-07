@@ -1,13 +1,10 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
+﻿using Microsoft.AspNetCore.Components.Forms;
 using System.Linq.Expressions;
 
 namespace BlazorComponent
 {
     public partial class BInput<TValue> : IValidatable
     {
-        private bool _isFocused;
-
         [Parameter]
         public bool Disabled { get; set; }
 
@@ -20,14 +17,8 @@ namespace BlazorComponent
         [Parameter]
         public virtual TValue Value
         {
-            get
-            {
-                return GetValue<TValue>();
-            }
-            set
-            {
-                SetValue(value);
-            }
+            get => GetValue<TValue>();
+            set => SetValue(value);
         }
 
         [Parameter]
@@ -63,14 +54,8 @@ namespace BlazorComponent
         [Parameter]
         public IEnumerable<Func<TValue, StringBoolean>> Rules
         {
-            get
-            {
-                return GetValue<IEnumerable<Func<TValue, StringBoolean>>>();
-            }
-            set
-            {
-                SetValue(value);
-            }
+            get { return GetValue<IEnumerable<Func<TValue, StringBoolean>>>(); }
+            set { SetValue(value); }
         }
 
         protected EditContext OldEditContext { get; set; }
@@ -85,8 +70,8 @@ namespace BlazorComponent
 
         protected TValue InternalValue
         {
-            get => LazyValue;
-            set => LazyValue = value;
+            get => GetValue<TValue>(LazyValue);
+            set => SetValue(value);
         }
 
         public bool IsFocused
@@ -174,7 +159,7 @@ namespace BlazorComponent
 
         protected TValue InputValue { get; set; }
 
-        protected virtual void OnValueChange(TValue val)
+        protected virtual void OnInternalValueChange(TValue val)
         {
         }
 
@@ -188,15 +173,17 @@ namespace BlazorComponent
                         LazyValue = val;
 
                         InputValue = val;
-                        
-                        OnValueChange(val);
                     }
+                })
+                .Watch<TValue>(nameof(InternalValue), val =>
+                {
+                    LazyValue = val;
+
+                    OnInternalValueChange(val);
                 })
                 .Watch<bool>(nameof(IsFocused), async val =>
                 {
-                    _isFocused = val;
-
-                    if (!_isFocused && !IsDisabled)
+                    if (!val && !IsDisabled)
                     {
                         HasFocused = true;
                         if (ValidateOnBlur)
@@ -228,7 +215,7 @@ namespace BlazorComponent
         {
             return Task.CompletedTask;
         }
-        
+
         protected virtual void Validate()
         {
             if (FirstValidate)
@@ -300,7 +287,7 @@ namespace BlazorComponent
             if (Rules != null)
             {
                 var value = val is null ? InternalValue : val;
-                
+
                 ErrorBucket.Clear();
 
                 foreach (var rule in Rules)

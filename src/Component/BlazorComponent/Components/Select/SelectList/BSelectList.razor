@@ -50,7 +50,6 @@
             children.Add(AppendItemContent);
         }
 
-        @Items.Count @(System.Text.Json.JsonSerializer.Serialize(SelectedItems)) 
         foreach (var child in children)
         {
             @child
