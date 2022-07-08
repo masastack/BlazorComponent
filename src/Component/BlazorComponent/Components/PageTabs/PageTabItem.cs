@@ -6,6 +6,15 @@
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Url = url ?? throw new ArgumentNullException(nameof(url));
+
+            if (Url.StartsWith("http") || url.StartsWith("https"))
+            {
+                AbsolutePath = new Uri(url).AbsolutePath;
+            }
+            else
+            {
+                AbsolutePath = Url.StartsWith("/") ? Url : "/" + Url;
+            }
         }
 
         public PageTabItem(string name, string url, PageTabsMatch match)
@@ -67,6 +76,8 @@
         public PageTabsMatch Match { get; } = PageTabsMatch.All;
 
         public PageTabsTarget Target { get; } = PageTabsTarget.Self;
+
+        public string AbsolutePath { get; private set; }
 
         internal bool IsOpened { get; set; }
 
