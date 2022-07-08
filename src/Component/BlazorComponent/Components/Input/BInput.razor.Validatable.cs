@@ -75,7 +75,11 @@ namespace BlazorComponent
         protected TValue InternalValue
         {
             get => LazyValue;
-            set => SetValue(value);
+            set
+            {
+                LazyValue = value;
+                SetValue(value);
+            }
         }
 
         public bool IsFocused
@@ -165,7 +169,6 @@ namespace BlazorComponent
 
         protected virtual void OnInternalValueChange(TValue val)
         {
-            LazyValue = val;
         }
 
         protected virtual void OnLazyValueChange(TValue val)
