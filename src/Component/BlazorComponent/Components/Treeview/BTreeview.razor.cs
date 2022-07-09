@@ -5,6 +5,7 @@ namespace BlazorComponent
     public partial class BTreeview<TItem, TKey> : ITreeview<TItem, TKey>
     {
         private List<TItem> _oldItems;
+        private string _oldItemsKeys;
         private List<TKey> _oldValue;
         private List<TKey> _oldActive;
         private List<TKey> _oldOpen;
@@ -351,7 +352,7 @@ namespace BlazorComponent
                 else
                 {
                     var children = Nodes
-                    .Where(r => nodeState.Children.Contains(r.Key)).Select(r => r.Value);
+                                   .Where(r => nodeState.Children.Contains(r.Key)).Select(r => r.Value);
                     if (children.All(r => r.IsSelected))
                     {
                         nodeState.IsSelected = true;
@@ -427,14 +428,48 @@ namespace BlazorComponent
             return !string.IsNullOrEmpty(Search) && ExcludedItems.Contains(key);
         }
 
+        private string CombineItemKeys(IList<TItem> list)
+        {
+            string keys = string.Empty;
+
+            if (list == null || list.Count == 0)
+            {
+                return keys;
+            }
+
+            foreach (var item in list)
+            {
+                var key = ItemKey(item);
+                keys += key.ToString();
+
+                var children = ItemChildren(item);
+                if (children is not null)
+                {
+                    keys += CombineItemKeys(children);
+                }
+            }
+
+            return keys;
+        }
+
         protected override void OnParametersSet()
         {
-            if (!ListComparer.Equals(_oldItems, Items))
+            if (_oldItems != Items)
             {
-                Nodes.Clear();
-                BuildTree(Items, default);
-
                 _oldItems = Items;
+                _oldItemsKeys = CombineItemKeys(Items);
+
+                BuildTree(Items, default);
+            }
+            else
+            {
+                var itemKeys = CombineItemKeys(Items);
+                if (_oldItemsKeys != itemKeys)
+                {
+                    _oldItemsKeys = itemKeys;
+
+                    BuildTree(Items, default);
+                }
             }
 
             if (!ListComparer.Equals(_oldValue, Value))
@@ -526,16 +561,25 @@ namespace BlazorComponent
                 var key = ItemKey(item);
                 var children = ItemChildren(item) ?? new List<TItem>();
 
-                var nodeState = new NodeState<TItem, TKey>
+                if (!Nodes.TryGetValue(key, out var oldNode))
                 {
+                    oldNode = new NodeState<TItem, TKey>();
+                }
+
+                var newNode = new NodeState<TItem, TKey>
+                {
+                    Node = oldNode.Node,
+                    Parent = parent,
                     Children = children.Select(ItemKey),
-                    IsOpen = OpenAll,
                     Item = item,
-                    Parent = parent
                 };
-                Nodes.Add(key, nodeState);
 
                 BuildTree(children, key);
+
+                newNode.IsActive = oldNode.IsActive;
+                newNode.IsOpen = oldNode.IsOpen;
+
+                Nodes[key] = newNode;
             }
         }
     }
