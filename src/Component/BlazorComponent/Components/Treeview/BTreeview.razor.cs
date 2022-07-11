@@ -336,6 +336,14 @@ namespace BlazorComponent
             }
         }
 
+        /// <summary>
+        /// Rebuilds the tree with current Items.
+        /// </summary>
+        public void RebuildTree()
+        {
+            BuildTree(Items, default);
+        }
+
         private void UpdateParentSelected(TKey parent, bool isIndeterminate = false)
         {
             if (parent == null)
