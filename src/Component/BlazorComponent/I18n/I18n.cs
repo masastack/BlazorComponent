@@ -46,6 +46,9 @@ public class I18n
 
         var culture = !string.IsNullOrEmpty(cultureName) ? CultureInfo.CreateSpecificCulture(cultureName) : CultureInfo.CurrentCulture;
 
+        // https://github.com/dotnet/runtime/issues/18998#issuecomment-254565364
+        // `CultureInfo.CreateSpecificCulture` has the different behavior in different OS,
+        // so need to standardize the culture.
         StandardizeCulture(ref culture);
 
         if (!EmbeddedLocales.ContainsLocale(culture))
