@@ -44,7 +44,9 @@ public class I18n
             cultureName = _cookieStorage.GetCookie(CultureCookieKey);
         }
 
-        var culture = !string.IsNullOrEmpty(cultureName) ? new CultureInfo(cultureName) : CultureInfo.CurrentCulture;
+        var culture = !string.IsNullOrEmpty(cultureName) ? CultureInfo.CreateSpecificCulture(cultureName) : CultureInfo.CurrentCulture;
+
+        StandardizeCulture(ref culture);
 
         if (!EmbeddedLocales.ContainsLocale(culture))
         {
@@ -129,5 +131,15 @@ public class I18n
         }
 
         return whenNullReturnKey ? key.Split('.').Last() : null;
+    }
+
+    private static void StandardizeCulture(ref CultureInfo culture)
+    {
+        culture = culture.Name switch
+        {
+            "zh-Hans-CN" => new CultureInfo("zh-CN"),
+            "zh-Hant-CN" => new CultureInfo("zh-TW"),
+            _ => culture
+        };
     }
 }
