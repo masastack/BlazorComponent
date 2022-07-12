@@ -74,7 +74,7 @@ public class I18n
 
     public void SetCulture(CultureInfo uiCulture)
     {
-        SetCulture(uiCulture, uiCulture);
+        SetCulture(uiCulture, CultureInfo.InvariantCulture);
     }
 
     public void SetCulture(CultureInfo uiCulture, CultureInfo culture)
