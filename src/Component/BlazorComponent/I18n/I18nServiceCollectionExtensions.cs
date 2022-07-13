@@ -1,9 +1,9 @@
-﻿using System.Globalization;
-using BlazorComponent.I18n;
+﻿using BlazorComponent.I18n;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using System.Globalization;
 using System.Net.Http.Json;
 using System.Reflection;
 using System.Text.Json;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -21,6 +21,18 @@ public static class I18nServiceCollectionExtensions
         return services;
     }
 
+    public static IBlazorComponentBuilder AddI18n(this IBlazorComponentBuilder builder, IEnumerable<(string cultureName, Dictionary<string, string> map)> locales)
+    {
+        AddI18n(locales);
+        return builder;
+    }
+
+    public static IBlazorComponentBuilder AddI18n(this IBlazorComponentBuilder builder, IEnumerable<(CultureInfo culture, Dictionary<string, string> map)> locales)
+    {
+        AddI18n(locales);
+        return builder;
+    }
+
     /// <summary>
     /// Add MasaI18n service according to the physical path of the folder where the i18n resource file is located
     /// </summary>
@@ -31,7 +43,7 @@ public static class I18nServiceCollectionExtensions
     {
         if (Directory.Exists(localeDirectory))
         {
-            CacheLocalesFromPath(localeDirectory);
+            AddI18nFromPath(localeDirectory);
         }
         else
         {
@@ -39,7 +51,7 @@ public static class I18nServiceCollectionExtensions
             var i18nPath = Path.Combine(assemblyPath, localeDirectory);
             if (Directory.Exists(i18nPath))
             {
-                CacheLocalesFromPath(i18nPath);
+                AddI18nFromPath(i18nPath);
             }
             else if (localeDirectory.StartsWith("wwwroot"))
             {
@@ -50,7 +62,7 @@ public static class I18nServiceCollectionExtensions
                     i18nPath = Directory.GetDirectories(wwwrootPath, i18nDirectory, SearchOption.AllDirectories).FirstOrDefault();
                     if (i18nPath is not null)
                     {
-                        CacheLocalesFromPath(i18nPath);
+                        AddI18nFromPath(i18nPath);
                     }
                     else throw new Exception($"Can't find path：{localeDirectory}");
                 }
@@ -80,12 +92,12 @@ public static class I18nServiceCollectionExtensions
             locales.Add((culture, map));
         }
 
-        CacheLocales(locales);
+        AddI18n(locales);
 
         return builder;
     }
 
-    private static void CacheLocalesFromPath(string path)
+    private static void AddI18nFromPath(string path)
     {
         var files = new List<string>();
         var locales = new List<(string culture, Dictionary<string, string>)>();
@@ -108,14 +120,18 @@ public static class I18nServiceCollectionExtensions
             locales.Add((culture, locale));
         }
 
-        CacheLocales(locales);
+        AddI18n(locales);
     }
 
-    private static void CacheLocales(IEnumerable<(string culture, Dictionary<string, string>)> locales)
+    private static void AddI18n(IEnumerable<(string cultureName, Dictionary<string, string> map)> locales)
     {
-        foreach (var (cultureName, map) in locales)
+        AddI18n(locales.Select(culture => (CultureInfo.CreateSpecificCulture(culture.cultureName), culture.map)));
+    }
+
+    private static void AddI18n(IEnumerable<(CultureInfo culture, Dictionary<string, string> map)> locales)
+    {
+        foreach (var (culture, map) in locales)
         {
-            var culture = CultureInfo.CreateSpecificCulture(cultureName);
             if (string.IsNullOrEmpty(culture.Name))
             {
                 continue;
