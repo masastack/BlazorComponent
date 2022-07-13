@@ -21,13 +21,13 @@ public static class I18nServiceCollectionExtensions
         return services;
     }
 
-    public static IBlazorComponentBuilder AddI18n(this IBlazorComponentBuilder builder, IEnumerable<(string cultureName, Dictionary<string, string> map)> locales)
+    public static IBlazorComponentBuilder AddI18n(this IBlazorComponentBuilder builder, params(string cultureName, Dictionary<string, string> map)[] locales)
     {
         AddI18n(locales);
         return builder;
     }
 
-    public static IBlazorComponentBuilder AddI18n(this IBlazorComponentBuilder builder, IEnumerable<(CultureInfo culture, Dictionary<string, string> map)> locales)
+    public static IBlazorComponentBuilder AddI18n(this IBlazorComponentBuilder builder, params(CultureInfo culture, Dictionary<string, string> map)[] locales)
     {
         AddI18n(locales);
         return builder;
