@@ -38,7 +38,7 @@ namespace BlazorComponent
 
         protected bool IsReverse { get; set; }
 
-        public bool ArrowsVisible => ShowArrowsOnHover || ShowArrows;
+        public virtual bool ArrowsVisible => ShowArrowsOnHover || ShowArrows;
 
         public int TransitionCount { get; set; }
 
