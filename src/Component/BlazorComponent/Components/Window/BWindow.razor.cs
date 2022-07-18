@@ -94,16 +94,19 @@ namespace BlazorComponent
             var nextIndex = GetNextIndex(InternalIndex);
             var nextItem = Items[nextIndex];
 
-            if (ValueChanged.HasDelegate)
+            InvokeAsync(() =>
             {
-                ValueChanged.InvokeAsync(nextItem.Value);
-            }
-            else
-            {
-                Value = nextItem.Value;
-                InternalIndex = nextIndex;
-                StateHasChanged();
-            }
+                if (ValueChanged.HasDelegate)
+                {
+                    ValueChanged.InvokeAsync(nextItem.Value);
+                }
+                else
+                {
+                    Value = nextItem.Value;
+                    InternalIndex = nextIndex;
+                    StateHasChanged();
+                }
+            });
         }
 
         protected void Prev()

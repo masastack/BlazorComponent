@@ -1,6 +1,6 @@
 ﻿namespace BlazorComponent
 {
-    public partial class BWindowItem : BGroupItem<ItemGroupBase>
+    public partial class BWindowItem : BGroupItem<ItemGroupBase>, IWindowItem
     {
         protected BWindowItem() : base(GroupType.Window, bootable: true)
         {
