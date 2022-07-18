@@ -38,6 +38,39 @@ namespace BlazorComponent
             _nextTickQueue.Enqueue(callback);
         }
 
+        protected void NextTick(Action callback)
+        {
+            NextTick(() =>
+            {
+                callback.Invoke();
+                return Task.CompletedTask;
+            });
+        }
+
+        protected async Task NextTickIf(Func<Task> callback, Func<bool> @if)
+        {
+            if (@if.Invoke())
+            {
+                NextTick(callback);
+            }
+            else
+            {
+                await callback.Invoke();
+            }
+        }
+
+        protected void NextTickIf(Action callback, Func<bool> @if)
+        {
+            if (@if.Invoke())
+            {
+                NextTick(callback);
+            }
+            else
+            {
+                callback.Invoke();
+            }
+        }
+
         protected void InvokeStateHasChanged()
         {
             if (!IsDisposed)
@@ -115,7 +148,7 @@ namespace BlazorComponent
             if (AfterHandleEventShouldRender())
             {
                 StateHasChanged();
-            }            
+            }
         }
 
         protected virtual void Dispose(bool disposing)
