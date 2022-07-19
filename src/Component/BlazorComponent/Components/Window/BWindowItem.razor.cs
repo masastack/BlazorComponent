@@ -12,7 +12,7 @@
         {
             return Task.CompletedTask;
         }
-        
+
         protected virtual Task HandleOnAfter(ElementReference el)
         {
             return Task.CompletedTask;
