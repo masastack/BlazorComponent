@@ -19,6 +19,7 @@ partial class MFIleInputBase
 
     public Action<PrecedingUploadingDto> PrecedingUploading { get; set; }
 
+    [Parameter]
     public string? Url { get; set; }
 
     [Parameter]
