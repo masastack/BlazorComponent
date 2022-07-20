@@ -37,7 +37,5 @@
         public bool Right { get; set; }
 
         public bool Top { get; set; }
-
-        public bool Visible { get; set; }
     }
 }

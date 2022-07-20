@@ -4,6 +4,8 @@
     {
         public IList<TItem> ComputedItems => Component.ComputedItems;
 
+        public RenderFragment MenuContent => Component.MenuContent;
+
         public object Menu
         {
             set

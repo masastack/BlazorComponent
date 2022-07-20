@@ -6,7 +6,7 @@ namespace BlazorComponent
     {
         private List<TItem> _oldItems;
         private string _oldItemsKeys;
-        private List<TKey> _oldValue;
+        private List<TKey> _oldValue = new();
         private List<TKey> _oldActive;
         private List<TKey> _oldOpen;
 
@@ -481,7 +481,7 @@ namespace BlazorComponent
 
             if (!ListComparer.Equals(_oldValue, Value))
             {
-                UpdateSelected();
+                UpdateSelected(_oldValue, Value);
                 _oldValue = Value;
             }
 
@@ -523,7 +523,7 @@ namespace BlazorComponent
         
         private void UpdateOpen()
         {
-            if (Open == null || !Open.Any())
+            if (Open == null)
             {
                 return;
             }
@@ -544,7 +544,7 @@ namespace BlazorComponent
 
         private void UpdateActive()
         {
-            if (Active == null || !Active.Any())
+            if (Active == null)
             {
                 return;
             }
@@ -565,23 +565,26 @@ namespace BlazorComponent
             }
         }
 
-        private void UpdateSelected()
+        private void UpdateSelected(List<TKey> old, List<TKey> value)
         {
-            if (Value == null || !Value.Any())
+            if (value == null)
             {
                 return;
             }
 
             //clear all selected
-            foreach (var selectedNodeState in Nodes.Values.Where(r => r.IsSelected))
-            {
-                selectedNodeState.IsSelected = false;
-            }
+            // foreach (var selectedNodeState in Nodes.Values.Where(r => r.IsSelected))
+            // {
+            //     selectedNodeState.IsSelected = false;
+            // }
 
-            foreach (var key in Value)
-            {
-                UpdateSelected(key, true);
-            }
+            old.ForEach(k => UpdateSelected(k, false));
+            value.ForEach(k => UpdateSelected(k, true));
+            //
+            // foreach (var key in Value)
+            // {
+            //     UpdateSelected(key, true);
+            // }
         }
 
         private void BuildTree(List<TItem> items, TKey parent)

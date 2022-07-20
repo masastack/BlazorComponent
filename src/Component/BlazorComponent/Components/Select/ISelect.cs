@@ -10,6 +10,7 @@ namespace BlazorComponent
         IList<TItem> SelectedItems { get; }
         int SelectedIndex { get; set; }
         object Menu { set; }
+        RenderFragment MenuContent { get; }
         bool HasChips { get; }
         RenderFragment PrependItemContent { get; }
         RenderFragment AppendItemContent { get; }

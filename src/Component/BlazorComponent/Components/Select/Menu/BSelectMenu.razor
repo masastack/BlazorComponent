@@ -6,5 +6,12 @@
 @inherits ComponentPartBase<TInput>
 
 <BMenu @attributes="GetAttributes(typeof(BMenu))" @ref="Menu">
-    @RenderPart(typeof(BSelectList<,,,>))
+    @if (MenuContent is not null)
+    {
+        @MenuContent
+    }
+    else
+    {
+        @RenderPart(typeof(BSelectList<,,,>))
+    }
 </BMenu>
