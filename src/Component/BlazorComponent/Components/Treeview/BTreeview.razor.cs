@@ -12,7 +12,6 @@ namespace BlazorComponent
 
         [Parameter]
         public List<TItem> Items { get; set; }
-
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
@@ -459,7 +458,7 @@ namespace BlazorComponent
 
             return keys;
         }
-
+        
         protected override void OnParametersSet()
         {
             if (_oldItems != Items)
@@ -499,6 +498,29 @@ namespace BlazorComponent
             }
         }
 
+        protected override void OnAfterRender(bool firstRender)
+        {
+            base.OnAfterRender(firstRender);
+
+            if (firstRender)
+            {
+                if (OpenAll)
+                {
+                    UpdateAll(true);
+                }
+                
+                StateHasChanged();
+            }
+        }
+
+        public void UpdateAll(bool val)
+        {
+            Nodes.Values.ForEach(nodeState =>
+            {
+                nodeState.IsOpen = val;
+            });
+        }
+        
         private void UpdateOpen()
         {
             if (Open == null || !Open.Any())
