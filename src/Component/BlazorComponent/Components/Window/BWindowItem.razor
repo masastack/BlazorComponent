@@ -3,7 +3,6 @@
 
 @if (IsBooted)
 {
-    @ItemGroup.Value @InternalIsActive
     <Transition Name="@ComputedTransition"
                 OnBeforeEnter="HandleOnBefore"
                 OnAfterEnter="HandleOnAfter"

@@ -6,6 +6,12 @@
         {
         }
 
+        /// <summary>
+        /// just to refresh the component.
+        /// </summary>
+        [CascadingParameter(Name = "WindowValue")]
+        public string WindowValue { get; set; }
+
         protected virtual string ComputedTransition { get; }
 
         protected virtual Task HandleOnBefore(ElementReference el)
