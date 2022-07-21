@@ -12,6 +12,7 @@ namespace BlazorComponent
 
         [Parameter]
         public List<TItem> Items { get; set; }
+
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
@@ -133,7 +134,7 @@ namespace BlazorComponent
 
         public TKey ActiveKey { get; private set; }
 
-        public Dictionary<TKey, NodeState<TItem, TKey>> Nodes { get; private set; } = new();
+        public Dictionary<TKey, NodeState<TItem, TKey>> Nodes { get; } = new();
 
         public List<TKey> ExcludedItems
         {
@@ -197,6 +198,11 @@ namespace BlazorComponent
         {
             if (Nodes.TryGetValue(key, out var nodeState))
             {
+                if (key is int and (2 or 3) )
+                {
+                    Console.WriteLine($"Key:{key} IsSelected:{nodeState.IsSelected} Nodes.HashCode{Nodes.GetHashCode()}");
+                }
+
                 return nodeState.IsSelected;
             }
 
@@ -301,10 +307,20 @@ namespace BlazorComponent
                 nodeState.IsSelected = isSelected ?? !nodeState.IsSelected;
                 nodeState.IsIndeterminate = false;
 
+                if (key is int  and (2 or 3))
+                {
+                    Console.WriteLine($"before {key} isSelected:{isSelected} nodeState.IsSelected {nodeState.IsSelected} Nodes.HashCode:{Nodes.GetHashCode()}");
+                }
+
                 if (SelectionType == SelectionType.Leaf)
                 {
                     UpdateChildrenSelected(nodeState.Children, nodeState.IsSelected);
                     UpdateParentSelected(nodeState.Parent);
+                }
+                
+                if (key is int and (2 or 3))
+                {
+                    Console.WriteLine($"after {key} nodeState.IsSelected {nodeState.IsSelected}");
                 }
             }
         }
@@ -458,7 +474,7 @@ namespace BlazorComponent
 
             return keys;
         }
-        
+
         protected override void OnParametersSet()
         {
             if (_oldItems != Items)
@@ -508,19 +524,16 @@ namespace BlazorComponent
                 {
                     UpdateAll(true);
                 }
-                
+
                 StateHasChanged();
             }
         }
 
         public void UpdateAll(bool val)
         {
-            Nodes.Values.ForEach(nodeState =>
-            {
-                nodeState.IsOpen = val;
-            });
+            Nodes.Values.ForEach(nodeState => { nodeState.IsOpen = val; });
         }
-        
+
         private void UpdateOpen()
         {
             if (Open == null)
@@ -580,6 +593,7 @@ namespace BlazorComponent
 
             old.ForEach(k => UpdateSelected(k, false));
             value.ForEach(k => UpdateSelected(k, true));
+
             //
             // foreach (var key in Value)
             // {
@@ -589,6 +603,8 @@ namespace BlazorComponent
 
         private void BuildTree(List<TItem> items, TKey parent)
         {
+            Console.WriteLine("build tree.............");
+            
             foreach (var item in items)
             {
                 var key = ItemKey(item);
