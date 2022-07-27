@@ -7,7 +7,7 @@ internal static class I18nCache
 {
     private static readonly ConcurrentDictionary<CultureInfo, IReadOnlyDictionary<string, string>> Cache;
 
-    private static CultureInfo? _defaultCulture;
+    private static CultureInfo? _defaultCulture = new CultureInfo("en-US");
 
     static I18nCache()
     {

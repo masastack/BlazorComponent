@@ -10,7 +10,6 @@ public class I18n
     private readonly CookieStorage _cookieStorage;
 
     private CultureInfo? _culture;
-    private IReadOnlyDictionary<string, string>? _locale;
 
     public I18n(CookieStorage cookieStorage, IHttpContextAccessor httpContextAccessor)
     {
@@ -44,12 +43,7 @@ public class I18n
             cultureName = _cookieStorage.GetCookie(CultureCookieKey);
         }
 
-        var culture = !string.IsNullOrEmpty(cultureName) ? CultureInfo.CreateSpecificCulture(cultureName) : CultureInfo.CurrentCulture;
-
-        // https://github.com/dotnet/runtime/issues/18998#issuecomment-254565364
-        // `CultureInfo.CreateSpecificCulture` has the different behavior in different OS,
-        // so need to standardize the culture.
-        StandardizeCulture(ref culture);
+        var culture = GetValidCulture(cultureName);
 
         if (!EmbeddedLocales.ContainsLocale(culture))
         {
@@ -57,6 +51,7 @@ public class I18n
         }
 
         _culture = culture;
+        Locale = I18nCache.GetLocale(culture);
     }
 
     public CultureInfo Culture
@@ -65,12 +60,11 @@ public class I18n
         private set
         {
             _culture = value ?? I18nCache.DefaultCulture;
-            _locale = I18nCache.GetLocale(_culture);
+            Locale = I18nCache.GetLocale(_culture);
         }
     }
 
-    public IReadOnlyDictionary<string, string> Locale =>
-        _locale ?? (_locale = I18nCache.GetLocale(Culture)) ?? throw new Exception($"Not has {Culture} language !");
+    public IReadOnlyDictionary<string, string> Locale { get; private set; }
 
     public void SetCulture(CultureInfo uiCulture)
     {
@@ -136,9 +130,28 @@ public class I18n
         return whenNullReturnKey ? key.Split('.').Last() : null;
     }
 
-    private static void StandardizeCulture(ref CultureInfo culture)
+    private static CultureInfo GetValidCulture(string cultureName)
     {
-        culture = culture.Name switch
+        CultureInfo culture;
+
+        try
+        {
+            culture = CultureInfo.CreateSpecificCulture(cultureName);
+        }
+        catch (Exception e)
+        {
+            culture = CultureInfo.CurrentUICulture;
+        }
+
+        if (culture.Name == string.Empty)
+        {
+            culture = DefaultCulture;
+        }
+
+        // https://github.com/dotnet/runtime/issues/18998#issuecomment-254565364
+        // `CultureInfo.CreateSpecificCulture` has the different behavior in different OS,
+        // so need to standardize the culture.
+        return culture.Name switch
         {
             "zh-Hans-CN" => new CultureInfo("zh-CN"),
             "zh-Hant-CN" => new CultureInfo("zh-TW"),

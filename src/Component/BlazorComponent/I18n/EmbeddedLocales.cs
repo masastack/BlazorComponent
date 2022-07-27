@@ -38,8 +38,6 @@ internal static class EmbeddedLocales
 
         LocaleCaches.Add(culture, locale);
 
-        I18nCache.AddLocale(culture, locale);
-
         return locale;
     }
 
