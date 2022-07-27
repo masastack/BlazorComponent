@@ -72,6 +72,7 @@ namespace BlazorComponent
         private bool DebounceEnabled => DebounceMilliseconds > 0;
 
         /// <summary>
+        /// (Temporary solution, change in 0.6.0)
         /// A flag to determine whether the user is entering.
         /// Set to true when the input event occurs.
         /// Set to false when the debounce event occurs.
@@ -80,7 +81,7 @@ namespace BlazorComponent
 
         public virtual Func<Task> DebounceTimerRun { get; set; }
 
-        public virtual int DebounceMilliseconds { get; set; } = 250;
+        public virtual int DebounceMilliseconds { get; set; } = 200;
 
         public virtual bool IsDark
         {
@@ -140,8 +141,14 @@ namespace BlazorComponent
         {
             if (DebounceEnabled)
             {
-                if (DebounceTimerRun != null && !ignoreDebounce)
+                if (DebounceTimerRun != null)
                 {
+                    if (ignoreDebounce)
+                    {
+                        DebounceTimerRun?.Invoke();
+                        return;
+                    }
+
                     DebounceChangeValue();
                     return;
                 }
