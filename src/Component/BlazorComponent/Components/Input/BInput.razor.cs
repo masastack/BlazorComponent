@@ -67,13 +67,21 @@ namespace BlazorComponent
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
 
+        private Timer _debounceTimer;
+
         private bool DebounceEnabled => DebounceMilliseconds > 0;
 
-        private Timer _debounceTimer;
+        /// <summary>
+        /// (Temporary solution, change in 0.6.0)
+        /// A flag to determine whether the user is entering.
+        /// Set to true when the input event occurs.
+        /// Set to false when the debounce event occurs.
+        /// </summary>
+        protected bool Inputting { get; set; }
 
         public virtual Func<Task> DebounceTimerRun { get; set; }
 
-        public virtual int DebounceMilliseconds { get; set; } = 250;
+        public virtual int DebounceMilliseconds { get; set; } = 200;
 
         public virtual bool IsDark
         {
@@ -133,8 +141,14 @@ namespace BlazorComponent
         {
             if (DebounceEnabled)
             {
-                if (DebounceTimerRun != null && !ignoreDebounce)
+                if (DebounceTimerRun != null)
                 {
+                    if (ignoreDebounce)
+                    {
+                        DebounceTimerRun?.Invoke();
+                        return;
+                    }
+
                     DebounceChangeValue();
                     return;
                 }
@@ -159,6 +173,7 @@ namespace BlazorComponent
         {
             InvokeAsync(async () =>
             {
+                Inputting = false;
                 await ChangeValue(true);
             });
         }
