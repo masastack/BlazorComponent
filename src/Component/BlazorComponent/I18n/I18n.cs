@@ -9,8 +9,6 @@ public class I18n
 
     private readonly CookieStorage _cookieStorage;
 
-    private CultureInfo? _culture;
-
     public I18n(CookieStorage cookieStorage, IHttpContextAccessor httpContextAccessor)
     {
         _cookieStorage = cookieStorage;
@@ -45,45 +43,20 @@ public class I18n
 
         var culture = GetValidCulture(cultureName);
 
-        if (!EmbeddedLocales.ContainsLocale(culture))
-        {
-            AddLocale(culture, EmbeddedLocales.GetSpecifiedLocale(culture));
-        }
-
-        _culture = culture;
-        Locale = I18nCache.GetLocale(culture);
+        SetCultureAndLocale(culture);
     }
 
-    public CultureInfo Culture
-    {
-        get => _culture ?? I18nCache.DefaultCulture;
-        private set
-        {
-            _culture = value ?? I18nCache.DefaultCulture;
-            Locale = I18nCache.GetLocale(_culture);
-        }
-    }
+    public CultureInfo Culture { get; private set; }
 
     public IReadOnlyDictionary<string, string> Locale { get; private set; }
 
-    public void SetCulture(CultureInfo uiCulture)
+    public void SetCulture(CultureInfo culture)
     {
-        SetCulture(uiCulture, CultureInfo.InvariantCulture);
-    }
+        _cookieStorage?.SetItemAsync(CultureCookieKey, culture);
 
-    public void SetCulture(CultureInfo uiCulture, CultureInfo culture)
-    {
-        if (!EmbeddedLocales.ContainsLocale(uiCulture))
-        {
-            AddLocale(uiCulture, EmbeddedLocales.GetSpecifiedLocale(uiCulture));
-        }
+        SetCultureAndLocale(culture);
 
-        _cookieStorage?.SetItemAsync(CultureCookieKey, uiCulture);
-
-        Culture = uiCulture;
-
-        CultureInfo.DefaultThreadCurrentUICulture = uiCulture;
-        CultureInfo.DefaultThreadCurrentCulture = culture;
+        CultureInfo.DefaultThreadCurrentUICulture = culture;
     }
 
     public void AddLocale(CultureInfo culture, IReadOnlyDictionary<string, string>? locale, bool isDefault = false)
@@ -130,6 +103,17 @@ public class I18n
         return whenNullReturnKey ? key.Split('.').Last() : null;
     }
 
+    private void SetCultureAndLocale(CultureInfo culture)
+    {
+        if (!EmbeddedLocales.ContainsLocale(culture))
+        {
+            AddLocale(culture, EmbeddedLocales.GetSpecifiedLocale(culture));
+        }
+
+        Culture = culture;
+        Locale = I18nCache.GetLocale(culture);
+    }
+
     private static CultureInfo GetValidCulture(string cultureName)
     {
         CultureInfo culture;
@@ -145,7 +129,7 @@ public class I18n
 
         if (culture.Name == string.Empty)
         {
-            culture = DefaultCulture;
+            culture = I18nCache.DefaultCulture;
         }
 
         // https://github.com/dotnet/runtime/issues/18998#issuecomment-254565364
