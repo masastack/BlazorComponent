@@ -9,9 +9,6 @@ public class I18n
 
     private readonly CookieStorage _cookieStorage;
 
-    private CultureInfo? _culture;
-    private IReadOnlyDictionary<string, string>? _locale;
-
     public I18n(CookieStorage cookieStorage, IHttpContextAccessor httpContextAccessor)
     {
         _cookieStorage = cookieStorage;
@@ -44,52 +41,22 @@ public class I18n
             cultureName = _cookieStorage.GetCookie(CultureCookieKey);
         }
 
-        var culture = !string.IsNullOrEmpty(cultureName) ? CultureInfo.CreateSpecificCulture(cultureName) : CultureInfo.CurrentCulture;
+        var culture = GetValidCulture(cultureName);
 
-        // https://github.com/dotnet/runtime/issues/18998#issuecomment-254565364
-        // `CultureInfo.CreateSpecificCulture` has the different behavior in different OS,
-        // so need to standardize the culture.
-        StandardizeCulture(ref culture);
-
-        if (!EmbeddedLocales.ContainsLocale(culture))
-        {
-            AddLocale(culture, EmbeddedLocales.GetSpecifiedLocale(culture));
-        }
-
-        _culture = culture;
+        SetCultureAndLocale(culture);
     }
 
-    public CultureInfo Culture
+    public CultureInfo Culture { get; private set; }
+
+    public IReadOnlyDictionary<string, string> Locale { get; private set; }
+
+    public void SetCulture(CultureInfo culture)
     {
-        get => _culture ?? I18nCache.DefaultCulture;
-        private set
-        {
-            _culture = value ?? I18nCache.DefaultCulture;
-            _locale = I18nCache.GetLocale(_culture);
-        }
-    }
+        _cookieStorage?.SetItemAsync(CultureCookieKey, culture);
 
-    public IReadOnlyDictionary<string, string> Locale =>
-        _locale ?? (_locale = I18nCache.GetLocale(Culture)) ?? throw new Exception($"Not has {Culture} language !");
+        SetCultureAndLocale(culture);
 
-    public void SetCulture(CultureInfo uiCulture)
-    {
-        SetCulture(uiCulture, CultureInfo.InvariantCulture);
-    }
-
-    public void SetCulture(CultureInfo uiCulture, CultureInfo culture)
-    {
-        if (!EmbeddedLocales.ContainsLocale(uiCulture))
-        {
-            AddLocale(uiCulture, EmbeddedLocales.GetSpecifiedLocale(uiCulture));
-        }
-
-        _cookieStorage?.SetItemAsync(CultureCookieKey, uiCulture);
-
-        Culture = uiCulture;
-
-        CultureInfo.DefaultThreadCurrentUICulture = uiCulture;
-        CultureInfo.DefaultThreadCurrentCulture = culture;
+        CultureInfo.DefaultThreadCurrentUICulture = culture;
     }
 
     public void AddLocale(CultureInfo culture, IReadOnlyDictionary<string, string>? locale, bool isDefault = false)
@@ -136,9 +103,39 @@ public class I18n
         return whenNullReturnKey ? key.Split('.').Last() : null;
     }
 
-    private static void StandardizeCulture(ref CultureInfo culture)
+    private void SetCultureAndLocale(CultureInfo culture)
     {
-        culture = culture.Name switch
+        if (!EmbeddedLocales.ContainsLocale(culture))
+        {
+            AddLocale(culture, EmbeddedLocales.GetSpecifiedLocale(culture));
+        }
+
+        Culture = culture;
+        Locale = I18nCache.GetLocale(culture);
+    }
+
+    private static CultureInfo GetValidCulture(string cultureName)
+    {
+        CultureInfo culture;
+
+        try
+        {
+            culture = CultureInfo.CreateSpecificCulture(cultureName);
+        }
+        catch (Exception e)
+        {
+            culture = CultureInfo.CurrentUICulture;
+        }
+
+        if (culture.Name == string.Empty)
+        {
+            culture = I18nCache.DefaultCulture;
+        }
+
+        // https://github.com/dotnet/runtime/issues/18998#issuecomment-254565364
+        // `CultureInfo.CreateSpecificCulture` has the different behavior in different OS,
+        // so need to standardize the culture.
+        return culture.Name switch
         {
             "zh-Hans-CN" => new CultureInfo("zh-CN"),
             "zh-Hant-CN" => new CultureInfo("zh-TW"),

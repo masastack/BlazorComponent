@@ -7,7 +7,7 @@ internal static class I18nCache
 {
     private static readonly ConcurrentDictionary<CultureInfo, IReadOnlyDictionary<string, string>> Cache;
 
-    private static CultureInfo? _defaultCulture;
+    private static CultureInfo? _defaultCulture = new("en-US");
 
     static I18nCache()
     {
@@ -38,10 +38,7 @@ internal static class I18nCache
 
     public static bool ContainsCulture(string cultureName) => Cache.Keys.Any(c => c.Name == cultureName);
 
-    public static IEnumerable<CultureInfo> GetCultures()
-    {
-        return Cache.Keys;
-    }
+    public static IEnumerable<CultureInfo> GetCultures() => Cache.Keys;
 
     private static IReadOnlyDictionary<TK, TV> Merge<TK, TV>(params IReadOnlyDictionary<TK, TV>[] dictionaries)
     {
