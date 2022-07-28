@@ -11,12 +11,12 @@ namespace BlazorComponent
         public TItem Item { get; set; }
 
         [Parameter]
-        public RenderFragment<ItemColProps<TItem>> ItemColContent { get; set; }
-
-        [Parameter]
         public int Index { get; set; }
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public Func<ItemColProps<TItem>, bool> HasSlot { get; set; }
+
+        [Parameter]
+        public RenderFragment<ItemColProps<TItem>> SlotContent { get; set; }
     }
 }

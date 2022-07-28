@@ -1,0 +1,41 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<thead class="@CssProvider.GetClass()">
+    <tr>
+        <th>
+            <div class="@CssProvider.GetClass("header-mobile__wrapper")">
+                @{
+                    var header = Headers.FirstOrDefault(h => h.Value == "data-table-select");
+                    if (header is not null && !SingleSelect)
+                    {
+                        <div class="@CssProvider.GetClass("header-mobile__select") @header.Class">
+                            @RenderPart(typeof(BDataTableHeaderSelectAll<>))
+                        </div>
+                    }
+
+                    var sortHeaders = Headers.Where(h => h.Sortable && h.Value == "data-table-select")
+                                             .Select(h => (h.Text, h.Value));
+
+                    if (!DisableSort && sortHeaders.Any())
+                    {
+                        @RenderPart(typeof(BDataTableHeaderSortSelect<>), "items", sortHeaders)
+                    }
+                }
+            </div>
+        </th>
+    </tr>
+</thead>
+
+@code {
+
+    [Parameter]
+    public bool DisableSort { get; set; }
+
+    [Parameter]
+    public List<DataTableHeader> Headers { get; set; }
+
+    [Parameter]
+    public bool SingleSelect { get; set; }
+
+}

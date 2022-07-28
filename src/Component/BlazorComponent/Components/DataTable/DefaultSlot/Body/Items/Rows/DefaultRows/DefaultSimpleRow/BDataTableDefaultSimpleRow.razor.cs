@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+﻿using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
@@ -10,6 +9,8 @@ namespace BlazorComponent
 
         [Parameter]
         public TItem Item { get; set; }
+
+        public bool IsMobile => Component.IsMobile;
 
         public Func<TItem, string> ItemKey => Component.ItemKey;
 
@@ -30,5 +31,16 @@ namespace BlazorComponent
         public EventCallback<MouseEventArgs> HandleOnRowContextMenuAsync => CreateEventCallback<MouseEventArgs>(Component.HandleOnRowContextMenuAsync);
 
         public EventCallback<MouseEventArgs> HandleOnRowDbClickAsync => CreateEventCallback<MouseEventArgs>(Component.HandleOnRowDbClickAsync);
+
+        private bool HasExpand(ItemColProps<TItem> props) => props.Header.Value == "data-table-expand" && ShowExpand;
+
+        private bool HasSelect(ItemColProps<TItem> props) => props.Header.Value == "data-table-select" && ShowSelect;
+
+        private bool HasItemColContent() => ItemColContent is not null;
+
+        private bool HasSlot(ItemColProps<TItem> props)
+        {
+            return HasExpand(props) || HasSelect(props) || HasItemColContent();
+        }
     }
 }

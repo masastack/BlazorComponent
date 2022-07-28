@@ -64,6 +64,8 @@ namespace BlazorComponent
         string GroupPlusIcon { get; }
 
         DataOptions Options { get; }
+        
+        bool IsMobile { get; }
     }
 }
 
