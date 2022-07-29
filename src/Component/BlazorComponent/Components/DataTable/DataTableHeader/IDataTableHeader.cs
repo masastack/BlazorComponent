@@ -9,6 +9,8 @@ namespace BlazorComponent
         RenderFragment DataTableSelectContent { get; }
 
         bool DisableSort { get; }
+        
+        bool MultiSort { get; }
 
         string SortIcon { get; }
 
@@ -18,7 +20,7 @@ namespace BlazorComponent
 
         Task HandleOnGroup(string group);
 
-        Dictionary<string, object> GetHeaderAttrs(DataTableHeader header);
+        Task HandleOnHeaderColClick(string value);
 
         DataOptions Options { get; }
     }

@@ -7,24 +7,24 @@
     {
         <td class="@CssProvider.GetClass("mobile-row", data: header)">
             @{
-                var props = new ItemColProps<TItem>(header, Item);
-                if (HasSlot(props))
+                if (header.Value != "data-table-select" && !HideDefaultHeader)
                 {
-                    @SlotContent(props)
-                }
-                else
-                {
-                    if (header.Value != "data-table-select" && !HideDefaultHeader)
-                    {
-                        <div class="@CssProvider.GetClass("mobile-row__header")">
-                            @header.Text
-                        </div>
-                    }
-
-                    <div class="@CssProvider.GetClass("mobile-row__cell")">
-                        @props.Value
+                    <div class="@CssProvider.GetClass("mobile-row__header")">
+                        @header.Text
                     </div>
                 }
+
+                var props = new ItemColProps<TItem>(header, Item);
+                <div class="@CssProvider.GetClass("mobile-row__cell")">
+                    @if (HasSlot(props))
+                    {
+                        @SlotContent(props)
+                    }
+                    else
+                    {
+                        @props.Value
+                    }
+                </div>
             }
         </td>
     }

@@ -6,5 +6,8 @@ namespace BlazorComponent
     {
         [Parameter]
         public List<DataTableHeader> Headers { get; set; } = new();
+
+        [Parameter]
+        public bool IsMobile { get; set; }
     }
 }

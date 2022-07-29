@@ -6,14 +6,7 @@
 @HeaderContent
 @if (!HideDefaultHeader)
 {
-    @if (IsMobile)
-    {
-        <BDataTableHeaderMobile @attributes="@GetAttributes(typeof(BDataTableHeaderMobile))"></BDataTableHeaderMobile>
-    }
-    else
-    {
-        <BDataTableHeader @attributes="@GetAttributes(typeof(BDataTableHeader))"></BDataTableHeader>
-    }
+    <BDataTableHeader @attributes="@GetAttributes(typeof(BDataTableHeader))"></BDataTableHeader>
 }
 @if (Loading == true)
 {
