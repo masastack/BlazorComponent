@@ -1,4 +1,5 @@
-﻿using BlazorComponent.Mixins;
+﻿using BlazorComponent.JSInterop;
+using BlazorComponent.Mixins;
 using BlazorComponent.Web;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -204,9 +205,9 @@ namespace BlazorComponent
 
         public async Task AddOutsideClickEventListener()
         {
-            await JsInvokeAsync(JsInteropConstants.AddOutsideClickEventListener,
-                DotNetObjectReference.Create(new Invoker<ClickOutsideArgs>(HandleOutsideClickAsync)),
-                new[] { ContentElement.GetSelector(), ActivatorSelector }, null, ContentElement);
+            var noInvokeSelectors = DependentElements.Select(s => s.Selector).Concat<string>(new[] { ActivatorSelector });
+
+            await Js.AddOutsideClickEventListener(HandleOutsideClickAsync, noInvokeSelectors);
         }
 
         public async Task RemoveOutsideClickEventListener()

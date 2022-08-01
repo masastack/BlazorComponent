@@ -1,4 +1,5 @@
-﻿using BlazorComponent.Mixins;
+﻿using BlazorComponent.JSInterop;
+using BlazorComponent.Mixins;
 using BlazorComponent.Web;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -53,9 +54,7 @@ namespace BlazorComponent
             {
                 _isAttached = true;
 
-                await JsInvokeAsync(JsInteropConstants.AddOutsideClickEventListener,
-                    DotNetObjectReference.Create(new Invoker<object>(HandleOutsideClickAsync)),
-                    new[] { Document.GetElementByReference(ContentElement).Selector, ActivatorSelector }, null, ContentElement);
+                await Js.AddOutsideClickEventListener(HandleOutsideClickAsync, new[] { ContentElement.GetSelector(), ActivatorSelector });
             }
 
             await base.WhenIsActiveUpdating(value);
