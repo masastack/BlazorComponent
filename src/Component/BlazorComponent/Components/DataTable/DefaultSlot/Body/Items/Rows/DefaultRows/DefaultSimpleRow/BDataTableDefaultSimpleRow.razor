@@ -3,44 +3,83 @@
 @typeparam TDataTable
 @inherits ComponentPartBase<TDataTable>
 
-<BDataTableRow @onclick="HandleOnRowClickAsync"
-               @oncontextmenu="HandleOnRowContextMenuAsync"
-               @ondblclick="HandleOnRowDbClickAsync"
-               Index="Index"
-               Item="Item"
-               @key="ItemKey?.Invoke(Item)"
-               @attributes="GetAttributes(typeof(BDataTableRow<>))">
-    <ItemColContent>
-        @if (context.Header.Value == "data-table-expand" && ShowExpand)
-        {
-            if (ItemDataTableExpandContent != null)
+@if (IsMobile)
+{
+    <BDataTableMobileRow @onclick="HandleOnRowClickAsync"
+                         @oncontextmenu="HandleOnRowContextMenuAsync"
+                         @ondblclick="HandleOnRowDbClickAsync"
+                         Index="Index"
+                         Item="Item"
+                         HasSlot="@HasSlot"
+                         @key="ItemKey?.Invoke(Item)"
+                         @attributes="@GetAttributes(typeof(BDataTableMobileRow<>))">
+        <SlotContent>
+            @if (HasExpand(context))
             {
-                @ItemDataTableExpandContent
-            }
+                if (ItemDataTableExpandContent != null)
+                {
+                    @ItemDataTableExpandContent
+                }
 
-            <BIcon @attributes="@(GetAttributes(typeof(BIcon),"expand-icon",data:Item))">
-                @ExpandIcon
-            </BIcon>
-        }
-        else if (context.Header.Value == "data-table-select" && ShowSelect)
-        {
-            if (ItemDataTableSelectContent != null)
-            {
-                @ItemDataTableSelectContent
+                <BIcon @attributes="@(GetAttributes(typeof(BIcon), "expand-icon", data: Item))">
+                    @ExpandIcon
+                </BIcon>
             }
-            else
+            else if (HasSelect(context))
             {
-                <BSimpleCheckbox @attributes="GetAttributes(typeof(BSimpleCheckbox), data: Item)"></BSimpleCheckbox>
+                if (ItemDataTableSelectContent != null)
+                {
+                    @ItemDataTableSelectContent
+                }
+                else
+                {
+                    <BSimpleCheckbox @attributes="GetAttributes(typeof(BSimpleCheckbox), data: Item)"></BSimpleCheckbox>
+                }
             }
-        }
-        else if (ItemColContent != null)
-        {
-            @ItemColContent(context);
-        }
-        else
-        {
-            @context.Value
-        }
-    </ItemColContent>
-</BDataTableRow>
+            else if (HasItemColContent())
+            {
+                @ItemColContent(context)
+            }
+        </SlotContent>
+    </BDataTableMobileRow>
+}
+else
+{
+    <BDataTableRow @onclick="HandleOnRowClickAsync"
+                   @oncontextmenu="HandleOnRowContextMenuAsync"
+                   @ondblclick="HandleOnRowDbClickAsync"
+                   Index="Index"
+                   Item="Item"
+                   HasSlot="@HasSlot"
+                   @key="ItemKey?.Invoke(Item)"
+                   @attributes="@GetAttributes(typeof(BDataTableRow<>))">
+        <SlotContent>
+            @if (HasExpand(context))
+            {
+                if (ItemDataTableExpandContent != null)
+                {
+                    @ItemDataTableExpandContent
+                }
 
+                <BIcon @attributes="@(GetAttributes(typeof(BIcon), "expand-icon", data: Item))">
+                    @ExpandIcon
+                </BIcon>
+            }
+            else if (HasSelect(context))
+            {
+                if (ItemDataTableSelectContent != null)
+                {
+                    @ItemDataTableSelectContent
+                }
+                else
+                {
+                    <BSimpleCheckbox @attributes="GetAttributes(typeof(BSimpleCheckbox), data: Item)"></BSimpleCheckbox>
+                }
+            }
+            else if (HasItemColContent())
+            {
+                @ItemColContent(context)
+            }
+        </SlotContent>
+    </BDataTableRow>
+}

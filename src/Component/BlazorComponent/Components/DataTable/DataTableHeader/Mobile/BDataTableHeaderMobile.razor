@@ -1,0 +1,51 @@
+﻿@namespace BlazorComponent
+@typeparam TDataTableHeader 
+@inherits ComponentPartBase<TDataTableHeader>
+
+<thead class="@CssProvider.GetClass()">
+<tr>
+    <th>
+        <div class="@CssProvider.GetClass("header-mobile__wrapper")">
+            @{
+                var header = Headers.FirstOrDefault(h => h.Value == "data-table-select");
+                if (header is not null && !SingleSelect)
+                {
+                    <div class="@CssProvider.GetClass("header-mobile__select") @header.Class">
+                        @RenderPart(typeof(BDataTableHeaderSelectAll<>))
+                    </div>
+                }
+
+                var sortHeaders = Headers.Where(h => h.Sortable && h.Value != "data-table-select")
+                                         .Select(h => (h.Text, h.Value)).ToList();
+
+                if (!DisableSort && sortHeaders.Any())
+                {
+                    RenderFragment<SelectSelectionProps<(string Text, string Value)>> selectionContent = context =>
+                        @<BChip @attributes="@GetAttributes(typeof(BChip))"
+                                OnClick="() => Component.HandleOnHeaderColClick(context.Item.Value)">
+                            @context.Item.Text
+                            <div class="@CssProvider.GetClass("header-mobile__select-chips", data: context.Item)">
+                                @RenderPart(typeof(BDataTableHeaderSortIcon<>))
+                            </div>
+                        </BChip>;
+
+                    @RenderPart(typeof(BDataTableHeaderSortSelect<>), sortHeaders, selectionContent, MultiSort, "items")
+                }
+            }
+        </div>
+    </th>
+</tr>
+</thead>
+
+@code {
+
+    [Parameter]
+    public List<DataTableHeader> Headers { get; set; }
+
+    public bool SingleSelect => Component.SingleSelect;
+
+    public bool DisableSort => Component.DisableSort;
+
+    public bool MultiSort => Component.MultiSort;
+
+}

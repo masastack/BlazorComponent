@@ -514,9 +514,15 @@ namespace BlazorComponent
             });
         }
 
-        public void Sort(string key)
+        public void Sort(OneOf<string, List<string>> key)
         {
-            var (sortBy, sortDesc, page) = Toggle(key, InternalOptions.SortBy, InternalOptions.SortDesc, InternalOptions.Page, InternalOptions.MustSort, InternalOptions.MultiSort);
+            if (key.IsT1)
+            {
+                SortArray(key.AsT1);
+                return;
+            }
+            
+            var (sortBy, sortDesc, page) = Toggle(key.AsT0, InternalOptions.SortBy, InternalOptions.SortDesc, InternalOptions.Page, InternalOptions.MustSort, InternalOptions.MultiSort);
 
             UpdateOptions(options =>
             {
@@ -526,9 +532,19 @@ namespace BlazorComponent
             });
         }
 
-        public void SortArray(IList<string> sortBy)
+        public void SortArray(List<string> sortBy)
         {
-            throw new NotImplementedException();
+            var sortDesc = sortBy.Select(s =>
+            {
+                var i = InternalOptions.SortBy.ToList().FindIndex(k => k == s);
+                return i > -1 ? InternalOptions.SortDesc[i] : false;
+            }).ToList();
+            
+            UpdateOptions(options =>
+            {
+                options.SortBy = sortBy;
+                options.SortDesc = sortDesc;
+            });
         }
 
         public void UpdateOptions(Action<DataOptions> options, bool emit = true)

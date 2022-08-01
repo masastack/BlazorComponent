@@ -9,5 +9,7 @@ namespace BlazorComponent
         public bool HideDefaultHeader => Component.HideDefaultHeader;
 
         public StringBoolean Loading => Component.Loading;
+
+        public bool IsMobile => Component.IsMobile;
     }
 }

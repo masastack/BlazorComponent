@@ -32,6 +32,9 @@
         public string Align { get; set; }
 
         public bool Groupable { get; set; } = true;
+        
+        // TODO: non implementation
+        public string Class { get; set; }
 
         public string CellClass { get; set; }
 

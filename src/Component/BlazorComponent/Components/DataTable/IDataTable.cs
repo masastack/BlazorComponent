@@ -1,69 +1,72 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+﻿using Microsoft.AspNetCore.Components.Web;
 
-namespace BlazorComponent
+namespace BlazorComponent;
+
+/// <summary>
+/// TODO: many render fragments lack the type parameter.
+/// </summary>
+/// <typeparam name="TItem"></typeparam>
+public interface IDataTable<TItem> : IDataIterator<TItem>
 {
-    public interface IDataTable<TItem> : IDataIterator<TItem>
-    {
-        string Caption { get; }
+    string Caption { get; }
 
-        RenderFragment CaptionContent { get; }
+    RenderFragment CaptionContent { get; }
 
-        IEnumerable<DataTableHeader<TItem>> ComputedHeaders { get; }
+    IEnumerable<DataTableHeader<TItem>> ComputedHeaders { get; }
 
-        RenderFragment TopContent { get; }
+    RenderFragment TopContent { get; }
 
-        RenderFragment FootContent { get; }
+    RenderFragment FootContent { get; }
 
-        bool HasTop { get; }
+    bool HasTop { get; }
 
-        bool IsExpanded(TItem item);
+    bool IsExpanded(TItem item);
 
-        bool HasBottom { get; }
+    bool HasBottom { get; }
 
-        Dictionary<string, object> ColspanAttrs { get; }
+    Dictionary<string, object> ColspanAttrs { get; }
 
-        Task HandleOnRowClickAsync(MouseEventArgs args);
+    Task HandleOnRowClickAsync(MouseEventArgs args);
 
-        RenderFragment BodyPrependContent { get; }
+    RenderFragment BodyPrependContent { get; }
 
-        Task HandleOnRowContextMenuAsync(MouseEventArgs arg);
+    Task HandleOnRowContextMenuAsync(MouseEventArgs arg);
 
-        RenderFragment BodyAppendContent { get; }
+    RenderFragment BodyAppendContent { get; }
 
-        RenderFragment GroupContent { get; }
+    RenderFragment GroupContent { get; }
 
-        Task HandleOnRowDbClickAsync(MouseEventArgs arg);
+    Task HandleOnRowDbClickAsync(MouseEventArgs arg);
 
-        RenderFragment<(IEnumerable<DataTableHeader<TItem>> Headers, TItem Item)> ExpandedItemContent { get; }
+    RenderFragment<(IEnumerable<DataTableHeader<TItem>> Headers, TItem Item)> ExpandedItemContent { get; }
 
-        Func<TItem, string> ItemKey { get; }
+    Func<TItem, string> ItemKey { get; }
 
-        bool HideDefaultHeader { get; }
+    bool HideDefaultHeader { get; }
 
-        bool ShowExpand { get; }
+    bool ShowExpand { get; }
 
-        RenderFragment ItemDataTableExpandContent { get; }
+    RenderFragment ItemDataTableExpandContent { get; }
 
-        bool ShowSelect { get; }
+    bool ShowSelect { get; }
 
-        string ExpandIcon { get; }
+    string ExpandIcon { get; }
 
-        RenderFragment<ItemColProps<TItem>> ItemColContent { get; }
+    RenderFragment<ItemColProps<TItem>> ItemColContent { get; }
 
-        RenderFragment ItemDataTableSelectContent { get; }
+    RenderFragment ItemDataTableSelectContent { get; }
 
-        RenderFragment GroupHeaderContent { get; }
+    RenderFragment GroupHeaderContent { get; }
 
-        Dictionary<string, bool> OpenCache { get; }
+    Dictionary<string, bool> OpenCache { get; }
 
-        string GroupMinusIcon { get; }
+    string GroupMinusIcon { get; }
 
-        string GroupCloseIcon { get; }
+    string GroupCloseIcon { get; }
 
-        string GroupPlusIcon { get; }
+    string GroupPlusIcon { get; }
 
-        DataOptions Options { get; }
-    }
+    DataOptions Options { get; }
+
+    bool IsMobile { get; }
 }
-

@@ -6,10 +6,9 @@
 @HeaderContent
 @if (!HideDefaultHeader)
 {
-    <BDataTableHeader @attributes="GetAttributes(typeof(BDataTableHeader))"></BDataTableHeader>
+    <BDataTableHeader @attributes="@GetAttributes(typeof(BDataTableHeader))"></BDataTableHeader>
 }
 @if (Loading == true)
 {
     @RenderPart(typeof(BDataTableLoading<,>))
 }
-

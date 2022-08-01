@@ -5,23 +5,18 @@
 <tr class="@CssProvider.GetClass()" @attributes="Attributes">
     @foreach (var header in Headers)
     {
-        <td class="@CssProvider.GetClass("cell",data:header)">
-            @if (ItemColContent != null)
-            {
-                var prop = new ItemColProps<TItem>
-                    {
-                        Header = header,
-                        Item = Item
-                    };
-                @ItemColContent(prop)
-            }
-            else
-            {
-                var value = header.ItemValue?.Invoke(Item);
-                @value
+        <td class="@CssProvider.GetClass("cell", data: header)">
+            @{
+                var props = new ItemColProps<TItem>(header, Item);
+                if (HasSlot(props))
+                {
+                    @SlotContent(props)
+                }
+                else
+                {
+                    @props.Value
+                }
             }
         </td>
     }
 </tr>
-
-
