@@ -1,4 +1,5 @@
-﻿using BlazorComponent.Web;
+﻿using BlazorComponent.JSInterop;
+using BlazorComponent.Web;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
@@ -126,8 +127,7 @@ namespace BlazorComponent
             {
                 Attached = true;
 
-                await JsInvokeAsync(JsInteropConstants.AddOutsideClickEventListener,
-                    DotNetObjectReference.Create(new Invoker<object>(HandleOnOutsideClickAsync)),
+                await Js.AddOutsideClickEventListener(HandleOnOutsideClickAsync,
                     new[] { Document.GetElementByReference(DialogRef).Selector },
                     new[] { Document.GetElementByReference(OverlayRef!.Value).Selector });
 

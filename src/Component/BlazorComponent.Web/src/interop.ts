@@ -480,7 +480,7 @@ export function removeHtmlElementEventListener(selector, type, k?: string) {
 
 var outsideClickListenerCaches: { [key: string]: any } = {}
 
-export function addOutsideClickEventListener(invoker, noInvokeSelectors: string[], invokeSelectors: string[], contentElement) {
+export function addOutsideClickEventListener(invoker, noInvokeSelectors: string[], invokeSelectors: string[]) {
   if (!noInvokeSelectors) return;
 
   noInvokeSelectors = noInvokeSelectors.filter(s => !!s)

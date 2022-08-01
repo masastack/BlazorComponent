@@ -1,4 +1,5 @@
-﻿using BlazorComponent.Mixins;
+﻿using BlazorComponent.JSInterop;
+using BlazorComponent.Mixins;
 using BlazorComponent.Web;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -186,9 +187,7 @@ namespace BlazorComponent
 
             if (firstRender)
             {
-                await JsInvokeAsync(JsInteropConstants.AddOutsideClickEventListener,
-                    DotNetObjectReference.Create(new Invoker<object>(HandleOnOutsideClickAsync)),
-                    DependentElements.Select(element => element.Selector));
+                await Js.AddOutsideClickEventListener(HandleOnOutsideClickAsync,DependentElements.Select(element => element.Selector));
 
                 if (!Permanent && !Stateless && !Temporary)
                 {
