@@ -1,10 +1,7 @@
 name: Mirror to Giltab
-on:
-  push:
-  delete:
-  create:
-  workflow_dispatch:
-  
+
+on: [push, delete, create]
+
 jobs:
   to_gitlab:
     runs-on: ubuntu-latest
