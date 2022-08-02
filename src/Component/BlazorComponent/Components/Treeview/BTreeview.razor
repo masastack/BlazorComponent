@@ -11,7 +11,7 @@
             {
                 foreach (var item in ComputedItems)
                 {
-                    @RenderPart(typeof(BTreeviewNodeChild<,,>),item,ItemDisabled?.Invoke(item) ?? false,arg1Name:"ParentIsDisabled")
+                    @RenderPart(typeof(BTreeviewNodeChild<,,>), item, ItemDisabled?.Invoke(item) ?? false, arg1Name: "ParentIsDisabled")
                 }
             }
             else

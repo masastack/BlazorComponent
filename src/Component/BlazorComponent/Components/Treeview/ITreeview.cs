@@ -25,6 +25,7 @@
         Task EmitActiveAsync();
 
         Task EmitOpenAsync();
+
         Task EmitSelectedAsync();
     }
 }

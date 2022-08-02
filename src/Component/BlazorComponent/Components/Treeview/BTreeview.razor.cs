@@ -231,6 +231,10 @@ namespace BlazorComponent
             {
                 await ActiveChanged.InvokeAsync(active.Select(ItemKey).ToList());
             }
+            else
+            {
+                StateHasChanged();
+            }
         }
 
         public void UpdateOpen(TKey key)
@@ -254,20 +258,23 @@ namespace BlazorComponent
             {
                 await OpenChanged.InvokeAsync(open.Select(ItemKey).ToList());
             }
+            else
+            {
+                StateHasChanged();
+            }
         }
 
         public void UpdateSelected(TKey key, bool isSelected)
         {
-            if (Nodes.TryGetValue(key, out var nodeState))
-            {
-                nodeState.IsSelected = isSelected;
-                nodeState.IsIndeterminate = false;
+            if (!Nodes.TryGetValue(key, out var nodeState)) return;
 
-                if (SelectionType == SelectionType.Leaf)
-                {
-                    UpdateChildrenSelected(nodeState.Children, nodeState.IsSelected);
-                    UpdateParentSelected(nodeState.Parent);
-                }
+            nodeState.IsSelected = isSelected;
+            nodeState.IsIndeterminate = false;
+
+            if (SelectionType == SelectionType.Leaf)
+            {
+                UpdateChildrenSelected(nodeState.Children, nodeState.IsSelected);
+                UpdateParentSelected(nodeState.Parent);
             }
         }
 
@@ -282,6 +289,10 @@ namespace BlazorComponent
             else if (OnInput.HasDelegate)
             {
                 await OnInput.InvokeAsync(selected);
+            }
+            else
+            {
+                StateHasChanged();
             }
         }
 
@@ -322,10 +333,12 @@ namespace BlazorComponent
                     }
                     else
                     {
+                        nodeState.IsSelected = false;
                         nodeState.IsIndeterminate = true;
                     }
                 }
 
+                // TODO: 父级的兄弟和自己都选中时有问题
                 UpdateParentSelected(nodeState.Parent, nodeState.IsIndeterminate);
             }
         }
@@ -451,11 +464,32 @@ namespace BlazorComponent
             }
         }
 
+        protected override void OnAfterRender(bool firstRender)
+        {
+            base.OnAfterRender(firstRender);
+
+            if (firstRender)
+            {
+                if (OpenAll)
+                {
+                    UpdateAll(true);
+                }
+                
+                StateHasChanged();
+            }
+        }
+
+        public void UpdateAll(bool val)
+        {
+            Nodes.Values.ForEach(nodeState => { nodeState.IsOpen = val; });
+        }
+        
         private void UpdateOpen(TKey key, bool isOpen)
         {
             if (!Nodes.TryGetValue(key, out var nodeState)) return;
-            
-            
+
+            nodeState.IsOpen = isOpen;
+
             //
             // if (Open == null || !Open.Any())
             // {
@@ -480,8 +514,12 @@ namespace BlazorComponent
         {
             if (value == null) return;
 
+            var v1 = Nodes.Values.Where(r => r.IsSelected).Select(r => r.Item).ToList();
+
             old.ForEach(k => updateFn(k, false));
+            var v2 = Nodes.Values.Where(r => r.IsSelected).Select(r => r.Item).ToList();
             value.ForEach(k => updateFn(k, true));
+            var v3 = Nodes.Values.Where(r => r.IsSelected).Select(r => r.Item).ToList();
 
             await emitFn.Invoke();
         }

@@ -4,4 +4,9 @@
 @typeparam TComponent
 @inherits ComponentPartBase<TComponent>
 
-<BTreeviewNode TItem="TItem" TKey="TKey" Item="Item" ParentIsDisabled="ParentIsDisabled" @attributes="GetAttributes(typeof(BTreeviewNode<,>))"></BTreeviewNode>
+<BTreeviewNode TItem="TItem"
+               TKey="TKey"
+               Item="Item"
+               ParentIsDisabled="@ParentIsDisabled"
+               @attributes="@GetAttributes(typeof(BTreeviewNode<,>))">
+</BTreeviewNode>
