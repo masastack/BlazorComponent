@@ -6,9 +6,9 @@ namespace BlazorComponent
     {
         private List<TItem> _oldItems;
         private string _oldItemsKeys;
-        private List<TKey> _oldValue;
-        private List<TKey> _oldActive;
-        private List<TKey> _oldOpen;
+        private List<TKey> _oldValue = new();
+        private List<TKey> _oldActive = new();
+        private List<TKey> _oldOpen = new();
 
         [Parameter]
         public List<TItem> Items { get; set; }
@@ -47,6 +47,9 @@ namespace BlazorComponent
         public Func<TItem, List<TItem>> ItemChildren { get; set; }
 
         [Parameter]
+        public Func<TItem, string, Func<TItem, string>, bool> Filter { get; set; }
+
+        [Parameter]
         public SelectionType SelectionType { get; set; }
 
         [Parameter]
@@ -57,6 +60,9 @@ namespace BlazorComponent
 
         [Parameter]
         public bool MultipleActive { get; set; }
+
+        [Parameter]
+        public bool MandatoryActive { get; set; }
 
         [Parameter]
         public List<TKey> Active { get; set; }
@@ -204,54 +210,37 @@ namespace BlazorComponent
             return false;
         }
 
-        public void UpdateActive(TKey key)
+        public void UpdateActive(TKey key, bool isActive)
         {
-            if (Nodes.TryGetValue(key, out var nodeState))
-            {
-                if (MultipleActive)
-                {
-                    nodeState.IsActive = !nodeState.IsActive;
-                }
-                else
-                {
-                    if (!nodeState.IsActive)
-                    {
-                        nodeState.IsActive = true;
+            if (!Nodes.TryGetValue(key, out var nodeState)) return;
 
-                        //only one active
-                        foreach (var otherNodeState in Nodes.Values.Where(r => r != nodeState && r.IsActive))
-                        {
-                            otherNodeState.IsActive = false;
-                        }
-                    }
-                    else
-                    {
-                        nodeState.IsActive = false;
-                    }
-                }
+            if (MandatoryActive && !isActive)
+            {
+                return;
+            }
+
+            nodeState.IsActive = isActive;
+
+            if (MultipleActive) return;
+
+            foreach (var ns in Nodes.Values.Where(r => r != nodeState && r.IsActive))
+            {
+                ns.IsActive = false;
             }
         }
 
         public async Task EmitActiveAsync()
         {
-            _oldActive = Nodes.Values.Where(r => r.IsActive).Select(r => ItemKey(r.Item)).ToList();
-            if (ListComparer.Equals(_oldActive, Active))
-            {
-                //nothing change
-                return;
-            }
-
-            Active = _oldActive;
+            var active = Nodes.Values.Where(r => r.IsActive).Select(r => r.Item).ToList();
 
             if (OnActiveUpdate.HasDelegate)
             {
-                var active = Nodes.Values.Where(r => r.IsActive).Select(r => r.Item).ToList();
                 _ = OnActiveUpdate.InvokeAsync(active);
             }
 
             if (ActiveChanged.HasDelegate)
             {
-                await ActiveChanged.InvokeAsync(Active);
+                await ActiveChanged.InvokeAsync(active.Select(ItemKey).ToList());
             }
             else
             {
@@ -269,66 +258,48 @@ namespace BlazorComponent
 
         public async Task EmitOpenAsync()
         {
-            _oldOpen = Nodes.Values.Where(r => r.IsOpen).Select(r => ItemKey(r.Item)).ToList();
-            if (ListComparer.Equals(_oldOpen, Open))
-            {
-                //nothing change
-                return;
-            }
-
-            Open = _oldOpen;
+            var open = Nodes.Values.Where(r => r.IsOpen).Select(r => r.Item).ToList();
 
             if (OnOpenUpdate.HasDelegate)
             {
-                var open = Nodes.Values.Where(r => r.IsOpen).Select(r => r.Item).ToList();
                 _ = OnOpenUpdate.InvokeAsync(open);
             }
 
             if (OpenChanged.HasDelegate)
             {
-                await OpenChanged.InvokeAsync(Open);
+                await OpenChanged.InvokeAsync(open.Select(ItemKey).ToList());
+            }
+            else
+            {
+                StateHasChanged();
             }
         }
 
-        public void UpdateSelected(TKey key)
+        public void UpdateSelected(TKey key, bool isSelected)
         {
-            UpdateSelected(key, null);
-        }
+            if (!Nodes.TryGetValue(key, out var nodeState)) return;
 
-        public void UpdateSelected(TKey key, bool? isSelected)
-        {
-            if (Nodes.TryGetValue(key, out var nodeState))
+            nodeState.IsSelected = isSelected;
+            nodeState.IsIndeterminate = false;
+
+            if (SelectionType == SelectionType.Leaf)
             {
-                nodeState.IsSelected = isSelected ?? !nodeState.IsSelected;
-                nodeState.IsIndeterminate = false;
-
-                if (SelectionType == SelectionType.Leaf)
-                {
-                    UpdateChildrenSelected(nodeState.Children, nodeState.IsSelected);
-                    UpdateParentSelected(nodeState.Parent);
-                }
+                UpdateChildrenSelected(nodeState.Children, nodeState.IsSelected);
+                UpdateParentSelected(nodeState.Parent);
             }
         }
 
         public async Task EmitSelectedAsync()
         {
-            _oldValue = Nodes.Values.Where(r => r.IsSelected).Select(r => ItemKey(r.Item)).ToList();
-            if (ListComparer.Equals(_oldValue, Value))
-            {
-                //nothing change
-                return;
-            }
-
-            Value = _oldValue;
+            var selected = Nodes.Values.Where(r => r.IsSelected).Select(r => r.Item).ToList();
 
             if (ValueChanged.HasDelegate)
             {
-                await ValueChanged.InvokeAsync(Value);
+                await ValueChanged.InvokeAsync(selected.Select(ItemKey).ToList());
             }
             else if (OnInput.HasDelegate)
             {
-                var value = Nodes.Values.Where(r => r.IsSelected).Select(r => r.Item).ToList();
-                await OnInput.InvokeAsync(value);
+                await OnInput.InvokeAsync(selected);
             }
             else
             {
@@ -355,6 +326,7 @@ namespace BlazorComponent
             {
                 if (isIndeterminate)
                 {
+                    nodeState.IsSelected = false;
                     nodeState.IsIndeterminate = true;
                 }
                 else
@@ -373,6 +345,7 @@ namespace BlazorComponent
                     }
                     else
                     {
+                        nodeState.IsSelected = false;
                         nodeState.IsIndeterminate = true;
                     }
                 }
@@ -427,8 +400,13 @@ namespace BlazorComponent
 
         private bool FilterTreeItem(TItem item, string search, Func<TItem, string> itemText)
         {
-            var text = itemText(item).ToString();
-            return text.ToLower().IndexOf(search.ToLower()) > -1;
+            if (Filter is not null)
+            {
+                return Filter.Invoke(item, search, itemText);
+            }
+
+            var text = itemText(item);
+            return text.ToLower().IndexOf(search.ToLower(), StringComparison.InvariantCulture) > -1;
         }
 
         public bool IsExcluded(TKey key)
@@ -460,8 +438,10 @@ namespace BlazorComponent
             return keys;
         }
 
-        protected override void OnParametersSet()
+        protected override async Task OnParametersSetAsync()
         {
+            await base.OnParametersSetAsync();
+
             if (_oldItems != Items)
             {
                 _oldItems = Items;
@@ -482,84 +462,58 @@ namespace BlazorComponent
 
             if (!ListComparer.Equals(_oldValue, Value))
             {
-                UpdateSelected();
-                _oldValue = Value;
+                await HandleUpdate(_oldValue, Value, UpdateSelected, EmitSelectedAsync);
+                _oldValue = Value ?? new List<TKey>();
             }
 
             if (!ListComparer.Equals(_oldActive, Active))
             {
-                UpdateActive();
-                _oldActive = Active;
+                await HandleUpdate(_oldActive, Active, UpdateActive, EmitActiveAsync);
+                _oldActive = Active ?? new List<TKey>();
             }
 
             if (!ListComparer.Equals(_oldOpen, Open))
             {
-                UpdateOpen();
-                _oldOpen = Open;
+                await HandleUpdate(_oldOpen, Open, UpdateOpen, EmitOpenAsync);
+                _oldOpen = Open ?? new List<TKey>();
             }
         }
 
-        private void UpdateOpen()
+        protected override void OnAfterRender(bool firstRender)
         {
-            if (Open == null || !Open.Any())
-            {
-                return;
-            }
+            base.OnAfterRender(firstRender);
 
-            foreach (var nodeState in Nodes.Values)
+            if (firstRender)
             {
-                var key = ItemKey(nodeState.Item);
-                if (Open.Contains(key))
+                if (OpenAll)
                 {
-                    nodeState.IsOpen = true;
+                    UpdateAll(true);
                 }
-                else
-                {
-                    nodeState.IsOpen = false;
-                }
+
+                StateHasChanged();
             }
         }
 
-        private void UpdateActive()
+        public void UpdateAll(bool val)
         {
-            if (Active == null || !Active.Any())
-            {
-                return;
-            }
-
-            var hasActive = false;
-            foreach (var nodeState in Nodes.Values)
-            {
-                var key = ItemKey(nodeState.Item);
-                if (Active.Contains(key) && (MultipleActive || !hasActive))
-                {
-                    nodeState.IsActive = true;
-                    hasActive = true;
-                }
-                else
-                {
-                    nodeState.IsActive = false;
-                }
-            }
+            Nodes.Values.ForEach(nodeState => { nodeState.IsOpen = val; });
         }
 
-        private void UpdateSelected()
+        private void UpdateOpen(TKey key, bool isOpen)
         {
-            if (Value == null || !Value.Any())
-            {
-                return;
-            }
+            if (!Nodes.TryGetValue(key, out var nodeState)) return;
 
-            //clear all selected
-            foreach (var selectedNodeState in Nodes.Values.Where(r => r.IsSelected))
-            {
-                selectedNodeState.IsSelected = false;
-            }
+            nodeState.IsOpen = isOpen;
+        }
 
-            foreach (var key in Value)
-            {
-                UpdateSelected(key, true);
-            }
+        private async Task HandleUpdate(List<TKey> old, List<TKey> value, Action<TKey, bool> updateFn, Func<Task> emitFn)
+        {
+            if (value == null) return;
+
+            old.ForEach(k => updateFn(k, false));
+            value.ForEach(k => updateFn(k, true));
+
+            await emitFn.Invoke();
         }
 
         private void BuildTree(List<TItem> items, TKey parent)

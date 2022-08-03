@@ -131,7 +131,7 @@ namespace BlazorComponent
             }
             else if (Activatable && !Disabled)
             {
-                Treeview.UpdateActive(Key);
+                Treeview.UpdateActive(Key, !IsActive);
                 await Treeview.EmitActiveAsync();
             }
         }

@@ -6,9 +6,9 @@
 
         void AddNode(ITreeviewNode<TItem, TKey> node);
 
-        void UpdateActive(TKey key);
+        void UpdateActive(TKey key, bool isActive);
 
-        void UpdateSelected(TKey key);
+        void UpdateSelected(TKey key, bool isSelected);
 
         void UpdateOpen(TKey key);
 
@@ -25,6 +25,7 @@
         Task EmitActiveAsync();
 
         Task EmitOpenAsync();
+
         Task EmitSelectedAsync();
     }
 }
