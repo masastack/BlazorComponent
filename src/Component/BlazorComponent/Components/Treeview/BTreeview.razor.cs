@@ -47,6 +47,9 @@ namespace BlazorComponent
         public Func<TItem, List<TItem>> ItemChildren { get; set; }
 
         [Parameter]
+        public Func<TItem, string, Func<TItem, string>, bool> Filter { get; set; }
+
+        [Parameter]
         public SelectionType SelectionType { get; set; }
 
         [Parameter]
@@ -57,6 +60,9 @@ namespace BlazorComponent
 
         [Parameter]
         public bool MultipleActive { get; set; }
+
+        [Parameter]
+        public bool MandatoryActive { get; set; }
 
         [Parameter]
         public List<TKey> Active { get; set; }
@@ -208,6 +214,11 @@ namespace BlazorComponent
         {
             if (!Nodes.TryGetValue(key, out var nodeState)) return;
 
+            if (MandatoryActive && !isActive)
+            {
+                return;
+            }
+
             nodeState.IsActive = isActive;
 
             if (MultipleActive) return;
@@ -315,6 +326,7 @@ namespace BlazorComponent
             {
                 if (isIndeterminate)
                 {
+                    nodeState.IsSelected = false;
                     nodeState.IsIndeterminate = true;
                 }
                 else
@@ -338,7 +350,6 @@ namespace BlazorComponent
                     }
                 }
 
-                // TODO: 父级的兄弟和自己都选中时有问题
                 UpdateParentSelected(nodeState.Parent, nodeState.IsIndeterminate);
             }
         }
@@ -389,8 +400,13 @@ namespace BlazorComponent
 
         private bool FilterTreeItem(TItem item, string search, Func<TItem, string> itemText)
         {
-            var text = itemText(item).ToString();
-            return text.ToLower().IndexOf(search.ToLower()) > -1;
+            if (Filter is not null)
+            {
+                return Filter.Invoke(item, search, itemText);
+            }
+
+            var text = itemText(item);
+            return text.ToLower().IndexOf(search.ToLower(), StringComparison.InvariantCulture) > -1;
         }
 
         public bool IsExcluded(TKey key)
@@ -447,20 +463,19 @@ namespace BlazorComponent
             if (!ListComparer.Equals(_oldValue, Value))
             {
                 await HandleUpdate(_oldValue, Value, UpdateSelected, EmitSelectedAsync);
-                _oldValue = Value;
+                _oldValue = Value ?? new List<TKey>();
             }
 
             if (!ListComparer.Equals(_oldActive, Active))
             {
                 await HandleUpdate(_oldActive, Active, UpdateActive, EmitActiveAsync);
-                _oldActive = Active;
+                _oldActive = Active ?? new List<TKey>();
             }
 
             if (!ListComparer.Equals(_oldOpen, Open))
             {
-                // UpdateOpen();
                 await HandleUpdate(_oldOpen, Open, UpdateOpen, EmitOpenAsync);
-                _oldOpen = Open;
+                _oldOpen = Open ?? new List<TKey>();
             }
         }
 
@@ -474,7 +489,7 @@ namespace BlazorComponent
                 {
                     UpdateAll(true);
                 }
-                
+
                 StateHasChanged();
             }
         }
@@ -483,43 +498,20 @@ namespace BlazorComponent
         {
             Nodes.Values.ForEach(nodeState => { nodeState.IsOpen = val; });
         }
-        
+
         private void UpdateOpen(TKey key, bool isOpen)
         {
             if (!Nodes.TryGetValue(key, out var nodeState)) return;
 
             nodeState.IsOpen = isOpen;
-
-            //
-            // if (Open == null || !Open.Any())
-            // {
-            //     return;
-            // }
-            //
-            // foreach (var nodeState in Nodes.Values)
-            // {
-            //     var key = ItemKey(nodeState.Item);
-            //     if (Open.Contains(key))
-            //     {
-            //         nodeState.IsOpen = true;
-            //     }
-            //     else
-            //     {
-            //         nodeState.IsOpen = false;
-            //     }
-            // }
         }
-        
+
         private async Task HandleUpdate(List<TKey> old, List<TKey> value, Action<TKey, bool> updateFn, Func<Task> emitFn)
         {
             if (value == null) return;
 
-            var v1 = Nodes.Values.Where(r => r.IsSelected).Select(r => r.Item).ToList();
-
             old.ForEach(k => updateFn(k, false));
-            var v2 = Nodes.Values.Where(r => r.IsSelected).Select(r => r.Item).ToList();
             value.ForEach(k => updateFn(k, true));
-            var v3 = Nodes.Values.Where(r => r.IsSelected).Select(r => r.Item).ToList();
 
             await emitFn.Invoke();
         }
