@@ -4,5 +4,8 @@
 @typeparam TInput
 @inherits ComponentPartBase<TInput>
 
-<BCascaderList TItem="TItem" TValue="TValue" Items="ComputedItems" @attributes="GetAttributes(typeof(BCascaderList<,>))">
+<BCascaderList TItem="TItem"
+               TValue="TValue"
+               Items="ComputedItems"
+               @attributes="@GetAttributes(typeof(BCascaderList<,>))">
 </BCascaderList>
