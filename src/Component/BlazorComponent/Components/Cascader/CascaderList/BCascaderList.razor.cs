@@ -22,6 +22,8 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<(TItem item, bool closeOnSelect)> OnSelect { get; set; }
 
+        private BCascaderList<TItem, TValue> NextCascaderList { get; set; }
+
         protected virtual string Icon { get; }
 
         protected TItem LoadingItem { get; set; }
@@ -32,8 +34,22 @@ namespace BlazorComponent
 
         private bool IsLast => Children == null || Children.Count == 0;
 
+        /// <summary>
+        /// Clear the selection.
+        /// </summary>
+        internal void Clear()
+        {
+            SelectedItem = default;
+        }
+
         protected async Task SelectItemAsync(TItem item)
         {
+            // clear the child cascader's selection if the item is equal to SelectedItem
+            if (EqualityComparer<TItem>.Default.Equals(SelectedItem, item))
+            {
+                NextCascaderList?.Clear();
+            }
+
             SelectedItem = item;
             Children = ItemChildren(item);
 
