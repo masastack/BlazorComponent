@@ -1,65 +1,59 @@
-// KeyboardEvent.keyCode aliases
-const keyCodes = Object.freeze({
-  enter: 13,
-  tab: 9,
-  delete: 46,
-  esc: 27,
-  space: 32,
-  up: 38,
-  down: 40,
-  left: 37,
-  right: 39,
-  end: 35,
-  home: 36,
-  del: 46,
-  backspace: 8,
-  insert: 45,
-  pageup: 33,
-  pagedown: 34,
-  shift: 16,
-})
+// Utilities
+import { addPassiveEventListener, composedPath, keyCodes } from "../../utils/helper";
+import { getDom } from "../../utils/index";
+
 var wheelListenerCaches: { [key: string]: any } = {}
 
-export function addWheelEventListener(overlaySelector, content, dialog) {
-  if (!overlaySelector) return
-
-  const listener = function (e) {
-    if (e.type === 'keydown') {
-      if (
-        ['INPUT', 'TEXTAREA', 'SELECT'].includes((e.target as Element).tagName) || (e.target as HTMLElement).isContentEditable
-      ) return
-
-      const up = [keyCodes.up, keyCodes.pageup]
-      const down = [keyCodes.down, keyCodes.pagedown]
-
-      if (up.includes(e.keyCode)) {
-        (e as any).deltaY = -1
-      } else if (down.includes(e.keyCode)) {
-        (e as any).deltaY = 1
-      } else {
-        return
-      }
+export function hideScroll(fullscreen: boolean, overlaySelector: string, content, dialog) {
+  if (fullscreen) {
+    document.documentElement!.classList.add('overflow-y-hidden')
+  } else {
+    if (!overlaySelector) return
+    const overlay = getDom(overlaySelector);
+    const listener = (e) => {
+      scrollListener(e, overlay, content, dialog)
     }
 
-    var overlay = document.querySelector(overlaySelector)
+    wheelListenerCaches[`window_${overlaySelector}`] = listener;
 
-    if (overlay === e.target ||
-      (e.type !== 'keydown' && e.target === document.body) ||
-      checkPath(e, getDom(content), getDom(dialog))) {
-      e.preventDefault()
-    }
+    addPassiveEventListener(window, 'wheel', listener, { passive: false })
+    window.addEventListener('keydown', listener)
   }
-
-  wheelListenerCaches[`window_${overlaySelector}`] = listener;
-
-  window.addEventListener("wheel", listener, { passive: false })
 }
 
-export function removeWheelEventListener(overlaySelector) {
+export function showScroll (overlaySelector) {
+  document.documentElement!.classList.remove('overflow-y-hidden')
+
   var listener = wheelListenerCaches[`window_${overlaySelector}`]
   if (listener) {
-    window.removeEventListener("wheel", listener, ({ passive: false } as any))
+    window.removeEventListener('wheel', listener)
+    window.removeEventListener('keydown', listener)
   }
+}
+
+function scrollListener (e: WheelEvent & KeyboardEvent, overlay, content, dialog) {
+  if (e.type === 'keydown') {
+    if (
+      ['INPUT', 'TEXTAREA', 'SELECT'].includes((e.target as Element).tagName) ||
+      // https://github.com/vuetifyjs/vuetify/issues/4715
+      (e.target as HTMLElement).isContentEditable
+    ) return
+
+    const up = [keyCodes.up, keyCodes.pageup]
+    const down = [keyCodes.down, keyCodes.pagedown]
+
+    if (up.includes(e.keyCode)) {
+      (e as any).deltaY = -1
+    } else if (down.includes(e.keyCode)) {
+      (e as any).deltaY = 1
+    } else {
+      return
+    }
+  }
+
+  if (e.target === overlay ||
+    (e.type !== 'keydown' && e.target === document.body) ||
+    checkPath(e, content, dialog)) e.preventDefault()
 }
 
 function checkPath(e: WheelEvent, content, dialog) {
@@ -125,53 +119,10 @@ function isInside(el: Element, parent: Element): boolean {
   }
 }
 
-/**  Polyfill for Event.prototype.composedPath */
-function composedPath(e: Event): EventTarget[] {
-  if (e.composedPath) return e.composedPath()
-
-  const path = []
-  let el = e.target as Element
-
-  while (el) {
-    path.push(el)
-
-    if (el.tagName === 'HTML') {
-      path.push(document)
-      path.push(window)
-
-      return path
-    }
-
-    el = el.parentElement!
-  }
-  return path
-}
-
 function hasScrollbar(el?: Element) {
   if (!el || el.nodeType !== Node.ELEMENT_NODE) return false
 
   const style = window.getComputedStyle(el)
   return ((['auto', 'scroll'].includes(style.overflowY!) || el.tagName === 'SELECT') && el.scrollHeight > el.clientHeight) ||
     ((['auto', 'scroll'].includes(style.overflowX!)) && el.scrollWidth > el.clientWidth)
-}
-
-function getDom(element) {
-  if (!element) {
-    element = document.body;
-  } else if (typeof element === 'string') {
-    if (element === 'document') {
-      return document.documentElement;
-    } else if (element.indexOf('.') > 0) {
-      let array = element.split('.');
-      let el = document.querySelector(array[0]);
-      if (!el) {
-        return null;
-      }
-
-      element = el[array[1]];
-    } else {
-      element = document.querySelector(element);
-    }
-  }
-  return element;
 }
