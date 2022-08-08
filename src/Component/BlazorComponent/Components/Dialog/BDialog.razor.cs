@@ -138,28 +138,16 @@ namespace BlazorComponent
             StateHasChanged();
         }
 
+        protected virtual bool IsFullscreen => Fullscreen;
+
         private async Task HideScroll()
         {
-            if (Fullscreen)
-            {
-                await JsInvokeAsync(JsInteropConstants.SetStyle, "document", "overflow-y", "hidden");
-            }
-            else
-            {
-                await JsInvokeAsync(JsInteropConstants.AddWheelEventListener, OverlayRef.GetSelector(), ContentRef, DialogRef);
-            }
+            await JsInvokeAsync(JsInteropConstants.HideScroll, IsFullscreen, OverlayRef.GetSelector(), ContentRef, DialogRef);
         }
 
         private async Task ShowScroll()
         {
-            await JsInvokeAsync(JsInteropConstants.SetStyle, "document", "overflow-y", "auto");
-
-            await JsInvokeAsync(JsInteropConstants.RemoveWheelEventListener, OverlayRef.GetSelector());
-        }
-
-        private Task ScrollListener()
-        {
-            return Task.CompletedTask;
+            await JsInvokeAsync(JsInteropConstants.ShowScroll, OverlayRef.GetSelector());
         }
 
         protected async Task HandleOnOutsideClickAsync(object _)

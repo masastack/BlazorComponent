@@ -6,7 +6,7 @@
         <CascadingValue Name="IsInNav" Value="@(Tag=="nav")">
             @if (ShowOverlay)
             {
-                <BOverlay @attributes="GetAttributes(typeof(BOverlay))"></BOverlay>
+                <BOverlay @attributes="GetAttributes(typeof(BOverlay))" @ref="Overlay"></BOverlay>
             }
             @*TODO: Directives,Listeners*@
             <Element Tag="@Tag" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" ReferenceCaptureAction="element=>Ref=element" @attributes="Attributes"

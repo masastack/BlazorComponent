@@ -30,9 +30,9 @@
 
         public static string RemoveOutsideClickEventListener => $"{Variables.JsInteropFuncNamePrefix}removeOutsideClickEventListener";
         
-        public static string AddWheelEventListener => $"{Variables.JsInteropFuncNamePrefix}addWheelEventListener";
+        public static string HideScroll => $"{Variables.JsInteropFuncNamePrefix}hideScroll";
 
-        public static string RemoveWheelEventListener => $"{Variables.JsInteropFuncNamePrefix}removeWheelEventListener";
+        public static string ShowScroll => $"{Variables.JsInteropFuncNamePrefix}showScroll";
 
         public static string MatchMedia => $"{Variables.JsInteropFuncNamePrefix}matchMedia";
 

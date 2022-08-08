@@ -115,6 +115,10 @@ namespace BlazorComponent
         [Inject]
         private Document Document { get; set; }
 
+        protected object Overlay { get; set; }
+
+        protected ElementReference? OverlayRef => ((BOverlay)Overlay)?.Ref;
+
         protected bool IsMouseover
         {
             get
@@ -231,6 +235,18 @@ namespace BlazorComponent
         {
             if (!CloseConditional()) return;
             await UpdateValue(false);
+        }
+
+        protected virtual bool IsFullscreen => false;
+
+        protected async Task HideScroll()
+        {
+            await JsInvokeAsync(JsInteropConstants.HideScroll, IsFullscreen, OverlayRef.GetSelector());
+        }
+
+        protected async Task ShowScroll()
+        {
+            await JsInvokeAsync(JsInteropConstants.ShowScroll, OverlayRef.GetSelector());
         }
 
         protected bool CloseConditional()
