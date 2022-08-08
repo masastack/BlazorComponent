@@ -1,7 +1,7 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
-@typeparam TItem
-@typeparam TItemValue
+@typeparam TColumnItem
+@typeparam TColumnItemValue
 
 <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">
     <div class="@CssProvider.GetClass("toolbar")" style="@CssProvider.GetStyle("toolbar")">
@@ -9,23 +9,10 @@
         <div class="@CssProvider.GetClass("title")" style="@CssProvider.GetStyle("title")">@Title</div>
         <BButton @attributes="@GetAttributes(typeof(BButton), "ok")">@OkText</BButton>
     </div>
-    <div class="@CssProvider.GetClass("columns")" style="@CssProvider.GetStyle("columns")">
-        @foreach (var column in Items)
+    <div class="@CssProvider.GetClass("columns")" style="@CssProvider.GetStyle("columns")" @ontouchmove:preventDefault>
+        @foreach (var (column, columnIndex) in FormattedColumns.Select((item, index) => (item, index)))
         {
-            <div class="@CssProvider.GetClass("column")" style="@CssProvider.GetStyle("column")"
-                 @ontouchstart="HandleTouchstart"
-                 @ontouchmove="HandleTouchmove"
-                 @ontouchmove:preventDefault
-                 @ontouchend="HandleTouchend">
-                <ul class="@CssProvider.GetClass("column-wrapper")" style="@CssProvider.GetStyle("column-wrapper")">
-                    @foreach (var item in column)
-                    {
-                        <li class="@CssProvider.GetClass("column-item")" style="@CssProvider.GetStyle("column-item")">
-                            <div class="@CssProvider.GetClass("column-text")">@GetItemText(item)</div>
-                        </li>
-                    }
-                </ul>
-            </div>
+            <BMobilePickerColumn TColumnItem="TColumnItem" Items="column" ItemText="ColumnItemText" ItemHeight="ItemPxHeight"></BMobilePickerColumn>
         }
         <div class="@CssProvider.GetClass("picked")" style="@CssProvider.GetStyle("picked")"></div>
         <div class="@CssProvider.GetClass("mask")" style="@CssProvider.GetStyle("mask")"></div>

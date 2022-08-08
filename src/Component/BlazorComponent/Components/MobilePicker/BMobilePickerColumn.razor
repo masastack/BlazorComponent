@@ -1,0 +1,21 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+@typeparam TColumnItem
+
+@* @ontransitionend="OnTransitionEnd" *@
+
+<div class="@CssProvider.GetClass("column")" style="@CssProvider.GetStyle("column")"
+     @ontouchstart="OnTouchstart"
+     @ontouchmove="OnTouchmove"
+     @ontouchend="OnTouchend"
+     @ontouchcancel="OnTouchend">
+    <ul class="@CssProvider.GetClass("column-wrapper")" style="@CssProvider.GetStyle("column-wrapper")"
+        @ref="Wrapper">
+        @foreach (var item in Items)
+        {
+            <li class="@CssProvider.GetClass("column-item")" style="@CssProvider.GetStyle("column-item")">
+                <div class="@CssProvider.GetClass("column-text")">@ItemText?.Invoke(item)</div>
+            </li>
+        }
+    </ul>
+</div>

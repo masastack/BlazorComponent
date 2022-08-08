@@ -1571,3 +1571,11 @@ export function scrollToTile(contentSelector: string, tilesSelector: string, ind
     content.scrollTo({ top: tile.offsetTop - contentHeight + tile.clientHeight * 2, behavior: "smooth" })
   }
 }
+
+export function getElementTranslateY(element) {
+  const style = window.getComputedStyle(element);
+  const transform = style.transform || style.webkitTransform;
+  const translateY = transform.slice(7, transform.length - 1).split(', ')[5];
+
+  return Number(translateY);
+}

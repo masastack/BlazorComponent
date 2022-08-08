@@ -2,13 +2,13 @@
 
 namespace BlazorComponent;
 
-public partial class BMobilePicker<TItem, TItemValue> : BDomComponentBase
+public partial class BMobilePicker<TColumnItem, TColumnItemValue> : BDomComponentBase
 {
-    [Parameter, EditorRequired] public List<List<TItem>> Items { get; set; }
+    [Parameter, EditorRequired] public List<List<TColumnItem>> Columns { get; set; }
 
-    [Parameter] public Func<TItem, string> ItemText { get; set; }
+    [Parameter] public Func<TColumnItem, string> ColumnItemText { get; set; }
 
-    [Parameter] public Func<TItem, TItemValue> ItemValue { get; set; }
+    [Parameter] public Func<TColumnItem, TColumnItemValue> ColumnItemValue { get; set; }
 
     [Parameter] public StringNumber ItemHeight { get; set; } = 44;
 
@@ -20,9 +20,11 @@ public partial class BMobilePicker<TItem, TItemValue> : BDomComponentBase
 
     [Parameter] public string OkText { get; set; }
 
-    protected int ComputedItemHeight => ItemHeight.ToInt32();
+    protected List<List<TColumnItem>> FormattedColumns { get; set; } = new();
 
-    protected int ComputedHeight
+    protected int ItemPxHeight => ItemHeight.ToInt32();
+
+    protected int WrapHeight
     {
         get
         {
@@ -38,73 +40,35 @@ public partial class BMobilePicker<TItem, TItemValue> : BDomComponentBase
         get
         {
             var itemHeight = ItemHeight.ToInt32();
-            return (ComputedHeight / 2) - itemHeight / 2;
+            return (WrapHeight / 2) - itemHeight / 2;
         }
     }
-    
+
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
 
-        NormalizeNormalColumns(Items);
+        // TODO: how to watch Columns
+        FormattedColumns = new List<List<TColumnItem>>(Columns);
     }
 
-    protected string GetItemText(TItem item)
+    protected string GetColumnItemText(TColumnItem columnItem)
     {
-        return ItemText?.Invoke(item) ?? item.ToString();
+        return ColumnItemText?.Invoke(columnItem) ?? columnItem.ToString();
     }
 
-    protected TItemValue GetItemValue(TItem item)
+    protected TColumnItemValue GetItemValue(TColumnItem columnItem)
     {
-        if (ItemValue is not null)
+        if (ColumnItemValue is not null)
         {
-            return ItemValue(item);
+            return ColumnItemValue(columnItem);
         }
 
-        if (item is TItemValue value)
+        if (columnItem is TColumnItemValue value)
         {
             return value;
         }
 
         return default;
-    }
-
-    private int sid = 0;
-    private void NormalizeNormalColumns(List<List<TItem>> items)
-    {
-        foreach (var (column, index) in items.Select((column, index) => (column, index)))
-        {
-            var normalColumn = column;
-            var scrollColumn = new
-            {
-                id = sid++,
-                prevY = -1,
-                momentumPrevY = -1,
-                touching = false,
-                translate = ComputedTop,
-                // index = normalColumn.initialIndex ?? 0,
-                columnIndex = index,
-                duration = 0,
-                momentumTime = 0,
-                column = normalColumn,
-            };
-            
-            
-        }
-    }
-
-    private void HandleTouchstart(TouchEventArgs args)
-    {
-        
-    }
-
-    private void HandleTouchmove(TouchEventArgs args)
-    {
-        
-    }
-
-    private void HandleTouchend(TouchEventArgs args)
-    {
-        
     }
 }
