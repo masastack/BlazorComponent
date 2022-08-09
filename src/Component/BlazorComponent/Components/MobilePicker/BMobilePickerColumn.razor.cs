@@ -2,8 +2,10 @@
 
 namespace BlazorComponent;
 
-public partial class BMobilePickerColumn<TColumnItem>
+public partial class BMobilePickerColumn<TColumnItem, TColumnItemValue>
 {
+    [CascadingParameter] public BMobilePicker<TColumnItem, TColumnItemValue> Parent { get; set; }
+
     [Parameter] public List<TColumnItem> Items { get; set; } = new();
 
     [Parameter] public int ItemHeight { get; set; }
@@ -11,6 +13,25 @@ public partial class BMobilePickerColumn<TColumnItem>
     [Parameter] public Func<TColumnItem, string> ItemText { get; set; }
 
     [Parameter] public Func<TColumnItem, bool> ItemDisabled { get; set; } = _ => false;
+
+    [Parameter] public int DefaultIndex { get; set; }
+
+    [Parameter] public int SwipeDuration { get; set; }
+
+    [Parameter] public StringNumber VisibleItemCount { get; set; }
+
+    [Parameter] public EventCallback<int> OnChange { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        CurrentIndex = DefaultIndex;
+
+        Parent.Register(this);
+
+        SetIndex(CurrentIndex);
+    }
 
     private const int DEFAULT_DURATION = 200;
 
@@ -22,21 +43,21 @@ public partial class BMobilePickerColumn<TColumnItem>
 
     public ElementReference Wrapper { get; set; }
 
-
     private int Count => Items.Count;
 
+    protected int BaseOffset => (ItemHeight * (VisibleItemCount.ToInt32() - 1)) / 2;
 
     public async Task OnTouchstart(TouchEventArgs args)
     {
         // if (Readonly) return;
 
-        Touchmove(args);
+        Touchstart(args);
 
         if (_moving)
         {
             var translateY = await JsInvokeAsync<double>(JsInteropConstants.GetElementTranslateY, Wrapper);
             Console.WriteLine($"translateY:{translateY}");
-            _offset = Math.Min(0, translateY - _baseOffset);
+            _offset = Math.Min(0, translateY - BaseOffset);
             _startOffset = _offset;
         }
         else
@@ -102,7 +123,9 @@ public partial class BMobilePickerColumn<TColumnItem>
         distance = _offset + (speed / 0.003) * (distance < 0 ? -1 : 1);
         var index = GetIndexByOffset(distance);
 
-        _duration = +_swipeDuration;
+        _duration = SwipeDuration;
+        Console.WriteLine($"{DateTime.Now.ToLongTimeString()} _duration:{_duration}");
+        StateHasChanged();
         SetIndex((int)Math.Ceiling(index), true);
     }
 
@@ -111,21 +134,21 @@ public partial class BMobilePickerColumn<TColumnItem>
         return Range(Math.Round(-offset / ItemHeight), 0, Count - 1);
     }
 
-    private void SetIndex(int index, bool emitChange)
+    private void SetIndex(int index, bool emitChange = false)
     {
         index = AdjustIndex(index) ?? 0;
 
         var offset  = -index * ItemHeight;
 
-        var trigger = () =>
+        var trigger = async () =>
         {
-            if (index != _currentIndex)
+            if (index != CurrentIndex)
             {
-                _currentIndex = index;
+                CurrentIndex = index;
 
                 if (emitChange)
                 {
-                    // TODO: $emit('change', index)
+                    await OnChange.InvokeAsync(index);
                 }
             }
         };
@@ -142,11 +165,23 @@ public partial class BMobilePickerColumn<TColumnItem>
         _offset = offset;
     }
 
+    private void OnClickItem(int index)
+    {
+        if (_moving /* ||  Readonly*/)
+        {
+            return;
+        }
+
+        _transitionEndTrigger = null;
+        _duration = DEFAULT_DURATION;
+        SetIndex(index, true);
+    }
+
     private int? AdjustIndex(int index)
     {
         index = Range(index, 0, Count);
 
-        for (int i = 0; i < Count; i++)
+        for (int i = index; i < Count; i++)
         {
             if (!ItemDisabled(Items[i])) return i;
         }
@@ -170,12 +205,10 @@ public partial class BMobilePickerColumn<TColumnItem>
     }
 
     private bool _moving;
-    private double _offset;
-    private double _baseOffset;
+    protected double _offset;
     private double _startOffset;
-    private int _duration;
-    private int _swipeDuration;
-    private Action _transitionEndTrigger;
+    protected int _duration;
+    private Func<Task> _transitionEndTrigger;
     private long _touchStartTime;
     private double _momentumOffset;
     private double _startX;
@@ -185,7 +218,7 @@ public partial class BMobilePickerColumn<TColumnItem>
     private double _offsetX;
     private double _offsetY;
     private string _direction;
-    private int _currentIndex;
+    internal int CurrentIndex { get; set; }
 
     private void Touchstart(TouchEventArgs args)
     {
@@ -235,20 +268,27 @@ public partial class BMobilePickerColumn<TColumnItem>
         _offsetY = 0;
     }
 
-    private void OnTransitionEnd()
+    private async Task OnTransitionEnd()
     {
-        StopMomentum();
+        Console.WriteLine($"{DateTime.Now.ToLongTimeString()} OnTransitionEnd");
+        
+        await StopMomentum();
     }
 
-    private void StopMomentum()
+    public async Task StopMomentum()
     {
         _moving = false;
         _duration = 0;
 
         if (_transitionEndTrigger is not null)
         {
-            _transitionEndTrigger.Invoke();
+            await _transitionEndTrigger.Invoke();
             _transitionEndTrigger = null;
         }
+    }
+
+    public TColumnItem GetItem()
+    {
+        return Items.ElementAtOrDefault(CurrentIndex);
     }
 }

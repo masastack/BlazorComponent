@@ -1,8 +1,8 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 @typeparam TColumnItem
+@typeparam TColumnItemValue
 
-@* @ontransitionend="OnTransitionEnd" *@
 
 <div class="@CssProvider.GetClass("column")" style="@CssProvider.GetStyle("column")"
      @ontouchstart="OnTouchstart"
@@ -10,10 +10,11 @@
      @ontouchend="OnTouchend"
      @ontouchcancel="OnTouchend">
     <ul class="@CssProvider.GetClass("column-wrapper")" style="@CssProvider.GetStyle("column-wrapper")"
+        @ontransitionend="OnTransitionEnd"
         @ref="Wrapper">
-        @foreach (var item in Items)
+        @foreach (var (item, index) in Items.Select((item, index) => (item, index)))
         {
-            <li class="@CssProvider.GetClass("column-item")" style="@CssProvider.GetStyle("column-item")">
+            <li class="@CssProvider.GetClass("column-item")" style="@CssProvider.GetStyle("column-item")" @onclick="() => OnClickItem(index)">
                 <div class="@CssProvider.GetClass("column-text")">@ItemText?.Invoke(item)</div>
             </li>
         }

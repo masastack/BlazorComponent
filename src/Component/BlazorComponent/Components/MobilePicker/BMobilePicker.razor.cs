@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent;
+﻿namespace BlazorComponent;
 
 public partial class BMobilePicker<TColumnItem, TColumnItemValue> : BDomComponentBase
 {
@@ -12,13 +10,31 @@ public partial class BMobilePicker<TColumnItem, TColumnItemValue> : BDomComponen
 
     [Parameter] public StringNumber ItemHeight { get; set; } = 44;
 
-    [Parameter] public StringNumber ItemCount { get; set; } = 6;
+    [Parameter] public int SwipeDuration { get; set; } = 1000;
+
+    [Parameter] public StringNumber VisibleItemCount { get; set; } = 6;
 
     [Parameter] public string Title { get; set; }
 
     [Parameter] public string CancelText { get; set; }
 
     [Parameter] public string OkText { get; set; }
+
+    [Parameter] public EventCallback<(List<TColumnItemValue> value, List<int> index)> OnOk { get; set; }
+
+    [Parameter] public EventCallback<(List<TColumnItemValue> value, List<int> index)> OnChange { get; set; }
+
+    [Parameter] public EventCallback OnCancel { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        // TODO: how to watch Columns
+        FormattedColumns = new List<List<TColumnItem>>(Columns);
+    }
+
+    protected readonly List<BMobilePickerColumn<TColumnItem, TColumnItemValue>> Children = new();
 
     protected List<List<TColumnItem>> FormattedColumns { get; set; } = new();
 
@@ -29,46 +45,61 @@ public partial class BMobilePicker<TColumnItem, TColumnItemValue> : BDomComponen
         get
         {
             var itemHeight = ItemHeight.ToInt32();
-            var itemCount = ItemCount.ToInt32();
+            var itemCount = VisibleItemCount.ToInt32();
 
             return itemHeight * itemCount;
         }
     }
 
-    protected int ComputedTop
+    protected async Task HandleOnOk()
     {
-        get
+        foreach (var child in Children)
         {
-            var itemHeight = ItemHeight.ToInt32();
-            return (WrapHeight / 2) - itemHeight / 2;
+            await child.StopMomentum();
+        }
+
+        if (OnOk.HasDelegate)
+        {
+            var items = GetItems();
+            var values = items.Select(ColumnItemValue).ToList();
+            var indexes = GetIndexes();
+
+            await OnChange.InvokeAsync((values, indexes));
         }
     }
 
-    protected override void OnParametersSet()
+    protected async Task HandleOnCancel()
     {
-        base.OnParametersSet();
-
-        // TODO: how to watch Columns
-        FormattedColumns = new List<List<TColumnItem>>(Columns);
+        if (OnCancel.HasDelegate)
+        {
+            await OnCancel.InvokeAsync();
+        }
     }
 
-    protected string GetColumnItemText(TColumnItem columnItem)
+    protected async Task HandleOnChange(int index)
     {
-        return ColumnItemText?.Invoke(columnItem) ?? columnItem.ToString();
+        if (OnChange.HasDelegate)
+        {
+            var items = GetItems();
+            var values = items.Select(ColumnItemValue).ToList();
+            var indexes = GetIndexes();
+
+            await OnChange.InvokeAsync((values, indexes));
+        }
     }
 
-    protected TColumnItemValue GetItemValue(TColumnItem columnItem)
+    private List<TColumnItem> GetItems()
     {
-        if (ColumnItemValue is not null)
-        {
-            return ColumnItemValue(columnItem);
-        }
+        return Children.Select(child => child.GetItem()).ToList();
+    }
 
-        if (columnItem is TColumnItemValue value)
-        {
-            return value;
-        }
+    private List<int> GetIndexes()
+    {
+        return Children.Select(child => child.CurrentIndex).ToList();
+    }
 
-        return default;
+    public void Register(BMobilePickerColumn<TColumnItem, TColumnItemValue> column)
+    {
+        Children.Add(column);
     }
 }

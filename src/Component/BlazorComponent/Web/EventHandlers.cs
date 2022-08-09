@@ -12,6 +12,7 @@ namespace BlazorComponent;
 [EventHandler("onexmouseenter", typeof(ExMouseEventArgs), true, true)]
 [EventHandler("onextouchstart", typeof(ExTouchEventArgs), true, true)]
 [EventHandler("onpastewithdata", typeof(PasteWithDataEventArgs), true, true)]
+[EventHandler("ontransitionend", typeof(TransitionEventArgs), true, true)]
 public static class EventHandlers
 {
 }

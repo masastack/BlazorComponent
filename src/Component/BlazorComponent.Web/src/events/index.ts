@@ -8,4 +8,13 @@ export function registerExtraEvents() {
     registerExtraMouseEvent("exmouseenter", "mouseenter");
     registerExtraMouseEvent("exmousemove", "mousemove");
     registerExtraTouchEvent("extouchstart", "touchstart");
+    registerEvent("transitionend", "transitionend")
+}
+
+function registerEvent(eventType: string, eventName: string) {
+    if (Blazor) {
+        Blazor.registerCustomEventType(eventType, {
+            browserEventName: eventName,
+        })
+    }
 }
