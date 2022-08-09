@@ -5,28 +5,12 @@
 
 <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">
     <div class="@CssProvider.GetClass("toolbar")" style="@CssProvider.GetStyle("toolbar")">
-        <BButton @attributes="@GetAttributes(typeof(BButton), "cancel")"
-                 OnClick="HandleOnCancel">
+        <BButton @attributes="@GetAttributes(typeof(BButton), "cancel")">
             @CancelText
         </BButton>
         <div class="@CssProvider.GetClass("title")" style="@CssProvider.GetStyle("title")">@Title</div>
-        <BButton @attributes="@GetAttributes(typeof(BButton), "ok")"
-                 OnClick="HandleOnOk">
+        <BButton @attributes="@GetAttributes(typeof(BButton), "ok")">
             @OkText
         </BButton>
-    </div>
-    <div class="@CssProvider.GetClass("columns")" style="@CssProvider.GetStyle("columns")" @ontouchmove:preventDefault>
-        <CascadingValue Value="this">
-            @foreach (var (column, columnIndex) in FormattedColumns.Select((item, index) => (item, index)))
-            {
-                <BMobilePickerColumn TColumnItem="TColumnItem" TColumnItemValue="TColumnItemValue"
-                                     VisibleItemCount="@VisibleItemCount" SwipeDuration="@SwipeDuration"
-                                     Items="column" ItemText="ColumnItemText" ItemHeight="ItemPxHeight"
-                                     OnChange="HandleOnChange">
-                </BMobilePickerColumn>
-            }
-        </CascadingValue>
-        <div class="@CssProvider.GetClass("mask")" style="@CssProvider.GetStyle("mask")"></div>
-        <div class="@CssProvider.GetClass("picked")" style="@CssProvider.GetStyle("picked")"></div>
     </div>
 </div>

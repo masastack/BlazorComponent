@@ -4,7 +4,7 @@ namespace BlazorComponent;
 
 public partial class BMobilePickerColumn<TColumnItem, TColumnItemValue>
 {
-    [CascadingParameter] public BMobilePicker<TColumnItem, TColumnItemValue> Parent { get; set; }
+    [CascadingParameter] public BMobilePickerView<TColumnItem, TColumnItemValue> Parent { get; set; }
 
     [Parameter] public List<TColumnItem> Items { get; set; } = new();
 
