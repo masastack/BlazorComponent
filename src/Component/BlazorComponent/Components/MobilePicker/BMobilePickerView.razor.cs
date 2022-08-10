@@ -10,7 +10,11 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
 
     [Parameter] public Func<TColumnItem, List<TColumnItem>> ItemChildren { get; set; }
 
+    [Parameter] public Func<TColumnItem, bool> ItemDisabled { get; set; }
+
     [Parameter] public StringNumber ItemHeight { get; set; } = 44;
+
+    [Parameter] public StringNumber DefaultIndex { get; set; }
 
     [Parameter] public int SwipeDuration { get; set; } = 1000;
 
@@ -20,9 +24,9 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
 
     [Parameter] public EventCallback<List<TColumnItemValue>> ValueChanged { get; set; }
 
-    protected readonly List<BMobilePickerColumn<TColumnItem, TColumnItemValue>> Children = new();
+    protected readonly List<BMobilePickerColumn<TColumn, TColumnItem, TColumnItemValue>> Children = new();
 
-    protected List<List<TColumnItem>> FormattedColumns { get; set; } = new();
+    protected List<MobilePickerColumn<TColumnItem>> FormattedColumns { get; set; } = new();
 
     private string _dataType;
 
@@ -30,10 +34,12 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
     {
         base.OnParametersSet();
 
-        ComputeDataType();
+        ItemDisabled ??= _ => false;
+        DefaultIndex ??= 0;
 
-        // TODO: how to watch Columns
-        FormattedColumns = new List<List<TColumnItem>>(Columns);
+        ComputeDataType();
+        
+        Format();
     }
 
     protected int ItemPxHeight => ItemHeight.ToInt32();
@@ -72,47 +78,57 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
     {
         if (_dataType == "list")
         {
-            // FormattedColumns = new List<List<TColumnItem>>(Columns);
+            FormatList();
         }
         else if (_dataType == "cascade")
         {
+            FormatCascade();
         }
+    }
+
+    private void FormatList()
+    {
+        if (Columns is not List<List<TColumnItem>> columns)
+        {
+            return;
+        }
+
+        FormattedColumns = columns.Select(c => new MobilePickerColumn<TColumnItem>(c)).ToList();
     }
 
     private void FormatCascade()
     {
-        List<TColumnItem> formatted = new();
-
-        foreach (TColumn column in Columns)
+        if (Columns is not List<TColumnItem> columns)
         {
-            if (column is TColumnItem columnItem)
-            {
-                var children = ItemChildren(columnItem);
-
-
-                formatted.Add(columnItem);
-            }
+            return;
         }
 
-        FormattedColumns.Add(formatted);
+        List<MobilePickerColumn<TColumnItem>> formatted = new();
 
-        // (int, List<TColumnItem>) format(TColumnItem item, int index)
-        // {
-        //     var res = new List<TColumnItem>();
-        //
-        //     var children = ItemChildren(item);
-        //     if (children is null || children.Count == 0)
-        //     {
-        //         res.Add(item);
-        //     }
-        //
-        //     index++;
-        //     foreach (var child in children)
-        //     {
-        //        var (i, list) = format(child, index);
-        //        
-        //     }
-        // }
+        var cursor = new { Children = columns, DefaultIndex = (int?)null };
+
+        while (cursor?.Children is not null)
+        {
+            var children = cursor.Children;
+            var defaultIndex = cursor.DefaultIndex ?? DefaultIndex.ToInt32();
+
+            while (children.Count > defaultIndex  && ItemDisabled(children[defaultIndex]))
+            {
+                if (defaultIndex < children.Count - 1)
+                {
+                    defaultIndex++;
+                }
+                else
+                {
+                    defaultIndex = 0;
+                    break;
+                }
+            }
+
+            formatted.Add(new MobilePickerColumn<TColumnItem>(cursor.Children));
+        }
+
+        FormattedColumns = formatted;
     }
 
     protected async Task HandleOnChange(int index)
@@ -150,7 +166,7 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
         return index > -1 ? index : 0;
     }
 
-    public void Register(BMobilePickerColumn<TColumnItem, TColumnItemValue> column)
+    public void Register(BMobilePickerColumn<TColumn, TColumnItem, TColumnItemValue> column)
     {
         Children.Add(column);
     }

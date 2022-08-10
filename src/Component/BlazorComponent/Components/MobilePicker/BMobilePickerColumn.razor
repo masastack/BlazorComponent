@@ -1,8 +1,8 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
+@typeparam TColumn
 @typeparam TColumnItem
 @typeparam TColumnItemValue
-
 
 <div class="@CssProvider.GetClass("column")" style="@CssProvider.GetStyle("column")"
      @ontouchstart="OnTouchstart"

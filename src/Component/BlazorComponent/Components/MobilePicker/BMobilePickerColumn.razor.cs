@@ -2,9 +2,9 @@
 
 namespace BlazorComponent;
 
-public partial class BMobilePickerColumn<TColumnItem, TColumnItemValue>
+public partial class BMobilePickerColumn<TColumn, TColumnItem, TColumnItemValue>
 {
-    [CascadingParameter] public BMobilePickerView<TColumnItem, TColumnItemValue> Parent { get; set; }
+    [CascadingParameter] public BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> Parent { get; set; }
 
     [Parameter] public List<TColumnItem> Items { get; set; } = new();
 
@@ -14,7 +14,7 @@ public partial class BMobilePickerColumn<TColumnItem, TColumnItemValue>
 
     [Parameter] public Func<TColumnItem, bool> ItemDisabled { get; set; } = _ => false;
 
-    [Parameter] public int DefaultIndex { get; set; }
+    [Parameter] public int Value { get; set; }
 
     [Parameter] public int SwipeDuration { get; set; }
 
@@ -25,12 +25,20 @@ public partial class BMobilePickerColumn<TColumnItem, TColumnItemValue>
     protected override void OnInitialized()
     {
         base.OnInitialized();
-
-        CurrentIndex = DefaultIndex;
-
         Parent.Register(this);
+    }
 
-        SetIndex(CurrentIndex);
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        if (prevValue != Value)
+        {
+            prevValue = Value;
+            CurrentIndex = Value;
+            SetIndex(CurrentIndex);
+            StateHasChanged();
+        }
     }
 
     private const int DEFAULT_DURATION = 200;
@@ -40,6 +48,8 @@ public partial class BMobilePickerColumn<TColumnItem, TColumnItemValue>
     // 距离大于 `MOMENTUM_LIMIT_DISTANCE` 时，执行惯性滑动
     private const int MOMENTUM_LIMIT_TIME  = 300;
     private const int MOMENTUM_LIMIT_DISTANCE  = 15;
+
+    private int prevValue = 0;
 
     public ElementReference Wrapper { get; set; }
 
@@ -271,7 +281,7 @@ public partial class BMobilePickerColumn<TColumnItem, TColumnItemValue>
     private async Task OnTransitionEnd()
     {
         Console.WriteLine($"{DateTime.Now.ToLongTimeString()} OnTransitionEnd");
-        
+
         await StopMomentum();
     }
 

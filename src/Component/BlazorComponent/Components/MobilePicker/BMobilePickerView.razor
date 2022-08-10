@@ -6,14 +6,22 @@
 
 <div class="@CssProvider.GetClass("view")" style="@CssProvider.GetStyle("view")" @ontouchmove:preventDefault>
     <CascadingValue Value="this">
-        @foreach (var (columnItems, columnIndex) in FormattedColumns.Select((item, index) => (item, index)))
+        @foreach (var (item, columnIndex) in FormattedColumns.Select((item, index) => (item, index)))
         {
-            var defaultIndex = GetDefaultIndex(columnItems, columnIndex);
+            var index = (item.DefaultIndex ?? DefaultIndex.ToInt32()); // TODO: this index?
+            var defaultIndex = GetDefaultIndex(item.Values, columnIndex);
             
-            <BMobilePickerColumn TColumnItem="TColumnItem" TColumnItemValue="TColumnItemValue"
-                                 VisibleItemCount="@VisibleItemCount" SwipeDuration="@SwipeDuration"
-                                 DefaultIndex="@defaultIndex"
-                                 Items="columnItems" ItemText="ItemText" ItemHeight="ItemPxHeight"
+            Console.WriteLine($"defaultIndex; {defaultIndex}");
+
+            <BMobilePickerColumn TColumn="TColumn"
+                                 TColumnItem="TColumnItem"
+                                 TColumnItemValue="TColumnItemValue"
+                                 VisibleItemCount="@VisibleItemCount" 
+                                 SwipeDuration="@SwipeDuration"
+                                 Value="defaultIndex"
+                                 Items="item.Values"
+                                 ItemText="ItemText" 
+                                 ItemHeight="ItemPxHeight"
                                  OnChange="HandleOnChange">
             </BMobilePickerColumn>
         }
