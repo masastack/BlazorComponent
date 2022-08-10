@@ -20,7 +20,7 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
 
     [Parameter] public StringNumber VisibleItemCount { get; set; } = 6;
 
-    [Parameter] public List<TColumnItemValue> Value { get; set; }
+    [Parameter] public List<TColumnItemValue> Value { get; set; } = new();
 
     [Parameter] public EventCallback<List<TColumnItemValue>> ValueChanged { get; set; }
 
@@ -38,7 +38,8 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
         DefaultIndex ??= 0;
 
         ComputeDataType();
-        
+
+        // TODO: 防止经常执行
         Format();
     }
 
@@ -58,6 +59,11 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
     private void ComputeDataType()
     {
         var firstColumn = Columns.FirstOrDefault();
+        if (firstColumn is null)
+        {
+            return;
+        }
+
         if (ItemChildren is not null)
         {
             if (firstColumn is TColumnItem)
@@ -126,13 +132,49 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
             }
 
             formatted.Add(new MobilePickerColumn<TColumnItem>(cursor.Children));
+
+            var columnItem = children[defaultIndex];
+            var columnItemChildren = ItemChildren(columnItem);
+
+            cursor = new { Children = columnItemChildren, DefaultIndex = (int?)null };
         }
 
         FormattedColumns = formatted;
     }
 
-    protected async Task HandleOnChange(int index)
+    private void OnCascadeChange(int columnIndex)
     {
+        var columns = Columns as List<TColumnItem>;
+
+        var cursor = new { Children = columns, DefaultIndex = (int?)null };
+        var indexes = GetIndexes();
+
+        for (int i = 0; i <= columnIndex; i++)
+        {
+            var index = indexes[i];
+
+            if (cursor.Children.Count > index)
+            {
+                cursor = new { Children = ItemChildren(cursor.Children[index]), DefaultIndex = (int?)null };
+            }
+        }
+
+        while (cursor.Children is not null)
+        {
+            columnIndex++;
+            SetColumnValues(columnIndex, cursor.Children);
+            cursor = new { Children = ItemChildren(cursor.Children[cursor.DefaultIndex ?? 0]), DefaultIndex = (int?)null };
+        }
+    }
+
+    protected async Task HandleOnChange(int columnIndex)
+    {
+        if (_dataType == "cascade")
+        {
+            OnCascadeChange(columnIndex);
+            StateHasChanged();
+        }
+
         var items = GetItems();
         var values = items.Select(ItemValue).ToList();
         var indexes = GetIndexes();
@@ -140,6 +182,18 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
         if (ValueChanged.HasDelegate)
         {
             await ValueChanged.InvokeAsync(values);
+        }
+    }
+
+    public void SetColumnValues(int index, List<TColumnItem> items)
+    {
+        if (Children.Count > index)
+        {
+            // var column = Children[index];
+            // column.SetOptions(items);
+
+            FormattedColumns[index].Values = items;
+            FormattedColumns[index].DefaultIndex = 0;
         }
     }
 

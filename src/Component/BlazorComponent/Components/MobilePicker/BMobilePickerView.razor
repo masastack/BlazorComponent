@@ -22,7 +22,7 @@
                                  Items="item.Values"
                                  ItemText="ItemText" 
                                  ItemHeight="ItemPxHeight"
-                                 OnChange="HandleOnChange">
+                                 OnChange="() => HandleOnChange(columnIndex)">
             </BMobilePickerColumn>
         }
     </CascadingValue>

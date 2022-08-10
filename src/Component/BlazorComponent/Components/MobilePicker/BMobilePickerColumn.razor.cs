@@ -57,6 +57,13 @@ public partial class BMobilePickerColumn<TColumn, TColumnItem, TColumnItemValue>
 
     protected int BaseOffset => (ItemHeight * (VisibleItemCount.ToInt32() - 1)) / 2;
 
+    internal void SetOptions(List<TColumnItem> items)
+    {
+        Items = items;
+        SetIndex(Value);
+        StateHasChanged();
+    }
+
     public async Task OnTouchstart(TouchEventArgs args)
     {
         // if (Readonly) return;
