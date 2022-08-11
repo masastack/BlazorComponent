@@ -4,7 +4,7 @@ public class MobilePickerColumn<TItem>
 {
     public List<TItem> Values { get; set; }
 
-    public int? DefaultIndex { get; set; }
+    public int? Index { get; set; }
 
     public string ClassName { get; set; }
 
@@ -17,12 +17,12 @@ public class MobilePickerColumn<TItem>
         Values = values;
     }
 
-    public MobilePickerColumn(List<TItem> values, int? defaultIndex): this(values)
+    public MobilePickerColumn(List<TItem> values, int? index): this(values)
     {
-        DefaultIndex = defaultIndex;
+        Index = index;
     }
 
-    public MobilePickerColumn(List<TItem> values, int? defaultIndex, string className): this(values, defaultIndex)
+    public MobilePickerColumn(List<TItem> values, int? index, string className): this(values, index)
     {
         ClassName = className;
     }

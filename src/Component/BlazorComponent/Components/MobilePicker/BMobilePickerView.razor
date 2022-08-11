@@ -8,21 +8,16 @@
     <CascadingValue Value="this">
         @foreach (var (item, columnIndex) in FormattedColumns.Select((item, index) => (item, index)))
         {
-            var index = (item.DefaultIndex ?? DefaultIndex.ToInt32()); // TODO: this index?
-            var defaultIndex = GetDefaultIndex(item.Values, columnIndex);
-            
-            Console.WriteLine($"defaultIndex; {defaultIndex}");
-
             <BMobilePickerColumn TColumn="TColumn"
                                  TColumnItem="TColumnItem"
                                  TColumnItemValue="TColumnItemValue"
-                                 VisibleItemCount="@VisibleItemCount" 
+                                 VisibleItemCount="@VisibleItemCount"
                                  SwipeDuration="@SwipeDuration"
-                                 Value="defaultIndex"
+                                 Value="@(item.Index ?? 0)"
                                  Items="item.Values"
-                                 ItemText="ItemText" 
+                                 ItemText="ItemText"
                                  ItemHeight="ItemPxHeight"
-                                 OnChange="() => HandleOnChange(columnIndex)">
+                                 OnChange="(selectedIndex) => HandleOnChange(selectedIndex, columnIndex)">
             </BMobilePickerColumn>
         }
     </CascadingValue>

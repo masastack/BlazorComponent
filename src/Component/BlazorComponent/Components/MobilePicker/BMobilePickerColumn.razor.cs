@@ -151,7 +151,7 @@ public partial class BMobilePickerColumn<TColumn, TColumnItem, TColumnItemValue>
         return Range(Math.Round(-offset / ItemHeight), 0, Count - 1);
     }
 
-    private void SetIndex(int index, bool emitChange = false)
+    public void SetIndex(int index, bool emitChange = false)
     {
         index = AdjustIndex(index) ?? 0;
 
