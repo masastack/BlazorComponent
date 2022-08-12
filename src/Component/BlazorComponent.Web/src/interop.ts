@@ -2,7 +2,7 @@
 import { registerExtraEvents } from "./events/index";
 //#region mentions
 import getOffset from "./modules/Caret";
-import { getBlazorId, getElementSelector } from "./utils/index";
+import { getElementSelector, canUseDom } from "./utils/index";
 
 export function updateCanvas(element, hue: number) {
   const canvas = element as HTMLCanvasElement
@@ -1569,5 +1569,65 @@ export function scrollToTile(contentSelector: string, tilesSelector: string, ind
     content.scrollTo({ top: tile.offsetTop - tile.clientHeight, behavior: "smooth" })
   } else if (scrollTop + contentHeight < tile.offsetTop + tile.clientHeight + 8) {
     content.scrollTo({ top: tile.offsetTop - contentHeight + tile.clientHeight * 2, behavior: "smooth" })
+  }
+}
+
+//#region getScrollParent
+
+type ScrollElement = HTMLElement | Window
+const defaultRoot = canUseDom ? window : undefined
+const overflowStylePatterns = ['scroll', 'auto', 'overlay']
+function isElement(node: Element) {
+  const ELEMENT_NODE_TYPE = 1
+  return node.nodeType === ELEMENT_NODE_TYPE
+}
+
+function getScrollParent(
+  el: Element,
+  root: ScrollElement | null | undefined = defaultRoot
+): Window | Element | null | undefined {
+  let node = el
+
+  while (node && node !== root && isElement(node)) {
+    if (node === document.body) {
+      return root
+    }
+    const { overflowY } = window.getComputedStyle(node)
+    if (
+      overflowStylePatterns.includes(overflowY) &&
+      node.scrollHeight > node.clientHeight
+    ) {
+      return node
+    }
+    node = node.parentNode as Element
+  }
+
+  return root
+}
+
+export function getScrollParentSelector(
+  el: Element,
+  root: ScrollElement | null | undefined = defaultRoot): string {
+  var node = getScrollParent(el, root)
+  return getElementSelector(node)
+}
+
+//#endregion
+
+function isWindow(element: any | Window): element is Window {
+  return element === window
+}
+
+export function triggerLoadingEventIfReachThreshold(el: Element, parentSelector: string, threshold: number, invoker) {
+  var parent = getDom(parentSelector)
+  if (!parent) return
+
+  const rect = el.getBoundingClientRect();
+  const elementTop = rect.top;
+  const current = isWindow(parent)
+    ? window.innerHeight
+    : parent.getBoundingClientRect().bottom
+  if (current >= elementTop - threshold) {
+    invoker.invokeMethodAsync("Invoke");
   }
 }

@@ -52,3 +52,10 @@ export function getDom(element) {
   }
   return element;
 }
+
+export const canUseDom = !!(
+  typeof window !== 'undefined' &&
+  typeof document !== 'undefined' &&
+  window.document &&
+  window.document.createElement
+)

@@ -1,0 +1,29 @@
+﻿@namespace BlazorComponent
+@using Microsoft.Extensions.Logging
+@inherits BDomComponentBase
+@inject ILogger<BInfiniteScroll> Logger
+
+<div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" @ref="Ref">
+    @if (ChildContent != null)
+    {
+        @ChildContent((HasMore, _failed, CreateEventCallback(Retry)))
+    }
+    else
+    {
+        @if (!HasMore)
+        {
+            <span class="@CssProvider.GetClass("text--no-more")">没有更多了</span>
+        }
+        else if (_failed)
+        {
+            <span class="@CssProvider.GetClass("text--failed")">加载失败</span>
+            <a @onclick="Retry">重新加载</a>
+        }
+        else
+        {
+            <span class="@CssProvider.GetClass("text--loading")">加载中</span>
+            <BProgressCircular Indeterminate Size="15" Width="2"></BProgressCircular>
+            <a @onclick="OnLoadMore">加载</a>
+        }
+    }
+</div>
