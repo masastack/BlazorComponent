@@ -1572,62 +1572,18 @@ export function scrollToTile(contentSelector: string, tilesSelector: string, ind
   }
 }
 
-//#region getScrollParent
-
-type ScrollElement = HTMLElement | Window
-const defaultRoot = canUseDom ? window : undefined
-const overflowStylePatterns = ['scroll', 'auto', 'overlay']
-function isElement(node: Element) {
-  const ELEMENT_NODE_TYPE = 1
-  return node.nodeType === ELEMENT_NODE_TYPE
-}
-
-function getScrollParent(
-  el: Element,
-  root: ScrollElement | null | undefined = defaultRoot
-): Window | Element | null | undefined {
-  let node = el
-
-  while (node && node !== root && isElement(node)) {
-    if (node === document.body) {
-      return root
-    }
-    const { overflowY } = window.getComputedStyle(node)
-    if (
-      overflowStylePatterns.includes(overflowY) &&
-      node.scrollHeight > node.clientHeight
-    ) {
-      return node
-    }
-    node = node.parentNode as Element
-  }
-
-  return root
-}
-
-export function getScrollParentSelector(
-  el: Element,
-  root: ScrollElement | null | undefined = defaultRoot): string {
-  var node = getScrollParent(el, root)
-  return getElementSelector(node)
-}
-
-//#endregion
-
 function isWindow(element: any | Window): element is Window {
   return element === window
 }
 
-export function triggerLoadingEventIfReachThreshold(el: Element, parentSelector: string, threshold: number, invoker) {
-  var parent = getDom(parentSelector)
-  if (!parent) return
+export function checkIfThresholdIsExceededWhenScrolling(el: Element, parent: Element, threshold: number) {
+  if (!el || !parent) return
 
   const rect = el.getBoundingClientRect();
   const elementTop = rect.top;
   const current = isWindow(parent)
     ? window.innerHeight
     : parent.getBoundingClientRect().bottom
-  if (current >= elementTop - threshold) {
-    invoker.invokeMethodAsync("Invoke");
-  }
+  
+  return (current >= elementTop - threshold)
 }

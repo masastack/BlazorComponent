@@ -1,67 +1,96 @@
-﻿using System.Globalization;
-using BlazorComponent.JSInterop;
+﻿using BlazorComponent.JSInterop;
+using BlazorComponent.Web;
 using Microsoft.Extensions.Logging;
-using Microsoft.JSInterop;
 
 namespace BlazorComponent;
 
-public partial class BInfiniteScroll
+public partial class BInfiniteScroll : BDomComponentBase
 {
-    [Parameter, EditorRequired] public EventCallback OnLoadMore { get; set; }
+    [Parameter, EditorRequired]
+    public EventCallback OnLoadMore { get; set; }
 
-    [Parameter, EditorRequired] public bool HasMore { get; set; }
+    [Parameter, EditorRequired]
+    public bool HasMore { get; set; }
 
-    [Parameter] public StringNumber Threshold { get; set; } = 250;
+    /// <summary>
+    /// The parent element that has overflow style.
+    /// </summary>
+    [Parameter, EditorRequired]
+    public ElementReference Parent { get; set; }
 
-    [Parameter] public RenderFragment<(bool HasMore, bool Failed, EventCallback Retry)> ChildContent { get; set; }
+    [Parameter]
+    public StringNumber Threshold { get; set; } = 250;
+
+    [Parameter]
+    public RenderFragment<(bool HasMore, bool Failed, EventCallback Retry)> ChildContent { get; set; }
+
+    private static readonly SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1, 1);
 
     private bool _loading;
     private bool _failed;
+    private bool _isAttached;
 
-    protected string ParentSelector { get; private set; }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnParametersSetAsync()
     {
-        if (firstRender)
-        {
-            ParentSelector = await JsInvokeAsync<string>(JsInteropConstants.GetScrollParentSelector, Ref);
+        await base.OnParametersSetAsync();
 
-            await JsInvokeAsync(JsInteropConstants.TriggerLoadingEventIfReachThreshold, Ref, ParentSelector, Threshold,
-                DotNetObjectReference.Create(new Invoker(OnScroll)));
-            await Js.AddHtmlElementEventListener(ParentSelector, "scroll", OnScroll, false, new EventListenerExtras(0, 100));
+        if (!_isAttached && Parent.Context is not null)
+        {
+            await OnScroll();
+            
+            await Js.AddHtmlElementEventListener(Parent.GetSelector(), "scroll", OnScroll, false, new EventListenerExtras(0, 100));
+            _isAttached = true;
 
             StateHasChanged();
-
-            var en = new CultureInfo("en-us");
-            
-
-            DateTime.UtcNow.ToString(en.DateTimeFormat);
-
         }
     }
 
-    private void OnScroll()
+    private async Task OnScroll()
     {
-        Console.WriteLine($"{DateTime.Now.ToLongTimeString()} OnScroll...........");
+        if (!OnLoadMore.HasDelegate) return;
+
+        await SemaphoreSlim.WaitAsync();
+
+        if (_failed)
+        {
+            SemaphoreSlim.Release();
+            return;
+        }
+
+        // OPTIMIZE: Combine scroll event and the following js interop.
+        var exceeded = await JsInvokeAsync<bool>(JsInteropConstants.CheckIfThresholdIsExceededWhenScrolling, Ref, Parent, Threshold.ToDouble());
+        if (!exceeded)
+        {
+            SemaphoreSlim.Release();
+            return;
+        }
+
+        await DoLoadMore();
+
+        SemaphoreSlim.Release();
+    }
+
+    private async Task DoLoadMore()
+    {
+        try
+        {
+            _failed = false;
+            await OnLoadMore.InvokeAsync();
+        }
+        catch (Exception e)
+        {
+            Logger.LogWarning(e, "Failed to load more");
+            _failed = true;
+            StateHasChanged();
+        }
     }
 
     private async Task Retry()
     {
         _loading = true;
 
-        try
-        {
-            await OnLoadMore.InvokeAsync();
-            _failed = false;
-        }
-        catch (Exception e)
-        {
-            Logger.LogWarning(e, "Failed to load more");
-            _failed = true;
-        }
-        finally
-        {
-            _loading = false;
-        }
+        await DoLoadMore();
+
+        _loading = false;
     }
 }
