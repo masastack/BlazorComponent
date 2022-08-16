@@ -155,6 +155,12 @@
     },
     "mobileCascader": {
       "pleaseSelect": "Please select"
+    },
+    "infiniteScroll": {
+      "noMore": "There's no more",
+      "failedToLoad": "Failed to load",
+      "reload": "Reload",
+      "loading": "Loading"
     }
   }
 }

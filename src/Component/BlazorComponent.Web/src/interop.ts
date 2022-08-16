@@ -1579,3 +1579,19 @@ export function getElementTranslateY(element) {
 
   return Number(translateY);
 }
+
+function isWindow(element: any | Window): element is Window {
+  return element === window
+}
+
+export function checkIfThresholdIsExceededWhenScrolling(el: Element, parent: Element, threshold: number) {
+  if (!el || !parent) return
+
+  const rect = el.getBoundingClientRect();
+  const elementTop = rect.top;
+  const current = isWindow(parent)
+    ? window.innerHeight
+    : parent.getBoundingClientRect().bottom
+  
+  return (current >= elementTop - threshold)
+}
