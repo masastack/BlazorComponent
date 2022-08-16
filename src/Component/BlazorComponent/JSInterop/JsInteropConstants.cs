@@ -170,6 +170,8 @@
 
         public static string ScrollToTile => $"{Variables.JsInteropFuncNamePrefix}scrollToTile";
 
+        public static string CheckIfThresholdIsExceededWhenScrolling => $"{Variables.JsInteropFuncNamePrefix}checkIfThresholdIsExceededWhenScrolling";
+
         #region Draggable Modal
 
         public static string EnableDraggable => $"{Variables.JsInteropFuncNamePrefix}enableDraggable";

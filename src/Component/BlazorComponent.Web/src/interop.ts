@@ -2,7 +2,7 @@
 import { registerExtraEvents } from "./events/index";
 //#region mentions
 import getOffset from "./modules/Caret";
-import { getBlazorId, getElementSelector } from "./utils/index";
+import { getElementSelector, canUseDom } from "./utils/index";
 
 export function updateCanvas(element, hue: number) {
   const canvas = element as HTMLCanvasElement
@@ -1570,4 +1570,20 @@ export function scrollToTile(contentSelector: string, tilesSelector: string, ind
   } else if (scrollTop + contentHeight < tile.offsetTop + tile.clientHeight + 8) {
     content.scrollTo({ top: tile.offsetTop - contentHeight + tile.clientHeight * 2, behavior: "smooth" })
   }
+}
+
+function isWindow(element: any | Window): element is Window {
+  return element === window
+}
+
+export function checkIfThresholdIsExceededWhenScrolling(el: Element, parent: Element, threshold: number) {
+  if (!el || !parent) return
+
+  const rect = el.getBoundingClientRect();
+  const elementTop = rect.top;
+  const current = isWindow(parent)
+    ? window.innerHeight
+    : parent.getBoundingClientRect().bottom
+  
+  return (current >= elementTop - threshold)
 }
