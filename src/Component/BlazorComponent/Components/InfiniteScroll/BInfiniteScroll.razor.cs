@@ -16,7 +16,7 @@ public partial class BInfiniteScroll : BDomComponentBase
     /// The parent element that has overflow style.
     /// </summary>
     [Parameter, EditorRequired]
-    public ElementReference Parent { get; set; }
+    public ElementReference? Parent { get; set; }
 
     [Parameter]
     public StringNumber Threshold { get; set; } = 250;
@@ -34,7 +34,7 @@ public partial class BInfiniteScroll : BDomComponentBase
     {
         await base.OnParametersSetAsync();
 
-        if (!_isAttached && Parent.Context is not null)
+        if (!_isAttached && Parent?.Context is not null)
         {
             _isAttached = true;
 
