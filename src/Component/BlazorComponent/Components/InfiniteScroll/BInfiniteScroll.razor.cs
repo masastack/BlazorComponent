@@ -24,7 +24,19 @@ public partial class BInfiniteScroll : BDomComponentBase
     [Parameter]
     public RenderFragment<(bool HasMore, bool Failed, EventCallback Retry)> ChildContent { get; set; }
 
-    private static readonly SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1, 1);
+    [Parameter]
+    public string NoMoreText { get; set; }
+
+    [Parameter]
+    public string FailedToLoadText { get; set; }
+
+    [Parameter]
+    public string LoadingText { get; set; }
+
+    [Parameter]
+    public string ReloadText { get; set; }
+
+    private static readonly SemaphoreSlim SemaphoreSlim = new(1, 1);
 
     private bool _loading;
     private bool _failed;

@@ -170,6 +170,12 @@
     },
     "mobileCascader": {
       "pleaseSelect": "请选择"
+    },
+    "infiniteScroll": {
+      "noMore": "没有更多了",
+      "failedToLoad": "加载失败",
+      "reload": "重新加载",
+      "loading": "加载中"
     }
   }
 }

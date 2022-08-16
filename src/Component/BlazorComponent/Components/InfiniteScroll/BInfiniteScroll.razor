@@ -12,16 +12,16 @@
     {
         @if (!HasMore)
         {
-            <span class="@CssProvider.GetClass("text--no-more")">没有更多了</span>
+            <span class="@CssProvider.GetClass("text--no-more")">@NoMoreText</span>
         }
         else if (_failed && !_loading)
         {
-            <span class="@CssProvider.GetClass("text--failed")">加载失败</span>
-            <a @onclick="Retry">重新加载</a>
+            <span class="@CssProvider.GetClass("text--failed")">@FailedToLoadText</span>
+            <a @onclick="Retry">@ReloadText</a>
         }
         else
         {
-            <span class="@CssProvider.GetClass("text--loading")">加载中</span>
+            <span class="@CssProvider.GetClass("text--loading")">@LoadingText</span>
             <BProgressCircular Indeterminate Size="15" Width="2"></BProgressCircular>
         }
     }
