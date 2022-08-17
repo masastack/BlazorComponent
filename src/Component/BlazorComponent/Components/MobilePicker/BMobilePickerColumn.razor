@@ -15,7 +15,7 @@
         @foreach (var (item, index) in Items.Select((item, index) => (item, index)))
         {
             <li class="@CssProvider.GetClass("column-item")" style="@CssProvider.GetStyle("column-item")" @onclick="() => OnClickItem(index)" @key="item">
-                <div class="@CssProvider.GetClass("column-text")">@ItemText?.Invoke(item) Value:@Value</div>
+                <div class="@CssProvider.GetClass("column-text")">@ItemText?.Invoke(item) Value:@SelectedIndex index:@index</div>
             </li>
         }
     </ul>

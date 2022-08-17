@@ -14,13 +14,44 @@ public partial class BMobilePickerColumn<TColumn, TColumnItem, TColumnItemValue>
 
     [Parameter] public Func<TColumnItem, bool> ItemDisabled { get; set; } = _ => false;
 
-    [Parameter] public int Value { get; set; }
+    [Parameter] public int SelectedIndex { get; set; }
 
     [Parameter] public int SwipeDuration { get; set; }
 
     [Parameter] public StringNumber VisibleItemCount { get; set; }
 
     [Parameter] public EventCallback<int> OnChange { get; set; }
+
+    private const int DEFAULT_DURATION = 200;
+
+    // 惯性滑动思路:
+    // 在手指离开屏幕时，如果和上一次 move 时的间隔小于 `MOMENTUM_LIMIT_TIME` 且 move
+    // 距离大于 `MOMENTUM_LIMIT_DISTANCE` 时，执行惯性滑动
+    private const int MOMENTUM_LIMIT_TIME  = 300;
+    private const int MOMENTUM_LIMIT_DISTANCE  = 15;
+
+    private int _prevValue = 0;
+    private bool _moving;
+    private double _startOffset;
+    private Func<Task> _transitionEndTrigger;
+    private long _touchStartTime;
+    private double _momentumOffset;
+    private double _startX;
+    private double _startY;
+    private double _deltaX;
+    private double _deltaY;
+    private double _offsetX;
+    private double _offsetY;
+    private string _direction;
+
+    private ElementReference Wrapper { get; set; }
+
+    protected double Offset { get; private set; }
+    protected int Duration { get; private set; }
+
+    private int Count => Items.Count;
+
+    protected int BaseOffset => (ItemHeight * (VisibleItemCount.ToInt32() - 1)) / 2;
 
     protected override void OnInitialized()
     {
@@ -32,66 +63,38 @@ public partial class BMobilePickerColumn<TColumn, TColumnItem, TColumnItemValue>
     {
         base.OnParametersSet();
 
-        if (prevValue != Value)
+        if (_prevValue != SelectedIndex)
         {
-            prevValue = Value;
-            CurrentIndex = Value;
-            SetIndex(CurrentIndex);
+            _prevValue = SelectedIndex;
+            SetIndex(SelectedIndex);
             StateHasChanged();
         }
     }
 
-    private const int DEFAULT_DURATION = 200;
-
-    // 惯性滑动思路:
-    // 在手指离开屏幕时，如果和上一次 move 时的间隔小于 `MOMENTUM_LIMIT_TIME` 且 move
-    // 距离大于 `MOMENTUM_LIMIT_DISTANCE` 时，执行惯性滑动
-    private const int MOMENTUM_LIMIT_TIME  = 300;
-    private const int MOMENTUM_LIMIT_DISTANCE  = 15;
-
-    private int prevValue = 0;
-
-    public ElementReference Wrapper { get; set; }
-
-    private int Count => Items.Count;
-
-    protected int BaseOffset => (ItemHeight * (VisibleItemCount.ToInt32() - 1)) / 2;
-
-    internal void SetOptions(List<TColumnItem> items)
+    private async Task OnTouchstart(TouchEventArgs args)
     {
-        Items = items;
-        SetIndex(Value);
-        StateHasChanged();
-    }
-
-    public async Task OnTouchstart(TouchEventArgs args)
-    {
-        // if (Readonly) return;
-
         Touchstart(args);
 
         if (_moving)
         {
             var translateY = await JsInvokeAsync<double>(JsInteropConstants.GetElementTranslateY, Wrapper);
             Console.WriteLine($"translateY:{translateY}");
-            _offset = Math.Min(0, translateY - BaseOffset);
-            _startOffset = _offset;
+            Offset = Math.Min(0, translateY - BaseOffset);
+            _startOffset = Offset;
         }
         else
         {
-            _startOffset = _offset;
+            _startOffset = Offset;
         }
 
-        _duration = 0;
+        Duration = 0;
         _transitionEndTrigger = null;
         _touchStartTime = DateTime.Now.Millisecond;
         _momentumOffset = _startOffset;
     }
 
-    public void OnTouchmove(TouchEventArgs args)
+    private void OnTouchmove(TouchEventArgs args)
     {
-        // if (Readonly) return;
-
         Touchmove(args);
 
         if (_direction == "vertical")
@@ -100,21 +103,19 @@ public partial class BMobilePickerColumn<TColumn, TColumnItem, TColumnItemValue>
             // TODO: preventDefault(args, true);
         }
 
-        _offset = Range(_startOffset + _deltaY, -(Count * ItemHeight), ItemHeight);
+        Offset = Range(_startOffset + _deltaY, -(Count * ItemHeight), ItemHeight);
 
         var now = DateTime.Now.Millisecond;
         if (now - _touchStartTime > MOMENTUM_LIMIT_TIME)
         {
             _touchStartTime = now;
-            _momentumOffset = _offset;
+            _momentumOffset = Offset;
         }
     }
 
-    public void OnTouchend(TouchEventArgs args)
+    private void OnTouchend(TouchEventArgs args)
     {
-        // if (Readonly) return;
-
-        var distance = _offset - _momentumOffset;
+        var distance = Offset - _momentumOffset;
         var duration = DateTime.Now.Millisecond - _touchStartTime;
         var allowMomentum = duration < MOMENTUM_LIMIT_TIME && Math.Abs(distance) > MOMENTUM_LIMIT_DISTANCE;
 
@@ -124,24 +125,24 @@ public partial class BMobilePickerColumn<TColumn, TColumnItem, TColumnItemValue>
             return;
         }
 
-        var index = GetIndexByOffset(_offset);
-        _duration =  DEFAULT_DURATION;
+        var index = GetIndexByOffset(Offset);
+        Duration =  DEFAULT_DURATION;
         SetIndex((int)Math.Ceiling(index), true);
 
         // compatible with desktop scenario
-        // use setTimeout to skip the click event Emitted after touchstart
+        // TODO: use setTimeout to skip the click event Emitted after touchstart in js, how to do it in Blazor
         // setTimeout(() => { _moving = false; }, 0);
-        _moving = false; // or next tick?
+        _moving = false;
     }
 
     private void Momentum(double distance, long duration)
     {
         var speed = Math.Abs(distance / duration);
-        distance = _offset + (speed / 0.003) * (distance < 0 ? -1 : 1);
+        distance = Offset + (speed / 0.003) * (distance < 0 ? -1 : 1);
         var index = GetIndexByOffset(distance);
 
-        _duration = SwipeDuration;
-        Console.WriteLine($"{DateTime.Now.ToLongTimeString()} _duration:{_duration}");
+        Duration = SwipeDuration;
+        Console.WriteLine($"{DateTime.Now.ToLongTimeString()} _duration:{Duration}");
         StateHasChanged();
         SetIndex((int)Math.Ceiling(index), true);
     }
@@ -159,9 +160,9 @@ public partial class BMobilePickerColumn<TColumn, TColumnItem, TColumnItemValue>
 
         var trigger = async () =>
         {
-            if (index != CurrentIndex)
+            if (index != SelectedIndex)
             {
-                CurrentIndex = index;
+                SelectedIndex = index;
 
                 if (emitChange)
                 {
@@ -170,7 +171,7 @@ public partial class BMobilePickerColumn<TColumn, TColumnItem, TColumnItemValue>
             }
         };
 
-        if (_moving && offset != _offset)
+        if (_moving && Math.Abs(offset - Offset) > 0)
         {
             _transitionEndTrigger = trigger;
         }
@@ -179,18 +180,18 @@ public partial class BMobilePickerColumn<TColumn, TColumnItem, TColumnItemValue>
             trigger();
         }
 
-        _offset = offset;
+        Offset = offset;
     }
 
     private void OnClickItem(int index)
     {
-        if (_moving /* ||  Readonly*/)
+        if (_moving)
         {
             return;
         }
 
         _transitionEndTrigger = null;
-        _duration = DEFAULT_DURATION;
+        Duration = DEFAULT_DURATION;
         SetIndex(index, true);
     }
 
@@ -221,22 +222,6 @@ public partial class BMobilePickerColumn<TColumn, TColumnItem, TColumnItemValue>
         return Math.Min(Math.Max(num, min), max);
     }
 
-    private bool _moving;
-    protected double _offset;
-    private double _startOffset;
-    protected int _duration;
-    private Func<Task> _transitionEndTrigger;
-    private long _touchStartTime;
-    private double _momentumOffset;
-    private double _startX;
-    private double _startY;
-    private double _deltaX;
-    private double _deltaY;
-    private double _offsetX;
-    private double _offsetY;
-    private string _direction;
-    internal int CurrentIndex { get; set; }
-
     private void Touchstart(TouchEventArgs args)
     {
         ResetTouchStatus();
@@ -253,14 +238,14 @@ public partial class BMobilePickerColumn<TColumn, TColumnItem, TColumnItemValue>
         _offsetX = Math.Abs(_deltaX);
         _offsetY = Math.Abs(_deltaY);
 
-        const int LOCK_DIRECTION_DISTANCE = 10;
+        const int lockDirectionDistance = 10;
 
-        if (string.IsNullOrEmpty(_direction) || (_offsetX < LOCK_DIRECTION_DISTANCE && _offsetY < LOCK_DIRECTION_DISTANCE))
+        if (string.IsNullOrEmpty(_direction) || (_offsetX < lockDirectionDistance && _offsetY < lockDirectionDistance))
         {
-            _direction = getDirection(_offsetX, _offsetY);
+            _direction = GetDirection(_offsetX, _offsetY);
         }
 
-        string getDirection(double x, double y)
+        string GetDirection(double x, double y)
         {
             if (x > y)
             {
@@ -287,15 +272,13 @@ public partial class BMobilePickerColumn<TColumn, TColumnItem, TColumnItemValue>
 
     private async Task OnTransitionEnd()
     {
-        Console.WriteLine($"{DateTime.Now.ToLongTimeString()} OnTransitionEnd");
-
         await StopMomentum();
     }
 
-    public async Task StopMomentum()
+    private async Task StopMomentum()
     {
         _moving = false;
-        _duration = 0;
+        Duration = 0;
 
         if (_transitionEndTrigger is not null)
         {
@@ -306,6 +289,6 @@ public partial class BMobilePickerColumn<TColumn, TColumnItem, TColumnItemValue>
 
     public TColumnItem GetItem()
     {
-        return Items.ElementAtOrDefault(CurrentIndex);
+        return Items.ElementAtOrDefault(SelectedIndex);
     }
 }

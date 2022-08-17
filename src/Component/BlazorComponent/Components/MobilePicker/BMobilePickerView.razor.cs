@@ -20,7 +20,16 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
 
     [Parameter] public StringNumber VisibleItemCount { get; set; } = 6;
 
-    [Parameter] public List<TColumnItemValue> Value { get; set; } = new();
+    [Parameter] public List<TColumnItemValue> Value
+    {
+        get => _value;
+        set
+        {
+            _value = value;
+            InternalValue = value;
+            Console.WriteLine("Value settter");
+        }
+    }
 
     [Parameter] public EventCallback<List<TColumnItemValue>> ValueChanged { get; set; }
 
@@ -31,6 +40,9 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
     private string _dataType;
     private string _prevColumnsStr;
     private string _prevValue;
+    private List<TColumnItemValue> _value;
+
+    protected List<TColumnItemValue> InternalValue { get; set; } = new();
 
     protected override void OnParametersSet()
     {
@@ -40,21 +52,21 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
 
         ComputeDataType();
 
-        bool isChanged = false;
+        var isChanged = false;
 
-        var columnsStr = JsonSerializer.Serialize(Columns);
-        if (_prevColumnsStr != columnsStr)
+        var valueStr = JsonSerializer.Serialize(Value);
+        if (_prevValue != valueStr)
         {
-            _prevColumnsStr = columnsStr;
+            _prevValue = valueStr;
             isChanged = true;
         }
 
-        if (!isChanged)
+        if (!isChanged || _prevColumnsStr is null)
         {
-            var valueStr = JsonSerializer.Serialize(Value);
-            if (_prevValue != valueStr)
+            var columnsStr = JsonSerializer.Serialize(Columns);
+            if (_prevColumnsStr != columnsStr)
             {
-                _prevValue = valueStr;
+                _prevColumnsStr = columnsStr;
                 isChanged = true;
             }
         }
@@ -62,8 +74,6 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
         if (isChanged)
         {
             Format();
-
-            Console.WriteLine($"{DateTime.Now.ToLongTimeString()} Format()");
         }
     }
 
@@ -123,7 +133,23 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
             return;
         }
 
-        FormattedColumns = columns.Select(c => new MobilePickerColumn<TColumnItem>(c)).ToList();
+        FormattedColumns.Clear();
+
+        for (int i = 0; i < columns.Count; i++)
+        {
+            var column = columns[i];
+            var index = 0;
+
+            if (Value.Count > i)
+            {
+                var val = Value[i];
+                var itemIndex = column.FindIndex(c => EqualityComparer<TColumnItemValue>.Default.Equals(ItemValue(c), val));
+                if (itemIndex > 0)
+                    index = itemIndex;
+            }
+
+            FormattedColumns.Add(new MobilePickerColumn<TColumnItem>(column, index));
+        }
     }
 
     private class Cursor
@@ -147,12 +173,12 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
         int columnIndex = 0;
 
         Cursor cursor = new() { Children = columns };
-        if (Value.Count > columnIndex)
+        if (InternalValue.Count > columnIndex)
         {
-            cursor.Value = Value[columnIndex];
+            cursor.Value = InternalValue[columnIndex];
         }
 
-        while (cursor?.Children is not null)
+        while (cursor.Children is not null)
         {
             var children = cursor.Children;
 
@@ -185,18 +211,19 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
 
             columnIndex++;
             cursor = new() { Children = columnItemChildren };
-            if (Value.Count > columnIndex)
+            if (InternalValue.Count > columnIndex)
             {
-                cursor.Value = Value[columnIndex];
+                cursor.Value = InternalValue[columnIndex];
             }
         }
 
         FormattedColumns = formatted;
     }
 
-    private void OnCascadeChange(int selectedIndex, int columnIndex)
+    private void OnCascadeChange(int columnIndex)
     {
         var columns = Columns as List<TColumnItem>;
+        columns ??= new List<TColumnItem>();
 
         var cursor = new Cursor { Children = columns };
         var indexes = GetSelectedIndexes();
@@ -204,9 +231,12 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
         for (int i = 0; i <= columnIndex; i++)
         {
             var index = indexes[i];
-        
+
             if (cursor.Children.Count > index)
             {
+                // TODO: refactor with a function?
+                FormattedColumns[columnIndex].Index = index;
+
                 cursor = new Cursor { Children = ItemChildren(cursor.Children[index]) };
             }
         }
@@ -217,24 +247,22 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
             {
                 break;
             }
-            
+
             columnIndex++;
             SetColumnValues(columnIndex, cursor.Children);
             cursor = new Cursor { Children = ItemChildren(cursor.Children[0]) };
         }
     }
 
-    protected async Task HandleOnChange(int selectedIndex, int columnIndex)
+    private async Task HandleOnChange(int columnIndex)
     {
         if (_dataType == "cascade")
         {
-            OnCascadeChange(selectedIndex, columnIndex);
-            StateHasChanged();
+            OnCascadeChange(columnIndex);
         }
 
         var items = GetItems();
         var values = items.Select(ItemValue).ToList();
-        var indexes = GetSelectedIndexes();
 
         if (ValueChanged.HasDelegate)
         {
@@ -242,10 +270,11 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
         }
         else
         {
-            Value = values;
+            InternalValue = values;
         }
     }
 
+    // TODO: rename this
     public void SetColumnValues(int columnIndex, List<TColumnItem> items)
     {
         if (Children.Count > columnIndex)
@@ -265,21 +294,8 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
 
     private List<int> GetSelectedIndexes()
     {
-        return Children.Select(child => child.CurrentIndex).ToList();
+        return Children.Select(child => child.SelectedIndex).ToList();
     }
-
-    // private int GetDefaultIndex(List<TColumnItem> columnItems, int columnIndex)
-    // {
-    //     if (Value.Count <= columnIndex)
-    //     {
-    //         return 0;
-    //     }
-    //
-    //     var columnValue = Value[columnIndex];
-    //     var index = columnItems.FindIndex(item => EqualityComparer<TColumnItemValue>.Default.Equals(ItemValue(item), columnValue));
-    //
-    //     return index > -1 ? index : 0;
-    // }
 
     public void Register(BMobilePickerColumn<TColumn, TColumnItem, TColumnItemValue> column)
     {
