@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface ISelectList<TItem, TItemValue, TValue> : IHasProviderComponent
     {
@@ -11,5 +9,7 @@ namespace BlazorComponent
         RenderFragment<SelectListItemProps<TItem>> ItemContent { get; }
         string GetFilteredText(TItem item);
         bool HasItem(TItem item);
+        bool GetDisabled(TItem item);
+        EventCallback<TItem> OnSelect { get; }
     }
 }
