@@ -2,32 +2,24 @@
 @typeparam TItem
 @typeparam TItemValue
 @typeparam TValue
-@inherits ComponentPartBase<ISelectList<TItem,TItemValue,TValue>>
+@inherits ComponentPartBase<ISelectList<TItem, TItemValue, TValue>>
 
-@{
-    if (!Value)
+<BListItem @onmousedown:preventDefault
+           @key="Item"
+           Disabled="@Component.GetDisabled(Item)"
+           OnClick="HandleOnClick"
+           @attributes="@GetAttributes(typeof(BListItem), data: (Item,Value))">
+    @if (ItemContent == null)
     {
-        Value = HasItem(Item);
+        if (Action && !HideSelected && Items.Count > 0)
+        {
+            @RenderPart(typeof(BSelectListAction<,,>), Item, Value)
+        }
+        @RenderPart(typeof(BSelectListTileContent<,,>), Item, Value)
     }
-    //TODO: disable
-
-    <BListItem @onmousedown:preventDefault
-               @key="Item"
-               @attributes="GetAttributes(typeof(BListItem),data:(Item,Value))">
-        @if (ItemContent == null)
-        {
-            if (Action && !HideSelected && Items.Count > 0)
-            {
-                @RenderPart(typeof(BSelectListAction<,,>),Item,Value)
-            }
-            @RenderPart(typeof(BSelectListTileContent<,,>),Item,Value)
-        }
-        else
-        {
-            var props = new SelectListItemProps<TItem>(Item);
-            @ItemContent(props)
-        }
-    </BListItem>
-}
-
-
+    else
+    {
+        var props = new SelectListItemProps<TItem>(Item, HandleOnClick);
+        @ItemContent(props)
+    }
+</BListItem>
