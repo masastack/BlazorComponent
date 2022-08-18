@@ -3,6 +3,6 @@
 @typeparam TInput
 @inherits ComponentPartBase<TInput>
 
-<div class="@CssProvider.GetClass(ComputedType)">
+<div class="@CssProvider.GetClass(ComputedType)" @ref="Element">
     @ChildContent
 </div>
