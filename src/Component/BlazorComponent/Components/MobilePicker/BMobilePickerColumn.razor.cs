@@ -22,6 +22,8 @@ public partial class BMobilePickerColumn<TColumn, TColumnItem, TColumnItemValue>
 
     [Parameter] public EventCallback<int> OnChange { get; set; }
 
+    [Parameter] public int ColumnIndex { get; set; } // TODO: for tests
+
     private const int DEFAULT_DURATION = 200;
 
     // 惯性滑动思路:
@@ -57,18 +59,6 @@ public partial class BMobilePickerColumn<TColumn, TColumnItem, TColumnItemValue>
     {
         base.OnInitialized();
         Parent.Register(this);
-    }
-
-    protected override void OnParametersSet()
-    {
-        base.OnParametersSet();
-
-        if (_prevValue != SelectedIndex)
-        {
-            _prevValue = SelectedIndex;
-            SetIndex(SelectedIndex);
-            StateHasChanged();
-        }
     }
 
     private async Task OnTouchstart(TouchEventArgs args)
@@ -154,12 +144,16 @@ public partial class BMobilePickerColumn<TColumn, TColumnItem, TColumnItemValue>
 
     public void SetIndex(int index, bool emitChange = false)
     {
+        Console.WriteLine($"SetIndex columnIndex:{ColumnIndex} index:{index} emitChange:{emitChange}");
+
         index = AdjustIndex(index) ?? 0;
 
         var offset  = -index * ItemHeight;
 
         var trigger = async () =>
         {
+            Console.WriteLine($"Trigger columnIndex:{ColumnIndex} index:{index} SelectedIndex:{SelectedIndex}");
+
             if (index != SelectedIndex)
             {
                 SelectedIndex = index;
