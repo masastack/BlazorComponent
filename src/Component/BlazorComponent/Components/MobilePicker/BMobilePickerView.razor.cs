@@ -73,7 +73,20 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
 
         if (!isChanged || _prevColumnsStr is null)
         {
-            var columnsStr = JsonSerializer.Serialize(Columns);
+            // TODO: how to watch list
+            // var columnsStr = JsonSerializer.Serialize(Columns);
+            string columnsStr = string.Empty;
+
+            if (Columns is List<TColumnItem> cascadeColumns)
+            {
+                columnsStr = JsonSerializer.Serialize(cascadeColumns.Select(ItemValue));
+            }
+            else if (Columns is List<List<TColumnItem>> listColumns)
+            {
+                var firstColumn = listColumns.First();
+                columnsStr = JsonSerializer.Serialize(firstColumn);
+            }
+            
             if (_prevColumnsStr != columnsStr)
             {
                 _prevColumnsStr = columnsStr;
@@ -245,9 +258,6 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
 
             if (cursor.Children.Count > index)
             {
-                // TODO: refactor with a function?
-                // FormattedColumns[columnIndex].Index = index;
-
                 cursor = new Cursor { Children = ItemChildren(cursor.Children[index]) };
             }
         }
@@ -261,21 +271,6 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
 
             columnIndex++;
 
-            int index = 0;
-
-            // TODO: 用一个变量是决定是否之前的index.
-            
-            if (indexes.Count() > columnIndex)
-            {
-                index = indexes[columnIndex];
-            }
-
-            if (index > cursor.Children.Count - 1)
-            {
-                index = cursor.Children.Count - 1;
-            }
-
-            SetColumnValues(columnIndex, cursor.Children, index);
             cursor = new Cursor { Children = ItemChildren(cursor.Children[0]) };
         }
     }
@@ -299,20 +294,7 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
             InternalValue = values;
         }
     }
-
-    // TODO: rename this
-    public void SetColumnValues(int columnIndex, List<TColumnItem> items, int index)
-    {
-        if (Children.Count > columnIndex)
-        {
-            FormattedColumns[columnIndex].Values = items;
-            FormattedColumns[columnIndex].Index = index;
-
-            var child = Children[columnIndex];
-            child.SetIndex(index);
-        }
-    }
-
+    
     private List<TColumnItem> GetItems()
     {
         return Children.Select(child => child.GetItem()).ToList();

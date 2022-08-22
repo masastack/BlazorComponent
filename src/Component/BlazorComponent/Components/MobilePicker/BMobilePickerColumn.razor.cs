@@ -4,25 +4,35 @@ namespace BlazorComponent;
 
 public partial class BMobilePickerColumn<TColumn, TColumnItem, TColumnItemValue>
 {
-    [CascadingParameter] public BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> Parent { get; set; }
+    [CascadingParameter]
+    public BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> Parent { get; set; }
 
-    [Parameter] public List<TColumnItem> Items { get; set; } = new();
+    [Parameter]
+    public List<TColumnItem> Items { get; set; } = new();
 
-    [Parameter] public int ItemHeight { get; set; }
+    [Parameter]
+    public int ItemHeight { get; set; }
 
-    [Parameter] public Func<TColumnItem, string> ItemText { get; set; }
+    [Parameter]
+    public Func<TColumnItem, string> ItemText { get; set; }
 
-    [Parameter] public Func<TColumnItem, bool> ItemDisabled { get; set; } = _ => false;
+    [Parameter]
+    public Func<TColumnItem, bool> ItemDisabled { get; set; } = _ => false;
 
-    [Parameter] public int SelectedIndex { get; set; }
+    [Parameter]
+    public int SelectedIndex { get; set; }
 
-    [Parameter] public int SwipeDuration { get; set; }
+    [Parameter]
+    public int SwipeDuration { get; set; }
 
-    [Parameter] public StringNumber VisibleItemCount { get; set; }
+    [Parameter]
+    public StringNumber VisibleItemCount { get; set; }
 
-    [Parameter] public EventCallback<int> OnChange { get; set; }
+    [Parameter]
+    public EventCallback<int> OnChange { get; set; }
 
-    [Parameter] public int ColumnIndex { get; set; } // TODO: for tests
+    [Parameter]
+    public int ColumnIndex { get; set; } // TODO: for tests
 
     private const int DEFAULT_DURATION = 200;
 
@@ -59,6 +69,19 @@ public partial class BMobilePickerColumn<TColumn, TColumnItem, TColumnItemValue>
     {
         base.OnInitialized();
         Parent.Register(this);
+    }
+
+    private int _prevSelectedIndex;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        
+        if (_prevSelectedIndex != SelectedIndex)
+        {
+            _prevSelectedIndex = SelectedIndex;
+            SetIndex(SelectedIndex);
+        }
     }
 
     private async Task OnTouchstart(TouchEventArgs args)
@@ -142,7 +165,7 @@ public partial class BMobilePickerColumn<TColumn, TColumnItem, TColumnItemValue>
         return Range(Math.Round(-offset / ItemHeight), 0, Count - 1);
     }
 
-    public void SetIndex(int index, bool emitChange = false)
+    private void SetIndex(int index, bool emitChange = false)
     {
         Console.WriteLine($"SetIndex columnIndex:{ColumnIndex} index:{index} emitChange:{emitChange}");
 
