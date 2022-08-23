@@ -2,11 +2,8 @@
 
 namespace BlazorComponent;
 
-public partial class BMobilePickerColumn<TColumn, TColumnItem, TColumnItemValue>
+public partial class BMobilePickerColumn<TColumnItem>
 {
-    [CascadingParameter]
-    public BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> Parent { get; set; }
-
     [Parameter]
     public List<TColumnItem> Items { get; set; } = new();
 
@@ -63,20 +60,14 @@ public partial class BMobilePickerColumn<TColumn, TColumnItem, TColumnItemValue>
 
     private int Count => Items.Count;
 
-    protected int BaseOffset => (ItemHeight * (VisibleItemCount.ToInt32() - 1)) / 2;
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        Parent.Register(this);
-    }
+    protected int BaseOffset => ItemHeight * (VisibleItemCount.ToInt32() - 1) / 2;
 
     private int _prevSelectedIndex;
 
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        
+
         if (_prevSelectedIndex != SelectedIndex)
         {
             _prevSelectedIndex = SelectedIndex;
