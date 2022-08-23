@@ -91,7 +91,6 @@ public partial class BMobilePickerColumn<TColumn, TColumnItem, TColumnItemValue>
         if (_moving)
         {
             var translateY = await JsInvokeAsync<double>(JsInteropConstants.GetElementTranslateY, Wrapper);
-            Console.WriteLine($"translateY:{translateY}");
             Offset = Math.Min(0, translateY - BaseOffset);
             _startOffset = Offset;
         }
@@ -165,18 +164,19 @@ public partial class BMobilePickerColumn<TColumn, TColumnItem, TColumnItemValue>
         return Range(Math.Round(-offset / ItemHeight), 0, Count - 1);
     }
 
+    internal void SetIndex()
+    {
+        SetIndex(SelectedIndex);
+    }
+
     private void SetIndex(int index, bool emitChange = false)
     {
-        Console.WriteLine($"SetIndex columnIndex:{ColumnIndex} index:{index} emitChange:{emitChange}");
-
         index = AdjustIndex(index) ?? 0;
 
         var offset  = -index * ItemHeight;
 
         var trigger = async () =>
         {
-            Console.WriteLine($"Trigger columnIndex:{ColumnIndex} index:{index} SelectedIndex:{SelectedIndex}");
-
             if (index != SelectedIndex)
             {
                 SelectedIndex = index;

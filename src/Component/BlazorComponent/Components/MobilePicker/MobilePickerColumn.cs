@@ -3,8 +3,8 @@
 public class MobilePickerColumn<TItem>
 {
     public List<TItem> Values { get; set; }
-
-    public int? Index { get; set; }
+    
+    public int Index { get; set; }
 
     public string ClassName { get; set; }
 
@@ -17,12 +17,12 @@ public class MobilePickerColumn<TItem>
         Values = values;
     }
 
-    public MobilePickerColumn(List<TItem> values, int? index): this(values)
+    public MobilePickerColumn(List<TItem> values, int index): this(values)
     {
         Index = index;
     }
 
-    public MobilePickerColumn(List<TItem> values, int? index, string className): this(values, index)
+    public MobilePickerColumn(List<TItem> values, int index, string className): this(values, index)
     {
         ClassName = className;
     }

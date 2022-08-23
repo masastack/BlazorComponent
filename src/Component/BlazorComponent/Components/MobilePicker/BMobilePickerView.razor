@@ -13,12 +13,12 @@
                                  TColumnItemValue="TColumnItemValue"
                                  VisibleItemCount="@VisibleItemCount"
                                  SwipeDuration="@SwipeDuration"
-                                 SelectedIndex="@(item.Index ?? 0)"
+                                 SelectedIndex="@item.Index"
                                  Items="item.Values"
                                  ItemText="ItemText"
                                  ItemHeight="ItemPxHeight"
                                  ColumnIndex="@columnIndex"
-                                 OnChange="_ => HandleOnChange(columnIndex)">
+                                 OnChange="v => HandleOnChange(columnIndex, ItemValue(item.Values[v]))">
             </BMobilePickerColumn>
         }
     </CascadingValue>
