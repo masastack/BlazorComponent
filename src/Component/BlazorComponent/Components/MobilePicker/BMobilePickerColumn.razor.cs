@@ -28,9 +28,6 @@ public partial class BMobilePickerColumn<TColumnItem>
     [Parameter]
     public EventCallback<int> OnChange { get; set; }
 
-    [Parameter]
-    public int ColumnIndex { get; set; } // TODO: for tests
-
     private const int DEFAULT_DURATION = 200;
 
     // 惯性滑动思路:
@@ -293,10 +290,5 @@ public partial class BMobilePickerColumn<TColumnItem>
             await _transitionEndTrigger.Invoke();
             _transitionEndTrigger = null;
         }
-    }
-
-    public TColumnItem GetItem()
-    {
-        return Items.ElementAtOrDefault(SelectedIndex);
     }
 }
