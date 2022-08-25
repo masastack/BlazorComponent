@@ -28,13 +28,13 @@ public partial class BMobilePickerColumn<TColumnItem>
     [Parameter]
     public EventCallback<int> OnChange { get; set; }
 
-    private const int DEFAULT_DURATION = 200;
+    private const int DefaultDuration = 200;
 
     // 惯性滑动思路:
     // 在手指离开屏幕时，如果和上一次 move 时的间隔小于 `MOMENTUM_LIMIT_TIME` 且 move
     // 距离大于 `MOMENTUM_LIMIT_DISTANCE` 时，执行惯性滑动
-    private const int MOMENTUM_LIMIT_TIME  = 300;
-    private const int MOMENTUM_LIMIT_DISTANCE  = 15;
+    private const int MomentumLimitTime  = 300;
+    private const int MomentumLimitDistance  = 15;
 
     private int _prevValue = 0;
     private bool _moving;
@@ -106,7 +106,7 @@ public partial class BMobilePickerColumn<TColumnItem>
         Offset = Range(_startOffset + _deltaY, -(Count * ItemHeight), ItemHeight);
 
         var now = DateTime.Now.Millisecond;
-        if (now - _touchStartTime > MOMENTUM_LIMIT_TIME)
+        if (now - _touchStartTime > MomentumLimitTime)
         {
             _touchStartTime = now;
             _momentumOffset = Offset;
@@ -117,7 +117,7 @@ public partial class BMobilePickerColumn<TColumnItem>
     {
         var distance = Offset - _momentumOffset;
         var duration = DateTime.Now.Millisecond - _touchStartTime;
-        var allowMomentum = duration < MOMENTUM_LIMIT_TIME && Math.Abs(distance) > MOMENTUM_LIMIT_DISTANCE;
+        var allowMomentum = duration < MomentumLimitTime && Math.Abs(distance) > MomentumLimitDistance;
 
         if (allowMomentum)
         {
@@ -126,7 +126,7 @@ public partial class BMobilePickerColumn<TColumnItem>
         }
 
         var index = GetIndexByOffset(Offset);
-        Duration =  DEFAULT_DURATION;
+        Duration =  DefaultDuration;
         SetIndex((int)Math.Ceiling(index), true);
 
         // compatible with desktop scenario
@@ -142,7 +142,6 @@ public partial class BMobilePickerColumn<TColumnItem>
         var index = GetIndexByOffset(distance);
 
         Duration = SwipeDuration;
-        Console.WriteLine($"{DateTime.Now.ToLongTimeString()} _duration:{Duration}");
         StateHasChanged();
         SetIndex((int)Math.Ceiling(index), true);
     }
@@ -196,7 +195,7 @@ public partial class BMobilePickerColumn<TColumnItem>
         }
 
         _transitionEndTrigger = null;
-        Duration = DEFAULT_DURATION;
+        Duration = DefaultDuration;
         SetIndex(index, true);
     }
 

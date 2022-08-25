@@ -19,7 +19,7 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
     [Parameter]
     public Func<TColumnItem, bool> ItemDisabled { get; set; }
 
-    // TODO: change to StringNumber, support px, vh, vw, rem
+    // TODO: change int to StringNumber, support px, vh, vw, rem
     [Parameter]
     public int ItemHeight { get; set; } = 40;
 
@@ -72,7 +72,7 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
     protected List<MobilePickerColumn<TColumnItem>> FormattedColumns { get; set; } = new();
 
     private string _dataType;
-    private string _prevColumnsStr;
+    private List<TColumn> _prevColumns = null;
     private string _prevValue;
     private List<TColumnItemValue> _value = new();
 
@@ -94,32 +94,13 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
             _prevValue = valueStr;
             InternalValue = Value.ToList();
 
-            Console.WriteLine($"{DateTime.Now.ToLongTimeString()} [Value] Invoke Format() in OnParameterSet()");
             isChanged = true;
         }
 
-        if (_prevColumnsStr is null)
+        if (_prevColumns != Columns)
         {
-            // TODO: how to watch list
-            // var columnsStr = JsonSerializer.Serialize(Columns);
-            string columnsStr = string.Empty;
-
-            if (Columns is List<TColumnItem> cascadeColumns)
-            {
-                columnsStr = JsonSerializer.Serialize(cascadeColumns.Select(ItemValue));
-            }
-            else if (Columns is List<List<TColumnItem>> listColumns)
-            {
-                var firstColumn = listColumns.First();
-                columnsStr = JsonSerializer.Serialize(firstColumn);
-            }
-
-            if (_prevColumnsStr != columnsStr)
-            {
-                _prevColumnsStr = columnsStr;
-
-                isChanged = true;
-            }
+            _prevColumns = Columns;
+            isChanged = true;
         }
 
         if (isChanged)
