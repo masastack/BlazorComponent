@@ -16,13 +16,12 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
     [Parameter]
     public virtual Func<TColumnItem, List<TColumnItem>> ItemChildren { get; set; }
 
-    // TODO: implement
     [Parameter]
     public Func<TColumnItem, bool> ItemDisabled { get; set; }
 
     // TODO: change to StringNumber, support px, vh, vw, rem
     [Parameter]
-    public int ItemHeight { get; set; } = 44;
+    public int ItemHeight { get; set; } = 40;
 
     [Parameter]
     public EventCallback<List<TColumnItem>> OnSelect { get; set; }
