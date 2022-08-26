@@ -31,12 +31,11 @@ public partial class BMobilePickerColumn<TColumnItem>
     private const int DefaultDuration = 200;
 
     // 惯性滑动思路:
-    // 在手指离开屏幕时，如果和上一次 move 时的间隔小于 `MOMENTUM_LIMIT_TIME` 且 move
-    // 距离大于 `MOMENTUM_LIMIT_DISTANCE` 时，执行惯性滑动
+    // 在手指离开屏幕时，如果和上一次 move 时的间隔小于 `MomentumLimitTime` 且 move
+    // 距离大于 `MomentumLimitDistance` 时，执行惯性滑动
     private const int MomentumLimitTime  = 300;
     private const int MomentumLimitDistance  = 15;
 
-    private int _prevValue = 0;
     private bool _moving;
     private double _startOffset;
     private Func<Task> _transitionEndTrigger;
