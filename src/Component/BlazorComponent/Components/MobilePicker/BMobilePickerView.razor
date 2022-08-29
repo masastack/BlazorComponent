@@ -1,0 +1,28 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+@typeparam TColumn
+@typeparam TColumnItem
+@typeparam TColumnItemValue
+
+<div class="@CssProvider.GetClass("view")" style="@CssProvider.GetStyle("view")" @ontouchmove:preventDefault>
+    <CascadingValue Value="this">
+        @foreach (var (item, columnIndex) in FormattedColumns.Select((item, index) => (item, index)))
+        {
+            <BMobilePickerColumn TColumn="TColumn"
+                                 TColumnItem="TColumnItem"
+                                 TColumnItemValue="TColumnItemValue"
+                                 VisibleItemCount="@VisibleItemCount"
+                                 SwipeDuration="@SwipeDuration"
+                                 SelectedIndex="@item.Index"
+                                 Items="item.Values"
+                                 ItemText="ItemText"
+                                 ItemHeight="ItemPxHeight"
+                                 ItemDisabled="ItemDisabled"
+                                 ColumnIndex="@columnIndex"
+                                 OnChange="v => HandleOnChange(columnIndex, ItemValue(item.Values[v]))">
+            </BMobilePickerColumn>
+        }
+    </CascadingValue>
+    <div class="@CssProvider.GetClass("mask")" style="@CssProvider.GetStyle("mask")"></div>
+    <div class="@CssProvider.GetClass("picked")" style="@CssProvider.GetStyle("picked")"></div>
+</div>

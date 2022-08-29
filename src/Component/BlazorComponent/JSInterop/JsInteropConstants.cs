@@ -170,6 +170,8 @@
 
         public static string ScrollToTile => $"{Variables.JsInteropFuncNamePrefix}scrollToTile";
 
+        public static string GetElementTranslateY => $"{Variables.JsInteropFuncNamePrefix}getElementTranslateY";
+
         public static string CheckIfThresholdIsExceededWhenScrolling => $"{Variables.JsInteropFuncNamePrefix}checkIfThresholdIsExceededWhenScrolling";
 
         #region Draggable Modal

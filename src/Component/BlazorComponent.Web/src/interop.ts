@@ -2,7 +2,7 @@
 import { registerExtraEvents } from "./events/index";
 //#region mentions
 import getOffset from "./modules/Caret";
-import { getElementSelector, canUseDom } from "./utils/index";
+import { getBlazorId, getElementSelector } from "./utils/index";
 
 export function updateCanvas(element, hue: number) {
   const canvas = element as HTMLCanvasElement
@@ -1570,6 +1570,14 @@ export function scrollToTile(contentSelector: string, tilesSelector: string, ind
   } else if (scrollTop + contentHeight < tile.offsetTop + tile.clientHeight + 8) {
     content.scrollTo({ top: tile.offsetTop - contentHeight + tile.clientHeight * 2, behavior: "smooth" })
   }
+}
+
+export function getElementTranslateY(element) {
+  const style = window.getComputedStyle(element);
+  const transform = style.transform || style.webkitTransform;
+  const translateY = transform.slice(7, transform.length - 1).split(', ')[5];
+
+  return Number(translateY);
 }
 
 function isWindow(element: any | Window): element is Window {
