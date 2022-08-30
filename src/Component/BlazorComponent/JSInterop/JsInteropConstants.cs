@@ -100,8 +100,6 @@
 
         public static string GetMaxZIndex => $"{Variables.JsInteropFuncNamePrefix}getMaxZIndex";
 
-        public static string GetCursorXY => $"{Variables.JsInteropFuncNamePrefix}getCursorXY";
-
         public static string DisposeObj => $"{Variables.JsInteropFuncNamePrefix}disposeObj";
 
         public static string ElementScrollIntoView => $"{Variables.JsInteropFuncNamePrefix}elementScrollIntoView";
@@ -173,15 +171,7 @@
         public static string GetElementTranslateY => $"{Variables.JsInteropFuncNamePrefix}getElementTranslateY";
 
         public static string CheckIfThresholdIsExceededWhenScrolling => $"{Variables.JsInteropFuncNamePrefix}checkIfThresholdIsExceededWhenScrolling";
-
-        #region Draggable Modal
-
-        public static string EnableDraggable => $"{Variables.JsInteropFuncNamePrefix}enableDraggable";
-
-        public static string DisableDraggable => $"{Variables.JsInteropFuncNamePrefix}disableDraggable";
-
-        public static string ResetModalPosition => $"{Variables.JsInteropFuncNamePrefix}resetModalPosition";
-
+        
         public static string SetProperty => $"{Variables.JsInteropFuncNamePrefix}setProperty";
 
         public static string ScrollHeightWithoutHeight => $"{Variables.JsInteropFuncNamePrefix}getScrollHeightWithoutHeight";
@@ -190,6 +180,5 @@
 
         public static string InvokeMultipleMethod => $"{Variables.JsInteropFuncNamePrefix}invokeMultipleMethod";
 
-        #endregion Draggable Modal
     }
 }
