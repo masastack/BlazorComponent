@@ -8,5 +8,8 @@ declare global {
 }
 
 window.BlazorComponent = {
-    interop: { ...interop, ...overlayable }
+    interop: {
+        ...interop,
+        ...overlayable
+    }
 };

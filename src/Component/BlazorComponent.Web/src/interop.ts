@@ -830,39 +830,6 @@ const hasScrollbar = () => {
   return document.body.scrollHeight > (window.innerHeight || document.documentElement.clientHeight);
 }
 
-export function disableBodyScroll() {
-  let body = document.body;
-  const oldBodyCache = {};
-  ["position", "width", "overflow"].forEach((key) => {
-    oldBodyCache[key] = body.style[key];
-  });
-  oldBodyCacheStack.push(oldBodyCache);
-  css(body,
-    {
-      "position": "relative",
-      "width": hasScrollbar() ? "calc(100% - 17px)" : null,
-      "overflow": "hidden"
-    });
-  addCls(document.body, "ant-scrolling-effect");
-}
-
-export function enableBodyScroll() {
-  let oldBodyCache = oldBodyCacheStack.length > 0 ? oldBodyCacheStack.pop() : {};
-
-  css(document.body,
-    {
-      "position": oldBodyCache["position"] ?? null,
-      "width": oldBodyCache["width"] ?? null,
-      "overflow": oldBodyCache["overflow"] ?? null
-    });
-  removeCls(document.body, "ant-scrolling-effect");
-}
-
-export function destroyAllDialog() {
-  document.querySelectorAll('.ant-modal-root')
-    .forEach(e => document.body.removeChild(e.parentNode));
-}
-
 export function createIconFromfontCN(scriptUrl) {
   if (document.querySelector(`[data-namespace="${scriptUrl}"]`)) {
     return;
@@ -1592,6 +1559,6 @@ export function checkIfThresholdIsExceededWhenScrolling(el: Element, parent: Ele
   const current = isWindow(parent)
     ? window.innerHeight
     : parent.getBoundingClientRect().bottom
-  
+
   return (current >= elementTop - threshold)
 }

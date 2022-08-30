@@ -71,14 +71,6 @@ namespace BlazorComponent
 
         private bool DebounceEnabled => DebounceMilliseconds > 0;
 
-        /// <summary>
-        /// (Temporary solution, change in 0.6.0)
-        /// A flag to determine whether the user is entering.
-        /// Set to true when the input event occurs.
-        /// Set to false when the debounce event occurs.
-        /// </summary>
-        protected bool Inputting { get; set; }
-
         public virtual Func<Task> DebounceTimerRun { get; set; }
 
         public virtual int DebounceMilliseconds { get; set; } = 200;
@@ -173,7 +165,6 @@ namespace BlazorComponent
         {
             InvokeAsync(async () =>
             {
-                Inputting = false;
                 await ChangeValue(true);
             });
         }

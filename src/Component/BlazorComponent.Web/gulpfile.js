@@ -7,7 +7,7 @@ var uglify = require('gulp-uglify');
 var sourcemaps = require('gulp-sourcemaps');
 var buffer = require('vinyl-buffer');
 
-gulp.task('ts', function () {
+gulp.task('interop', function () {
     return browserify({
         basedir: '.',
         debug: true,
@@ -29,4 +29,21 @@ gulp.task('ts', function () {
         .pipe(gulp.dest('../BlazorComponent/wwwroot/js'));
 });
 
-gulp.task('default', gulp.parallel('ts'), function () { });
+gulp.task('input', function () {
+    return browserify()
+        .add('./src/input.ts')
+        .plugin(tsify)
+        // .transform('babelify', {
+        //     presets: ['es2015'],
+        //     extensions: ['.ts']
+        // })
+        .bundle()
+        .pipe(source('input.js'))
+        .pipe(buffer())
+        // .pipe(sourcemaps.init({ loadMaps: true }))
+        // .pipe(uglify())
+        // .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('../BlazorComponent/wwwroot/js'));
+})
+
+gulp.task('default', gulp.parallel('input'), function () { });
