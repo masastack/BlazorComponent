@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using System.Linq.Expressions;
+using Microsoft.JSInterop;
 
 namespace BlazorComponent
 {
@@ -46,6 +47,9 @@ namespace BlazorComponent
         public List<string> Messages { get; set; } = new();
 
         [Parameter]
+        public EventCallback<TValue> OnInput { get; set; }
+
+        [Parameter]
         public bool Success { get; set; }
 
         [Parameter]
@@ -65,6 +69,8 @@ namespace BlazorComponent
         protected bool HasInput { get; set; }
 
         protected bool HasFocused { get; set; }
+
+        public virtual ElementReference InputElement { get; set; }
 
         protected virtual TValue LazyValue
         {
@@ -165,14 +171,34 @@ namespace BlazorComponent
 
         public virtual bool ExternalError => ErrorMessages.Count > 0 || Error;
 
-        protected TValue InputValue { get; set; }
-
         protected virtual void OnInternalValueChange(TValue val)
         {
+            if (ValueChanged.HasDelegate)
+            {
+                ValueChanged.InvokeAsync(val);
+            }
         }
 
         protected virtual void OnLazyValueChange(TValue val)
         {
+        }
+        
+        protected IJSObjectReference InputJsObjectReference { get; private set; }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            await base.OnAfterRenderAsync(firstRender);
+
+            if (firstRender)
+            {
+                InputJsObjectReference = await Js.InvokeAsync<IJSObjectReference>("import", "./_content/BlazorComponent/js/input.js");
+                await InputJsObjectReference.InvokeVoidAsync("registerInputEvents", InputElement, DotNetObjectReference.Create(new Invoker<ChangeEventArgs>(HandleOnInputAsync)), 250);
+            }
+        }
+
+        public virtual Task HandleOnInputAsync(ChangeEventArgs args)
+        {
+            return Task.CompletedTask;
         }
 
         protected override void OnWatcherInitialized()
@@ -183,8 +209,12 @@ namespace BlazorComponent
                     if (!EqualityComparer<TValue>.Default.Equals(val, LazyValue))
                     {
                         LazyValue = val;
+                        
+                        Console.WriteLine($"{DateTime.Now.ToLongTimeString()} Value changed: {val}");
+                        
+                        // setValue by js
 
-                        InputValue = val;
+                        _ = InputJsObjectReference.InvokeVoidAsync("setValue", InputElement, val);
                     }
                 })
                 .Watch<TValue>(nameof(LazyValue), OnLazyValueChange)
@@ -323,7 +353,6 @@ namespace BlazorComponent
             //We will change this and InternalValue
             ErrorBucket.Clear();
 
-            InputValue = default;
             LazyValue = default;
             if (ValueChanged.HasDelegate)
             {

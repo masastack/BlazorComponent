@@ -5,8 +5,6 @@ namespace BlazorComponent
 {
     public partial class BTextFieldInput<TValue, TInput> where TInput : ITextField<TValue>
     {
-        public TValue InputValue => Component.InputValue;
-
         public bool Autofocus => Component.Autofocus;
 
         public bool Disabled => Component.IsDisabled;

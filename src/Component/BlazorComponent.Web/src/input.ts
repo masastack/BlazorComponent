@@ -5,7 +5,7 @@ function registerInputEvents(
   dotNet: DotNet.DotNetObject,
   debounce: number
 ) {
-  if (!element) return;
+  if (!(element && element instanceof HTMLInputElement)) return;
 
   let compositionInputting = false;
   let listener;
@@ -17,9 +17,13 @@ function registerInputEvents(
 
       clearTimeout(timeout);
       timeout = setTimeout(() => {
-        console.log("invoke debounce ~~~");
-
         var changeEventArgs = parseChangeEvent(args);
+        console.log(
+          "invoke debounce ~~~",
+          args.target.value,
+          args.target.validity,
+          changeEventArgs.value
+        );
         dotNet.invokeMethodAsync("Invoke", changeEventArgs);
       }, debounce);
     };
@@ -27,12 +31,19 @@ function registerInputEvents(
     listener = function (args: any) {
       if (compositionInputting) return;
 
-      console.log("invoke ~~~");
+      console.log(
+        "invoke ~~~",
+        args.target.value,
+        args.target.validity,
+        changeEventArgs.value
+      );
 
       var changeEventArgs = parseChangeEvent(args);
       dotNet.invokeMethodAsync("Invoke", changeEventArgs);
     };
   }
+
+  console.log("element", element);
 
   element.addEventListener(
     "compositionstart",
@@ -45,4 +56,8 @@ function registerInputEvents(
   element.addEventListener("input", listener);
 }
 
-export { registerInputEvents };
+function setValue(element: HTMLInputElement, value: any) {
+  element.value = value;
+}
+
+export { registerInputEvents, setValue };
