@@ -1,4 +1,4 @@
-import { parseChangeEvent } from "./events/default";
+import { parseChangeEvent } from "./events/EventType";
 
 function registerInputEvents(
   element: Element,

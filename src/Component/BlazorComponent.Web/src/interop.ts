@@ -1,8 +1,6 @@
-﻿import registerDirective from "./directive/index";
+import registerDirective from "./directive/index";
 import { registerExtraEvents } from "./events/index";
-//#region mentions
-import getOffset from "./modules/Caret";
-import { getBlazorId, getElementSelector } from "./utils/index";
+import { getElementSelector } from "./utils/helper";
 
 export function updateCanvas(element, hue: number) {
   const canvas = element as HTMLCanvasElement
@@ -420,7 +418,7 @@ export function addHtmlElementEventListener<K extends keyof HTMLElementTagNameMa
   };
 
   if (extras?.debounce && extras.debounce > 0) {
-    let timeout: NodeJS.Timeout;
+    let timeout;
     config["listener"] = function (args: any) {
       clearTimeout(timeout)
       timeout = setTimeout(() => listener(args), extras.debounce);
@@ -967,15 +965,6 @@ export function disposeObj(objReferenceName) {
   delete objReferenceDict[objReferenceName];
 }
 
-export function getCursorXY(element, objReference) {
-  objReferenceDict["mentions"] = objReference;
-  window.addEventListener("click", mentionsOnWindowClick);
-
-  var offset = getOffset(element);
-
-  return [offset.left, offset.top + offset.height + 14];
-}
-
 function mentionsOnWindowClick(e) {
   let mentionsObj = objReferenceDict["mentions"];
   if (mentionsObj) {
@@ -984,10 +973,6 @@ function mentionsOnWindowClick(e) {
     window.removeEventListener("click", mentionsOnWindowClick);
   }
 }
-
-//#endregion
-
-export { disableDraggable, enableDraggable, resetModalPosition } from "./modules/dragHelper";
 
 export function bindTableHeaderAndBodyScroll(bodyRef, headerRef) {
   bodyRef.bindScrollLeftToHeader = () => {

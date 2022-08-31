@@ -1,4 +1,5 @@
 import * as interop from "./interop";
+import * as overlayable from "./mixins/overlayable";
 
 declare global {
   interface Window {
@@ -9,5 +10,6 @@ declare global {
 window.BlazorComponent = {
   interop: {
     ...interop,
+    ...overlayable,
   },
 };

@@ -1,3 +1,6 @@
+// see https://github.com/dotnet/aspnetcore/blob/main/src/Components/Web.JS/src/Rendering/Events/EventTypes.ts
+// updated at 2022/08/31
+
 export function parseMouseEvent(event: MouseEvent): Blazor.MouseEventArgs {
   return {
     detail: event.detail,
@@ -16,7 +19,7 @@ export function parseMouseEvent(event: MouseEvent): Blazor.MouseEventArgs {
     altKey: event.altKey,
     metaKey: event.metaKey,
     type: event.type,
-  };
+  } as Blazor.MouseEventArgs;
 }
 
 export function parseTouchEvent(event: TouchEvent): Blazor.TouchEventArgs {
@@ -59,40 +62,34 @@ export function parseChangeEvent(event: Event): Blazor.ChangeEventArgs {
   } else if (isMultipleSelectInput(element)) {
     const selectElement = element as HTMLSelectElement;
     const selectedValues = Array.from(selectElement.options)
-      .filter(option => option.selected)
-      .map(option => option.value);
+      .filter((option) => option.selected)
+      .map((option) => option.value);
     return { value: selectedValues };
   } else {
     const targetIsCheckbox = isCheckbox(element);
-    const newValue = targetIsCheckbox ? !!element['checked'] : element['value'];
+    const newValue = targetIsCheckbox ? !!element["checked"] : element["value"];
     return { value: newValue };
   }
 }
 
 function isTimeBasedInput(element: Element): element is HTMLInputElement {
-  return timeBasedInputs.indexOf(element.getAttribute('type')!) !== -1;
+  return timeBasedInputs.indexOf(element.getAttribute("type")!) !== -1;
 }
 
-const timeBasedInputs = [
-  'date',
-  'datetime-local',
-  'month',
-  'time',
-  'week',
-];
+const timeBasedInputs = ["date", "datetime-local", "month", "time", "week"];
 
 function normalizeTimeBasedValue(element: HTMLInputElement): string {
   const value = element.value;
   const type = element.type;
   switch (type) {
-    case 'date':
-    case 'month':
+    case "date":
+    case "month":
       return value;
-    case 'datetime-local':
-      return value.length === 16 ? value + ':00' : value; // Convert yyyy-MM-ddTHH:mm to yyyy-MM-ddTHH:mm:00
-    case 'time':
-      return value.length === 5 ? value + ':00' : value; // Convert hh:mm to hh:mm:00
-    case 'week':
+    case "datetime-local":
+      return value.length === 16 ? value + ":00" : value; // Convert yyyy-MM-ddTHH:mm to yyyy-MM-ddTHH:mm:00
+    case "time":
+      return value.length === 5 ? value + ":00" : value; // Convert hh:mm to hh:mm:00
+    case "week":
       // For now we are not going to normalize input type week as it is not trivial
       return value;
   }
@@ -101,9 +98,15 @@ function normalizeTimeBasedValue(element: HTMLInputElement): string {
 }
 
 function isMultipleSelectInput(element: Element): element is HTMLSelectElement {
-  return element instanceof HTMLSelectElement && element.type === 'select-multiple';
+  return (
+    element instanceof HTMLSelectElement && element.type === "select-multiple"
+  );
 }
 
 function isCheckbox(element: Element | null): boolean {
-  return !!element && element.tagName === 'INPUT' && element.getAttribute('type') === 'checkbox';
+  return (
+    !!element &&
+    element.tagName === "INPUT" &&
+    element.getAttribute("type") === "checkbox"
+  );
 }
