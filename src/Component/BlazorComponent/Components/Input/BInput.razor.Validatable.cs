@@ -174,6 +174,16 @@ namespace BlazorComponent
 
         protected virtual void OnInternalValueChange(TValue val)
         {
+            // If it's the first time we're setting input,
+            // mark it with hasInput
+            HasInput = true;
+            
+            // todo: whether to need to do validate?
+            if (!ValidateOnBlur)
+            {
+                Validate();
+            }
+
             if (ValueChanged.HasDelegate)
             {
                 ValueChanged.InvokeAsync(val);
@@ -196,9 +206,6 @@ namespace BlazorComponent
                     await ValueChanged.InvokeAsync(val);
                 }
             }
-
-
-            // todo: validate on blur
 
             if (!ValidateOnBlur)
             {
