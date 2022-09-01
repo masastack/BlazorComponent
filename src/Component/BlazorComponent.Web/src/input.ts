@@ -2,7 +2,8 @@ import { parseChangeEvent } from "./events/EventType";
 
 function registerInputEvents(
   element: Element,
-  dotNet: DotNet.DotNetObject,
+  onInput: DotNet.DotNetObject,
+  onDebounceInput: DotNet.DotNetObject,
   debounce: number
 ) {
   if (!(element && element instanceof HTMLInputElement)) return;
@@ -15,21 +16,28 @@ function registerInputEvents(
     listener = function (args: any) {
       if (compositionInputting) return;
 
+      var changeEventArgs = parseChangeEvent(args);
+
+      onInput && onInput.invokeMethodAsync("Invoke", changeEventArgs);
+
       clearTimeout(timeout);
       timeout = setTimeout(() => {
-        var changeEventArgs = parseChangeEvent(args);
         console.log(
           "invoke debounce ~~~",
           args.target.value,
           args.target.validity,
           changeEventArgs.value
         );
-        dotNet.invokeMethodAsync("Invoke", changeEventArgs);
+        onDebounceInput.invokeMethodAsync("Invoke", changeEventArgs);
       }, debounce);
     };
   } else {
     listener = function (args: any) {
       if (compositionInputting) return;
+
+      var changeEventArgs = parseChangeEvent(args);
+
+      onInput && onInput.invokeMethodAsync("Invoke", changeEventArgs);
 
       console.log(
         "invoke ~~~",
@@ -38,8 +46,7 @@ function registerInputEvents(
         changeEventArgs.value
       );
 
-      var changeEventArgs = parseChangeEvent(args);
-      dotNet.invokeMethodAsync("Invoke", changeEventArgs);
+      onDebounceInput.invokeMethodAsync("Invoke", changeEventArgs);
     };
   }
 
@@ -57,6 +64,7 @@ function registerInputEvents(
 }
 
 function setValue(element: HTMLInputElement, value: any) {
+  console.log("setValue", element, value);
   element.value = value;
 }
 

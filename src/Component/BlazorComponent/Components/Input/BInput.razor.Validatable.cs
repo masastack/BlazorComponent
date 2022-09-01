@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Components.Forms;
 using System.Linq.Expressions;
 using Microsoft.JSInterop;
 
@@ -182,7 +183,31 @@ namespace BlazorComponent
         protected virtual void OnLazyValueChange(TValue val)
         {
         }
-        
+
+        protected bool ValueChangedInternal { get; set; }
+
+        protected virtual async Task HandleOnInputImmediately(ChangeEventArgs args)
+        {
+            if (BindConverter.TryConvertTo<TValue>(args.Value?.ToString(), CultureInfo.InvariantCulture, out var val))
+            {
+                if (ValueChanged.HasDelegate)
+                {
+                    ValueChangedInternal = true;
+                    await ValueChanged.InvokeAsync(val);
+                }
+            }
+
+
+            // todo: validate on blur
+
+            if (!ValidateOnBlur)
+            {
+                //We removed NextTick since it doesn't trigger render
+                //and validate may not be called
+                Validate();
+            }
+        }
+
         protected IJSObjectReference InputJsObjectReference { get; private set; }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -192,7 +217,12 @@ namespace BlazorComponent
             if (firstRender)
             {
                 InputJsObjectReference = await Js.InvokeAsync<IJSObjectReference>("import", "./_content/BlazorComponent/js/input.js");
-                await InputJsObjectReference.InvokeVoidAsync("registerInputEvents", InputElement, DotNetObjectReference.Create(new Invoker<ChangeEventArgs>(HandleOnInputAsync)), 250);
+                await InputJsObjectReference.InvokeVoidAsync(
+                    "registerInputEvents",
+                    InputElement,
+                    DotNetObjectReference.Create(new Invoker<ChangeEventArgs>(HandleOnInputImmediately)),
+                    DotNetObjectReference.Create(new Invoker<ChangeEventArgs>(HandleOnInputAsync)),
+                    250);
             }
         }
 
@@ -201,21 +231,44 @@ namespace BlazorComponent
             return Task.CompletedTask;
         }
 
+        protected virtual bool DisableSetValueByJsInterop => false;
+
+        protected virtual void OnValueChanged(TValue val)
+        {
+            LazyValue = val;
+
+            Console.WriteLine($"{DateTime.Now.ToLongTimeString()} Value changed: {val}");
+
+            if (!ValueChangedInternal)
+            {
+                if (!DisableSetValueByJsInterop)
+                {
+                    _ = NextTickWhile(async () =>
+                        {
+                            Console.WriteLine($"{DateTime.Now.ToLongTimeString()} setValue {val}");
+                            await InputJsObjectReference.InvokeVoidAsync("setValue", InputElement, val);
+                        },
+                        () => InputJsObjectReference is null);
+                }
+            }
+            else
+            {
+                ValueChangedInternal = false;
+            }
+
+            StateHasChanged();
+        }
+
         protected override void OnWatcherInitialized()
         {
             Watcher
-                .Watch<TValue>(nameof(Value), val =>
+                .Watch<TValue>(nameof(Value), (val) =>
                 {
-                    if (!EqualityComparer<TValue>.Default.Equals(val, LazyValue))
-                    {
-                        LazyValue = val;
-                        
-                        Console.WriteLine($"{DateTime.Now.ToLongTimeString()} Value changed: {val}");
-                        
-                        // setValue by js
+                    Console.WriteLine($"{DateTime.Now.ToLongTimeString()} watch value: {val}");
 
-                        _ = InputJsObjectReference.InvokeVoidAsync("setValue", InputElement, val);
-                    }
+                    if (EqualityComparer<TValue>.Default.Equals(val, LazyValue)) return;
+
+                    OnValueChanged(val);
                 })
                 .Watch<TValue>(nameof(LazyValue), OnLazyValueChange)
                 .Watch<TValue>(nameof(InternalValue), OnInternalValueChange)
@@ -238,10 +291,7 @@ namespace BlazorComponent
         {
             base.OnInitialized();
 
-            if (Form != null)
-            {
-                Form.Register(this);
-            }
+            Form?.Register(this);
         }
 
         protected override void OnParametersSet()
@@ -354,6 +404,12 @@ namespace BlazorComponent
             ErrorBucket.Clear();
 
             LazyValue = default;
+
+            if (InputJsObjectReference is not null)
+            {
+                await InputJsObjectReference.InvokeVoidAsync("setValue", InputElement, null);
+            }
+
             if (ValueChanged.HasDelegate)
             {
                 await ValueChanged.InvokeAsync(LazyValue);
