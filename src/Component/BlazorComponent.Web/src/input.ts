@@ -3,52 +3,29 @@ import { parseChangeEvent } from "./events/EventType";
 function registerInputEvents(
   element: Element,
   onInput: DotNet.DotNetObject,
-  onDebounceInput: DotNet.DotNetObject,
   debounce: number
 ) {
   if (!(element && element instanceof HTMLInputElement)) return;
 
   let compositionInputting = false;
-  let listener;
 
-  if (debounce > 0) {
-    let timeout;
-    listener = function (args: any) {
-      if (compositionInputting) return;
+  let timeout;
+  const listener = function (args: any) {
+    if (compositionInputting) return;
 
-      var changeEventArgs = parseChangeEvent(args);
+    var changeEventArgs = parseChangeEvent(args);
 
-      onInput && onInput.invokeMethodAsync("Invoke", changeEventArgs);
-
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        console.log(
-          "invoke debounce ~~~",
-          args.target.value,
-          args.target.validity,
-          changeEventArgs.value
-        );
-        onDebounceInput.invokeMethodAsync("Invoke", changeEventArgs);
-      }, debounce);
-    };
-  } else {
-    listener = function (args: any) {
-      if (compositionInputting) return;
-
-      var changeEventArgs = parseChangeEvent(args);
-
-      onInput && onInput.invokeMethodAsync("Invoke", changeEventArgs);
-
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
       console.log(
-        "invoke ~~~",
+        "invoke debounce ~~~",
         args.target.value,
         args.target.validity,
         changeEventArgs.value
       );
-
-      onDebounceInput.invokeMethodAsync("Invoke", changeEventArgs);
-    };
-  }
+      onInput.invokeMethodAsync("Invoke", changeEventArgs);
+    }, debounce);
+  };
 
   console.log("element", element);
 

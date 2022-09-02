@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
 using System.Text;
+using Microsoft.Extensions.Options;
 using Util.Reflection.Expressions;
 using FluentValidationResult = FluentValidation.Results.ValidationResult;
 using ValidationResult = System.ComponentModel.DataAnnotations.ValidationResult;
@@ -20,6 +22,46 @@ namespace BlazorComponent
         public static IDisposable EnableValidation(this EditContext editContext, IServiceProvider serviceProvider, bool enableI18n)
         {
             return new ValidationEventSubscriptions(editContext, serviceProvider, enableI18n);
+        }
+
+        private class ValidationMessageStorer
+        {
+            private ValidationMessageStore Store { get; set; }
+            public List<FieldIdentifier> Fields { get; } = new();
+
+            public ValidationMessageStorer(EditContext context)
+            {
+                Store = new ValidationMessageStore(context);
+            }
+
+            public void Add(in FieldIdentifier fieldIdentifier, IEnumerable<string> messages)
+            {
+                Fields.Add(fieldIdentifier);
+                Store.Add(fieldIdentifier, messages);
+            }
+
+            public void Add(in FieldIdentifier fieldIdentifier, string message)
+            {
+                Fields.Add(fieldIdentifier);
+                Store.Add(fieldIdentifier, message);
+            }
+
+            public void Clear(in FieldIdentifier fieldIdentifier)
+            {
+                Fields.Remove(fieldIdentifier);
+                Store.Clear(fieldIdentifier);
+            }
+
+            public void Clear()
+            {
+                Fields.Clear();
+                Store.Clear();
+            }
+
+            public bool Contains(FieldIdentifier fieldIdentifier)
+            {
+                return Fields.Contains(fieldIdentifier);
+            }
         }
 
         private sealed class ValidationEventSubscriptions : IDisposable
@@ -41,7 +83,8 @@ namespace BlazorComponent
                         if (referenceAssembly.FullName.StartsWith("Microsoft.") || referenceAssembly.FullName.StartsWith("System."))
                             continue;
 
-                        var types = referenceAssembly.GetTypes().Where(t => t.BaseType?.IsGenericType == true && t.BaseType.GetGenericTypeDefinition() == typeof(AbstractValidator<>)).ToArray();
+                        var types = referenceAssembly.GetTypes().Where(t =>
+                            t.BaseType?.IsGenericType == true && t.BaseType.GetGenericTypeDefinition() == typeof(AbstractValidator<>)).ToArray();
                         foreach (var type in types)
                         {
                             var modelType = type.BaseType.GenericTypeArguments[0];
@@ -56,7 +99,7 @@ namespace BlazorComponent
             }
 
             private readonly EditContext _editContext;
-            private readonly ValidationMessageStore _messageStore;
+            private readonly ValidationMessageStorer _messageStore;
             private readonly IServiceProvider _serviceProvider;
             private I18n.I18n? _i18n;
 
@@ -68,7 +111,7 @@ namespace BlazorComponent
             {
                 _serviceProvider = serviceProvider;
                 _editContext = editContext ?? throw new ArgumentNullException(nameof(editContext));
-                _messageStore = new ValidationMessageStore(_editContext);
+                _messageStore = new ValidationMessageStorer(_editContext);
 
                 _editContext.OnFieldChanged += OnFieldChanged;
                 _editContext.OnValidationRequested += OnValidationRequested;
@@ -103,7 +146,7 @@ namespace BlazorComponent
                 _editContext.NotifyValidationStateChanged();
             }
 
-            private void DataAnnotationsValidate(object model, ValidationMessageStore messageStore, FieldIdentifier field)
+            private void DataAnnotationsValidate(object model, ValidationMessageStorer messageStore, FieldIdentifier field)
             {
                 var validationResults = new List<ValidationResult>();
                 if (field.FieldName == "")
@@ -143,21 +186,40 @@ namespace BlazorComponent
                 }
                 else
                 {
-                    var validationContext = new ValidationContext(field.Model);
+                    var validationContext = new ValidationContext(model);
                     Validator.TryValidateObject(field.Model, validationContext, validationResults, true);
-                    messageStore.Clear(field);
-                    foreach (var validationResult in validationResults)
+
+                    var validationFields = validationResults.Select(r => r.MemberNames.First()).ToList();
+                    var prevFields = messageStore.Fields.Select(f => f.FieldName).ToList();
+
+                    Console.WriteLine($"validationFields:{string.Join(',', validationFields)}");
+                    Console.WriteLine($"prevFields:{string.Join(',', prevFields)}");
+
+                    validationFields.Except(prevFields).ForEach(f =>
                     {
-                        if (validationResult.MemberNames.Contains(field.FieldName))
-                        {
-                            AddValidationMessage(field, validationResult.ErrorMessage);
-                            return;
-                        }
-                    }
+                        var result = validationResults.First(r => r.MemberNames.Contains(f));
+
+                        messageStore.Add(_editContext.Field(f), result.ErrorMessage);
+                        Console.WriteLine($"add field:{f}");
+                    });
+
+                    prevFields.Except(validationFields).ForEach(f =>
+                    {
+                        messageStore.Clear(_editContext.Field(f));
+                        Console.WriteLine($"remove field:{f}");
+                    });
+
+                    // foreach (var validationResult in validationResults)
+                    // {
+                    //     var fieldName = validationResult.MemberNames.First();
+                    //     var fieldIdentifier = _editContext.Field(fieldName);
+                    //
+                    //     messageStore.Add(fieldIdentifier, validationResult.ErrorMessage);
+                    // }
                 }
             }
 
-            private void FluentValidate(object model, ValidationMessageStore messageStore, FieldIdentifier field)
+            private void FluentValidate(object model, ValidationMessageStorer messageStore, FieldIdentifier field)
             {
                 var validationResult = GetValidationResult(model);
                 if (field.FieldName == "")
@@ -219,6 +281,7 @@ namespace BlazorComponent
                     func = validationResult.BuildDefaultDelegate<Func<IServiceProvider, object, FluentValidationResult>>();
                     _validationResultMap[type] = func;
                 }
+
                 return func(_serviceProvider, model);
             }
 
@@ -251,9 +314,11 @@ namespace BlazorComponent
                             }
                         }
                     }
+
                     func = map.BuildDelegate<Func<object, Dictionary<string, object>>>();
                     _modelPropertiesMap[type] = func;
                 }
+
                 return func(model);
             }
 
@@ -263,6 +328,7 @@ namespace BlazorComponent
                 {
                     message = _i18n.T(message, true);
                 }
+
                 _messageStore.Add(fieldIdentifier, message);
             }
 

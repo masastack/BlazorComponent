@@ -8,7 +8,7 @@ namespace BlazorComponent
         private object _oldModel;
 
         [Inject]
-        public IServiceProvider ServiceProvider { get;set; }
+        public IServiceProvider ServiceProvider { get; set; }
 
         [Parameter]
         public RenderFragment<EditContext> ChildContent { get; set; }
@@ -110,22 +110,20 @@ namespace BlazorComponent
 
         public async Task<bool> ValidateAsync()
         {
-            //REVIEW: We should combine this
             var valid = true;
+
+            foreach (var validatable in Validatables)
+            {
+                var success = await validatable.ValidateAsync();
+                if (!success)
+                {
+                    valid = false;
+                }
+            }
+
             if (EditContext != null)
             {
                 valid = EditContext.Validate();
-            }
-            else
-            {
-                foreach (var validatable in Validatables)
-                {
-                    var success = await validatable.ValidateAsync();
-                    if (!success)
-                    {
-                        valid = false;
-                    }
-                }
             }
 
             if (ValueChanged.HasDelegate)

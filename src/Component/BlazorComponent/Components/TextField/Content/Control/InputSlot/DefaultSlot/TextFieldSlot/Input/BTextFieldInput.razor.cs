@@ -7,7 +7,7 @@ namespace BlazorComponent
     {
         public bool Autofocus => Component.Autofocus;
 
-        public bool Disabled => Component.IsDisabled;
+        public bool Disabled => Component .IsDisabled;
 
         public bool HasLabel => Component.HasLabel;
 

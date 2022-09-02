@@ -1216,6 +1216,8 @@ function registerPasteWithData(customEventName) {
 }
 
 export function registerTextFieldOnMouseDown(element, inputElement, callback) {
+  if (!element || !inputElement) return
+
   element.addEventListener('mousedown', (e: MouseEvent) => {
     const target = e.target;
     const inputDom = getDom(inputElement);

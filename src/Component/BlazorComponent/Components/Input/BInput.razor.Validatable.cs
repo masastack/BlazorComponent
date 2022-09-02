@@ -150,8 +150,6 @@ namespace BlazorComponent
 
         public virtual bool IsReadonly => Readonly || (Form != null && Form.Readonly);
 
-        protected bool FirstValidate { get; set; } = true;
-
         public virtual bool ShouldValidate
         {
             get
@@ -166,7 +164,7 @@ namespace BlazorComponent
                     return HasFocused && !IsFocused;
                 }
 
-                return HasInput || HasFocused || FirstValidate;
+                return HasInput || HasFocused;
             }
         }
 
@@ -178,7 +176,6 @@ namespace BlazorComponent
             // mark it with hasInput
             HasInput = true;
             
-            // todo: whether to need to do validate?
             if (!ValidateOnBlur)
             {
                 Validate();
@@ -192,11 +189,33 @@ namespace BlazorComponent
 
         protected virtual void OnLazyValueChange(TValue val)
         {
+            // OnInternalValueChange(val);
+            
+            HasInput = true;
         }
 
         protected bool ValueChangedInternal { get; set; }
 
-        protected virtual async Task HandleOnInputImmediately(ChangeEventArgs args)
+        protected IJSObjectReference InputJsObjectReference { get; private set; }
+
+        protected virtual int InternalDebounceInterval => 0;
+        
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            await base.OnAfterRenderAsync(firstRender);
+
+            if (firstRender)
+            {
+                InputJsObjectReference = await Js.InvokeAsync<IJSObjectReference>("import", "./_content/BlazorComponent/js/input.js");
+                await InputJsObjectReference.InvokeVoidAsync(
+                    "registerInputEvents",
+                    InputElement,
+                    DotNetObjectReference.Create(new Invoker<ChangeEventArgs>(HandleOnInputAsync)),
+                    InternalDebounceInterval);
+            }
+        }
+
+        public virtual async Task HandleOnInputAsync(ChangeEventArgs args)
         {
             if (BindConverter.TryConvertTo<TValue>(args.Value?.ToString(), CultureInfo.InvariantCulture, out var val))
             {
@@ -215,30 +234,13 @@ namespace BlazorComponent
             }
         }
 
-        protected IJSObjectReference InputJsObjectReference { get; private set; }
-
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            await base.OnAfterRenderAsync(firstRender);
-
-            if (firstRender)
-            {
-                InputJsObjectReference = await Js.InvokeAsync<IJSObjectReference>("import", "./_content/BlazorComponent/js/input.js");
-                await InputJsObjectReference.InvokeVoidAsync(
-                    "registerInputEvents",
-                    InputElement,
-                    DotNetObjectReference.Create(new Invoker<ChangeEventArgs>(HandleOnInputImmediately)),
-                    DotNetObjectReference.Create(new Invoker<ChangeEventArgs>(HandleOnInputAsync)),
-                    250);
-            }
-        }
-
-        public virtual Task HandleOnInputAsync(ChangeEventArgs args)
-        {
-            return Task.CompletedTask;
-        }
-
         protected virtual bool DisableSetValueByJsInterop => false;
+
+        protected virtual async Task SetValueByJsInterop(TValue val)
+        {
+            if ( InputJsObjectReference is null) return;
+            await InputJsObjectReference.InvokeVoidAsync("setValue", InputElement, val);
+        }
 
         protected virtual void OnValueChanged(TValue val)
         {
@@ -248,6 +250,11 @@ namespace BlazorComponent
 
             if (!ValueChangedInternal)
             {
+                if (!ValidateOnBlur)
+                {
+                    Validate();
+                }
+                
                 if (!DisableSetValueByJsInterop)
                 {
                     _ = NextTickWhile(async () =>
@@ -313,11 +320,6 @@ namespace BlazorComponent
 
         protected virtual void Validate()
         {
-            if (FirstValidate)
-            {
-                FirstValidate = false;
-            }
-
             if (EditContext != null && !EqualityComparer<FieldIdentifier>.Default.Equals(ValueIdentifier, default))
             {
                 EditContext.NotifyFieldChanged(ValueIdentifier);
@@ -402,9 +404,9 @@ namespace BlazorComponent
 
         public Task<bool> ValidateAsync()
         {
-            return ValidateAsync(false);
+            return ValidateAsync(true);
         }
-
+        
         public async Task ResetAsync()
         {
             //We will change this and InternalValue
@@ -412,10 +414,7 @@ namespace BlazorComponent
 
             LazyValue = default;
 
-            if (InputJsObjectReference is not null)
-            {
-                await InputJsObjectReference.InvokeVoidAsync("setValue", InputElement, null);
-            }
+            await SetValueByJsInterop(default);
 
             if (ValueChanged.HasDelegate)
             {
