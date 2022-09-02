@@ -58,13 +58,11 @@ public class ExpandTransition : Transition
 
     public override Task Enter(TransitionElementBase element)
     {
-        Console.WriteLine($"{element.Reference.Id} enter");
         return UpdateSize(element.Reference);
     }
 
     public override Task Leave(TransitionElementBase element)
     {
-        Console.WriteLine($"{element.Reference.Id} leave");
         return UpdateSize(element.Reference);
     }
 
