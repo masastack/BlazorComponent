@@ -175,7 +175,7 @@ namespace BlazorComponent
             // If it's the first time we're setting input,
             // mark it with hasInput
             HasInput = true;
-            
+
             if (!ValidateOnBlur)
             {
                 Validate();
@@ -190,7 +190,7 @@ namespace BlazorComponent
         protected virtual void OnLazyValueChange(TValue val)
         {
             // OnInternalValueChange(val);
-            
+
             HasInput = true;
         }
 
@@ -199,7 +199,7 @@ namespace BlazorComponent
         protected IJSObjectReference InputJsObjectReference { get; private set; }
 
         protected virtual int InternalDebounceInterval => 0;
-        
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
@@ -238,7 +238,7 @@ namespace BlazorComponent
 
         protected virtual async Task SetValueByJsInterop(TValue val)
         {
-            if ( InputJsObjectReference is null) return;
+            if (InputJsObjectReference is null) return;
             await InputJsObjectReference.InvokeVoidAsync("setValue", InputElement, val);
         }
 
@@ -254,7 +254,7 @@ namespace BlazorComponent
                 {
                     Validate();
                 }
-                
+
                 if (!DisableSetValueByJsInterop)
                 {
                     _ = NextTickWhile(async () =>
@@ -406,7 +406,7 @@ namespace BlazorComponent
         {
             return ValidateAsync(true);
         }
-        
+
         public async Task ResetAsync()
         {
             //We will change this and InternalValue
@@ -430,6 +430,8 @@ namespace BlazorComponent
 
         protected virtual void HandleOnValidationStateChanged(object sender, ValidationStateChangedEventArgs e)
         {
+            if (EditContext.IsModified() && !EditContext.IsModified(ValueIdentifier)) return;
+
             var errors = EditContext.GetValidationMessages(ValueIdentifier);
             if (!errors.Any())
             {
@@ -462,13 +464,6 @@ namespace BlazorComponent
 
             InternalValue = internalValue;
             HasInput = true;
-
-            if (!ValidateOnBlur)
-            {
-                //We removed NextTick since it doesn't trigger render
-                //and validate may not be called
-                Validate();
-            }
         }
 
         protected override void Dispose(bool disposing)
