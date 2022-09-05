@@ -5,43 +5,49 @@ function registerInputEvents(
   onInput: DotNet.DotNetObject,
   debounce: number
 ) {
-  if (!(element && element instanceof HTMLInputElement)) return;
+  if (
+    !(
+      element &&
+      (element instanceof HTMLInputElement ||
+        element instanceof HTMLTextAreaElement)
+    )
+  )
+    return;
 
   let compositionInputting = false;
 
   let timeout;
-  const listener = function (args: any) {
+  let startValue: string;
+
+  element.addEventListener("compositionstart", (_) => {
+    compositionInputting = true;
+
+    startValue = element.value;
+  });
+
+  element.addEventListener("compositionend", (event: CompositionEvent) => {
+    compositionInputting = false;
+
+    const changeEventArgs = parseChangeEvent(event);
+    changeEventArgs.value = startValue + event.data;
+    startValue = null;
+
+    onInput.invokeMethodAsync("Invoke", changeEventArgs);
+  });
+
+  element.addEventListener("input", (event: InputEvent) => {
     if (compositionInputting) return;
 
-    var changeEventArgs = parseChangeEvent(args);
+    var changeEventArgs = parseChangeEvent(event);
 
     clearTimeout(timeout);
     timeout = setTimeout(() => {
-      console.log(
-        "invoke debounce ~~~",
-        args.target.value,
-        args.target.validity,
-        changeEventArgs.value
-      );
       onInput.invokeMethodAsync("Invoke", changeEventArgs);
     }, debounce);
-  };
-
-  console.log("element", element);
-
-  element.addEventListener(
-    "compositionstart",
-    (_) => (compositionInputting = true)
-  );
-  element.addEventListener(
-    "compositionend",
-    (_) => (compositionInputting = false)
-  );
-  element.addEventListener("input", listener);
+  });
 }
 
 function setValue(element: HTMLInputElement, value: any) {
-  console.log("setValue", element, value);
   element.value = value;
 }
 

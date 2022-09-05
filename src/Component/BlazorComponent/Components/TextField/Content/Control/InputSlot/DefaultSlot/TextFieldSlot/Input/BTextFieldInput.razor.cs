@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+﻿using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
@@ -24,8 +23,6 @@ namespace BlazorComponent
         public EventCallback<ChangeEventArgs> HandleOnChange => EventCallback.Factory.Create<ChangeEventArgs>(Component, Component.HandleOnChangeAsync);
 
         public EventCallback<FocusEventArgs> HandleOnBlur => EventCallback.Factory.Create<FocusEventArgs>(Component, Component.HandleOnBlurAsync);
-
-        public EventCallback<ChangeEventArgs> HandleOnInput => EventCallback.Factory.Create<ChangeEventArgs>(Component, Component.HandleOnInputAsync);
 
         public EventCallback<FocusEventArgs> HandleOnFocus => EventCallback.Factory.Create<FocusEventArgs>(Component, Component.HandleOnFocusAsync);
 
