@@ -183,14 +183,12 @@ namespace BlazorComponent
 
             if (ValueChanged.HasDelegate)
             {
-                ValueChanged.InvokeAsync(val);
+                _ = ValueChanged.InvokeAsync(val);
             }
         }
 
         protected virtual void OnLazyValueChange(TValue val)
         {
-            // OnInternalValueChange(val);
-
             HasInput = true;
         }
 
@@ -450,6 +448,7 @@ namespace BlazorComponent
             InvokeStateHasChanged();
         }
 
+        // TODO: can i delete this method?
         protected virtual async Task SetInternalValueAsync(TValue internalValue)
         {
             if (EqualityComparer<TValue>.Default.Equals(internalValue, InternalValue))
