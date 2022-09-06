@@ -59,9 +59,12 @@ namespace BlazorComponent
         [Parameter]
         public IEnumerable<Func<TValue, StringBoolean>> Rules
         {
-            get { return GetValue<IEnumerable<Func<TValue, StringBoolean>>>(); }
-            set { SetValue(value); }
+            get => GetValue<IEnumerable<Func<TValue, StringBoolean>>>();
+            set => SetValue(value);
         }
+
+        private bool _resetStatus;
+        private bool _forceStatus;
 
         protected EditContext OldEditContext { get; set; }
 
@@ -81,10 +84,7 @@ namespace BlazorComponent
 
         protected TValue InternalValue
         {
-            get
-            {
-                return GetValue<TValue>(LazyValue);
-            }
+            get { return GetValue<TValue>(LazyValue); }
             set
             {
                 LazyValue = value;
@@ -194,7 +194,7 @@ namespace BlazorComponent
             {
                 _ = ValueChanged.InvokeAsync(val);
             }
-            
+
             // InvokeStateHasChanged();
         }
 
@@ -281,6 +281,7 @@ namespace BlazorComponent
             {
                 ValueChangedInternal = false;
             }
+
             //
             StateHasChanged();
         }
@@ -316,13 +317,11 @@ namespace BlazorComponent
             return Task.CompletedTask;
         }
 
-        private bool _isResetting;
-
         protected virtual void Validate()
         {
-            if (_isResetting)
+            if (_resetStatus)
             {
-                _isResetting = false;
+                _resetStatus = false;
                 return;
             }
 
@@ -378,6 +377,8 @@ namespace BlazorComponent
 
         public Task<bool> ValidateAsync(bool force = false, TValue? val = default)
         {
+            _forceStatus = force;
+
             //No rules should be valid. 
             var valid = true;
 
@@ -410,6 +411,7 @@ namespace BlazorComponent
 
         public Task<bool> ValidateAsync()
         {
+            _resetStatus = false;
             return ValidateAsync(true);
         }
 
@@ -421,7 +423,7 @@ namespace BlazorComponent
             HasInput = false;
             HasFocused = false;
 
-            _isResetting = true;
+            _resetStatus = true;
 
             EditContext.MarkAsUnmodified(ValueIdentifier);
 
@@ -437,9 +439,17 @@ namespace BlazorComponent
 
         protected virtual void HandleOnValidationStateChanged(object sender, ValidationStateChangedEventArgs e)
         {
-            if (EditContext.IsModified() && !EditContext.IsModified(ValueIdentifier)) return;
+            // The following conditions require an error message to be displayed:
+            // TODO: need check.
+            // 1. Force validation, because it validates all input elements
+            // 2. The input pointed to by ValueIdentifier has been modified
+            if (!_forceStatus && EditContext.IsModified() && !EditContext.IsModified(ValueIdentifier))
+                return;
 
-            var errors = EditContext.GetValidationMessages(ValueIdentifier);
+            _forceStatus = false;
+
+            var errors = EditContext.GetValidationMessages(ValueIdentifier).ToList();
+
             if (!errors.Any())
             {
                 if (ErrorBucket.Count == 0)

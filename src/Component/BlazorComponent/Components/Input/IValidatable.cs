@@ -7,5 +7,7 @@
         Task ResetAsync();
 
         Task ResetValidationAsync();
+        
+        bool HasError { get; }
     }
 }

@@ -50,16 +50,18 @@ namespace BlazorComponent
 
         protected override void OnParametersSet()
         {
+            base.OnParametersSet();
+
             if (_oldModel != Model)
             {
                 //EditContext changed,re-subscribe OnValidationStateChanged event
                 if (EditContext != null)
                 {
-                    EditContext.OnValidationStateChanged -= OnValidationStateChanged;
+                    // EditContext.OnValidationStateChanged -= OnValidationStateChanged;
                 }
 
                 EditContext = new EditContext(Model);
-                EditContext.OnValidationStateChanged += OnValidationStateChanged;
+                // EditContext.OnValidationStateChanged += OnValidationStateChanged;
 
                 if (EnableValidation)
                 {
@@ -70,12 +72,39 @@ namespace BlazorComponent
             }
         }
 
-        private void OnValidationStateChanged(object sender, ValidationStateChangedEventArgs e)
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            var valid = !EditContext.GetValidationMessages().Any();
-            if (valid != Value && ValueChanged.HasDelegate)
+            await base.OnAfterRenderAsync(firstRender);
+            
+            var hasError = Validatables.Any(v => v.HasError);
+            if (Value != !hasError)
             {
-                _ = ValueChanged.InvokeAsync(valid);
+                if (ValueChanged.HasDelegate)
+                {
+                    await ValueChanged.InvokeAsync(!hasError);
+                    
+                    Console.WriteLine("Form new");
+                }
+            }
+        }
+
+        // private void OnValidationStateChanged(object sender, ValidationStateChangedEventArgs e)
+        // {
+        //     var hasError = EditContext.GetValidationMessages().Any();
+        //     var valid = !hasError;
+        //     if (valid != Value && ValueChanged.HasDelegate)
+        //     {
+        //         _ = ValueChanged.InvokeAsync(valid);
+        //     }
+        // }
+        
+        
+
+        internal async Task UpdateValue(bool value)
+        {
+            if (ValueChanged.HasDelegate)
+            {
+                await ValueChanged.InvokeAsync(value);
             }
         }
 
@@ -172,7 +201,7 @@ namespace BlazorComponent
         {
             if (EditContext != null)
             {
-                EditContext.OnValidationStateChanged -= OnValidationStateChanged;
+                // EditContext.OnValidationStateChanged -= OnValidationStateChanged;
             }
 
             base.Dispose(disposing);
