@@ -81,7 +81,7 @@ namespace BlazorComponent
 
         protected TValue InternalValue
         {
-            get => LazyValue;
+            get => GetValue(LazyValue);
             set
             {
                 LazyValue = value;
@@ -198,6 +198,15 @@ namespace BlazorComponent
 
         protected virtual int InternalDebounceInterval => 0;
 
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+
+            Form?.Register(this);
+
+            LazyValue = Value;
+        }
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
@@ -244,8 +253,6 @@ namespace BlazorComponent
         {
             LazyValue = val;
 
-            Console.WriteLine($"{DateTime.Now.ToLongTimeString()} Value changed: {val}");
-
             if (!ValueChangedInternal)
             {
                 if (!ValidateOnBlur)
@@ -257,7 +264,6 @@ namespace BlazorComponent
                 {
                     _ = NextTickWhile(async () =>
                         {
-                            Console.WriteLine($"{DateTime.Now.ToLongTimeString()} setValue {val}");
                             await InputJsObjectReference.InvokeVoidAsync("setValue", InputElement, val);
                         },
                         () => InputJsObjectReference is null);
@@ -274,14 +280,7 @@ namespace BlazorComponent
         protected override void OnWatcherInitialized()
         {
             Watcher
-                .Watch<TValue>(nameof(Value), (val) =>
-                {
-                    Console.WriteLine($"{DateTime.Now.ToLongTimeString()} watch value: {val}");
-
-                    if (EqualityComparer<TValue>.Default.Equals(val, LazyValue)) return;
-
-                    OnValueChanged(val);
-                })
+                .Watch<TValue>(nameof(Value), OnValueChanged)
                 .Watch<TValue>(nameof(LazyValue), OnLazyValueChange)
                 .Watch<TValue>(nameof(InternalValue), OnInternalValueChange)
                 .Watch<bool>(nameof(IsFocused), async val =>
@@ -297,13 +296,6 @@ namespace BlazorComponent
 
                     await OnIsFocusedChange(val);
                 });
-        }
-
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
-
-            Form?.Register(this);
         }
 
         protected override void OnParametersSet()
@@ -446,23 +438,6 @@ namespace BlazorComponent
             }
 
             InvokeStateHasChanged();
-        }
-
-        // TODO: can i delete this method?
-        protected virtual async Task SetInternalValueAsync(TValue internalValue)
-        {
-            if (EqualityComparer<TValue>.Default.Equals(internalValue, InternalValue))
-            {
-                return;
-            }
-
-            if (!EqualityComparer<TValue>.Default.Equals(internalValue, Value) && ValueChanged.HasDelegate)
-            {
-                await ValueChanged.InvokeAsync(internalValue);
-            }
-
-            InternalValue = internalValue;
-            HasInput = true;
         }
 
         protected override void Dispose(bool disposing)
