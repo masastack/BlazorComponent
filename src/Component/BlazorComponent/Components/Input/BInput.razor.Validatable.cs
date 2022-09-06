@@ -81,7 +81,10 @@ namespace BlazorComponent
 
         protected TValue InternalValue
         {
-            get => GetValue(LazyValue);
+            get
+            {
+                return GetValue<TValue>(LazyValue);
+            }
             set
             {
                 LazyValue = value;
@@ -176,15 +179,23 @@ namespace BlazorComponent
             // mark it with hasInput
             HasInput = true;
 
+            // if (!ValidateOnBlur)
+            // {
+            //     Validate();
+            // }
+
+            // NextTickIf(Validate, () => !ValidateOnBlur);
             if (!ValidateOnBlur)
             {
-                Validate();
+                NextTick(() => Validate());
             }
 
             if (ValueChanged.HasDelegate)
             {
                 _ = ValueChanged.InvokeAsync(val);
             }
+            
+            // InvokeStateHasChanged();
         }
 
         protected virtual void OnLazyValueChange(TValue val)
@@ -255,17 +266,14 @@ namespace BlazorComponent
 
             if (!ValueChangedInternal)
             {
-                if (!ValidateOnBlur)
-                {
-                    Validate();
-                }
+                // if (!ValidateOnBlur)
+                // {
+                //     Validate();
+                // }
 
                 if (!DisableSetValueByJsInterop)
                 {
-                    _ = NextTickWhile(async () =>
-                        {
-                            await InputJsObjectReference.InvokeVoidAsync("setValue", InputElement, val);
-                        },
+                    _ = NextTickWhile(async () => { await InputJsObjectReference.InvokeVoidAsync("setValue", InputElement, val); },
                         () => InputJsObjectReference is null);
                 }
             }
@@ -273,7 +281,7 @@ namespace BlazorComponent
             {
                 ValueChangedInternal = false;
             }
-
+            //
             StateHasChanged();
         }
 
@@ -308,8 +316,16 @@ namespace BlazorComponent
             return Task.CompletedTask;
         }
 
+        private bool _isResetting;
+
         protected virtual void Validate()
         {
+            if (_isResetting)
+            {
+                _isResetting = false;
+                return;
+            }
+
             if (EditContext != null && !EqualityComparer<FieldIdentifier>.Default.Equals(ValueIdentifier, default))
             {
                 EditContext.NotifyFieldChanged(ValueIdentifier);
@@ -402,14 +418,15 @@ namespace BlazorComponent
             //We will change this and InternalValue
             ErrorBucket.Clear();
 
-            LazyValue = default;
+            HasInput = false;
+            HasFocused = false;
 
-            await SetValueByJsInterop(default);
+            _isResetting = true;
 
-            if (ValueChanged.HasDelegate)
-            {
-                await ValueChanged.InvokeAsync(LazyValue);
-            }
+            EditContext.MarkAsUnmodified(ValueIdentifier);
+
+            // TODO: IList<TValue> ?
+            InternalValue = default;
         }
 
         public Task ResetValidationAsync()

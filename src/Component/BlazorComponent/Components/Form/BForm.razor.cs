@@ -72,10 +72,10 @@ namespace BlazorComponent
 
         private void OnValidationStateChanged(object sender, ValidationStateChangedEventArgs e)
         {
-            var value = !EditContext.GetValidationMessages().Any();
-            if (value != Value && ValueChanged.HasDelegate)
+            var valid = !EditContext.GetValidationMessages().Any();
+            if (valid != Value && ValueChanged.HasDelegate)
             {
-                _ = ValueChanged.InvokeAsync(value);
+                _ = ValueChanged.InvokeAsync(valid);
             }
         }
 
@@ -137,10 +137,7 @@ namespace BlazorComponent
 
         public async Task ResetAsync()
         {
-            if (EditContext != null)
-            {
-                EditContext.MarkAsUnmodified();
-            }
+            EditContext?.MarkAsUnmodified();
 
             foreach (var validatable in Validatables)
             {
