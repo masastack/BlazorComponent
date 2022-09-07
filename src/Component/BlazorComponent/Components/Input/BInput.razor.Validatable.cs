@@ -60,7 +60,7 @@ namespace BlazorComponent
         public IEnumerable<Func<TValue, StringBoolean>> Rules
         {
             get => GetValue<IEnumerable<Func<TValue, StringBoolean>>>();
-            set => SetValue(value);
+            set => SetValue<IEnumerable<Func<TValue, StringBoolean>>, TValue>(value, nameof(Value));
         }
 
         private bool _resetStatus;
@@ -78,13 +78,17 @@ namespace BlazorComponent
 
         protected virtual TValue LazyValue
         {
-            get => GetValue<TValue>();
+            get => GetValue<TValue>(Value);
             set => SetValue(value);
         }
 
         protected TValue InternalValue
         {
-            get { return GetValue<TValue>(LazyValue); }
+            get
+            {
+                GetValue<TValue>(LazyValue);
+                return LazyValue;
+            }
             set
             {
                 LazyValue = value;
@@ -203,8 +207,6 @@ namespace BlazorComponent
             base.OnInitialized();
 
             Form?.Register(this);
-
-            LazyValue = Value;
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -243,7 +245,7 @@ namespace BlazorComponent
 
         protected virtual bool DisableSetValueByJsInterop => false;
 
-        protected virtual async Task SetValueByJsInterop(TValue val)
+        protected virtual async Task SetValueByJsInterop(string val)
         {
             if (InputJsObjectReference is null) return;
             await InputJsObjectReference.InvokeVoidAsync("setValue", InputElement, val);
@@ -251,6 +253,13 @@ namespace BlazorComponent
 
         protected virtual void OnValueChanged(TValue val)
         {
+            // OnInternalValueChange has to invoke manually because
+            // LazyValue is the getter of InternalValue, LazyValue changes cannot notify the watcher of InternalValue
+            if (!EqualityComparer<TValue>.Default.Equals(val, InternalValue))
+            {
+                OnInternalValueChange(val);
+            }
+
             LazyValue = val;
 
             if (!ValueChangedInternal)

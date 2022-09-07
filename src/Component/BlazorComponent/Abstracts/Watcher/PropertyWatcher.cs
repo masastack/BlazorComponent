@@ -95,6 +95,28 @@ namespace BlazorComponent
             property.Value = value;
         }
 
+        /// <summary>
+        /// setting value can only be executed after a given property has been set first.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="name"></param>
+        /// <param name="propertySetFirst"></param>
+        /// <typeparam name="TValue"></typeparam>
+        /// <typeparam name="TFirstValue"></typeparam>
+        public void SetValue<TValue, TFirstValue>(TValue value, string name, string propertySetFirst)
+        {
+            var property = GetProperty<TFirstValue>(default, propertySetFirst);
+            if (property.HasValue)
+            {
+                Unwatch(propertySetFirst);
+                SetValue(value, name);
+            }
+            else
+            {
+                Watch(propertySetFirst, () => { SetValue(value, name); });
+            }
+        }
+
         public PropertyWatcher Watch<TValue>(string name, Action changeCallback)
         {
             return Watch<TValue>(name, (newValue, oldValue) => changeCallback?.Invoke());
@@ -111,6 +133,11 @@ namespace BlazorComponent
             property.OnValueChange += changeCallback;
 
             return this;
+        }
+
+        private void Unwatch(string name)
+        {
+            _props.TryRemove(name, out _);
         }
 
         private void Watch(string name, Action changeCallback)
