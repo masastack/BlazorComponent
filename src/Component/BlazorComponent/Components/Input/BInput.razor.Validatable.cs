@@ -179,23 +179,12 @@ namespace BlazorComponent
             // mark it with hasInput
             HasInput = true;
 
-            // if (!ValidateOnBlur)
-            // {
-            //     Validate();
-            // }
-
-            // NextTickIf(Validate, () => !ValidateOnBlur);
-            if (!ValidateOnBlur)
-            {
-                NextTick(() => Validate());
-            }
+            NextTickIf(Validate, () => !ValidateOnBlur);
 
             if (ValueChanged.HasDelegate)
             {
                 _ = ValueChanged.InvokeAsync(val);
             }
-
-            // InvokeStateHasChanged();
         }
 
         protected virtual void OnLazyValueChange(TValue val)
@@ -266,11 +255,6 @@ namespace BlazorComponent
 
             if (!ValueChangedInternal)
             {
-                // if (!ValidateOnBlur)
-                // {
-                //     Validate();
-                // }
-
                 if (!DisableSetValueByJsInterop)
                 {
                     _ = NextTickWhile(async () => { await InputJsObjectReference.InvokeVoidAsync("setValue", InputElement, val); },

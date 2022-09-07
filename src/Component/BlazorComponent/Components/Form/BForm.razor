@@ -6,9 +6,8 @@
         <form class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" @onsubmit="HandleOnSubmitAsync">
             @if (ChildContent != null)
             {
-                @ChildContent(EditContext)
+                @ChildContent(new FormContext(EditContext, ValidateAsync))
             }
         </form>
     </CascadingValue>
 </CascadingValue>
-

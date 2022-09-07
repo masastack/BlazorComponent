@@ -1,18 +1,14 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Components.Forms;
 
 namespace BlazorComponent
 {
     public partial class BForm : BDomComponentBase
     {
-        private object _oldModel;
-
         [Inject]
         public IServiceProvider ServiceProvider { get; set; }
 
         [Parameter]
-        public RenderFragment<EditContext> ChildContent { get; set; }
+        public RenderFragment<FormContext> ChildContent { get; set; }
 
         [Parameter]
         public EventCallback<EventArgs> OnSubmit { get; set; }
@@ -44,9 +40,11 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback OnInvalidSubmit { get; set; }
 
+        private object _oldModel;
+
         public EditContext EditContext { get; protected set; }
 
-        protected List<IValidatable> Validatables { get; } = new List<IValidatable>();
+        protected List<IValidatable> Validatables { get; } = new();
 
         protected override void OnParametersSet()
         {
@@ -54,14 +52,7 @@ namespace BlazorComponent
 
             if (_oldModel != Model)
             {
-                //EditContext changed,re-subscribe OnValidationStateChanged event
-                if (EditContext != null)
-                {
-                    // EditContext.OnValidationStateChanged -= OnValidationStateChanged;
-                }
-
                 EditContext = new EditContext(Model);
-                // EditContext.OnValidationStateChanged += OnValidationStateChanged;
 
                 if (EnableValidation)
                 {
@@ -75,36 +66,11 @@ namespace BlazorComponent
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
-            
+
             var hasError = Validatables.Any(v => v.HasError);
-            if (Value != !hasError)
+            if (Value != !hasError && ValueChanged.HasDelegate)
             {
-                if (ValueChanged.HasDelegate)
-                {
-                    await ValueChanged.InvokeAsync(!hasError);
-                    
-                    Console.WriteLine("Form new");
-                }
-            }
-        }
-
-        // private void OnValidationStateChanged(object sender, ValidationStateChangedEventArgs e)
-        // {
-        //     var hasError = EditContext.GetValidationMessages().Any();
-        //     var valid = !hasError;
-        //     if (valid != Value && ValueChanged.HasDelegate)
-        //     {
-        //         _ = ValueChanged.InvokeAsync(valid);
-        //     }
-        // }
-        
-        
-
-        internal async Task UpdateValue(bool value)
-        {
-            if (ValueChanged.HasDelegate)
-            {
-                await ValueChanged.InvokeAsync(value);
+                await ValueChanged.InvokeAsync(!hasError);
             }
         }
 
@@ -181,10 +147,7 @@ namespace BlazorComponent
 
         public async Task ResetValidationAsync()
         {
-            if (EditContext != null)
-            {
-                EditContext.MarkAsUnmodified();
-            }
+            EditContext?.MarkAsUnmodified();
 
             foreach (var validatable in Validatables)
             {
@@ -195,16 +158,6 @@ namespace BlazorComponent
             {
                 await ValueChanged.InvokeAsync(true);
             }
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (EditContext != null)
-            {
-                // EditContext.OnValidationStateChanged -= OnValidationStateChanged;
-            }
-
-            base.Dispose(disposing);
         }
     }
 }
