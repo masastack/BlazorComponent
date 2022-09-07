@@ -27,7 +27,7 @@
         public static ComponentAbstractProvider ApplyTextFieldPrependIcon(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>> propertiesAction = null)
         {
             return abstractProvider
-                .Apply(typeof(BIcon), type, "prepend-icon", propertiesAction);
+                .Merge(typeof(BIcon), type, "prepend-icon", propertiesAction);
         }
 
         public static ComponentAbstractProvider ApplyTextFieldLabel(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>> propertiesAction = null)
@@ -44,9 +44,8 @@
 
         public static ComponentAbstractProvider ApplyTextFieldAppendIcon(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>> propertiesAction = null)
         {
-            // XXX: 有缺陷，无法覆盖和合并Input对应元素
             return abstractProvider
-                .Apply(typeof(BIcon), type, "append-icon", propertiesAction);
+                   .Merge(typeof(BIcon), type, "append-icon", propertiesAction);
         }
 
         public static ComponentAbstractProvider ApplyTextFieldCounter(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>> propertiesAction = null)
