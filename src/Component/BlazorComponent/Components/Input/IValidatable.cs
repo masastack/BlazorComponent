@@ -4,9 +4,9 @@
     {
         Task<bool> ValidateAsync();
 
-        Task ResetAsync();
+        void Reset();
 
-        Task ResetValidationAsync();
+        void ResetValidation();
         
         bool HasError { get; }
     }

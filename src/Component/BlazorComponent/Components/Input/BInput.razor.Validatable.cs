@@ -405,9 +405,8 @@ namespace BlazorComponent
             return ValidateAsync(true);
         }
 
-        public async Task ResetAsync()
+        public void Reset()
         {
-            //We will change this and InternalValue
             ErrorBucket.Clear();
 
             HasInput = false;
@@ -421,16 +420,14 @@ namespace BlazorComponent
             InternalValue = default;
         }
 
-        public Task ResetValidationAsync()
+        public void ResetValidation()
         {
             ErrorBucket.Clear();
-            return Task.CompletedTask;
         }
 
         protected virtual void HandleOnValidationStateChanged(object sender, ValidationStateChangedEventArgs e)
         {
             // The following conditions require an error message to be displayed:
-            // TODO: need check.
             // 1. Force validation, because it validates all input elements
             // 2. The input pointed to by ValueIdentifier has been modified
             if (!_forceStatus && EditContext.IsModified() && !EditContext.IsModified(ValueIdentifier))

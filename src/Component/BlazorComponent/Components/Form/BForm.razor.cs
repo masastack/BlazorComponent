@@ -136,7 +136,7 @@ namespace BlazorComponent
 
             foreach (var validatable in Validatables)
             {
-                await validatable.ResetAsync();
+                validatable.Reset();
             }
 
             if (ValueChanged.HasDelegate)
@@ -151,7 +151,7 @@ namespace BlazorComponent
 
             foreach (var validatable in Validatables)
             {
-                await validatable.ResetValidationAsync();
+                validatable.ResetValidation();
             }
 
             if (ValueChanged.HasDelegate)
