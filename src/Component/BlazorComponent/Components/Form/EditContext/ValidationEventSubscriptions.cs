@@ -50,7 +50,6 @@ internal sealed class ValidationEventSubscriptions : IDisposable
     private readonly IServiceProvider _serviceProvider;
     private I18n.I18n? _i18n;
 
-
     [MemberNotNullWhen(true, nameof(_i18n))]
     private bool EnableI18n { get; set; }
 
