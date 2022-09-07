@@ -54,6 +54,8 @@ namespace BlazorComponent
 
         protected override void OnInitialized()
         {
+            base.OnInitialized();
+
             _linker = new Linker(this);
 
             Breadcrumbs?.AddSubBreadcrumbsItem(this);

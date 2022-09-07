@@ -66,7 +66,6 @@ namespace BlazorComponent
             {
                 times++;
                 await Task.Delay(16);
-                // NextTick(StateHasChanged);
             }
 
             await callback.Invoke();
@@ -78,7 +77,7 @@ namespace BlazorComponent
             {
                 NextTick(callback);
             }
-            else 
+            else
             {
                 callback.Invoke();
             }

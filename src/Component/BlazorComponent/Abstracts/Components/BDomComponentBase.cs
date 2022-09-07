@@ -128,9 +128,9 @@ namespace BlazorComponent
             Watcher.SetValue(value, name);
         }
 
-        protected void SetValue<TValue,TD>(TValue value, string propertySetFirst, [CallerMemberName] string name = null)
+        protected void SetValue<TValue, TFirstValue>(TValue value, string propertySetFirst, [CallerMemberName] string name = null)
         {
-            Watcher.SetValue<TValue, TD>(value, name, propertySetFirst);
+            Watcher.SetValue<TValue, TFirstValue>(value, name, propertySetFirst);
         }
 
         protected RenderFragment Render(Type type, Action<AttributesBuilder> parametersBuilderAction = null, object key = null, object data = null, Action<object> referenceCapture = null)

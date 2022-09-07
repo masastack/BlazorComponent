@@ -5,7 +5,7 @@ using Microsoft.JSInterop;
 
 namespace BlazorComponent
 {
-    public partial class BInput<TValue> : IValidatable
+    public partial class BInput<TValue> : IValidatable, IAsyncDisposable
     {
         [Parameter]
         public bool Disabled { get; set; }
@@ -274,9 +274,6 @@ namespace BlazorComponent
             {
                 ValueChangedInternal = false;
             }
-
-            //
-            StateHasChanged();
         }
 
         protected override void OnWatcherInitialized()
@@ -468,6 +465,21 @@ namespace BlazorComponent
             }
 
             base.Dispose(disposing);
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            try
+            {
+                if (InputJsObjectReference != null)
+                {
+                    await InputJsObjectReference.DisposeAsync();
+                }
+            }
+            catch
+            {
+                // ignored
+            }
         }
     }
 }
