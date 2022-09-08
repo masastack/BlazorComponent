@@ -59,13 +59,13 @@ namespace BlazorComponent
             }
         }
 
-        protected async Task NextTickWhile(Func<Task> callback, Func<bool> @while, int retryTimes = 5)
+        protected async Task NextTickWhile(Func<Task> callback, Func<bool> @while, int retryTimes = 20)
         {
             var times = 0;
             while (@while.Invoke() && times < retryTimes)
             {
                 times++;
-                await Task.Delay(16);
+                await Task.Delay(100);
             }
 
             await callback.Invoke();
