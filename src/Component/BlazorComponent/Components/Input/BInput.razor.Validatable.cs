@@ -266,7 +266,7 @@ namespace BlazorComponent
             {
                 if (!DisableSetValueByJsInterop)
                 {
-                    _ = NextTickWhile(async () => { await InputJsObjectReference.InvokeVoidAsync("setValue", InputElement, val); },
+                    _ = NextTickWhile(async () => await InputJsObjectReference.InvokeVoidAsync("setValue", InputElement, val),
                         () => InputJsObjectReference is null);
                 }
             }
