@@ -183,7 +183,7 @@ namespace BlazorComponent
             // mark it with hasInput
             HasInput = true;
 
-            NextTickIf(Validate, () => !ValidateOnBlur);
+            NextTickIf(InternalValidate, () => !ValidateOnBlur);
 
             if (ValueChanged.HasDelegate)
             {
@@ -239,7 +239,7 @@ namespace BlazorComponent
             {
                 //We removed NextTick since it doesn't trigger render
                 //and validate may not be called
-                Validate();
+                InternalValidate();
             }
         }
 
@@ -289,7 +289,7 @@ namespace BlazorComponent
                         HasFocused = true;
                         if (ValidateOnBlur)
                         {
-                            Validate();
+                            InternalValidate();
                         }
                     }
 
@@ -302,12 +302,37 @@ namespace BlazorComponent
             SubscribeValidationStateChanged();
         }
 
+        protected virtual void SubscribeValidationStateChanged()
+        {
+            if (ValueExpression != null)
+            {
+                ValueIdentifier = FieldIdentifier.Create(ValueExpression);
+            }
+            else
+            {
+                //No ValueExpression,subscribe is unnecessary
+                return;
+            }
+
+            //When EditContext update,we should re-subscribe OnValidationStateChanged
+            if (OldEditContext != EditContext)
+            {
+                if (OldEditContext != null)
+                {
+                    OldEditContext.OnValidationStateChanged -= HandleOnValidationStateChanged;
+                }
+
+                EditContext.OnValidationStateChanged += HandleOnValidationStateChanged;
+                OldEditContext = EditContext;
+            }
+        }
+
         protected virtual Task OnIsFocusedChange(bool val)
         {
             return Task.CompletedTask;
         }
 
-        protected virtual void Validate()
+        protected virtual void InternalValidate()
         {
             if (_resetStatus)
             {
@@ -340,33 +365,10 @@ namespace BlazorComponent
             }
         }
 
-        protected virtual void SubscribeValidationStateChanged()
+        protected bool ForceValidate(TValue? val = default)
         {
-            if (ValueExpression != null)
-            {
-                ValueIdentifier = FieldIdentifier.Create(ValueExpression);
-            }
-            else
-            {
-                //No ValueExpression,subscribe is unnecessary
-                return;
-            }
+            var force = true;
 
-            //When EditContext update,we should re-subscribe OnValidationStateChanged
-            if (OldEditContext != EditContext)
-            {
-                if (OldEditContext != null)
-                {
-                    OldEditContext.OnValidationStateChanged -= HandleOnValidationStateChanged;
-                }
-
-                EditContext.OnValidationStateChanged += HandleOnValidationStateChanged;
-                OldEditContext = EditContext;
-            }
-        }
-
-        public Task<bool> ValidateAsync(bool force = false, TValue? val = default)
-        {
             _forceStatus = force;
 
             //No rules should be valid. 
@@ -396,13 +398,13 @@ namespace BlazorComponent
                 valid = ErrorBucket.Count > 0;
             }
 
-            return Task.FromResult(valid);
+            return valid;
         }
 
-        public Task<bool> ValidateAsync()
+        public bool Validate()
         {
             _resetStatus = false;
-            return ValidateAsync(true);
+            return ForceValidate();
         }
 
         public void Reset()

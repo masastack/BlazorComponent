@@ -81,7 +81,7 @@ namespace BlazorComponent
 
         private async Task HandleOnSubmitAsync(EventArgs args)
         {
-            var valid = await ValidateAsync();
+            var valid = Validate();
 
             if (OnSubmit.HasDelegate)
             {
@@ -104,13 +104,13 @@ namespace BlazorComponent
             }
         }
 
-        public async Task<bool> ValidateAsync()
+        public bool Validate()
         {
             var valid = true;
 
             foreach (var validatable in Validatables)
             {
-                var success = await validatable.ValidateAsync();
+                var success = validatable.Validate();
                 if (!success)
                 {
                     valid = false;
@@ -124,13 +124,13 @@ namespace BlazorComponent
 
             if (ValueChanged.HasDelegate)
             {
-                await ValueChanged.InvokeAsync(valid);
+                _ = ValueChanged.InvokeAsync(valid);
             }
 
             return valid;
         }
 
-        public async Task ResetAsync()
+        public void Reset()
         {
             EditContext?.MarkAsUnmodified();
 
@@ -141,11 +141,11 @@ namespace BlazorComponent
 
             if (ValueChanged.HasDelegate)
             {
-                await ValueChanged.InvokeAsync(true);
+                _ = ValueChanged.InvokeAsync(true);
             }
         }
 
-        public async Task ResetValidationAsync()
+        public void ResetValidation()
         {
             EditContext?.MarkAsUnmodified();
 
@@ -156,7 +156,7 @@ namespace BlazorComponent
 
             if (ValueChanged.HasDelegate)
             {
-                await ValueChanged.InvokeAsync(true);
+                _ = ValueChanged.InvokeAsync(true);
             }
         }
     }

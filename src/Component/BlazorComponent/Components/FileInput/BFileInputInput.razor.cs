@@ -13,7 +13,7 @@ namespace BlazorComponent
             }
         }
 
-        public EventCallback<InputFileChangeEventArgs> HandleOnFileChange => EventCallback.Factory.Create<InputFileChangeEventArgs>(Component, Component.HandleOnFileChangeAsync);
+        public EventCallback<InputFileChangeEventArgs> HandleOnFileChange => EventCallback.Factory.Create<InputFileChangeEventArgs>(Component, Component.HandleOnFileChange);
 
         public bool Multiple => Component.Multiple;
     }
