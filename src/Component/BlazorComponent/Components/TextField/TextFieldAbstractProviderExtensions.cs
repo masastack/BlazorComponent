@@ -44,7 +44,6 @@
 
         public static ComponentAbstractProvider ApplyTextFieldAppendIcon(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>> propertiesAction = null)
         {
-            // XXX: 有缺陷，无法覆盖和合并Input对应元素
             return abstractProvider
                    .Merge(typeof(BIcon), type, "append-icon", propertiesAction);
         }
