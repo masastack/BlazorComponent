@@ -1,19 +1,8 @@
-﻿{
+{
   "compilerOptions": {
     "noImplicitAny": false,
     "noEmitOnError": true,
-    "removeComments": false,
-    "sourceMap": true,
-    "target": "es2015"
-  },
-  "files": [
-    "./main.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "wwwroot"
-  ],
-  "include": [
-    "./types/blazor__event/*"
-  ]
+    "moduleResolution": "node",
+    "target":"ES2016"
+  }
 }

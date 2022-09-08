@@ -1,10 +1,10 @@
-// see https://github.com/dotnet/aspnetcore/blob/main/src/Components/Web.JS/src/Rendering/Events/EventTypes.ts
-// updated at 2022/06/09
-
-declare var Blazor: Blazor
+declare var Blazor: Blazor;
 
 declare interface Blazor {
-  registerCustomEventType: (eventName: string, options: Blazor.EventTypeOptions) => void
+  registerCustomEventType: (
+    eventName: string,
+    options: Blazor.EventTypeOptions
+  ) => void;
 }
 
 declare namespace Blazor {
@@ -80,6 +80,8 @@ declare namespace Blazor {
     offsetY: number;
     pageX: number;
     pageY: number;
+    movementX: number;
+    movementY: number;
     button: number;
     buttons: number;
     ctrlKey: boolean;
@@ -144,4 +146,3 @@ declare namespace Blazor {
     type: string;
   }
 }
-

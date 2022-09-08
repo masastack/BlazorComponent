@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Components.Forms;
 using System.Linq.Expressions;
+using Microsoft.JSInterop;
 
 namespace BlazorComponent
 {
-    public partial class BInput<TValue> : IValidatable
+    public partial class BInput<TValue> : IValidatable, IAsyncDisposable
     {
         [Parameter]
         public bool Disabled { get; set; }
@@ -46,6 +48,9 @@ namespace BlazorComponent
         public List<string> Messages { get; set; } = new();
 
         [Parameter]
+        public EventCallback<TValue> OnInput { get; set; }
+
+        [Parameter]
         public bool Success { get; set; }
 
         [Parameter]
@@ -54,9 +59,12 @@ namespace BlazorComponent
         [Parameter]
         public IEnumerable<Func<TValue, StringBoolean>> Rules
         {
-            get { return GetValue<IEnumerable<Func<TValue, StringBoolean>>>(); }
-            set { SetValue(value); }
+            get => GetValue<IEnumerable<Func<TValue, StringBoolean>>>();
+            set => SetValue<IEnumerable<Func<TValue, StringBoolean>>, TValue>(value, nameof(Value));
         }
+
+        private bool _resetStatus;
+        private bool _forceStatus;
 
         protected EditContext OldEditContext { get; set; }
 
@@ -66,15 +74,21 @@ namespace BlazorComponent
 
         protected bool HasFocused { get; set; }
 
+        public virtual ElementReference InputElement { get; set; }
+
         protected virtual TValue LazyValue
         {
-            get => GetValue<TValue>();
+            get => GetValue<TValue>(Value);
             set => SetValue(value);
         }
 
         protected TValue InternalValue
         {
-            get => LazyValue;
+            get
+            {
+                GetValue<TValue>(LazyValue);
+                return LazyValue;
+            }
             set
             {
                 LazyValue = value;
@@ -143,8 +157,6 @@ namespace BlazorComponent
 
         public virtual bool IsReadonly => Readonly || (Form != null && Form.Readonly);
 
-        protected bool FirstValidate { get; set; } = true;
-
         public virtual bool ShouldValidate
         {
             get
@@ -159,34 +171,115 @@ namespace BlazorComponent
                     return HasFocused && !IsFocused;
                 }
 
-                return HasInput || HasFocused || FirstValidate;
+                return HasInput || HasFocused;
             }
         }
 
         public virtual bool ExternalError => ErrorMessages.Count > 0 || Error;
 
-        protected TValue InputValue { get; set; }
-
         protected virtual void OnInternalValueChange(TValue val)
         {
+            // If it's the first time we're setting input,
+            // mark it with hasInput
+            HasInput = true;
+
+            NextTickIf(Validate, () => !ValidateOnBlur);
+
+            if (ValueChanged.HasDelegate)
+            {
+                _ = ValueChanged.InvokeAsync(val);
+            }
         }
 
         protected virtual void OnLazyValueChange(TValue val)
         {
+            HasInput = true;
+        }
+
+        protected bool ValueChangedInternal { get; set; }
+
+        protected IJSObjectReference InputJsObjectReference { get; private set; }
+
+        protected virtual int InternalDebounceInterval => 0;
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+
+            Form?.Register(this);
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            await base.OnAfterRenderAsync(firstRender);
+
+            if (firstRender)
+            {
+                InputJsObjectReference = await Js.InvokeAsync<IJSObjectReference>("import", "./_content/BlazorComponent/js/input.js");
+                await InputJsObjectReference.InvokeVoidAsync(
+                    "registerInputEvents",
+                    InputElement,
+                    DotNetObjectReference.Create(new Invoker<ChangeEventArgs>(HandleOnInputAsync)),
+                    InternalDebounceInterval);
+            }
+        }
+
+        public virtual async Task HandleOnInputAsync(ChangeEventArgs args)
+        {
+            if (BindConverter.TryConvertTo<TValue>(args.Value?.ToString(), CultureInfo.InvariantCulture, out var val))
+            {
+                if (ValueChanged.HasDelegate)
+                {
+                    ValueChangedInternal = true;
+                    await ValueChanged.InvokeAsync(val);
+                }
+            }
+
+            if (!ValidateOnBlur)
+            {
+                //We removed NextTick since it doesn't trigger render
+                //and validate may not be called
+                Validate();
+            }
+        }
+
+        protected virtual bool DisableSetValueByJsInterop => false;
+
+        protected virtual async Task SetValueByJsInterop(string val)
+        {
+            if (InputJsObjectReference is null) return;
+            await InputJsObjectReference.InvokeVoidAsync("setValue", InputElement, val);
+        }
+
+        protected virtual void OnValueChanged(TValue val)
+        {
+            // OnInternalValueChange has to invoke manually because
+            // LazyValue is the getter of InternalValue, LazyValue changes cannot notify the watcher of InternalValue
+            if (!EqualityComparer<TValue>.Default.Equals(val, InternalValue))
+            {
+                OnInternalValueChange(val);
+            }
+
+            LazyValue = val;
+
+            if (!ValueChangedInternal)
+            {
+                if (!DisableSetValueByJsInterop)
+                {
+                    _ = NextTickWhile(async () => { await InputJsObjectReference.InvokeVoidAsync("setValue", InputElement, val); },
+                        () => InputJsObjectReference is null);
+                }
+            }
+            else
+            {
+                ValueChangedInternal = false;
+            }
         }
 
         protected override void OnWatcherInitialized()
         {
             Watcher
-                .Watch<TValue>(nameof(Value), val =>
-                {
-                    if (!EqualityComparer<TValue>.Default.Equals(val, LazyValue))
-                    {
-                        LazyValue = val;
-
-                        InputValue = val;
-                    }
-                })
+                .Watch<TValue>(nameof(Value), OnValueChanged)
                 .Watch<TValue>(nameof(LazyValue), OnLazyValueChange)
                 .Watch<TValue>(nameof(InternalValue), OnInternalValueChange)
                 .Watch<bool>(nameof(IsFocused), async val =>
@@ -204,16 +297,6 @@ namespace BlazorComponent
                 });
         }
 
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
-
-            if (Form != null)
-            {
-                Form.Register(this);
-            }
-        }
-
         protected override void OnParametersSet()
         {
             SubscribeValidationStateChanged();
@@ -226,9 +309,10 @@ namespace BlazorComponent
 
         protected virtual void Validate()
         {
-            if (FirstValidate)
+            if (_resetStatus)
             {
-                FirstValidate = false;
+                _resetStatus = false;
+                return;
             }
 
             if (EditContext != null && !EqualityComparer<FieldIdentifier>.Default.Equals(ValueIdentifier, default))
@@ -283,6 +367,8 @@ namespace BlazorComponent
 
         public Task<bool> ValidateAsync(bool force = false, TValue? val = default)
         {
+            _forceStatus = force;
+
             //No rules should be valid. 
             var valid = true;
 
@@ -315,31 +401,42 @@ namespace BlazorComponent
 
         public Task<bool> ValidateAsync()
         {
-            return ValidateAsync(false);
+            _resetStatus = false;
+            return ValidateAsync(true);
         }
 
-        public async Task ResetAsync()
+        public void Reset()
         {
-            //We will change this and InternalValue
             ErrorBucket.Clear();
 
-            InputValue = default;
-            LazyValue = default;
-            if (ValueChanged.HasDelegate)
-            {
-                await ValueChanged.InvokeAsync(LazyValue);
-            }
+            HasInput = false;
+            HasFocused = false;
+
+            _resetStatus = true;
+
+            EditContext.MarkAsUnmodified(ValueIdentifier);
+
+            // TODO: IList<TValue> ?
+            InternalValue = default;
         }
 
-        public Task ResetValidationAsync()
+        public void ResetValidation()
         {
             ErrorBucket.Clear();
-            return Task.CompletedTask;
         }
 
         protected virtual void HandleOnValidationStateChanged(object sender, ValidationStateChangedEventArgs e)
         {
-            var errors = EditContext.GetValidationMessages(ValueIdentifier);
+            // The following conditions require an error message to be displayed:
+            // 1. Force validation, because it validates all input elements
+            // 2. The input pointed to by ValueIdentifier has been modified
+            if (!_forceStatus && EditContext.IsModified() && !EditContext.IsModified(ValueIdentifier))
+                return;
+
+            _forceStatus = false;
+
+            var errors = EditContext.GetValidationMessages(ValueIdentifier).ToList();
+
             if (!errors.Any())
             {
                 if (ErrorBucket.Count == 0)
@@ -357,29 +454,6 @@ namespace BlazorComponent
             InvokeStateHasChanged();
         }
 
-        protected virtual async Task SetInternalValueAsync(TValue internalValue)
-        {
-            if (EqualityComparer<TValue>.Default.Equals(internalValue, InternalValue))
-            {
-                return;
-            }
-
-            if (!EqualityComparer<TValue>.Default.Equals(internalValue, Value) && ValueChanged.HasDelegate)
-            {
-                await ValueChanged.InvokeAsync(internalValue);
-            }
-
-            InternalValue = internalValue;
-            HasInput = true;
-
-            if (!ValidateOnBlur)
-            {
-                //We removed NextTick since it doesn't trigger render
-                //and validate may not be called
-                Validate();
-            }
-        }
-
         protected override void Dispose(bool disposing)
         {
             if (EditContext != null)
@@ -388,6 +462,21 @@ namespace BlazorComponent
             }
 
             base.Dispose(disposing);
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            try
+            {
+                if (InputJsObjectReference != null)
+                {
+                    await InputJsObjectReference.DisposeAsync();
+                }
+            }
+            catch
+            {
+                // ignored
+            }
         }
     }
 }

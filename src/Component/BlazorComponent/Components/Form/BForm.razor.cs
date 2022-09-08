@@ -1,17 +1,14 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
+﻿using Microsoft.AspNetCore.Components.Forms;
 
 namespace BlazorComponent
 {
     public partial class BForm : BDomComponentBase
     {
-        private object _oldModel;
-
         [Inject]
-        public IServiceProvider ServiceProvider { get;set; }
+        public IServiceProvider ServiceProvider { get; set; }
 
         [Parameter]
-        public RenderFragment<EditContext> ChildContent { get; set; }
+        public RenderFragment<FormContext> ChildContent { get; set; }
 
         [Parameter]
         public EventCallback<EventArgs> OnSubmit { get; set; }
@@ -43,22 +40,19 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback OnInvalidSubmit { get; set; }
 
+        private object _oldModel;
+
         public EditContext EditContext { get; protected set; }
 
-        protected List<IValidatable> Validatables { get; } = new List<IValidatable>();
+        protected List<IValidatable> Validatables { get; } = new();
 
         protected override void OnParametersSet()
         {
+            base.OnParametersSet();
+
             if (_oldModel != Model)
             {
-                //EditContext changed,re-subscribe OnValidationStateChanged event
-                if (EditContext != null)
-                {
-                    EditContext.OnValidationStateChanged -= OnValidationStateChanged;
-                }
-
                 EditContext = new EditContext(Model);
-                EditContext.OnValidationStateChanged += OnValidationStateChanged;
 
                 if (EnableValidation)
                 {
@@ -69,12 +63,14 @@ namespace BlazorComponent
             }
         }
 
-        private void OnValidationStateChanged(object sender, ValidationStateChangedEventArgs e)
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            var value = !EditContext.GetValidationMessages().Any();
-            if (value != Value && ValueChanged.HasDelegate)
+            await base.OnAfterRenderAsync(firstRender);
+
+            var hasError = Validatables.Any(v => v.HasError);
+            if (Value != !hasError && ValueChanged.HasDelegate)
             {
-                _ = ValueChanged.InvokeAsync(value);
+                await ValueChanged.InvokeAsync(!hasError);
             }
         }
 
@@ -110,22 +106,20 @@ namespace BlazorComponent
 
         public async Task<bool> ValidateAsync()
         {
-            //REVIEW: We should combine this
             var valid = true;
+
+            foreach (var validatable in Validatables)
+            {
+                var success = await validatable.ValidateAsync();
+                if (!success)
+                {
+                    valid = false;
+                }
+            }
+
             if (EditContext != null)
             {
                 valid = EditContext.Validate();
-            }
-            else
-            {
-                foreach (var validatable in Validatables)
-                {
-                    var success = await validatable.ValidateAsync();
-                    if (!success)
-                    {
-                        valid = false;
-                    }
-                }
             }
 
             if (ValueChanged.HasDelegate)
@@ -138,14 +132,11 @@ namespace BlazorComponent
 
         public async Task ResetAsync()
         {
-            if (EditContext != null)
-            {
-                EditContext.MarkAsUnmodified();
-            }
+            EditContext?.MarkAsUnmodified();
 
             foreach (var validatable in Validatables)
             {
-                await validatable.ResetAsync();
+                validatable.Reset();
             }
 
             if (ValueChanged.HasDelegate)
@@ -156,30 +147,17 @@ namespace BlazorComponent
 
         public async Task ResetValidationAsync()
         {
-            if (EditContext != null)
-            {
-                EditContext.MarkAsUnmodified();
-            }
+            EditContext?.MarkAsUnmodified();
 
             foreach (var validatable in Validatables)
             {
-                await validatable.ResetValidationAsync();
+                validatable.ResetValidation();
             }
 
             if (ValueChanged.HasDelegate)
             {
                 await ValueChanged.InvokeAsync(true);
             }
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (EditContext != null)
-            {
-                EditContext.OnValidationStateChanged -= OnValidationStateChanged;
-            }
-
-            base.Dispose(disposing);
         }
     }
 }

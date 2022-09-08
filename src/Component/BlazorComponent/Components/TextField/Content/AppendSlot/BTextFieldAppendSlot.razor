@@ -12,7 +12,7 @@
     }
     else if (AppendOuterIcon != null)
     {
-        childContent = RenderPart(typeof(BInputIcon<,>), "append-outer-icon", AppendOuterIcon, HandleOnAppendOuterClickAsync,arg0Name:"Type",arg1Name:"Icon",arg2Name:"OnClick");
+        childContent = RenderPart(typeof(BInputIcon<,>), "append-outer-icon", AppendOuterIcon, HandleOnAppendOuterClickAsync, arg0Name:"Type",arg1Name:"Icon",arg2Name:"OnClick");
     }
 
     @RenderPart(typeof(BInputSlot<,>),"append","outer",childContent,arg0Name:"Type","Location")

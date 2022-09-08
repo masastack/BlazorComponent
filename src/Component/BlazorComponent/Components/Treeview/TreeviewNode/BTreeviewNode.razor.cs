@@ -163,6 +163,8 @@ namespace BlazorComponent
 
         protected override void OnInitialized()
         {
+            base.OnInitialized();
+            
             Treeview.AddNode(this);
         }
 

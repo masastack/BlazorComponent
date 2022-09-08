@@ -1,5 +1,5 @@
-import { getElementSelector } from "../utils/index";
-import { parseMouseEvent, parseTouchEvent } from "./default";
+import { getElementSelector } from "../utils/helper";
+import { parseMouseEvent, parseTouchEvent } from "./EventType";
 
 export function registerExtraMouseEvent(eventType: string, eventName: string) {
   if (Blazor) {

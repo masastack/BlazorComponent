@@ -1,6 +1,5 @@
 // Utilities
-import { addPassiveEventListener, composedPath, keyCodes } from "../../utils/helper";
-import { getDom } from "../../utils/index";
+import { addPassiveEventListener, composedPath, getDom, keyCodes } from "../../utils/helper";
 
 var wheelListenerCaches: { [key: string]: any } = {}
 

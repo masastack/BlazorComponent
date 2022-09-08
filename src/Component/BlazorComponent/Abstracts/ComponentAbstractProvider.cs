@@ -107,6 +107,16 @@ namespace BlazorComponent
             return this;
         }
 
+        public ComponentAbstractProvider Merge(Type type, Type implementType, string name, Action<AttributesDictionary> mergeAttributesAction = null)
+        {
+            var key = new ComponentKey(type, name);
+
+            _typeConfig[key] = implementType;
+            Merge(key, mergeAttributesAction);
+
+            return this;
+        }
+
         private void Merge(ComponentKey key, Action<AttributesDictionary> mergeAttributesAction = null)
         {
             if (mergeAttributesAction != null)

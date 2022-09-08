@@ -85,12 +85,7 @@ namespace BlazorComponent
         {
             Id ??= ComponentIdGenerator.Generate(this);
             base.OnInitialized();
-        }
-
-        protected override Task OnInitializedAsync()
-        {
             SetComponentClass();
-            return base.OnInitializedAsync();
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -131,6 +126,11 @@ namespace BlazorComponent
         protected void SetValue<TValue>(TValue value, [CallerMemberName] string name = null)
         {
             Watcher.SetValue(value, name);
+        }
+
+        protected void SetValue<TValue, TFirstValue>(TValue value, string propertySetFirst, [CallerMemberName] string name = null)
+        {
+            Watcher.SetValue<TValue, TFirstValue>(value, name, propertySetFirst);
         }
 
         protected RenderFragment Render(Type type, Action<AttributesBuilder> parametersBuilderAction = null, object key = null, object data = null, Action<object> referenceCapture = null)

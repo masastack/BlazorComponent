@@ -67,6 +67,8 @@ namespace BlazorComponent
 
         EventCallback<MouseEventArgs> OnAppendClick { get; }
 
+        EventCallback<MouseEventArgs> OnPrependClick { get; }
+
         Task HandleOnPrependClickAsync(MouseEventArgs args)
         {
             return Task.CompletedTask;

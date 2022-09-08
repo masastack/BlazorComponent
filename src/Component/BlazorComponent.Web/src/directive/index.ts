@@ -1,4 +1,4 @@
-import { rippleShow, rippleHide } from "./ripple";
+import { rippleHide, rippleShow } from "./ripple";
 
 export default function registerDirective() {
     var observer = new MutationObserver(function (mutationsList) {
