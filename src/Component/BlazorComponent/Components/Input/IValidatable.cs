@@ -2,7 +2,7 @@
 {
     public interface IValidatable
     {
-        Task<bool> ValidateAsync();
+        bool Validate();
 
         void Reset();
 

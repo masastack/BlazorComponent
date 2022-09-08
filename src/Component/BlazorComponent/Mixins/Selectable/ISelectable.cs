@@ -12,7 +12,7 @@ namespace BlazorComponent
 
         Task HandleOnBlur(FocusEventArgs args);
 
-        Task HandleOnChange();
+        void HandleOnChange();
 
         Task HandleOnFocus(FocusEventArgs args);
 
