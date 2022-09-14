@@ -286,7 +286,7 @@ namespace BlazorComponent
         protected override void OnWatcherInitialized()
         {
             Watcher
-                .Watch<TValue>(nameof(Value), OnValueChanged)
+                .Watch<TValue>(nameof(Value), OnValueChanged, immediate: true)
                 .Watch<TValue>(nameof(LazyValue), OnLazyValueChange)
                 .Watch<TValue>(nameof(InternalValue), OnInternalValueChange)
                 .Watch<bool>(nameof(IsFocused), async val =>
