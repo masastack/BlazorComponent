@@ -19,7 +19,7 @@ namespace BlazorComponent
         [Parameter]
         public virtual TValue Value
         {
-            get => GetValue<TValue>();
+            get => GetValue(DefaultValue);
             set => SetValue(value);
         }
 
@@ -65,6 +65,8 @@ namespace BlazorComponent
 
         private bool _resetStatus;
         private bool _forceStatus;
+
+        protected virtual TValue DefaultValue => default;
 
         protected EditContext OldEditContext { get; set; }
 
