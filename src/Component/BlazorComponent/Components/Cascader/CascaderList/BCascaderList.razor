@@ -35,7 +35,7 @@
     </div>
 </div>
 
-@if (Children != null && Children.Count > 0)
+@if (HasChildren)
 {
     <BCascaderList @key="SelectedItem" TItem="TItem" TValue="TValue" Items="Children"
                    @attributes="@GetAttributes(typeof(BCascaderList<,>))"

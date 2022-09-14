@@ -34,6 +34,10 @@ namespace BlazorComponent
 
         private bool IsLast => Children == null || Children.Count == 0;
 
+        private bool IsSelectedItemDefault => EqualityComparer<TItem>.Default.Equals(SelectedItem, default);
+
+        private bool HasChildren => Children is { Count: > 0 } && !IsSelectedItemDefault;
+
         /// <summary>
         /// Clear the selection.
         /// </summary>
