@@ -196,7 +196,10 @@ namespace BlazorComponent
             HasInput = true;
         }
 
-        protected bool ValueChangedInternal { get; set; }
+        /// <summary>
+        /// Determine whether the value is changed internally, such as in the input event
+        /// </summary>
+        protected bool ValueChangedInternally { get; set; }
 
         protected IJSObjectReference InputJsObjectReference { get; private set; }
 
@@ -230,7 +233,7 @@ namespace BlazorComponent
             {
                 if (ValueChanged.HasDelegate)
                 {
-                    ValueChangedInternal = true;
+                    ValueChangedInternally = true;
                     await ValueChanged.InvokeAsync(val);
                 }
             }
@@ -262,7 +265,7 @@ namespace BlazorComponent
 
             LazyValue = val;
 
-            if (!ValueChangedInternal)
+            if (!ValueChangedInternally)
             {
                 if (!DisableSetValueByJsInterop)
                 {
@@ -272,7 +275,7 @@ namespace BlazorComponent
             }
             else
             {
-                ValueChangedInternal = false;
+                ValueChangedInternally = false;
             }
         }
 

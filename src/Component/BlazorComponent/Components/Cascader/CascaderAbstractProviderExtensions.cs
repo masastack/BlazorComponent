@@ -1,6 +1,6 @@
 ﻿namespace BlazorComponent
 {
-    public static class CascaderAbstractProviderExtensitions
+    public static class CascaderAbstractProviderExtensions
     {
         public static ComponentAbstractProvider ApplyCascaderDefault<TItem, TValue>(this ComponentAbstractProvider abstractProvider)
         {
