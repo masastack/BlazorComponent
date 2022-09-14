@@ -254,6 +254,8 @@ namespace BlazorComponent
             await InputJsObjectReference.InvokeVoidAsync("setValue", InputElement, val);
         }
 
+        private CancellationTokenSource _cancellationTokenSource;
+
         protected virtual void OnValueChanged(TValue val)
         {
             // OnInternalValueChange has to invoke manually because
@@ -267,11 +269,13 @@ namespace BlazorComponent
 
             if (!ValueChangedInternally)
             {
-                if (!DisableSetValueByJsInterop)
-                {
-                    _ = NextTickWhile(async () => await InputJsObjectReference.InvokeVoidAsync("setValue", InputElement, val),
-                        () => InputJsObjectReference is null);
-                }
+                if (DisableSetValueByJsInterop) return;
+
+                _cancellationTokenSource?.Cancel();
+                _cancellationTokenSource = new();
+                _ = NextTickWhile(async () => await InputJsObjectReference.InvokeVoidAsync("setValue", InputElement, val),
+                    () => InputJsObjectReference is null,
+                    cancellationToken: _cancellationTokenSource.Token);
             }
             else
             {
