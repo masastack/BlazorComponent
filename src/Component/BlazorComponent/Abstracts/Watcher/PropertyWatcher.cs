@@ -122,15 +122,25 @@ namespace BlazorComponent
             return Watch<TValue>(name, (newValue, oldValue) => changeCallback?.Invoke());
         }
 
-        public PropertyWatcher Watch<TValue>(string name, Action<TValue> changeCallback)
+        public PropertyWatcher Watch<TValue>(string name, Action<TValue> changeCallback, bool immediate = false, bool @override = false)
         {
-            return Watch<TValue>(name, (newValue, oldValue) => changeCallback?.Invoke(newValue));
+            return Watch<TValue>(name, (newValue, _) => changeCallback?.Invoke(newValue), immediate, @override);
         }
 
-        public PropertyWatcher Watch<TValue>(string name, Action<TValue, TValue> changeCallback)
+        public PropertyWatcher Watch<TValue>(string name, Action<TValue, TValue> changeCallback, bool immediate = false, bool @override = false)
         {
+            if (@override)
+            {
+                Unwatch(name);
+            }
+
             var property = GetProperty<TValue>(default, name);
             property.OnValueChange += changeCallback;
+
+            if (immediate)
+            {
+                changeCallback.Invoke(default, default);
+            }
 
             return this;
         }

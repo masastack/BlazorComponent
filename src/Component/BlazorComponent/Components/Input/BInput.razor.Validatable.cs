@@ -19,7 +19,7 @@ namespace BlazorComponent
         [Parameter]
         public virtual TValue Value
         {
-            get => GetValue<TValue>();
+            get => GetValue(DefaultValue);
             set => SetValue(value);
         }
 
@@ -65,6 +65,8 @@ namespace BlazorComponent
 
         private bool _resetStatus;
         private bool _forceStatus;
+
+        protected virtual TValue DefaultValue => default;
 
         protected EditContext OldEditContext { get; set; }
 
@@ -254,6 +256,8 @@ namespace BlazorComponent
             await InputJsObjectReference.InvokeVoidAsync("setValue", InputElement, val);
         }
 
+        private CancellationTokenSource _cancellationTokenSource;
+
         protected virtual void OnValueChanged(TValue val)
         {
             // OnInternalValueChange has to invoke manually because
@@ -267,11 +271,13 @@ namespace BlazorComponent
 
             if (!ValueChangedInternally)
             {
-                if (!DisableSetValueByJsInterop)
-                {
-                    _ = NextTickWhile(async () => await InputJsObjectReference.InvokeVoidAsync("setValue", InputElement, val),
-                        () => InputJsObjectReference is null);
-                }
+                if (DisableSetValueByJsInterop) return;
+
+                _cancellationTokenSource?.Cancel();
+                _cancellationTokenSource = new();
+                _ = NextTickWhile(async () => await InputJsObjectReference.InvokeVoidAsync("setValue", InputElement, val),
+                    () => InputJsObjectReference is null,
+                    cancellationToken: _cancellationTokenSource.Token);
             }
             else
             {
@@ -282,7 +288,7 @@ namespace BlazorComponent
         protected override void OnWatcherInitialized()
         {
             Watcher
-                .Watch<TValue>(nameof(Value), OnValueChanged)
+                .Watch<TValue>(nameof(Value), OnValueChanged, immediate: true)
                 .Watch<TValue>(nameof(LazyValue), OnLazyValueChange)
                 .Watch<TValue>(nameof(InternalValue), OnInternalValueChange)
                 .Watch<bool>(nameof(IsFocused), async val =>

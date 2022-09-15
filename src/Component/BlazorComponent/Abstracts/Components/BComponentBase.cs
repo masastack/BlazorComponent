@@ -59,18 +59,6 @@ namespace BlazorComponent
             }
         }
 
-        protected async Task NextTickWhile(Func<Task> callback, Func<bool> @while, int retryTimes = 20)
-        {
-            var times = 0;
-            while (@while.Invoke() && times < retryTimes)
-            {
-                times++;
-                await Task.Delay(100);
-            }
-
-            await callback.Invoke();
-        }
-
         protected void NextTickIf(Action callback, Func<bool> @if)
         {
             if (@if.Invoke())
@@ -80,6 +68,25 @@ namespace BlazorComponent
             else
             {
                 callback.Invoke();
+            }
+        }
+
+        protected async Task NextTickWhile(Func<Task> callback, Func<bool> @while, int retryTimes = 20, CancellationToken cancellationToken = default)
+        {
+            if (retryTimes > 0 && !cancellationToken.IsCancellationRequested)
+            {
+                if (@while.Invoke())
+                {
+                    retryTimes--;
+
+                    await Task.Delay(100, cancellationToken);
+
+                    await NextTickWhile(callback, @while, retryTimes, cancellationToken);
+                }
+                else
+                {
+                    await callback.Invoke();
+                }
             }
         }
 
