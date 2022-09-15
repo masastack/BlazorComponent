@@ -882,96 +882,12 @@ export function getStyle(element, styleProp) {
   }
 }
 
-export function getTextAreaInfo(element) {
-  var result = {};
-  var dom = getDom(element);
-  result["scrollHeight"] = dom.scrollHeight || 0;
-
-  if (element.currentStyle) {
-    result["lineHeight"] = parseFloat(element.currentStyle["line-height"]);
-    result["paddingTop"] = parseFloat(element.currentStyle["padding-top"]);
-    result["paddingBottom"] = parseFloat(element.currentStyle["padding-bottom"]);
-    result["borderBottom"] = parseFloat(element.currentStyle["border-bottom"]);
-    result["borderTop"] = parseFloat(element.currentStyle["border-top"]);
-  } else if (window.getComputedStyle) {
-    result["lineHeight"] = parseFloat(document.defaultView.getComputedStyle(element, null).getPropertyValue("line-height"));
-    result["paddingTop"] = parseFloat(document.defaultView.getComputedStyle(element, null).getPropertyValue("padding-top"));
-    result["paddingBottom"] = parseFloat(document.defaultView.getComputedStyle(element, null).getPropertyValue("padding-bottom"));
-    result["borderBottom"] = parseFloat(document.defaultView.getComputedStyle(element, null).getPropertyValue("border-bottom"));
-    result["borderTop"] = parseFloat(document.defaultView.getComputedStyle(element, null).getPropertyValue("border-top"));
-  }
-  //Firefox can return this as NaN, so it has to be handled here like that.
-  if (Object.is(NaN, result["borderTop"]))
-    result["borderTop"] = 1;
-  if (Object.is(NaN, result["borderBottom"]))
-    result["borderBottom"] = 1;
-  return result;
-}
-
 const funcDict = {};
-
-export function registerResizeTextArea(element, minRows, maxRows, objReference) {
-  if (!objReference) {
-    disposeResizeTextArea(element);
-  } else {
-    objReferenceDict[element.id] = objReference;
-    funcDict[element.id + "input"] = function () {
-      resizeTextArea(element, minRows, maxRows);
-    }
-    element.addEventListener("input", funcDict[element.id + "input"]);
-    return getTextAreaInfo(element);
-  }
-}
-
-export function disposeResizeTextArea(element) {
-  element.removeEventListener("input", funcDict[element.id + "input"]);
-  objReferenceDict[element.id] = null;
-  funcDict[element.id + "input"] = null;
-
-}
-
-export function resizeTextArea(element, minRows, maxRows) {
-  var dims = getTextAreaInfo(element);
-  var rowHeight = dims["lineHeight"];
-  var offsetHeight = dims["paddingTop"] + dims["paddingBottom"] + dims["borderTop"] + dims["borderBottom"];
-  var oldHeight = parseFloat(element.style.height);
-  element.style.height = 'auto';
-
-  var rows = Math.trunc(element.scrollHeight / rowHeight);
-  rows = Math.max(minRows, rows);
-
-  var newHeight = 0;
-  if (rows > maxRows) {
-    rows = maxRows;
-
-    newHeight = (rows * rowHeight + offsetHeight);
-    element.style.height = newHeight + "px";
-    element.style.overflowY = "visible";
-  } else {
-    newHeight = rows * rowHeight + offsetHeight;
-    element.style.height = newHeight + "px";
-    element.style.overflowY = "hidden";
-  }
-  if (oldHeight !== newHeight) {
-    let textAreaObj = objReferenceDict[element.id];
-    textAreaObj.invokeMethodAsync("ChangeSizeAsyncJs", parseFloat(element.scrollWidth), newHeight);
-  }
-}
-
 
 const objReferenceDict = {};
 
 export function disposeObj(objReferenceName) {
   delete objReferenceDict[objReferenceName];
-}
-
-function mentionsOnWindowClick(e) {
-  let mentionsObj = objReferenceDict["mentions"];
-  if (mentionsObj) {
-    mentionsObj.invokeMethodAsync("CloseMentionsDropDown");
-  } else {
-    window.removeEventListener("click", mentionsOnWindowClick);
-  }
 }
 
 export function bindTableHeaderAndBodyScroll(bodyRef, headerRef) {
