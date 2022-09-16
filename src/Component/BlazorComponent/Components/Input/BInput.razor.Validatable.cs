@@ -275,7 +275,7 @@ namespace BlazorComponent
 
                 _cancellationTokenSource?.Cancel();
                 _cancellationTokenSource = new();
-                _ = NextTickWhile(async () => await InputJsObjectReference.InvokeVoidAsync("setValue", InputElement, val),
+                _ = NextTickWhile(async () => await SetValueByJsInterop(val?.ToString()),
                     () => InputJsObjectReference is null,
                     cancellationToken: _cancellationTokenSource.Token);
             }
