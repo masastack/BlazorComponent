@@ -13,7 +13,9 @@ export default defineConfig({
     },
   ],
 
-  plugins: [typescript(), terser()],
+  plugins: [typescript(), terser({
+    keep_fnames: true
+  })],
   watch: {
     exclude: "node_modules/**",
   },
