@@ -266,13 +266,13 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
     {
         InternalValue[columnIndex] = value;
 
+        Format();
+
         if (ValueChanged.HasDelegate)
         {
             _prevValue = JsonSerializer.Serialize(InternalValue);
             await ValueChanged.InvokeAsync(InternalValue.ToList());
         }
-
-        Format();
 
         var items = FormattedColumns.Select(c => c.Values[c.Index]).ToList();
 
