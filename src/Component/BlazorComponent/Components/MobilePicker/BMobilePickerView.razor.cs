@@ -106,6 +106,11 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
         if (isChanged)
         {
             Format();
+
+            if (ValueChanged.HasDelegate)
+            {
+                _ = ValueChanged.InvokeAsync(InternalValue);
+            }
         }
     }
 
