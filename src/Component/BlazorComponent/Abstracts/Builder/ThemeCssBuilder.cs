@@ -2,30 +2,27 @@
 {
     public class ThemeCssBuilder
     {
-        public string Build()
+        public string Build(ThemeOptions theme)
         {
-            var combinePrefix = Variables.Theme.CombinePrefix;
+            var combinePrefix = theme.CombinePrefix;
             combinePrefix ??= string.Empty;
             combinePrefix = combinePrefix.EndsWith(' ') ? combinePrefix : $"{combinePrefix} ";
 
-            if (Variables.Theme == null) return string.Empty;
+            if (theme == null) return string.Empty;
 
             var lstCss = new List<string>()
             {
-                $"{combinePrefix}a {{ color: { Variables.Theme.Primary }; }}",
-                Build(combinePrefix, nameof(Variables.Theme.Primary).ToLowerInvariant(), Variables.Theme.Primary),
-                Build(combinePrefix, nameof(Variables.Theme.Secondary).ToLowerInvariant(), Variables.Theme.Secondary),
-                Build(combinePrefix, nameof(Variables.Theme.Accent).ToLowerInvariant(), Variables.Theme.Accent),
-                Build(combinePrefix, nameof(Variables.Theme.Error).ToLowerInvariant(), Variables.Theme.Error),
-                Build(combinePrefix, nameof(Variables.Theme.Info).ToLowerInvariant(), Variables.Theme.Info),
-                Build(combinePrefix, nameof(Variables.Theme.Success).ToLowerInvariant(), Variables.Theme.Success),
-                Build(combinePrefix, nameof(Variables.Theme.Warning).ToLowerInvariant(), Variables.Theme.Warning),
+                $"{combinePrefix}a {{ color: {theme.Primary}; }}",
+                Build(combinePrefix, nameof(theme.Primary).ToLowerInvariant(), theme.Primary),
+                Build(combinePrefix, nameof(theme.Secondary).ToLowerInvariant(), theme.Secondary),
+                Build(combinePrefix, nameof(theme.Accent).ToLowerInvariant(), theme.Accent),
+                Build(combinePrefix, nameof(theme.Error).ToLowerInvariant(), theme.Error),
+                Build(combinePrefix, nameof(theme.Info).ToLowerInvariant(), theme.Info),
+                Build(combinePrefix, nameof(theme.Success).ToLowerInvariant(), theme.Success),
+                Build(combinePrefix, nameof(theme.Warning).ToLowerInvariant(), theme.Warning),
             };
 
-            Variables.Theme.UserDefined?.ForEach(kvp =>
-            {
-                lstCss.Add(Build(combinePrefix, kvp.Key.ToLowerInvariant(), kvp.Value));
-            });
+            theme.UserDefined?.ForEach(kvp => { lstCss.Add(Build(combinePrefix, kvp.Key.ToLowerInvariant(), kvp.Value)); });
 
             return $"<style>{string.Concat(lstCss)}</style>";
         }
