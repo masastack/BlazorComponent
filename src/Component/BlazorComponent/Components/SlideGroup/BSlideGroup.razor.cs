@@ -22,7 +22,11 @@ namespace BlazorComponent
 
         protected double ContentWidth { get; set; }
 
-        protected double ScrollOffset { get; set; }
+        protected double ScrollOffset
+        {
+            get => GetValue<double>();
+            set => SetValue(value);
+        }
 
         protected double StartX { get; set; }
 
@@ -50,7 +54,42 @@ namespace BlazorComponent
         private int _prevItemsLength;
         private StringNumber _prevValue;
         private bool _prevIsOverflowing;
-        private double _prevScrollOffset;
+
+        protected override void OnWatcherInitialized()
+        {
+            base.OnWatcherInitialized();
+
+            Watcher.Watch<double>(nameof(ScrollOffset), OnScrollOffsetChanged);
+        }
+
+        private async void OnScrollOffsetChanged(double val)
+        {
+            if (Rtl)
+            {
+                val = -val;
+            }
+
+            var scroll = val <= 0 ? Bias(-val) :
+                val > ContentWidth - WrapperWidth ? -(ContentWidth - WrapperWidth) + Bias(ContentWidth - WrapperWidth - val) : -val;
+
+            if (Rtl)
+            {
+                scroll = -scroll;
+            }
+
+
+            if (ContentRef.Context != null)
+            {
+                await JsInvokeAsync(JsInteropConstants.SetStyle, ContentRef, "transform", $"translateX({scroll}px)");
+            }
+        }
+
+        private double Bias(double val)
+        {
+            var c = 0.501;
+            var x = Math.Abs(val);
+            return Math.Sign(val) * (x / ((1 / c - 2) * (1 - x) + 1));
+        }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -76,17 +115,6 @@ namespace BlazorComponent
                 StateHasChanged();
 
                 await SetWidths(Value);
-            }
-
-            if (_prevScrollOffset != ScrollOffset)
-            {
-                _prevScrollOffset = ScrollOffset;
-
-                if (ContentRef.Context != null)
-                {
-                    await JsInvokeAsync(JsInteropConstants.SetStyle,
-                        ContentRef, "transform", $"translateX(-{ScrollOffset}px)");
-                }
             }
         }
 
