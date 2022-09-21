@@ -8,8 +8,8 @@ export default function registerDirective() {
         //ripple
         if (!target._bind && target.attributes["ripple"]) {
           target.addEventListener("mousedown", rippleShow);
-          target.addEventListener("mouseup", rippleHideWrapper);
-          target.addEventListener("mouseleave", rippleHideWrapper);
+          target.addEventListener("mouseup", rippleHide);
+          target.addEventListener("mouseleave", rippleHide);
 
           target._bind = true;
         } else if (target.nodeName == "BODY") {
@@ -18,8 +18,8 @@ export default function registerDirective() {
             var el: any = rippleEl;
             if (!el._bind) {
               el.addEventListener("mousedown", rippleShow);
-              el.addEventListener("mouseup", (e) => rippleHide(e));
-              el.addEventListener("mouseleave", (e) => rippleHide(e));
+              el.addEventListener("mouseup", rippleHide);
+              el.addEventListener("mouseleave", rippleHide);
 
               el._bind = true;
             }
@@ -31,12 +31,12 @@ export default function registerDirective() {
           var target: any = mutation.target;
           if (target.attributes["ripple"]) {
             target.addEventListener("mousedown", rippleShow);
-            target.addEventListener("mouseup", (e) => rippleHide(e));
-            target.addEventListener("mouseleave", (e) => rippleHide(e));
+            target.addEventListener("mouseup", rippleHide);
+            target.addEventListener("mouseleave", rippleHide);
           } else {
             target.removeEventListener("mousedown", rippleShow);
-            target.removeEventListener("mouseup", (e) => rippleHide(e));
-            target.removeEventListener("mouseleave", (e) => rippleHide(e));
+            target.removeEventListener("mouseup", rippleHide);
+            target.removeEventListener("mouseleave", rippleHide);
           }
         }
       }

@@ -820,22 +820,10 @@ export function elementScrollIntoView(selector: Element | string) {
   element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
 }
 
-const oldBodyCacheStack = [];
-
 const hasScrollbar = () => {
   let overflow = document.body.style.overflow;
   if (overflow && overflow === "hidden") return false;
   return document.body.scrollHeight > (window.innerHeight || document.documentElement.clientHeight);
-}
-
-export function createIconFromfontCN(scriptUrl) {
-  if (document.querySelector(`[data-namespace="${scriptUrl}"]`)) {
-    return;
-  }
-  const script = document.createElement('script');
-  script.setAttribute('src', scriptUrl);
-  script.setAttribute('data-namespace', scriptUrl);
-  document.body.appendChild(script);
 }
 
 export function getScroll() {
