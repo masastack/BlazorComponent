@@ -404,7 +404,7 @@ namespace BlazorComponent
                     }
                 }
 
-                valid = ErrorBucket.Count > 0;
+                valid = ErrorBucket.Count == 0;
             }
 
             return valid;
