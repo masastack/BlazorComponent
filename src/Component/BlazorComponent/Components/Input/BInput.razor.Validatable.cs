@@ -185,7 +185,7 @@ namespace BlazorComponent
             // mark it with hasInput
             HasInput = true;
 
-            NextTickIf(InternalValidate, () => !ValidateOnBlur);
+            NextTickIf(InternalValidate, () => !ValidateOnBlur && HasFocused);
 
             if (ValueChanged.HasDelegate)
             {
