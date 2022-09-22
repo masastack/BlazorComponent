@@ -425,9 +425,12 @@ namespace BlazorComponent
 
             _resetStatus = true;
 
-            EditContext.MarkAsUnmodified(ValueIdentifier);
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            if (ValueIdentifier.Model is not null)
+            {
+                EditContext.MarkAsUnmodified(ValueIdentifier);
+            }
 
-            // TODO: IList<TValue> ?
             InternalValue = default;
         }
 
