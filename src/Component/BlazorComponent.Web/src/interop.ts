@@ -1,6 +1,6 @@
 import registerDirective from "./directive/index";
 import { registerExtraEvents } from "./events/index";
-import { getElementSelector } from "./utils/helper";
+import { getDom, getElementSelector } from "./utils/helper";
 
 export function updateCanvas(element, hue: number) {
   const canvas = element as HTMLCanvasElement
@@ -103,27 +103,6 @@ function leave(element: HTMLElement) {
   setTimeout(() => {
     element.style.height = 0 + 'px';
   }, 10)
-}
-
-export function getDom(element) {
-  if (!element) {
-    element = document.body;  // TODO: really ???
-  } else if (typeof element === 'string') {
-    if (element === 'document') {
-      return document.documentElement;
-    } else if (element.indexOf('.') > 0) {
-      let array = element.split('.');
-      let el = document.querySelector(array[0]);
-      if (!el) {
-        return null;
-      }
-
-      element = el[array[1]];
-    } else {
-      element = document.querySelector(element);
-    }
-  }
-  return element;
 }
 
 export function getDomInfo(element, selector = "body") {
