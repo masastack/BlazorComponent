@@ -32,16 +32,6 @@ public class Theme
     public bool Dark { get; set; }
 
     public Themes Themes { get; }
-
-    public void ConfigureLight(Action<ThemeOptions> themeAction)
-    {
-        themeAction.Invoke(Themes.Light);
-    }
-
-    public void ConfigureDark(Action<ThemeOptions> themeAction)
-    {
-        themeAction.Invoke(Themes.Dark);
-    }
 }
 
 public class Themes
