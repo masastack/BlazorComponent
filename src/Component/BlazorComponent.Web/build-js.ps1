@@ -1,5 +1,5 @@
 param(
-  [Parameter()]
+  [Parameter(Mandatory = $true, HelpMessage = "Enter 'main' to build 'main.ts', enter 'input' to build 'input.ts'.")]
   [ValidateSet("main", "input")]
   [string]$file
 )

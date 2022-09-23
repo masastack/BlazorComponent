@@ -185,7 +185,7 @@ namespace BlazorComponent
             // mark it with hasInput
             HasInput = true;
 
-            NextTickIf(InternalValidate, () => !ValidateOnBlur);
+            NextTickIf(InternalValidate, () => !ValidateOnBlur && HasFocused);
 
             if (ValueChanged.HasDelegate)
             {
@@ -425,9 +425,12 @@ namespace BlazorComponent
 
             _resetStatus = true;
 
-            EditContext.MarkAsUnmodified(ValueIdentifier);
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            if (ValueIdentifier.Model is not null)
+            {
+                EditContext.MarkAsUnmodified(ValueIdentifier);
+            }
 
-            // TODO: IList<TValue> ?
             InternalValue = default;
         }
 

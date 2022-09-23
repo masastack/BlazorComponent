@@ -31,7 +31,10 @@ function registerInputEvents(
     const changeEventArgs = parseChangeEvent(event);
     changeEventArgs.value = startValue + event.data;
 
-    if (element.maxLength && changeEventArgs.value.length > element.maxLength) {
+    if (
+      element.maxLength !== -1 &&
+      changeEventArgs.value.length > element.maxLength
+    ) {
       changeEventArgs.value = changeEventArgs.value.substring(
         0,
         element.maxLength
