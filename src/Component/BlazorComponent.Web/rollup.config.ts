@@ -8,14 +8,12 @@ export default defineConfig({
   output: [
     {
       file: "../BlazorComponent/wwwroot/js/blazor-component.js",
-      format: "esm",
+      format: "iife",
       sourcemap: true,
     },
   ],
 
-  plugins: [typescript(), terser({
-    keep_fnames: true
-  })],
+  plugins: [typescript(), terser()],
   watch: {
     exclude: "node_modules/**",
   },

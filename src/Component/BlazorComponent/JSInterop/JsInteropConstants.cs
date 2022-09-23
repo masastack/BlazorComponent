@@ -2,183 +2,140 @@
 {
     public static class JsInteropConstants
     {
-        public static string GetDomInfo => $"{Variables.JsInteropFuncNamePrefix}getDomInfo";
+        private static string JsInteropFuncNamePrefix => "BlazorComponent.interop.";
 
-        public static string TriggerEvent => $"{Variables.JsInteropFuncNamePrefix}triggerEvent";
+        public static string GetDomInfo => $"{JsInteropFuncNamePrefix}getDomInfo";
 
-        public static string AddFileClickEventListener => $"{Variables.JsInteropFuncNamePrefix}addFileClickEventListener";
+        public static string TriggerEvent => $"{JsInteropFuncNamePrefix}triggerEvent";
 
-        public static string RemoveFileClickEventListener => $"{Variables.JsInteropFuncNamePrefix}removeFileClickEventListener";
+        public static string GetBoundingClientRect => $"{JsInteropFuncNamePrefix}getBoundingClientRect";
 
-        public static string ClearFile => $"{Variables.JsInteropFuncNamePrefix}clearFile";
+        public static string AddHtmlElementEventListener => $"{JsInteropFuncNamePrefix}addHtmlElementEventListener";
 
-        public static string UploadFile => $"{Variables.JsInteropFuncNamePrefix}uploadFile";
+        public static string RemoveHtmlElementEventListener => $"{JsInteropFuncNamePrefix}removeHtmlElementEventListener";
 
-        public static string GetObjectURL => $"{Variables.JsInteropFuncNamePrefix}getObjectURL";
+        public static string AddOutsideClickEventListener => $"{JsInteropFuncNamePrefix}addOutsideClickEventListener";
 
-        public static string GetFileInfo => $"{Variables.JsInteropFuncNamePrefix}getFileInfo";
+        public static string RemoveOutsideClickEventListener => $"{JsInteropFuncNamePrefix}removeOutsideClickEventListener";
 
-        public static string GetBoundingClientRect => $"{Variables.JsInteropFuncNamePrefix}getBoundingClientRect";
+        public static string HideScroll => $"{JsInteropFuncNamePrefix}hideScroll";
 
-        public static string GetFirstChildBoundingClientRect => $"{Variables.JsInteropFuncNamePrefix}getFirstChildBoundingClientRect";
+        public static string ShowScroll => $"{JsInteropFuncNamePrefix}showScroll";
 
-        public static string AddHtmlElementEventListener => $"{Variables.JsInteropFuncNamePrefix}addHtmlElementEventListener";
+        public static string Contains => $"{JsInteropFuncNamePrefix}contains";
 
-        public static string RemoveHtmlElementEventListener => $"{Variables.JsInteropFuncNamePrefix}removeHtmlElementEventListener";
+        public static string EqualsOrContains => $"{JsInteropFuncNamePrefix}equalsOrContains";
 
-        public static string AddOutsideClickEventListener => $"{Variables.JsInteropFuncNamePrefix}addOutsideClickEventListener";
+        public static string Copy => $"{JsInteropFuncNamePrefix}copy";
 
-        public static string RemoveOutsideClickEventListener => $"{Variables.JsInteropFuncNamePrefix}removeOutsideClickEventListener";
-        
-        public static string HideScroll => $"{Variables.JsInteropFuncNamePrefix}hideScroll";
+        public static string Log => $"{JsInteropFuncNamePrefix}log";
 
-        public static string ShowScroll => $"{Variables.JsInteropFuncNamePrefix}showScroll";
+        public static string Focus => $"{JsInteropFuncNamePrefix}focus";
 
-        public static string MatchMedia => $"{Variables.JsInteropFuncNamePrefix}matchMedia";
+        public static string Select => $"{JsInteropFuncNamePrefix}select";
 
-        public static string Contains => $"{Variables.JsInteropFuncNamePrefix}contains";
+        public static string HasFocus => $"{JsInteropFuncNamePrefix}hasFocus";
 
-        public static string EqualsOrContains => $"{Variables.JsInteropFuncNamePrefix}equalsOrContains";
+        public static string Blur => $"{JsInteropFuncNamePrefix}blur";
 
-        public static string Copy => $"{Variables.JsInteropFuncNamePrefix}copy";
+        public static string BackTop => $"{JsInteropFuncNamePrefix}backTop";
 
-        public static string Log => $"{Variables.JsInteropFuncNamePrefix}log";
+        public static string ScrollTo => $"{JsInteropFuncNamePrefix}scrollTo";
 
-        public static string Focus => $"{Variables.JsInteropFuncNamePrefix}focus";
+        public static string ScrollToActiveElement => $"{JsInteropFuncNamePrefix}scrollToActiveElement";
 
-        public static string Select => $"{Variables.JsInteropFuncNamePrefix}select";
+        public static string ScrollToPosition => $"{JsInteropFuncNamePrefix}scrollToPosition";
 
-        public static string HasFocus => $"{Variables.JsInteropFuncNamePrefix}hasFocus";
+        public static string AddCls => $"{JsInteropFuncNamePrefix}addCls";
 
-        public static string Blur => $"{Variables.JsInteropFuncNamePrefix}blur";
+        public static string AddClsToFirstChild => $"{JsInteropFuncNamePrefix}addClsToFirstChild";
 
-        public static string BackTop => $"{Variables.JsInteropFuncNamePrefix}backTop";
+        public static string RemoveCls => $"{JsInteropFuncNamePrefix}removeCls";
 
-        public static string ScrollTo => $"{Variables.JsInteropFuncNamePrefix}scrollTo";
+        public static string RemoveClsFromFirstChild => $"{JsInteropFuncNamePrefix}removeClsFromFirstChild";
 
-        public static string ScrollToActiveElement => $"{Variables.JsInteropFuncNamePrefix}scrollToActiveElement";
+        public static string AddElementToBody => $"{JsInteropFuncNamePrefix}addElementToBody";
 
-        public static string ScrollToPosition => $"{Variables.JsInteropFuncNamePrefix}scrollToPosition";
+        public static string DelElementFromBody => $"{JsInteropFuncNamePrefix}delElementFromBody";
 
-        public static string GetFirstChildDomInfo => $"{Variables.JsInteropFuncNamePrefix}getFirstChildDomInfo";
+        public static string AddElementTo => $"{JsInteropFuncNamePrefix}addElementTo";
 
-        public static string AddCls => $"{Variables.JsInteropFuncNamePrefix}addCls";
+        public static string DelElementFrom => $"{JsInteropFuncNamePrefix}delElementFrom";
 
-        public static string AddClsToFirstChild => $"{Variables.JsInteropFuncNamePrefix}addClsToFirstChild";
+        public static string GetActiveElement => $"{JsInteropFuncNamePrefix}getActiveElement";
 
-        public static string RemoveCls => $"{Variables.JsInteropFuncNamePrefix}removeCls";
+        public static string FocusDialog => $"{JsInteropFuncNamePrefix}focusDialog";
 
-        public static string RemoveClsFromFirstChild => $"{Variables.JsInteropFuncNamePrefix}removeClsFromFirstChild";
+        public static string GetWindow => $"{JsInteropFuncNamePrefix}getWindow";
 
-        public static string AddElementToBody => $"{Variables.JsInteropFuncNamePrefix}addElementToBody";
+        public static string GetWindowAndDocumentProps => $"{JsInteropFuncNamePrefix}getWindowAndDocumentProps";
 
-        public static string DelElementFromBody => $"{Variables.JsInteropFuncNamePrefix}delElementFromBody";
+        public static string GetScroll => $"{JsInteropFuncNamePrefix}getScroll";
 
-        public static string AddElementTo => $"{Variables.JsInteropFuncNamePrefix}addElementTo";
+        public static string GetInnerText => $"{JsInteropFuncNamePrefix}getInnerText";
 
-        public static string DelElementFrom => $"{Variables.JsInteropFuncNamePrefix}delElementFrom";
+        public static string GetMaxZIndex => $"{JsInteropFuncNamePrefix}getMaxZIndex";
 
-        public static string GetActiveElement => $"{Variables.JsInteropFuncNamePrefix}getActiveElement";
+        public static string DisposeObj => $"{JsInteropFuncNamePrefix}disposeObj";
 
-        public static string FocusDialog => $"{Variables.JsInteropFuncNamePrefix}focusDialog";
+        public static string ElementScrollIntoView => $"{JsInteropFuncNamePrefix}elementScrollIntoView";
 
-        public static string GetWindow => $"{Variables.JsInteropFuncNamePrefix}getWindow";
+        public static string GetStyle => $"{JsInteropFuncNamePrefix}getStyle";
 
-        public static string GetWindowAndDocumentProps => $"{Variables.JsInteropFuncNamePrefix}getWindowAndDocumentProps";
+        public static string RegisterTextFieldOnMouseDown => $"{JsInteropFuncNamePrefix}registerTextFieldOnMouseDown";
 
-        public static string DisableBodyScroll => $"{Variables.JsInteropFuncNamePrefix}disableBodyScroll";
+        public static string InsertAdjacentHTML => $"{JsInteropFuncNamePrefix}insertAdjacentHTML";
 
-        public static string EnableBodyScroll => $"{Variables.JsInteropFuncNamePrefix}enableBodyScroll";
+        public static string GetImageDimensions => $"{JsInteropFuncNamePrefix}getImageDimensions";
 
-        public static string DestroyAllDialog => $"{Variables.JsInteropFuncNamePrefix}destroyAllDialog";
+        public static string EnablePreventDefaultForEvent => $"{JsInteropFuncNamePrefix}enablePreventDefaultForEvent";
 
-        public static string CreateIconFromfontCN => $"{Variables.JsInteropFuncNamePrefix}createIconFromfontCN";
+        public static string ResizeObserver => $"{JsInteropFuncNamePrefix}resizeObserver";
 
-        public static string GetScroll => $"{Variables.JsInteropFuncNamePrefix}getScroll";
+        public static string IntersectionObserver => $"{JsInteropFuncNamePrefix}intersectionObserver";
 
-        public static string GetInnerText => $"{Variables.JsInteropFuncNamePrefix}getInnerText";
+        public static string GetBoundingClientRects => $"{JsInteropFuncNamePrefix}getBoundingClientRects";
 
-        public static string GetMaxZIndex => $"{Variables.JsInteropFuncNamePrefix}getMaxZIndex";
+        public static string GetSize => $"{JsInteropFuncNamePrefix}getSize";
 
-        public static string DisposeObj => $"{Variables.JsInteropFuncNamePrefix}disposeObj";
+        public static string GetProp => $"{JsInteropFuncNamePrefix}getProp";
 
-        public static string ElementScrollIntoView => $"{Variables.JsInteropFuncNamePrefix}elementScrollIntoView";
+        public static string IsMobile => $"{JsInteropFuncNamePrefix}isMobile";
 
-        public static string BindTableHeaderAndBodyScroll => $"{Variables.JsInteropFuncNamePrefix}bindTableHeaderAndBodyScroll";
+        public static string SetStyle => $"{JsInteropFuncNamePrefix}css";
 
-        public static string UnbindTableHeaderAndBodyScroll => $"{Variables.JsInteropFuncNamePrefix}unbindTableHeaderAndBodyScroll";
+        public static string GetZIndex => $"{JsInteropFuncNamePrefix}getZIndex";
 
-        public static string AddPreventKeys => $"{Variables.JsInteropFuncNamePrefix}addPreventKeys";
+        public static string GetMenuOrDialogMaxZIndex => $"{JsInteropFuncNamePrefix}getMenuOrDialogMaxZIndex";
 
-        public static string RemovePreventKeys => $"{Variables.JsInteropFuncNamePrefix}removePreventKeys";
+        public static string AddStepperEventListener => $"{JsInteropFuncNamePrefix}addStepperEventListener";
 
-        public static string AddPreventEnterOnOverlayVisible => $"{Variables.JsInteropFuncNamePrefix}addPreventEnterOnOverlayVisible";
+        public static string RemoveStepperEventListener => $"{JsInteropFuncNamePrefix}removeStepperEventListener";
 
-        public static string RemovePreventEnterOnOverlayVisible => $"{Variables.JsInteropFuncNamePrefix}removePreventEnterOnOverlayVisible";
+        public static string InitStepperWrapper => $"{JsInteropFuncNamePrefix}initStepperWrapper";
 
-        public static string GetStyle => $"{Variables.JsInteropFuncNamePrefix}getStyle";
+        public static string ContainsActiveElement => $"{JsInteropFuncNamePrefix}containsActiveElement";
 
-        public static string RegisterResizeTextArea => $"{Variables.JsInteropFuncNamePrefix}registerResizeTextArea";
+        public static string RegisterOTPInputOnInputEvent => $"{JsInteropFuncNamePrefix}registerOTPInputOnInputEvent";
 
-        public static string RegisterTextFieldOnMouseDown => $"{Variables.JsInteropFuncNamePrefix}registerTextFieldOnMouseDown";
+        public static string CopyChild => $"{JsInteropFuncNamePrefix}copyChild";
 
-        public static string DisposeResizeTextArea => $"{Variables.JsInteropFuncNamePrefix}disposeResizeTextArea";
+        public static string CopyText => $"{JsInteropFuncNamePrefix}copyText";
 
-        public static string InsertAdjacentHTML => $"{Variables.JsInteropFuncNamePrefix}insertAdjacentHTML";
+        public static string GetListIndexWhereAttributeExists => $"{JsInteropFuncNamePrefix}getListIndexWhereAttributeExists";
 
-        public static string GetImageDimensions => $"{Variables.JsInteropFuncNamePrefix}getImageDimensions";
+        public static string ScrollToTile => $"{JsInteropFuncNamePrefix}scrollToTile";
 
-        public static string EnablePreventDefaultForEvent => $"{Variables.JsInteropFuncNamePrefix}enablePreventDefaultForEvent";
+        public static string GetElementTranslateY => $"{JsInteropFuncNamePrefix}getElementTranslateY";
 
-        public static string ResizeObserver => $"{Variables.JsInteropFuncNamePrefix}resizeObserver";
+        public static string CheckIfThresholdIsExceededWhenScrolling => $"{JsInteropFuncNamePrefix}checkIfThresholdIsExceededWhenScrolling";
 
-        public static string IntersectionObserver => $"{Variables.JsInteropFuncNamePrefix}intersectionObserver";
+        public static string SetProperty => $"{JsInteropFuncNamePrefix}setProperty";
 
-        public static string GetBoundingClientRects => $"{Variables.JsInteropFuncNamePrefix}getBoundingClientRects";
+        public static string ScrollHeightWithoutHeight => $"{JsInteropFuncNamePrefix}getScrollHeightWithoutHeight";
 
-        public static string GetSize => $"{Variables.JsInteropFuncNamePrefix}getSize";
+        public static string UpdateWindowTransition => $"{JsInteropFuncNamePrefix}updateWindowTransition";
 
-        public static string GetProp => $"{Variables.JsInteropFuncNamePrefix}getProp";
-
-        public static string IsMobile => $"{Variables.JsInteropFuncNamePrefix}isMobile";
-
-        public static string SetStyle => $"{Variables.JsInteropFuncNamePrefix}css";
-
-        public static string GetZIndex => $"{Variables.JsInteropFuncNamePrefix}getZIndex";
-
-        public static string GetMenuOrDialogMaxZIndex => $"{Variables.JsInteropFuncNamePrefix}getMenuOrDialogMaxZIndex";
-
-        public static string AddStepperEventListener => $"{Variables.JsInteropFuncNamePrefix}addStepperEventListener";
-
-        public static string RemoveStepperEventListener => $"{Variables.JsInteropFuncNamePrefix}removeStepperEventListener";
-
-        public static string InitStepperWrapper => $"{Variables.JsInteropFuncNamePrefix}initStepperWrapper";
-
-        public static string UpdateCanvas => $"{Variables.JsInteropFuncNamePrefix}updateCanvas";
-
-        public static string ContainsActiveElement => $"{Variables.JsInteropFuncNamePrefix}containsActiveElement";
-
-        public static string RegisterOTPInputOnInputEvent => $"{Variables.JsInteropFuncNamePrefix}registerOTPInputOnInputEvent";
-
-        public static string CopyChild => $"{Variables.JsInteropFuncNamePrefix}copyChild";
-
-        public static string CopyText => $"{Variables.JsInteropFuncNamePrefix}copyText";
-
-        public static string GetListIndexWhereAttributeExists => $"{Variables.JsInteropFuncNamePrefix}getListIndexWhereAttributeExists";
-
-        public static string ScrollToTile => $"{Variables.JsInteropFuncNamePrefix}scrollToTile";
-
-        public static string GetElementTranslateY => $"{Variables.JsInteropFuncNamePrefix}getElementTranslateY";
-
-        public static string CheckIfThresholdIsExceededWhenScrolling => $"{Variables.JsInteropFuncNamePrefix}checkIfThresholdIsExceededWhenScrolling";
-        
-        public static string SetProperty => $"{Variables.JsInteropFuncNamePrefix}setProperty";
-
-        public static string ScrollHeightWithoutHeight => $"{Variables.JsInteropFuncNamePrefix}getScrollHeightWithoutHeight";
-
-        public static string UpdateWindowTransition => $"{Variables.JsInteropFuncNamePrefix}updateWindowTransition";
-
-        public static string InvokeMultipleMethod => $"{Variables.JsInteropFuncNamePrefix}invokeMultipleMethod";
-
+        public static string InvokeMultipleMethod => $"{JsInteropFuncNamePrefix}invokeMultipleMethod";
     }
 }
