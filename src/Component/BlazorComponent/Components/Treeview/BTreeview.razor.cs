@@ -291,7 +291,15 @@ namespace BlazorComponent
 
         public async Task EmitSelectedAsync()
         {
-            var selected = Nodes.Values.Where(r => r.IsSelected && !r.Children.Any()).Select(r => r.Item).ToList();
+            var selected = Nodes.Values.Where(r =>
+            {
+                if (SelectionType == SelectionType.Independent)
+                {
+                    return  r.IsSelected;
+                }
+
+                return r.IsSelected && !r.Children.Any();
+            }).Select(r => r.Item).ToList();
 
             if (ValueChanged.HasDelegate)
             {
