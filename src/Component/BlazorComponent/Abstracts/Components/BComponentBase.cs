@@ -4,15 +4,27 @@ namespace BlazorComponent
 {
     public abstract class BComponentBase : ComponentBase, IDisposable, IHandleEvent
     {
-        private readonly Queue<Func<Task>> _nextTickQueue = new();
-
-        [Parameter]
-        public ForwardRef RefBack { get; set; } = new ForwardRef();
-
         [Inject]
         public virtual IJSRuntime Js { get; set; }
 
+        [CascadingParameter]
+        protected IErrorHandler? ErrorHandler { get; set; }
+
+        [Parameter]
+        public ForwardRef RefBack { get; set; } = new();
+
+        private readonly Queue<Func<Task>> _nextTickQueue = new();
+
+        private ParameterView ParameterView { get; set; }
+
         protected bool IsDisposed { get; private set; }
+
+        public override Task SetParametersAsync(ParameterView parameters)
+        {
+            ParameterView = parameters;
+
+            return base.SetParametersAsync(parameters);
+        }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -31,6 +43,17 @@ namespace BlazorComponent
                     await callback();
                 }
             }
+        }
+
+        /// <summary>
+        /// Check whether the parameter has been assigned value.
+        /// </summary>
+        /// <param name="parameterName"></param>
+        /// <typeparam name="TValue"></typeparam>
+        /// <returns></returns>
+        protected bool IsDirtyParameter<TValue>(string parameterName)
+        {
+            return ParameterView.TryGetValue<TValue>(parameterName, out _);
         }
 
         protected void NextTick(Func<Task> callback)
@@ -115,9 +138,6 @@ namespace BlazorComponent
         {
             await Js.InvokeVoidAsync(code, args);
         }
-
-        [CascadingParameter]
-        protected IErrorHandler? ErrorHandler { get; set; }
 
         protected virtual bool AfterHandleEventShouldRender()
         {
