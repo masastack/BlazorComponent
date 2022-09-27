@@ -36,6 +36,8 @@ public partial class BMobilePickerColumn<TColumnItem>
     private const int MomentumLimitTime  = 300;
     private const int MomentumLimitDistance  = 15;
 
+    private static long MillisecondFrom19700101 => (DateTime.UtcNow.Ticks - 621355968000000000) / 1000;
+
     private bool _moving;
     private double _startOffset;
     private Func<Task> _transitionEndTrigger;
@@ -88,7 +90,7 @@ public partial class BMobilePickerColumn<TColumnItem>
 
         Duration = 0;
         _transitionEndTrigger = null;
-        _touchStartTime = DateTime.Now.Millisecond;
+        _touchStartTime = MillisecondFrom19700101;
         _momentumOffset = _startOffset;
     }
 
@@ -104,7 +106,7 @@ public partial class BMobilePickerColumn<TColumnItem>
 
         Offset = Range(_startOffset + _deltaY, -(Count * ItemHeight), ItemHeight);
 
-        var now = DateTime.Now.Millisecond;
+        var now = MillisecondFrom19700101;
         if (now - _touchStartTime > MomentumLimitTime)
         {
             _touchStartTime = now;
@@ -115,7 +117,7 @@ public partial class BMobilePickerColumn<TColumnItem>
     private void OnTouchend(TouchEventArgs args)
     {
         var distance = Offset - _momentumOffset;
-        var duration = DateTime.Now.Millisecond - _touchStartTime;
+        var duration = MillisecondFrom19700101 - _touchStartTime;
         var allowMomentum = duration < MomentumLimitTime && Math.Abs(distance) > MomentumLimitDistance;
 
         if (allowMomentum)
