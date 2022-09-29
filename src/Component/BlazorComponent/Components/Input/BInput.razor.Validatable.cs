@@ -267,7 +267,7 @@ namespace BlazorComponent
             // LazyValue is the getter of InternalValue, LazyValue changes cannot notify the watcher of InternalValue
             if (!EqualityComparer<TValue>.Default.Equals(val, InternalValue))
             {
-                OnInternalValueChange(val);
+                InternalValue = val;
             }
 
             LazyValue = val;
