@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
+﻿using BlazorComponent.Form;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace BlazorComponent
 {
@@ -119,7 +120,7 @@ namespace BlazorComponent
 
             if (EditContext != null)
             {
-                valid = EditContext.Validate();
+                if (valid is true) valid = EditContext.Validate();
             }
 
             if (ValueChanged.HasDelegate)
@@ -128,6 +129,62 @@ namespace BlazorComponent
             }
 
             return valid;
+        }
+
+        public void ParseFormValidation(string validationMessage)
+        {
+            if (TryParseFormValidation(validationMessage) is false)
+                throw new Exception(validationMessage);
+        }
+
+        public bool TryParseFormValidation(string validationMessage)
+        {
+            if (string.IsNullOrEmpty(validationMessage)) return false;
+            var resultStrs = validationMessage.Split("\r\n").ToList();
+            if (resultStrs.Count < 1 || resultStrs[0].StartsWith("Validation failed:") is false) return false;
+            resultStrs.RemoveAt(0);
+            var validationResults = new List<ValidationResult>();
+            foreach (var resultStr in resultStrs)
+            {
+                int startIndex = resultStr.IndexOf(" -- ") + 4;
+                if (startIndex < 4) continue;
+                int colonIndex = resultStr.IndexOf(": ");
+                var field = resultStr.Substring(startIndex, colonIndex - startIndex);
+                int severityIndex = resultStr.IndexOf("Severity: ");
+                colonIndex += 2;
+                var msg = resultStr.Substring(colonIndex, severityIndex - colonIndex);
+                Enum.TryParse<ValidationResultTypes>(resultStr.Substring(severityIndex + 10), out var type);
+                validationResults.Add(new ValidationResult
+                {
+                    Message = msg,
+                    Field = field,
+                    ValidationResultType = type
+                });
+            }
+            ParseFormValidation(validationResults);
+
+            return true;
+        }
+
+        public void ParseFormValidation(List<ValidationResult> validationResults)
+        {
+            var messageStore = new ValidationMessageStore(EditContext);
+            foreach (var validationResult in validationResults.Where(item => item.ValidationResultType == ValidationResultTypes.Error))
+            {
+                var field = new FieldIdentifier(Model, validationResult.Field);
+                var validatable = Validatables.FirstOrDefault(item => item.ValueIdentifier.Equals(field));
+                if (validatable is not null)
+                {
+                    validatable.Validate();
+                    messageStore.Add(field, validationResult.Message);
+                }
+            }
+            EditContext.NotifyValidationStateChanged();
+            if (ValueChanged.HasDelegate)
+            {
+                _ = ValueChanged.InvokeAsync(false);
+            }
+            else Value = false;
         }
 
         public void Reset()
