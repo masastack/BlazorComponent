@@ -126,7 +126,7 @@ namespace BlazorComponent
             {
                  var success = EditContext.Validate();
 
-                if (valid is true) valid = success;
+                 valid = valid && success;
             }
 
             if (ValueChanged.HasDelegate)
