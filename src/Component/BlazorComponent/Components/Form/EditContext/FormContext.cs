@@ -7,7 +7,7 @@ public class FormContext
 {
     public EditContext EditContext { get; }
 
-    public BForm Form { get; }
+    private BForm Form { get; }
 
     public FormContext(EditContext editContext, BForm form)
     {
@@ -17,9 +17,24 @@ public class FormContext
 
     public bool Validate() => Form.Validate();
 
-    public void ParseFormValidation(string validationMessage) => Form.ParseFormValidation(validationMessage);
+    /// <summary>
+    /// parse form validation result,if parse faield throw exception
+    /// </summary>
+    /// <param name="validationResult">
+    /// validation result
+    /// see deatils https://blazor.masastack.com/components/forms
+    /// </param>
+    public void ParseFormValidation(string validationResult) => Form.ParseFormValidation(validationResult);
 
-    public bool TryParseFormValidation(string validationMessage) => Form.TryParseFormValidation(validationMessage);
+    /// <summary>
+    /// parse form validation result,if parse faield return false
+    /// </summary>
+    /// <param name="validationResult">
+    /// validation result
+    /// see deatils https://blazor.masastack.com/components/forms
+    /// </param>
+    /// <returns></returns>
+    public bool TryParseFormValidation(string validationResult) => Form.TryParseFormValidation(validationResult);
 
-    public void ParseFormValidation(List<ValidationResult> validationResults) => Form.ParseFormValidation(validationResults);
+    public void ParseFormValidation(IEnumerable<ValidationResult> validationResults) => Form.ParseFormValidation(validationResults);
 }

@@ -124,7 +124,9 @@ namespace BlazorComponent
 
             if (EditContext != null)
             {
-                if (valid is true) valid = EditContext.Validate();
+                 var success = EditContext.Validate();
+
+                if (valid is true) valid = success;
             }
 
             if (ValueChanged.HasDelegate)
@@ -135,16 +137,31 @@ namespace BlazorComponent
             return valid;
         }
 
-        public void ParseFormValidation(string validationMessage)
+        /// <summary>
+        /// parse form validation result,if parse faield throw exception
+        /// </summary>
+        /// <param name="validationResult">
+        /// validation result
+        /// see deatils https://blazor.masastack.com/components/forms
+        /// </param>
+        public void ParseFormValidation(string validationResult)
         {
-            if (TryParseFormValidation(validationMessage) is false)
-                throw new Exception(validationMessage);
+            if (TryParseFormValidation(validationResult) is false)
+                throw new Exception(validationResult);
         }
 
-        public bool TryParseFormValidation(string validationMessage)
+        /// <summary>
+        /// parse form validation result,if parse faield return false
+        /// </summary>
+        /// <param name="validationResult">
+        /// validation result
+        /// see deatils https://blazor.masastack.com/components/forms
+        /// </param>
+        /// <returns></returns>
+        public bool TryParseFormValidation(string validationResult)
         {
-            if (string.IsNullOrEmpty(validationMessage)) return false;
-            var resultStrs = validationMessage.Split("\r\n").ToList();
+            if (string.IsNullOrEmpty(validationResult)) return false;
+            var resultStrs = validationResult.Split("\r\n").ToList();
             if (resultStrs.Count < 1 || resultStrs[0].StartsWith("Validation failed:") is false) return false;
             resultStrs.RemoveAt(0);
             var validationResults = new List<ValidationResult>();
@@ -165,12 +182,12 @@ namespace BlazorComponent
                     ValidationResultType = type
                 });
             }
-            ParseFormValidation(validationResults);
+            ParseFormValidation(validationResults.ToArray());
 
             return true;
         }
 
-        public void ParseFormValidation(List<ValidationResult> validationResults)
+        public void ParseFormValidation(IEnumerable<ValidationResult> validationResults)
         {
             var messageStore = new ValidationMessageStore(EditContext);
             foreach (var validationResult in validationResults.Where(item => item.ValidationResultType == ValidationResultTypes.Error))

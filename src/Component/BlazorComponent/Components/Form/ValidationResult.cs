@@ -8,9 +8,3 @@ public class ValidationResult
 
     public ValidationResultTypes ValidationResultType { get; set; }
 }
-
-public enum ValidationResultTypes
-{
-    Error = 1,
-    warning
-}
