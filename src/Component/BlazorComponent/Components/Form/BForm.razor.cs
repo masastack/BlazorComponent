@@ -1,9 +1,14 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
+﻿using BlazorComponent.Form;
+using Microsoft.AspNetCore.Components.Forms;
+using System.Collections.Concurrent;
+using System.Reflection;
 
 namespace BlazorComponent
 {
     public partial class BForm : BDomComponentBase
     {
+        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _modelPropertiesMap = new();
+
         [Inject]
         public IServiceProvider ServiceProvider { get; set; }
 
@@ -119,7 +124,9 @@ namespace BlazorComponent
 
             if (EditContext != null)
             {
-                valid = EditContext.Validate();
+                 var success = EditContext.Validate();
+
+                 valid = valid && success;
             }
 
             if (ValueChanged.HasDelegate)
@@ -128,6 +135,128 @@ namespace BlazorComponent
             }
 
             return valid;
+        }
+
+        /// <summary>
+        /// parse form validation result,if parse faield throw exception
+        /// </summary>
+        /// <param name="validationResult">
+        /// validation result
+        /// see deatils https://blazor.masastack.com/components/forms
+        /// </param>
+        public void ParseFormValidation(string validationResult)
+        {
+            if (TryParseFormValidation(validationResult) is false)
+                throw new Exception(validationResult);
+        }
+
+        /// <summary>
+        /// parse form validation result,if parse faield return false
+        /// </summary>
+        /// <param name="validationResult">
+        /// validation result
+        /// see deatils https://blazor.masastack.com/components/forms
+        /// </param>
+        /// <returns></returns>
+        public bool TryParseFormValidation(string validationResult)
+        {
+            if (string.IsNullOrEmpty(validationResult)) return false;
+            var resultStrs = validationResult.Split("\r\n").ToList();
+            if (resultStrs.Count < 1 || resultStrs[0].StartsWith("Validation failed:") is false) return false;
+            resultStrs.RemoveAt(0);
+            var validationResults = new List<ValidationResult>();
+            foreach (var resultStr in resultStrs)
+            {
+                int startIndex = resultStr.IndexOf(" -- ") + 4;
+                if (startIndex < 4) continue;
+                int colonIndex = resultStr.IndexOf(": ");
+                var field = resultStr.Substring(startIndex, colonIndex - startIndex);
+                int severityIndex = resultStr.IndexOf("Severity: ");
+                colonIndex += 2;
+                var msg = resultStr.Substring(colonIndex, severityIndex - colonIndex);
+                Enum.TryParse<ValidationResultTypes>(resultStr.Substring(severityIndex + 10), out var type);
+                validationResults.Add(new ValidationResult
+                {
+                    Message = msg,
+                    Field = field,
+                    ValidationResultType = type
+                });
+            }
+            ParseFormValidation(validationResults.ToArray());
+
+            return true;
+        }
+
+        public void ParseFormValidation(IEnumerable<ValidationResult> validationResults)
+        {
+            var messageStore = new ValidationMessageStore(EditContext);
+            foreach (var validationResult in validationResults.Where(item => item.ValidationResultType == ValidationResultTypes.Error))
+            {
+                var model = Model;
+                var field = validationResult.Field;
+                if (validationResult.Field.Contains('.'))
+                {
+                    var fieldChunks = validationResult.Field.Split('.');
+                    field = fieldChunks.Last();
+                    foreach (var fieldChunk in fieldChunks)
+                    {
+                        if(fieldChunk != field)
+                            model = GetModelValue(model, fieldChunk, () => throw new Exception($"{validationResult.Field} is error,can not read {fieldChunk}"));
+                    }                
+                }
+                var fieldIdentifuer = new FieldIdentifier(model, field);
+                var validatable = Validatables.FirstOrDefault(item => item.ValueIdentifier.Equals(fieldIdentifuer));
+                if (validatable is not null)
+                {
+                    validatable.Validate();
+                    messageStore.Add(fieldIdentifuer, validationResult.Message);
+                }
+            }
+            EditContext.NotifyValidationStateChanged();
+            if (ValueChanged.HasDelegate)
+            {
+                _ = ValueChanged.InvokeAsync(false);
+            }
+            else Value = false;
+
+            object GetModelValue(object model, string fieldChunk, Action whenError)
+            {
+                var type = model.GetType();
+                if (_modelPropertiesMap.TryGetValue(type, out var propertyInfos) is false)
+                {
+                    propertyInfos = type.GetProperties();
+                    _modelPropertiesMap[type] = propertyInfos;
+                }
+                if (fieldChunk.Contains('['))
+                {
+                    var leftBracketsIndex = fieldChunk.IndexOf('[') + 1;
+                    var rightBracketsIndex = fieldChunk.IndexOf(']');
+                    var filedName = fieldChunk.Substring(0, leftBracketsIndex - 1);
+                    var propertyInfo = propertyInfos.FirstOrDefault(item => item.Name == filedName);
+                    if (propertyInfo is null) whenError.Invoke();
+                    model = propertyInfo.GetValue(model);
+                    var enumerable = model as System.Collections.IEnumerable;
+                    var index = Convert.ToInt32(fieldChunk.Substring(leftBracketsIndex, rightBracketsIndex - leftBracketsIndex));
+                    var i = 0;
+                    foreach (var item in enumerable)
+                    {
+                        if (i == index)
+                        {
+                            model = item;
+                            break;
+                        }
+                        i++;
+                    }
+                }
+                else
+                {
+                    var propertyInfo = propertyInfos.FirstOrDefault(item => item.Name == fieldChunk);
+                    if (propertyInfo is null) whenError.Invoke();
+                    model = propertyInfo.GetValue(model);
+                }
+
+                return model;
+            }
         }
 
         public void Reset()

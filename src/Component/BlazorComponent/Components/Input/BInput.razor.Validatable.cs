@@ -70,7 +70,7 @@ namespace BlazorComponent
 
         protected EditContext OldEditContext { get; set; }
 
-        protected FieldIdentifier ValueIdentifier { get; set; }
+        public FieldIdentifier ValueIdentifier { get; set; }
 
         protected bool HasInput { get; set; }
 
