@@ -481,14 +481,31 @@ function slideTo(targetPageY) {
   }, 10);
 }
 
-export function scrollTo(target) {
+export function scrollIntoView(target, arg?: boolean | ScrollIntoViewOptions) {
   let dom = getDom(target);
   if (dom instanceof HTMLElement) {
-    dom.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-      inline: "nearest"
-    });
+    if (arg === null || arg == undefined) {
+      dom.scrollIntoView();
+    } else if (typeof arg === 'boolean') {
+      dom.scrollIntoView(arg);
+    } else {
+      dom.scrollIntoView({
+        block: arg.block == null ? undefined : arg.block,
+        inline: arg.inline == null ? undefined : arg.inline,
+        behavior: arg.behavior
+      })
+    }
+  }
+}
+
+export function scrollTo(target, options: ScrollToOptions) {
+  let dom = getDom(target);
+  if (dom instanceof HTMLElement) {
+    dom.scrollTo({
+      left: options.left === null ? undefined : options.left,
+      top: options.top === null ? undefined : options.top,
+      behavior: options.behavior
+    })
   }
 }
 
@@ -501,11 +518,6 @@ export function scrollToActiveElement(container, target) {
   }
 
   dom.scrollTop = target.offsetTop - dom.offsetHeight / 2 + target.offsetHeight / 2;
-}
-
-export function scrollToPosition(container, position) {
-  var dom = getDom(container);
-  dom.scrollTo({ top: position, behavior: 'smooth'})
 }
 
 export function addClsToFirstChild(element, className) {

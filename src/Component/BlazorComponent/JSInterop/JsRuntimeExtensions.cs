@@ -36,7 +36,7 @@ public static class JsRuntimeExtensions
             extras
         );
     }
-    
+
     public static async Task AddHtmlElementEventListener(this IJSRuntime jsRuntime, string selector, string type, Func<Task> callback,
         OneOf<EventListenerOptions, bool> options, EventListenerExtras extras = null)
     {
@@ -52,5 +52,17 @@ public static class JsRuntimeExtensions
     public static async Task RemoveHtmlElementEventListener(this IJSRuntime jsRuntime, string selector, string type)
     {
         await jsRuntime.InvokeVoidAsync(JsInteropConstants.RemoveHtmlElementEventListener, selector, type);
+    }
+
+    public static async Task ScrollTo(this IJSRuntime jsRuntime, ElementReference el, double? top, double? left = null,
+        ScrollBehavior behavior = ScrollBehavior.Smooth)
+    {
+        await jsRuntime.InvokeVoidAsync(JsInteropConstants.ScrollTo, el, new ScrollToOptions(left, top, behavior));
+    }
+
+    public static async Task ScrollIntoView(this IJSRuntime jsRuntime, ElementReference el, ScrollLogicalPosition? block,
+        ScrollLogicalPosition? inline, ScrollBehavior behavior = ScrollBehavior.Smooth)
+    {
+        await jsRuntime.InvokeVoidAsync(JsInteropConstants.ScrollIntoView, el, new ScrollIntoViewOptions(block, inline, behavior));
     }
 }
