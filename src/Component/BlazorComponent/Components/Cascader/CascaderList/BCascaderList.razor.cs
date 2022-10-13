@@ -5,9 +5,6 @@ namespace BlazorComponent
     public partial class BCascaderList<TItem, TValue>
     {
         [Parameter]
-        public bool ChangeOnSelect { get; set; }
-
-        [Parameter]
         public IList<TItem> Items { get; set; }
 
         [Parameter]
@@ -68,14 +65,7 @@ namespace BlazorComponent
 
             if (OnSelect.HasDelegate)
             {
-                if (ChangeOnSelect)
-                {
-                    await OnSelect.InvokeAsync((item, IsLast));
-                }
-                else if (IsLast)
-                {
-                    await OnSelect.InvokeAsync((item, true));
-                }
+                await OnSelect.InvokeAsync((item, IsLast));
             }
         }
     }
