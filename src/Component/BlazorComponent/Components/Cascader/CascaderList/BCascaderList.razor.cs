@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using BlazorComponent.JSInterop;
+using BlazorComponent.Web;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
@@ -43,7 +46,7 @@ namespace BlazorComponent
             SelectedItem = default;
         }
 
-        protected async Task SelectItemAsync(TItem item)
+        protected async Task SelectItemAsync(TItem item, MouseEventArgs args)
         {
             // clear the child cascader's selection if the item is equal to SelectedItem
             if (EqualityComparer<TItem>.Default.Equals(SelectedItem, item))
@@ -65,6 +68,8 @@ namespace BlazorComponent
 
             if (OnSelect.HasDelegate)
             {
+                var itemRef = ((MouseEventWithRefArgs)args).ElementReference;
+                NextTick(async () => await Js.ScrollIntoParentView(itemRef, true,  true, 4));
                 await OnSelect.InvokeAsync((item, IsLast));
             }
         }

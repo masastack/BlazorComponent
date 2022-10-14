@@ -44,6 +44,8 @@
 
         public static string ScrollIntoView => $"{JsInteropFuncNamePrefix}scrollIntoView";
 
+        public static string ScrollIntoParentView => $"{JsInteropFuncNamePrefix}scrollIntoParentView";
+
         public static string ScrollToActiveElement => $"{JsInteropFuncNamePrefix}scrollToActiveElement";
 
         public static string AddCls => $"{JsInteropFuncNamePrefix}addCls";

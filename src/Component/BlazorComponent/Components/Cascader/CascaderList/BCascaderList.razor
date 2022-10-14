@@ -9,7 +9,8 @@
             @foreach (var item in Items)
             {
                 var children = ItemChildren(item);
-                <BListItem @onmousedown:preventDefault OnClick="() => SelectItemAsync(item)"
+                <BListItem @onmousedown:preventDefault 
+                           OnClick="(args) => SelectItemAsync(item, args)"
                            @attributes="@GetAttributes(typeof(BListItem), data: item)">
                     <BListItemContent @attributes="@GetAttributes(typeof(BListItemContent))">
                         <BListItemTitle>
@@ -28,7 +29,6 @@
                             </BIcon>
                         }
                     </BListItemIcon>
-
                 </BListItem>
             }
         </BList>
