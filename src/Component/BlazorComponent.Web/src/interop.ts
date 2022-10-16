@@ -501,7 +501,7 @@ export function scrollIntoView(target, arg?: boolean | ScrollIntoViewOptions) {
 export function scrollIntoParentView(
   target,
   inline = false,
-  offset = false,
+  start = false,
   level = 1,
   behavior: ScrollBehavior = "smooth",
 ) {
@@ -521,31 +521,32 @@ export function scrollIntoParentView(
     };
 
     if (inline) {
-      const to = dom.offsetLeft - parent.offsetLeft;
-      if (to - parent.scrollLeft < parent.offsetLeft) {
+      if (start) {
+        options.left = dom.offsetLeft
+      } else {
+        const to = dom.offsetLeft - parent.offsetLeft;
+        if (to - parent.scrollLeft < 0) {
         options.left = to;
       } else if (
         to + dom.offsetWidth - parent.scrollLeft >
         parent.offsetWidth
-      ) {
-        options.left = to + dom.offsetWidth - parent.offsetWidth;
-      }
-      if (options.left && offset) {
-          options.left += dom.clientWidth;
+        ) {
+          options.left = to + dom.offsetWidth - parent.offsetWidth;
+        }
       }
     } else {
-      const to = dom.offsetTop - parent.offsetTop;
-      if (to - parent.scrollTop < 0) {
-        options.top = to;
-      } else if (
-        to + dom.offsetHeight - parent.scrollTop >
-        parent.offsetHeight
-      ) {
-        options.top = to + dom.offsetHeight - parent.offsetHeight;
-      }
-
-      if (options.top && offset) {
-        options.top += dom.clientHeight;
+      if (start) {
+        options.top = dom.offsetTop;
+      } else {
+        const to = dom.offsetTop - parent.offsetTop;
+        if (to - parent.scrollTop < 0) {
+          options.top = to;
+        } else if (
+          to + dom.offsetHeight - parent.scrollTop >
+          parent.offsetHeight
+          ) {
+            options.top = to + dom.offsetHeight - parent.offsetHeight;
+          }
       }
     }
 
@@ -558,11 +559,12 @@ export function scrollIntoParentView(
 export function scrollTo(target, options: ScrollToOptions) {
   let dom = getDom(target);
   if (dom instanceof HTMLElement) {
-    dom.scrollTo({
+    const o = {
       left: options.left === null ? undefined : options.left,
       top: options.top === null ? undefined : options.top,
       behavior: options.behavior
-    })
+    }
+    dom.scrollTo(o)
   }
 }
 
