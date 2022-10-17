@@ -136,7 +136,7 @@ namespace BlazorComponent
 
             if (OnClick.HasDelegate)
             {
-                await OnClick.InvokeAsync(args);
+                await OnClick.InvokeAsync(new MouseEventWithRefArgs(args, Ref));
             }
 
             await ToggleAsync();

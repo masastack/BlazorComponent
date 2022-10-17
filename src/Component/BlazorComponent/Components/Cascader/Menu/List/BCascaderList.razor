@@ -4,8 +4,10 @@
 @typeparam TInput
 @inherits ComponentPartBase<TInput>
 
-<BCascaderList TItem="TItem"
-               TValue="TValue"
-               Items="ComputedItems"
-               @attributes="@GetAttributes(typeof(BCascaderList<,>))">
-</BCascaderList>
+<div class="@CssProvider.GetClass("columns")">
+    <BCascaderColumn TItem="TItem"
+                     TValue="TValue"
+                     Items="ComputedItems"
+                     @attributes="@GetAttributes(typeof(BCascaderColumn<,>))">
+    </BCascaderColumn>
+</div>

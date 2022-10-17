@@ -481,14 +481,90 @@ function slideTo(targetPageY) {
   }, 10);
 }
 
-export function scrollTo(target) {
+export function scrollIntoView(target, arg?: boolean | ScrollIntoViewOptions) {
   let dom = getDom(target);
   if (dom instanceof HTMLElement) {
-    dom.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-      inline: "nearest"
-    });
+    if (arg === null || arg == undefined) {
+      dom.scrollIntoView();
+    } else if (typeof arg === 'boolean') {
+      dom.scrollIntoView(arg);
+    } else {
+      dom.scrollIntoView({
+        block: arg.block == null ? undefined : arg.block,
+        inline: arg.inline == null ? undefined : arg.inline,
+        behavior: arg.behavior
+      })
+    }
+  }
+}
+
+export function scrollIntoParentView(
+  target,
+  inline = false,
+  start = false,
+  level = 1,
+  behavior: ScrollBehavior = "smooth",
+) {
+  const dom = getDom(target);
+  if (dom instanceof HTMLElement) {
+    let parent: HTMLElement = dom;
+    while (level > 0) {
+      parent = parent.parentElement;
+      level--;
+      if (!parent) {
+        return;
+      }
+    }
+
+    const options: ScrollToOptions = {
+      behavior,
+    };
+
+    if (inline) {
+      if (start) {
+        options.left = dom.offsetLeft
+      } else {
+        const to = dom.offsetLeft - parent.offsetLeft;
+        if (to - parent.scrollLeft < 0) {
+        options.left = to;
+      } else if (
+        to + dom.offsetWidth - parent.scrollLeft >
+        parent.offsetWidth
+        ) {
+          options.left = to + dom.offsetWidth - parent.offsetWidth;
+        }
+      }
+    } else {
+      if (start) {
+        options.top = dom.offsetTop;
+      } else {
+        const to = dom.offsetTop - parent.offsetTop;
+        if (to - parent.scrollTop < 0) {
+          options.top = to;
+        } else if (
+          to + dom.offsetHeight - parent.scrollTop >
+          parent.offsetHeight
+          ) {
+            options.top = to + dom.offsetHeight - parent.offsetHeight;
+          }
+      }
+    }
+
+    if (options.left || options.top) {
+      parent.scrollTo(options);
+    }
+  }
+}
+
+export function scrollTo(target, options: ScrollToOptions) {
+  let dom = getDom(target);
+  if (dom instanceof HTMLElement) {
+    const o = {
+      left: options.left === null ? undefined : options.left,
+      top: options.top === null ? undefined : options.top,
+      behavior: options.behavior
+    }
+    dom.scrollTo(o)
   }
 }
 
@@ -501,11 +577,6 @@ export function scrollToActiveElement(container, target) {
   }
 
   dom.scrollTop = target.offsetTop - dom.offsetHeight / 2 + target.offsetHeight / 2;
-}
-
-export function scrollToPosition(container, position) {
-  var dom = getDom(container);
-  dom.scrollTo({ top: position, behavior: 'smooth'})
 }
 
 export function addClsToFirstChild(element, className) {

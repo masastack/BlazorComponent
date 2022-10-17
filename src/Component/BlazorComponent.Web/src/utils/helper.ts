@@ -128,14 +128,6 @@ export function getDom(element) {
   } else if (typeof element === 'string') {
     if (element === 'document') {
       return document.documentElement;
-    } else if (element.indexOf('.') > 0) {
-      let array = element.split('.');
-      let el = document.querySelector(array[0]);
-      if (!el) {
-        return null;
-      }
-
-      element = el[array[1]];
     } else {
       element = document.querySelector(element);
     }
