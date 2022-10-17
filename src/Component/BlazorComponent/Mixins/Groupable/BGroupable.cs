@@ -149,7 +149,11 @@
                     _firstRenderAfterBooting = false;
                 }
 
-                InternalIsActive = val;
+                NextTick(() =>
+                {
+                    InternalIsActive = val;
+                    StateHasChanged();
+                });
             }
         }
 
