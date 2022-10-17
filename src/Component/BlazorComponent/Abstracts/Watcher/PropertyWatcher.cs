@@ -41,6 +41,12 @@ namespace BlazorComponent
             return property;
         }
 
+        public TValue GetComputedValue<TValue>(string name)
+        {
+            var property = GetProperty<TValue>(default, name);
+            return !property.HasValue ? default : property.Value;
+        }
+
         public TValue GetComputedValue<TValue>(Expression<Func<TValue>> valueExpression, string name)
         {
             var property = GetProperty<TValue>(default, name);
@@ -136,6 +142,36 @@ namespace BlazorComponent
 
             var property = GetProperty<TValue>(default, name);
             property.OnValueChange += changeCallback;
+
+            if (immediate)
+            {
+                changeCallback.Invoke(default, default);
+            }
+
+            return this;
+        }
+
+        public PropertyWatcher Watch<TValue>(string name, Action<TValue, TValue> changeCallback, Func<TValue> valueFactory,
+            string[] dependencyProperties, bool immediate = false, bool @override = false)
+        {
+            if (@override)
+            {
+                Unwatch(name);
+            }
+
+            var property = GetProperty<TValue>(default, name);
+            property.OnValueChange += changeCallback;
+            property.ValueFactory = valueFactory;
+            property.Value = valueFactory();
+
+            foreach (var dependencyProperty in dependencyProperties)
+            {
+                Watch(dependencyProperty, () =>
+                {
+                    var value = valueFactory();
+                    SetValue(value, name);
+                });
+            }
 
             if (immediate)
             {
