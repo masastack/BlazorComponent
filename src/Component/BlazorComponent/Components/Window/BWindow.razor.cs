@@ -46,11 +46,7 @@ namespace BlazorComponent
 
         public bool IsActive => TransitionCount > 0;
 
-        public int InternalIndex
-        {
-            get => GetValue<int>();
-            set => SetValue(value);
-        }
+        public int InternalIndex => GetComputedValue<int>();
 
         public bool HasActiveItems => Items.Any(item => !item.Disabled);
 
@@ -62,20 +58,24 @@ namespace BlazorComponent
         {
             base.OnInitialized();
 
-            Watcher.Watch<int>(nameof(InternalIndex),
-                (newVal, oldVal) => IsReverse = UpdateReverse(newVal, oldVal));
+            WatchInternalIndex();
         }
 
-        protected override void OnParametersSet()
+        private void WatchInternalIndex()
         {
-            base.OnParametersSet();
-
-            UpdateInternalIndex();
+            Watcher.Watch(nameof(InternalIndex),
+                (newVal, oldVal) => IsReverse = UpdateReverse(newVal, oldVal),
+                () => Items.FindIndex(item => item.Value == Value),
+                new[] { nameof(Value) },
+                false,
+                true);
         }
 
         public override void Register(IGroupable item)
         {
             base.Register(item);
+
+            WatchInternalIndex();
 
             StateHasChanged();
         }
@@ -87,32 +87,23 @@ namespace BlazorComponent
 
         protected void Next()
         {
-            UpdateInternalIndex();
-
             if (!HasActiveItems || !HasNext) return;
 
             var nextIndex = GetNextIndex(InternalIndex);
             var nextItem = Items[nextIndex];
 
-            InvokeAsync(() =>
+            if (ValueChanged.HasDelegate)
             {
-                if (ValueChanged.HasDelegate)
-                {
-                    ValueChanged.InvokeAsync(nextItem.Value);
-                }
-                else
-                {
-                    Value = nextItem.Value;
-                    InternalIndex = nextIndex;
-                    StateHasChanged();
-                }
-            });
+                ValueChanged.InvokeAsync(nextItem.Value);
+            }
+            else
+            {
+                Value = nextItem.Value;
+            }
         }
 
         protected void Prev()
         {
-            UpdateInternalIndex();
-
             if (!HasActiveItems || !HasPrev) return;
 
             var prevIndex = GetPrevIndex(InternalIndex);
@@ -125,8 +116,6 @@ namespace BlazorComponent
             else
             {
                 Value = pervItem.Value;
-                InternalIndex = prevIndex;
-                StateHasChanged();
             }
         }
 
@@ -148,11 +137,6 @@ namespace BlazorComponent
             if (prevItem.Disabled) return GetPrevIndex(prevIndex);
 
             return prevIndex;
-        }
-
-        private void UpdateInternalIndex()
-        {
-            InternalIndex = Items.FindIndex(item => item.Value == Value);
         }
 
         private bool UpdateReverse(int val, int oldVal)

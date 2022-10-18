@@ -113,6 +113,11 @@ namespace BlazorComponent
             return Watcher.GetValue(@default, name);
         }
 
+        protected TValue GetComputedValue<TValue>([CallerMemberName] string name = null)
+        {
+            return Watcher.GetComputedValue<TValue>(name);
+        }
+
         protected TValue GetComputedValue<TValue>(Expression<Func<TValue>> valueExpression, [CallerMemberName] string name = null)
         {
             return Watcher.GetComputedValue(valueExpression, name);

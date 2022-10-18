@@ -7,11 +7,11 @@
     <div class="@CssProvider.GetClass("controls")"
          style="@CssProvider.GetStyle("controls")">
 
-        <BItemGroup @attributes="@GetAttributes(typeof(BItemGroup))"
-                    Value="InternalValue"
+        <BItemGroup Value="InternalValue"
                     ValueChanged="InternalValueChanged"
                     Mandatory="Mandatory"
-                    TargetGroup="GroupType.ButtonGroup">
+                    TargetGroup="GroupType.ButtonGroup"
+                    @attributes="@GetAttributes(typeof(BItemGroup))">
             @foreach (var item in Items)
             {
                 <BButton @attributes="@GetAttributes(typeof(BButton), "controls-item")" Value="@item.Value">
