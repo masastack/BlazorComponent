@@ -5,40 +5,37 @@ namespace BlazorComponent
 {
     public class ObservableProperty<TValue> : ObservableProperty
     {
+        private readonly IObservableProperty _internalProperty;
+
         private bool _hasValue;
         private TValue _oldValue;
         private TValue _value;
-        private IObservableProperty _internalProperty;
 
-        public ObservableProperty(string name, TValue value)
+        public ObservableProperty(string name, TValue value, bool disableIListAlwaysNotifying = false)
             : base(name)
         {
             Value = value;
             _internalProperty = this;
+            DisableIListAlwaysNotifying = disableIListAlwaysNotifying;
         }
 
-        public ObservableProperty(IObservableProperty property, TValue value)
+        public ObservableProperty(IObservableProperty property, TValue value, bool disableIListAlwaysNotifying = false)
             : base(property.Name)
         {
-            _internalProperty = property;
             Value = value;
+            _internalProperty = property;
+            DisableIListAlwaysNotifying = disableIListAlwaysNotifying;
         }
 
         public TValue Value
         {
-            get
-            {
-                return _value;
-            }
+            get { return _value; }
             set
             {
                 //First time set value
                 if (!_hasValue && value is INotifyPropertyChanged notify)
                 {
-                    notify.PropertyChanged += (sender, args) =>
-                    {
-                        NotifyChange(_value, _oldValue);
-                    };
+                    notify.PropertyChanged += (sender, args) => { NotifyChange(_value, _oldValue); };
                 }
 
                 //We can't detect whether reference type has changed
@@ -47,7 +44,7 @@ namespace BlazorComponent
                 //
                 //We just assume list always changed
                 //This will be changed when we finished data-collect and deep watch
-                if (!EqualityComparer<TValue>.Default.Equals(_value, value) || value is IList)
+                if (!EqualityComparer<TValue>.Default.Equals(_value, value) || (!DisableIListAlwaysNotifying && value is IList))
                 {
                     _oldValue = _value;
                     _value = value;
@@ -59,6 +56,8 @@ namespace BlazorComponent
         }
 
         public Func<TValue> ValueFactory { get; set; }
+
+        public bool DisableIListAlwaysNotifying { get; set; }
 
         /// <summary>
         /// If value has set return true,else false

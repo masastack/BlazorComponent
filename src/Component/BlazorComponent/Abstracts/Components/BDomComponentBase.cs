@@ -108,9 +108,9 @@ namespace BlazorComponent
         {
         }
 
-        protected TValue GetValue<TValue>(TValue @default = default, [CallerMemberName] string name = null)
+        protected TValue GetValue<TValue>(TValue @default = default, [CallerMemberName] string name = null, bool disableIListAlwaysNotifying = false)
         {
-            return Watcher.GetValue(@default, name);
+            return Watcher.GetValue(@default, name, disableIListAlwaysNotifying);
         }
 
         protected TValue GetComputedValue<TValue>([CallerMemberName] string name = null)
@@ -128,9 +128,9 @@ namespace BlazorComponent
             return Watcher.GetComputedValue(valueFactory, dependencyProperties, name);
         }
 
-        protected void SetValue<TValue>(TValue value, [CallerMemberName] string name = null)
+        protected void SetValue<TValue>(TValue value, [CallerMemberName] string name = null, bool disableIListAlwaysNotifying = false)
         {
-            Watcher.SetValue(value, name);
+            Watcher.SetValue(value, name, disableIListAlwaysNotifying);
         }
 
         protected void SetValue<TValue, TFirstValue>(TValue value, string propertySetFirst, [CallerMemberName] string name = null)

@@ -16,9 +16,9 @@ namespace BlazorComponent
             _objectType = objectType;
         }
 
-        public TValue GetValue<TValue>(TValue @default = default, string name = null)
+        public TValue GetValue<TValue>(TValue @default = default, string name = null, bool disableIListAlwaysNotifying = false)
         {
-            var property = GetProperty(@default, name);
+            var property = GetProperty(@default, name, disableIListAlwaysNotifying);
             if (!property.HasValue && property != default)
             {
                 property.Value = @default;
@@ -27,17 +27,20 @@ namespace BlazorComponent
             return property.Value;
         }
 
-        private ObservableProperty<TValue> GetProperty<TValue>(TValue @default, string name)
+        private ObservableProperty<TValue> GetProperty<TValue>(TValue @default, string name, bool disableIListAlwaysNotifying = false)
         {
-            var prop = _props.GetOrAdd(name, key => new ObservableProperty<TValue>(name, @default));
+            var prop = _props.GetOrAdd(name, key => new ObservableProperty<TValue>(name, @default, disableIListAlwaysNotifying));
             if (prop.GetType() == typeof(ObservableProperty))
             {
                 //Internal watch may before `ObservableProperty<TValue>` be created 
-                prop = new ObservableProperty<TValue>(prop, @default);
+                prop = new ObservableProperty<TValue>(prop, @default, disableIListAlwaysNotifying);
                 _props[name] = prop;
             }
 
             var property = (ObservableProperty<TValue>)prop;
+
+            property.DisableIListAlwaysNotifying = disableIListAlwaysNotifying;
+
             return property;
         }
 
@@ -95,9 +98,9 @@ namespace BlazorComponent
             return property.Value;
         }
 
-        public void SetValue<TValue>(TValue value, string name)
+        public void SetValue<TValue>(TValue value, string name, bool disableIListAlwaysNotifying = false)
         {
-            var property = GetProperty<TValue>(default, name);
+            var property = GetProperty<TValue>(default, name, disableIListAlwaysNotifying);
             property.Value = value;
         }
 
