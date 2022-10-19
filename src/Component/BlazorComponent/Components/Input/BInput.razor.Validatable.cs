@@ -2,8 +2,6 @@
 using System.Globalization;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Linq.Expressions;
-using System.Text.Json;
-using BlazorComponent.Web;
 using Microsoft.JSInterop;
 
 namespace BlazorComponent
@@ -19,17 +17,11 @@ namespace BlazorComponent
         [Parameter]
         public bool ValidateOnBlur { get; set; }
 
-        private string _valueJson;
-
         [Parameter]
         public virtual TValue Value
         {
             get => GetValue(DefaultValue);
-            set
-            {
-                _valueJson = JsonSerializer.Serialize(value);
-                SetValue(value);
-            }
+            set => SetValue(value);
         }
 
         [Parameter]
@@ -93,20 +85,18 @@ namespace BlazorComponent
             set => SetValue(value);
         }
 
-        private string _internalValueJson;
-
         protected TValue InternalValue
         {
             get
             {
-                GetValue<TValue>(LazyValue);
-                return LazyValue;
+                var clonedLazyValue = LazyValue.GetClone();
+                return GetValue(clonedLazyValue);
             }
             set
             {
-                _internalValueJson = JsonSerializer.Serialize(value);
-                LazyValue = value;
-                SetValue(value);
+                var clonedLazyValue = value.GetClone();
+                LazyValue = clonedLazyValue;
+                SetValue(clonedLazyValue);
             }
         }
 
@@ -289,21 +279,26 @@ namespace BlazorComponent
         {
             // OnInternalValueChange has to invoke manually because
             // LazyValue is the getter of InternalValue, LazyValue changes cannot notify the watcher of InternalValue
-            if (_valueJson != _internalValueJson)
+            var isEqual = true;
+            if (val is IList valList && InternalValue is IList internalValueList)
+            {
+                if (valList.Count != internalValueList.Count || valList.Cast<object>().Any(valItem => !internalValueList.Contains(valItem)))
+                {
+                    isEqual = false;
+                }
+            }
+            else
+            {
+                isEqual = EqualityComparer<TValue>.Default.Equals(val, InternalValue);
+            }
+
+            if (!isEqual)
             {
                 _internalValueChangingFromOnValueChanged = true;
                 InternalValue = val;
-                Console.WriteLine("InternalValue=val");
             }
-            
-            // if (!EqualityComparer<TValue>.Default.Equals(val, InternalValue))
-            // {
-            // }
 
-            LazyValue = val;
-
-            Console.WriteLine($"{Value?.GetHashCode()}, {LazyValue?.GetHashCode()} {InternalValue?.GetHashCode()}");
-
+            LazyValue = val.GetClone();
 
             if (!ValueChangedInternally)
             {
@@ -334,7 +329,7 @@ namespace BlazorComponent
             }
             else if (ValueChanged.HasDelegate)
             {
-                _ = ValueChanged.InvokeAsync(val);
+                _ = ValueChanged.InvokeAsync(val.GetClone());
             }
         }
 
