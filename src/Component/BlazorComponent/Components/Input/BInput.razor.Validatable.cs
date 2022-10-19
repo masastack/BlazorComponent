@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Collections;
+using System.Globalization;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Linq.Expressions;
 using Microsoft.JSInterop;
@@ -80,7 +81,7 @@ namespace BlazorComponent
 
         protected virtual TValue LazyValue
         {
-            get => GetValue<TValue>(Value);
+            get => GetValue<TValue>();
             set => SetValue(value);
         }
 
@@ -88,13 +89,14 @@ namespace BlazorComponent
         {
             get
             {
-                GetValue<TValue>(LazyValue);
-                return LazyValue;
+                var clonedLazyValue = LazyValue.GetClone();
+                return GetValue(clonedLazyValue);
             }
             set
             {
-                LazyValue = value;
-                SetValue(value);
+                var clonedLazyValue = value.GetClone();
+                LazyValue = clonedLazyValue;
+                SetValue(clonedLazyValue);
             }
         }
 
@@ -179,32 +181,13 @@ namespace BlazorComponent
 
         public virtual bool ExternalError => ErrorMessages.Count > 0 || Error;
 
-        protected virtual void OnInternalValueChange(TValue val)
-        {
-            // If it's the first time we're setting input,
-            // mark it with hasInput
-            HasInput = true;
-
-            if (HasFocused)
-            {
-                NextTickIf(InternalValidate, () => !ValidateOnBlur);
-            }
-
-            if (ValueChanged.HasDelegate)
-            {
-                _ = ValueChanged.InvokeAsync(val);
-            }
-        }
-
-        protected virtual void OnLazyValueChange(TValue val)
-        {
-            HasInput = true;
-        }
-
         /// <summary>
         /// Determine whether the value is changed internally, such as in the input event
         /// </summary>
         protected bool ValueChangedInternally { get; set; }
+
+        private bool _internalValueChangingFromOnValueChanged;
+        private CancellationTokenSource _cancellationTokenSource;
 
         protected IJSObjectReference InputJsObjectReference { get; private set; }
 
@@ -255,37 +238,15 @@ namespace BlazorComponent
 
         protected virtual async Task SetValueByJsInterop(string val)
         {
-            if (InputJsObjectReference is null) return;
-            await InputJsObjectReference.InvokeVoidAsync("setValue", InputElement, val);
-        }
-
-        private CancellationTokenSource _cancellationTokenSource;
-
-        protected virtual void OnValueChanged(TValue val)
-        {
-            // OnInternalValueChange has to invoke manually because
-            // LazyValue is the getter of InternalValue, LazyValue changes cannot notify the watcher of InternalValue
-            if (!EqualityComparer<TValue>.Default.Equals(val, InternalValue))
-            {
-                InternalValue = val;
-            }
-
-            LazyValue = val;
-
-            if (!ValueChangedInternally)
-            {
-                if (DisableSetValueByJsInterop) return;
-
-                _cancellationTokenSource?.Cancel();
-                _cancellationTokenSource = new();
-                _ = NextTickWhile(async () => await SetValueByJsInterop(val?.ToString()),
-                    () => InputJsObjectReference is null,
-                    cancellationToken: _cancellationTokenSource.Token);
-            }
-            else
-            {
-                ValueChangedInternally = false;
-            }
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource = new();
+            await NextTickWhile(async () =>
+                {
+                    await InputJsObjectReference.InvokeVoidAsync("setValue", InputElement, val);
+                    StateHasChanged();
+                },
+                () => InputJsObjectReference is null,
+                cancellationToken: _cancellationTokenSource.Token);
         }
 
         protected override void OnWatcherInitialized()
@@ -312,6 +273,69 @@ namespace BlazorComponent
         protected override void OnParametersSet()
         {
             SubscribeValidationStateChanged();
+        }
+
+        protected virtual void OnValueChanged(TValue val)
+        {
+            // OnInternalValueChange has to invoke manually because
+            // LazyValue is the getter of InternalValue, LazyValue changes cannot notify the watcher of InternalValue
+            var isEqual = true;
+            if (val is IList valList && InternalValue is IList internalValueList)
+            {
+                if (valList.Count != internalValueList.Count || valList.Cast<object>().Any(valItem => !internalValueList.Contains(valItem)))
+                {
+                    isEqual = false;
+                }
+            }
+            else
+            {
+                isEqual = EqualityComparer<TValue>.Default.Equals(val, InternalValue);
+            }
+
+            if (!isEqual)
+            {
+                _internalValueChangingFromOnValueChanged = true;
+                InternalValue = val;
+            }
+
+            LazyValue = val.GetClone();
+
+            if (!ValueChangedInternally)
+            {
+                if (DisableSetValueByJsInterop) return;
+
+                _ = SetValueByJsInterop(val?.ToString());
+            }
+            else
+            {
+                ValueChangedInternally = false;
+            }
+        }
+
+        protected virtual void OnInternalValueChange(TValue val)
+        {
+            // If it's the first time we're setting input,
+            // mark it with hasInput
+            HasInput = true;
+
+            if (HasFocused)
+            {
+                NextTickIf(InternalValidate, () => !ValidateOnBlur);
+            }
+
+            if (_internalValueChangingFromOnValueChanged)
+            {
+                _internalValueChangingFromOnValueChanged = false;
+            }
+            else if (ValueChanged.HasDelegate)
+            {
+                _ = ValueChanged.InvokeAsync(val.GetClone());
+            }
+        }
+
+        protected virtual void OnLazyValueChange(TValue val)
+        {
+            HasInput = true;
         }
 
         protected virtual void SubscribeValidationStateChanged()

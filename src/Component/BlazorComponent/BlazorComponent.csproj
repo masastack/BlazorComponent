@@ -24,6 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="CloneExtensions" Version="1.4.2" />
         <PackageReference Include="FluentValidation" Version="11.0.3" />
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.0.3" />
         <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.0-preview.7.21378.6" />
