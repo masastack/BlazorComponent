@@ -185,14 +185,15 @@ namespace BlazorComponent
 
         private async Task<bool> UpdateActiveForLinkage()
         {
-            var isActive = InternalIsActive;
-
             if (IsLinkage)
             {
-                await SetInternalIsActive(_linker.MatchRoute(Href));
+                var isActive = InternalIsActive;
+                var matched = _linker.MatchRoute(Href);
+                await SetInternalIsActive(matched);
+                return isActive != matched;
             }
 
-            return isActive != InternalIsActive;
+            return false;
         }
 
         protected override void Dispose(bool disposing)
