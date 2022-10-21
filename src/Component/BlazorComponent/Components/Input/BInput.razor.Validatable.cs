@@ -236,7 +236,7 @@ namespace BlazorComponent
 
         protected virtual bool DisableSetValueByJsInterop => false;
 
-        protected virtual bool ValidateOnlyUnderHasFocused => true;
+        protected virtual bool ValidateOnlyInFocusedState => true;
 
         protected virtual async Task SetValueByJsInterop(string val)
         {
@@ -320,7 +320,7 @@ namespace BlazorComponent
             // mark it with hasInput
             HasInput = true;
 
-            if (ValidateOnlyUnderHasFocused)
+            if (ValidateOnlyInFocusedState)
             {
                 if (HasFocused)
                 {
