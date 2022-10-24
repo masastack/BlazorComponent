@@ -16,18 +16,16 @@ namespace BlazorComponent
         [Parameter]
         public bool ExpandOnHover
         {
-            get
-            {
-                return GetValue<bool>();
-            }
-            set
-            {
-                SetValue(value);
-            }
+            get => GetValue<bool>();
+            set => SetValue(value);
         }
 
         [Parameter]
-        public bool MiniVariant { get; set; }
+        public bool MiniVariant
+        {
+            get => GetValue<bool>();
+            set => SetValue(value);
+        }
 
         [Parameter]
         public EventCallback<bool> MiniVariantChanged { get; set; }
@@ -44,14 +42,8 @@ namespace BlazorComponent
         [Parameter]
         public string Tag
         {
-            get
-            {
-                return GetValue(App ? "nav" : "aside");
-            }
-            set
-            {
-                SetValue(value);
-            }
+            get => GetValue(App ? "nav" : "aside");
+            set => SetValue(value);
         }
 
         [Parameter]
@@ -60,14 +52,8 @@ namespace BlazorComponent
         [Parameter]
         public bool Value
         {
-            get
-            {
-                return GetValue<bool>();
-            }
-            set
-            {
-                SetValue(value);
-            }
+            get => GetValue<bool>();
+            set => SetValue(value);
         }
 
         [Parameter]
@@ -121,14 +107,8 @@ namespace BlazorComponent
 
         protected bool IsMouseover
         {
-            get
-            {
-                return GetValue<bool>();
-            }
-            set
-            {
-                SetValue(value);
-            }
+            get => GetValue<bool>();
+            set => SetValue(value);
         }
 
         //TODO: TouchArea,StackMinZIndex
@@ -137,47 +117,40 @@ namespace BlazorComponent
 
         protected bool IsActive
         {
-            get
-            {
-                return GetValue<bool>();
-            }
-            set
-            {
-                SetValue(value);
-            }
+            get => GetValue<bool>();
+            set => SetValue(value);
         }
 
-        protected bool IsMobile => !Stateless && !Permanent && IsMobileBreakpoint;//TODO: fix mobile
+        protected bool IsMobile => !Stateless && !Permanent && IsMobileBreakpoint; //TODO: fix mobile
 
-        protected bool ReactsToClick
-        {
-            get
-            {
-                return !Stateless && !Permanent && (IsMobile || Temporary);
-            }
-        }
+        protected bool ReactsToClick => !Stateless && !Permanent && (IsMobile || Temporary);
 
-        protected bool ShowOverlay
-        {
-            get
-            {
-                return (!HideOverlay && IsActive && (IsMobile || Temporary));
-            }
-        }
+        protected bool ShowOverlay => !HideOverlay && IsActive && (IsMobile || Temporary);
 
         public IEnumerable<HtmlElement> DependentElements
         {
             get
             {
                 var elements = _dependents
-                    .SelectMany(dependent => dependent.DependentElements)
-                    .ToList();
+                               .SelectMany(dependent => dependent.DependentElements)
+                               .ToList();
 
                 var element = Document.GetElementByReference(Ref);
                 elements.Add(element);
 
                 return elements;
             }
+        }
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+
+            Watcher.Watch<bool>(nameof(MiniVariant), CallUpdate);
+        }
+
+        protected virtual async void CallUpdate()
+        {
         }
 
         public void RegisterChild(IDependent dependent)
@@ -191,7 +164,7 @@ namespace BlazorComponent
 
             if (firstRender)
             {
-                await Js.AddOutsideClickEventListener(HandleOnOutsideClickAsync,DependentElements.Select(element => element.Selector));
+                await Js.AddOutsideClickEventListener(HandleOnOutsideClickAsync, DependentElements.Select(element => element.Selector));
 
                 if (!Permanent && !Stateless && !Temporary)
                 {
