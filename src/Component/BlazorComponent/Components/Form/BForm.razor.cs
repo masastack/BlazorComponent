@@ -160,9 +160,6 @@ namespace BlazorComponent
         /// <returns></returns>
         public bool TryParseFormValidation(string validationResult)
         {
-            Console.ResetColor();
-            Console.BackgroundColor = ConsoleColor.Red;
-
             Console.WriteLine(validationResult);
 
             Console.WriteLine("-------- step 2 -----------");
