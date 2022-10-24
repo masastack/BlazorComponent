@@ -160,9 +160,17 @@ namespace BlazorComponent
         /// <returns></returns>
         public bool TryParseFormValidation(string validationResult)
         {
+            Console.ResetColor();
+            Console.BackgroundColor = ConsoleColor.Red;
+
+            Console.WriteLine(validationResult);
+
+            Console.WriteLine("-------- step 2 -----------");
             if (string.IsNullOrEmpty(validationResult)) return false;
+            Console.WriteLine("-------- step 3 -----------");
             var resultStrs = validationResult.Split("\r\n").ToList();
             if (resultStrs.Count < 1 || resultStrs[0].StartsWith("Validation failed:") is false) return false;
+            Console.WriteLine("-------- step 4 -----------");
             resultStrs.RemoveAt(0);
             var validationResults = new List<ValidationResult>();
             foreach (var resultStr in resultStrs)
@@ -182,6 +190,7 @@ namespace BlazorComponent
                     ValidationResultType = type
                 });
             }
+            Console.WriteLine("-------- step 5 -----------");
             ParseFormValidation(validationResults.ToArray());
 
             return true;
@@ -212,6 +221,7 @@ namespace BlazorComponent
                     messageStore.Add(fieldIdentifuer, validationResult.Message);
                 }
             }
+            Console.WriteLine("-------- step 6 -----------");
             EditContext.NotifyValidationStateChanged();
             if (ValueChanged.HasDelegate)
             {
