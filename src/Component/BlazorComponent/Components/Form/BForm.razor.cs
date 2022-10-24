@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components.Forms;
 using System.Collections.Concurrent;
 using System.Reflection;
+using System.Text.Json;
 
 namespace BlazorComponent
 {
@@ -195,6 +196,7 @@ namespace BlazorComponent
 
         public void ParseFormValidation(IEnumerable<ValidationResult> validationResults)
         {
+            Console.WriteLine(JsonSerializer.Serialize(validationResults));
             var messageStore = new ValidationMessageStore(EditContext);
             foreach (var validationResult in validationResults.Where(item => item.ValidationResultType == ValidationResultTypes.Error))
             {
@@ -220,6 +222,7 @@ namespace BlazorComponent
             }
             Console.WriteLine("-------- step 6 -----------");
             EditContext.NotifyValidationStateChanged();
+            Console.WriteLine(JsonSerializer.Serialize(EditContext.GetValidationMessages()));
             if (ValueChanged.HasDelegate)
             {
                 _ = ValueChanged.InvokeAsync(false);
