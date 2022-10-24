@@ -236,6 +236,8 @@ namespace BlazorComponent
 
         protected virtual bool DisableSetValueByJsInterop => false;
 
+        protected virtual bool ValidateOnlyInFocusedState => true;
+
         protected virtual async Task SetValueByJsInterop(string val)
         {
             _cancellationTokenSource?.Cancel();
@@ -318,7 +320,14 @@ namespace BlazorComponent
             // mark it with hasInput
             HasInput = true;
 
-            if (HasFocused)
+            if (ValidateOnlyInFocusedState)
+            {
+                if (HasFocused)
+                {
+                    NextTickIf(InternalValidate, () => !ValidateOnBlur);
+                }
+            }
+            else
             {
                 NextTickIf(InternalValidate, () => !ValidateOnBlur);
             }
