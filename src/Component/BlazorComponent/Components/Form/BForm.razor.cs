@@ -169,6 +169,8 @@ namespace BlazorComponent
             var resultStrs = validationResult.Split("\r\n").ToList();
             if (resultStrs.Count < 1 || resultStrs[0].StartsWith("Validation failed:") is false) return false;
             Console.WriteLine("-------- step 4 -----------");
+            Console.WriteLine(JsonSerializer.Serialize(resultStrs));
+            resultStrs = validationResult.Split("\n").ToList();
             resultStrs.RemoveAt(0);
             var validationResults = new List<ValidationResult>();
             foreach (var resultStr in resultStrs)
