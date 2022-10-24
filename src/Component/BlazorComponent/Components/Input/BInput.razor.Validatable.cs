@@ -89,12 +89,12 @@ namespace BlazorComponent
         {
             get
             {
-                var clonedLazyValue = LazyValue.DeepClone();
+                var clonedLazyValue = LazyValue.TryDeepClone();
                 return GetValue(clonedLazyValue);
             }
             set
             {
-                var clonedLazyValue = value.DeepClone();
+                var clonedLazyValue = value.TryDeepClone();
                 LazyValue = clonedLazyValue;
                 SetValue(clonedLazyValue);
             }
@@ -300,7 +300,7 @@ namespace BlazorComponent
                 InternalValue = val;
             }
 
-            LazyValue = val.DeepClone();
+            LazyValue = val.TryDeepClone();
 
             if (!ValueChangedInternally)
             {
@@ -338,7 +338,7 @@ namespace BlazorComponent
             }
             else if (ValueChanged.HasDelegate)
             {
-                _ = ValueChanged.InvokeAsync(val.DeepClone());
+                _ = ValueChanged.InvokeAsync(val.TryDeepClone());
             }
         }
 
