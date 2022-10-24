@@ -7,11 +7,15 @@ using Microsoft.JSInterop;
 
 namespace BlazorComponent
 {
-    public abstract partial class BNavigationDrawer : BDomComponentBase, IDependent
+    public abstract partial class BNavigationDrawer : BApplicationable, IDependent
     {
         private CancellationTokenSource _cancellationTokenSource;
         private bool _disposed;
         private readonly List<IDependent> _dependents = new();
+
+        public BNavigationDrawer() : base(nameof(MiniVariant))
+        {
+        }
 
         [Parameter]
         public bool ExpandOnHover
@@ -31,13 +35,21 @@ namespace BlazorComponent
         public EventCallback<bool> MiniVariantChanged { get; set; }
 
         [Parameter]
-        public bool Permanent { get; set; }
+        public bool Permanent
+        {
+            get => GetValue(false);
+            set => SetValue(value);
+        }
 
         [Parameter]
         public string Src { get; set; }
 
         [Parameter]
-        public bool Stateless { get; set; }
+        public bool Stateless
+        {
+            get => GetValue(false);
+            set => SetValue(value);
+        }
 
         [Parameter]
         public string Tag
@@ -47,7 +59,11 @@ namespace BlazorComponent
         }
 
         [Parameter]
-        public bool Temporary { get; set; }
+        public bool Temporary
+        {
+            get => GetValue(false);
+            set => SetValue(value);
+        }
 
         [Parameter]
         public bool Value
@@ -60,10 +76,11 @@ namespace BlazorComponent
         public EventCallback<bool> ValueChanged { get; set; }
 
         [Parameter]
-        public bool App { get; set; }
-
-        [Parameter]
-        public bool HideOverlay { get; set; }
+        public bool HideOverlay
+        {
+            get => GetValue(false);
+            set => SetValue(value);
+        }
 
         [Parameter]
         public bool Dark { get; set; }
@@ -121,7 +138,21 @@ namespace BlazorComponent
             set => SetValue(value);
         }
 
-        protected bool IsMobile => !Stateless && !Permanent && IsMobileBreakpoint; //TODO: fix mobile
+        protected bool IsMobile
+        {
+            get
+            {
+                return GetComputedValue(() =>
+                {
+                    // TODO: how to depends IsMobileBreakpoint 
+                    return !Stateless && !Permanent && IsMobileBreakpoint;
+                }, new string[]
+                {
+                    nameof(Stateless),
+                    nameof(Permanent)
+                });
+            }
+        }
 
         protected bool ReactsToClick => !Stateless && !Permanent && (IsMobile || Temporary);
 
@@ -140,17 +171,6 @@ namespace BlazorComponent
 
                 return elements;
             }
-        }
-
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
-
-            Watcher.Watch<bool>(nameof(MiniVariant), CallUpdate);
-        }
-
-        protected virtual async void CallUpdate()
-        {
         }
 
         public void RegisterChild(IDependent dependent)

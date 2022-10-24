@@ -189,7 +189,7 @@ namespace BlazorComponent
             _props.TryRemove(name, out _);
         }
 
-        private void Watch(string name, Action changeCallback)
+        public void Watch(string name, Action changeCallback)
         {
             //Internal watch can'not infer the TValue,can we get a better solution?
             var prop = _props.GetOrAdd(name, key => new ObservableProperty(name));
