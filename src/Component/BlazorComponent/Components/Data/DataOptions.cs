@@ -1,101 +1,62 @@
-﻿namespace BlazorComponent
+﻿namespace BlazorComponent;
+
+public class DataOptions : ObservableObject
 {
-    public class DataOptions : ObservableObject
+    public DataOptions()
     {
-        public int Page
-        {
-            get
-            {
-                return GetValue<int>();
-            }
-            set
-            {
-                SetValue(value);
-            }
-        }
+    }
 
-        public int ItemsPerPage
-        {
-            get
-            {
-                return GetValue<int>();
-            }
-            set
-            {
-                SetValue(value);
-            }
-        }
+    public DataOptions(int page, int itemsPerPage)
+    {
+        Page = page;
+        ItemsPerPage = itemsPerPage;
+    }
 
-        public IList<bool> SortDesc
-        {
-            get
-            {
-                return GetValue<IList<bool>>(new List<bool>());
-            }
-            set
-            {
-                SetValue(value);
-            }
-        }
+    public int Page
+    {
+        get => GetValue<int>();
+        set => SetValue(value);
+    }
 
-        public IList<bool> GroupDesc
-        {
-            get
-            {
-                return GetValue<IList<bool>>(new List<bool>());
-            }
-            set
-            {
-                SetValue(value);
-            }
-        }
+    public int ItemsPerPage
+    {
+        get => GetValue<int>();
+        set => SetValue(value);
+    }
 
-        public bool MustSort
-        {
-            get
-            {
-                return GetValue<bool>();
-            }
-            set
-            {
-                SetValue(value);
-            }
-        }
+    public IList<bool> SortDesc
+    {
+        get => GetValue<IList<bool>>(new List<bool>());
+        set => SetValue(value);
+    }
 
-        public bool MultiSort
-        {
-            get
-            {
-                return GetValue<bool>();
-            }
-            set
-            {
-                SetValue(value);
-            }
-        }
+    public IList<bool> GroupDesc
+    {
+        get => GetValue<IList<bool>>(new List<bool>());
+        set => SetValue(value);
+    }
 
-        public IList<string> SortBy
-        {
-            get
-            {
-                return GetValue<IList<string>>(new List<string>());
-            }
-            set
-            {
-                SetValue(value);
-            }
-        }
+    public bool MustSort
+    {
+        get => GetValue<bool>();
+        set => SetValue(value);
+    }
 
-        public IList<string> GroupBy
-        {
-            get
-            {
-                return GetValue<IList<string>>(new List<string>());
-            }
-            set
-            {
-                SetValue(value);
-            }
-        }
+    public bool MultiSort
+    {
+        get => GetValue<bool>();
+        set => SetValue(value);
+    }
+
+    public IList<string> SortBy
+    {
+        get => GetValue<IList<string>>(new List<string>());
+        set => SetValue(value);
+    }
+
+    public IList<string> GroupBy
+    {
+        get => GetValue<IList<string>>(new List<string>());
+        set => SetValue(value);
     }
 }
