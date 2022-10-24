@@ -161,16 +161,9 @@ namespace BlazorComponent
         /// <returns></returns>
         public bool TryParseFormValidation(string validationResult)
         {
-            Console.WriteLine(validationResult);
-
-            Console.WriteLine("-------- step 2 -----------");
             if (string.IsNullOrEmpty(validationResult)) return false;
-            Console.WriteLine("-------- step 3 -----------");
-            var resultStrs = validationResult.Split("\r\n").ToList();
+            var resultStrs = validationResult.Split("\n").ToList();
             if (resultStrs.Count < 1 || resultStrs[0].StartsWith("Validation failed:") is false) return false;
-            Console.WriteLine("-------- step 4 -----------");
-            Console.WriteLine(JsonSerializer.Serialize(resultStrs));
-            resultStrs = validationResult.Split("\n").ToList();
             resultStrs.RemoveAt(0);
             var validationResults = new List<ValidationResult>();
             foreach (var resultStr in resultStrs)
@@ -190,7 +183,6 @@ namespace BlazorComponent
                     ValidationResultType = type
                 });
             }
-            Console.WriteLine("-------- step 5 -----------");
             ParseFormValidation(validationResults.ToArray());
 
             return true;
@@ -198,7 +190,6 @@ namespace BlazorComponent
 
         public void ParseFormValidation(IEnumerable<ValidationResult> validationResults)
         {
-            Console.WriteLine(JsonSerializer.Serialize(validationResults));
             var messageStore = new ValidationMessageStore(EditContext);
             foreach (var validationResult in validationResults.Where(item => item.ValidationResultType == ValidationResultTypes.Error))
             {
@@ -222,9 +213,7 @@ namespace BlazorComponent
                     messageStore.Add(fieldIdentifuer, validationResult.Message);
                 }
             }
-            Console.WriteLine("-------- step 6 -----------");
             EditContext.NotifyValidationStateChanged();
-            Console.WriteLine(JsonSerializer.Serialize(EditContext.GetValidationMessages()));
             if (ValueChanged.HasDelegate)
             {
                 _ = ValueChanged.InvokeAsync(false);
