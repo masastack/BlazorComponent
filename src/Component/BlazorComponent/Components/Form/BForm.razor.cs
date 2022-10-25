@@ -51,6 +51,8 @@ namespace BlazorComponent
 
         public EditContext EditContext { get; protected set; }
 
+        protected ValidationMessageStore ValidationMessageStore { get; set; }
+
         protected List<IValidatable> Validatables { get; } = new();
 
         protected override void OnParametersSet()
@@ -63,7 +65,8 @@ namespace BlazorComponent
 
                 if (EnableValidation)
                 {
-                    _editContextValidation = EditContext.EnableValidation(ServiceProvider, EnableI18n);
+                    ValidationMessageStore = new ValidationMessageStore(EditContext);
+                    _editContextValidation = EditContext.EnableValidation(ValidationMessageStore, ServiceProvider, EnableI18n);
                 }
 
                 _oldModel = Model;
@@ -191,7 +194,6 @@ namespace BlazorComponent
 
         public void ParseFormValidation(IEnumerable<ValidationResult> validationResults)
         {
-            var messageStore = new ValidationMessageStore(EditContext);
             foreach (var validationResult in validationResults.Where(item => item.ValidationResultType == ValidationResultTypes.Error))
             {
                 var model = Model;
@@ -211,10 +213,12 @@ namespace BlazorComponent
                 if (validatable is not null)
                 {
                     validatable.Validate();
-                    messageStore.Add(fieldIdentifier, validationResult.Message);
+                    ValidationMessageStore.Clear(fieldIdentifier);
+                    ValidationMessageStore.Add(fieldIdentifier, validationResult.Message);
                 }
             }
             EditContext.NotifyValidationStateChanged();
+
             if (ValueChanged.HasDelegate)
             {
                 _ = ValueChanged.InvokeAsync(false);

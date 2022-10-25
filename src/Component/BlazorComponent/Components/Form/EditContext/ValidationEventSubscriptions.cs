@@ -54,11 +54,11 @@ internal sealed class ValidationEventSubscriptions : IDisposable
     [MemberNotNullWhen(true, nameof(_i18n))]
     private bool EnableI18n { get; set; }
 
-    public ValidationEventSubscriptions(EditContext editContext, IServiceProvider serviceProvider, bool enableI18n)
+    public ValidationEventSubscriptions(EditContext editContext, ValidationMessageStore messageStore, IServiceProvider serviceProvider, bool enableI18n)
     {
         _serviceProvider = serviceProvider;
         _editContext = editContext ?? throw new ArgumentNullException(nameof(editContext));
-        _messageStore = new ValidationMessageStore(_editContext);
+        _messageStore = messageStore;
 
         _editContext.OnFieldChanged += OnFieldChanged;
         _editContext.OnValidationRequested += OnValidationRequested;
