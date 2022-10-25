@@ -47,6 +47,7 @@ namespace BlazorComponent
         public EventCallback OnInvalidSubmit { get; set; }
 
         private object _oldModel;
+        private IDisposable _editContextValidation;
 
         public EditContext EditContext { get; protected set; }
 
@@ -62,7 +63,7 @@ namespace BlazorComponent
 
                 if (EnableValidation)
                 {
-                    EditContext.EnableValidation(ServiceProvider, EnableI18n);
+                    _editContextValidation = EditContext.EnableValidation(ServiceProvider, EnableI18n);
                 }
 
                 _oldModel = Model;
@@ -205,12 +206,12 @@ namespace BlazorComponent
                             model = GetModelValue(model, fieldChunk, () => throw new Exception($"{validationResult.Field} is error,can not read {fieldChunk}"));
                     }                
                 }
-                var fieldIdentifuer = new FieldIdentifier(model, field);
-                var validatable = Validatables.FirstOrDefault(item => item.ValueIdentifier.Equals(fieldIdentifuer));
+                var fieldIdentifier = new FieldIdentifier(model, field);
+                var validatable = Validatables.FirstOrDefault(item => item.ValueIdentifier.Equals(fieldIdentifier));
                 if (validatable is not null)
                 {
                     validatable.Validate();
-                    messageStore.Add(fieldIdentifuer, validationResult.Message);
+                    messageStore.Add(fieldIdentifier, validationResult.Message);
                 }
             }
             EditContext.NotifyValidationStateChanged();
@@ -288,6 +289,13 @@ namespace BlazorComponent
             {
                 _ = ValueChanged.InvokeAsync(true);
             }
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            _editContextValidation.Dispose();
         }
     }
 }
