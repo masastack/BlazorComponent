@@ -196,9 +196,10 @@ namespace BlazorComponent
             IsDisposed = true;
         }
 
-        public virtual void Dispose()
+        public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         ~BComponentBase()
