@@ -213,10 +213,12 @@ namespace BlazorComponent
                 if (validatable is not null)
                 {
                     validatable.Validate();
+                    ValidationMessageStore.Clear(fieldIdentifier);
                     ValidationMessageStore.Add(fieldIdentifier, validationResult.Message);
                 }
             }
             EditContext.NotifyValidationStateChanged();
+
             if (ValueChanged.HasDelegate)
             {
                 _ = ValueChanged.InvokeAsync(false);
