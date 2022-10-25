@@ -47,6 +47,7 @@ namespace BlazorComponent
         public EventCallback OnInvalidSubmit { get; set; }
 
         private object _oldModel;
+        private IDisposable _editContextValidation;
 
         public EditContext EditContext { get; protected set; }
 
@@ -165,7 +166,7 @@ namespace BlazorComponent
         public bool TryParseFormValidation(string validationResult)
         {
             if (string.IsNullOrEmpty(validationResult)) return false;
-            var resultStrs = validationResult.Split("\n").ToList();
+            var resultStrs = validationResult.Split(Environment.NewLine).ToList();
             if (resultStrs.Count < 1 || resultStrs[0].StartsWith("Validation failed:") is false) return false;
             resultStrs.RemoveAt(0);
             var validationResults = new List<ValidationResult>();
@@ -207,8 +208,8 @@ namespace BlazorComponent
                             model = GetModelValue(model, fieldChunk, () => throw new Exception($"{validationResult.Field} is error,can not read {fieldChunk}"));
                     }                
                 }
-                var fieldIdentifuer = new FieldIdentifier(model, field);
-                var validatable = Validatables.FirstOrDefault(item => item.ValueIdentifier.Equals(fieldIdentifuer));
+                var fieldIdentifier = new FieldIdentifier(model, field);
+                var validatable = Validatables.FirstOrDefault(item => item.ValueIdentifier.Equals(fieldIdentifier));
                 if (validatable is not null)
                 {
                     validatable.Validate();
@@ -290,6 +291,13 @@ namespace BlazorComponent
             {
                 _ = ValueChanged.InvokeAsync(true);
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+
+            _editContextValidation?.Dispose();
         }
     }
 }

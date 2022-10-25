@@ -11,16 +11,12 @@ namespace BlazorComponent;
 
 internal sealed class ValidationEventSubscriptions : IDisposable
 {
-    private static readonly ConcurrentDictionary<Type, Func<IServiceProvider, object, FluentValidationResult>> ValidationResultMap;
-    private static readonly ConcurrentDictionary<Type, Func<object, Dictionary<string, object>>> ModelPropertiesMap;
-    private static readonly Dictionary<Type, Type> FluentValidationTypeMap;
+    private static readonly ConcurrentDictionary<Type, IValidator> ModelFluentValidatorMap = new();
+    private static readonly ConcurrentDictionary<Type, Func<object, Dictionary<string, object>>> ModelPropertiesMap = new();
+    private static readonly Dictionary<Type, Type> FluentValidationTypeMap = new();
 
     static ValidationEventSubscriptions()
     {
-        ValidationResultMap = new();
-        ModelPropertiesMap = new();
-        FluentValidationTypeMap = new();
-
         try
         {
             var referenceAssembles = AppDomain.CurrentDomain.GetAssemblies();
@@ -29,8 +25,13 @@ internal sealed class ValidationEventSubscriptions : IDisposable
                 if (referenceAssembly.FullName.StartsWith("Microsoft.") || referenceAssembly.FullName.StartsWith("System."))
                     continue;
 
-                var types = referenceAssembly.GetTypes().Where(t =>
-                    t.BaseType?.IsGenericType == true && t.BaseType.GetGenericTypeDefinition() == typeof(AbstractValidator<>)).ToArray();
+                var types = referenceAssembly
+                            .GetTypes()
+                            .Where(t => t.IsClass)
+                            .Where(t => !t.IsAbstract && !t.IsGenericTypeDefinition)
+                            .Where(t => typeof(IValidator).IsAssignableFrom(t))
+                            .ToArray();
+
                 foreach (var type in types)
                 {
                     var modelType = type.BaseType.GenericTypeArguments[0];
@@ -103,11 +104,6 @@ internal sealed class ValidationEventSubscriptions : IDisposable
 
             foreach (var validationResult in validationResults)
             {
-                if (validationResult == null)
-                {
-                    continue;
-                }
-
                 if (validationResult is EnumerableValidationResult enumerableValidationResult)
                 {
                     foreach (var descriptor in enumerableValidationResult.Descriptors)
@@ -198,18 +194,23 @@ internal sealed class ValidationEventSubscriptions : IDisposable
     private FluentValidationResult GetValidationResult(object model)
     {
         var type = model.GetType();
-        if (ValidationResultMap.TryGetValue(type, out var func) is false)
+        var validationContext = new ValidationContext<object>(model);
+
+        if (ModelFluentValidatorMap.TryGetValue(type, out var validator))
         {
-            var validatorType = FluentValidationTypeMap[type];
-            var serviceProvider = Expr.BlockParam<IServiceProvider>();
-            var validator = serviceProvider.Method("GetService", Expr.Constant(validatorType)).Convert(validatorType);
-            var modelParameter = Expr.BlockParam(typeof(object)).Convert(type);
-            Var validationResult = validator.Method("Validate", modelParameter);
-            func = validationResult.BuildDefaultDelegate<Func<IServiceProvider, object, FluentValidationResult>>();
-            ValidationResultMap[type] = func;
+            return validator.Validate(validationContext);
         }
 
-        return func(_serviceProvider, model);
+        var genericType = typeof(IValidator<>).MakeGenericType(type);
+        validator = (IValidator)_serviceProvider.GetService(genericType);
+
+        if (validator is not null)
+        {
+            ModelFluentValidatorMap[type] = validator;
+            return validator.Validate(validationContext);
+        }
+
+        throw new NotImplementedException($"Validator for {type} does not exists.");
     }
 
     private Dictionary<string, object> GetPropertyMap(object model)
