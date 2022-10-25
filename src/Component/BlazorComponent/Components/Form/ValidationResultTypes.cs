@@ -3,5 +3,5 @@
 public enum ValidationResultTypes
 {
     Error = 1,
-    warning
+    Warning
 }

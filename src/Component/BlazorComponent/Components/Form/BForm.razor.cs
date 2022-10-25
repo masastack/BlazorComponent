@@ -162,7 +162,7 @@ namespace BlazorComponent
         public bool TryParseFormValidation(string validationResult)
         {
             if (string.IsNullOrEmpty(validationResult)) return false;
-            var resultStrs = validationResult.Split("\n").ToList();
+            var resultStrs = validationResult.Split(Environment.NewLine).ToList();
             if (resultStrs.Count < 1 || resultStrs[0].StartsWith("Validation failed:") is false) return false;
             resultStrs.RemoveAt(0);
             var validationResults = new List<ValidationResult>();
