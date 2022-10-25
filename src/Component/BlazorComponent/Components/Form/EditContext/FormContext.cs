@@ -18,20 +18,20 @@ public class FormContext
     public bool Validate() => Form.Validate();
 
     /// <summary>
-    /// parse form validation result,if parse faield throw exception
+    /// parse form validation result,if parse failed throw exception
     /// </summary>
     /// <param name="validationResult">
     /// validation result
-    /// see deatils https://blazor.masastack.com/components/forms
+    /// see details https://blazor.masastack.com/components/forms
     /// </param>
     public void ParseFormValidation(string validationResult) => Form.ParseFormValidation(validationResult);
 
     /// <summary>
-    /// parse form validation result,if parse faield return false
+    /// parse form validation result,if parse failed return false
     /// </summary>
     /// <param name="validationResult">
     /// validation result
-    /// see deatils https://blazor.masastack.com/components/forms
+    /// see details https://blazor.masastack.com/components/forms
     /// </param>
     /// <returns></returns>
     public bool TryParseFormValidation(string validationResult) => Form.TryParseFormValidation(validationResult);

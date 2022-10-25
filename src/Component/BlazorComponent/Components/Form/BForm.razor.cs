@@ -205,12 +205,12 @@ namespace BlazorComponent
                             model = GetModelValue(model, fieldChunk, () => throw new Exception($"{validationResult.Field} is error,can not read {fieldChunk}"));
                     }                
                 }
-                var fieldIdentifuer = new FieldIdentifier(model, field);
-                var validatable = Validatables.FirstOrDefault(item => item.ValueIdentifier.Equals(fieldIdentifuer));
+                var fieldIdentifier = new FieldIdentifier(model, field);
+                var validatable = Validatables.FirstOrDefault(item => item.ValueIdentifier.Equals(fieldIdentifier));
                 if (validatable is not null)
                 {
                     validatable.Validate();
-                    messageStore.Add(fieldIdentifuer, validationResult.Message);
+                    messageStore.Add(fieldIdentifier, validationResult.Message);
                 }
             }
             EditContext.NotifyValidationStateChanged();
