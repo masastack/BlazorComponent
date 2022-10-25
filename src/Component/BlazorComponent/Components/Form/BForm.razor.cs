@@ -66,7 +66,7 @@ namespace BlazorComponent
                 if (EnableValidation)
                 {
                     ValidationMessageStore = new ValidationMessageStore(EditContext);
-                    EditContext.EnableValidation(ValidationMessageStore, ServiceProvider, EnableI18n);
+                    _editContextValidation = EditContext.EnableValidation(ValidationMessageStore, ServiceProvider, EnableI18n);
                 }
 
                 _oldModel = Model;
