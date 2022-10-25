@@ -11,16 +11,12 @@ namespace BlazorComponent;
 
 internal sealed class ValidationEventSubscriptions : IDisposable
 {
-    private static readonly ConcurrentDictionary<Type, Func<object, FluentValidationResult>> ValidationResultMap;
-    private static readonly ConcurrentDictionary<Type, Func<object, Dictionary<string, object>>> ModelPropertiesMap;
-    private static readonly Dictionary<Type, Type> FluentValidationTypeMap;
+    private static readonly ConcurrentDictionary<Type, IValidator> ModelFluentValidatorMap = new();
+    private static readonly ConcurrentDictionary<Type, Func<object, Dictionary<string, object>>> ModelPropertiesMap = new();
+    private static readonly Dictionary<Type, Type> FluentValidationTypeMap = new();
 
     static ValidationEventSubscriptions()
     {
-        ValidationResultMap = new();
-        ModelPropertiesMap = new();
-        FluentValidationTypeMap = new();
-
         try
         {
             var referenceAssembles = AppDomain.CurrentDomain.GetAssemblies();
@@ -108,11 +104,6 @@ internal sealed class ValidationEventSubscriptions : IDisposable
 
             foreach (var validationResult in validationResults)
             {
-                if (validationResult == null)
-                {
-                    continue;
-                }
-
                 if (validationResult is EnumerableValidationResult enumerableValidationResult)
                 {
                     foreach (var descriptor in enumerableValidationResult.Descriptors)
@@ -203,20 +194,23 @@ internal sealed class ValidationEventSubscriptions : IDisposable
     private FluentValidationResult GetValidationResult(object model)
     {
         var type = model.GetType();
-        if (ValidationResultMap.TryGetValue(type, out var func) is false)
-        {
-            func = m =>
-            {
-                var genericType = typeof(IValidator<>).MakeGenericType(type);
-                var validator = (IValidator)_serviceProvider.GetService(genericType);
-                var context = new ValidationContext<object>(m);
-                return validator?.Validate(context);
-            };
+        var validationContext = new ValidationContext<object>(model);
 
-            ValidationResultMap[type] = func;
+        if (ModelFluentValidatorMap.TryGetValue(type, out var validator))
+        {
+            return validator.Validate(validationContext);
         }
 
-        return func.Invoke(model);
+        var genericType = typeof(IValidator<>).MakeGenericType(type);
+        validator = (IValidator)_serviceProvider.GetService(genericType);
+
+        if (validator is not null)
+        {
+            ModelFluentValidatorMap[type] = validator;
+            return validator.Validate(validationContext);
+        }
+
+        throw new NotImplementedException($"Validator for {type} does not exists.");
     }
 
     private Dictionary<string, object> GetPropertyMap(object model)
