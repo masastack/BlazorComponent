@@ -47,6 +47,7 @@ namespace BlazorComponent
         public EventCallback OnInvalidSubmit { get; set; }
 
         private object _oldModel;
+        private IDisposable _editContextValidation;
 
         public EditContext EditContext { get; protected set; }
 
@@ -62,7 +63,7 @@ namespace BlazorComponent
 
                 if (EnableValidation)
                 {
-                    EditContext.EnableValidation(ServiceProvider, EnableI18n);
+                    _editContextValidation = EditContext.EnableValidation(ServiceProvider, EnableI18n);
                 }
 
                 _oldModel = Model;
@@ -288,6 +289,13 @@ namespace BlazorComponent
             {
                 _ = ValueChanged.InvokeAsync(true);
             }
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            _editContextValidation.Dispose();
         }
     }
 }
