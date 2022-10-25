@@ -213,7 +213,7 @@ namespace BlazorComponent
                 if (validatable is not null)
                 {
                     validatable.Validate();
-                    ValidationMessageStore.Add(fieldIdentifuer, validationResult.Message);
+                    ValidationMessageStore.Add(fieldIdentifier, validationResult.Message);
                 }
             }
             EditContext.NotifyValidationStateChanged();
