@@ -29,8 +29,13 @@ internal sealed class ValidationEventSubscriptions : IDisposable
                 if (referenceAssembly.FullName.StartsWith("Microsoft.") || referenceAssembly.FullName.StartsWith("System."))
                     continue;
 
-                var types = referenceAssembly.GetTypes().Where(t =>
-                    t.BaseType?.IsGenericType == true && t.BaseType.GetGenericTypeDefinition() == typeof(AbstractValidator<>)).ToArray();
+                var types = referenceAssembly
+                            .GetTypes()
+                            .Where(t => t.IsClass)
+                            .Where(t => !t.IsAbstract && !t.IsGenericTypeDefinition)
+                            .Where(t => typeof(IValidator).IsAssignableFrom(t))
+                            .ToArray();
+
                 foreach (var type in types)
                 {
                     var modelType = type.BaseType.GenericTypeArguments[0];
