@@ -47,14 +47,17 @@ namespace BlazorComponent
 
         private void OnStateChanged(object? sender, EventArgs e)
         {
-            InvokeAsync(() => StateHasChanged());
+            InvokeAsync(StateHasChanged);
         }
 
-
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            PopupProvider.StateChanged -= OnStateChanged;
-            base.Dispose();
+            base.Dispose(disposing);
+
+            if (PopupProvider is not null)
+            {
+                PopupProvider.StateChanged -= OnStateChanged;
+            }
         }
     }
 }

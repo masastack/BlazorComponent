@@ -291,11 +291,11 @@ namespace BlazorComponent
             }
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            base.Dispose();
+            base.Dispose(disposing);
 
-            _editContextValidation.Dispose();
+            _editContextValidation?.Dispose();
         }
     }
 }
