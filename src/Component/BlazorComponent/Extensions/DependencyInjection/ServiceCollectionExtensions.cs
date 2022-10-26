@@ -21,7 +21,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IComponentActivator, AbstractComponentActivator>();
             services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies(), ServiceLifetime.Scoped, includeInternalTypes: true);
 
-            services.TryAddScoped<MarkdownItProxy>();
+            services.TryAddScoped<MarkdownItProxyModule>();
 
             services.AddI18n();
 

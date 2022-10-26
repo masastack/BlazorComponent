@@ -2,41 +2,19 @@
 
 namespace BlazorComponent;
 
-public class MarkdownItProxy : IAsyncDisposable
+public class MarkdownItProxy
 {
-    private readonly Lazy<Task<IJSObjectReference>> _moduleTask;
+    private readonly IJSObjectReference _module;
+    private readonly string _key;
 
-    public MarkdownItProxy(IJSRuntime jsRuntime)
+    public MarkdownItProxy(IJSObjectReference module, string key)
     {
-        _moduleTask = new Lazy<Task<IJSObjectReference>>(() =>
-            jsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/markdown-it-proxy.js").AsTask());
+        _module = module;
+        _key = key;
     }
 
-    public async Task Init(MarkdownItOptions options, Dictionary<string, string> tagClassMap, string key = "default")
+    public async Task<string> Render(string source)
     {
-        var module = await _moduleTask.Value;
-        await module.InvokeVoidAsync("init", options, tagClassMap, key);
-    }
-
-    public async Task<string> Render(string mdStr)
-    {
-        var module = await _moduleTask.Value;
-        return await module.InvokeAsync<string>("render", mdStr);
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        if (_moduleTask.IsValueCreated)
-        {
-            var module = await _moduleTask.Value;
-            try
-            {
-                await module.DisposeAsync();
-            }
-            catch
-            {
-                // ignored
-            }
-        }
+        return await _module.InvokeAsync<string>("render", source, _key);
     }
 }

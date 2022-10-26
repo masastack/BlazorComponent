@@ -9,17 +9,23 @@ let md: MarkdownIt = undefined;
 
 const mdDict = {};
 
-export function init(
+export function create(
   options: MarkdownIt.Options = {},
   tagClassMap: { [prop: string]: string[] } = {},
+  enableHeaderSections: boolean = false,
   key: string = "default"
 ) {
-  options = { ...options, highlight };
-  const md = new MarkdownIt(options)
-    .use(markdownItHeaderSections)
-    .use(markdownItClass, tagClassMap);
-
   key ??= "default";
+
+  options = { ...options, highlight };
+
+  let md = mdDict[key];
+  md = new MarkdownIt(options).use(markdownItClass, tagClassMap);
+
+  if (enableHeaderSections) {
+    md.use(markdownItHeaderSections);
+  }
+
   mdDict[key] = md;
 }
 
@@ -74,8 +80,6 @@ function highlight(str: string, lang: string) {
 
   lang = getLangCodeFromExtension(lang.toLowerCase());
 
-  console.log("lang", lang);
-
   if (highlighter.getLanguage(lang)) {
     try {
       return highlighter.highlight(str, lang);
@@ -95,11 +99,10 @@ function highlight(str: string, lang: string) {
 function getLangCodeFromExtension(extension) {
   const extensionMap = {
     cs: "csharp",
-    html: "markup", // TODO: html?
     md: "markdown",
     ts: "typescript",
     py: "python",
-    razor: "markup", // TODO: csthml?
+    razor: "cshtml",
     sh: "bash",
     yml: "yaml",
   };

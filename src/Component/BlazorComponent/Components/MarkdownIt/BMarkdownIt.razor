@@ -1,4 +1,6 @@
 ﻿@namespace BlazorComponent
-@inherits ComponentBase
+@inherits BDomComponentBase
 
-@((MarkupString)_mdHtml)
+<div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" @attributes="@Attributes" @ref="Ref">
+    @((MarkupString)_mdHtml)
+</div>
