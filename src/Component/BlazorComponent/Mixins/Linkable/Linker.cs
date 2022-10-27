@@ -22,13 +22,33 @@ public class Linker : ILinkable
     {
         var baseRelativePath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
 
-        if (Exact || href == "/")
+        return MatchRoute(href, baseRelativePath, Exact);
+    }
+
+    public static bool MatchRoute(string href, string relativePath, bool exact)
+    {
+        href = FormatUrl(href);
+
+        relativePath = relativePath.Split('#', '?')[0];
+        relativePath = FormatUrl(relativePath);
+
+        if (exact || href == "/")
         {
             href += "$";
         }
 
-        var relativePath = "/" + baseRelativePath;
+        href = "^" + href;
 
         return Regex.Match(relativePath, href, RegexOptions.IgnoreCase).Success;
+    }
+
+    private static string FormatUrl(string url)
+    {
+        if (!url.StartsWith("/"))
+        {
+            return "/" + url;
+        }
+
+        return url;
     }
 }
