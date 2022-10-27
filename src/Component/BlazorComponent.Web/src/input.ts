@@ -17,19 +17,16 @@ function registerInputEvents(
   let compositionInputting = false;
 
   let timeout;
-  let startValue: string;
 
   element.addEventListener("compositionstart", (_) => {
     compositionInputting = true;
-
-    startValue = element.value;
   });
 
   element.addEventListener("compositionend", (event: CompositionEvent) => {
     compositionInputting = false;
 
     const changeEventArgs = parseChangeEvent(event);
-    changeEventArgs.value = startValue + event.data;
+    changeEventArgs.value = element.value;
 
     if (
       element.maxLength !== -1 &&
@@ -40,8 +37,6 @@ function registerInputEvents(
         element.maxLength
       );
     }
-
-    startValue = null;
 
     onInput.invokeMethodAsync("Invoke", changeEventArgs);
   });
