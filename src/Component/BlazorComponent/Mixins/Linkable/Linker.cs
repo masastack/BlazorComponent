@@ -27,15 +27,10 @@ public class Linker : ILinkable
 
     public static bool MatchRoute(string href, string relativePath, bool exact)
     {
-        if (!href.StartsWith("/"))
-        {
-            href = "/" + href;
-        }
+        href = FormatUrl(href);
 
-        if (!relativePath.StartsWith("/"))
-        {
-            relativePath = "/" + relativePath;
-        }
+        relativePath = relativePath.Split('#', '?')[0];
+        relativePath = FormatUrl(relativePath);
 
         if (exact || href == "/")
         {
@@ -45,5 +40,15 @@ public class Linker : ILinkable
         href = "^" + href;
 
         return Regex.Match(relativePath, href, RegexOptions.IgnoreCase).Success;
+    }
+
+    private static string FormatUrl(string url)
+    {
+        if (!url.StartsWith("/"))
+        {
+            return "/" + url;
+        }
+
+        return url;
     }
 }
