@@ -22,12 +22,27 @@ public class Linker : ILinkable
     {
         var baseRelativePath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
 
-        if (Exact || href == "/")
+        return MatchRoute(href, baseRelativePath, Exact);
+    }
+
+    public static bool MatchRoute(string href, string relativePath, bool exact)
+    {
+        if (!href.StartsWith("/"))
+        {
+            href = "/" + href;
+        }
+
+        if (!relativePath.StartsWith("/"))
+        {
+            relativePath = "/" + relativePath;
+        }
+
+        if (exact || href == "/")
         {
             href += "$";
         }
 
-        var relativePath = "/" + baseRelativePath;
+        href = "^" + href;
 
         return Regex.Match(relativePath, href, RegexOptions.IgnoreCase).Success;
     }
