@@ -73,15 +73,11 @@ namespace BlazorComponent
             }
         }
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+        internal void UpdateValidValue()
         {
-            await base.OnAfterRenderAsync(firstRender);
-
-            var hasError = Validatables.Any(v => v.HasError);
-            if (Value != !hasError && ValueChanged.HasDelegate)
-            {
-                await ValueChanged.InvokeAsync(!hasError);
-            }
+            var hasError = Validatables.Any(v =>  v.HasError);
+            var valid = !hasError;
+            _ = UpdateValue(valid);
         }
 
         public void Register(IValidatable validatable)
@@ -129,9 +125,9 @@ namespace BlazorComponent
 
             if (EditContext != null)
             {
-                 var success = EditContext.Validate();
+                var success = EditContext.Validate();
 
-                 valid = valid && success;
+                valid = valid && success;
             }
 
             if (ValueChanged.HasDelegate)
@@ -187,6 +183,7 @@ namespace BlazorComponent
                     ValidationResultType = type
                 });
             }
+
             ParseFormValidation(validationResults.ToArray());
 
             return true;
@@ -208,6 +205,7 @@ namespace BlazorComponent
                             model = GetModelValue(model, fieldChunk, () => throw new Exception($"{validationResult.Field} is error,can not read {fieldChunk}"));
                     }                
                 }
+
                 var fieldIdentifier = new FieldIdentifier(model, field);
                 var validatable = Validatables.FirstOrDefault(item => item.ValueIdentifier.Equals(fieldIdentifier));
                 if (validatable is not null)
@@ -217,13 +215,10 @@ namespace BlazorComponent
                     ValidationMessageStore.Add(fieldIdentifier, validationResult.Message);
                 }
             }
+
             EditContext.NotifyValidationStateChanged();
 
-            if (ValueChanged.HasDelegate)
-            {
-                _ = ValueChanged.InvokeAsync(false);
-            }
-            else Value = false;
+            _ = UpdateValue(false);
 
             object GetModelValue(object model, string fieldChunk, Action whenError)
             {
@@ -233,6 +228,7 @@ namespace BlazorComponent
                     propertyInfos = type.GetProperties();
                     _modelPropertiesMap[type] = propertyInfos;
                 }
+
                 if (fieldChunk.Contains('['))
                 {
                     var leftBracketsIndex = fieldChunk.IndexOf('[') + 1;
@@ -251,6 +247,7 @@ namespace BlazorComponent
                             model = item;
                             break;
                         }
+
                         i++;
                     }
                 }
@@ -274,10 +271,7 @@ namespace BlazorComponent
                 validatable.Reset();
             }
 
-            if (ValueChanged.HasDelegate)
-            {
-                _ = ValueChanged.InvokeAsync(true);
-            }
+            _ = UpdateValue(true);
         }
 
         public void ResetValidation()
@@ -289,9 +283,18 @@ namespace BlazorComponent
                 validatable.ResetValidation();
             }
 
+            _ = UpdateValue(true);
+        }
+
+        private async Task UpdateValue(bool val)
+        {
             if (ValueChanged.HasDelegate)
             {
-                _ = ValueChanged.InvokeAsync(true);
+                await ValueChanged.InvokeAsync(val);
+            }
+            else
+            {
+                Value = val;
             }
         }
 
