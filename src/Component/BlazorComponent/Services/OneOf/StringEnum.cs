@@ -1,60 +1,52 @@
 ﻿using OneOf;
 
-namespace BlazorComponent
+namespace BlazorComponent;
+
+[GenerateOneOf]
+public partial class StringEnum<T> : OneOfBase<string, T> where T : Enum
 {
-    public class StringEnum<T> : OneOfBase<string, T> where T : Enum
+    public override string ToString()
     {
-        StringEnum(OneOf<string, T> _) : base(_)
+        return Value?.ToString();
+    }
+
+    public static bool operator ==(StringEnum<T> left, StringEnum<T> right)
+    {
+        if (Equals(left, right))
         {
+            return true;
         }
 
-        public static implicit operator StringEnum<T>(string _) => new(_);
-
-        public static implicit operator StringEnum<T>(T _) => new(_);
-
-        public override string ToString()
+        if (left is null || right is null)
         {
-            return Value?.ToString();
+            return false;
         }
 
-        public static bool operator ==(StringEnum<T> left, StringEnum<T> right)
+        return left.Value == right.Value;
+    }
+
+    public static bool operator !=(StringEnum<T> left, StringEnum<T> right)
+    {
+        if (Equals(left, right))
         {
-            if (Equals(left, right))
-            {
-                return true;
-            }
-
-            if (left is null || right is null)
-            {
-                return false;
-            }
-
-            return left.Value == right.Value;
+            return false;
         }
 
-        public static bool operator !=(StringEnum<T> left, StringEnum<T> right)
+        if (left is null || right is null)
         {
-            if (Equals(left, right))
-            {
-                return false;
-            }
-
-            if (left is null || right is null)
-            {
-                return true;
-            }
-
-            return left.Value != right.Value;
+            return true;
         }
 
-        public override bool Equals(object obj)
-        {
-            return base.Equals(obj);
-        }
+        return left.Value != right.Value;
+    }
 
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
+    public override bool Equals(object obj)
+    {
+        return base.Equals(obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
     }
 }
