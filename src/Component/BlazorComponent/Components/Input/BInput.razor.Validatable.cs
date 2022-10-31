@@ -61,7 +61,7 @@ namespace BlazorComponent
         public IEnumerable<Func<TValue, StringBoolean>> Rules
         {
             get => GetValue<IEnumerable<Func<TValue, StringBoolean>>>();
-            set => SetValue<IEnumerable<Func<TValue, StringBoolean>>, TValue>(value, nameof(Value));
+            set => SetValue(value);
         }
 
         private bool _forceStatus;
@@ -383,7 +383,7 @@ namespace BlazorComponent
                 EditContext.NotifyFieldChanged(ValueIdentifier);
             }
 
-            if (Rules != null)
+            if (Rules != null && Rules.Any())
             {
                 ErrorBucket.Clear();
 
@@ -425,7 +425,7 @@ namespace BlazorComponent
                 HasFocused = true;
             }
 
-            if (Rules != null)
+            if (Rules != null && Rules.Any())
             {
                 var value = val is null ? InternalValue : val;
 
