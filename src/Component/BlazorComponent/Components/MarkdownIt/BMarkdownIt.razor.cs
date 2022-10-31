@@ -168,7 +168,7 @@ public partial class BMarkdownIt : BDomComponentBase
 
     private async Task TryRender()
     {
-        if (_markdownItProxy is null) return;
+        if (_markdownItProxy is null || Source is null) return;
 
         _mdHtml = await _markdownItProxy.Render(Source);
 
