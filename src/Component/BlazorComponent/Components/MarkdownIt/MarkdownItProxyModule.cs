@@ -9,7 +9,7 @@ public class MarkdownItProxyModule : IAsyncDisposable
     public MarkdownItProxyModule(IJSRuntime jsRuntime)
     {
         _moduleTask = new Lazy<Task<IJSObjectReference>>(() =>
-            jsRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/BlazorComponent/js/markdown-it-proxy.min.js").AsTask());
+            jsRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/BlazorComponent/js/markdown-it-proxy.js").AsTask());
     }
 
     public async Task<MarkdownItProxy> Create(MarkdownItOptions options, Dictionary<string, string> tagClassMap,
@@ -19,6 +19,14 @@ public class MarkdownItProxyModule : IAsyncDisposable
         key ??= "default";
         var module = await _moduleTask.Value;
         await module.InvokeVoidAsync("create", options, tagClassMap, enableHeaderSections, key);
+        return new MarkdownItProxy(module, key);
+    }
+
+    public async Task<MarkdownItProxy> Create(MarkdownItOptions options, string key = "default")
+    {
+        key ??= "default";
+        var module = await _moduleTask.Value;
+        await module.InvokeVoidAsync("create", options, new Dictionary<string, string>(), false, key);
         return new MarkdownItProxy(module, key);
     }
 

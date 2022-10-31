@@ -13,8 +13,13 @@ public class MarkdownItProxy
         _key = key;
     }
 
-    public async Task<string> Render(string source)
+    public async Task<string> Parse(string source)
     {
-        return await _module.InvokeAsync<string>("render", source, _key);
+        return await _module.InvokeAsync<string>("parse", source, _key);
+    }
+
+    public async Task<string> Highlight(string code, string lang)
+    {
+        return await _module.InvokeAsync<string>("highlight", code, lang);
     }
 }

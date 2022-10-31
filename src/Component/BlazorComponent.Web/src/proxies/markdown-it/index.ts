@@ -4,14 +4,11 @@ import markdownItHeaderSections from "markdown-it-header-sections";
 
 import { highlight } from "./highlighter";
 
-declare const Prism: Prism;
-declare const hljs: hljs;
-
 let md: MarkdownIt = undefined;
 
 const mdDict = {};
 
-export function create(
+function create(
   options: MarkdownIt.Options = {},
   tagClassMap: { [prop: string]: string[] } = {},
   enableHeaderSections: boolean = false,
@@ -31,7 +28,13 @@ export function create(
   mdDict[key] = md;
 }
 
-export function render(src: string, key: string = "default") {
+function parse(src: string, key: string = "default") {
   key ??= "default";
   return mdDict[key].render(src);
+}
+
+export {
+  create,
+  parse,
+  highlight,
 }

@@ -1,0 +1,8 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+
+<pre class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" @attributes="@Attributes" @ref="Ref">
+    <code class="@CssProvider.GetClass("code")" style="@CssProvider.GetStyle("code")">
+        @((MarkupString)_codeHtml)
+    </code>
+</pre>

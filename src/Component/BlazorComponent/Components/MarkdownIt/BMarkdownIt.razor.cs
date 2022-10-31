@@ -6,7 +6,7 @@ public partial class BMarkdownIt : BDomComponentBase
     protected MarkdownItProxyModule MarkdownItProxyModule { get; set; }
 
     /// <summary>
-    /// Enable markdown-it-header-sections plugin
+    /// Enable markdown-it-header-sections plugin··
     /// </summary>
     [Parameter]
     public bool HeaderSections { get; set; }
@@ -127,7 +127,7 @@ public partial class BMarkdownIt : BDomComponentBase
         {
             _prevSource = Source;
 
-            await TryRender();
+            await TryParse();
         }
     }
 
@@ -138,14 +138,14 @@ public partial class BMarkdownIt : BDomComponentBase
         if (firstRender)
         {
             await CreateMarkdownItProxy();
-            await TryRender();
+            await TryParse();
         }
     }
 
     private async void GoCreateMarkdownItProxy()
     {
         await CreateMarkdownItProxy();
-        NextTick(async () => { await TryRender(); });
+        NextTick(async () => { await TryParse(); });
     }
 
     private async Task CreateMarkdownItProxy()
@@ -166,11 +166,11 @@ public partial class BMarkdownIt : BDomComponentBase
         _markdownItProxy = await MarkdownItProxyModule.Create(options, tagClassMap, HeaderSections, Key);
     }
 
-    private async Task TryRender()
+    private async Task TryParse()
     {
         if (_markdownItProxy is null || Source is null) return;
 
-        _mdHtml = await _markdownItProxy.Render(Source);
+        _mdHtml = await _markdownItProxy.Parse(Source);
 
         StateHasChanged();
     }

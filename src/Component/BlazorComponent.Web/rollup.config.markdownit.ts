@@ -6,27 +6,14 @@ import json from "@rollup/plugin-json";
 import resolve from "@rollup/plugin-node-resolve";
 import typescript from "@rollup/plugin-typescript";
 
-export default defineConfig([
-  {
-    input: "./src/proxies/markdown-it/index.ts",
-    output: [
-      {
-        file: "../BlazorComponent/wwwroot/js/markdown-it-proxy.min.js",
-        format: "esm",
-        sourcemap: true,
-      },
-    ],
-    plugins: [typescript(), json(), resolve(), commonjs(), terser()],
-  },
-  {
-    input: "./src/proxies/markdown-it/highlighter.ts",
-    output: [
-      {
-        file: "../BlazorComponent/wwwroot/js/highlighter.min.js",
-        format: "esm",
-        sourcemap: true,
-      },
-    ],
-    plugins: [typescript(), json(), resolve(), commonjs(), terser()],
-  },
-]);
+export default defineConfig({
+  input: "./src/proxies/markdown-it/index.ts",
+  output: [
+    {
+      file: "../BlazorComponent/wwwroot/js/markdown-it-proxy.js",
+      format: "esm",
+      sourcemap: true,
+    },
+  ],
+  plugins: [typescript(), json(), resolve(), commonjs(), terser()],
+});

@@ -8,8 +8,8 @@ function getHighlighter() {
         getLanguage(lang: string) {
           return Prism.languages[lang];
         },
-        highlight(str: string, lang: string) {
-          return Prism.highlight(str, Prism.languages[lang], lang);
+        highlight(code: string, lang: string) {
+          return Prism.highlight(code, Prism.languages[lang], lang);
         },
       };
     }
@@ -21,8 +21,8 @@ function getHighlighter() {
         getLanguage(lang: string) {
           return hljs.getLanguage(lang);
         },
-        highlight(str: string, lang: string) {
-          return hljs.highlight(str, { language: lang }).value;
+        highlight(code: string, lang: string) {
+          return hljs.highlight(code, { language: lang }).value;
         },
       };
     }
@@ -31,30 +31,30 @@ function getHighlighter() {
   return undefined;
 }
 
-export function highlight(str: string, lang: string) {
+export function highlight(code: string, lang: string) {
   const highlighter = getHighlighter();
 
   if (!highlighter) {
     console.warn(
       `Highlighter(Prismjs or Highlight.js) is required!`
     );
-    return str;
+    return code;
   }
 
   if (!lang) {
-    return str;
+    return code;
   }
 
   lang = getLangCodeFromExtension(lang.toLowerCase());
 
   if (highlighter.getLanguage(lang)) {
     try {
-      return highlighter.highlight(str, lang);
+      return highlighter.highlight(code, lang);
     } catch (error) {
       console.error(
         `Syntax highlight for language ${lang} failed.`
       );
-      return str;
+      return code;
     }
   } else {
     console.warn(
