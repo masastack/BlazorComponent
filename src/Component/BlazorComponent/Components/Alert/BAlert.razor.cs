@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using BlazorComponent.Attributes;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
@@ -18,6 +19,7 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
+        [DefaultValue("mdi-close-circle")]
         [Parameter]
         public string CloseIcon { get; set; } = "mdi-close-circle";
 

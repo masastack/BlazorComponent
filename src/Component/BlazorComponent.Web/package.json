@@ -22,6 +22,7 @@
     "@types/node": "^18.7.14",
     "markdown-it": "^13.0.1",
     "markdown-it-class": "^1.0.0",
+    "markdown-it-front-matter": "^0.2.3",
     "markdown-it-header-sections": "^1.0.0",
     "punycode": "^2.1.1",
     "rollup": "^2.79.0",

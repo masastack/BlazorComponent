@@ -350,6 +350,11 @@
   "resolved" "https://registry.npmmirror.com/markdown-it-class/-/markdown-it-class-1.0.0.tgz"
   "version" "1.0.0"
 
+"markdown-it-front-matter@^0.2.3":
+  "integrity" "sha512-s9+rcClLmZsZc3YL8Awjg/YO/VdphlE20LJ9Bx5a8RAFLI5a1vq6Mll8kOzG6w/wy8yhFLBupaa6Mfd60GATkA=="
+  "resolved" "https://registry.npmmirror.com/markdown-it-front-matter/-/markdown-it-front-matter-0.2.3.tgz"
+  "version" "0.2.3"
+
 "markdown-it-header-sections@^1.0.0":
   "integrity" "sha512-GndZbs+iTo7NkNRf00VmT4mtFql7VoJNnSwB7hP5xkomGUTdQ78siVZIuRco4fbiWJd45JUemLxUS9vO8luPSA=="
   "resolved" "https://registry.npmmirror.com/markdown-it-header-sections/-/markdown-it-header-sections-1.0.0.tgz"

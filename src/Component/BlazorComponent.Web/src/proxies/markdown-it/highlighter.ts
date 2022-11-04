@@ -60,6 +60,7 @@ export function highlight(code: string, lang: string) {
     console.warn(
       `[markdown-it-proxy] Syntax highlight for language "${lang}" is not supported.`
     );
+    return code;
   }
 }
 

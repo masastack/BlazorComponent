@@ -12,9 +12,6 @@ public partial class BMarkdownIt : BDomComponentBase
     public bool HeaderSections { get; set; }
 
     [Parameter]
-    public string? Key { get; set; }
-
-    [Parameter]
     [EditorRequired]
     public string? Source { get; set; }
 
@@ -101,7 +98,15 @@ public partial class BMarkdownIt : BDomComponentBase
     [Parameter]
     public Dictionary<string, string>? TagClassMap { get; set; }
 
+    [Parameter]
+    public bool Plain { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnFrontMatterParsed { get; set; }
+
     private string _mdHtml = string.Empty;
+    public string? _frontMatter;
+
     private string? _prevSource;
     private MarkdownItProxy? _markdownItProxy;
 
@@ -163,14 +168,27 @@ public partial class BMarkdownIt : BDomComponentBase
 
         var tagClassMap = TagClassMap ?? new Dictionary<string, string>();
 
-        _markdownItProxy = await MarkdownItProxyModule.Create(options, tagClassMap, HeaderSections, Key);
+        _markdownItProxy = await MarkdownItProxyModule.Create(options, tagClassMap, HeaderSections, this.GetHashCode().ToString());
     }
 
     private async Task TryParse()
     {
-        if (_markdownItProxy is null || Source is null) return;
+        if (_markdownItProxy is null) return;
 
-        _mdHtml = await _markdownItProxy.Parse(Source);
+        if (Source == null)
+        {
+            _frontMatter = null;
+            _mdHtml = null;
+        }
+        else
+        {
+            (_frontMatter, _mdHtml) = await _markdownItProxy.ParseAll(Source);
+
+            if (OnFrontMatterParsed.HasDelegate)
+            {
+                await OnFrontMatterParsed.InvokeAsync(_frontMatter);
+            }
+        }
 
         StateHasChanged();
     }

@@ -1,6 +1,13 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-<div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" @attributes="@Attributes" @ref="Ref">
+@if (Plain)
+{
     @((MarkupString)_mdHtml)
-</div>
+}
+else
+{
+    <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" @attributes="@Attributes" @ref="Ref">
+        @((MarkupString)_mdHtml)
+    </div>
+}
