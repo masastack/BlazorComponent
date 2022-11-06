@@ -13,6 +13,9 @@ public partial class BHighlight : BDomComponentBase
     [EditorRequired]
     public string Language { get; set; }
 
+    [Parameter]
+    public bool Inline { get; set; }
+
     private const string Key = "Highlight";
 
     private string _codeHtml = string.Empty;
