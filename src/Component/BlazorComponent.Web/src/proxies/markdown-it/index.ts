@@ -43,12 +43,13 @@ function create(
   };
 
   const md = new MarkdownIt(options)
-    .use(markdownItClass, tagClassMap)
     .use(markdownItFrontMatter, more.frontMatter.cb);
 
   if (enableHeaderSections) {
     md.use(markdownItHeaderSections);
   }
+
+  md.use(markdownItClass, tagClassMap);
 
   more.md = md;
 
