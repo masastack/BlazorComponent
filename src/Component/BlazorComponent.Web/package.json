@@ -21,6 +21,7 @@
     "@types/blazor__javascript-interop": "^3.1.2",
     "@types/node": "^18.7.14",
     "markdown-it": "^13.0.1",
+    "markdown-it-anchor": "^8.6.5",
     "markdown-it-class": "^1.0.0",
     "markdown-it-front-matter": "^0.2.3",
     "markdown-it-header-sections": "^1.0.0",
@@ -29,5 +30,8 @@
     "rollup-plugin-terser": "^7.0.2",
     "tslib": "^2.4.0",
     "typescript": "^4.8.2"
+  },
+  "dependencies": {
+    "lodash.kebabcase": "^4.1.1"
   }
 }

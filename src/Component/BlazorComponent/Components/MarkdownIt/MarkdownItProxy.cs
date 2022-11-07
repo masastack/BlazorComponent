@@ -1,4 +1,5 @@
-﻿using Microsoft.JSInterop;
+﻿using System.Text.Json;
+using Microsoft.JSInterop;
 
 namespace BlazorComponent;
 
@@ -18,13 +19,9 @@ public class MarkdownItProxy
         return await _module.InvokeAsync<string>("parse", source, _key);
     }
 
-    public async Task<(string frontMatter, string markup)> ParseAll(string source)
+    public async Task<MarkdownItParsedResult> ParseAll(string source)
     {
-        var results = await _module.InvokeAsync<string[]>("parseAll", source, _key);
-        var frontMatter = results[0];
-        var markup = results[1];
-        
-        return (frontMatter, markup);
+        return await _module.InvokeAsync<MarkdownItParsedResult>("parseAll", source, _key);
     }
 
     public async Task<string> Highlight(string code, string lang)

@@ -104,8 +104,10 @@ public partial class BMarkdownIt : BDomComponentBase
     [Parameter]
     public EventCallback<string> OnFrontMatterParsed { get; set; }
 
+    [Parameter]
+    public EventCallback<List<MarkdownItHeading>?> OnTocParsed { get; set; }
+
     private string _mdHtml = string.Empty;
-    public string? _frontMatter;
 
     private string? _prevSource;
     private MarkdownItProxy? _markdownItProxy;
@@ -177,16 +179,22 @@ public partial class BMarkdownIt : BDomComponentBase
 
         if (Source == null)
         {
-            _frontMatter = null;
             _mdHtml = null;
         }
         else
         {
-            (_frontMatter, _mdHtml) = await _markdownItProxy.ParseAll(Source);
+            var result = await _markdownItProxy.ParseAll(Source);
 
             if (OnFrontMatterParsed.HasDelegate)
             {
-                await OnFrontMatterParsed.InvokeAsync(_frontMatter);
+                await OnFrontMatterParsed.InvokeAsync(result.FrontMatter);
+            }
+
+            _mdHtml = result.MarkupContent;
+
+            if (OnTocParsed.HasDelegate)
+            {
+                await OnTocParsed.InvokeAsync(result.Toc);
             }
         }
 
