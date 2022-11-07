@@ -1,12 +1,10 @@
-import { Buffer } from "buffer";
-import kebabCase from "lodash.kebabcase";
 import MarkdownIt from "markdown-it";
-import markdownItClass from "markdown-it-class";
+import markdownItAnchor from "markdown-it-anchor";
+import markdownItAttrs from "markdown-it-attrs";
 import markdownItFrontMatter from "markdown-it-front-matter";
 import markdownItHeaderSections from "markdown-it-header-sections";
 
 import { highlight } from "./highlighter";
-import markdownItTocDesc, { Heading, MarkdownTocDescOption } from "./markdown-it-toc-desc";
 
 type MarkdownItMore = {
   md: MarkdownIt;
@@ -15,8 +13,8 @@ type MarkdownItMore = {
     cb: (s: string) => void;
   };
   toc: {
-    headings: Heading[];
-    cb: (tree: Heading[]) => void;
+    contents: any;
+    cb: (tocMarkdown, tocArray, tocHtml) => void;
   };
 };
 
@@ -30,7 +28,6 @@ const mdDict: MarkdownItMoreDict = {};
 
 function create(
   options: MarkdownIt.Options = {},
-  tagClassMap: { [prop: string]: string[] } = {},
   enableHeaderSections: boolean = false,
   key: string = "default"
 ) {
@@ -50,26 +47,33 @@ function create(
     more.frontMatter.meta = s;
   };
 
-  more.toc.headings = [];
-  more.toc.cb = (tree) => {
-    more.toc.headings = tree;
-  };
-
-  const tocOptions: MarkdownTocDescOption = {
-    includeLevel: [2, 3, 4],
-    slugify: (s) => hashString(kebabCase(s)),
-    getTocs: more.toc.cb,
+  more.toc.contents = [];
+  more.toc.cb = (_, array) => {
+    more.toc.contents = array;
   };
 
   const md = new MarkdownIt(options)
-    .use(markdownItFrontMatter, more.frontMatter.cb)
-    .use(markdownItTocDesc, tocOptions);
+    .use(markdownItAttrs)
+    .use(markdownItFrontMatter, more.frontMatter.cb);
+
+  md.use(markdownItAnchor, {
+    level: 1, // todo: support for custom config
+    permalink: true,
+    permalinkSymbol: '',
+    permalinkClass: '',
+    slugify: (s: string) => hashString(s),
+    callback: (_token, info) => {
+      more.toc.contents.push({ content: info.title, anchor: info.slug, level: _token.markup.length });
+    }
+  });
 
   if (enableHeaderSections) {
     md.use(markdownItHeaderSections);
   }
 
-  md.use(markdownItClass, tagClassMap);
+  if (window.BlazorComponent && window.BlazorComponent.markdownItRules) {
+    window.BlazorComponent.markdownItRules(key, md)
+  }
 
   more.md = md;
 
@@ -86,26 +90,31 @@ function parseAll(src: string, key: string = "default") {
 
   const more = mdDict[key];
   more.frontMatter.meta = undefined;
-  more.toc.headings = [];
+  more.toc.contents = [];
 
   const markup = more.md.render(src);
 
   return {
     frontMatter: more.frontMatter.meta,
     markup: markup,
-    toc: more.toc.headings,
+    toc: more.toc.contents,
   };
 }
 
-export function hashString(str: string) {
-  const encodedStr = encodeURIComponent(str);
-  if (encodedStr === str) {
-    return str;
+function hashString(str: string) {
+  let slug = String(str)
+    .trim()
+    .toLowerCase()
+    .replace(/[\s,.[\]{}()/]+/g, "-")
+    .replace(/[^a-z0-9 -]/g, (c) => c.charCodeAt(0).toString(16))
+    .replace(/-{2,}/g, "-")
+    .replace(/^-*|-*$/g, "");
+
+  if (slug.charAt(0).match(/[^a-z]/g)) {
+    slug = "section-" + slug;
   }
 
-  let hash = window.btoa(unescape(encodedStr));
-  hash = hash.substring(hash.length - 5);
-  return hash;
+  return encodeURIComponent(slug);
 }
 
 export { create, parse, parseAll, highlight };

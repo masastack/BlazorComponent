@@ -9,5 +9,5 @@ public class MarkdownItParsedResult
     [JsonPropertyName("markup")]
     public string MarkupContent { get; set; }
 
-    public List<MarkdownItHeading> Toc { get; set; }
+    public List<MarkdownItTocContent> Toc { get; set; }
 }

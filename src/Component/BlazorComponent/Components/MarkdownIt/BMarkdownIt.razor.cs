@@ -15,6 +15,9 @@ public partial class BMarkdownIt : BDomComponentBase
     [EditorRequired]
     public string? Source { get; set; }
 
+    [Parameter]
+    public string? Key { get; set; }
+
     #region MarkdownItOptions
 
     /// <summary>
@@ -92,20 +95,14 @@ public partial class BMarkdownIt : BDomComponentBase
 
     #endregion
 
-    /// <summary>
-    /// Enable markdown-it-class plugin
-    /// </summary>
     [Parameter]
-    public Dictionary<string, string>? TagClassMap { get; set; }
-
-    [Parameter]
-    public bool Plain { get; set; }
+    public bool Plain { get; set; } // TODO: rename this
 
     [Parameter]
     public EventCallback<string> OnFrontMatterParsed { get; set; }
 
     [Parameter]
-    public EventCallback<List<MarkdownItHeading>?> OnTocParsed { get; set; }
+    public EventCallback<List<MarkdownItTocContent>?> OnTocParsed { get; set; }
 
     private string _mdHtml = string.Empty;
 
@@ -168,9 +165,9 @@ public partial class BMarkdownIt : BDomComponentBase
             Quotes = Quotes
         };
 
-        var tagClassMap = TagClassMap ?? new Dictionary<string, string>();
+        var key = Key ?? this.GetHashCode().ToString();
 
-        _markdownItProxy = await MarkdownItProxyModule.Create(options, tagClassMap, HeaderSections, this.GetHashCode().ToString());
+        _markdownItProxy = await MarkdownItProxyModule.Create(options, HeaderSections, key);
     }
 
     private async Task TryParse()

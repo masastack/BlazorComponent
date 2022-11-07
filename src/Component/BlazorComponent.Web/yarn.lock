@@ -135,6 +135,24 @@
   "resolved" "https://registry.npmmirror.com/@types/estree/-/estree-1.0.0.tgz"
   "version" "1.0.0"
 
+"@types/linkify-it@*":
+  "integrity" "sha512-HZQYqbiFVWufzCwexrvh694SOim8z2d+xJl5UNamcvQFejLY/2YUtzXHYi3cHdI7PMlS8ejH2slRAOJQ32aNbA=="
+  "resolved" "https://registry.npmmirror.com/@types/linkify-it/-/linkify-it-3.0.2.tgz"
+  "version" "3.0.2"
+
+"@types/markdown-it@*":
+  "integrity" "sha512-GKMHFfv3458yYy+v/N8gjufHO6MSZKCOXpZc5GXIWWy8uldwfmPn98vp81gZ5f9SVw8YYBctgfJ22a2d7AOMeQ=="
+  "resolved" "https://registry.npmmirror.com/@types/markdown-it/-/markdown-it-12.2.3.tgz"
+  "version" "12.2.3"
+  dependencies:
+    "@types/linkify-it" "*"
+    "@types/mdurl" "*"
+
+"@types/mdurl@*":
+  "integrity" "sha512-eC4U9MlIcu2q0KQmXszyn5Akca/0jrQmwDRgpAMJai7qBWq4amIQhZyNau4VYGtCeALvW1/NtjzJJ567aZxfKA=="
+  "resolved" "https://registry.npmmirror.com/@types/mdurl/-/mdurl-1.0.2.tgz"
+  "version" "1.0.2"
+
 "@types/node@*", "@types/node@^18.7.14":
   "integrity" "sha512-6bbDaETVi8oyIARulOE9qF1/Qdi/23z6emrUh0fNJRUmjznqrixD4MpGDdgOFk5Xb0m2H6Xu42JGdvAxaJR/wA=="
   "resolved" "https://registry.npmmirror.com/@types/node/-/node-18.7.14.tgz"
@@ -338,6 +356,11 @@
   dependencies:
     "uc.micro" "^1.0.1"
 
+"lodash.kebabcase@^4.1.1":
+  "integrity" "sha512-N8XRTIMMqqDgSy4VLKPnJ/+hpGZN+PHQiJnSenYqPaVV/NCqEogTnAdZLQiGKhxX+JCs8waWq2t1XHWKOmlY8g=="
+  "resolved" "https://registry.npmmirror.com/lodash.kebabcase/-/lodash.kebabcase-4.1.1.tgz"
+  "version" "4.1.1"
+
 "magic-string@^0.26.4":
   "integrity" "sha512-hX9XH3ziStPoPhJxLq1syWuZMxbDvGNbVchfrdCtanC7D13888bMFow61x8axrx+GfHLtVeAx2kxL7tTGRl+Ow=="
   "resolved" "https://registry.npmmirror.com/magic-string/-/magic-string-0.26.7.tgz"
@@ -345,10 +368,15 @@
   dependencies:
     "sourcemap-codec" "^1.4.8"
 
-"markdown-it-class@^1.0.0":
-  "integrity" "sha512-CVDYqSgmErLAqInwWu8WmAR2nX6MMIBIt8LB6qg8DNldca9+aoC6ZyuY0lvBMsaTSHNFJRkcHVR1XjLw9nr9qQ=="
-  "resolved" "https://registry.npmmirror.com/markdown-it-class/-/markdown-it-class-1.0.0.tgz"
-  "version" "1.0.0"
+"markdown-it-anchor@^8.6.5":
+  "integrity" "sha512-PI1qEHHkTNWT+X6Ip9w+paonfIQ+QZP9sCeMYi47oqhH+EsW8CrJ8J7CzV19QVOj6il8ATGbK2nTECj22ZHGvQ=="
+  "resolved" "https://registry.npmmirror.com/markdown-it-anchor/-/markdown-it-anchor-8.6.5.tgz"
+  "version" "8.6.5"
+
+"markdown-it-attrs@^4.1.4":
+  "integrity" "sha512-53Zfv8PTb6rlVFDlD106xcZHKBSsRZKJ2IW/rTxEJBEVbVaoxaNsmRkG0HXfbHl2SK8kaxZ2QKqdthWy/QBwmA=="
+  "resolved" "https://registry.npmmirror.com/markdown-it-attrs/-/markdown-it-attrs-4.1.4.tgz"
+  "version" "4.1.4"
 
 "markdown-it-front-matter@^0.2.3":
   "integrity" "sha512-s9+rcClLmZsZc3YL8Awjg/YO/VdphlE20LJ9Bx5a8RAFLI5a1vq6Mll8kOzG6w/wy8yhFLBupaa6Mfd60GATkA=="
@@ -360,7 +388,7 @@
   "resolved" "https://registry.npmmirror.com/markdown-it-header-sections/-/markdown-it-header-sections-1.0.0.tgz"
   "version" "1.0.0"
 
-"markdown-it@^13.0.1":
+"markdown-it@*", "markdown-it@^13.0.1", "markdown-it@>= 9.0.0":
   "integrity" "sha512-lTlxriVoy2criHP0JKRhO2VDG9c2ypWCsT237eDiLqi09rmbKoUetyGHq2uOIRoRS//kfoJckS0eUzzkDR+k2Q=="
   "resolved" "https://registry.npmmirror.com/markdown-it/-/markdown-it-13.0.1.tgz"
   "version" "13.0.1"
