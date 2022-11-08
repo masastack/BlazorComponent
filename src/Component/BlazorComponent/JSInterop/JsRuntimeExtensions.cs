@@ -73,6 +73,11 @@ public static class JsRuntimeExtensions
         await jsRuntime.InvokeVoidAsync(JsInteropConstants.ScrollIntoView, el, new ScrollIntoViewOptions(block, inline, behavior));
     }
 
+    public static async Task ScrollToElement(this IJSRuntime jsRuntime, string selector, int offset, ScrollBehavior behavior = ScrollBehavior.Smooth)
+    {
+        await jsRuntime.InvokeVoidAsync(JsInteropConstants.ScrollToElement, selector, offset, behavior.ToString().ToLower());
+    }
+
     public static async Task ScrollIntoParentView(this IJSRuntime jsRuntime, string selector, bool inline = false, bool start = false,
         int level = 1, ScrollBehavior behavior = ScrollBehavior.Smooth)
     {
