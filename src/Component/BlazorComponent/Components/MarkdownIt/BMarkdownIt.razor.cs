@@ -99,7 +99,7 @@ public partial class BMarkdownIt : BDomComponentBase
     public bool Plain { get; set; } // TODO: rename this
 
     [Parameter]
-    public EventCallback<string> OnFrontMatterParsed { get; set; }
+    public EventCallback<string?> OnFrontMatterParsed { get; set; }
 
     [Parameter]
     public EventCallback<List<MarkdownItTocContent>?> OnTocParsed { get; set; }
