@@ -29,6 +29,7 @@ const mdDict: MarkdownItMoreDict = {};
 function create(
   options: MarkdownIt.Options = {},
   enableHeaderSections: boolean = false,
+  anchorOptions = null,
   key: string = "default"
 ) {
   key ??= "default";
@@ -56,23 +57,34 @@ function create(
     .use(markdownItAttrs)
     .use(markdownItFrontMatter, more.frontMatter.cb);
 
-  md.use(markdownItAnchor, {
-    level: 1, // todo: support for custom config
-    permalink: true,
-    permalinkSymbol: '',
-    permalinkClass: '',
-    slugify: (s: string) => hashString(s),
-    callback: (_token, info) => {
-      more.toc.contents.push({ content: info.title, anchor: info.slug, level: _token.markup.length });
+  if (anchorOptions) {
+    let slugify = (s: string) => hashString(s);
+    if (window.BlazorComponent.markdownItAnchorSlugify) {
+      slugify = (s) => window.BlazorComponent.markdownItAnchorSlugify(key, s);
     }
-  });
+
+    md.use(markdownItAnchor, {
+      level: anchorOptions.level,
+      permalink: anchorOptions.permalink,
+      permalinkSymbol: anchorOptions.permalinkSymbol,
+      permalinkClass: anchorOptions.permalinkClass,
+      slugify,
+      callback: (_token, info) => {
+        more.toc.contents.push({
+          content: info.title,
+          anchor: info.slug,
+          level: _token.markup.length,
+        });
+      },
+    });
+  }
 
   if (enableHeaderSections) {
     md.use(markdownItHeaderSections);
   }
 
   if (window.BlazorComponent && window.BlazorComponent.markdownItRules) {
-    window.BlazorComponent.markdownItRules(key, md)
+    window.BlazorComponent.markdownItRules(key, md);
   }
 
   more.md = md;

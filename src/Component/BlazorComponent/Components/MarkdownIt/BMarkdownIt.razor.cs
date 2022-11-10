@@ -6,7 +6,7 @@ public partial class BMarkdownIt : BDomComponentBase
     protected MarkdownItProxyModule MarkdownItProxyModule { get; set; }
 
     /// <summary>
-    /// Enable markdown-it-header-sections plugin··
+    /// Enable markdown-it-header-sections plugin.
     /// </summary>
     [Parameter]
     public bool HeaderSections { get; set; }
@@ -95,12 +95,27 @@ public partial class BMarkdownIt : BDomComponentBase
 
     #endregion
 
+    /// <summary>
+    /// Determines whether to wrap it with elements
+    /// </summary>
     [Parameter]
-    public bool Plain { get; set; } // TODO: rename this
+    public bool NoWrapper { get; set; }
 
+    /// <summary>
+    /// A callback that will be invoked when the <see cref="Source"/> rendered.
+    /// </summary>
     [Parameter]
     public EventCallback<string?> OnFrontMatterParsed { get; set; }
 
+    /// <summary>
+    /// Enable markdown-it-anchor plugin.
+    /// </summary>
+    [Parameter]
+    public MarkdownItAnchorOptions? AnchorOptions { get; set; }
+
+    /// <summary>
+    /// A callback that will be invoked when the <see cref="AnchorOptions"/> was instantiated and the <see cref="Source"/> rendered.
+    /// </summary>
     [Parameter]
     public EventCallback<List<MarkdownItTocContent>?> OnTocParsed { get; set; }
 
@@ -167,7 +182,7 @@ public partial class BMarkdownIt : BDomComponentBase
 
         var key = Key ?? this.GetHashCode().ToString();
 
-        _markdownItProxy = await MarkdownItProxyModule.Create(options, HeaderSections, key);
+        _markdownItProxy = await MarkdownItProxyModule.Create(options, HeaderSections, AnchorOptions, key);
     }
 
     private async Task TryParse()
