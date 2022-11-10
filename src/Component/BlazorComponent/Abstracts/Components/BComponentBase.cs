@@ -2,7 +2,7 @@
 
 namespace BlazorComponent
 {
-    public abstract class BComponentBase : ComponentBase, IDisposable, IHandleEvent
+    public abstract class BComponentBase : NextTickComponentBase, IHandleEvent
     {
         [Inject]
         public virtual IJSRuntime Js { get; set; }
@@ -13,36 +13,13 @@ namespace BlazorComponent
         [Parameter]
         public ForwardRef RefBack { get; set; } = new();
 
-        private readonly Queue<Func<Task>> _nextTickQueue = new();
-
         private ParameterView ParameterView { get; set; }
-
-        protected bool IsDisposed { get; private set; }
 
         public override Task SetParametersAsync(ParameterView parameters)
         {
             ParameterView = parameters;
 
             return base.SetParametersAsync(parameters);
-        }
-
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            if (_nextTickQueue.Count > 0)
-            {
-                var callbacks = _nextTickQueue.ToArray();
-                _nextTickQueue.Clear();
-
-                foreach (var callback in callbacks)
-                {
-                    if (IsDisposed)
-                    {
-                        return;
-                    }
-
-                    await callback();
-                }
-            }
         }
 
         /// <summary>
@@ -54,63 +31,6 @@ namespace BlazorComponent
         protected bool IsDirtyParameter<TValue>(string parameterName)
         {
             return ParameterView.TryGetValue<TValue>(parameterName, out _);
-        }
-
-        protected void NextTick(Func<Task> callback)
-        {
-            _nextTickQueue.Enqueue(callback);
-        }
-
-        protected void NextTick(Action callback)
-        {
-            NextTick(() =>
-            {
-                callback.Invoke();
-                return Task.CompletedTask;
-            });
-        }
-
-        protected async Task NextTickIf(Func<Task> callback, Func<bool> @if)
-        {
-            if (@if.Invoke())
-            {
-                NextTick(callback);
-            }
-            else
-            {
-                await callback.Invoke();
-            }
-        }
-
-        protected void NextTickIf(Action callback, Func<bool> @if)
-        {
-            if (@if.Invoke())
-            {
-                NextTick(callback);
-            }
-            else
-            {
-                callback.Invoke();
-            }
-        }
-
-        protected async Task NextTickWhile(Func<Task> callback, Func<bool> @while, int retryTimes = 20, CancellationToken cancellationToken = default)
-        {
-            if (retryTimes > 0 && !cancellationToken.IsCancellationRequested)
-            {
-                if (@while.Invoke())
-                {
-                    retryTimes--;
-
-                    await Task.Delay(100, cancellationToken);
-
-                    await NextTickWhile(callback, @while, retryTimes, cancellationToken);
-                }
-                else
-                {
-                    await callback.Invoke();
-                }
-            }
         }
 
         protected void InvokeStateHasChanged()
@@ -188,24 +108,6 @@ namespace BlazorComponent
             {
                 StateHasChanged();
             }
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (IsDisposed) return;
-            IsDisposed = true;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        ~BComponentBase()
-        {
-            // Finalizer calls Dispose(false)
-            Dispose(false);
         }
     }
 }
