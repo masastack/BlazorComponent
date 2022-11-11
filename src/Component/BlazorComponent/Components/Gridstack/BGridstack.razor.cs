@@ -17,6 +17,13 @@ public partial class BGridstack<TItem> : BDomComponentBase, IAsyncDisposable
     public Func<TItem, int>? ItemColumn { get; set; }
 
     [Parameter]
+    public bool Readonly
+    {
+        get => GetValue(false);
+        set => SetValue(value);
+    }
+
+    [Parameter]
     public int Column { get; set; } = 12;
 
     [Parameter]
@@ -32,6 +39,13 @@ public partial class BGridstack<TItem> : BDomComponentBase, IAsyncDisposable
         ArgumentNullException.ThrowIfNull(Items);
         ArgumentNullException.ThrowIfNull(ItemContent);
         ArgumentNullException.ThrowIfNull(ItemKey);
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        Watcher.Watch<bool>(nameof(Readonly), (val) => { _ = SetStatic(val); });
     }
 
     protected override async Task OnParametersSetAsync()
@@ -69,6 +83,12 @@ public partial class BGridstack<TItem> : BDomComponentBase, IAsyncDisposable
     {
         if (_jsObjectReference is null) return;
         await _jsObjectReference.InvokeVoidAsync("reload", Ref);
+    }
+
+    private async Task SetStatic(bool staticValue)
+    {
+        if (_jsObjectReference is null || Readonly) return;
+        await _jsObjectReference.InvokeVoidAsync("setStatic", Ref, staticValue);
     }
 
     public async ValueTask DisposeAsync()

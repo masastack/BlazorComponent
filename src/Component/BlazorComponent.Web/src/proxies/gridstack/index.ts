@@ -24,6 +24,14 @@ function init(
   gsDict[key] = grid;
 }
 
+function setStatic(elOrString: GridStackElement, staticValue: boolean) {
+  const key = genGridKey(elOrString);
+  let grid = gsDict[key];
+  if (grid) {
+    grid.setStatic(staticValue);
+  }
+}
+
 function reload(elOrString: GridStackElement) {
   const key = genGridKey(elOrString);
   let grid = gsDict[key];
@@ -48,4 +56,4 @@ function genGridKey(elOrString: GridStackElement) {
   return selector;
 }
 
-export { init, reload };
+export { init, reload, setStatic };
