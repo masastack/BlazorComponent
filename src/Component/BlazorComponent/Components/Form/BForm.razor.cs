@@ -63,9 +63,11 @@ namespace BlazorComponent
             {
                 EditContext = new EditContext(Model);
 
+                // 未开启EnableValidation也需要初始化ValidationMessageStore，否则
+                // 用户手动调用ParseFormValidation，设置错误信息时，报空引用异常
+                ValidationMessageStore = new ValidationMessageStore(EditContext);
                 if (EnableValidation)
                 {
-                    ValidationMessageStore = new ValidationMessageStore(EditContext);
                     _editContextValidation = EditContext.EnableValidation(ValidationMessageStore, ServiceProvider, EnableI18n);
                 }
 
