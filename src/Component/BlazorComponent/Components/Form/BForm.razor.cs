@@ -63,8 +63,6 @@ namespace BlazorComponent
             {
                 EditContext = new EditContext(Model);
 
-                // 未开启EnableValidation也需要初始化ValidationMessageStore，否则
-                // 用户手动调用ParseFormValidation，设置错误信息时，报空引用异常
                 ValidationMessageStore = new ValidationMessageStore(EditContext);
                 if (EnableValidation)
                 {
@@ -212,7 +210,6 @@ namespace BlazorComponent
                 var validatable = Validatables.FirstOrDefault(item => item.ValueIdentifier.Equals(fieldIdentifier));
                 if (validatable is not null)
                 {
-                    validatable.Validate();
                     ValidationMessageStore.Clear(fieldIdentifier);
                     ValidationMessageStore.Add(fieldIdentifier, validationResult.Message);
                 }
