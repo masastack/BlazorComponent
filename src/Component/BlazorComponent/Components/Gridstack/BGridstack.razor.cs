@@ -4,6 +4,9 @@ namespace BlazorComponent;
 
 public partial class BGridstack<TItem> : BDomComponentBase, IAsyncDisposable
 {
+    [Inject]
+    protected GridstackProxyModule Module { get; set; } = null!;
+
     [Parameter, EditorRequired]
     public List<TItem> Items { get; set; } = new();
 
@@ -29,8 +32,11 @@ public partial class BGridstack<TItem> : BDomComponentBase, IAsyncDisposable
     [Parameter]
     public int MinRow { get; set; }
 
+    [Parameter]
+    public EventCallback<(ElementReference? elementReference, string? id, int width, int height)> OnResize { get; set; }
+
     private string? _prevItemKeys;
-    private IJSObjectReference? _jsObjectReference;
+    private IJSObjectReference? _gridstackInstance;
 
     public override async Task SetParametersAsync(ParameterView parameters)
     {
@@ -69,35 +75,45 @@ public partial class BGridstack<TItem> : BDomComponentBase, IAsyncDisposable
         if (firstRender)
         {
             _prevItemKeys = string.Join("", Items.Select(ItemKey));
+            _gridstackInstance = await Module.Init(new { Column, MinRow }, Ref);
+            Module.Resize += GridstackOnResize;
 
-            _jsObjectReference = await Js.InvokeAsync<IJSObjectReference>("import", "./_content/BlazorComponent/js/gridstack-proxy.js");
-            await _jsObjectReference!.InvokeVoidAsync("init", Ref, new
+            if (Readonly)
             {
-                Column, // TODO: not work?
-                MinRow
-            });
+                await SetStatic(true);
+            }
+        }
+    }
+
+    private void GridstackOnResize(object sender, GridstackProxyModule.GridstackResizeEventArgs e)
+    {
+        if (OnResize.HasDelegate)
+        {
+            OnResize.InvokeAsync((e.ElementReference, e.Id, e.Width, e.Height));
+            InvokeStateHasChanged();
         }
     }
 
     private async Task Reload()
     {
-        if (_jsObjectReference is null) return;
-        await _jsObjectReference.InvokeVoidAsync("reload", Ref);
+        if (_gridstackInstance is null) return;
+        _gridstackInstance = await Module.Reload(_gridstackInstance);
     }
 
     private async Task SetStatic(bool staticValue)
     {
-        if (_jsObjectReference is null || Readonly) return;
-        await _jsObjectReference.InvokeVoidAsync("setStatic", Ref, staticValue);
+        if (_gridstackInstance is null) return;
+        await Module.SetStatic(_gridstackInstance, staticValue);
     }
 
     public async ValueTask DisposeAsync()
     {
         try
         {
-            if (_jsObjectReference is not null)
+            Module.Resize -= GridstackOnResize;
+            if (_gridstackInstance is not null)
             {
-                await _jsObjectReference.DisposeAsync();
+                await _gridstackInstance.DisposeAsync();
             }
         }
         catch

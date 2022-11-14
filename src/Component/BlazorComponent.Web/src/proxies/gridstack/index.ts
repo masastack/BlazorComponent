@@ -1,59 +1,63 @@
-import { GridStack, GridStackElement, GridStackOptions } from "gridstack";
+import { GridItemHTMLElement, GridStack, GridStackElement, GridStackOptions } from "gridstack";
 
-import { getBlazorId, getElementSelector } from "../../utils/helper";
-
-type GridStackDict = {
-  [prop: string]: GridStack;
-};
-
-const gsDict: GridStackDict = {};
+import { getBlazorId } from "../../utils/helper";
 
 function init(
+  options: GridStackOptions = {},
   elOrString: GridStackElement = ".grid-stack",
-  options: GridStackOptions = {}
+  dotNet: DotNet.DotNetObject
 ) {
-  console.log(options);
-  const grid = GridStack.init(
-    {
-      column: 10,
-      minRow: 1,
-    },
-    elOrString
-  );
-  const key = genGridKey(elOrString);
-  gsDict[key] = grid;
+  const grid = GridStack.init(options, elOrString);
+  grid["dotNet"] = dotNet;
+  addEvents(grid);
+  return grid;
 }
 
-function setStatic(elOrString: GridStackElement, staticValue: boolean) {
-  const key = genGridKey(elOrString);
-  let grid = gsDict[key];
+function setStatic(grid: GridStack, staticValue: boolean) {
   if (grid) {
     grid.setStatic(staticValue);
   }
 }
 
-function reload(elOrString: GridStackElement) {
-  const key = genGridKey(elOrString);
-  let grid = gsDict[key];
+function reload(grid: GridStack) {
   if (grid) {
+    const opts = { ...grid.opts };
+    const el = grid.el;
     grid.destroy(false);
-    grid = GridStack.init(grid.opts, elOrString);
-    gsDict[key] = grid;
+    const dotNet = grid["dotNet"];
+    grid = GridStack.init(opts, el);
+    grid["dotNet"] = dotNet;
+    addEvents(grid);
+    return grid;
   }
+
+  return grid;
 }
 
-function genGridKey(elOrString: GridStackElement) {
-  let selector;
-  if (typeof elOrString === "string") {
-    selector = elOrString;
-  } else {
-    selector = getBlazorId(elOrString);
-    if (!selector) {
-      selector = getElementSelector(elOrString);
-    }
-  }
+function addEvents(grid: GridStack) {
+  const dotNet: DotNet.DotNetObject = grid["dotNet"];
+  grid.on("resize", function (event: Event, el: GridItemHTMLElement) {
+    dotNet.invokeMethodAsync("OnResize", ...resize(event, el));
+  });
 
-  return selector;
+  grid.on("resizestop", function (event: Event, el: GridItemHTMLElement) {
+    dotNet.invokeMethodAsync("OnResizeStop", ...resize(event, el));
+  });
+}
+
+function resize(event: Event, el: GridItemHTMLElement) {
+  const customElement = el.firstElementChild.firstElementChild;
+  let blazorId;
+  let id;
+  let width = 0;
+  let height = 0;
+  if (customElement) {
+    blazorId = getBlazorId(customElement);
+    id = customElement.getAttribute("id");
+    width = customElement.clientWidth;
+    height = customElement.clientHeight;
+  }
+  return [blazorId, id, width, height];
 }
 
 export { init, reload, setStatic };
