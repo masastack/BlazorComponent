@@ -63,9 +63,9 @@ namespace BlazorComponent
             {
                 EditContext = new EditContext(Model);
 
+                ValidationMessageStore = new ValidationMessageStore(EditContext);
                 if (EnableValidation)
                 {
-                    ValidationMessageStore = new ValidationMessageStore(EditContext);
                     _editContextValidation = EditContext.EnableValidation(ValidationMessageStore, ServiceProvider, EnableI18n);
                 }
 
@@ -210,7 +210,6 @@ namespace BlazorComponent
                 var validatable = Validatables.FirstOrDefault(item => item.ValueIdentifier.Equals(fieldIdentifier));
                 if (validatable is not null)
                 {
-                    validatable.Validate();
                     ValidationMessageStore.Clear(fieldIdentifier);
                     ValidationMessageStore.Add(fieldIdentifier, validationResult.Message);
                 }
