@@ -6,12 +6,14 @@
   "scripts": {
     "dev": "rollup --config rollup.config.ts --watch",
     "build": "rollup --config rollup.config.ts",
+    "dev:echarts": "rollup --config rollup.config.echarts.ts --watch",
+    "build:echarts": "rollup --config rollup.config.echarts.ts",
+    "dev:gridstack": "rollup --config rollup.config.gridstack.ts --watch",
+    "build:gridstack": "rollup --config rollup.config.gridstack.ts",
     "dev:input": "rollup --config rollup.config.input.ts --watch",
     "build:input": "rollup --config rollup.config.input.ts",
     "dev:markdownit": "rollup --config rollup.config.markdownit.ts --watch",
-    "build:markdownit": "rollup --config rollup.config.markdownit.ts",
-    "dev:gridstack": "rollup --config rollup.config.gridstack.ts --watch",
-    "build:gridstack": "rollup --config rollup.config.gridstack.ts"
+    "build:markdownit": "rollup --config rollup.config.markdownit.ts"
   },
   "author": "",
   "license": "MIT",
@@ -23,6 +25,7 @@
     "@rollup/plugin-typescript": "^8.4.0",
     "@types/blazor__javascript-interop": "^3.1.2",
     "@types/node": "^18.7.14",
+    "echarts": "^5.4.0",
     "gridstack": "^7.1.0",
     "lodash.kebabcase": "^4.1.1",
     "markdown-it": "^13.0.1",
