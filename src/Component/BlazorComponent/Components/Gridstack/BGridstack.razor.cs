@@ -20,17 +20,58 @@ public partial class BGridstack<TItem> : BDomComponentBase, IAsyncDisposable
     public Func<TItem, int>? ItemColumn { get; set; }
 
     [Parameter]
+    public Func<TItem, int>? ItemRow { get; set; }
+
+    [Parameter]
     public bool Readonly
     {
         get => GetValue(false);
         set => SetValue(value);
     }
 
+    /// <summary>
+    /// Integer > 0 (default 12) which can change on the fly with column(N) API, or 'auto' for nested grids to size themselves to the parent grid container (to make sub-items are the same size). 
+    /// </summary>
     [Parameter]
+    [DefaultValue(12)]
     public int Column { get; set; } = 12;
 
+    /// <summary>
+    /// disables the oneColumnMode when the grid width is less than minW (default: 'false')
+    /// </summary>
+    [Parameter]
+    public bool DisableOneColumnMode { get; set; }
+
+    /// <summary>
+    /// disallows resizing of widgets (default: false).
+    /// </summary>
+    [Parameter]
+    public bool DisableResize { get; set; }
+
+    /// <summary>
+    /// enable floating widgets (default: false)
+    /// </summary>
+    [Parameter]
+    public bool Float { get; set; }
+
+    /// <summary>
+    /// gap size around grid item and content (default: 10px)
+    /// </summary>
+    [Parameter]
+    [DefaultValue(10)]
+    public int Margin { get; set; } = 10;
+
+    /// <summary>
+    /// minimum rows amount which is handy to prevent grid from collapsing when empty. Default is 0. You can also do this with min-height CSS attribute on the grid div in pixels, which will round to the closest row.
+    /// </summary>
     [Parameter]
     public int MinRow { get; set; }
+
+    /// <summary>
+    /// if true turns grid to RTL.
+    /// </summary>
+    [Parameter]
+    public bool Rtl { get; set; }
 
     [Parameter]
     public EventCallback<(ElementReference? elementReference, string? id, int width, int height)> OnResize { get; set; }
@@ -75,7 +116,20 @@ public partial class BGridstack<TItem> : BDomComponentBase, IAsyncDisposable
         if (firstRender)
         {
             _prevItemKeys = string.Join("", Items.Select(ItemKey));
-            _gridstackInstance = await Module.Init(new { Column, MinRow }, Ref);
+
+            var options = new GridstackOptions()
+            {
+                Column = Column,
+                DisableOneColumnMode = DisableOneColumnMode,
+                DisableResize = DisableResize,
+                Float = Float,
+                Margin = Margin,
+                MinRow = MinRow,
+                Rtl = Rtl
+            };
+
+            _gridstackInstance = await Module.Init(options, Ref);
+
             Module.Resize += GridstackOnResize;
 
             if (Readonly)
@@ -90,7 +144,6 @@ public partial class BGridstack<TItem> : BDomComponentBase, IAsyncDisposable
         if (OnResize.HasDelegate)
         {
             OnResize.InvokeAsync((e.ElementReference, e.Id, e.Width, e.Height));
-            InvokeStateHasChanged();
         }
     }
 

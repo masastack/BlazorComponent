@@ -8,8 +8,9 @@
     @foreach (var item in Items)
     {
         var width = ItemColumn?.Invoke(item) ?? 1;
+        var height = ItemRow?.Invoke(item) ?? 1;
 
-        <div class="grid-stack-item" gs-w="@width">
+        <div class="grid-stack-item" gs-w="@width" gs-h="@height">
             <div class="grid-stack-item-content @CssProvider.GetClass("item")"
                  style="@CssProvider.GetStyle("item")">
                 @ItemContent.Invoke(item)

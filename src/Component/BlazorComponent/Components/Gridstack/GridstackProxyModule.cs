@@ -14,7 +14,7 @@ public class GridstackProxyModule : JSModule
 
     public event EventHandler<GridstackResizeEventArgs>? Resize;
 
-    public async ValueTask<IJSObjectReference> Init(object options, ElementReference el)
+    public async ValueTask<IJSObjectReference> Init(GridstackOptions options, ElementReference el)
         => await InvokeAsync<IJSObjectReference>("init", options, el, _dotNetObjectReference);
 
     public async ValueTask SetStatic(IJSObjectReference instance, bool staticValue)
