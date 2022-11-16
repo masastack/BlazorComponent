@@ -1,6 +1,6 @@
-import { GridItemHTMLElement, GridStack, GridStackElement, GridStackOptions } from "gridstack";
-
-import { getBlazorId } from "../../utils/helper";
+import {
+    GridItemHTMLElement, GridStack, GridStackElement, GridStackNode, GridStackOptions
+} from "gridstack";
 
 function init(
   options: GridStackOptions = {},
@@ -34,30 +34,40 @@ function reload(grid: GridStack) {
   return grid;
 }
 
+function save(grid: GridStack) {
+  if (grid) {
+    return grid.save();
+  }
+}
+
 function addEvents(grid: GridStack) {
+  if (!grid) return;
+
   const dotNet: DotNet.DotNetObject = grid["dotNet"];
   grid.on("resize", function (event: Event, el: GridItemHTMLElement) {
     dotNet.invokeMethodAsync("OnResize", ...resize(event, el));
   });
 
-  grid.on("resizestop", function (event: Event, el: GridItemHTMLElement) {
-    dotNet.invokeMethodAsync("OnResizeStop", ...resize(event, el));
+  grid.on("change", function (event: Event, items: GridStackNode[]) {
+    const res = grid.save(false);
+    if (Array.isArray(res)) {
+      const positions = res.map(({ content, ...position }) => position);
+      console.log("save", positions);
+    }
   });
 }
 
 function resize(event: Event, el: GridItemHTMLElement) {
   const customElement = el.firstElementChild.firstElementChild;
-  let blazorId;
   let id;
   let width = 0;
   let height = 0;
   if (customElement) {
-    blazorId = getBlazorId(customElement);
-    id = customElement.getAttribute("id");
+    id = el.getAttribute("gs-id");
     width = customElement.clientWidth;
     height = customElement.clientHeight;
   }
-  return [blazorId, id, width, height];
+  return [id, width, height];
 }
 
-export { init, reload, setStatic };
+export { init, reload, setStatic, save };

@@ -1,10 +1,14 @@
-import * as echarts from "echarts";
-
 function init(elOrString, theme, initOptions) {
   const chart = echarts.init(elOrString, theme, initOptions);
-  window.onresize = function () {
-    chart.resize();
-  };
+
+  window.addEventListener("resize", () => {
+    const dom = chart.getDom();
+    const width = dom.clientWidth;
+    const height = dom.clientHeight;
+    chart.resize({ width, height });
+  });
+
+  return chart;
 }
 
 function setOption(
@@ -13,18 +17,22 @@ function setOption(
   notMerge: boolean = false,
   lazyUpdate: boolean = false
 ) {
-  instance.setOption(option, notMerge, lazyUpdate);
+  if (instance) {
+    instance.setOption(option, notMerge, lazyUpdate);
+  }
 }
 
 function dispose(instance: echarts.ECharts) {
-  instance.dispose();
+  if (instance) {
+    instance.dispose();
+  }
 }
 
 function resize(instance: echarts.ECharts, width?: number, height?: number) {
-  instance.resize({
-    width,
-    height,
-  });
+  if (instance) {
+    console.log("resize", width, height);
+    instance.resize({ width, height });
+  }
 }
 
 export { init, setOption, resize, dispose };

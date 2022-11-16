@@ -22,7 +22,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies(), ServiceLifetime.Scoped, includeInternalTypes: true);
 
             services.TryAddScoped<MarkdownItProxyModule>();
-            services.TryAddScoped<GridstackProxyModule>();
 
             services.AddI18n();
 
