@@ -30,7 +30,6 @@ function dispose(instance: echarts.ECharts) {
 
 function resize(instance: echarts.ECharts, width?: number, height?: number) {
   if (instance) {
-    console.log("resize", width, height);
     instance.resize({ width, height });
   }
 }

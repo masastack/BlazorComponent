@@ -1,6 +1,4 @@
-import {
-    GridItemHTMLElement, GridStack, GridStackElement, GridStackNode, GridStackOptions
-} from "gridstack";
+import { GridItemHTMLElement, GridStack, GridStackElement, GridStackOptions } from "gridstack";
 
 function init(
   options: GridStackOptions = {},
@@ -36,8 +34,13 @@ function reload(grid: GridStack) {
 
 function save(grid: GridStack) {
   if (grid) {
-    return grid.save();
+    const widgets = grid.save();
+    if (Array.isArray(widgets)) {
+      return widgets.map(({ content, ...rest }) => rest);
+    }
   }
+
+  return [];
 }
 
 function addEvents(grid: GridStack) {
@@ -46,14 +49,6 @@ function addEvents(grid: GridStack) {
   const dotNet: DotNet.DotNetObject = grid["dotNet"];
   grid.on("resize", function (event: Event, el: GridItemHTMLElement) {
     dotNet.invokeMethodAsync("OnResize", ...resize(event, el));
-  });
-
-  grid.on("change", function (event: Event, items: GridStackNode[]) {
-    const res = grid.save(false);
-    if (Array.isArray(res)) {
-      const positions = res.map(({ content, ...position }) => position);
-      console.log("save", positions);
-    }
   });
 }
 
