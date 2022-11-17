@@ -1,6 +1,6 @@
 param(
-  [Parameter(Mandatory = $true, HelpMessage = "Enter 'main' to build 'main.ts', enter 'input' to build 'input.ts', enter 'markdownit' to build 'markdownit'.")]
-  [ValidateSet("main", "input", "markdownit")]
+  [Parameter(Mandatory = $true, HelpMessage = "main | echarts | input | markdownit | gridstack")]
+  [ValidateSet("main", "echarts", "input", "markdownit", "gridstack")]
   [string]$file
 )
 
@@ -19,6 +19,12 @@ if (Get-Command npm -ErrorAction SilentlyContinue) {
     }
     elseif ($file -eq 'markdownit') {
       npm run build:markdownit
+    }
+    elseif ($file -eq 'gridstack') {
+      npm run build:gridstack
+    }
+    elseif ($file -eq 'echarts') {
+      npm run build:echarts
     }
   }
   else {

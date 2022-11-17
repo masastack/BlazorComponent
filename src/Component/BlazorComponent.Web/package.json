@@ -6,6 +6,10 @@
   "scripts": {
     "dev": "rollup --config rollup.config.ts --watch",
     "build": "rollup --config rollup.config.ts",
+    "dev:echarts": "rollup --config rollup.config.echarts.ts --watch",
+    "build:echarts": "rollup --config rollup.config.echarts.ts",
+    "dev:gridstack": "rollup --config rollup.config.gridstack.ts --watch",
+    "build:gridstack": "rollup --config rollup.config.gridstack.ts",
     "dev:input": "rollup --config rollup.config.input.ts --watch",
     "build:input": "rollup --config rollup.config.input.ts",
     "dev:markdownit": "rollup --config rollup.config.markdownit.ts --watch",
@@ -14,12 +18,17 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@microsoft/dotnet-js-interop": "6.0.11",
     "@rollup/plugin-commonjs": "^23.0.2",
     "@rollup/plugin-json": "^5.0.1",
     "@rollup/plugin-node-resolve": "^15.0.1",
+    "@rollup/plugin-replace": "^5.0.1",
     "@rollup/plugin-typescript": "^8.4.0",
     "@types/blazor__javascript-interop": "^3.1.2",
+    "@types/echarts": "^4.9.16",
     "@types/node": "^18.7.14",
+    "gridstack": "^7.1.0",
+    "lodash.kebabcase": "^4.1.1",
     "markdown-it": "^13.0.1",
     "markdown-it-anchor": "^8.6.5",
     "markdown-it-attrs": "^4.1.4",
@@ -30,8 +39,5 @@
     "rollup-plugin-terser": "^7.0.2",
     "tslib": "^2.4.0",
     "typescript": "^4.8.2"
-  },
-  "dependencies": {
-    "lodash.kebabcase": "^4.1.1"
   }
 }
