@@ -4,6 +4,7 @@ import * as overlayable from "./mixins/overlayable";
 declare global {
   interface Window {
     BlazorComponent: any;
+    MasaBlazor: any;
   }
 }
 
@@ -13,3 +14,5 @@ window.BlazorComponent = {
     ...overlayable,
   },
 };
+
+window.MasaBlazor = {};

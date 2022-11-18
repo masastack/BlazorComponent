@@ -6,7 +6,7 @@ import markdownItHeaderSections from "markdown-it-header-sections";
 
 import { highlight } from "./highlighter";
 
-type MarkdownItMore = {
+type MarkdownParser = {
   md: MarkdownIt;
   frontMatter: {
     meta?: string;
@@ -18,49 +18,37 @@ type MarkdownItMore = {
   };
 };
 
-type MarkdownItMoreDict = {
-  [prop: string]: MarkdownItMore;
-};
-
-let md: MarkdownIt = undefined;
-
-const mdDict: MarkdownItMoreDict = {};
-
 function create(
   options: MarkdownIt.Options = {},
   enableHeaderSections: boolean = false,
   anchorOptions = null,
-  key: string = "default"
+  scope: string = null
 ) {
-  key ??= "default";
-
   options = { ...options, highlight };
 
-  const more =
-    mdDict[key] ??
-    ({
-      frontMatter: {},
-      toc: {},
-    } as MarkdownItMore);
+  const parser = {
+    frontMatter: {},
+    toc: {},
+  } as MarkdownParser;
 
-  more.frontMatter.meta = undefined;
-  more.frontMatter.cb = (s) => {
-    more.frontMatter.meta = s;
+  parser.frontMatter.meta = undefined;
+  parser.frontMatter.cb = (s) => {
+    parser.frontMatter.meta = s;
   };
 
-  more.toc.contents = [];
-  more.toc.cb = (_, array) => {
-    more.toc.contents = array;
+  parser.toc.contents = [];
+  parser.toc.cb = (_, array) => {
+    parser.toc.contents = array;
   };
 
   const md = new MarkdownIt(options)
     .use(markdownItAttrs)
-    .use(markdownItFrontMatter, more.frontMatter.cb);
+    .use(markdownItFrontMatter, parser.frontMatter.cb);
 
   if (anchorOptions) {
     let slugify = (s: string) => hashString(s);
-    if (window.BlazorComponent.markdownItAnchorSlugify) {
-      slugify = (s) => window.BlazorComponent.markdownItAnchorSlugify(key, s);
+    if (window.MasaBlazor.markdownItAnchorSlugify) {
+      slugify = (s) => window.MasaBlazor.markdownItAnchorSlugify(scope, s);
     }
 
     md.use(markdownItAnchor, {
@@ -70,7 +58,7 @@ function create(
       permalinkClass: anchorOptions.permalinkClass,
       slugify,
       callback: (_token, info) => {
-        more.toc.contents.push({
+        parser.toc.contents.push({
           content: info.title,
           anchor: info.slug,
           level: _token.markup.length,
@@ -83,34 +71,35 @@ function create(
     md.use(markdownItHeaderSections);
   }
 
-  if (window.BlazorComponent && window.BlazorComponent.markdownItRules) {
-    window.BlazorComponent.markdownItRules(key, md);
+  if (window.MasaBlazor && window.MasaBlazor.markdownItRules) {
+    window.MasaBlazor.markdownItRules(scope, md);
   }
 
-  more.md = md;
+  parser.md = md;
 
-  mdDict[key] = more;
+  return parser;
 }
 
-function parse(src: string, key: string = "default") {
-  const { markup } = parseAll(src, key);
+function parse(parser: MarkdownParser, src: string) {
+  const { markup } = parseAll(parser, src);
   return markup;
 }
 
-function parseAll(src: string, key: string = "default") {
-  key ??= "default";
+function parseAll(parser: MarkdownParser, src: string) {
+  if (parser) {
+    parser.frontMatter.meta = undefined;
+    parser.toc.contents = [];
 
-  const more = mdDict[key];
-  more.frontMatter.meta = undefined;
-  more.toc.contents = [];
+    const markup = parser.md.render(src);
 
-  const markup = more.md.render(src);
+    return {
+      frontMatter: parser.frontMatter.meta,
+      markup: markup,
+      toc: parser.toc.contents,
+    };
+  }
 
-  return {
-    frontMatter: more.frontMatter.meta,
-    markup: markup,
-    toc: more.toc.contents,
-  };
+  return {};
 }
 
 function hashString(str: string) {
