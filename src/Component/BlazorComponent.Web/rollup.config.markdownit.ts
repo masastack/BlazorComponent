@@ -10,7 +10,7 @@ export default defineConfig({
   input: "./src/proxies/markdown-it/index.ts",
   output: [
     {
-      file: "../BlazorComponent/wwwroot/js/markdown-it-proxy.js",
+      file: "../../../../MASA.Blazor/wwwroot/js/proxies/markdown-it-proxy.js",
       format: "esm",
       sourcemap: true,
     },

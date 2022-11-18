@@ -67,6 +67,7 @@ export function highlight(code: string, lang: string) {
 function getLangCodeFromExtension(extension) {
   const extensionMap = {
     cs: "csharp",
+    html: "markup",
     md: "markdown",
     ts: "typescript",
     py: "python",
