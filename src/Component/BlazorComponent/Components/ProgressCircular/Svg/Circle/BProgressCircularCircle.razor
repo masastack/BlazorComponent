@@ -2,4 +2,7 @@
 @typeparam TProgressCircular
 @inherits ComponentPartBase<TProgressCircular>
 
-<circle class="@CssProvider.GetClass($"{Name}-circle")" r="" stroke-dashoffset="@Offset" @attributes="CircleAttrs"></circle>
+<circle class="@CssProvider.GetClass($"{Name}-circle")"
+        style="@CssProvider.GetStyle($"{Name}-circle")"
+        r="" stroke-dashoffset="@Offset" @attributes="CircleAttrs">
+</circle>
