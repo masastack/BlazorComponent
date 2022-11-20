@@ -2,4 +2,6 @@
 @typeparam TItem
 @inherits BData<TItem>
 
-@RenderPart(typeof(BDataIteratorDefaultSlot<,>))
+<CascadingValue Value="this">
+    @RenderPart(typeof(BDataIteratorDefaultSlot<,>))
+</CascadingValue>

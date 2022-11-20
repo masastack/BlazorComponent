@@ -42,6 +42,8 @@ public interface IDataTable<TItem> : IDataIterator<TItem>
 
     Func<TItem, string> ItemKey { get; }
 
+    Func<TItem, List<TItem>> ItemChildren { get; }
+
     bool HideDefaultHeader { get; }
 
     bool ShowExpand { get; }

@@ -50,6 +50,7 @@ else
                    @ondblclick="HandleOnRowDbClickAsync"
                    Index="Index"
                    Item="Item"
+                   ItemChildren="ItemChildren"
                    HasSlot="@HasSlot"
                    @key="ItemKey?.Invoke(Item)"
                    @attributes="@GetAttributes(typeof(BDataTableRow<>))">

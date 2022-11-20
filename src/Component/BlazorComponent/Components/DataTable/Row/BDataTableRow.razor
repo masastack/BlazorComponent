@@ -2,10 +2,28 @@
 @typeparam TItem
 @inherits BDomComponentBase
 
-<tr class="@CssProvider.GetClass()" @attributes="Attributes">
-    @foreach (var header in Headers)
+<tr class="@CssProvider.GetClass()" style="@(_visible ? "" : "display:none")" @attributes="Attributes">
+    @foreach (var (header, i) in Headers.Select((header, i) => (header, i)))
     {
+        var hasChildren = Children.Any() && i == 0;
+
         <td class="@CssProvider.GetClass("cell", data: header)">
+            @if (ItemChildren is not null && i == 0)
+            {
+                <BButton OnClick="@ToggleExpand"
+                         @attributes="@(GetAttributes(typeof(BButton), "tree-toggle"))">
+                    @if (Children.Any())
+                    {
+                        <BIcon @attributes="@(GetAttributes(typeof(BIcon), "tree-toggle-icon"))">
+                            @(_expand ? TreeCloseIcon : TreeOpenIcon)
+                        </BIcon>
+                    }
+                </BButton>
+            }
+            @if (i == 0)
+            {
+                <span class="@CssProvider.GetClass("row-indent")" style="@CssProvider.GetStyle("row-indent")"></span>
+            }
             @{
                 var props = new ItemColProps<TItem>(header, Item);
                 if (HasSlot(props))
@@ -20,3 +38,21 @@
         </td>
     }
 </tr>
+
+<CascadingValue Value="this">
+    @if (Children.Any())
+    {
+        var level = Level + 1;
+
+        @foreach (var item in Children)
+        {
+            <BDataTableRow Item="@item"
+                           ItemChildren="@ItemChildren"
+                           Headers="@Headers"
+                           HasSlot="@HasSlot"
+                           SlotContent="@SlotContent"
+                           Level="@level">
+            </BDataTableRow>
+        }
+    }
+</CascadingValue>

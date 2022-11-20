@@ -10,6 +10,8 @@ namespace BlazorComponent
         [Parameter]
         public TItem Item { get; set; }
 
+        public Func<TItem, List<TItem>> ItemChildren => Component.ItemChildren;
+
         public bool IsMobile => Component.IsMobile;
 
         public Func<TItem, string> ItemKey => Component.ItemKey;
