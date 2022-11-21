@@ -2,17 +2,19 @@
 {
     public partial class BDataIterator<TItem>
     {
-        private Dictionary<TItem, (bool visible, bool expand)> _childrenOpenCache = new();
+        /// <summary>
+        /// cache the item status, useful for the tree data
+        /// </summary>
+        private readonly Dictionary<TItem, (bool visible, bool expand)> _treeItemStatusCache = new();
 
-        internal void UpdateExpand(TItem item, (bool visible, bool expand) value)
+        internal void UpdateTreeItemStatus(TItem item, (bool visible, bool expand) value)
         {
-            Console.WriteLine("update expand");
-            _childrenOpenCache[item] = value;
+            _treeItemStatusCache[item] = value;
         }
 
-        internal bool TryGetExpand(TItem item, out (bool visible, bool expand) valueTuple)
+        internal bool TruGetTreeItemStatus(TItem item, out(bool visible, bool expand) valueTuple)
         {
-            if (_childrenOpenCache.TryGetValue(item, out var value))
+            if (_treeItemStatusCache.TryGetValue(item, out var value))
             {
                 valueTuple = value;
                 return true;

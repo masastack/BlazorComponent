@@ -5,22 +5,20 @@
 <tr class="@CssProvider.GetClass()" style="@(_visible ? "" : "display:none")" @attributes="Attributes">
     @foreach (var (header, i) in Headers.Select((header, i) => (header, i)))
     {
-        var hasChildren = Children.Any() && i == 0;
-
         <td class="@CssProvider.GetClass("cell", data: header)">
-            @if (ItemChildren is not null && i == 0)
+            @if (ItemChildren is not null && i == FirstCellIndex)
             {
                 <BButton OnClick="@ToggleExpand"
                          @attributes="@(GetAttributes(typeof(BButton), "tree-toggle"))">
                     @if (Children.Any())
                     {
                         <BIcon @attributes="@(GetAttributes(typeof(BIcon), "tree-toggle-icon"))">
-                            @(_expand ? TreeCloseIcon : TreeOpenIcon)
+                            @(_expanded ? TreeCloseIcon : TreeOpenIcon)
                         </BIcon>
                     }
                 </BButton>
             }
-            @if (i == 0)
+            @if (i == FirstCellIndex)
             {
                 <span class="@CssProvider.GetClass("row-indent")" style="@CssProvider.GetStyle("row-indent")"></span>
             }

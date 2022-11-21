@@ -31,10 +31,30 @@ namespace BlazorComponent
         [Parameter]
         public int Level { get; set; }
 
-        internal bool _expand;
-        private bool _booted;
-        private bool _visible = false;
+        private bool _expanded;
+        private bool _visible;
         private List<BDataTableRow<TItem>> _childDataTableRows = new();
+
+        private int FirstCellIndex
+        {
+            get
+            {
+                int index = 0;
+                var first = Headers.ElementAtOrDefault(0);
+                if (first is { Value: "data-table-select" } or { Value: "data-table-expand" })
+                {
+                    index++;
+                }
+
+                var second = Headers.ElementAtOrDefault(1);
+                if (second is { Value: "data-table-select" } or { Value: "data-table-expand" })
+                {
+                    index++;
+                }
+
+                return index;
+            }
+        }
 
         protected List<TItem> Children => ItemChildren?.Invoke(Item) ?? new();
 
@@ -60,9 +80,9 @@ namespace BlazorComponent
         {
             base.OnAfterRender(firstRender);
 
-            if (firstRender && ParentDataTableRow != null && DataIterator.TryGetExpand(Item, out var value))
+            if (firstRender && ParentDataTableRow != null && DataIterator.TruGetTreeItemStatus(Item, out var value))
             {
-                (_visible, _expand) = value;
+                (_visible, _expanded) = value;
                 StateHasChanged();
             }
         }
@@ -74,30 +94,27 @@ namespace BlazorComponent
 
         internal void ToggleChildren(bool visible)
         {
-            if (visible == false)
-            {
-                _visible = false;
-                _childDataTableRows.ForEach(c => c.ToggleChildren(false));
-                DataIterator.UpdateExpand(Item, (false, _expand));
-            }
-            else
-            {
-                _visible = true;
+            _visible = visible;
+            DataIterator.UpdateTreeItemStatus(Item, (_visible, _expanded));
 
-                if (_expand)
+            if (visible)
+            {
+                if (_expanded)
                 {
                     _childDataTableRows.ForEach(c => c.ToggleChildren(true));
                 }
-
-                DataIterator.UpdateExpand(Item, (true, _expand));
+            }
+            else
+            {
+                _childDataTableRows.ForEach(c => c.ToggleChildren(false));
             }
         }
 
         private void ToggleExpand()
         {
-            _expand = !_expand;
-            DataIterator.UpdateExpand(Item, (true, _expand));
-            _childDataTableRows.ForEach(c => c.ToggleChildren(_expand));
+            _expanded = !_expanded;
+            DataIterator.UpdateTreeItemStatus(Item, (_visible, _expanded));
+            _childDataTableRows.ForEach(c => c.ToggleChildren(_expanded));
         }
     }
 }
