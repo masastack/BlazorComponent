@@ -1,64 +1,58 @@
 ﻿using OneOf;
 
-namespace BlazorComponent
+namespace BlazorComponent;
+
+[GenerateOneOf]
+public partial class StringNumberBoolean : OneOfBase<string, int, bool>
 {
-    public class StringNumberBoolean : OneOfBase<string, int, bool>
+    public static bool operator ==(StringNumberBoolean left, StringNumberBoolean right)
     {
-        StringNumberBoolean(OneOf<string, int, bool> _) : base(_) { }
-
-        public static implicit operator StringNumberBoolean(string _) => new(_);
-        public static implicit operator StringNumberBoolean(int _) => new(_);
-        public static implicit operator StringNumberBoolean(bool _) => new(_);
-
-        public static bool operator ==(StringNumberBoolean left, StringNumberBoolean right)
+        if (Equals(left, right))
         {
-            if (Equals(left, right))
-            {
-                return true;
-            }
-
-            if (left is null || right is null)
-            {
-                return false;
-            }
-
-            return left.Value == right.Value;
+            return true;
         }
 
-        public static bool operator !=(StringNumberBoolean left, StringNumberBoolean right)
+        if (left is null || right is null)
         {
-            if (Equals(left, right))
-            {
-                return false;
-            }
-
-            if (left is null || right is null)
-            {
-                return true;
-            }
-
-            return left.Value != right.Value;
+            return false;
         }
 
-        public int ToInt32() => Match(
-            t0 => Convert.ToInt32(t0),
-            t1 => t1,
-            t2 => 0
-            );
+        return left.Value == right.Value;
+    }
 
-        public override bool Equals(object obj)
+    public static bool operator !=(StringNumberBoolean left, StringNumberBoolean right)
+    {
+        if (Equals(left, right))
         {
-            return base.Equals(obj);
+            return false;
         }
 
-        public override int GetHashCode()
+        if (left is null || right is null)
         {
-            return base.GetHashCode();
+            return true;
         }
 
-        public override string ToString()
-        {
-            return Convert.ToString(Value);
-        }
+        return left.Value != right.Value;
+    }
+
+    public int ToInt32() => Match(
+        t0 => Convert.ToInt32(t0),
+        t1 => t1,
+        t2 => 0
+    );
+
+    public override bool Equals(object obj)
+    {
+        return base.Equals(obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
+    }
+
+    public override string ToString()
+    {
+        return Convert.ToString(Value);
     }
 }
