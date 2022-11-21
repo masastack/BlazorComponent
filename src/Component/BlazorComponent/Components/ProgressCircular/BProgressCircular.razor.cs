@@ -11,6 +11,9 @@ namespace BlazorComponent
         public string Color { get; set; }
 
         [Parameter]
+        public string BackgroundColor { get; set; }
+
+        [Parameter]
         public StringNumber Size { get; set; } = 32;
 
         [Parameter]
