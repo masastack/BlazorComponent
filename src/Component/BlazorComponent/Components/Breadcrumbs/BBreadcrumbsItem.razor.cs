@@ -91,6 +91,11 @@ namespace BlazorComponent
 
         public RenderFragment DividerContent => Breadcrumbs?.DividerContent;
 
+        internal void InternalStateHasChanged()
+        {
+            StateHasChanged();
+        }
+
         #endregion
 
         private bool UpdateActiveForLinkage()
