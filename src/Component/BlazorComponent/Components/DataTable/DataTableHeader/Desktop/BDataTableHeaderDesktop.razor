@@ -15,7 +15,7 @@
             }
             else
             {
-                @if (!DisableSort && header.Sortable && header.Align == "end")
+                @if (!DisableSort && header.Sortable && header.Align == DataTableHeaderAlign.End)
                 {
                     @RenderPart(typeof(BDataTableHeaderSortIcon<>))
                 }

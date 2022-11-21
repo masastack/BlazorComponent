@@ -29,7 +29,7 @@
 
         public bool Sortable { get; set; } = true;
 
-        public string Align { get; set; }
+        public DataTableHeaderAlign Align { get; set; } = DataTableHeaderAlign.Start;
 
         public bool Groupable { get; set; } = true;
         
