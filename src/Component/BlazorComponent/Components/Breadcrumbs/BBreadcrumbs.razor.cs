@@ -53,6 +53,16 @@ namespace BlazorComponent
             }
         }
 
+        protected override void OnAfterRender(bool firstRender)
+        {
+            base.OnAfterRender(firstRender);
+
+            if (SubBreadcrumbsItems.Any())
+            {
+                SubBreadcrumbsItems.ForEach(sub => sub.InternalStateHasChanged());
+            }
+        }
+
         #region When using razor definition without Items parameter
 
         internal List<BBreadcrumbsItem> SubBreadcrumbsItems { get; } = new();
