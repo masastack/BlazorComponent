@@ -225,7 +225,7 @@ internal sealed class ValidationEventSubscriptions : IDisposable
         {
             var modelParameter = Expr.BlockParam<object>().Convert(type);
             Var map = Expr.New<Dictionary<string, object>>();
-            var properties = type.GetProperties(BindingFlags.Instance);
+            var properties = type.GetProperties();
             foreach (var property in properties)
             {
                 if (property.PropertyType.IsValueType || property.PropertyType == typeof(string))
