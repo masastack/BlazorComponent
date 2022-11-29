@@ -19,8 +19,16 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped(typeof(BDragDropService));
             CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CurrentCulture;
             services.AddSingleton<IComponentActivator, AbstractComponentActivator>();
-            services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies(), ServiceLifetime.Scoped, includeInternalTypes: true);
+            services.AddValidators();
+            services.AddI18n();
+
+            return new BlazorComponentBuilder(services);
+        }
+
+        internal static IServiceCollection AddValidators(this IServiceCollection services)
+        {
             var referenceAssembles = AppDomain.CurrentDomain.GetAssemblies();
+            services.AddValidatorsFromAssemblies(referenceAssembles, ServiceLifetime.Scoped, includeInternalTypes: true);
             foreach (var referenceAssembly in referenceAssembles)
             {
                 if (referenceAssembly!.FullName!.StartsWith("Microsoft.") || referenceAssembly.FullName.StartsWith("System."))
@@ -48,9 +56,8 @@ namespace Microsoft.Extensions.DependencyInjection
                     }
                 }
             }
-            services.AddI18n();
 
-            return new BlazorComponentBuilder(services);
+            return services;
         }
     }
 }

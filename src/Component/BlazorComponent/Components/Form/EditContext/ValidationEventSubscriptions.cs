@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using Util.Reflection.Expressions;
 using FluentValidationResult = FluentValidation.Results.ValidationResult;
 using ValidationResult = System.ComponentModel.DataAnnotations.ValidationResult;
@@ -224,7 +225,7 @@ internal sealed class ValidationEventSubscriptions : IDisposable
         {
             var modelParameter = Expr.BlockParam<object>().Convert(type);
             Var map = Expr.New<Dictionary<string, object>>();
-            var properties = type.GetProperties();
+            var properties = type.GetProperties(BindingFlags.Instance);
             foreach (var property in properties)
             {
                 if (property.PropertyType.IsValueType || property.PropertyType == typeof(string))
