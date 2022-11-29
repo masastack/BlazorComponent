@@ -22,21 +22,33 @@ internal sealed class ValidationEventSubscriptions : IDisposable
             var referenceAssembles = AppDomain.CurrentDomain.GetAssemblies();
             foreach (var referenceAssembly in referenceAssembles)
             {
-                if (referenceAssembly.FullName.StartsWith("Microsoft.") || referenceAssembly.FullName.StartsWith("System."))
+                if (referenceAssembly!.FullName!.StartsWith("Microsoft.") || referenceAssembly.FullName.StartsWith("System."))
                     continue;
 
                 var types = referenceAssembly
                             .GetTypes()
                             .Where(t => t.IsClass)
-                            .Where(t => !t.IsAbstract && !t.IsGenericTypeDefinition)
+                            .Where(t => !t.IsAbstract)
                             .Where(t => typeof(IValidator).IsAssignableFrom(t))
                             .ToArray();
 
                 foreach (var type in types)
                 {
-                    var modelType = type.BaseType.GenericTypeArguments[0];
-                    var validatorType = typeof(IValidator<>).MakeGenericType(modelType);
-                    FluentValidationTypeMap.Add(modelType, validatorType);
+                    var modelType = type!.BaseType!.GenericTypeArguments[0];
+                    if (modelType.IsGenericParameter && modelType.BaseType is not null)
+                    {
+                        var modelTypes = referenceAssembly.GetTypes().Where(t => modelType.BaseType.IsAssignableFrom(t) && !t.IsAbstract && !t.IsGenericTypeDefinition);
+                        foreach (var item in modelTypes)
+                        {
+                            var validatorType = typeof(IValidator<>).MakeGenericType(item);
+                            FluentValidationTypeMap.Add(item, validatorType);
+                        }
+                    }
+                    else
+                    {
+                        var validatorType = typeof(IValidator<>).MakeGenericType(modelType);
+                        FluentValidationTypeMap.Add(modelType, validatorType);
+                    }
                 }
             }
         }
@@ -193,20 +205,12 @@ internal sealed class ValidationEventSubscriptions : IDisposable
 
     private FluentValidationResult GetValidationResult(object model)
     {
-        var type = model.GetType();
-        var validationContext = new ValidationContext<object>(model);
+        var type = model.GetType();        
 
-        if (ModelFluentValidatorMap.TryGetValue(type, out var validator))
+        if (FluentValidationTypeMap.TryGetValue(type, out var validatorType))
         {
-            return validator.Validate(validationContext);
-        }
-
-        var genericType = typeof(IValidator<>).MakeGenericType(type);
-        validator = (IValidator)_serviceProvider.GetService(genericType);
-
-        if (validator is not null)
-        {
-            ModelFluentValidatorMap[type] = validator;
+            var validationContext = new ValidationContext<object>(model);
+            var validator = ModelFluentValidatorMap.GetOrAdd(type, t => (IValidator)_serviceProvider.GetService(validatorType));
             return validator.Validate(validationContext);
         }
 
