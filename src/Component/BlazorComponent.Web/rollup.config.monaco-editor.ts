@@ -4,10 +4,10 @@ import { terser } from "rollup-plugin-terser";
 import typescript from "@rollup/plugin-typescript";
 
 export default defineConfig({
-  input: "./src/proxies/monaco/index.ts",
+  input: "./src/proxies/monaco-editor/index.ts",
   output: [
     {
-      file: "../../../../MASA.Blazor/wwwroot/js/proxies/monaco-proxy.js",
+      file: "../../../../MASA.Blazor/wwwroot/js/proxies/monaco-editor-proxy.js",
       format: "esm",
       sourcemap: true,
     },
