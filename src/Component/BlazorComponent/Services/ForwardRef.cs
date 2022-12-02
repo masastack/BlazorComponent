@@ -1,21 +1,11 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿namespace BlazorComponent;
 
-namespace BlazorComponent
+public class ForwardRef
 {
-    public class ForwardRef
+    public ElementReference Current { get; private set; }
+
+    public void Set(ElementReference value)
     {
-        private ElementReference _current;
-
-        public ElementReference Current
-        {
-            get => _current;
-            set => Set(value);
-        }
-
-
-        public void Set(ElementReference value)
-        {
-            _current = value;
-        }
+        Current = value;
     }
 }

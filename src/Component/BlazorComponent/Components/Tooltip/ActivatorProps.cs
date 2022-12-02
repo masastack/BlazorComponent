@@ -7,6 +7,6 @@
             Attrs = attrs;
         }
 
-        public Dictionary<string, object> Attrs { get; }
+        public Dictionary<string, object> Attrs { get; set; }
     }
 }
