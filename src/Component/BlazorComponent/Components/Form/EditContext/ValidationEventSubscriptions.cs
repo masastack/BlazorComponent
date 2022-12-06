@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations;
-using System.Reflection;
 using Util.Reflection.Expressions;
+using Util.Reflection.Expressions.Abstractions;
 using FluentValidationResult = FluentValidation.Results.ValidationResult;
 using ValidationResult = System.ComponentModel.DataAnnotations.ValidationResult;
 
@@ -166,11 +166,11 @@ internal sealed class ValidationEventSubscriptions : IDisposable
             {
                 if (error.PropertyName.Contains("."))
                 {
-                    var propertyName = error.PropertyName.Substring(0, error.PropertyName.IndexOf('.'));
+                    var propertyName = error.PropertyName.Substring(0, error.PropertyName.LastIndexOf('.'));
                     if (propertyMap.ContainsKey(propertyName))
                     {
                         var modelItem = propertyMap[propertyName];
-                        var modelItemPropertyName = error.FormattedMessagePlaceholderValues["PropertyName"].ToString().Replace(" ", "");
+                        var modelItemPropertyName = error.PropertyName.Split('.').Last();
                         AddValidationMessage(new FieldIdentifier(modelItem, modelItemPropertyName), error.ErrorMessage);
                     }
                 }
@@ -206,7 +206,7 @@ internal sealed class ValidationEventSubscriptions : IDisposable
 
     private FluentValidationResult GetValidationResult(object model)
     {
-        var type = model.GetType();        
+        var type = model.GetType();
 
         if (FluentValidationTypeMap.TryGetValue(type, out var validatorType))
         {
@@ -225,7 +225,18 @@ internal sealed class ValidationEventSubscriptions : IDisposable
         {
             var modelParameter = Expr.BlockParam<object>().Convert(type);
             Var map = Expr.New<Dictionary<string, object>>();
-            var properties = type.GetProperties();
+            BuildPropertyMap(modelParameter, map);
+
+            func = map.BuildDelegate<Func<object, Dictionary<string, object>>>();
+            ModelPropertiesMap[type] = func;
+        }
+
+        return func(model);
+
+        void BuildPropertyMap(CommonValueExpression value, Var map, CommonValueExpression? basePropertyPath = null)
+        {
+            basePropertyPath ??= Expr.Constant("");
+            var properties = value.Type.GetProperties();
             foreach (var property in properties)
             {
                 if (property.PropertyType.IsValueType || property.PropertyType == typeof(string))
@@ -235,24 +246,23 @@ internal sealed class ValidationEventSubscriptions : IDisposable
                     if (property.PropertyType.GetInterfaces().Any(gt => gt == typeof(System.Collections.IEnumerable)))
                     {
                         Var index = -1;
-                        Expr.Foreach(modelParameter[property.Name], (item, @continue, @return) =>
+                        Expr.Foreach(value[property.Name], (item, @continue, @return) =>
                         {
                             index++;
-                            map[property.Name + "[" + index + "]"] = item.Convert<object>();
+                            var propertyPath = basePropertyPath + property.Name + "[" + index + "]";
+                            map[propertyPath] = item.Convert<object>(); ;
+                            BuildPropertyMap(item, map, propertyPath + ".");
                         });
                     }
                     else
                     {
-                        map[$"[{property.Name}]"] = modelParameter[property.Name].Convert<object>();
+                        var propertyPath = basePropertyPath + property.Name;
+                        map[propertyPath] = value[property.Name].Convert<object>();
+                        BuildPropertyMap(value[property.Name], map, $"{propertyPath}.");
                     }
                 }
             }
-
-            func = map.BuildDelegate<Func<object, Dictionary<string, object>>>();
-            ModelPropertiesMap[type] = func;
         }
-
-        return func(model);
     }
 
     private void AddValidationMessage(in FieldIdentifier fieldIdentifier, string message)
