@@ -1,41 +1,57 @@
-declare const monaco: any;
+import { editor as MonacoEditor } from "monaco-editor";
 
-function init(id, options) {
-    return monaco.editor.create(document.getElementById(id), options);
-}
-
-function getValue(instance) {
-    return instance.getValue();
-}
-function setValue(instance, value) {
-    instance.setValue(value);
-    return true;
-}
-function setTheme(instance, theme) {
-    instance.setTheme(theme);
-    return true;
+interface Monaco {
+  editor: typeof MonacoEditor;
 }
 
-function getModels(instance) {
-    return instance.getModels();
+declare const monaco: Monaco;
+
+function init(id: string, options: MonacoEditor.IStandaloneEditorConstructionOptions) {
+  return monaco.editor.create(document.getElementById(id), options);
 }
 
-function getModel(instance, uri) {
-    return instance.getModel(uri);
+function getValue(instance: MonacoEditor.IStandaloneCodeEditor) {
+  return instance.getValue();
 }
-function setModelLanguage(instance, languageId) {
-    monaco.editor.setModelLanguage(instance.getModel(), languageId);
+function setValue(instance: MonacoEditor.IStandaloneCodeEditor, value) {
+  instance.setValue(value);
 }
-function remeasureFonts(instance) {
-    instance.remeasureFonts();
-}
-
-function addKeybindingRules(instance, rules) {
-    instance.addKeybindingRules(rules);
+function setTheme(theme: string) {
+  monaco.editor.setTheme(theme);
 }
 
-function addKeybindingRule(instance, rule) {
-    instance.addKeybindingRule(rule);
+function getModels() {
+  return monaco.editor.getModels();
 }
 
-export { init, getValue, setValue, setTheme, getModels, getModel, setModelLanguage, remeasureFonts, addKeybindingRules, addKeybindingRule }
+function getModel(instance: MonacoEditor.IStandaloneCodeEditor) {
+  return instance.getModel();
+}
+
+function setModelLanguage(instance: MonacoEditor.IStandaloneCodeEditor, languageId: string) {
+  monaco.editor.setModelLanguage(instance.getModel(), languageId);
+}
+function remeasureFonts() {
+  monaco.editor.remeasureFonts();
+}
+
+function addKeybindingRules(rules: MonacoEditor.IKeybindingRule[]) {
+  monaco.editor.addKeybindingRules(rules);
+}
+
+function addKeybindingRule(rule: MonacoEditor.IKeybindingRule) {
+  monaco.editor.addKeybindingRule(rule);
+}
+
+export {
+  init,
+  getValue,
+  setValue,
+  setTheme,
+  getModels,
+  getModel,
+  setModelLanguage,
+  remeasureFonts,
+  addKeybindingRules,
+  addKeybindingRule
+}
