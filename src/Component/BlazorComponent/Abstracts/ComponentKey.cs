@@ -5,7 +5,6 @@
         public ComponentKey(Type type)
         {
             Type = type;
-            Name = "";
         }
 
         public ComponentKey(Type type, string name)
@@ -21,7 +20,7 @@
 
         public Type Type { get; }
 
-        public string Name { get; }
+        public string? Name { get; }
 
         public override int GetHashCode()
         {

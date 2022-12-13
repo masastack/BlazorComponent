@@ -6,6 +6,6 @@
 
         public int Index { get; internal set; }
 
-        public object Data { get; internal set; }
+        public object? Data { get; internal set; }
     }
 }

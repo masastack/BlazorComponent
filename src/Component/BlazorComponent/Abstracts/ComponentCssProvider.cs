@@ -60,7 +60,7 @@
         /// <param name="mergeCssAction"></param>
         /// <param name="mergeStyleAction"></param>
         /// <returns></returns>
-        public ComponentCssProvider Merge(string name, Action<CssBuilder> mergeCssAction = null, Action<StyleBuilder> mergeStyleAction = null)
+        public ComponentCssProvider Merge(string name, Action<CssBuilder>? mergeCssAction = null, Action<StyleBuilder>? mergeStyleAction = null)
         {
             if (mergeCssAction != null)
             {
@@ -122,7 +122,7 @@
         /// <param name="data"></param>
         /// <param name="addDefaultCssImplicitly"></param>
         /// <returns></returns>
-        public string GetClass(string name, int index = 0, object data = null, bool addDefaultCssImplicitly = true)
+        public string GetClass(string name, int index = 0, object? data = null, bool addDefaultCssImplicitly = true)
         {
             var action = _cssConfig.GetValueOrDefault(name);
 
@@ -149,7 +149,7 @@
         /// <param name="index"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        public string GetStyle(string name, int index = 0, object data = null)
+        public string GetStyle(string name, int index = 0, object? data = null)
         {
             var action = _styleConfig.GetValueOrDefault(name);
 
