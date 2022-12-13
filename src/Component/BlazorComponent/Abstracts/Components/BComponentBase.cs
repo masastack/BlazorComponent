@@ -5,7 +5,8 @@ namespace BlazorComponent
     public abstract class BComponentBase : NextTickComponentBase, IHandleEvent
     {
         [Inject]
-        public virtual IJSRuntime Js { get; set; }
+        [NotNull]
+        public virtual IJSRuntime? Js { get; set; }
 
         [CascadingParameter]
         protected IErrorHandler? ErrorHandler { get; set; }

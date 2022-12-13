@@ -15,7 +15,7 @@
         /// <param name="cssAction"></param>
         /// <param name="styleAction"></param>
         /// <returns></returns>
-        public ComponentCssProvider Apply(Action<CssBuilder> cssAction = null, Action<StyleBuilder> styleAction = null)
+        public ComponentCssProvider Apply(Action<CssBuilder>? cssAction = null, Action<StyleBuilder>? styleAction = null)
         {
             return Apply("default", cssAction, styleAction);
         }
@@ -27,7 +27,7 @@
         /// <param name="cssAction"></param>
         /// <param name="styleAction"></param>
         /// <returns></returns>
-        public ComponentCssProvider Apply(string name, Action<CssBuilder> cssAction = null, Action<StyleBuilder> styleAction = null)
+        public ComponentCssProvider Apply(string name, Action<CssBuilder>? cssAction = null, Action<StyleBuilder>? styleAction = null)
         {
             if (cssAction != null)
             {
@@ -48,7 +48,7 @@
         /// <param name="mergeCssAction"></param>
         /// <param name="mergeStyleAction"></param>
         /// <returns></returns>
-        public ComponentCssProvider Merge(Action<CssBuilder> mergeCssAction = null, Action<StyleBuilder> mergeStyleAction = null)
+        public ComponentCssProvider Merge(Action<CssBuilder>? mergeCssAction = null, Action<StyleBuilder>? mergeStyleAction = null)
         {
             return Merge("default", mergeCssAction, mergeStyleAction);
         }

@@ -4,7 +4,8 @@
     {
         public ComponentKey(Type type)
         {
-            Type = type ?? throw new ArgumentNullException(nameof(type));
+            Type = type;
+            Name = "";
         }
 
         public ComponentKey(Type type, string name)
