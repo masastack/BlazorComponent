@@ -91,7 +91,7 @@ namespace BlazorComponent
 
         protected string CalculatedMaxHeight => Auto ? "200px" : MaxHeight.ConvertToUnit();
 
-        protected string CalculatedMaxWidth => MaxWidth.ConvertToUnit();
+        protected string CalculatedMaxWidth => MaxWidth?.ConvertToUnit()??"";
 
         protected string CalculatedMinWidth
         {
@@ -207,7 +207,7 @@ namespace BlazorComponent
 
         public async Task AddOutsideClickEventListener()
         {
-            var noInvokeSelectors = DependentElements.Select(s => s.Selector).Concat<string>(new[] { ActivatorSelector });
+            var noInvokeSelectors = DependentElements.Select(s => s.Selector ?? "").Concat(new[] { ActivatorSelector });
 
             await Js.AddOutsideClickEventListener(HandleOutsideClickAsync, noInvokeSelectors);
         }

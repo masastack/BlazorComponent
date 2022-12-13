@@ -11,7 +11,7 @@ public class BDelayable : BDomComponentBase, IAsyncDisposable
     public int CloseDelay { get; set; }
 
     private IJSObjectReference? _module;
-    private DotNetObjectReference<BDelayable> _dotNetRef;
+    private DotNetObjectReference<BDelayable>? _dotNetRef;
 
     protected bool IsActive { get; private set; }
 

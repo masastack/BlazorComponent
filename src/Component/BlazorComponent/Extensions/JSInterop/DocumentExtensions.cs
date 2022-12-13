@@ -4,7 +4,7 @@ namespace BlazorComponent.Web
 {
     public static class DocumentExtensions
     {
-        public static HtmlElement GetElementByReference(this Document document, ElementReference elementReference)
+        public static HtmlElement? GetElementByReference(this Document document, ElementReference elementReference)
         {
             if (elementReference.Id == null)
             {

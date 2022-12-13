@@ -10,7 +10,9 @@ namespace BlazorComponent
     public partial class BIcon : IThemeable, ITransitionIf
     {
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        [NotNull]
+        [EditorRequired]
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
         public bool If { get; set; } = true;
@@ -30,16 +32,16 @@ namespace BlazorComponent
         public bool Right { get; set; }
 
         [Parameter]
-        public StringNumber Size { get; set; }
+        public StringNumber? Size { get; set; }
 
-        public string Icon { get; set; }
+        public string? Icon { get; set; }
 
         [Parameter]
         public string Tag { get; set; } = "i";
 
-        public string NewChildren { get; set; }
+        public string? NewChildren { get; set; }
 
-        public Dictionary<string, object> SvgAttrs { get; set; }
+        public Dictionary<string, object>? SvgAttrs { get; set; }
 
         #endregion
 
@@ -71,7 +73,7 @@ namespace BlazorComponent
         }
 
         [Parameter]
-        public string Color { get; set; }
+        public string? Color { get; set; }
 
         [Parameter]
         public EventCallback<MouseEventArgs> OnClick { get; set; }
@@ -83,7 +85,8 @@ namespace BlazorComponent
         public bool OnClickStopPropagation { get; set; }
 
         [Inject]
-        public Document Document { get; set; }
+        [NotNull]
+        public Document? Document { get; set; }
 
         private bool _clickEventRegistered;
 
@@ -154,6 +157,12 @@ namespace BlazorComponent
                 NewChildren = string.Empty;
             }
 #pragma warning restore BL0006 // Do not use RenderTree types
+        }
+
+        protected override void OnParametersSet()
+        {
+            base.OnParametersSet();
+            ArgumentNullException.ThrowIfNull(ChildContent);
         }
     }
 }

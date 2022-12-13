@@ -8,6 +8,7 @@ namespace BlazorComponent
     public partial class BCascaderColumn<TItem, TValue>
     {
         [CascadingParameter]
+        [NotNull]
         protected ICascader<TItem, TValue>? Cascader { get; set; }
         
         [Parameter]
@@ -29,7 +30,7 @@ namespace BlazorComponent
         [Parameter]
         [NotNull]
         [EditorRequired]
-        public Func<TItem, List<TItem>?> ItemChildren { get; set; }
+        public Func<TItem, List<TItem>?>? ItemChildren { get; set; }
 
         [Parameter]
         public Func<TItem, Task>? LoadChildren { get; set; }

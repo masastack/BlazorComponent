@@ -103,7 +103,7 @@
         /// </summary>
         /// <param name="addDefaultCssImplicitly"></param>
         /// <returns></returns>
-        public string GetClass(bool addDefaultCssImplicitly = true)
+        public string? GetClass(bool addDefaultCssImplicitly = true)
         {
             return GetClass("default", addDefaultCssImplicitly: addDefaultCssImplicitly);
         }
@@ -122,7 +122,7 @@
         /// <param name="data"></param>
         /// <param name="addDefaultCssImplicitly"></param>
         /// <returns></returns>
-        public string GetClass(string name, int index = 0, object? data = null, bool addDefaultCssImplicitly = true)
+        public string? GetClass(string name, int index = 0, object? data = null, bool addDefaultCssImplicitly = true)
         {
             var action = _cssConfig.GetValueOrDefault(name);
 
