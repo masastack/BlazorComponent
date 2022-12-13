@@ -16,9 +16,11 @@ namespace BlazorComponent
         }
 
         [Inject]
-        public IComponentIdGenerator ComponentIdGenerator { get; set; }
+        [NotNull]
+        public IComponentIdGenerator? ComponentIdGenerator { get; set; }
 
         [Parameter]
+        [NotNull]
         public string? Id { get; set; }
 
         /// <summary>
@@ -153,7 +155,7 @@ namespace BlazorComponent
                     var parametersBuilder = new AttributesBuilder();
                     parametersBuilderAction.Invoke(parametersBuilder);
 
-                    builder.AddMultipleAttributes(sequence++, parametersBuilder.Attributes);
+                    builder.AddMultipleAttributes(sequence++, parametersBuilder.Attributes!);
                 }
 
                 if (key != null)
@@ -180,7 +182,7 @@ namespace BlazorComponent
             return AbstractProvider.GetPartContent(keyType, this, builderAction);
         }
 
-        protected RenderFragment? RenderPart(Type keyType, object arg0, [CallerArgumentExpression("arg0")] string arg0Name = null)
+        protected RenderFragment? RenderPart(Type keyType, object arg0, [CallerArgumentExpression("arg0")]string arg0Name = "")
         {
             return AbstractProvider.GetPartContent(keyType, this, builder =>
             {
@@ -189,7 +191,7 @@ namespace BlazorComponent
             });
         }
 
-        protected RenderFragment? RenderPart(Type keyType, object arg0, object arg1, [CallerArgumentExpression("arg0")] string arg0Name = null, [CallerArgumentExpression("arg1")] string arg1Name = null)
+        protected RenderFragment? RenderPart(Type keyType, object arg0, object arg1, [CallerArgumentExpression("arg0")] string arg0Name = "", [CallerArgumentExpression("arg1")] string arg1Name = "")
         {
             return AbstractProvider.GetPartContent(keyType, this, builder =>
             {
@@ -199,7 +201,7 @@ namespace BlazorComponent
             });
         }
 
-        protected RenderFragment? RenderPart(Type keyType, object arg0, object arg1, object arg2, [CallerArgumentExpression("arg0")] string arg0Name = null, [CallerArgumentExpression("arg1")] string arg1Name = null, [CallerArgumentExpression("arg2")] string arg2Name = null)
+        protected RenderFragment? RenderPart(Type keyType, object arg0, object arg1, object arg2, [CallerArgumentExpression("arg0")] string arg0Name = null, [CallerArgumentExpression("arg1")] string arg1Name = "", [CallerArgumentExpression("arg2")] string arg2Name = "")
         {
             return AbstractProvider.GetPartContent(keyType, this, builder =>
             {

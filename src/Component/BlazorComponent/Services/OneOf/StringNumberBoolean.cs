@@ -53,6 +53,6 @@ public partial class StringNumberBoolean : OneOfBase<string, int, bool>
 
     public override string ToString()
     {
-        return Convert.ToString(Value);
+        return Convert.ToString(Value) ?? "";
     }
 }

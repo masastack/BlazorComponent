@@ -13,28 +13,28 @@ namespace BlazorComponent
         public bool AllowOverflow { get; set; }
 
         [Parameter]
-        public string ContentClass { get; set; }
+        public string? ContentClass { get; set; }
 
         [Parameter]
-        public StringNumber MaxWidth { get; set; }
+        public StringNumber? MaxWidth { get; set; }
 
         [Parameter]
-        public StringNumber MinWidth { get; set; }
+        public StringNumber? MinWidth { get; set; }
 
         [Parameter]
-        public StringNumber NudgeBottom { get; set; }
+        public StringNumber? NudgeBottom { get; set; }
 
         [Parameter]
-        public StringNumber NudgeLeft { get; set; }
+        public StringNumber? NudgeLeft { get; set; }
 
         [Parameter]
-        public StringNumber NudgeRight { get; set; }
+        public StringNumber? NudgeRight { get; set; }
 
         [Parameter]
-        public StringNumber NudgeTop { get; set; }
+        public StringNumber? NudgeTop { get; set; }
 
         [Parameter]
-        public StringNumber NudgeWidth { get; set; }
+        public StringNumber? NudgeWidth { get; set; }
 
         [Parameter]
         public bool OffsetOverflow { get; set; }
@@ -46,10 +46,10 @@ namespace BlazorComponent
         public double? PositionY { get; set; }
 
         [Parameter]
-        public StringNumber ZIndex { get; set; }
+        public StringNumber? ZIndex { get; set; }
 
         [Parameter]
-        public string Attach { get; set; }
+        public string? Attach { get; set; }
 
         [Parameter]
         public bool Left { get; set; }
@@ -73,10 +73,12 @@ namespace BlazorComponent
         public bool ExternalActivator { get; set; }
 
         [Inject]
-        public Window Window { get; set; }
+        [NotNull]
+        public Window? Window { get; set; }
 
         [Inject]
-        public Document Document { get; set; }
+        [NotNull]
+        public Document? Document { get; set; }
 
         protected double ComputedLeft
         {
@@ -180,7 +182,7 @@ namespace BlazorComponent
 
         protected bool HasActivator => ActivatorContent != null || ExternalActivator;
 
-        protected virtual string AttachSelector => Attach;
+        protected virtual string? AttachSelector => Attach;
 
         protected int ComputedZIndex => ZIndex != null ? ZIndex.ToInt32() : Math.Max(ActivateZIndex, StackMinZIndex);
 
@@ -206,13 +208,13 @@ namespace BlazorComponent
 
         public bool Attached { get; protected set; }
 
-        protected StringNumber CalcLeft(double menuWidth)
+        protected StringNumber? CalcLeft(double menuWidth)
         {
             var left = Attach != null ? ComputedLeft : CalcXOverflow(ComputedLeft, menuWidth);
             return left > 0 ? left : null;
         }
 
-        protected StringNumber CalcTop()
+        protected StringNumber? CalcTop()
         {
             var top = Attach != null ? ComputedTop : CalcYOverflow(ComputedTop);
             return top > 0 ? top : null;

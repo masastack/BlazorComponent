@@ -19,10 +19,12 @@ namespace BlazorComponent
         public bool CloseOnContentClick { get; set; } = true;
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        [NotNull]
+        [EditorRequired]
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
-        public string ContentStyle { get; set; }
+        public string? ContentStyle { get; set; }
 
         [Parameter]
         public bool DisableKeys { get; set; }
@@ -34,16 +36,16 @@ namespace BlazorComponent
         public EventCallback<MouseEventArgs> OnOutsideClick { get; set; }
 
         [Parameter]
-        public string Origin { get; set; }
+        public string? Origin { get; set; }
 
         [Parameter]
-        public StringBoolean Rounded { get; set; }
+        public StringBoolean? Rounded { get; set; }
 
         [Parameter]
         public bool Tile { get; set; }
 
         [Parameter]
-        public string Transition { get; set; }
+        public string? Transition { get; set; }
 
         [Parameter]
         public bool Dark { get; set; }
@@ -52,7 +54,7 @@ namespace BlazorComponent
         public bool Light { get; set; }
 
         [CascadingParameter]
-        public IDependent CascadingDependent { get; set; }
+        public IDependent? CascadingDependent { get; set; }
 
         [CascadingParameter(Name = "AppIsDark")]
         public bool AppIsDark { get; set; }
@@ -75,7 +77,7 @@ namespace BlazorComponent
             }
         }
 
-        protected StringNumber CalculatedLeft
+        protected StringNumber? CalculatedLeft
         {
             get
             {
@@ -124,7 +126,7 @@ namespace BlazorComponent
             }
         }
 
-        protected StringNumber CalculatedTop => !Auto ? CalcTop() : CalcYOverflow(CalcTopAuto());
+        protected StringNumber? CalculatedTop => !Auto ? CalcTop() : CalcYOverflow(CalcTopAuto());
 
         public IEnumerable<HtmlElement> DependentElements
         {
@@ -270,6 +272,12 @@ namespace BlazorComponent
         private double CalcLeftAuto()
         {
             return Dimensions.Activator.Left - DefaultOffset * 2;
+        }
+
+        protected override void OnParametersSet()
+        {
+            base.OnParametersSet();
+            ArgumentNullException.ThrowIfNull(ChildContent);
         }
     }
 }

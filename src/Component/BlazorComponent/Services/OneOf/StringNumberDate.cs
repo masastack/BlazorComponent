@@ -56,7 +56,7 @@ public partial class StringNumberDate : OneOfBase<string, int, DateTime>
 
     public override string ToString()
     {
-        return Convert.ToString(Value);
+        return Convert.ToString(Value) ?? "";
     }
 
     public bool ValidateTimestamp() => Match(

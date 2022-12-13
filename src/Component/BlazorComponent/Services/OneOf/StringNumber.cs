@@ -34,7 +34,7 @@ public partial class StringNumber : OneOfBase<string, int, double>
 
     public override string ToString()
     {
-        return Value?.ToString();
+        return Value?.ToString() ?? "null";
     }
 
     public static bool operator ==(StringNumber left, StringNumber right)
@@ -52,7 +52,7 @@ public partial class StringNumber : OneOfBase<string, int, double>
         return left.Value == right.Value;
     }
 
-    public static bool operator !=(StringNumber left, StringNumber right)
+    public static bool operator !=(StringNumber? left, StringNumber? right)
     {
         if (Equals(left, right))
         {

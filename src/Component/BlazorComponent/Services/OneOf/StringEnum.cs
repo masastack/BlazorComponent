@@ -7,7 +7,7 @@ public partial class StringEnum<T> : OneOfBase<string, T> where T : Enum
 {
     public override string ToString()
     {
-        return Value?.ToString();
+        return Value?.ToString() ?? "null";
     }
 
     public static bool operator ==(StringEnum<T> left, StringEnum<T> right)

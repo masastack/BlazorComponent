@@ -50,12 +50,12 @@ namespace BlazorComponent
             }
         }
 
-        protected async Task<T> JsInvokeAsync<T>(string code, params object[] args)
+        protected async Task<T> JsInvokeAsync<T>(string code, params object?[] args)
         {
             return await Js.InvokeAsync<T>(code, args);
         }
 
-        protected async Task JsInvokeAsync(string code, params object[] args)
+        protected async Task JsInvokeAsync(string code, params object?[] args)
         {
             await Js.InvokeVoidAsync(code, args);
         }

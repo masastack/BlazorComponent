@@ -9,7 +9,7 @@
 
         public string Name { get; }
 
-        public event Action<string> OnChange;
+        public event Action<string>? OnChange;
 
         void IObservableProperty.NotifyChange()
         {

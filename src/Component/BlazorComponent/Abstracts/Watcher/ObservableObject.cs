@@ -8,16 +8,16 @@ namespace BlazorComponent
     {
         private ConcurrentDictionary<string, IObservableProperty> _props = new();
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-        protected TValue GetValue<TValue>(TValue @default = default, [CallerMemberName] string name = null)
+        protected TValue GetValue<TValue>(TValue @default = default, [CallerMemberName] string name = "")
         {
             var prop = _props.GetOrAdd(name, key => new ObservableProperty<TValue>(name, @default));
             var property = (ObservableProperty<TValue>)prop;
             return property.Value;
         }
 
-        protected void SetValue<TValue>(TValue value, [CallerMemberName] string name = null)
+        protected void SetValue<TValue>(TValue value, [CallerMemberName] string name = "")
         {
             SetValue(name, value);
         }

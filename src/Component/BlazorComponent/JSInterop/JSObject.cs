@@ -8,13 +8,13 @@ namespace BlazorComponent.Web
         {
         }
 
-        public JSObject(IJSRuntime js)
+        public JSObject(IJSRuntime? js)
         {
             JS = js;
         }
 
-        public IJSRuntime JS { get; }
+        public IJSRuntime? JS { get; }
 
-        public string Selector { get; protected set; }
+        public string? Selector { get; protected set; }
     }
 }

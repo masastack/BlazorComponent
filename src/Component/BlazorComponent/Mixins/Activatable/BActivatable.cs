@@ -4,7 +4,7 @@ namespace BlazorComponent;
 
 public class BActivatable : BToggleable, IActivatable
 {
-    private string _activatorId;
+    private string? _activatorId;
 
     [Parameter]
     public bool Disabled
@@ -31,7 +31,7 @@ public class BActivatable : BToggleable, IActivatable
     }
 
     [Parameter]
-    public RenderFragment<ActivatorProps> ActivatorContent { get; set; }
+    public RenderFragment<ActivatorProps>? ActivatorContent { get; set; }
 
     protected bool IsBooted { get; set; }
 

@@ -6,6 +6,6 @@ namespace BlazorComponent
     {
         //Avoid exception
         [Parameter(CaptureUnmatchedValues = true)]
-        public Dictionary<string, object> Attrs { get; set; }
+        public Dictionary<string, object>? Attrs { get; set; }
     }
 }

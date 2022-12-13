@@ -4,7 +4,7 @@ namespace BlazorComponent
 {
     public class AttributesBuilder
     {
-        private Dictionary<string, object> _attributes = new();
+        private Dictionary<string, object?> _attributes = new();
 
         public AttributesBuilder Add(string name, object value)
         {
@@ -18,7 +18,7 @@ namespace BlazorComponent
             return this;
         }
 
-        public IDictionary<string, object> Attributes
+        public IDictionary<string, object?> Attributes
         {
             get
             {

@@ -16,7 +16,7 @@ namespace BlazorComponent
             _objectType = objectType;
         }
 
-        public TValue GetValue<TValue>(TValue @default = default, string name = null, bool disableIListAlwaysNotifying = false)
+        public TValue GetValue<TValue>(TValue @default = default, string name = "", bool disableIListAlwaysNotifying = false)
         {
             var property = GetProperty(@default, name, disableIListAlwaysNotifying);
             if (!property.HasValue && property != default)

@@ -66,7 +66,7 @@
             _bootable = bootable;
         }
 
-        protected string ComputedActiveClass => ActiveClass ?? ItemGroup?.ActiveClass;
+        protected string? ComputedActiveClass => ActiveClass ?? ItemGroup?.ActiveClass;
 
         protected bool Matched => ItemGroup != null && (ItemGroup.GroupType == _groupType);
 
