@@ -188,7 +188,7 @@ namespace BlazorComponent
             return GetMetadata(key, new AttributesDictionary(data));
         }
 
-        public RenderFragment GetPartContent(Type keyType, IHasProviderComponent component)
+        public RenderFragment? GetPartContent(Type keyType, IHasProviderComponent component)
         {
             var key = new ComponentKey(keyType);
             return GetPartContent(key, component);
@@ -216,25 +216,25 @@ namespace BlazorComponent
             throw new InvalidOperationException();
         }
 
-        public RenderFragment GetPartContent(Type keyType, string name, IHasProviderComponent component)
+        public RenderFragment? GetPartContent(Type keyType, string name, IHasProviderComponent component)
         {
             var key = new ComponentKey(keyType, name);
             return GetPartContent(key, component);
         }
 
-        public RenderFragment GetPartContent(Type keyType, string name, IHasProviderComponent component, Action<AttributesBuilder> builderAction)
+        public RenderFragment? GetPartContent(Type keyType, string name, IHasProviderComponent component, Action<AttributesBuilder> builderAction)
         {
             var key = new ComponentKey(keyType, name);
             return GetPartContent(key, component, builderAction);
         }
 
-        public RenderFragment GetPartContent(Type keyType, IHasProviderComponent component, Action<AttributesBuilder> builderAction)
+        public RenderFragment? GetPartContent(Type keyType, IHasProviderComponent component, Action<AttributesBuilder> builderAction)
         {
             var key = new ComponentKey(keyType);
             return GetPartContent(key, component, builderAction);
         }
 
-        public RenderFragment GetPartContent(ComponentKey key, IHasProviderComponent component, Action<AttributesBuilder> builderAction)
+        public RenderFragment? GetPartContent(ComponentKey key, IHasProviderComponent component, Action<AttributesBuilder> builderAction)
         {
             //Part has parameters,We may always creat a new obj
 

@@ -27,7 +27,7 @@
             return Name != null ? Type.GetHashCode() ^ Name.GetHashCode() : Type.GetHashCode();
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj != null && obj is ComponentKey key && key.Type == Type && key.Name == Name;
         }
