@@ -15,9 +15,9 @@ namespace BlazorComponent.Web
             Selector = selector;
         }
 
-        public HtmlElement ParentElement => new HtmlElement(JS, $"{Selector}.parentElement");
+        public HtmlElement ParentElement => new HtmlElement(JS, $"{Selector}__.__parentElement");
 
-        public HtmlElement OffsetParent => new HtmlElement(JS, $"{Selector}.offsetParent");
+        public HtmlElement OffsetParent => new HtmlElement(JS, $"{Selector}__.__offsetParent");
 
         public async Task AddClass(string className)
         {
