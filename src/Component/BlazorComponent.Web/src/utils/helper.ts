@@ -130,7 +130,7 @@ export function getDom(elOrString) {
     if (elOrString === "document") {
       return document.documentElement;
     } else if (elOrString.indexOf("__.__") > 0) {
-      // for example: el.parentElement
+      // for example: el__.__parentElement
       let array = elOrString.split("__.__");
       let i = 0;
       let el = document.querySelector(array[i++]);
