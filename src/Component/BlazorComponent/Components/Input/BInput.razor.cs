@@ -137,7 +137,7 @@ namespace BlazorComponent
             }
         }
 
-        public virtual async Task HandleOnClickAsync(MouseEventArgs args)
+        public virtual async Task HandleOnClickAsync(ExMouseEventArgs args)
         {
             if (OnClick.HasDelegate)
             {
@@ -154,7 +154,7 @@ namespace BlazorComponent
             }
         }
 
-        public virtual async Task HandleOnMouseUpAsync(MouseEventArgs args)
+        public virtual async Task HandleOnMouseUpAsync(ExMouseEventArgs args)
         {
             HasMouseDown = false;
             if (OnMouseUp.HasDelegate)

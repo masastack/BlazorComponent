@@ -122,13 +122,13 @@ export function getElementSelector(el) {
   return path.join(" > ");
 }
 
-export function getDom(elOrString) {
+export function getDom(elOrString: Element | string | undefined) {
   let element: HTMLElement;
   if (!elOrString) {
     element = document.body;
   } else if (typeof elOrString === "string") {
     if (elOrString === "document") {
-      return document.documentElement;
+      element = document.documentElement;
     } else if (elOrString.indexOf("__.__") > 0) {
       // for example: el__.__parentElement
       let array = elOrString.split("__.__");
@@ -148,6 +148,8 @@ export function getDom(elOrString) {
     } else {
       element = document.querySelector(elOrString);
     }
+  } else {
+    element = elOrString as HTMLElement;
   }
 
   return element;
