@@ -7,7 +7,6 @@ function registerInputEvents(
   dotNetHelper: DotNet.DotNetObject,
   debounce: number
 ) {
-  console.log("register", inputSlotElement);
   registerClickEvent(inputSlotElement, dotNetHelper);
 
   registerMouseUpEvent(inputSlotElement, dotNetHelper);
