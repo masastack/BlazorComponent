@@ -2,11 +2,10 @@
 using System.Globalization;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Linq.Expressions;
-using Microsoft.JSInterop;
 
 namespace BlazorComponent
 {
-    public partial class BInput<TValue> : IValidatable, IAsyncDisposable
+    public partial class BInput<TValue> : IInputJsCallbacks, IValidatable, IAsyncDisposable
     {
         [Parameter]
         public bool Disabled { get; set; }
@@ -188,7 +187,7 @@ namespace BlazorComponent
         private bool _internalValueChangingFromOnValueChanged;
         private CancellationTokenSource _cancellationTokenSource;
 
-        protected IJSObjectReference InputJsObjectReference { get; private set; }
+        private InputJsInterop? _inputJsInterop;
 
         protected virtual int InternalDebounceInterval => 0;
 
@@ -205,12 +204,8 @@ namespace BlazorComponent
 
             if (firstRender)
             {
-                InputJsObjectReference = await Js.InvokeAsync<IJSObjectReference>("import", "./_content/BlazorComponent/js/input.js");
-                await InputJsObjectReference.InvokeVoidAsync(
-                    "registerInputEvents",
-                    InputElement,
-                    DotNetObjectReference.Create(new Invoker<ChangeEventArgs>(HandleOnInputAsync)),
-                    InternalDebounceInterval);
+                _inputJsInterop = new InputJsInterop(this, Js);
+                await _inputJsInterop.InitializeAsync(InputElement, InputSlotElement, InternalDebounceInterval);
             }
         }
 
@@ -243,10 +238,10 @@ namespace BlazorComponent
             _cancellationTokenSource = new();
             await NextTickWhile(async () =>
                 {
-                    await InputJsObjectReference.InvokeVoidAsync("setValue", InputElement, val);
+                    await _inputJsInterop!.SetValue(val);
                     StateHasChanged();
                 },
-                () => InputJsObjectReference is null,
+                () => _inputJsInterop is null,
                 cancellationToken: _cancellationTokenSource.Token);
         }
 
@@ -510,9 +505,9 @@ namespace BlazorComponent
         {
             try
             {
-                if (InputJsObjectReference != null)
+                if (_inputJsInterop is not null)
                 {
-                    await InputJsObjectReference.DisposeAsync();
+                    await _inputJsInterop.DisposeAsync();
                 }
             }
             catch
