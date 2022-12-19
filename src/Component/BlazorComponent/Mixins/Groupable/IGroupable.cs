@@ -15,5 +15,7 @@ namespace BlazorComponent
         string Class { get; set; }
 
         string Style { get; set; }
+
+        Task RefreshState();
     }
 }

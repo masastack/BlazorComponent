@@ -62,6 +62,8 @@ namespace BlazorComponent
                 Add(value);
             }
 
+            Items.ForEach(item => item.RefreshState());
+
             if (ValueChanged.HasDelegate)
             {
                 await ValueChanged.InvokeAsync(_values.LastOrDefault());
@@ -70,12 +72,7 @@ namespace BlazorComponent
             {
                 await ValuesChanged.InvokeAsync(_values);
             }
-            else
-            {
-                StateHasChanged();
-            }
         }
-
 
         private void Add(StringNumber value)
         {
