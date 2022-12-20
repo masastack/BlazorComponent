@@ -77,7 +77,6 @@ namespace BlazorComponent
                 scroll = -scroll;
             }
 
-
             if (ContentRef.Context != null)
             {
                 await JsInvokeAsync(JsInteropConstants.SetStyle, ContentRef, "transform", $"translateX({scroll}px)");
@@ -93,6 +92,8 @@ namespace BlazorComponent
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
+            Console.WriteLine("SlideGroup render...");
+            
             if (firstRender)
             {
                 IsMobile = await JsInvokeAsync<bool>(JsInteropConstants.IsMobile);

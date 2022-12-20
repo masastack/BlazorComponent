@@ -37,7 +37,7 @@ namespace BlazorComponent
         [Parameter]
         public bool Tile { get; set; }
 
-        public async override Task ToggleAsync(StringNumber value)
+        protected override void UpdateValue(StringNumber value)
         {
             if (_values.Contains(value))
             {
@@ -60,17 +60,6 @@ namespace BlazorComponent
             if (Mandatory && _values.Count == 0)
             {
                 Add(value);
-            }
-
-            Items.ForEach(item => item.RefreshState());
-
-            if (ValueChanged.HasDelegate)
-            {
-                await ValueChanged.InvokeAsync(_values.LastOrDefault());
-            }
-            else if (ValuesChanged.HasDelegate)
-            {
-                await ValuesChanged.InvokeAsync(_values);
             }
         }
 
