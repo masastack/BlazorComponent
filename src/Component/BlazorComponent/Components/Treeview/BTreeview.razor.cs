@@ -25,6 +25,9 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment<TreeviewItem<TItem>> LabelContent { get; set; }
 
+        [Parameter]
+        public RenderFragment<TreeviewItem<TItem>> AppendContent { get; set; }
+
         [EditorRequired]
         [Parameter]
         public Func<TItem, string> ItemText { get; set; }
@@ -126,8 +129,6 @@ namespace BlazorComponent
                 }
             }
         }
-
-        public RenderFragment AppendContent { get; }
 
         //TODO:
         public bool IsLoading { get; }
