@@ -2,6 +2,7 @@
 
 namespace BlazorComponent;
 
+// TODO: remove 'onmouseleave' and 'onmouseenter' when the target framework is updated to .NET 7
 [EventHandler("onmouseleave", typeof(MouseEventArgs), true, true)]
 [EventHandler("onmouseenter", typeof(MouseEventArgs), true, true)]
 [EventHandler("onexmousedown", typeof(ExMouseEventArgs), true, true)]

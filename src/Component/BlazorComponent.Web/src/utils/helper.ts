@@ -122,24 +122,34 @@ export function getElementSelector(el) {
   return path.join(" > ");
 }
 
-export function getDom(element) {
-  if (!element) {
+export function getDom(elOrString: Element | string | undefined) {
+  let element: HTMLElement;
+  if (!elOrString) {
     element = document.body;
-  } else if (typeof element === 'string') {
-    if (element === 'document') {
-      return document.documentElement;
-    } else if (element.indexOf('.') > 0) {
-      // for example: el.parentElement
-      let array = element.split('.');
-      let el = document.querySelector(array[0]);
-      if (!el) {
-        return null;
+  } else if (typeof elOrString === "string") {
+    if (elOrString === "document") {
+      element = document.documentElement;
+    } else if (elOrString.indexOf("__.__") > 0) {
+      // for example: el__.__parentElement
+      let array = elOrString.split("__.__");
+      let i = 0;
+      let el = document.querySelector(array[i++]);
+
+      if (el) {
+        while (array[i]) {
+          el = el[array[i]];
+          i++;
+        }
       }
 
-      element = el[array[1]];
+      if (el instanceof HTMLElement) {
+        element = el;
+      }
     } else {
-      element = document.querySelector(element);
+      element = document.querySelector(elOrString);
     }
+  } else {
+    element = elOrString as HTMLElement;
   }
 
   return element;

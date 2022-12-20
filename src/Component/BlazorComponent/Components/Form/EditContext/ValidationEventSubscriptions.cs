@@ -36,20 +36,8 @@ internal sealed class ValidationEventSubscriptions : IDisposable
                 foreach (var type in types)
                 {
                     var modelType = type!.BaseType!.GenericTypeArguments[0];
-                    if (modelType.IsGenericParameter && modelType.BaseType is not null)
-                    {
-                        var modelTypes = referenceAssembly.GetTypes().Where(t => modelType.BaseType.IsAssignableFrom(t) && !t.IsAbstract && !t.IsGenericTypeDefinition);
-                        foreach (var item in modelTypes)
-                        {
-                            var validatorType = typeof(IValidator<>).MakeGenericType(item);
-                            FluentValidationTypeMap.Add(item, validatorType);
-                        }
-                    }
-                    else
-                    {
-                        var validatorType = typeof(IValidator<>).MakeGenericType(modelType);
-                        FluentValidationTypeMap.Add(modelType, validatorType);
-                    }
+                    var validatorType = typeof(IValidator<>).MakeGenericType(modelType);
+                    FluentValidationTypeMap.Add(modelType, validatorType);
                 }
             }
         }

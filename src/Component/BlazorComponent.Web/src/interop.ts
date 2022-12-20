@@ -92,12 +92,12 @@ export function getDomInfo(element, selector = "body") {
   var dom = getDom(element);
 
   if (dom) {
-    if (dom.style && dom.style['display'] === 'none') {
+    if (dom.style && dom.style["display"] === "none") {
       // clone and set display not none becuase
       // element with display:none can not get the dom info
-      var cloned = dom.cloneNode(true);
-      cloned.style['display'] = 'inline-block';
-      cloned.style['z-index'] = -1000;
+      var cloned = dom.cloneNode(true) as HTMLElement;
+      cloned.style["display"] = "inline-block";
+      cloned.style["z-index"] = -1000;
       dom.parentElement.appendChild(cloned);
 
       result = getDomInfoObj(cloned);
@@ -179,20 +179,20 @@ export function setProperty(element, name, value) {
 export function getBoundingClientRect(element, attach = "body") {
   let dom = getDom(element);
 
-  var result = {}
+  var result = {};
 
   if (dom && dom.getBoundingClientRect) {
-    if (dom.style && dom.style['display'] === 'none') {
-      var cloned = dom.cloneNode(true);
-      cloned.style['display'] = 'inline-block';
-      cloned.style['z-index'] = -1000;
+    if (dom.style && dom.style["display"] === "none") {
+      var cloned = dom.cloneNode(true) as HTMLElement;
+      cloned.style["display"] = "inline-block";
+      cloned.style["z-index"] = -1000;
       document.querySelector(attach)?.appendChild(cloned);
 
       result = cloned.getBoundingClientRect();
 
       document.querySelector(attach)?.removeChild(cloned);
     } else {
-      result = dom.getBoundingClientRect()
+      result = dom.getBoundingClientRect();
     }
   }
 
@@ -1254,7 +1254,7 @@ export function otpInputFocus(focusIndex: number, elementList) {
 }
 
 export function otpInputFocusEvent(e: Event, otpIdx: number, elementList) {
-  const element = getDom(elementList[otpIdx]);
+  const element = getDom(elementList[otpIdx]) as HTMLInputElement;
   if (element && document.activeElement === element) {
     element.select();
   }
