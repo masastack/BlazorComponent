@@ -97,10 +97,6 @@
             {
                 await SetInternalIsActive(_isActive.Value);
             }
-            else if (Matched)
-            {
-                await SetInternalIsActive(ValueMatched);
-            }
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -115,6 +111,14 @@
                 InternalIsActive = true;
                 StateHasChanged();
             }
+        }
+
+        public async Task RefreshState()
+        {
+            if (!Matched) return;
+
+            await SetInternalIsActive(ValueMatched);
+            StateHasChanged();
         }
 
         protected virtual async Task ToggleAsync()

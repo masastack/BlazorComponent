@@ -65,6 +65,13 @@ namespace BlazorComponent
             {
                 GroupType = TargetGroup.Value;
             }
+
+            RefreshItemsState();
+        }
+
+        private void RefreshItemsState()
+        {
+            Items.ForEach(item => item.RefreshState());
         }
 
         public virtual void Register(IGroupable item)
@@ -78,12 +85,17 @@ namespace BlazorComponent
             // assign first registered item
             if (Mandatory && Value == null)
             {
-                Value = item.Value;
                 if (ValueChanged.HasDelegate)
                 {
                     _ = ValueChanged.InvokeAsync(Value);
                 }
+                else
+                {
+                    Value = item.Value;
+                }
             }
+
+            RefreshItemsState();
         }
 
         public virtual void Unregister(IGroupable item)
@@ -106,9 +118,11 @@ namespace BlazorComponent
             await ToggleAsync(item.Value);
         }
 
-        public async virtual Task ToggleAsync(StringNumber key)
+        public async Task ToggleAsync(StringNumber key)
         {
             UpdateValue(key);
+
+            RefreshItemsState();
 
             if (ValuesChanged.HasDelegate)
             {
@@ -124,7 +138,7 @@ namespace BlazorComponent
             }
         }
 
-        private void UpdateValue(StringNumber key)
+        protected virtual void UpdateValue(StringNumber key)
         {
             if (_values.Contains(key))
             {

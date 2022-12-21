@@ -77,7 +77,6 @@ namespace BlazorComponent
                 scroll = -scroll;
             }
 
-
             if (ContentRef.Context != null)
             {
                 await JsInvokeAsync(JsInteropConstants.SetStyle, ContentRef, "transform", $"translateX({scroll}px)");

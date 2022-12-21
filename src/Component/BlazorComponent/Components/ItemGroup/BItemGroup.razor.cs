@@ -42,7 +42,7 @@ namespace BlazorComponent
             }
         }
 
-        public async override Task ToggleAsync(StringNumber value)
+        protected override void UpdateValue(StringNumber value)
         {
             if (_values.Contains(value))
             {
@@ -64,19 +64,6 @@ namespace BlazorComponent
             if (Mandatory && _values.Count == 0)
             {
                 _values.Add(value);
-            }
-
-            if (ValuesChanged.HasDelegate)
-            {
-                await ValuesChanged.InvokeAsync(_values);
-            }
-            else if (ValueChanged.HasDelegate)
-            {
-                await ValueChanged.InvokeAsync(_values.LastOrDefault());
-            }
-            else
-            {
-                StateHasChanged();
             }
         }
     }
