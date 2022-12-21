@@ -32,9 +32,9 @@ public partial class StringNumber : OneOfBase<string, int, double>
         t2 => t2
     );
 
-    public override string ToString()
+    public override string? ToString()
     {
-        return Value?.ToString() ?? "null";
+        return Value?.ToString();
     }
 
     public static bool operator ==(StringNumber? left, StringNumber? right)

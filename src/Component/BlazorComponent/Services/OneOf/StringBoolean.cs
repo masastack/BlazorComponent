@@ -45,9 +45,9 @@ public partial class StringBoolean : OneOfBase<string, bool>
         return base.GetHashCode();
     }
 
-    public override string ToString()
+    public override string? ToString()
     {
-        return Convert.ToString(Value)??"";
+        return Convert.ToString(Value);
     }
 
     public bool IsString() => Match(

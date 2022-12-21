@@ -4,8 +4,6 @@
     {
         public string Build(ThemeOptions theme)
         {
-            if (theme == null) return string.Empty;
-
             var combinePrefix = theme.CombinePrefix;
             combinePrefix ??= string.Empty;
             combinePrefix = combinePrefix.EndsWith(' ') ? combinePrefix : $"{combinePrefix} ";
