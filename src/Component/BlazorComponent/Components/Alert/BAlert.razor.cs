@@ -82,10 +82,10 @@ namespace BlazorComponent
             }
         }
 
-        public Task HandleOnDismiss(MouseEventArgs args)
+        public async Task HandleOnDismiss(MouseEventArgs args)
         {
             Value = false;
-            return Task.CompletedTask;
+            await ValueChanged.InvokeAsync(false);
         }
     }
 }
