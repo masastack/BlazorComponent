@@ -5,6 +5,14 @@ namespace BlazorComponent
     public partial class BCardTitle : BDomComponentBase
     {
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        [NotNull]
+        [EditorRequired]
+        public RenderFragment? ChildContent { get; set; }
+
+        protected override void OnParametersSet()
+        {
+            base.OnParametersSet();
+            ArgumentNullException.ThrowIfNull(ChildContent);
+        }
     }
 }

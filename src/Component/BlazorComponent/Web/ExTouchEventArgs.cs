@@ -2,6 +2,6 @@
 {
     public class ExTouchEventArgs : TouchEventArgs
     {
-        public EventTarget Target { get; set; }
+        public EventTarget? Target { get; set; }
     }
 }

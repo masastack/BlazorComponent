@@ -16,22 +16,24 @@ namespace BlazorComponent
         }
 
         [Inject]
-        public IComponentIdGenerator ComponentIdGenerator { get; set; }
+        [NotNull]
+        public IComponentIdGenerator? ComponentIdGenerator { get; set; }
 
         [Parameter]
-        public string Id { get; set; }
+        [NotNull]
+        public string? Id { get; set; }
 
         /// <summary>
         /// Specifies one or more class names for an DOM element.
         /// </summary>
         [Parameter]
-        public string Class { get; set; }
+        public string Class { get; set; } = "";
 
         /// <summary>
         /// Specifies an inline style for an DOM element.
         /// </summary>
         [Parameter]
-        public string Style { get; set; }
+        public string Style { get; set; } = "";
 
         /// <summary>
         /// Custom attributes
@@ -108,37 +110,37 @@ namespace BlazorComponent
         {
         }
 
-        protected TValue GetValue<TValue>(TValue @default = default, [CallerMemberName] string name = null, bool disableIListAlwaysNotifying = false)
+        protected TValue GetValue<TValue>(TValue @default = default, [CallerMemberName] string name = "", bool disableIListAlwaysNotifying = false)
         {
             return Watcher.GetValue(@default, name, disableIListAlwaysNotifying);
         }
 
-        protected TValue GetComputedValue<TValue>([CallerMemberName] string name = null)
+        protected TValue GetComputedValue<TValue>([CallerMemberName] string name = "")
         {
             return Watcher.GetComputedValue<TValue>(name);
         }
 
-        protected TValue GetComputedValue<TValue>(Expression<Func<TValue>> valueExpression, [CallerMemberName] string name = null)
+        protected TValue GetComputedValue<TValue>(Expression<Func<TValue>> valueExpression, [CallerMemberName] string name = "")
         {
             return Watcher.GetComputedValue(valueExpression, name);
         }
 
-        protected TValue GetComputedValue<TValue>(Func<TValue> valueFactory, string[] dependencyProperties, [CallerMemberName] string name = null)
+        protected TValue GetComputedValue<TValue>(Func<TValue> valueFactory, string[] dependencyProperties, [CallerMemberName] string name = "")
         {
             return Watcher.GetComputedValue(valueFactory, dependencyProperties, name);
         }
 
-        protected void SetValue<TValue>(TValue value, [CallerMemberName] string name = null, bool disableIListAlwaysNotifying = false)
+        protected void SetValue<TValue>(TValue value, [CallerMemberName] string name = "", bool disableIListAlwaysNotifying = false)
         {
             Watcher.SetValue(value, name, disableIListAlwaysNotifying);
         }
 
-        protected void SetValue<TValue, TFirstValue>(TValue value, string propertySetFirst, [CallerMemberName] string name = null)
+        protected void SetValue<TValue, TFirstValue>(TValue value, string propertySetFirst, [CallerMemberName] string name = "")
         {
             Watcher.SetValue<TValue, TFirstValue>(value, name, propertySetFirst);
         }
 
-        protected RenderFragment Render(Type type, Action<AttributesBuilder> parametersBuilderAction = null, object key = null, object data = null, Action<object> referenceCapture = null)
+        protected RenderFragment Render(Type type, Action<AttributesBuilder>? parametersBuilderAction = null, object? key = null, object? data = null, Action<object>? referenceCapture = null)
         {
             var metadata = AbstractProvider.GetMetadata(type, data);
             return builder =>
@@ -153,7 +155,7 @@ namespace BlazorComponent
                     var parametersBuilder = new AttributesBuilder();
                     parametersBuilderAction.Invoke(parametersBuilder);
 
-                    builder.AddMultipleAttributes(sequence++, parametersBuilder.Attributes);
+                    builder.AddMultipleAttributes(sequence++, parametersBuilder.Attributes!);
                 }
 
                 if (key != null)
@@ -170,17 +172,17 @@ namespace BlazorComponent
             };
         }
 
-        protected RenderFragment RenderPart(Type keyType)
+        protected RenderFragment? RenderPart(Type keyType)
         {
             return AbstractProvider.GetPartContent(keyType, this);
         }
 
-        protected RenderFragment RenderPart(Type keyType, Action<AttributesBuilder> builderAction)
+        protected RenderFragment? RenderPart(Type keyType, Action<AttributesBuilder> builderAction)
         {
             return AbstractProvider.GetPartContent(keyType, this, builderAction);
         }
 
-        protected RenderFragment RenderPart(Type keyType, object arg0, [CallerArgumentExpression("arg0")] string arg0Name = null)
+        protected RenderFragment? RenderPart(Type keyType, object arg0, [CallerArgumentExpression("arg0")]string arg0Name = "")
         {
             return AbstractProvider.GetPartContent(keyType, this, builder =>
             {
@@ -189,7 +191,7 @@ namespace BlazorComponent
             });
         }
 
-        protected RenderFragment RenderPart(Type keyType, object arg0, object arg1, [CallerArgumentExpression("arg0")] string arg0Name = null, [CallerArgumentExpression("arg1")] string arg1Name = null)
+        protected RenderFragment? RenderPart(Type keyType, object arg0, object arg1, [CallerArgumentExpression("arg0")] string arg0Name = "", [CallerArgumentExpression("arg1")] string arg1Name = "")
         {
             return AbstractProvider.GetPartContent(keyType, this, builder =>
             {
@@ -199,7 +201,7 @@ namespace BlazorComponent
             });
         }
 
-        protected RenderFragment RenderPart(Type keyType, object arg0, object arg1, object arg2, [CallerArgumentExpression("arg0")] string arg0Name = null, [CallerArgumentExpression("arg1")] string arg1Name = null, [CallerArgumentExpression("arg2")] string arg2Name = null)
+        protected RenderFragment? RenderPart(Type keyType, object arg0, object arg1, object arg2, [CallerArgumentExpression("arg0")] string arg0Name = null, [CallerArgumentExpression("arg1")] string arg1Name = "", [CallerArgumentExpression("arg2")] string arg2Name = "")
         {
             return AbstractProvider.GetPartContent(keyType, this, builder =>
             {
@@ -210,12 +212,12 @@ namespace BlazorComponent
             });
         }
 
-        protected Dictionary<string, object> GetAttributes(Type type, object data = null)
+        protected Dictionary<string, object> GetAttributes(Type type, object? data = null)
         {
             return AbstractProvider.GetMetadata(type, data).Attributes;
         }
 
-        protected Dictionary<string, object> GetAttributes(Type type, string name, object data = null)
+        protected Dictionary<string, object> GetAttributes(Type type, string name, object? data = null)
         {
             return AbstractProvider.GetMetadata(type, name, data).Attributes;
         }

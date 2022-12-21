@@ -5,7 +5,8 @@ namespace BlazorComponent
     public abstract class BComponentBase : NextTickComponentBase, IHandleEvent
     {
         [Inject]
-        public virtual IJSRuntime Js { get; set; }
+        [NotNull]
+        public virtual IJSRuntime? Js { get; set; }
 
         [CascadingParameter]
         protected IErrorHandler? ErrorHandler { get; set; }
@@ -49,12 +50,12 @@ namespace BlazorComponent
             }
         }
 
-        protected async Task<T> JsInvokeAsync<T>(string code, params object[] args)
+        protected async Task<T> JsInvokeAsync<T>(string code, params object?[] args)
         {
             return await Js.InvokeAsync<T>(code, args);
         }
 
-        protected async Task JsInvokeAsync(string code, params object[] args)
+        protected async Task JsInvokeAsync(string code, params object?[] args)
         {
             await Js.InvokeVoidAsync(code, args);
         }

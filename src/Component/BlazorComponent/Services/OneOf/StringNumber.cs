@@ -32,12 +32,12 @@ public partial class StringNumber : OneOfBase<string, int, double>
         t2 => t2
     );
 
-    public override string ToString()
+    public override string? ToString()
     {
         return Value?.ToString();
     }
 
-    public static bool operator ==(StringNumber left, StringNumber right)
+    public static bool operator ==(StringNumber? left, StringNumber? right)
     {
         if (Equals(left, right))
         {
@@ -52,7 +52,7 @@ public partial class StringNumber : OneOfBase<string, int, double>
         return left.Value == right.Value;
     }
 
-    public static bool operator !=(StringNumber left, StringNumber right)
+    public static bool operator !=(StringNumber? left, StringNumber? right)
     {
         if (Equals(left, right))
         {

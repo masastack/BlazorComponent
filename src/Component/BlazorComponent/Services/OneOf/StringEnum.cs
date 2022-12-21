@@ -5,7 +5,7 @@ namespace BlazorComponent;
 [GenerateOneOf]
 public partial class StringEnum<T> : OneOfBase<string, T> where T : Enum
 {
-    public override string ToString()
+    public override string? ToString()
     {
         return Value?.ToString();
     }

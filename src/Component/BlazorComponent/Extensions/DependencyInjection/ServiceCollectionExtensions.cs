@@ -13,7 +13,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddScoped<DomEventJsInterop>();
             services.TryAddScoped<HeadJsInterop>();
             services.TryAddScoped<Document>();
-            services.TryAddScoped(serviceProvider => new Window(serviceProvider.GetService<Document>()));
+            services.TryAddScoped(serviceProvider => new Window(serviceProvider.GetRequiredService<Document>()));
             services.TryAddScoped<IPopupProvider, PopupProvider>();
             services.TryAddSingleton<IComponentIdGenerator, GuidComponentIdGenerator>();
             services.AddScoped(typeof(BDragDropService));

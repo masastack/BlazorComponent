@@ -7,7 +7,7 @@ namespace BlazorComponent.JSInterop;
 public static class JsRuntimeExtensions
 {
     public static async Task AddOutsideClickEventListener(this IJSRuntime jsRuntime, Func<ClickOutsideArgs, Task> callback,
-        IEnumerable<string> noInvokeSelectors, IEnumerable<string> invokeSelectors = null)
+        IEnumerable<string> noInvokeSelectors, IEnumerable<string>? invokeSelectors = null)
     {
         await jsRuntime.InvokeVoidAsync(JsInteropConstants.AddOutsideClickEventListener,
             DotNetObjectReference.Create(new Invoker<ClickOutsideArgs>(callback)),
@@ -15,7 +15,7 @@ public static class JsRuntimeExtensions
     }
 
     public static async Task AddHtmlElementEventListener<T>(this IJSRuntime jsRuntime, string selector, string type, Func<T, Task> callback,
-        OneOf<EventListenerOptions, bool> options, EventListenerExtras extras = null)
+        OneOf<EventListenerOptions, bool> options, EventListenerExtras? extras = null)
     {
         await jsRuntime.InvokeVoidAsync(JsInteropConstants.AddHtmlElementEventListener,
             selector,
@@ -27,7 +27,7 @@ public static class JsRuntimeExtensions
     }
 
     public static async Task AddHtmlElementEventListener(this IJSRuntime jsRuntime, string selector, string type, Action callback,
-        OneOf<EventListenerOptions, bool> options, EventListenerExtras extras = null)
+        OneOf<EventListenerOptions, bool> options, EventListenerExtras? extras = null)
     {
         await jsRuntime.InvokeVoidAsync(JsInteropConstants.AddHtmlElementEventListener,
             selector,
@@ -39,7 +39,7 @@ public static class JsRuntimeExtensions
     }
 
     public static async Task AddHtmlElementEventListener(this IJSRuntime jsRuntime, string selector, string type, Func<Task> callback,
-        OneOf<EventListenerOptions, bool> options, EventListenerExtras extras = null)
+        OneOf<EventListenerOptions, bool> options, EventListenerExtras? extras = null)
     {
         await jsRuntime.InvokeVoidAsync(JsInteropConstants.AddHtmlElementEventListener,
             selector,

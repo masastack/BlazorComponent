@@ -11,13 +11,13 @@
             Index = index;
         }
 
-        public AttributesDictionary(object data)
+        public AttributesDictionary(object? data)
         {
             Data = data;
         }
 
         public int Index { get; }
 
-        public object Data { get; }
+        public object? Data { get; }
     }
 }

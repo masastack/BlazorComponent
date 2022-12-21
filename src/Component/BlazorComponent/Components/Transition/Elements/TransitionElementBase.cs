@@ -15,7 +15,8 @@ public abstract class TransitionElementBase : Element
 public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAsyncDisposable
 {
     [Inject]
-    protected IJSRuntime Js { get; set; }
+    [NotNull]
+    protected IJSRuntime? Js { get; set; }
 
     [CascadingParameter]
     public Transition? Transition { get; set; }

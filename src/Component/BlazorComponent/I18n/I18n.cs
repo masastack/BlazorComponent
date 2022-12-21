@@ -38,7 +38,7 @@ public class I18n
         }
         else
         {
-            cultureName = _cookieStorage.GetCookie(CultureCookieKey);
+            cultureName = _cookieStorage.GetCookie(CultureCookieKey) ?? "";
         }
 
         var culture = GetValidCulture(cultureName);
@@ -46,9 +46,11 @@ public class I18n
         SetCultureAndLocale(culture);
     }
 
-    public CultureInfo Culture { get; private set; }
+    [NotNull]
+    public CultureInfo? Culture { get; private set; }
 
-    public IReadOnlyDictionary<string, string> Locale { get; private set; }
+    [NotNull]
+    public IReadOnlyDictionary<string, string>? Locale { get; private set; }
 
     public void SetCulture(CultureInfo culture)
     {

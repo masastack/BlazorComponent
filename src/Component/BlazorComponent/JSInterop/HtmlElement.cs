@@ -94,7 +94,7 @@ namespace BlazorComponent.Web
         }
 
         public async Task AddEventListenerAsync<T>(string type, EventCallback<T> listener, OneOf<EventListenerOptions, bool> options,
-            EventListenerExtras extras = null)
+            EventListenerExtras? extras = null)
         {
             await JS.InvokeVoidAsync(JsInteropConstants.AddHtmlElementEventListener, Selector, type, DotNetObjectReference.Create(
                 new Invoker<T>(

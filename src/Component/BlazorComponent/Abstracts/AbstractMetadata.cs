@@ -2,15 +2,10 @@
 {
     public class AbstractMetadata
     {
-        public AbstractMetadata(Type type)
+        public AbstractMetadata(Type type, Dictionary<string, object>? attributes = null)
         {
-            Type = type ?? throw new ArgumentNullException(nameof(type));
-        }
-
-        public AbstractMetadata(Type type, Dictionary<string, object> attributes)
-            : this(type)
-        {
-            Attributes = attributes ?? throw new ArgumentNullException(nameof(attributes));
+            Type = type;
+            Attributes = attributes ?? new();
         }
 
         public Type Type { get; }

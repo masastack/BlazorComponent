@@ -5,7 +5,7 @@ namespace BlazorComponent
 {
     public interface IAlert : IHasProviderComponent
     {
-        RenderFragment IconContent { get; }
+        RenderFragment? IconContent { get; }
 
         bool IsShowIcon { get; }
 

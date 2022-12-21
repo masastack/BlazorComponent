@@ -6,18 +6,20 @@ namespace BlazorComponent
 {
     public partial class BAlert : BDomComponentBase, IAlert, IThemeable
     {
-        public RenderFragment IconContent { get; protected set; }
+        public RenderFragment? IconContent { get; protected set; }
 
         public bool IsShowIcon { get; protected set; }
 
         [Parameter]
-        public string Transition { get; set; }
+        public string? Transition { get; set; }
 
         [Parameter]
         public Borders Border { get; set; }
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        [NotNull]
+        [EditorRequired]
+        public RenderFragment? ChildContent { get; set; }
 
         [DefaultValue("mdi-close-circle")]
         [Parameter]
@@ -86,6 +88,12 @@ namespace BlazorComponent
         {
             Value = false;
             await ValueChanged.InvokeAsync(false);
+        }
+
+        protected override void OnParametersSet()
+        {
+            base.OnParametersSet();
+            ArgumentNullException.ThrowIfNull(ChildContent);
         }
     }
 }

@@ -24,55 +24,55 @@
                 .Merge(typeof(BInputLabel<,>), typeof(BTextFieldLabel<TValue>));
         }
 
-        public static ComponentAbstractProvider ApplyTextFieldPrependIcon(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>> propertiesAction = null)
+        public static ComponentAbstractProvider ApplyTextFieldPrependIcon(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>>? propertiesAction = null)
         {
             return abstractProvider
                 .Merge(typeof(BIcon), type, "prepend-icon", propertiesAction);
         }
 
-        public static ComponentAbstractProvider ApplyTextFieldLabel(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>> propertiesAction = null)
+        public static ComponentAbstractProvider ApplyTextFieldLabel(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>>? propertiesAction = null)
         {
             return abstractProvider
                 .Merge(typeof(BLabel), type, propertiesAction);
         }
 
-        public static ComponentAbstractProvider ApplyTextFieldMessages(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>> propertiesAction = null)
+        public static ComponentAbstractProvider ApplyTextFieldMessages(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>>? propertiesAction = null)
         {
             return abstractProvider
                 .Apply(typeof(BMessages), type, propertiesAction);
         }
 
-        public static ComponentAbstractProvider ApplyTextFieldAppendIcon(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>> propertiesAction = null)
+        public static ComponentAbstractProvider ApplyTextFieldAppendIcon(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>>? propertiesAction = null)
         {
             return abstractProvider
                    .Merge(typeof(BIcon), type, "append-icon", propertiesAction);
         }
 
-        public static ComponentAbstractProvider ApplyTextFieldCounter(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>> propertiesAction = null)
+        public static ComponentAbstractProvider ApplyTextFieldCounter(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>>? propertiesAction = null)
         {
             return abstractProvider
                 .Apply(typeof(BCounter), type, propertiesAction);
         }
 
-        public static ComponentAbstractProvider ApplyTextFieldProcessLinear(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>> propertiesAction = null)
+        public static ComponentAbstractProvider ApplyTextFieldProcessLinear(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>>? propertiesAction = null)
         {
             return abstractProvider
                 .Apply(typeof(BProgressLinear), type, propertiesAction);
         }
 
-        public static ComponentAbstractProvider ApplyTextFieldClearIcon(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>> propertiesAction = null)
+        public static ComponentAbstractProvider ApplyTextFieldClearIcon(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>>? propertiesAction = null)
         {
             return abstractProvider
                 .Apply(typeof(BIcon), type, "clear-icon", propertiesAction);
         }
 
-        public static ComponentAbstractProvider ApplyTextFieldAppendOuterIcon(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>> propertiesAction = null)
+        public static ComponentAbstractProvider ApplyTextFieldAppendOuterIcon(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>>? propertiesAction = null)
         {
             return abstractProvider
                 .Apply(typeof(BIcon), type, "append-outer-icon", propertiesAction);
         }
 
-        public static ComponentAbstractProvider ApplyTextFieldPrependInnerIcon(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>> propertiesAction = null)
+        public static ComponentAbstractProvider ApplyTextFieldPrependInnerIcon(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>>? propertiesAction = null)
         {
             return abstractProvider
                 .Apply(typeof(BIcon), type, "prepend-inner-icon", propertiesAction);

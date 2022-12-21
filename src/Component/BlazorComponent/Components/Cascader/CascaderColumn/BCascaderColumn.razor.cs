@@ -8,25 +8,32 @@ namespace BlazorComponent
     public partial class BCascaderColumn<TItem, TValue>
     {
         [CascadingParameter]
-        protected ICascader<TItem, TValue> Cascader { get; set; }
+        [NotNull]
+        protected ICascader<TItem, TValue>? Cascader { get; set; }
         
         [Parameter]
-        public IList<TItem> Items { get; set; }
+        [NotNull]
+        [EditorRequired]
+        public IList<TItem>? Items { get; set; }
 
         [Parameter]
-        public Func<TItem, string> ItemText { get; set; }
+        [NotNull]
+        [EditorRequired]
+        public Func<TItem, string>? ItemText { get; set; }
 
         [Parameter]
-        public Func<TItem, TValue> ItemValue { get; set; }
+        public Func<TItem, TValue>? ItemValue { get; set; }
 
         [Parameter]
-        public IList<TItem> SelectedItems { get; set; }
+        public IList<TItem>? SelectedItems { get; set; }
 
         [Parameter]
-        public Func<TItem, List<TItem>> ItemChildren { get; set; }
+        [NotNull]
+        [EditorRequired]
+        public Func<TItem, List<TItem>?>? ItemChildren { get; set; }
 
         [Parameter]
-        public Func<TItem, Task> LoadChildren { get; set; }
+        public Func<TItem, Task>? LoadChildren { get; set; }
 
         [Parameter]
         public EventCallback<(TItem item, bool closeOnSelect, int columnIndex)> OnSelect { get; set; }
@@ -34,17 +41,17 @@ namespace BlazorComponent
         [Parameter]
         public int ColumnIndex { get; set; }
 
-        private BCascaderColumn<TItem, TValue> NextCascaderColumn { get; set; }
+        private BCascaderColumn<TItem, TValue>? NextCascaderColumn { get; set; }
 
-        protected virtual string Icon { get; }
+        protected virtual string? Icon { get; }
 
-        protected BItemGroup ItemGroup { get; set; }
+        protected BItemGroup? ItemGroup { get; set; }
 
-        protected TItem LoadingItem { get; set; }
+        protected TItem? LoadingItem { get; set; }
 
-        protected IList<TItem> Children { get; set; }
+        protected IList<TItem>? Children { get; set; }
 
-        protected TItem SelectedItem { get; set; }
+        protected TItem? SelectedItem { get; set; }
 
         protected int SelectedItemIndex { get; set; }
 
@@ -112,6 +119,14 @@ namespace BlazorComponent
             {
                 await OnSelect.InvokeAsync((item, IsLast, ColumnIndex));
             }
+        }
+
+        protected override void OnParametersSet()
+        {
+            base.OnParametersSet();
+            ArgumentNullException.ThrowIfNull(Items);
+            ArgumentNullException.ThrowIfNull(ItemChildren);
+            ArgumentNullException.ThrowIfNull(ItemText);
         }
     }
 }

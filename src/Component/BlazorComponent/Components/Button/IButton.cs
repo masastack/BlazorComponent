@@ -8,26 +8,26 @@ namespace BlazorComponent
 
         RenderFragment ChildContent { get; }
 
-        string Color { get; }
+        string? Color { get; }
 
         bool Disabled { get; }
 
-        StringNumber Height { get; }
+        StringNumber? Height { get; }
 
         RenderFragment LoaderContent { get; }
 
         bool Loading { get; }
 
-        StringNumber MaxHeight { get; }
+        StringNumber? MaxHeight { get; }
 
-        StringNumber MaxWidth { get; }
+        StringNumber? MaxWidth { get; }
 
-        StringNumber MinHeight { get; }
+        StringNumber? MinHeight { get; }
 
-        StringNumber MinWidth { get; }
+        StringNumber? MinWidth { get; }
 
         bool Outlined { get; }
 
-        StringNumber Width { get; }
+        StringNumber? Width { get; }
     }
 }

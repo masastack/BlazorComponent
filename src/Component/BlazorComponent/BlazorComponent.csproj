@@ -12,6 +12,7 @@
         <PackageReleaseNotes />
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

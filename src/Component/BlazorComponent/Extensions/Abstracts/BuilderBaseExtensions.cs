@@ -63,7 +63,7 @@
             return builder;
         }
 
-        public static string GetClass(this Dictionary<Func<string>, Func<bool>> mapper)
+        public static string? GetClass(this Dictionary<Func<string>, Func<bool>> mapper)
         {
             var classList = mapper.Where(i => i.Value() && !string.IsNullOrWhiteSpace(i.Key())).Select(i => i.Key()?.Trim());
             if (!classList.Any())
