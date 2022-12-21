@@ -5,9 +5,9 @@ namespace BlazorComponent;
 [GenerateOneOf]
 public partial class StringEnum<T> : OneOfBase<string, T> where T : Enum
 {
-    public override string ToString()
+    public override string? ToString()
     {
-        return Value?.ToString() ?? "null";
+        return Value?.ToString();
     }
 
     public static bool operator ==(StringEnum<T> left, StringEnum<T> right)
