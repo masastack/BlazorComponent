@@ -92,8 +92,6 @@ namespace BlazorComponent
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            Console.WriteLine("SlideGroup render...");
-            
             if (firstRender)
             {
                 IsMobile = await JsInvokeAsync<bool>(JsInteropConstants.IsMobile);
