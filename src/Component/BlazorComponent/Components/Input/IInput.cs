@@ -79,17 +79,7 @@ namespace BlazorComponent
             return Task.CompletedTask;
         }
 
-        Task HandleOnClickAsync(ExMouseEventArgs args)
-        {
-            return Task.CompletedTask;
-        }
-
         Task HandleOnMouseDownAsync(MouseEventArgs args)
-        {
-            return Task.CompletedTask;
-        }
-
-        Task HandleOnMouseUpAsync(ExMouseEventArgs args)
         {
             return Task.CompletedTask;
         }
