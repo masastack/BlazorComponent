@@ -162,5 +162,10 @@ namespace BlazorComponent
                 await OnMouseUp.InvokeAsync(args);
             }
         }
+
+        public void StateHasChangedForJsInvokable()
+        {
+            StateHasChanged();
+        }
     }
 }

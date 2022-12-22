@@ -32,18 +32,21 @@ public class InputJsInterop : IAsyncDisposable
     public async Task OnInput(ChangeEventArgs args)
     {
         await _owner.HandleOnInputAsync(args);
+        _owner.StateHasChangedForJsInvokable();
     }
 
     [JSInvokable]
     public async Task OnClick(ExMouseEventArgs args)
     {
         await _owner.HandleOnClickAsync(args);
+        _owner.StateHasChangedForJsInvokable();
     }
 
     [JSInvokable]
     public async Task OnMouseUp(ExMouseEventArgs args)
     {
         await _owner.HandleOnMouseUpAsync(args);
+        _owner.StateHasChangedForJsInvokable();
     }
 
     public async Task SetValue(string val)

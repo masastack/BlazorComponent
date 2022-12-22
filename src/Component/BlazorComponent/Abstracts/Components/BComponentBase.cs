@@ -14,11 +14,11 @@ namespace BlazorComponent
         [Parameter]
         public ForwardRef RefBack { get; set; } = new();
 
-        private ParameterView ParameterView { get; set; }
+        private string[] _dirtyParameters = Array.Empty<string>();
 
         public override Task SetParametersAsync(ParameterView parameters)
         {
-            ParameterView = parameters;
+             _dirtyParameters = parameters.ToDictionary().Keys.ToArray();
 
             return base.SetParametersAsync(parameters);
         }
@@ -27,11 +27,10 @@ namespace BlazorComponent
         /// Check whether the parameter has been assigned value.
         /// </summary>
         /// <param name="parameterName"></param>
-        /// <typeparam name="TValue"></typeparam>
         /// <returns></returns>
-        protected bool IsDirtyParameter<TValue>(string parameterName)
+        protected bool IsDirtyParameter(string parameterName)
         {
-            return ParameterView.TryGetValue<TValue>(parameterName, out _);
+            return _dirtyParameters.Contains(parameterName);
         }
 
         protected void InvokeStateHasChanged()

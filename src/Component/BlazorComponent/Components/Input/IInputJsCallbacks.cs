@@ -9,4 +9,6 @@ public interface IInputJsCallbacks
     Task HandleOnClickAsync(ExMouseEventArgs args);
 
     Task HandleOnMouseUpAsync(ExMouseEventArgs args);
+
+    void StateHasChangedForJsInvokable();
 }

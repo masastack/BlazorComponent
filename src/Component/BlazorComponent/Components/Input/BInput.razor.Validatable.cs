@@ -17,7 +17,7 @@ namespace BlazorComponent
         public bool ValidateOnBlur { get; set; }
 
         [Parameter]
-        public virtual TValue Value
+        public virtual TValue? Value
         {
             get => GetValue(DefaultValue);
             set => SetValue(value);
@@ -65,7 +65,7 @@ namespace BlazorComponent
 
         private bool _forceStatus;
 
-        protected virtual TValue DefaultValue => default;
+        protected virtual TValue? DefaultValue => default;
 
         protected EditContext OldEditContext { get; set; }
 

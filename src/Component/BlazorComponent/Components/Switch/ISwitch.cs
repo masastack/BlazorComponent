@@ -1,11 +1,11 @@
 ﻿namespace BlazorComponent
 {
-    public interface ISwitch : ISelectable
+    public interface ISwitch<TValue> : ISelectable<TValue>
     {
         bool IsLoading { get; }
 
-        string LeftText { get; }
+        string? LeftText { get; }
 
-        string RightText { get; }
+        string? RightText { get; }
     }
 }

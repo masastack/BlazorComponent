@@ -1,6 +1,6 @@
 ﻿namespace BlazorComponent
 {
-    public partial class BSwitchDefaultSlot : BInputDefaultSlot<bool, ISwitch>
+    public partial class BSwitchDefaultSlot<TValue> : BInputDefaultSlot<TValue, ISwitch<TValue>>
     {
     }
 }
