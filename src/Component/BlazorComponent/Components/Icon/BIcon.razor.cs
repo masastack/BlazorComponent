@@ -10,7 +10,6 @@ namespace BlazorComponent
     public partial class BIcon : IThemeable, ITransitionIf
     {
         [Parameter]
-        [NotNull]
         [EditorRequired]
         public RenderFragment? ChildContent { get; set; }
 
@@ -157,12 +156,6 @@ namespace BlazorComponent
                 NewChildren = string.Empty;
             }
 #pragma warning restore BL0006 // Do not use RenderTree types
-        }
-
-        protected override void OnParametersSet()
-        {
-            base.OnParametersSet();
-            ArgumentNullException.ThrowIfNull(ChildContent);
         }
     }
 }

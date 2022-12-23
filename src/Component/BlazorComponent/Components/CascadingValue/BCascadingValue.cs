@@ -9,7 +9,6 @@ namespace BlazorComponent
         private Type? _cascadingValueType { get; set; }
 
         [Parameter]
-        [NotNull]
         [EditorRequired]
         public TValue? Value { get; set; }
 
@@ -20,7 +19,6 @@ namespace BlazorComponent
         public bool IsFixed { get; set; }
 
         [Parameter]
-        [NotNull]
         [EditorRequired]
         public RenderFragment? ChildContent { get; set; }
 
@@ -41,13 +39,6 @@ namespace BlazorComponent
             builder.AddAttribute(sequence++, nameof(IsFixed), IsFixed);
             builder.AddAttribute(sequence++, nameof(ChildContent), ChildContent);
             builder.CloseComponent();
-        }
-
-        protected override void OnParametersSet()
-        {
-            base.OnParametersSet();
-            ArgumentNullException.ThrowIfNull(Value);
-            ArgumentNullException.ThrowIfNull(ChildContent);
         }
     }
 
