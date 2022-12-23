@@ -8,7 +8,7 @@ namespace BlazorComponent
 
         bool Disabled { get; set; }
 
-        StringNumber Value { get; set; }
+        StringNumber? Value { get; set; }
 
         ElementReference Ref { get; set; }
 
