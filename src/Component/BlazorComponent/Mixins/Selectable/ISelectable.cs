@@ -2,7 +2,7 @@
 
 namespace BlazorComponent
 {
-    public interface ISelectable : IInput<bool>, IRippleable
+    public interface ISelectable<TValue> : IInput<TValue>, IRippleable
     {
         bool IsDisabled { get; }
 

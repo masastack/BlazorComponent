@@ -1,5 +1,6 @@
 ﻿@namespace BlazorComponent
 @typeparam TInput
+@typeparam TValue
 @inherits ComponentPartBase<TInput>
 
 <input disabled="@IsDisabled"
@@ -10,8 +11,8 @@
        checked="@IsActive"
        @onclick:preventDefault
        @onclick:stopPropagation
-       @onblur="HandleOnBlur"
-       @onchange="HandleOnChange"
-       @onfocus="HandleOnFocus"
-       @onkeydown="HandleOnKeyDown"
-       @attributes="InputAttrs" />
+       @onblur="@HandleOnBlur"
+       @onchange="@HandleOnChange"
+       @onfocus="@HandleOnFocus"
+       @onkeydown="@HandleOnKeyDown"
+       @attributes="@InputAttrs" />

@@ -1,11 +1,12 @@
 ﻿@namespace BlazorComponent
-@inherits BInputDefaultSlot<bool,ICheckbox>
+@typeparam TInput
+@typeparam TValue
+@inherits ComponentPartBase<TInput>
 
 <div class="@CssProvider.GetClass("checkbox-input")">
     <BIcon @attributes="GetAttributes(typeof(BIcon))">
         @ComputedIcon
     </BIcon>
-    @RenderPart(typeof(BSelectableInput<>),"checkbox",arg0Name:"Type")
+    @RenderPart(typeof(BSelectableInput<,>), "checkbox", arg0Name: "Type")
     @RenderPart(typeof(BRippleableRipple<>))
 </div>
-

@@ -1,6 +1,6 @@
 ﻿@namespace BlazorComponent
-@typeparam TCheckbox
-@inherits BInputDefaultSlot<bool,TCheckbox>
+@typeparam TValue
+@inherits BInputDefaultSlot<TValue, ICheckbox<TValue>>
 
-@RenderPart(typeof(BCheckboxCheckbox))
+@RenderPart(typeof(BCheckboxCheckbox<,>))
 @RenderPart(typeof(BInputLabel<,>))
