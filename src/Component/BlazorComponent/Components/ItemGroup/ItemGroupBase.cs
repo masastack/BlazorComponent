@@ -27,7 +27,7 @@ namespace BlazorComponent
         public bool Multiple { get; set; }
 
         [Parameter]
-        public StringNumber Value
+        public StringNumber? Value
         {
             get => _values.LastOrDefault();
             set
@@ -78,21 +78,14 @@ namespace BlazorComponent
         {
             item.Value ??= Items.Count;
 
-            // TODO: check exists
             Items.Add(item);
 
             // if no value provided and mandatory
             // assign first registered item
             if (Mandatory && Value == null)
             {
-                if (ValueChanged.HasDelegate)
-                {
-                    _ = ValueChanged.InvokeAsync(Value);
-                }
-                else
-                {
-                    Value = item.Value;
-                }
+                Value = item.Value;
+                ValueChanged.InvokeAsync(item.Value);
             }
 
             RefreshItemsState();
