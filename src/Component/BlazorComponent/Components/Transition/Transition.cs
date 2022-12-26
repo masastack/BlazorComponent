@@ -26,7 +26,6 @@ namespace BlazorComponent
         public TransitionMode? Mode { get; set; }
 
         [Parameter]
-        [NotNull]
         [EditorRequired]
         public RenderFragment? ChildContent { get; set; }
 
@@ -162,12 +161,6 @@ namespace BlazorComponent
             builder.AddAttribute(sequence++, nameof(CascadingValue<Transition>.ChildContent), ChildContent);
 
             builder.CloseComponent();
-        }
-
-        protected override void OnParametersSet()
-        {
-            base.OnParametersSet();
-            ArgumentNullException.ThrowIfNull(ChildContent);
         }
     }
 }

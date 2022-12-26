@@ -17,7 +17,6 @@ namespace BlazorComponent
         public Borders Border { get; set; }
 
         [Parameter]
-        [NotNull]
         [EditorRequired]
         public RenderFragment? ChildContent { get; set; }
 
@@ -88,12 +87,6 @@ namespace BlazorComponent
         {
             Value = false;
             await ValueChanged.InvokeAsync(false);
-        }
-
-        protected override void OnParametersSet()
-        {
-            base.OnParametersSet();
-            ArgumentNullException.ThrowIfNull(ChildContent);
         }
     }
 }

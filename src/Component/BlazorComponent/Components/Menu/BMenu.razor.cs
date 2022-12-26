@@ -19,7 +19,6 @@ namespace BlazorComponent
         public bool CloseOnContentClick { get; set; } = true;
 
         [Parameter]
-        [NotNull]
         [EditorRequired]
         public RenderFragment? ChildContent { get; set; }
 
@@ -272,12 +271,6 @@ namespace BlazorComponent
         private double CalcLeftAuto()
         {
             return Dimensions.Activator.Left - DefaultOffset * 2;
-        }
-
-        protected override void OnParametersSet()
-        {
-            base.OnParametersSet();
-            ArgumentNullException.ThrowIfNull(ChildContent);
         }
     }
 }
