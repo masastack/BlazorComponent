@@ -1,16 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
+using OneOf;
 
 namespace BlazorComponent
 {
     public abstract class ItemGroupBase : BDomComponentBase
     {
-        protected List<StringNumber> _values = new();
-
-        public ItemGroupBase(GroupType groupType)
-        {
-            GroupType = groupType;
-        }
-
         [Parameter]
         public string ActiveClass { get; set; }
 
@@ -27,29 +21,42 @@ namespace BlazorComponent
         public bool Multiple { get; set; }
 
         [Parameter]
-        public StringNumber? Value
+        public StringNumberOrMore? Value { get; set; }
+
+        [Parameter]
+        public EventCallback<StringNumberOrMore> ValueChanged { get; set; }
+
+        // [Parameter]
+        // public StringNumber? Value
+        // {
+        //     get => _values.LastOrDefault();
+        //     set
+        //     {
+        //         _values.Clear();
+        //         _values.Add(value);
+        //         SetValue(value);
+        //     }
+        // }
+        //
+        // [Parameter]
+        // public EventCallback<StringNumber> ValueChanged { get; set; }
+        //
+        // [Parameter]
+        // public List<StringNumber> Values
+        // {
+        //     get => _values;
+        //     set => _values = value;
+        // }
+        //
+        // [Parameter]
+        // public EventCallback<List<StringNumber>> ValuesChanged { get; set; }
+
+        public ItemGroupBase(GroupType groupType)
         {
-            get => _values.LastOrDefault();
-            set
-            {
-                _values.Clear();
-                _values.Add(value);
-                SetValue(value);
-            }
+            GroupType = groupType;
         }
 
-        [Parameter]
-        public EventCallback<StringNumber> ValueChanged { get; set; }
-
-        [Parameter]
-        public List<StringNumber> Values
-        {
-            get => _values;
-            set => _values = value;
-        }
-
-        [Parameter]
-        public EventCallback<List<StringNumber>> ValuesChanged { get; set; }
+        protected List<StringNumber> _values;
 
         public GroupType GroupType { get; private set; }
 
@@ -113,22 +120,34 @@ namespace BlazorComponent
 
         public async Task ToggleAsync(StringNumber key)
         {
+            Value ??= new List<StringNumber>();
+            _values = Value.ToList();
+
             UpdateValue(key);
 
-            RefreshItemsState();
-
-            if (ValuesChanged.HasDelegate)
+            if (Mandatory)
             {
-                await ValuesChanged.InvokeAsync(_values);
+                Value = _values.First();
             }
-            else if (ValueChanged.HasDelegate)
+            else if (Multiple)
             {
-                await ValueChanged.InvokeAsync(_values.LastOrDefault());
+                Value = _values;
+            }
+            else
+            {
+                Value = _values.FirstOrDefault();
+            }
+
+            if (ValueChanged.HasDelegate)
+            {
+                await ValueChanged.InvokeAsync(Value);
             }
             else
             {
                 StateHasChanged();
             }
+
+            RefreshItemsState();
         }
 
         protected virtual void UpdateValue(StringNumber key)

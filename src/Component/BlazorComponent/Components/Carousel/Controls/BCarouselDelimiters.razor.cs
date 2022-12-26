@@ -12,5 +12,5 @@ public partial class BCarouselDelimiters<TCarousel> : ComponentPartBase<TCarouse
 
     public List<IGroupable> Items => Component.Items;
 
-    public EventCallback<StringNumber> InternalValueChanged => EventCallback.Factory.Create<StringNumber>(Component, Component.InternalValueChanged);
+    public EventCallback<StringNumberOrMore> InternalValueChanged => EventCallback.Factory.Create<StringNumberOrMore>(Component, Component.InternalValueChanged);
 }

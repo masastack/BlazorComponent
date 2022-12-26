@@ -26,12 +26,12 @@ namespace BlazorComponent
         public StringNumber SliderSize { get; set; } = 2;
 
         [Parameter]
-        public StringNumber Value { get; set; }
+        public StringNumberOrMore Value { get; set; }
 
-        private EventCallback<StringNumber>? _valueChanged;
+        private EventCallback<StringNumberOrMore>? _valueChanged;
 
         [Parameter]
-        public EventCallback<StringNumber> ValueChanged
+        public EventCallback<StringNumberOrMore> ValueChanged
         {
             get
             {
@@ -40,7 +40,7 @@ namespace BlazorComponent
                     return _valueChanged.Value;
                 }
 
-                return EventCallback.Factory.Create<StringNumber>(this, (v) => Value = v);
+                return EventCallback.Factory.Create<StringNumberOrMore>(this, (v) => Value = v);
             }
             set => _valueChanged = value;
         }

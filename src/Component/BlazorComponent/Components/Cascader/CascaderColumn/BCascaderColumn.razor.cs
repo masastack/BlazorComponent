@@ -53,8 +53,8 @@ namespace BlazorComponent
 
         protected TItem? SelectedItem { get; set; }
 
-        protected int SelectedItemIndex { get; set; }
 
+        protected int SelectedItemIndex { get; set; }
         private bool IsLast => Children == null || Children.Count == 0;
 
         private bool IsSelectedItemDefault => EqualityComparer<TItem>.Default.Equals(SelectedItem, default);

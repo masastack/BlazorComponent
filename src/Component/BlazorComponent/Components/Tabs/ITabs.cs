@@ -14,6 +14,6 @@ namespace BlazorComponent
 
         List<ITabItem> TabItems { get; }
 
-        StringNumber Value { get; }
+        StringNumberOrMore Value { get; }
     }
 }

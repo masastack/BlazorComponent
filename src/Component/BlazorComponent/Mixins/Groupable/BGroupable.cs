@@ -70,7 +70,7 @@
 
         protected bool Matched => ItemGroup != null && (ItemGroup.GroupType == _groupType);
 
-        protected bool ValueMatched => Matched && ItemGroup.Values.Contains(Value);
+        protected bool ValueMatched => Matched && ItemGroup.Value.ToList().Contains(Value);
 
         public bool InternalIsActive { get; private set; }
 

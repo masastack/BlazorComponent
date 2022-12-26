@@ -18,5 +18,5 @@ public interface ICarousel : IHasProviderComponent
 
     List<IGroupable> Items { get; }
 
-    Task InternalValueChanged(StringNumber val);
+    Task InternalValueChanged(StringNumberOrMore val);
 }
