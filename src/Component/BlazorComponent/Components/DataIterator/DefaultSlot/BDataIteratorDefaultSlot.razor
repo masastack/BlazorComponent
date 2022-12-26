@@ -3,7 +3,7 @@
 @typeparam TDataIterator
 @inherits ComponentPartBase<TDataIterator>
 
-<div class="@CssProvider.GetClass()">
+<div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">
     @HeaderContent
     @RenderPart(typeof(BDataIteratorItems<,>))
     @RenderPart(typeof(BDataIteratorFooter<,>))
