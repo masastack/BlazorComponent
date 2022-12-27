@@ -14,10 +14,10 @@ public class ProviderItem
 
     public Dictionary<string, object> Parameters { get; set; }
 
-    public ProviderItem(Type componentType, PopupProvider provider, object service, string serviceName)
+    public ProviderItem(Type componentType, Dictionary<string, object> parameters, PopupProvider provider, object service, string serviceName)
     {
         TaskCompletionSource = new();
-        Parameters = new();
+        Parameters = parameters;
         ComponentType = componentType;
         Provider = provider;
         Service = service;
