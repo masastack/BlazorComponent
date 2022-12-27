@@ -27,7 +27,7 @@ namespace BlazorComponent
         public RenderFragment PrependContent { get; set; }
 
         [Parameter]
-        public StringBoolean HideDetails { get; set; } = false;
+        public StringBoolean? HideDetails { get; set; } = false;
 
         [Parameter]
         public string Hint { get; set; }
@@ -93,7 +93,7 @@ namespace BlazorComponent
 
         public bool IsLoading => Loading != null && Loading != false;
 
-        public virtual bool ShowDetails => HideDetails == false || (HideDetails == "auto" && HasDetails);
+        public virtual bool ShowDetails => HideDetails is null || HideDetails == false || (HideDetails == "auto" && HasDetails);
 
         public virtual bool HasHint => !HasError && !string.IsNullOrEmpty(Hint) && (PersistentHint || IsFocused);
 
