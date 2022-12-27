@@ -11,13 +11,13 @@ namespace BlazorComponent
 
         Borders Border { get; }
 
-        RenderFragment ChildContent { get; }
+        RenderFragment? ChildContent { get; }
 
         string CloseIcon { get; }
 
         string CloseLabel { get; }
 
-        string Color { get; }
+        string? Color { get; }
 
         bool Dismissible { get; }
 
