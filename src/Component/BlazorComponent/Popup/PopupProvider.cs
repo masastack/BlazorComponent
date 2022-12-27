@@ -9,8 +9,8 @@ public class PopupProvider : IPopupProvider
 
     public ProviderItem Add(Type componentType, Dictionary<string, object> attributes, object service, string serviceName)
     {
-        var item = new ProviderItem(componentType, this, service, serviceName);
-       
+        var item = new ProviderItem(componentType, attributes, this, service, serviceName);
+
         lock (_obj)
         {
             _items.Add(item);
