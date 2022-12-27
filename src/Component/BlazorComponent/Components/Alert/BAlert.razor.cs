@@ -1,6 +1,4 @@
-﻿using BlazorComponent.Attributes;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+﻿using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
@@ -28,7 +26,7 @@ namespace BlazorComponent
         public virtual string CloseLabel { get; set; } = "Close";
 
         [Parameter]
-        public string Color { get; set; }
+        public string? Color { get; set; }
 
         [Parameter]
         public virtual bool Dismissible { get; set; }
@@ -39,19 +37,8 @@ namespace BlazorComponent
         [Parameter]
         public AlertTypes Type { get; set; }
 
-        private bool _value = true;
-
         [Parameter]
-        public bool Value
-        {
-            get => _value;
-            set
-            {
-                if (value == _value) return;
-                _value = value;
-                ValueChanged.InvokeAsync(_value);
-            }
-        }
+        public bool Value { get; set; } = true;
 
         [Parameter]
         public EventCallback<bool> ValueChanged { get; set; }
@@ -87,6 +74,13 @@ namespace BlazorComponent
         {
             Value = false;
             await ValueChanged.InvokeAsync(false);
+        }
+
+        [PublicMethod]
+        public async Task ToggleAsync()
+        {
+            Value = !Value;
+            await ValueChanged.InvokeAsync(Value);
         }
     }
 }
