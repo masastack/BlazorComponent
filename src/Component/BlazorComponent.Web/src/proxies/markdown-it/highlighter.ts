@@ -1,3 +1,6 @@
+import { ReadStream } from "fs";
+import { Duplex, Stream } from "stream";
+
 declare const Prism: Prism;
 declare const hljs: hljs;
 
@@ -62,6 +65,10 @@ export function highlight(code: string, lang: string) {
     );
     return code;
   }
+}
+
+export async function highlightStream(codeStream: Blob) {
+  const stream = await codeStream.stream();
 }
 
 function getLangCodeFromExtension(extension) {
