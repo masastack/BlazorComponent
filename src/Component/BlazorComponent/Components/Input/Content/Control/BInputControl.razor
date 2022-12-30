@@ -3,7 +3,8 @@
 @typeparam TInput
 @inherits ComponentPartBase<TInput>
 
-<div class="@CssProvider.GetClass( "control")">
+<div class="@CssProvider.GetClass("control")"
+     style="@CssProvider.GetStyle("control")">
     @RenderPart(typeof(BInputInputSlot<,>))
     @RenderPart(typeof(BInputMessages<,>))
 </div>
