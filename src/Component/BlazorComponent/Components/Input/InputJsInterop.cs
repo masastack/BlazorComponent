@@ -13,6 +13,8 @@ public class InputJsInterop : IAsyncDisposable
 
     private ElementReference? _inputElement;
 
+    public bool Initialized { get; private set; }
+
     public InputJsInterop(IInputJsCallbacks owner, IJSRuntime jsRuntime)
     {
         _owner = owner;
@@ -26,6 +28,7 @@ public class InputJsInterop : IAsyncDisposable
         _selfReference = DotNetObjectReference.Create(this);
         _inputJsReference = await _jsRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/BlazorComponent/js/input.js");
         await _inputJsReference!.InvokeVoidAsync("registerInputEvents", input, inputSlot, _selfReference, internalDebounceInterval);
+        Initialized = true;
     }
 
     [JSInvokable]
