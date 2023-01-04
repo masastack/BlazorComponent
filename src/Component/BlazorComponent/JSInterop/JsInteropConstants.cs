@@ -38,8 +38,6 @@
 
         public static string Blur => $"{JsInteropFuncNamePrefix}blur";
 
-        public static string BackTop => $"{JsInteropFuncNamePrefix}backTop";
-
         public static string ScrollTo => $"{JsInteropFuncNamePrefix}scrollTo";
 
         public static string ScrollIntoView => $"{JsInteropFuncNamePrefix}scrollIntoView";
