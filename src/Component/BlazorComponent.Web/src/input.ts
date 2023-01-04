@@ -7,6 +7,8 @@ function registerInputEvents(
   dotNetHelper: DotNet.DotNetObject,
   debounce: number
 ) {
+  if (!inputElement || !inputSlotElement) return;
+
   registerClickEvent(inputSlotElement, dotNetHelper);
 
   registerMouseUpEvent(inputSlotElement, dotNetHelper);
@@ -68,6 +70,7 @@ function registerInputEvent(
 }
 
 function setValue(element: HTMLInputElement, value: any) {
+  if (!element) return;
   element.value = value;
 }
 
