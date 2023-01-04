@@ -241,7 +241,7 @@ namespace BlazorComponent
                     await _inputJsInterop!.SetValue(val);
                     StateHasChanged();
                 },
-                () => _inputJsInterop is null,
+                () => _inputJsInterop is not { Initialized: true },
                 cancellationToken: _cancellationTokenSource.Token);
         }
 

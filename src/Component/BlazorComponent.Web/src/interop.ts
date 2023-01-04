@@ -548,6 +548,7 @@ export function scrollTo(target, options: ScrollToOptions) {
 
 export function scrollToElement(target, offset: number, behavior?: ScrollBehavior) {
   const dom = getDom(target)
+  if (!dom) return;
   const domPosition = dom.getBoundingClientRect().top;
   const offsetPosition = domPosition + window.pageYOffset - offset;
   window.scrollTo({

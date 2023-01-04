@@ -2,5 +2,18 @@
 @typeparam TDatePickerTable
 @inherits ComponentPartBase<TDatePickerTable>
 
-@*TODO: *@
+@{
+    var eventColors = GetEventColors();
 
+    if (eventColors.Any())
+    {
+        <div class="@CssProvider.GetClass("events")">
+            @foreach (var color in eventColors)
+            {
+                <div class="@CssProvider.GetClass("event", data: color)"
+                     style="@CssProvider.GetStyle("event", data: color)">
+                </div>
+            }
+        </div>
+    }
+}
