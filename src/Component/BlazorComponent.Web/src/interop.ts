@@ -459,28 +459,6 @@ export function log(text) {
   console.log(text);
 }
 
-export function backTop(target: string) {
-  let dom = getDom(target);
-  if (dom) {
-    slideTo(dom.scrollTop);
-  } else {
-    slideTo(0);
-  }
-}
-
-function slideTo(targetPageY) {
-  var timer = setInterval(function () {
-    var currentY = document.documentElement.scrollTop || document.body.scrollTop;
-    var distance = targetPageY > currentY ? targetPageY - currentY : currentY - targetPageY;
-    var speed = Math.ceil(distance / 10);
-    if (currentY == targetPageY) {
-      clearInterval(timer);
-    } else {
-      window.scrollTo(0, targetPageY > currentY ? currentY + speed : currentY - speed);
-    }
-  }, 10);
-}
-
 export function scrollIntoView(target, arg?: boolean | ScrollIntoViewOptions) {
   let dom = getDom(target);
   if (dom instanceof HTMLElement) {
