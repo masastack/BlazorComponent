@@ -37,6 +37,15 @@ public class BDelayable : BDomComponentBase, IAsyncDisposable
     public async Task SetIsActive(bool value)
     {
         bool isLazyContent = false;
+        Console.WriteLine($"SetIsActive value:{value} IsActive:{IsActive}");
+
+        if (value is false && IsActive is false)
+        {
+            NextTick(async () => { await SetIsActive(false); });
+
+            return;
+        }
+
 
         if (value)
         {

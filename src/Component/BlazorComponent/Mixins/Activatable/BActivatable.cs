@@ -2,7 +2,7 @@
 
 namespace BlazorComponent;
 
-public class BActivatable : BToggleable, IActivatable
+public class BActivatable : BToggleable, IActivatable, IActivatableJsCallbacks
 {
     private string? _activatorId;
 
@@ -33,6 +33,8 @@ public class BActivatable : BToggleable, IActivatable
     [Parameter]
     public RenderFragment<ActivatorProps>? ActivatorContent { get; set; }
 
+    private ActivatableJsInterop? _activatableJsInterop;
+
     protected bool IsBooted { get; set; }
 
     protected Dictionary<string, object> ActivatorEvents { get; set; } = new();
@@ -47,7 +49,7 @@ public class BActivatable : BToggleable, IActivatable
 
     protected string ActivatorId => _activatorId ??= $"_activator_{Guid.NewGuid()}";
 
-    protected string ActivatorSelector => $"[{ActivatorId}]";
+    public string ActivatorSelector => $"[{ActivatorId}]";
 
     protected RenderFragment ComputedActivatorContent
     {
@@ -66,6 +68,17 @@ public class BActivatable : BToggleable, IActivatable
     bool IActivatable.IsActive => IsActive;
 
     RenderFragment IActivatable.ComputedActivatorContent => ComputedActivatorContent;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (firstRender)
+        {
+            _activatableJsInterop = new ActivatableJsInterop(this, Js);
+            await _activatableJsInterop.InitializeAsync();
+        }
+    }
 
     protected override void OnParametersSet()
     {
@@ -104,7 +117,7 @@ public class BActivatable : BToggleable, IActivatable
     private void ResetActivatorEvents()
     {
         ActivatorEvents.Clear();
-        AddActivatorEvents();
+        // AddActivatorEvents();
     }
 
     protected override void OnInitialized()
@@ -113,30 +126,30 @@ public class BActivatable : BToggleable, IActivatable
         ResetActivatorEvents();
     }
 
-    private void AddActivatorEvents()
-    {
-        if (Disabled)
-        {
-            return;
-        }
-
-        if (OpenOnHover)
-        {
-            ActivatorEvents.Add("onmouseenter", CreateEventCallback<MouseEventArgs>(HandleOnMouseEnterAsync));
-            ActivatorEvents.Add("onmouseleave", CreateEventCallback<MouseEventArgs>(HandleOnMouseLeaveAsync));
-        }
-        else if (OpenOnClick)
-        {
-            ActivatorEvents.Add("onexclick", CreateEventCallback<MouseEventArgs>(HandleOnClickAsync));
-            ActivatorEvents.Add("__internal_stopPropagation_onexclick", true);
-        }
-
-        if (OpenOnFocus)
-        {
-            ActivatorEvents.Add("onfocus", CreateEventCallback<FocusEventArgs>(HandleOnFocusAsync));
-            ActivatorEvents.Add("onblur", CreateEventCallback<FocusEventArgs>(HandleOnBlurAsync));
-        }
-    }
+    // private void AddActivatorEvents()
+    // {
+    //     if (Disabled)
+    //     {
+    //         return;
+    //     }
+    //
+    //     if (OpenOnHover)
+    //     {
+    //         ActivatorEvents.Add("onmouseenter", CreateEventCallback<MouseEventArgs>(HandleOnMouseEnterAsync));
+    //         ActivatorEvents.Add("onmouseleave", CreateEventCallback<MouseEventArgs>(HandleOnMouseLeaveAsync));
+    //     }
+    //     else if (OpenOnClick)
+    //     {
+    //         ActivatorEvents.Add("onexclick", CreateEventCallback<MouseEventArgs>(HandleOnClickAsync));
+    //         ActivatorEvents.Add("__internal_stopPropagation_onexclick", true);
+    //     }
+    //
+    //     if (OpenOnFocus)
+    //     {
+    //         ActivatorEvents.Add("onfocus", CreateEventCallback<FocusEventArgs>(HandleOnFocusAsync));
+    //         ActivatorEvents.Add("onblur", CreateEventCallback<FocusEventArgs>(HandleOnBlurAsync));
+    //     }
+    // }
 
     private async Task HandleOnMouseEnterAsync(MouseEventArgs args)
     {
@@ -163,5 +176,11 @@ public class BActivatable : BToggleable, IActivatable
     private async Task HandleOnBlurAsync(FocusEventArgs args)
     {
         await SetIsActive(false);
+    }
+
+    public async Task SetActive(bool val)
+    {
+        Console.WriteLine($"SetActive {val}");
+        await SetIsActive(val);
     }
 }
