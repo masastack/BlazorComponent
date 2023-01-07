@@ -1,15 +1,17 @@
+import { parseMouseEvent } from "../../events/EventType";
+import Delayable from "../delayable";
+
 type Listeners = Record<
   string,
   (e: MouseEvent & KeyboardEvent & FocusEvent) => void
 >;
 
-class Activatable {
+class Activatable extends Delayable {
   activator: HTMLElement;
   disabled: boolean;
   openOnClick: boolean;
   openOnHover: boolean;
   openOnFocus: boolean;
-  dotNetHelper: DotNet.DotNetObject;
 
   isActive: boolean;
   listeners: Listeners;
@@ -20,9 +22,17 @@ class Activatable {
     openOnClick: boolean,
     openOnHover: boolean,
     openOnFocus: boolean,
+    openDelay: number,
+    closeDelay: number,
     dotNetHelper: DotNet.DotNetObject
   ) {
-    this.activator = document.querySelector(selector);
+    super(openDelay, closeDelay, dotNetHelper);
+
+    const activator = document.querySelector(selector);
+
+    if (!activator) return;
+
+    this.activator = activator as HTMLElement;
     this.disabled = disabled;
     this.openOnClick = openOnClick;
     this.openOnHover = openOnHover;
@@ -37,7 +47,7 @@ class Activatable {
     const keys = Object.keys(this.listeners);
 
     for (const key of keys) {
-      this.activator.addEventListener(key, this.listeners[key]);
+      this.activator.addEventListener(key, this.listeners[key] as any);
     }
   }
 
@@ -48,11 +58,11 @@ class Activatable {
 
     if (this.openOnHover) {
       listeners.mouseenter = (e: MouseEvent) => {
-        console.log("mouseenter");
+        console.log("mouseenter", this.isActive);
         this.runDelay("open");
       };
       listeners.mouseleave = (e: MouseEvent) => {
-        console.log("mouseleave");
+        console.log("mouseleave", this.isActive);
         this.runDelay("close");
       };
     } else if (this.openOnClick) {
@@ -60,6 +70,8 @@ class Activatable {
         if (this.activator) this.activator.focus();
 
         e.stopPropagation();
+
+        this.dotNetHelper.invokeMethodAsync("OnClick", parseMouseEvent(e));
 
         this.setActive(!this.isActive);
       };
@@ -69,7 +81,11 @@ class Activatable {
       listeners.focus = (e: FocusEvent) => {
         e.stopPropagation();
 
-        this.setActive(!this.isActive);
+        this.runDelay("open");
+      };
+
+      listeners.blur = (e: FocusEvent) => {
+        this.runDelay("close");
       };
     }
 
@@ -88,22 +104,24 @@ class Activatable {
     this.listeners = {};
   }
 
-  resetActivator() {
+  resetActivator(
+    disabled: boolean,
+    openOnHover: boolean,
+    openOnFocus: boolean
+  ) {
+    this.disabled = disabled;
+    this.openOnHover = openOnHover;
+    this.openOnFocus = openOnFocus;
+
     this.removeActivatorEvents();
     this.addActivatorEvents();
   }
 
-  runDelay(type: "open" | "close") {
-    this.setActive({ open: true, close: false }[type]);
-  }
-
-  setActive(active: boolean) {
-    this.isActive = active;
-    this.dotNetHelper.invokeMethodAsync("SetActive", this.isActive);
+  runDelaying(val: boolean) {
+    console.log('runDelaying', val)
+    this.runDelay(val ? "open" : "close");
   }
 }
-
-const instances: Record<string, Activatable> = {};
 
 function init(
   selector: string,
@@ -111,29 +129,24 @@ function init(
   openOnClick: boolean,
   openOnHover: boolean,
   openOnFocus: boolean,
+  openDelay: number,
+  closeDelay: number,
   dotNetHelper: DotNet.DotNetObject
 ) {
-  const key = dotNetHelper["_id"];
-  console.log("key", key, dotNetHelper);
-
   var instance = new Activatable(
     selector,
     disabled,
     openOnClick,
     openOnHover,
     openOnFocus,
+    openDelay,
+    closeDelay,
     dotNetHelper
   );
 
-  instances[key] = instance;
-
   instance.addActivatorEvents();
+
+  return instance;
 }
 
-function reset(dotNetHelper: DotNet.DotNetObject) {
-  const key = dotNetHelper["_id"];
-  const instance = instances[key];
-  instance.resetActivator();
-}
-
-export { init, reset };
+export { init };

@@ -1,63 +1,78 @@
-﻿using Microsoft.JSInterop;
+﻿using BlazorComponent.JSInterop;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.JSInterop;
 
 namespace BlazorComponent;
 
-public interface IActivatableJsCallbacks
-{
-    string ActivatorSelector { get; }
-
-    bool Disabled { get; }
-
-    bool OpenOnHover { get; }
-
-    bool OpenOnClick { get; }
-
-    bool OpenOnFocus { get; }
-
-    Task SetActive(bool val);
-}
-
-public class ActivatableJsInterop : IAsyncDisposable
+public class ActivatableJsInterop : JSModule
 {
     private readonly IActivatableJsCallbacks _owner;
-    private readonly IJSRuntime _jsRuntime;
 
     private DotNetObjectReference<ActivatableJsInterop>? _selfReference;
-    private IJSObjectReference? _jsReference;
+    private IJSObjectReference? _activatableInstance;
 
-    public ActivatableJsInterop(IActivatableJsCallbacks owner, IJSRuntime jsRuntime)
+    public ActivatableJsInterop(IActivatableJsCallbacks owner, IJSRuntime js) : base(js, "./_content/BlazorComponent/js/activatable.js")
     {
         _owner = owner;
-        _jsRuntime = jsRuntime;
     }
 
     public async ValueTask InitializeAsync()
     {
         _selfReference = DotNetObjectReference.Create(this);
-        _jsReference = await _jsRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/BlazorComponent/js/activatable.js");
-        await _jsReference!.InvokeVoidAsync("init",
+        _activatableInstance = await InvokeAsync<IJSObjectReference>("init",
             _owner.ActivatorSelector,
             _owner.Disabled,
             _owner.OpenOnClick,
             _owner.OpenOnHover,
             _owner.OpenOnFocus,
+            _owner.OpenDelay,
+            _owner.CloseDelay,
             _selfReference
         );
     }
 
-    [JSInvokable]
+    public async Task ResetEvents()
+    {
+        if (_activatableInstance == null) return;
+
+        await _activatableInstance.InvokeVoidAsync("resetActivator", _owner.Disabled, _owner.OpenOnHover, _owner.OpenOnFocus);
+    }
+
     public async Task SetActive(bool val)
+    {
+        if (_activatableInstance == null) return;
+
+        await _activatableInstance.InvokeVoidAsync("setActive", val);
+    }
+
+    public async Task RunDelay(bool val)
+    {
+        if (_activatableInstance == null) return;
+
+        await _activatableInstance.InvokeVoidAsync("runDelaying", val);
+    }
+
+    [JSInvokable("SetActive")]
+    public async Task JSSetActive(bool val)
     {
         await _owner.SetActive(val);
     }
 
-    public async ValueTask DisposeAsync()
+    [JSInvokable]
+    public async Task OnClick(MouseEventArgs args)
     {
+        await _owner.HandleOnClickAsync(args);
+    }
+
+    public override async ValueTask DisposeAsync()
+    {
+        await base.DisposeAsync();
+
         _selfReference?.Dispose();
 
-        if (_jsReference != null)
+        if (_activatableInstance != null)
         {
-            await _jsReference.DisposeAsync();
+            await _activatableInstance.DisposeAsync();
         }
     }
 }

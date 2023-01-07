@@ -47,7 +47,7 @@ namespace BlazorComponent
         private bool _isAttached;
 
         protected ElementReference ContentElement { get; set; }
-        
+
         protected override async Task WhenIsActiveUpdating(bool value)
         {
             if (!OpenOnHover && !_isAttached)
@@ -86,25 +86,24 @@ namespace BlazorComponent
 
         protected async Task HandleOnContentClickAsync(MouseEventArgs _)
         {
-            await RunCloseDelayAsync();
+            RunDirectly(false);
         }
 
         protected async Task HandleOnContentMouseenterAsync(MouseEventArgs args)
         {
-            await RunOpenDelayAsync();
+            RunDelaying(true);
         }
 
         protected async Task HandleOnContentMouseleaveAsync(MouseEventArgs args)
         {
-            //TODO:If target is activator
-            await RunCloseDelayAsync();
+            RunDelaying(false);
         }
 
         private async Task HandleOutsideClickAsync(object agrs)
         {
             if (!IsActive) return;
 
-            await SetIsActive(false);
+            RunDirectly(false);
         }
     }
 }

@@ -205,7 +205,7 @@ namespace BlazorComponent
             }
             else
             {
-                await SetIsActive(false);
+                RunDirectly(false);
             }
         }
 

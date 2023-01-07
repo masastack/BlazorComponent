@@ -90,7 +90,7 @@ namespace BlazorComponent
 
         protected string CalculatedMaxHeight => Auto ? "200px" : MaxHeight.ConvertToUnit();
 
-        protected string CalculatedMaxWidth => MaxWidth?.ConvertToUnit()??"";
+        protected string CalculatedMaxWidth => MaxWidth?.ConvertToUnit() ?? "";
 
         protected string CalculatedMinWidth
         {
@@ -231,7 +231,7 @@ namespace BlazorComponent
             Handler ??= async () =>
             {
                 await OnOutsideClick.InvokeAsync();
-                await SetIsActive(false);
+                RunDirectly(false);
             };
 
             if (!await CloseConditional!(args)) return;
@@ -241,18 +241,17 @@ namespace BlazorComponent
 
         protected async Task HandleOnContentClickAsync(MouseEventArgs _)
         {
-            await SetIsActive(false);
+            RunDirectly(false);
         }
 
         protected async Task HandleOnContentMouseenterAsync(MouseEventArgs args)
         {
-            await RunOpenDelayAsync();
+            RunDelaying(true);
         }
 
         protected async Task HandleOnContentMouseleaveAsync(MouseEventArgs args)
         {
-            //TODO:If target is activator
-            await RunCloseDelayAsync();
+            RunDelaying(false);
         }
 
         private double CalcTopAuto()
