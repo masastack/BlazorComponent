@@ -16,11 +16,11 @@ public class ActivatableJsInterop : JSModule
         _owner = owner;
     }
 
-    public async ValueTask InitializeAsync()
+    public async ValueTask InitializeAsync(string? activatorSelector = null)
     {
         _selfReference = DotNetObjectReference.Create(this);
         _activatableInstance = await InvokeAsync<IJSObjectReference>("init",
-            _owner.ActivatorSelector,
+            activatorSelector ?? _owner.ActivatorSelector,
             _owner.Disabled,
             _owner.OpenOnClick,
             _owner.OpenOnHover,
@@ -31,11 +31,18 @@ public class ActivatableJsInterop : JSModule
         );
     }
 
+    public async Task ResetActivator(string selector)
+    {
+        if (_activatableInstance == null) return;
+
+        await _activatableInstance.InvokeVoidAsync("resetActivator", selector);
+    }
+
     public async Task ResetEvents()
     {
         if (_activatableInstance == null) return;
 
-        await _activatableInstance.InvokeVoidAsync("resetActivator", _owner.Disabled, _owner.OpenOnHover, _owner.OpenOnFocus);
+        await _activatableInstance.InvokeVoidAsync("resetActivatorEvents", _owner.Disabled, _owner.OpenOnHover, _owner.OpenOnFocus);
     }
 
     public async Task SetActive(bool val)
@@ -52,6 +59,24 @@ public class ActivatableJsInterop : JSModule
         await _activatableInstance.InvokeVoidAsync("runDelaying", val);
     }
 
+    public async Task RegisterPopup(string popupSelector, bool closeOnOutsideClick, bool closeOnContentClick, bool disableDefaultOutsideClickEvent)
+    {
+        if (_activatableInstance == null) return;
+
+        await _activatableInstance.InvokeVoidAsync("registerPopup",
+            popupSelector,
+            closeOnOutsideClick,
+            closeOnContentClick,
+            disableDefaultOutsideClickEvent);
+    }
+
+    public async Task ResetPopupEvents(bool closeOnOutsideClick, bool closeOnContentClick)
+    {
+        if (_activatableInstance == null) return;
+
+        await _activatableInstance.InvokeVoidAsync("resetPopupAndDocumentEvents", closeOnOutsideClick, closeOnContentClick);
+    }
+
     [JSInvokable("SetActive")]
     public async Task JSSetActive(bool val)
     {
@@ -62,6 +87,12 @@ public class ActivatableJsInterop : JSModule
     public async Task OnClick(MouseEventArgs args)
     {
         await _owner.HandleOnClickAsync(args);
+    }
+
+    [JSInvokable]
+    public async Task OnOutsideClick()
+    {
+        await _owner.HandleOnOutsideClickAsync();
     }
 
     public override async ValueTask DisposeAsync()

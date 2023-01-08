@@ -75,11 +75,8 @@ public class BActivatable : BToggleable, IActivatable, IActivatableJsCallbacks
 
         if (firstRender)
         {
-            if (HasActivator)
-            {
-                _activatableJsInterop = new ActivatableJsInterop(this, Js);
-                await _activatableJsInterop.InitializeAsync();
-            }
+            _activatableJsInterop = new ActivatableJsInterop(this, Js);
+            await _activatableJsInterop.InitializeAsync();
         }
     }
 
@@ -117,17 +114,22 @@ public class BActivatable : BToggleable, IActivatable, IActivatableJsCallbacks
         }
     }
 
+    protected void ResetActivator(string selector)
+    {
+        _ = _activatableJsInterop?.ResetActivator(selector);
+    }
+
     private void ResetActivatorEvents()
     {
-        if (_activatableJsInterop is null) return;
-
-        _ = _activatableJsInterop.ResetEvents();
+        _ = _activatableJsInterop?.ResetEvents();
     }
 
     public virtual Task HandleOnClickAsync(MouseEventArgs args)
     {
         return Task.CompletedTask;
     }
+
+    public virtual Task HandleOnOutsideClickAsync() => Task.CompletedTask;
 
     public async Task SetActive(bool val)
     {
@@ -141,6 +143,16 @@ public class BActivatable : BToggleable, IActivatable, IActivatableJsCallbacks
 
     protected void RunDelaying(bool val)
     {
-        _activatableJsInterop?.RunDelay(val);
+        _ = _activatableJsInterop?.RunDelay(val);
+    }
+
+    protected void RegisterPopupEvents(string selector, bool closeOnOutsideClick, bool closeOnContentClick, bool disableDefaultOutsideClickEvent)
+    {
+        _ = _activatableJsInterop?.RegisterPopup(selector, closeOnOutsideClick, closeOnContentClick, disableDefaultOutsideClickEvent);
+    }
+
+    protected void ResetPopupEvents(bool closeOnOutsideClick, bool closeOnContentClick)
+    {
+        _ = _activatableJsInterop?.ResetPopupEvents(closeOnOutsideClick, closeOnContentClick);
     }
 }

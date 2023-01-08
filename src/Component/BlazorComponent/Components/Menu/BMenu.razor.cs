@@ -13,10 +13,18 @@ namespace BlazorComponent
         public bool Auto { get; set; }
 
         [Parameter]
-        public bool CloseOnClick { get; set; } = true;
+        public bool CloseOnClick
+        {
+            get => GetValue(true);
+            set => SetValue(value);
+        }
 
         [Parameter]
-        public bool CloseOnContentClick { get; set; } = true;
+        public bool CloseOnContentClick
+        {
+            get => GetValue(true);
+            set => SetValue(value);
+        }
 
         [Parameter]
         [EditorRequired]
@@ -142,32 +150,9 @@ namespace BlazorComponent
             }
         }
 
-        protected Dictionary<string, object> ContentAttributes
-        {
-            get
-            {
-                var attributes = new Dictionary<string, object>(Attributes);
-
-                if (CloseOnContentClick)
-                {
-                    attributes.Add("onclick", CreateEventCallback<MouseEventArgs>(HandleOnContentClickAsync));
-                }
-
-                if (!Disabled && OpenOnHover)
-                {
-                    attributes.Add("onmouseenter", CreateEventCallback<MouseEventArgs>(HandleOnContentMouseenterAsync));
-                }
-
-                if (OpenOnHover)
-                {
-                    attributes.Add("onmouseleave", CreateEventCallback<MouseEventArgs>(HandleOnContentMouseleaveAsync));
-                }
-
-                return attributes;
-            }
-        }
-
         protected List<IDependent> Dependents { get; } = new();
+
+        public bool DisableDefaultOutsideClickEvent { get; set; }
 
         protected int DefaultOffset { get; set; } = 8;
 
@@ -181,52 +166,84 @@ namespace BlazorComponent
             }
         }
 
+        protected override void OnWatcherInitialized()
+        {
+            base.OnWatcherInitialized();
+
+            Watcher.Watch<bool>(nameof(CloseOnClick), ResetPopupEvents)
+                   .Watch<bool>(nameof(CloseOnContentClick), ResetPopupEvents);
+        }
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            base.OnAfterRender(firstRender);
+        }
+
         public void RegisterChild(IDependent dependent)
         {
             Dependents.Add(dependent);
         }
 
+        private void ResetPopupEvents()
+        {
+            ResetPopupEvents(CloseOnClick, CloseOnContentClick);
+        }
+
         //TODO:keydown event
+
+        private bool _isPopupEventsRegistered;
 
         protected override async Task WhenIsActiveUpdating(bool value)
         {
-            if (CloseOnClick && !OpenOnHover && !Attached)
+            if (!_isPopupEventsRegistered && ContentElement.Context is not null)
             {
-                // in the Select component, outside-click events for activator are registered.
-                // In order to ensure that only one event per component is registered,
-                // need to delete all registered outside-click events
-                // and then add new outside-click event.
-                await RemoveOutsideClickEventListener();
-
-                await AddOutsideClickEventListener();
+                RegisterPopupEvents();
+                _isPopupEventsRegistered = true;
             }
+
+            // if (CloseOnClick && !OpenOnHover && !Attached)
+            // {
+            //     // in the Select component, outside-click events for activator are registered.
+            //     // In order to ensure that only one event per component is registered,
+            //     // need to delete all registered outside-click events
+            //     // and then add new outside-click event.
+            //     await RemoveOutsideClickEventListener();
+            //
+            //     await AddOutsideClickEventListener();
+            // }
 
             await base.WhenIsActiveUpdating(value);
         }
 
-        public async Task AddOutsideClickEventListener()
+        public void RegisterPopupEvents()
         {
-            var noInvokeSelectors = DependentElements.Select(s => s.Selector ?? "").Concat(new[] { ActivatorSelector });
-
-            await Js.AddOutsideClickEventListener(HandleOutsideClickAsync, noInvokeSelectors);
+            Console.WriteLine(string.Join(", ", DependentElements.Select(s => s.Selector ?? "")));
+            RegisterPopupEvents(ContentElement.GetSelector(), CloseOnClick, CloseOnContentClick, DisableDefaultOutsideClickEvent);
         }
 
-        public async Task RemoveOutsideClickEventListener()
-        {
-            string[] activatorSelectors = { ActivatorSelector };
-            await JsInvokeAsync(JsInteropConstants.RemoveOutsideClickEventListener, (object)activatorSelectors);
+        // public async Task AddOutsideClickEventListener()
+        // {
+        //     var noInvokeSelectors = DependentElements.Select(s => s.Selector ?? "").Concat(new[] { ActivatorSelector });
+        //
+        //     Console.WriteLine(string.Join(",", noInvokeSelectors));
+        //
+        //     await Js.AddOutsideClickEventListener(HandleOutsideClickAsync, noInvokeSelectors);
+        // }
 
-            string[] noInvokeSelectors = { ContentElement.GetSelector(), ActivatorSelector };
-            await JsInvokeAsync(JsInteropConstants.RemoveOutsideClickEventListener, (object)noInvokeSelectors);
+        public void ResetActivator2(string selector)
+        {
+            ResetActivator(selector);
         }
 
-        public Func<ClickOutsideArgs, Task<bool>>? CloseConditional { get; set; }
+        public Func<Task<bool>>? CloseConditional { get; set; }
 
         public Func<Task>? Handler { get; set; }
 
-        private async Task HandleOutsideClickAsync(ClickOutsideArgs args)
+        public override async Task HandleOnOutsideClickAsync()
         {
-            CloseConditional ??= _ => Task.FromResult(IsActive && CloseOnClick);
+            Console.WriteLine("HandleOnOutsideClickAsync");
+            
+            CloseConditional ??= () => Task.FromResult(IsActive && CloseOnClick);
 
             Handler ??= async () =>
             {
@@ -234,24 +251,9 @@ namespace BlazorComponent
                 RunDirectly(false);
             };
 
-            if (!await CloseConditional!(args)) return;
+            if (!await CloseConditional!()) return;
 
             await Handler();
-        }
-
-        protected async Task HandleOnContentClickAsync(MouseEventArgs _)
-        {
-            RunDirectly(false);
-        }
-
-        protected async Task HandleOnContentMouseenterAsync(MouseEventArgs args)
-        {
-            RunDelaying(true);
-        }
-
-        protected async Task HandleOnContentMouseleaveAsync(MouseEventArgs args)
-        {
-            RunDelaying(false);
         }
 
         private double CalcTopAuto()

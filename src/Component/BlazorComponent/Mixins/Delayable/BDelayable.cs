@@ -19,19 +19,6 @@ public class BDelayable : BDomComponentBase, IDelayable
 
     private CancellationTokenSource? _cancellationTokenSource;
 
-    protected override void OnParametersSet()
-    {
-        if (OpenDelay < 16)
-        {
-            OpenDelay = 16;
-        }
-
-        if (CloseDelay < 16)
-        {
-            CloseDelay = 16;
-        }
-    }
-
     protected async Task SetActiveInternal(bool value)
     {
         _cancellationTokenSource?.Cancel();

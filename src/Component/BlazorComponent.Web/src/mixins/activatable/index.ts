@@ -1,4 +1,5 @@
 import { parseMouseEvent } from "../../events/EventType";
+import { getElementSelector } from "../../utils/helper";
 import Delayable from "../delayable";
 
 type Listeners = Record<
@@ -16,6 +17,7 @@ class Activatable extends Delayable {
 
   closeOnOutsideClick: boolean;
   closeOnContentClick: boolean;
+  disableDefaultOutsideClickEvent: boolean;
 
   isActive: boolean;
   activatorListeners: Listeners;
@@ -34,7 +36,9 @@ class Activatable extends Delayable {
   ) {
     super(openDelay, closeDelay, dotNetHelper);
 
+    console.log("activatorSelector", activatorSelector);
     const activator = document.querySelector(activatorSelector);
+    console.log("activator", activator);
     if (activator) {
       this.activator = activator as HTMLElement;
     }
@@ -47,6 +51,17 @@ class Activatable extends Delayable {
   }
 
   //#region activators
+
+  resetActivator(selector: string) {
+    console.log('resetActivator selector', selector)
+    const activator = document.querySelector(selector);
+    if (activator) {
+      this.activator = activator as HTMLElement;
+    }
+    console.log('resetActivator got the activator', this.activator)
+
+    this.resetActivatorEvents(this.disabled, this.openOnHover, this.openOnFocus);
+  }
 
   addActivatorEvents() {
     if (!this.activator || this.disabled) return;
@@ -75,6 +90,7 @@ class Activatable extends Delayable {
       };
     } else if (this.openOnClick) {
       listeners.click = (e: MouseEvent) => {
+        console.log(this.activator.id);
         if (this.activator) this.activator.focus();
 
         e.stopPropagation();
@@ -112,7 +128,7 @@ class Activatable extends Delayable {
     this.popupListeners = {};
   }
 
-  resetActivator(
+  resetActivatorEvents(
     disabled: boolean,
     openOnHover: boolean,
     openOnFocus: boolean
@@ -134,17 +150,28 @@ class Activatable extends Delayable {
 
   //#region popups
 
-  addPopupEvents2(
+  registerPopup(
     popupSelector: string,
     closeOnOutsideClick: boolean,
-    closeOnContentClick: boolean
+    closeOnContentClick: boolean,
+    disableDefaultOutsideClickEvent: boolean
   ) {
+    console.log("registerPop", popupSelector);
+    console.log("closeOnOutsideClick", closeOnOutsideClick);
+    console.log("closeOnContentClick", closeOnContentClick);
     const popup = document.querySelector(popupSelector);
-    if (!popup) return;
+    if (!popup) {
+      console.error("popup not exists");
+      return;
+    }
 
     this.popupElement = popup as HTMLElement;
     this.closeOnOutsideClick = closeOnOutsideClick;
     this.closeOnContentClick = closeOnContentClick;
+    this.disableDefaultOutsideClickEvent = disableDefaultOutsideClickEvent;
+
+    this.addPopupEvents();
+    this.addDocumentEvents();
   }
 
   addPopupEvents() {
@@ -165,7 +192,7 @@ class Activatable extends Delayable {
     const keys = Object.keys(this.documentListeners);
 
     for (const key of keys) {
-      document.addEventListener(key, this.documentListeners[key] as any);
+      document.addEventListener(key, this.documentListeners[key] as any, true);
     }
   }
 
@@ -196,15 +223,17 @@ class Activatable extends Delayable {
 
     const listeners: Listeners = {};
 
-    if (this.openOnHover) {
+    if (!this.disabled && this.openOnHover) {
       listeners.mouseenter = (e) => {
         console.log("content mouseenter");
-        this.setActive(true);
+        // this.setActive(true);
+        this.runDelay("open");
       };
 
       listeners.mouseleave = (e) => {
         console.log("content mouseleave");
-        this.setActive(false);
+        // this.setActive(false);
+        this.runDelay("close");
       };
     }
 
@@ -222,14 +251,39 @@ class Activatable extends Delayable {
   genDocumentListeners() {
     const listener: Listeners = {};
 
-    if (this.closeOnOutsideClick) {
-      listener.click = () => {
-        console.log("outside click");
-        this.setActive(false);
+    if (!this.openOnHover && this.closeOnOutsideClick) {
+      listener.click = (e) => {
+        if (
+          this.popupElement.contains(e.target as HTMLElement) ||
+          (this.activator && this.activator.contains(e.target as HTMLElement))
+        ) {
+          return;
+        }
+
+        this.dotNetHelper.invokeMethodAsync("OnOutsideClick");
+
+        if (!this.disableDefaultOutsideClickEvent) {
+          console.log('outside click: set active to false')
+          this.setActive(false);
+        }
       };
     }
 
     return listener;
+  }
+
+  resetPopupAndDocumentEvents(
+    closeOnOutsideClick: boolean,
+    closeOnContentClick: boolean
+  ) {
+    this.closeOnOutsideClick = closeOnOutsideClick;
+    this.closeOnContentClick = closeOnContentClick;
+
+    this.removePopupEvents();
+    this.removeDocumentEvents();
+
+    this.addPopupEvents();
+    this.addDocumentEvents();
   }
 
   //#endregion
@@ -261,4 +315,4 @@ function init(
   return instance;
 }
 
-export { init, Activatable };
+export { init };

@@ -17,4 +17,6 @@ public interface IActivatableJsCallbacks : IDelayable
     Task SetActive(bool val);
 
     Task HandleOnClickAsync(MouseEventArgs args);
+
+    Task HandleOnOutsideClickAsync();
 }
