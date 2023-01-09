@@ -114,7 +114,7 @@ public class BActivatable : BToggleable, IActivatable, IActivatableJsCallbacks
         }
     }
 
-    protected void ResetActivator(string selector)
+    public void ResetActivator(string selector)
     {
         _ = _activatableJsInterop?.ResetActivator(selector);
     }

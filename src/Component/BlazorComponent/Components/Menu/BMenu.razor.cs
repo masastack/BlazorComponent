@@ -96,11 +96,11 @@ namespace BlazorComponent
             }
         }
 
-        protected string CalculatedMaxHeight => Auto ? "200px" : MaxHeight.ConvertToUnit();
+        protected string? CalculatedMaxHeight => Auto ? "200px" : MaxHeight.ConvertToUnit();
 
         protected string CalculatedMaxWidth => MaxWidth?.ConvertToUnit() ?? "";
 
-        protected string CalculatedMinWidth
+        protected string? CalculatedMinWidth
         {
             get
             {
@@ -174,11 +174,6 @@ namespace BlazorComponent
                    .Watch<bool>(nameof(CloseOnContentClick), ResetPopupEvents);
         }
 
-        protected override void OnAfterRender(bool firstRender)
-        {
-            base.OnAfterRender(firstRender);
-        }
-
         public void RegisterChild(IDependent dependent)
         {
             Dependents.Add(dependent);
@@ -201,49 +196,21 @@ namespace BlazorComponent
                 _isPopupEventsRegistered = true;
             }
 
-            // if (CloseOnClick && !OpenOnHover && !Attached)
-            // {
-            //     // in the Select component, outside-click events for activator are registered.
-            //     // In order to ensure that only one event per component is registered,
-            //     // need to delete all registered outside-click events
-            //     // and then add new outside-click event.
-            //     await RemoveOutsideClickEventListener();
-            //
-            //     await AddOutsideClickEventListener();
-            // }
-
             await base.WhenIsActiveUpdating(value);
         }
 
         public void RegisterPopupEvents()
         {
-            Console.WriteLine(string.Join(", ", DependentElements.Select(s => s.Selector ?? "")));
             RegisterPopupEvents(ContentElement.GetSelector(), CloseOnClick, CloseOnContentClick, DisableDefaultOutsideClickEvent);
         }
 
-        // public async Task AddOutsideClickEventListener()
-        // {
-        //     var noInvokeSelectors = DependentElements.Select(s => s.Selector ?? "").Concat(new[] { ActivatorSelector });
-        //
-        //     Console.WriteLine(string.Join(",", noInvokeSelectors));
-        //
-        //     await Js.AddOutsideClickEventListener(HandleOutsideClickAsync, noInvokeSelectors);
-        // }
-
-        public void ResetActivator2(string selector)
-        {
-            ResetActivator(selector);
-        }
-
-        public Func<Task<bool>>? CloseConditional { get; set; }
+        public Func<ValueTask<bool>>? CloseConditional { get; set; }
 
         public Func<Task>? Handler { get; set; }
 
         public override async Task HandleOnOutsideClickAsync()
         {
-            Console.WriteLine("HandleOnOutsideClickAsync");
-            
-            CloseConditional ??= () => Task.FromResult(IsActive && CloseOnClick);
+            CloseConditional ??= () => new ValueTask<bool>(IsActive && CloseOnClick);
 
             Handler ??= async () =>
             {

@@ -93,7 +93,7 @@ export function getDomInfo(element, selector = "body") {
 
   if (dom) {
     if (dom.style && dom.style["display"] === "none") {
-      // clone and set display not none becuase
+      // clone and set display not none because
       // element with display:none can not get the dom info
       var cloned = dom.cloneNode(true) as HTMLElement;
       cloned.style["display"] = "inline-block";

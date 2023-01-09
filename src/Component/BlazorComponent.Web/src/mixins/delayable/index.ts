@@ -38,7 +38,6 @@ export default class Delayable {
   }
 
   setActive(active: boolean) {
-    console.log("setActive: ", active, "is return:", this.isActive == active);
     if (this.isActive == active) {
       return;
     }

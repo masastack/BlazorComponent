@@ -53,24 +53,28 @@ class Activatable extends Delayable {
   //#region activators
 
   resetActivator(selector: string) {
-    console.log('resetActivator selector', selector)
+    console.log("resetActivator selector", selector);
     const activator = document.querySelector(selector);
     if (activator) {
       this.activator = activator as HTMLElement;
     }
-    console.log('resetActivator got the activator', this.activator)
+    console.log("resetActivator got the activator", this.activator);
 
-    this.resetActivatorEvents(this.disabled, this.openOnHover, this.openOnFocus);
+    this.resetActivatorEvents(
+      this.disabled,
+      this.openOnHover,
+      this.openOnFocus
+    );
   }
 
   addActivatorEvents() {
     if (!this.activator || this.disabled) return;
 
-    this.popupListeners = this.genActivatorListeners();
-    const keys = Object.keys(this.popupListeners);
+    this.activatorListeners = this.genActivatorListeners();
+    const keys = Object.keys(this.activatorListeners);
 
     for (const key of keys) {
-      this.activator.addEventListener(key, this.popupListeners[key] as any);
+      this.activator.addEventListener(key, this.activatorListeners[key] as any);
     }
   }
 
@@ -119,13 +123,13 @@ class Activatable extends Delayable {
   removeActivatorEvents() {
     if (!this.activator) return;
 
-    const keys = Object.keys(this.popupListeners);
+    const keys = Object.keys(this.activatorListeners);
 
     for (const key of keys) {
-      this.activator.removeEventListener(key, this.popupListeners[key]);
+      this.activator.removeEventListener(key, this.activatorListeners[key]);
     }
 
-    this.popupListeners = {};
+    this.activatorListeners = {};
   }
 
   resetActivatorEvents(
@@ -133,6 +137,7 @@ class Activatable extends Delayable {
     openOnHover: boolean,
     openOnFocus: boolean
   ) {
+    console.log("resetActivatorEvents", "openOnHover", openOnHover);
     this.disabled = disabled;
     this.openOnHover = openOnHover;
     this.openOnFocus = openOnFocus;
@@ -263,7 +268,7 @@ class Activatable extends Delayable {
         this.dotNetHelper.invokeMethodAsync("OnOutsideClick");
 
         if (!this.disableDefaultOutsideClickEvent) {
-          console.log('outside click: set active to false')
+          console.log("outside click: set active to false");
           this.setActive(false);
         }
       };
