@@ -33,7 +33,7 @@ public class BActivatable : BToggleable, IActivatable, IActivatableJsCallbacks
     [Parameter]
     public RenderFragment<ActivatorProps>? ActivatorContent { get; set; }
 
-    private ActivatableJsInterop? _activatableJsInterop;
+    private ActivatableJsModule? _activatableJsInterop;
 
     protected bool IsBooted { get; set; }
 
@@ -75,7 +75,7 @@ public class BActivatable : BToggleable, IActivatable, IActivatableJsCallbacks
 
         if (firstRender)
         {
-            _activatableJsInterop = new ActivatableJsInterop(this, Js);
+            _activatableJsInterop = new ActivatableJsModule(this, Js);
             await _activatableJsInterop.InitializeAsync();
         }
     }

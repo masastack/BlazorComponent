@@ -4,14 +4,14 @@ using Microsoft.JSInterop;
 
 namespace BlazorComponent;
 
-public class ActivatableJsInterop : JSModule
+public class ActivatableJsModule : JSModule
 {
     private readonly IActivatableJsCallbacks _owner;
 
-    private DotNetObjectReference<ActivatableJsInterop>? _selfReference;
+    private DotNetObjectReference<ActivatableJsModule>? _selfReference;
     private IJSObjectReference? _activatableInstance;
 
-    public ActivatableJsInterop(IActivatableJsCallbacks owner, IJSRuntime js) : base(js, "./_content/BlazorComponent/js/activatable.js")
+    public ActivatableJsModule(IActivatableJsCallbacks owner, IJSRuntime js) : base(js, "./_content/BlazorComponent/js/activatable.js")
     {
         _owner = owner;
     }
