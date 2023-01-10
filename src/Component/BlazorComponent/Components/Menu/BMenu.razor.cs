@@ -131,7 +131,7 @@ public partial class BMenu : BMenuable, IDependent
 
     protected StringNumber? CalculatedTop => !Auto ? CalcTop() : CalcYOverflow(CalcTopAuto());
 
-    public IEnumerable<HtmlElement> DependentElements
+    public IEnumerable<string> DependentElements
     {
         get
         {
@@ -139,8 +139,10 @@ public partial class BMenu : BMenuable, IDependent
                            .SelectMany(dependent => dependent.DependentElements)
                            .ToList();
 
-            var contentElement = Document.GetElementById(Id);
-            elements.Add(contentElement);
+            elements.Add(ActivatorSelector);
+
+            // do not use the ContentElement elementReference because it's delay assignment.
+            elements.Add($"#{Id}");
 
             return elements;
         }
@@ -154,10 +156,8 @@ public partial class BMenu : BMenuable, IDependent
     {
         base.OnInitialized();
 
-        if (CascadingDependent != null)
-        {
-            CascadingDependent.RegisterChild(this);
-        }
+        Console.WriteLine($"menu be registered!:{ContentElement.GetSelector()}");
+        CascadingDependent?.RegisterChild(this);
     }
 
     protected override void OnWatcherInitialized()
@@ -192,7 +192,7 @@ public partial class BMenu : BMenuable, IDependent
         if (!OpenOnHover && CloseOnClick && _outsideClickJsModule is null)
         {
             _outsideClickJsModule = new OutsideClickJSModule(this, Js);
-            await _outsideClickJsModule.InitializeAsync(ActivatorSelector, ContentElement.GetSelector());
+            await _outsideClickJsModule.InitializeAsync(DependentElements.ToArray());
         }
     }
 

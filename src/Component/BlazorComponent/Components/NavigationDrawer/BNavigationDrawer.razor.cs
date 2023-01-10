@@ -7,7 +7,7 @@ using Microsoft.JSInterop;
 
 namespace BlazorComponent
 {
-    public abstract partial class BNavigationDrawer : BDomComponentBase, IDependent
+    public abstract partial class BNavigationDrawer : BDomComponentBase, IDependent, IOutsideClickJsCallback
     {
         private CancellationTokenSource _cancellationTokenSource;
         private bool _disposed;
@@ -101,6 +101,8 @@ namespace BlazorComponent
         [Inject]
         private Document Document { get; set; }
 
+        private OutsideClickJSModule? _outsideClickJSModule;
+
         protected object Overlay { get; set; }
 
         protected ElementReference? OverlayRef => ((BOverlay)Overlay)?.Ref;
@@ -127,16 +129,14 @@ namespace BlazorComponent
 
         protected bool ShowOverlay => !HideOverlay && IsActive && (IsMobile || Temporary);
 
-        public IEnumerable<HtmlElement> DependentElements
+        public IEnumerable<string> DependentElements
         {
             get
             {
-                var elements = _dependents
-                               .SelectMany(dependent => dependent.DependentElements)
-                               .ToList();
+                var elements = _dependents.SelectMany(dependent => dependent.DependentElements).ToList();
 
-                var element = Document.GetElementByReference(Ref);
-                elements.Add(element);
+                // do not use the Ref elementReference because it's delay assignment.
+                elements.Add($"#{Id}");
 
                 return elements;
             }
@@ -164,8 +164,9 @@ namespace BlazorComponent
 
             if (firstRender)
             {
-                await Js.AddOutsideClickEventListener(HandleOnOutsideClickAsync, DependentElements.Select(element => element.Selector));
-
+                _outsideClickJSModule = new OutsideClickJSModule(this, Js);
+                await _outsideClickJSModule.InitializeAsync(DependentElements.ToArray());
+                
                 if (!Permanent && !Stateless && !Temporary)
                 {
                     await UpdateValue(!IsMobile);
@@ -203,12 +204,6 @@ namespace BlazorComponent
         }
 
         //TODO ontransitionend事件
-
-        private async Task HandleOnOutsideClickAsync(object _)
-        {
-            if (!CloseConditional()) return;
-            await UpdateValue(false);
-        }
 
         protected virtual bool IsFullscreen => false;
 
@@ -248,6 +243,12 @@ namespace BlazorComponent
         protected override void Dispose(bool disposing)
         {
             _disposed = true;
+        }
+
+        public async Task HandleOnOutsideClickAsync()
+        {
+            if (!CloseConditional()) return;
+            await UpdateValue(false);
         }
     }
 }

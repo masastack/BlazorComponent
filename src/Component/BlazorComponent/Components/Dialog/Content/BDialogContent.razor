@@ -4,7 +4,11 @@
 
 @if (IsBooted)
 {
-    <div class="@CssProvider.GetClass("content")" style="@CssProvider.GetStyle("content")" @onkeydown="@HandleOnKeyDown" @ref="ContentRef" @attributes="ContentAttrs">
+    <div class="@CssProvider.GetClass("content")"
+         style="@CssProvider.GetStyle("content")"
+         @onkeydown="@HandleOnKeyDown"
+         @ref="ContentRef"
+         @attributes="@ContentAttrs">
         @RenderPart(typeof(BDialogInnerContent<>))
     </div>
 }

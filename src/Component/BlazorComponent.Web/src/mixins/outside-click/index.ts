@@ -1,38 +1,31 @@
 class OutsideClick {
   dotNetHelper: DotNet.DotNetObject;
   listener: (e: MouseEvent & KeyboardEvent & FocusEvent) => void;
-  excludedElements: HTMLElement[];
+  excludedSelectors: string[];
 
-  constructor(dotNetHelper: DotNet.DotNetObject, excludeSelectors: string[]) {
+  constructor(dotNetHelper: DotNet.DotNetObject, excludedSelectors: string[]) {
     this.dotNetHelper = dotNetHelper;
-
-    if (excludeSelectors) {
-      this.excludedElements = excludeSelectors.map((selector) =>
-        document.querySelector(selector)
-      );
-
-      this.excludedElements = this.excludedElements.filter((e) => !!e);
-
-      console.log("this.excludedElements", this.excludedElements);
-    }
+    this.excludedSelectors = excludedSelectors;
   }
 
   genListener() {
     this.listener = (e) => {
       if (
-        this.excludedElements.some((el) => el.contains(e.target as HTMLElement))
+        this.excludedSelectors.some((selector) => {
+          const el = document.querySelector(selector);
+          if (!el) return false;
+
+          return el.contains(e.target as HTMLElement);
+        })
       ) {
         return;
       }
-
-      console.log("outside-click js clicked");
 
       this.dotNetHelper.invokeMethodAsync("OnOutsideClick");
     };
   }
 
   addListener() {
-    console.log("addListener.................");
     this.genListener();
     document.addEventListener("click", this.listener, true);
   }
@@ -48,8 +41,6 @@ class OutsideClick {
 }
 
 function init(dotNetHelper: DotNet.DotNetObject, excludeSelectors: string[]) {
-  console.log("init outside click instance");
-
   var instance = new OutsideClick(dotNetHelper, excludeSelectors);
 
   instance.addListener();

@@ -34,9 +34,7 @@ class Activatable extends Delayable {
   ) {
     super(openDelay, closeDelay, dotNetHelper);
 
-    console.log("activatorSelector", activatorSelector);
     const activator = document.querySelector(activatorSelector);
-    console.log("activator", activator);
     if (activator) {
       this.activator = activator as HTMLElement;
     }
@@ -51,12 +49,10 @@ class Activatable extends Delayable {
   //#region activators
 
   resetActivator(selector: string) {
-    console.log("resetActivator selector", selector);
     const activator = document.querySelector(selector);
     if (activator) {
       this.activator = activator as HTMLElement;
     }
-    console.log("resetActivator got the activator", this.activator);
 
     this.resetActivatorEvents(
       this.disabled,
@@ -83,16 +79,13 @@ class Activatable extends Delayable {
 
     if (this.openOnHover) {
       listeners.mouseenter = (e: MouseEvent) => {
-        console.log("mouseenter", this.isActive);
         this.runDelay("open");
       };
       listeners.mouseleave = (e: MouseEvent) => {
-        console.log("mouseleave", this.isActive);
         this.runDelay("close");
       };
     } else if (this.openOnClick) {
       listeners.click = (e: MouseEvent) => {
-        console.log(this.activator.id);
         if (this.activator) this.activator.focus();
 
         e.stopPropagation();
@@ -135,7 +128,6 @@ class Activatable extends Delayable {
     openOnHover: boolean,
     openOnFocus: boolean
   ) {
-    console.log("resetActivatorEvents", "openOnHover", openOnHover);
     this.disabled = disabled;
     this.openOnHover = openOnHover;
     this.openOnFocus = openOnFocus;
@@ -145,7 +137,6 @@ class Activatable extends Delayable {
   }
 
   runDelaying(val: boolean) {
-    console.log("runDelaying", val);
     this.runDelay(val ? "open" : "close");
   }
 
@@ -154,8 +145,6 @@ class Activatable extends Delayable {
   //#region popups
 
   registerPopup(popupSelector: string, closeOnContentClick: boolean) {
-    console.log("registerPop", popupSelector);
-    console.log("closeOnContentClick", closeOnContentClick);
     const popup = document.querySelector(popupSelector);
     if (!popup) {
       console.error("popup not exists");
@@ -172,7 +161,6 @@ class Activatable extends Delayable {
     if (!this.popupElement || this.disabled) return;
 
     this.popupListeners = this.genPopupListeners();
-    console.log("addPopupEvents", this.popupListeners);
     const keys = Object.keys(this.popupListeners);
 
     for (const key of keys) {
@@ -199,13 +187,11 @@ class Activatable extends Delayable {
 
     if (!this.disabled && this.openOnHover) {
       listeners.mouseenter = (e) => {
-        console.log("content mouseenter");
         // this.setActive(true);
         this.runDelay("open");
       };
 
       listeners.mouseleave = (e) => {
-        console.log("content mouseleave");
         // this.setActive(false);
         this.runDelay("close");
       };
@@ -213,8 +199,6 @@ class Activatable extends Delayable {
 
     if (this.closeOnContentClick) {
       listeners.click = (e) => {
-        console.log("content click", e);
-
         this.setActive(false);
       };
     }
@@ -223,7 +207,6 @@ class Activatable extends Delayable {
   }
 
   resetPopupEvents(closeOnContentClick: boolean) {
-    console.log("resetPopupEvents", closeOnContentClick);
     this.closeOnContentClick = closeOnContentClick;
 
     this.removePopupEvents();
