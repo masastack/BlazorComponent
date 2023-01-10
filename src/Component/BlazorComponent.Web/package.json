@@ -14,7 +14,9 @@
     "build:input": "rollup --config rollup.config.input.ts",
     "dev:markdownit": "rollup --config rollup.config.markdownit.ts --watch",
     "build:markdownit": "rollup --config rollup.config.markdownit.ts",
+    "dev:activatable": "rollup --config rollup.config.activatable.ts --watch",
     "build:activatable": "rollup --config rollup.config.activatable.ts",
+    "dev:outsideclick": "rollup --config rollup.config.outsideclick.ts --watch",
     "build:outsideclick": "rollup --config rollup.config.outsideclick.ts"
   },
   "author": "",
