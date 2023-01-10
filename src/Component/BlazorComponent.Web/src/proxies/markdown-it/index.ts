@@ -1,6 +1,7 @@
 import MarkdownIt from "markdown-it";
 import markdownItAnchor from "markdown-it-anchor";
 import markdownItAttrs from "markdown-it-attrs";
+import markdownItContainer from "markdown-it-container";
 import markdownItFrontMatter from "markdown-it-front-matter";
 import markdownItHeaderSections from "markdown-it-header-sections";
 
@@ -43,7 +44,9 @@ function create(
 
   const md = new MarkdownIt(options)
     .use(markdownItAttrs)
-    .use(markdownItFrontMatter, parser.frontMatter.cb);
+    .use(markdownItFrontMatter, parser.frontMatter.cb)
+    .use(markdownItContainer, 'tab')
+    .use(markdownItContainer, 'tabs')
 
   if (anchorOptions) {
     let slugify = (s: string) => hashString(s);
