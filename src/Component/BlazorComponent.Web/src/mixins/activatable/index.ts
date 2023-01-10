@@ -1,5 +1,4 @@
 import { parseMouseEvent } from "../../events/EventType";
-import { getElementSelector } from "../../utils/helper";
 import Delayable from "../delayable";
 
 type Listeners = Record<
@@ -187,12 +186,10 @@ class Activatable extends Delayable {
 
     if (!this.disabled && this.openOnHover) {
       listeners.mouseenter = (e) => {
-        // this.setActive(true);
         this.runDelay("open");
       };
 
       listeners.mouseleave = (e) => {
-        // this.setActive(false);
         this.runDelay("close");
       };
     }
