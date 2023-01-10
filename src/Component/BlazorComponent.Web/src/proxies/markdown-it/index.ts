@@ -4,7 +4,7 @@ import markdownItAttrs from "markdown-it-attrs";
 import markdownItFrontMatter from "markdown-it-front-matter";
 import markdownItHeaderSections from "markdown-it-header-sections";
 
-import { highlight, highlightToArrayBuffer } from "./highlighter";
+import { highlight, highlightToStream } from "./highlighter";
 
 type MarkdownParser = {
   md: MarkdownIt;
@@ -118,4 +118,4 @@ function hashString(str: string) {
   return encodeURIComponent(slug);
 }
 
-export { create, parse, parseAll, highlightToArrayBuffer as highlight };
+export { create, parse, parseAll, highlight, highlightToStream };
