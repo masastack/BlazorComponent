@@ -156,7 +156,6 @@ public partial class BMenu : BMenuable, IDependent
     {
         base.OnInitialized();
 
-        Console.WriteLine($"menu be registered!:{ContentElement.GetSelector()}");
         CascadingDependent?.RegisterChild(this);
     }
 
