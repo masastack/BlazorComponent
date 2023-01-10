@@ -59,22 +59,18 @@ public class ActivatableJsInterop : JSModule
         await _activatableInstance.InvokeVoidAsync("runDelaying", val);
     }
 
-    public async Task RegisterPopup(string popupSelector, bool closeOnOutsideClick, bool closeOnContentClick, bool disableDefaultOutsideClickEvent)
+    public async Task RegisterPopup(string popupSelector, bool closeOnContentClick)
     {
         if (_activatableInstance == null) return;
 
-        await _activatableInstance.InvokeVoidAsync("registerPopup",
-            popupSelector,
-            closeOnOutsideClick,
-            closeOnContentClick,
-            disableDefaultOutsideClickEvent);
+        await _activatableInstance.InvokeVoidAsync("registerPopup", popupSelector, closeOnContentClick);
     }
 
-    public async Task ResetPopupEvents(bool closeOnOutsideClick, bool closeOnContentClick)
+    public async Task ResetPopupEvents(bool closeOnContentClick)
     {
         if (_activatableInstance == null) return;
 
-        await _activatableInstance.InvokeVoidAsync("resetPopupAndDocumentEvents", closeOnOutsideClick, closeOnContentClick);
+        await _activatableInstance.InvokeVoidAsync("resetPopupEvents", closeOnContentClick);
     }
 
     [JSInvokable("SetActive")]
@@ -87,12 +83,6 @@ public class ActivatableJsInterop : JSModule
     public async Task OnClick(MouseEventArgs args)
     {
         await _owner.HandleOnClickAsync(args);
-    }
-
-    [JSInvokable]
-    public async Task OnOutsideClick()
-    {
-        await _owner.HandleOnOutsideClickAsync();
     }
 
     public override async ValueTask DisposeAsync()

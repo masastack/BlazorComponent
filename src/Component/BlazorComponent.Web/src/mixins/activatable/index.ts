@@ -17,12 +17,10 @@ class Activatable extends Delayable {
 
   closeOnOutsideClick: boolean;
   closeOnContentClick: boolean;
-  disableDefaultOutsideClickEvent: boolean;
 
   isActive: boolean;
   activatorListeners: Listeners;
   popupListeners: Listeners;
-  documentListeners: Listeners;
 
   constructor(
     activatorSelector: string,
@@ -155,14 +153,8 @@ class Activatable extends Delayable {
 
   //#region popups
 
-  registerPopup(
-    popupSelector: string,
-    closeOnOutsideClick: boolean,
-    closeOnContentClick: boolean,
-    disableDefaultOutsideClickEvent: boolean
-  ) {
+  registerPopup(popupSelector: string, closeOnContentClick: boolean) {
     console.log("registerPop", popupSelector);
-    console.log("closeOnOutsideClick", closeOnOutsideClick);
     console.log("closeOnContentClick", closeOnContentClick);
     const popup = document.querySelector(popupSelector);
     if (!popup) {
@@ -171,33 +163,20 @@ class Activatable extends Delayable {
     }
 
     this.popupElement = popup as HTMLElement;
-    this.closeOnOutsideClick = closeOnOutsideClick;
     this.closeOnContentClick = closeOnContentClick;
-    this.disableDefaultOutsideClickEvent = disableDefaultOutsideClickEvent;
 
     this.addPopupEvents();
-    this.addDocumentEvents();
   }
 
   addPopupEvents() {
     if (!this.popupElement || this.disabled) return;
 
     this.popupListeners = this.genPopupListeners();
+    console.log("addPopupEvents", this.popupListeners);
     const keys = Object.keys(this.popupListeners);
 
     for (const key of keys) {
       this.popupElement.addEventListener(key, this.popupListeners[key] as any);
-    }
-  }
-
-  addDocumentEvents() {
-    if (this.disabled) return;
-
-    this.documentListeners = this.genDocumentListeners();
-    const keys = Object.keys(this.documentListeners);
-
-    for (const key of keys) {
-      document.addEventListener(key, this.documentListeners[key] as any, true);
     }
   }
 
@@ -211,16 +190,6 @@ class Activatable extends Delayable {
     }
 
     this.popupListeners = {};
-  }
-
-  removeDocumentEvents() {
-    const keys = Object.keys(this.documentListeners);
-
-    for (const key of keys) {
-      document.removeEventListener(key, this.documentListeners[key]);
-    }
-
-    this.documentListeners = {};
   }
 
   genPopupListeners() {
@@ -253,42 +222,12 @@ class Activatable extends Delayable {
     return listeners;
   }
 
-  genDocumentListeners() {
-    const listener: Listeners = {};
-
-    if (!this.openOnHover && this.closeOnOutsideClick) {
-      listener.click = (e) => {
-        if (
-          this.popupElement.contains(e.target as HTMLElement) ||
-          (this.activator && this.activator.contains(e.target as HTMLElement))
-        ) {
-          return;
-        }
-
-        this.dotNetHelper.invokeMethodAsync("OnOutsideClick");
-
-        if (!this.disableDefaultOutsideClickEvent) {
-          console.log("outside click: set active to false");
-          this.setActive(false);
-        }
-      };
-    }
-
-    return listener;
-  }
-
-  resetPopupAndDocumentEvents(
-    closeOnOutsideClick: boolean,
-    closeOnContentClick: boolean
-  ) {
-    this.closeOnOutsideClick = closeOnOutsideClick;
+  resetPopupEvents(closeOnContentClick: boolean) {
+    console.log("resetPopupEvents", closeOnContentClick);
     this.closeOnContentClick = closeOnContentClick;
 
     this.removePopupEvents();
-    this.removeDocumentEvents();
-
     this.addPopupEvents();
-    this.addDocumentEvents();
   }
 
   //#endregion

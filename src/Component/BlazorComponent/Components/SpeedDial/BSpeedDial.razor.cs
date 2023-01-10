@@ -41,7 +41,7 @@ public partial class BSpeedDial : BBootable
 
     private string Tag { get; set; } = "div";
 
-    private bool _isAttached;
+    private OutsideClickJSModule? _outsideClickJsModule;
 
     protected ElementReference ContentElement { get; set; }
 
@@ -50,17 +50,19 @@ public partial class BSpeedDial : BBootable
         base.OnWatcherInitialized();
 
         Watcher.Watch<bool>(nameof(OpenOnHover),
-            () => ResetPopupEvents(!OpenOnHover, true));
+            () => ResetPopupEvents(true));
     }
 
     protected override async Task WhenIsActiveUpdating(bool value)
     {
         await base.WhenIsActiveUpdating(value);
 
-        if (!_isAttached)
+        if (_outsideClickJsModule is null)
         {
-            _isAttached = true;
-            RegisterPopupEvents(ContentElement.GetSelector(), !OpenOnHover, true, true);
+            _outsideClickJsModule = new OutsideClickJSModule(this, Js);
+            await _outsideClickJsModule.InitializeAsync(ActivatorSelector, ContentElement.GetSelector());
+
+            RegisterPopupEvents(ContentElement.GetSelector(), true);
         }
     }
 

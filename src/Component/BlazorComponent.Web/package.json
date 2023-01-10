@@ -14,7 +14,8 @@
     "build:input": "rollup --config rollup.config.input.ts",
     "dev:markdownit": "rollup --config rollup.config.markdownit.ts --watch",
     "build:markdownit": "rollup --config rollup.config.markdownit.ts",
-    "build:activatable": "rollup --config rollup.config.activatable.ts"
+    "build:activatable": "rollup --config rollup.config.activatable.ts",
+    "build:outsideclick": "rollup --config rollup.config.outsideclick.ts"
   },
   "author": "",
   "license": "MIT",

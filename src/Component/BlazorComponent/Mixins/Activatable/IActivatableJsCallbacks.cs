@@ -2,7 +2,7 @@
 
 namespace BlazorComponent;
 
-public interface IActivatableJsCallbacks : IDelayable
+public interface IActivatableJsCallbacks : IDelayable, IOutsideClickJsCallback
 {
     string ActivatorSelector { get; }
 
@@ -17,6 +17,4 @@ public interface IActivatableJsCallbacks : IDelayable
     Task SetActive(bool val);
 
     Task HandleOnClickAsync(MouseEventArgs args);
-
-    Task HandleOnOutsideClickAsync();
 }

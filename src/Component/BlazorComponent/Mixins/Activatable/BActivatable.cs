@@ -141,18 +141,13 @@ public class BActivatable : BToggleable, IActivatable, IActivatableJsCallbacks
         _ = _activatableJsInterop is null ? SetActive(val) : _activatableJsInterop.SetActive(val);
     }
 
-    protected void RunDelaying(bool val)
+    protected void RegisterPopupEvents(string selector, bool closeOnContentClick)
     {
-        _ = _activatableJsInterop?.RunDelay(val);
+        _ = _activatableJsInterop?.RegisterPopup(selector, closeOnContentClick);
     }
 
-    protected void RegisterPopupEvents(string selector, bool closeOnOutsideClick, bool closeOnContentClick, bool disableDefaultOutsideClickEvent)
+    protected void ResetPopupEvents(bool closeOnContentClick)
     {
-        _ = _activatableJsInterop?.RegisterPopup(selector, closeOnOutsideClick, closeOnContentClick, disableDefaultOutsideClickEvent);
-    }
-
-    protected void ResetPopupEvents(bool closeOnOutsideClick, bool closeOnContentClick)
-    {
-        _ = _activatableJsInterop?.ResetPopupEvents(closeOnOutsideClick, closeOnContentClick);
+        _ = _activatableJsInterop?.ResetPopupEvents(closeOnContentClick);
     }
 }

@@ -6,6 +6,8 @@
         
         public bool Bottom { get; set; }
 
+        public bool CloseOnClick { get; set; }
+
         public bool CloseOnContentClick { get; set; }
 
         public bool DisableKeys { get; set; }
