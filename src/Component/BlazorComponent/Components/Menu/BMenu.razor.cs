@@ -62,6 +62,9 @@ public partial class BMenu : BMenuable, IDependent
     [CascadingParameter(Name = "AppIsDark")]
     public bool AppIsDark { get; set; }
 
+    private bool _isPopupEventsRegistered;
+    private OutsideClickJSModule? _outsideClickJsModule;
+
     public bool IsDark
     {
         get
@@ -163,10 +166,11 @@ public partial class BMenu : BMenuable, IDependent
     {
         base.OnWatcherInitialized();
 
+        // BUG: defaultValue is required, because there is a bug about Watcher
+        // default value would not works if GetValue(defaultValue) int CloseOnContentClick's getter never be called,
+        // so there need to assign the default value at Watch method.
         Watcher.Watch(nameof(CloseOnContentClick), () => ResetPopupEvents(CloseOnContentClick), defaultValue: true);
     }
-
-    private OutsideClickJSModule? _outsideClickJsModule;
 
     public void RegisterChild(IDependent dependent)
     {
@@ -174,8 +178,6 @@ public partial class BMenu : BMenuable, IDependent
     }
 
     //TODO:keydown event
-
-    private bool _isPopupEventsRegistered;
 
     protected override async Task WhenIsActiveUpdating(bool value)
     {
