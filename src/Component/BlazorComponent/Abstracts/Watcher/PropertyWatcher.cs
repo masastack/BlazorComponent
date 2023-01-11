@@ -149,7 +149,11 @@ namespace BlazorComponent
 
             var property = GetProperty<TValue>(default, name);
             property.OnValueChange += changeCallback;
-            property.Value = defaultValue;
+
+            if (defaultValue is not null && !defaultValue.Equals(default))
+            {
+                property.Value = defaultValue;
+            }
 
             if (immediate)
             {
