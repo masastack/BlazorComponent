@@ -13,6 +13,9 @@ namespace BlazorComponent
         private bool _disposed;
         private readonly List<IDependent> _dependents = new();
 
+        [Inject]
+        private OutsideClickJSModule? OutsideClickJsModule { get; set; }
+
         [Parameter]
         public bool ExpandOnHover
         {
@@ -98,11 +101,6 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment<Dictionary<string, object>> ImgContent { get; set; }
 
-        [Inject]
-        private Document Document { get; set; }
-
-        private OutsideClickJSModule? _outsideClickJSModule;
-
         protected object Overlay { get; set; }
 
         protected ElementReference? OverlayRef => ((BOverlay)Overlay)?.Ref;
@@ -164,9 +162,8 @@ namespace BlazorComponent
 
             if (firstRender)
             {
-                _outsideClickJSModule = new OutsideClickJSModule(this, Js);
-                await _outsideClickJSModule.InitializeAsync(DependentElements.ToArray());
-                
+                await OutsideClickJsModule!.InitializeAsync(this, DependentElements.ToArray());
+
                 if (!Permanent && !Stateless && !Temporary)
                 {
                     await UpdateValue(!IsMobile);

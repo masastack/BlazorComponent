@@ -45,4 +45,9 @@ export default class Delayable {
     this.isActive = active;
     this.dotNetHelper.invokeMethodAsync("SetActive", this.isActive);
   }
+
+  resetDelay(openDelay: number, closeDelay: number) {
+    this.openDelay = openDelay;
+    this.closeDelay = closeDelay;
+  }
 }

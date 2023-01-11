@@ -5,24 +5,30 @@ namespace BlazorComponent;
 
 public class OutsideClickJSModule : JSModule
 {
-    private readonly IOutsideClickJsCallback _owner;
+    private IOutsideClickJsCallback? _owner;
     private DotNetObjectReference<OutsideClickJSModule>? _selfReference;
-    private IJSObjectReference? _module;
+    private IJSObjectReference? _instance;
 
-    public OutsideClickJSModule(IOutsideClickJsCallback owner, IJSRuntime js) : base(js, "./_content/BlazorComponent/js/outside-click.js")
+    public OutsideClickJSModule(IJSRuntime js) : base(js, "./_content/BlazorComponent/js/outside-click.js")
     {
-        _owner = owner;
     }
 
-    public async ValueTask InitializeAsync(params string[] excludedSelectors)
+    public bool Initialized { get; private set; }
+
+    public async ValueTask InitializeAsync(IOutsideClickJsCallback owner, params string[] excludedSelectors)
     {
+        _owner = owner;
         _selfReference = DotNetObjectReference.Create(this);
-        _module = await InvokeAsync<IJSObjectReference>("init", _selfReference, excludedSelectors);
+        _instance = await InvokeAsync<IJSObjectReference>("init", _selfReference, excludedSelectors);
+
+        Initialized = true;
     }
 
     [JSInvokable]
     public async Task OnOutsideClick()
     {
+        if (_owner == null) return;
+
         await _owner.HandleOnOutsideClickAsync();
     }
 
@@ -32,9 +38,9 @@ public class OutsideClickJSModule : JSModule
 
         _selfReference?.Dispose();
 
-        if (_module is not null)
+        if (_instance is not null)
         {
-            await _module.DisposeAsync();
+            await _instance.DisposeAsync();
         }
     }
 }

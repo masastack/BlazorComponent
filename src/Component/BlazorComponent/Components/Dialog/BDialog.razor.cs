@@ -10,16 +10,13 @@ namespace BlazorComponent;
 public partial class BDialog : BBootable, IDependent, IAsyncDisposable
 {
     [Inject]
-    public Document Document { get; set; }
-
-    [Inject]
-    public Window Window { get; set; }
+    private OutsideClickJSModule? OutsideClickJsModule { get; set; }
 
     [Parameter]
-    public string Attach { get; set; }
+    public string? Attach { get; set; }
 
     [Parameter]
-    public RenderFragment ChildContent { get; set; }
+    public RenderFragment? ChildContent { get; set; }
 
     [Parameter]
     public bool Fullscreen { get; set; }
@@ -28,7 +25,7 @@ public partial class BDialog : BBootable, IDependent, IAsyncDisposable
     public bool HideOverlay { get; set; }
 
     [Parameter]
-    public StringNumber MaxWidth { get; set; }
+    public StringNumber? MaxWidth { get; set; }
 
     [Parameter]
     public EventCallback<MouseEventArgs> OnOutsideClick { get; set; }
@@ -37,7 +34,7 @@ public partial class BDialog : BBootable, IDependent, IAsyncDisposable
     public bool Persistent { get; set; }
 
     [Parameter]
-    public StringNumber Width { get; set; }
+    public StringNumber? Width { get; set; }
 
     [Parameter]
     public bool Dark { get; set; }
@@ -48,7 +45,6 @@ public partial class BDialog : BBootable, IDependent, IAsyncDisposable
     [CascadingParameter(Name = "IsDark")]
     public bool CascadingIsDark { get; set; }
 
-    private OutsideClickJSModule? _outsideClickJSModule;
     private List<IDependent> _dependents = new();
 
     public bool IsDark
@@ -125,11 +121,9 @@ public partial class BDialog : BBootable, IDependent, IAsyncDisposable
 
     private async Task AttachAsync(bool value)
     {
-        if (_outsideClickJSModule is null)
+        if (OutsideClickJsModule is { Initialized: false })
         {
-            _outsideClickJSModule = new OutsideClickJSModule(this, Js);
-
-            await _outsideClickJSModule.InitializeAsync(DependentElements.ToArray());
+            await OutsideClickJsModule.InitializeAsync(this, DependentElements.ToArray());
 
             await JsInvokeAsync(JsInteropConstants.AddElementTo, OverlayRef, AttachSelector);
             await JsInvokeAsync(JsInteropConstants.AddElementTo, ContentRef, AttachSelector);
@@ -190,7 +184,7 @@ public partial class BDialog : BBootable, IDependent, IAsyncDisposable
         }
     }
 
-    public new async ValueTask DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         await DeleteContent();
     }

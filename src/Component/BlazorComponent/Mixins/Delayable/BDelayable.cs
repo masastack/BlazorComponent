@@ -3,10 +3,18 @@
 public class BDelayable : BDomComponentBase, IDelayable
 {
     [Parameter]
-    public int OpenDelay { get; set; }
+    public int OpenDelay
+    {
+        get => GetValue<int>();
+        set => SetValue(value);
+    }
 
     [Parameter]
-    public int CloseDelay { get; set; }
+    public int CloseDelay
+    {
+        get => GetValue<int>();
+        set => SetValue(value);
+    }
 
     protected bool IsActive { get; private set; }
 

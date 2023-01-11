@@ -21,6 +21,9 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IComponentActivator, AbstractComponentActivator>();
             services.AddValidators();
             services.AddI18n();
+            
+            services.TryAddTransient<ActivatableJsModule>();
+            services.TryAddTransient<OutsideClickJSModule>();
 
             return new BlazorComponentBuilder(services);
         }

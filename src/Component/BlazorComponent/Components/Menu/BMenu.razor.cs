@@ -9,6 +9,9 @@ namespace BlazorComponent;
 
 public partial class BMenu : BMenuable, IDependent
 {
+    [Inject]
+    private OutsideClickJSModule? Module { get; set; }
+
     [Parameter]
     public bool Auto { get; set; }
 
@@ -63,7 +66,6 @@ public partial class BMenu : BMenuable, IDependent
     public bool AppIsDark { get; set; }
 
     private bool _isPopupEventsRegistered;
-    private OutsideClickJSModule? _outsideClickJsModule;
 
     public bool IsDark
     {
@@ -190,10 +192,9 @@ public partial class BMenu : BMenuable, IDependent
             RegisterPopupEvents(ContentElement.GetSelector(), CloseOnContentClick);
         }
 
-        if (!OpenOnHover && CloseOnClick && _outsideClickJsModule is null)
+        if (!OpenOnHover && CloseOnClick && Module is { Initialized: false })
         {
-            _outsideClickJsModule = new OutsideClickJSModule(this, Js);
-            await _outsideClickJsModule.InitializeAsync(DependentElements.ToArray());
+            await Module.InitializeAsync(this, DependentElements.ToArray());
         }
     }
 
