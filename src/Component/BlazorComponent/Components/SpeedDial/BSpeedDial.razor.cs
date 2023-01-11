@@ -9,6 +9,9 @@ namespace BlazorComponent;
 
 public partial class BSpeedDial : BBootable
 {
+    [Inject]
+    private OutsideClickJSModule? OutsideClickJSModule { get; set; }
+
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
@@ -41,8 +44,6 @@ public partial class BSpeedDial : BBootable
 
     private string Tag { get; set; } = "div";
 
-    private OutsideClickJSModule? _outsideClickJsModule;
-
     protected ElementReference ContentElement { get; set; }
 
     protected override void OnWatcherInitialized()
@@ -57,10 +58,9 @@ public partial class BSpeedDial : BBootable
     {
         await base.WhenIsActiveUpdating(value);
 
-        if (_outsideClickJsModule is null)
+        if (OutsideClickJSModule is { Initialized: false })
         {
-            _outsideClickJsModule = new OutsideClickJSModule(this, Js);
-            await _outsideClickJsModule.InitializeAsync(ActivatorSelector, ContentElement.GetSelector());
+            await OutsideClickJSModule.InitializeAsync(this, ActivatorSelector, ContentElement.GetSelector());
 
             RegisterPopupEvents(ContentElement.GetSelector(), true);
         }
