@@ -64,6 +64,13 @@ public class ToggleableTransitionElement : TransitionElementBase<bool>
         }
     }
 
+    /// <summary>
+    /// Value should be true when the status is Enter(To),
+    /// Value should be false when the status is Leave(To),
+    /// otherwise should continue to move
+    /// </summary>
+    protected override bool CanMoveNext => !RequestingAnimationFrame || (IsLeaveTransitionState ? !Value : Value);
+
     protected override void StartTransition()
     {
         //Don't trigger transition in first render
@@ -89,10 +96,10 @@ public class ToggleableTransitionElement : TransitionElementBase<bool>
         switch (state)
         {
             case TransitionState.Enter:
-                await RequestNextStateAsync(TransitionState.EnterTo);
+                await RequestNextStateAsync(TransitionState.EnterTo, true);
                 break;
             case TransitionState.Leave:
-                await RequestNextStateAsync(TransitionState.LeaveTo);
+                await RequestNextStateAsync(TransitionState.LeaveTo, false);
                 break;
         }
     }
@@ -122,9 +129,14 @@ public class ToggleableTransitionElement : TransitionElementBase<bool>
         await Hooks();
     }
 
-    private async Task RequestNextStateAsync(TransitionState state)
+    private async Task RequestNextStateAsync(TransitionState state, bool checkValue)
     {
-        await RequestAnimationFrameAsync(async () => await NextState(state));
+        await RequestAnimationFrameAsync(async () =>
+        {
+            if (checkValue != Value) return;
+
+            await NextState(state);
+        });
     }
 
     private void HideElement()

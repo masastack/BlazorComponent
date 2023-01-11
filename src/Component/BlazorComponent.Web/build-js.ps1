@@ -1,6 +1,6 @@
 param(
   [Parameter(Mandatory = $true, HelpMessage = "main | echarts | input | markdownit | gridstack")]
-  [ValidateSet("main", "echarts", "input", "markdownit", "gridstack")]
+  [ValidateSet("main", "echarts", "input", "markdownit", "gridstack", "activatable", "outsideclick")]
   [string]$file
 )
 
@@ -26,15 +26,16 @@ if (Get-Command npm -ErrorAction SilentlyContinue) {
     elseif ($file -eq 'echarts') {
       npm run build:echarts
     }
-  }
-  else {
-    npm run build
-    npm run build:input
-    npm run build:markdownit
-  }
+    elseif ($file -eq 'activatable') {
+      npm run build:activatable
+    }
+    elseif ($file -eq 'outsideclick') {
+      npm run build:outsideclick
+    }
 
-  Write-Host
-  Write-Host "Builded js successfully!" -ForegroundColor Green
+    Write-Host
+    Write-Host "Builded js successfully!" -ForegroundColor Green
+  }
 }
 else {
   Write-Host "The npm command is not installed." -ForegroundColor Red

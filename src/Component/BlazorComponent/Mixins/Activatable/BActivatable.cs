@@ -2,7 +2,7 @@
 
 namespace BlazorComponent;
 
-public class BActivatable : BToggleable, IActivatable
+public class BActivatable : BToggleable, IActivatable, IActivatableJsCallbacks
 {
     private string? _activatorId;
 
@@ -33,11 +33,13 @@ public class BActivatable : BToggleable, IActivatable
     [Parameter]
     public RenderFragment<ActivatorProps>? ActivatorContent { get; set; }
 
+    private ActivatableJsModule? _activatableJsInterop;
+
     protected bool IsBooted { get; set; }
 
-    protected Dictionary<string, object> ActivatorEvents { get; set; } = new();
+    private bool HasActivator => ActivatorContent is not null;
 
-    public virtual Dictionary<string, object> ActivatorAttributes => new(ActivatorEvents)
+    public virtual Dictionary<string, object> ActivatorAttributes => new()
     {
         { ActivatorId, true },
         { "role", "button" },
@@ -45,11 +47,11 @@ public class BActivatable : BToggleable, IActivatable
         { "aria-expanded", IsActive }
     };
 
-    protected string ActivatorId => _activatorId ??= $"_activator_{Guid.NewGuid()}";
+    private string ActivatorId => _activatorId ??= $"_activator_{Guid.NewGuid()}";
 
-    protected string ActivatorSelector => $"[{ActivatorId}]";
+    public string ActivatorSelector => $"[{ActivatorId}]";
 
-    protected RenderFragment ComputedActivatorContent
+    protected RenderFragment? ComputedActivatorContent
     {
         get
         {
@@ -65,7 +67,18 @@ public class BActivatable : BToggleable, IActivatable
 
     bool IActivatable.IsActive => IsActive;
 
-    RenderFragment IActivatable.ComputedActivatorContent => ComputedActivatorContent;
+    RenderFragment? IActivatable.ComputedActivatorContent => ComputedActivatorContent;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (firstRender)
+        {
+            _activatableJsInterop = new ActivatableJsModule(this, Js);
+            await _activatableJsInterop.InitializeAsync();
+        }
+    }
 
     protected override void OnParametersSet()
     {
@@ -84,84 +97,57 @@ public class BActivatable : BToggleable, IActivatable
         base.OnWatcherInitialized();
 
         Watcher
-            .Watch<bool>(nameof(Disabled), val => { ResetActivatorEvents(); })
-            .Watch<bool>(nameof(OpenOnFocus), () => { ResetActivatorEvents(); })
-            .Watch<bool>(nameof(OpenOnHover), () => { ResetActivatorEvents(); });
+            .Watch<bool>(nameof(Disabled), ResetActivatorEvents)
+            .Watch<bool>(nameof(OpenOnFocus), ResetActivatorEvents)
+            .Watch<bool>(nameof(OpenOnHover), ResetActivatorEvents);
     }
 
-    protected override async Task OnValueChanged(bool value)
+    protected override void OnValueChanged(bool value)
     {
         if (!IsBooted)
         {
-            NextTick(() => SetIsActive(value));
+            NextTick(() => RunDirectly(value));
         }
         else
         {
-            await SetIsActive(value);
+            RunDirectly(value);
         }
+    }
+
+    public void ResetActivator(string selector)
+    {
+        _ = _activatableJsInterop?.ResetActivator(selector);
     }
 
     private void ResetActivatorEvents()
     {
-        ActivatorEvents.Clear();
-        AddActivatorEvents();
+        _ = _activatableJsInterop?.ResetEvents();
     }
 
-    protected override void OnInitialized()
+    public virtual Task HandleOnClickAsync(MouseEventArgs args)
     {
-        base.OnInitialized();
-        ResetActivatorEvents();
+        return Task.CompletedTask;
     }
 
-    private void AddActivatorEvents()
+    public virtual Task HandleOnOutsideClickAsync() => Task.CompletedTask;
+
+    public async Task SetActive(bool val)
     {
-        if (Disabled)
-        {
-            return;
-        }
-
-        if (OpenOnHover)
-        {
-            ActivatorEvents.Add("onmouseenter", CreateEventCallback<MouseEventArgs>(HandleOnMouseEnterAsync));
-            ActivatorEvents.Add("onmouseleave", CreateEventCallback<MouseEventArgs>(HandleOnMouseLeaveAsync));
-        }
-        else if (OpenOnClick)
-        {
-            ActivatorEvents.Add("onexclick", CreateEventCallback<MouseEventArgs>(HandleOnClickAsync));
-            ActivatorEvents.Add("__internal_stopPropagation_onexclick", true);
-        }
-
-        if (OpenOnFocus)
-        {
-            ActivatorEvents.Add("onfocus", CreateEventCallback<FocusEventArgs>(HandleOnFocusAsync));
-            ActivatorEvents.Add("onblur", CreateEventCallback<FocusEventArgs>(HandleOnBlurAsync));
-        }
+        await SetActiveInternal(val);
     }
 
-    private async Task HandleOnMouseEnterAsync(MouseEventArgs args)
+    protected void RunDirectly(bool val)
     {
-        await RunOpenDelayAsync();
+        _ = _activatableJsInterop is null ? SetActive(val) : _activatableJsInterop.SetActive(val);
     }
 
-    private async Task HandleOnMouseLeaveAsync(MouseEventArgs args)
+    protected void RegisterPopupEvents(string selector, bool closeOnContentClick)
     {
-        await RunCloseDelayAsync();
+        _ = _activatableJsInterop?.RegisterPopup(selector, closeOnContentClick);
     }
 
-    protected virtual async Task HandleOnClickAsync(MouseEventArgs args)
+    protected void ResetPopupEvents(bool closeOnContentClick)
     {
-        // TODO: focus by js
-
-        await RunOpenDelayAsync();
-    }
-
-    private async Task HandleOnFocusAsync(FocusEventArgs args)
-    {
-        await SetIsActive(true);
-    }
-
-    private async Task HandleOnBlurAsync(FocusEventArgs args)
-    {
-        await SetIsActive(false);
+        _ = _activatableJsInterop?.ResetPopupEvents(closeOnContentClick);
     }
 }

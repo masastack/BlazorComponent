@@ -8,6 +8,6 @@ namespace BlazorComponent
 
         bool IsActive { get; }
 
-        RenderFragment ComputedActivatorContent { get; }
+        RenderFragment? ComputedActivatorContent { get; }
     }
 }

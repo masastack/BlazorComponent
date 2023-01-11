@@ -1,11 +1,8 @@
-﻿using BlazorComponent.Web;
+﻿namespace BlazorComponent.Mixins;
 
-namespace BlazorComponent.Mixins
+public interface IDependent
 {
-    public interface IDependent
-    {
-        void RegisterChild(IDependent dependent);
+    void RegisterChild(IDependent dependent);
 
-        IEnumerable<HtmlElement> DependentElements { get; }
-    }
+    IEnumerable<string> DependentElements { get; }
 }

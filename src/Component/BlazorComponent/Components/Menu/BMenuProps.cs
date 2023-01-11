@@ -14,19 +14,19 @@
 
         public bool Left { get; set; }
 
-        public StringNumber MaxHeight { get; set; }
+        public StringNumber? MaxHeight { get; set; }
 
-        public StringNumber MinWidth { get; set; }
+        public StringNumber? MinWidth { get; set; }
 
-        public StringNumber NudgeBottom { get; set; }
+        public StringNumber? NudgeBottom { get; set; }
 
-        public StringNumber NudgeLeft { get; set; }
+        public StringNumber? NudgeLeft { get; set; }
 
-        public StringNumber NudgeRight { get; set; }
+        public StringNumber? NudgeRight { get; set; }
 
-        public StringNumber NudgeTop { get; set; }
+        public StringNumber? NudgeTop { get; set; }
 
-        public StringNumber NudgeWidth { get; set; }
+        public StringNumber? NudgeWidth { get; set; }
 
         public bool OffsetX { get; set; }
 
