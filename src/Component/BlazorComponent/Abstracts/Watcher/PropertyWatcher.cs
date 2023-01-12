@@ -19,7 +19,8 @@ namespace BlazorComponent
         public TValue GetValue<TValue>(TValue @default = default, string name = "", bool disableIListAlwaysNotifying = false)
         {
             var property = GetProperty(@default, name, disableIListAlwaysNotifying);
-            if (!property.HasValue && property != default)
+
+            if (!property.HasValue)
             {
                 property.Value = @default;
             }
@@ -126,17 +127,20 @@ namespace BlazorComponent
             }
         }
 
-        public PropertyWatcher Watch<TValue>(string name, Action changeCallback)
+        public PropertyWatcher Watch<TValue>(string name, Action changeCallback, bool immediate = false, bool @override = false,
+            TValue? defaultValue = default)
         {
-            return Watch<TValue>(name, (newValue, oldValue) => changeCallback?.Invoke());
+            return Watch(name, (_, _) => changeCallback?.Invoke(), immediate, @override, defaultValue);
         }
 
-        public PropertyWatcher Watch<TValue>(string name, Action<TValue> changeCallback, bool immediate = false, bool @override = false)
+        public PropertyWatcher Watch<TValue>(string name, Action<TValue> changeCallback, bool immediate = false, bool @override = false,
+            TValue? defaultValue = default)
         {
-            return Watch<TValue>(name, (newValue, _) => changeCallback?.Invoke(newValue), immediate, @override);
+            return Watch(name, (newValue, _) => changeCallback?.Invoke(newValue), immediate, @override, defaultValue);
         }
 
-        public PropertyWatcher Watch<TValue>(string name, Action<TValue, TValue> changeCallback, bool immediate = false, bool @override = false)
+        public PropertyWatcher Watch<TValue>(string name, Action<TValue, TValue> changeCallback, bool immediate = false, bool @override = false,
+            TValue? defaultValue = default)
         {
             if (@override)
             {
@@ -145,6 +149,11 @@ namespace BlazorComponent
 
             var property = GetProperty<TValue>(default, name);
             property.OnValueChange += changeCallback;
+
+            if (defaultValue is not null && !defaultValue.Equals(default))
+            {
+                property.Value = defaultValue;
+            }
 
             if (immediate)
             {

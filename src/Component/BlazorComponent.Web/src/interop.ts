@@ -93,7 +93,7 @@ export function getDomInfo(element, selector = "body") {
 
   if (dom) {
     if (dom.style && dom.style["display"] === "none") {
-      // clone and set display not none becuase
+      // clone and set display not none because
       // element with display:none can not get the dom info
       var cloned = dom.cloneNode(true) as HTMLElement;
       cloned.style["display"] = "inline-block";
@@ -327,48 +327,6 @@ export function removeHtmlElementEventListener(selector, type, k?: string) {
     });
 
     htmlElementEventListennerConfigs[k] = []
-  }
-}
-
-var outsideClickListenerCaches: { [key: string]: any } = {}
-
-export function addOutsideClickEventListener(invoker, noInvokeSelectors: string[], invokeSelectors: string[]) {
-  if (!noInvokeSelectors) return;
-
-  noInvokeSelectors = noInvokeSelectors.filter(s => !!s)
-
-  var listener = function (args) {
-    var exists = noInvokeSelectors.some(s => getDom(s)?.contains(args.target));
-    if (exists) return;
-
-    var pointerSelector = getElementSelector(args.target)
-
-    if (invokeSelectors) {
-      if (invokeSelectors.some(s => getDom(s)?.contains(args.target))) {
-        invoker.invokeMethodAsync("Invoke", {pointerSelector});
-      }
-    } else {
-      invoker.invokeMethodAsync("Invoke", {pointerSelector});
-    }
-  }
-
-  document.addEventListener("click", listener, true);
-
-  var key = `(${noInvokeSelectors.join(',')})document:click`
-
-  outsideClickListenerCaches[key] = listener;
-}
-
-export function removeOutsideClickEventListener(noInvokeSelectors: string[]) {
-  if (!noInvokeSelectors) return;
-
-  noInvokeSelectors = noInvokeSelectors.filter(s => !!s)
-
-  var key = `(${noInvokeSelectors.join(',')})document:click`
-
-  if (outsideClickListenerCaches[key]) {
-    document.removeEventListener('click', outsideClickListenerCaches[key], true);
-    outsideClickListenerCaches[key] = undefined
   }
 }
 

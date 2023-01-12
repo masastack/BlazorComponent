@@ -24,7 +24,7 @@ public class BToggleable : BDelayable
     private bool _preventOnValueChanged;
     private bool _value;
 
-    private async void InternalOnValueChanged(bool val)
+    private void InternalOnValueChanged(bool val)
     {
         if (_preventOnValueChanged)
         {
@@ -32,12 +32,11 @@ public class BToggleable : BDelayable
             return;
         }
 
-        await OnValueChanged(val);
+        OnValueChanged(val);
     }
 
-    protected virtual Task OnValueChanged(bool val)
+    protected virtual void OnValueChanged(bool val)
     {
-        return Task.CompletedTask;
     }
 
     protected override async Task WhenIsActiveUpdating(bool val)

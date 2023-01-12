@@ -7,11 +7,14 @@ using Microsoft.JSInterop;
 
 namespace BlazorComponent
 {
-    public abstract partial class BNavigationDrawer : BDomComponentBase, IDependent
+    public abstract partial class BNavigationDrawer : BDomComponentBase, IDependent, IOutsideClickJsCallback
     {
         private CancellationTokenSource _cancellationTokenSource;
         private bool _disposed;
         private readonly List<IDependent> _dependents = new();
+
+        [Inject]
+        private OutsideClickJSModule? OutsideClickJsModule { get; set; }
 
         [Parameter]
         public bool ExpandOnHover
@@ -98,9 +101,6 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment<Dictionary<string, object>> ImgContent { get; set; }
 
-        [Inject]
-        private Document Document { get; set; }
-
         protected object Overlay { get; set; }
 
         protected ElementReference? OverlayRef => ((BOverlay)Overlay)?.Ref;
@@ -127,16 +127,14 @@ namespace BlazorComponent
 
         protected bool ShowOverlay => !HideOverlay && IsActive && (IsMobile || Temporary);
 
-        public IEnumerable<HtmlElement> DependentElements
+        public IEnumerable<string> DependentElements
         {
             get
             {
-                var elements = _dependents
-                               .SelectMany(dependent => dependent.DependentElements)
-                               .ToList();
+                var elements = _dependents.SelectMany(dependent => dependent.DependentElements).ToList();
 
-                var element = Document.GetElementByReference(Ref);
-                elements.Add(element);
+                // do not use the Ref elementReference because it's delay assignment.
+                elements.Add($"#{Id}");
 
                 return elements;
             }
@@ -164,7 +162,7 @@ namespace BlazorComponent
 
             if (firstRender)
             {
-                await Js.AddOutsideClickEventListener(HandleOnOutsideClickAsync, DependentElements.Select(element => element.Selector));
+                await OutsideClickJsModule!.InitializeAsync(this, DependentElements.ToArray());
 
                 if (!Permanent && !Stateless && !Temporary)
                 {
@@ -204,12 +202,6 @@ namespace BlazorComponent
 
         //TODO ontransitionend事件
 
-        private async Task HandleOnOutsideClickAsync(object _)
-        {
-            if (!CloseConditional()) return;
-            await UpdateValue(false);
-        }
-
         protected virtual bool IsFullscreen => false;
 
         protected async Task HideScroll()
@@ -248,6 +240,12 @@ namespace BlazorComponent
         protected override void Dispose(bool disposing)
         {
             _disposed = true;
+        }
+
+        public async Task HandleOnOutsideClickAsync()
+        {
+            if (!CloseConditional()) return;
+            await UpdateValue(false);
         }
     }
 }

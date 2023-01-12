@@ -14,10 +14,6 @@
 
         public static string RemoveHtmlElementEventListener => $"{JsInteropFuncNamePrefix}removeHtmlElementEventListener";
 
-        public static string AddOutsideClickEventListener => $"{JsInteropFuncNamePrefix}addOutsideClickEventListener";
-
-        public static string RemoveOutsideClickEventListener => $"{JsInteropFuncNamePrefix}removeOutsideClickEventListener";
-
         public static string HideScroll => $"{JsInteropFuncNamePrefix}hideScroll";
 
         public static string ShowScroll => $"{JsInteropFuncNamePrefix}showScroll";
