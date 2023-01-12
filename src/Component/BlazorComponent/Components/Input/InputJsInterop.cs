@@ -10,6 +10,7 @@ public class InputJsInterop : IAsyncDisposable
 
     private DotNetObjectReference<InputJsInterop>? _selfReference;
     private IJSObjectReference? _inputJsReference;
+    private bool _isDisposed;
 
     private ElementReference? _inputElement;
 
@@ -26,8 +27,13 @@ public class InputJsInterop : IAsyncDisposable
         _inputElement = input;
 
         _selfReference = DotNetObjectReference.Create(this);
+
         _inputJsReference = await _jsRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/BlazorComponent/js/input.js");
+
+        if (_isDisposed) return;
+
         await _inputJsReference!.InvokeVoidAsync("registerInputEvents", input, inputSlot, _selfReference, internalDebounceInterval);
+
         Initialized = true;
     }
 
@@ -61,6 +67,8 @@ public class InputJsInterop : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
+        _isDisposed = true;
+
         _selfReference?.Dispose();
 
         if (_inputJsReference != null)
