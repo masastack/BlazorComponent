@@ -150,7 +150,8 @@ namespace BlazorComponent
             var property = GetProperty<TValue>(default, name);
             property.OnValueChange += changeCallback;
 
-            if (defaultValue is not null && !defaultValue.Equals(default))
+            // TODO: defaultValue should not set to property, also in GetValue(defaultValue)
+            if (defaultValue is not null && !EqualityComparer<TValue>.Default.Equals(defaultValue, default))
             {
                 property.Value = defaultValue;
             }
