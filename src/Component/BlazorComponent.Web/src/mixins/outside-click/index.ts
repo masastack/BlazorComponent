@@ -41,7 +41,6 @@ class OutsideClick {
 
   updateExcludeSelectors(selectors: string[]) {
     this.excludedSelectors = selectors;
-    // this.resetListener();
   }
 }
 
