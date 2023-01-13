@@ -177,6 +177,7 @@ public partial class BMenu : BMenuable, IDependent
     public void RegisterChild(IDependent dependent)
     {
         Dependents.Add(dependent);
+        Module?.UpdateDependentElements(DependentElements.ToArray());
     }
 
     //TODO:keydown event

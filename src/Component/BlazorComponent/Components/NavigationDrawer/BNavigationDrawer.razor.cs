@@ -154,6 +154,8 @@ namespace BlazorComponent
         public void RegisterChild(IDependent dependent)
         {
             _dependents.Add(dependent);
+            
+            OutsideClickJsModule?.UpdateDependentElements(DependentElements.ToArray());
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)

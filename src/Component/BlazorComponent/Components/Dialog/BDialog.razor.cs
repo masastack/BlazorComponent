@@ -230,6 +230,8 @@ public partial class BDialog : BBootable, IDependent, IAsyncDisposable
     public void RegisterChild(IDependent dependent)
     {
         _dependents.Add(dependent);
+
+        OutsideClickJsModule?.UpdateDependentElements(DependentElements.ToArray());
     }
 
     public IEnumerable<string> DependentElements
