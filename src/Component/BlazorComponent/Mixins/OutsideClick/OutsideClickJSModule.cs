@@ -24,6 +24,16 @@ public class OutsideClickJSModule : JSModule
         Initialized = true;
     }
 
+    public void UpdateDependentElements(params string[] selectors)
+    {
+        if (_instance is null) return;
+
+        Task.Run(async () =>
+        {
+            await _instance.InvokeVoidAsync("updateExcludeSelectors", selectors.ToList());
+        });
+    }
+
     [JSInvokable]
     public async Task OnOutsideClick()
     {

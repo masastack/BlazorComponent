@@ -38,6 +38,11 @@ class OutsideClick {
     this.removeListener();
     this.addListener();
   }
+
+  updateExcludeSelectors(selectors: string[]) {
+    this.excludedSelectors = selectors;
+    // this.resetListener();
+  }
 }
 
 function init(dotNetHelper: DotNet.DotNetObject, excludeSelectors: string[]) {
