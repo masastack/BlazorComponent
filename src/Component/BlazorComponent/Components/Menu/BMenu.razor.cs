@@ -136,12 +136,12 @@ public partial class BMenu : BMenuable, IDependent
 
     protected StringNumber? CalculatedTop => !Auto ? CalcTop() : CalcYOverflow(CalcTopAuto());
 
-    public IEnumerable<string> DependentElements
+    public virtual IEnumerable<string> DependentSelectors
     {
         get
         {
             var elements = Dependents
-                           .SelectMany(dependent => dependent.DependentElements)
+                           .SelectMany(dependent => dependent.DependentSelectors)
                            .ToList();
 
             elements.Add(ActivatorSelector);
@@ -177,7 +177,7 @@ public partial class BMenu : BMenuable, IDependent
     public void RegisterChild(IDependent dependent)
     {
         Dependents.Add(dependent);
-        Module?.UpdateDependentElements(DependentElements.ToArray());
+        Module?.UpdateDependentElements(DependentSelectors.ToArray());
     }
 
     //TODO:keydown event
@@ -195,7 +195,7 @@ public partial class BMenu : BMenuable, IDependent
 
         if (!OpenOnHover && CloseOnClick && Module is { Initialized: false })
         {
-            await Module.InitializeAsync(this, DependentElements.ToArray());
+            await Module.InitializeAsync(this, DependentSelectors.ToArray());
         }
     }
 

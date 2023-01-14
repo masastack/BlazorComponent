@@ -127,11 +127,11 @@ namespace BlazorComponent
 
         protected bool ShowOverlay => !HideOverlay && IsActive && (IsMobile || Temporary);
 
-        public IEnumerable<string> DependentElements
+        public virtual IEnumerable<string> DependentSelectors
         {
             get
             {
-                var elements = _dependents.SelectMany(dependent => dependent.DependentElements).ToList();
+                var elements = _dependents.SelectMany(dependent => dependent.DependentSelectors).ToList();
 
                 // do not use the Ref elementReference because it's delay assignment.
                 elements.Add($"#{Id}");
@@ -155,7 +155,7 @@ namespace BlazorComponent
         {
             _dependents.Add(dependent);
             
-            OutsideClickJsModule?.UpdateDependentElements(DependentElements.ToArray());
+            OutsideClickJsModule?.UpdateDependentElements(DependentSelectors.ToArray());
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -164,7 +164,7 @@ namespace BlazorComponent
 
             if (firstRender)
             {
-                await OutsideClickJsModule!.InitializeAsync(this, DependentElements.ToArray());
+                await OutsideClickJsModule!.InitializeAsync(this, DependentSelectors.ToArray());
 
                 if (!Permanent && !Stateless && !Temporary)
                 {
