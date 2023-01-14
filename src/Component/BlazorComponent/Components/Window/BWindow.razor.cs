@@ -66,7 +66,7 @@ namespace BlazorComponent
             Watcher.Watch(nameof(InternalIndex),
                 (newVal, oldVal) => IsReverse = UpdateReverse(newVal, oldVal),
                 () => Items.FindIndex(item => item.Value == Value),
-                new[] { nameof(Value) },
+                new[] { nameof(Value), nameof(Values) },
                 false,
                 true);
         }
@@ -92,14 +92,7 @@ namespace BlazorComponent
             var nextIndex = GetNextIndex(InternalIndex);
             var nextItem = Items[nextIndex];
 
-            if (ValueChanged.HasDelegate)
-            {
-                ValueChanged.InvokeAsync(nextItem.Value);
-            }
-            else
-            {
-                Value = nextItem.Value;
-            }
+            _ = ToggleAsync(nextItem.Value);
         }
 
         protected void Prev()
@@ -107,16 +100,9 @@ namespace BlazorComponent
             if (!HasActiveItems || !HasPrev) return;
 
             var prevIndex = GetPrevIndex(InternalIndex);
-            var pervItem = Items[prevIndex];
+            var prevItem = Items[prevIndex];
 
-            if (ValueChanged.HasDelegate)
-            {
-                ValueChanged.InvokeAsync(pervItem.Value);
-            }
-            else
-            {
-                Value = pervItem.Value;
-            }
+            _ = ToggleAsync(prevItem.Value);
         }
 
         protected int GetNextIndex(int currentIndex)
