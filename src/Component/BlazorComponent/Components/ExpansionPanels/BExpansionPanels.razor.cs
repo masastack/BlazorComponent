@@ -39,7 +39,7 @@ namespace BlazorComponent
 
         protected override void UpdateValue(StringNumber value)
         {
-            if (_values.Contains(value))
+            if (InternalValues.Contains(value))
             {
                 Remove(value);
             }
@@ -47,17 +47,17 @@ namespace BlazorComponent
             {
                 if (!Multiple)
                 {
-                    _values.Clear();
+                    InternalValues.Clear();
                     NextActiveKeys.Clear();
                 }
 
-                if (Max == null || _values.Count < Max.TryGetNumber().number)
+                if (Max == null || InternalValues.Count < Max.TryGetNumber().number)
                 {
                     Add(value);
                 }
             }
 
-            if (Mandatory && _values.Count == 0)
+            if (Mandatory && InternalValues.Count == 0)
             {
                 Add(value);
             }
@@ -65,7 +65,7 @@ namespace BlazorComponent
 
         private void Add(StringNumber value)
         {
-            _values.Add(value);
+            InternalValues.Add(value);
 
             var index = AllValues.IndexOf(value);
             if (index > 1)
@@ -76,7 +76,7 @@ namespace BlazorComponent
 
         private void Remove(StringNumber value)
         {
-            _values.Remove(value);
+            InternalValues.Remove(value);
 
             var index = AllValues.IndexOf(value);
             if (index > 1)

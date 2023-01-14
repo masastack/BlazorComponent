@@ -44,26 +44,26 @@ namespace BlazorComponent
 
         protected override void UpdateValue(StringNumber value)
         {
-            if (_values.Contains(value))
+            if (InternalValues.Contains(value))
             {
-                _values.Remove(value);
+                InternalValues.Remove(value);
             }
             else
             {
                 if (!Multiple)
                 {
-                    _values.Clear();
+                    InternalValues.Clear();
                 }
 
-                if (Max == null || _values.Count < Max.TryGetNumber().number)
+                if (Max == null || InternalValues.Count < Max.TryGetNumber().number)
                 {
-                    _values.Add(value);
+                    InternalValues.Add(value);
                 }
             }
 
-            if (Mandatory && _values.Count == 0)
+            if (Mandatory && InternalValues.Count == 0)
             {
-                _values.Add(value);
+                InternalValues.Add(value);
             }
         }
     }

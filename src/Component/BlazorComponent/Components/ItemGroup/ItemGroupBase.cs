@@ -4,8 +4,6 @@ namespace BlazorComponent
 {
     public abstract class ItemGroupBase : BDomComponentBase
     {
-        protected List<StringNumber> _values = new();
-
         public ItemGroupBase(GroupType groupType)
         {
             GroupType = groupType;
@@ -29,11 +27,11 @@ namespace BlazorComponent
         [Parameter]
         public StringNumber? Value
         {
-            get => _values.LastOrDefault();
+            get => InternalValues.LastOrDefault();
             set
             {
-                _values.Clear();
-                _values.Add(value);
+                InternalValues.Clear();
+                InternalValues.Add(value);
                 SetValue(value);
             }
         }
@@ -44,8 +42,8 @@ namespace BlazorComponent
         [Parameter]
         public List<StringNumber> Values
         {
-            get => _values;
-            set => _values = value;
+            get => InternalValues;
+            set => InternalValues = value;
         }
 
         [Parameter]
@@ -56,6 +54,8 @@ namespace BlazorComponent
         public List<IGroupable> Items { get; } = new();
 
         public List<StringNumber> AllValues => Items.Select(item => item.Value).ToList();
+
+        protected List<StringNumber> InternalValues { get; set; } = new();
 
         protected override void OnParametersSet()
         {
@@ -117,39 +117,52 @@ namespace BlazorComponent
 
             RefreshItemsState();
 
-            if (ValuesChanged.HasDelegate)
+            if (Multiple)
             {
-                await ValuesChanged.InvokeAsync(_values);
-            }
-            else if (ValueChanged.HasDelegate)
-            {
-                await ValueChanged.InvokeAsync(_values.LastOrDefault());
+                if (ValuesChanged.HasDelegate)
+                {
+                    await ValuesChanged.InvokeAsync(InternalValues);
+                }
+                else
+                {
+                    Values = InternalValues;
+                    StateHasChanged();
+                }
             }
             else
             {
-                StateHasChanged();
+                var value = InternalValues.LastOrDefault();
+                if (ValueChanged.HasDelegate)
+                {
+                    await ValueChanged.InvokeAsync(value);
+                }
+                else
+                {
+                    Value = value;
+                    StateHasChanged();
+                }
             }
         }
 
         protected virtual void UpdateValue(StringNumber key)
         {
-            if (_values.Contains(key))
+            if (InternalValues.Contains(key))
             {
-                _values.Remove(key);
+                InternalValues.Remove(key);
             }
             else
             {
                 if (!Multiple)
                 {
-                    _values.Clear();
+                    InternalValues.Clear();
                 }
 
-                _values.Add(key);
+                InternalValues.Add(key);
             }
 
-            if (Mandatory && _values.Count == 0)
+            if (Mandatory && InternalValues.Count == 0)
             {
-                _values.Add(key);
+                InternalValues.Add(key);
             }
         }
     }
