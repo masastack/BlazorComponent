@@ -4,5 +4,5 @@ public interface IDependent
 {
     void RegisterChild(IDependent dependent);
 
-    IEnumerable<string> DependentElements { get; }
+    IEnumerable<string> DependentSelectors { get; }
 }

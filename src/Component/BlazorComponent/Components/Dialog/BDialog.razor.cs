@@ -123,7 +123,7 @@ public partial class BDialog : BBootable, IDependent, IAsyncDisposable
     {
         if (OutsideClickJsModule is { Initialized: false })
         {
-            await OutsideClickJsModule.InitializeAsync(this, DependentElements.ToArray());
+            await OutsideClickJsModule.InitializeAsync(this, DependentSelectors.ToArray());
 
             await JsInvokeAsync(JsInteropConstants.AddElementTo, OverlayRef, AttachSelector);
             await JsInvokeAsync(JsInteropConstants.AddElementTo, ContentRef, AttachSelector);
@@ -231,14 +231,14 @@ public partial class BDialog : BBootable, IDependent, IAsyncDisposable
     {
         _dependents.Add(dependent);
 
-        OutsideClickJsModule?.UpdateDependentElements(DependentElements.ToArray());
+        OutsideClickJsModule?.UpdateDependentElements(DependentSelectors.ToArray());
     }
 
-    public IEnumerable<string> DependentElements
+    public virtual IEnumerable<string> DependentSelectors
     {
         get
         {
-            var elements = _dependents.SelectMany(dependent => dependent.DependentElements).ToList();
+            var elements = _dependents.SelectMany(dependent => dependent.DependentSelectors).ToList();
 
             elements.Add(ContentRef.GetSelector());
 
