@@ -53,14 +53,14 @@ function addEvents(grid: GridStack) {
 }
 
 function resize(event: Event, el: GridItemHTMLElement) {
-  const customElement = el.firstElementChild.firstElementChild;
+  const contentElement = el.firstElementChild;
   let id;
   let width = 0;
   let height = 0;
-  if (customElement) {
+  if (contentElement) {
     id = el.getAttribute("gs-id");
-    width = customElement.clientWidth;
-    height = customElement.clientHeight;
+    width = contentElement.clientWidth;
+    height = contentElement.clientHeight;
   }
   return [id, width, height];
 }
