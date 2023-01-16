@@ -47,22 +47,16 @@ function addEvents(grid: GridStack) {
   if (!grid) return;
 
   const dotNet: DotNet.DotNetObject = grid["dotNet"];
-  grid.on("resize", function (event: Event, el: GridItemHTMLElement) {
-    dotNet.invokeMethodAsync("OnResize", ...resize(event, el));
+  grid.on("resizestop", function (event: Event, el: GridItemHTMLElement) {
+    dotNet.invokeMethodAsync("OnResize", resize(event, el));
   });
 }
 
 function resize(event: Event, el: GridItemHTMLElement) {
-  const contentElement = el.firstElementChild;
-  let id;
-  let width = 0;
-  let height = 0;
-  if (contentElement) {
-    id = el.getAttribute("gs-id");
-    width = contentElement.clientWidth;
-    height = contentElement.clientHeight;
-  }
-  return [id, width, height];
+  const id = el.getAttribute("gs-id");
+  const { x, y, w, h } = el.gridstackNode;
+  const { w: width, h: height } = el.gridstackNode["_rect"];
+  return { id, x, y, w, h, width, height };
 }
 
 export { init, reload, setStatic, save };
