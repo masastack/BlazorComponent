@@ -462,10 +462,10 @@ export function scrollIntoParentView(
       } else {
         const to = dom.offsetLeft - parent.offsetLeft;
         if (to - parent.scrollLeft < 0) {
-        options.left = to;
-      } else if (
-        to + dom.offsetWidth - parent.scrollLeft >
-        parent.offsetWidth
+          options.left = to;
+        } else if (
+          to + dom.offsetWidth - parent.scrollLeft >
+          parent.offsetWidth
         ) {
           options.left = to + dom.offsetWidth - parent.offsetWidth;
         }
@@ -480,9 +480,9 @@ export function scrollIntoParentView(
         } else if (
           to + dom.offsetHeight - parent.scrollTop >
           parent.offsetHeight
-          ) {
-            options.top = to + dom.offsetHeight - parent.offsetHeight;
-          }
+        ) {
+          options.top = to + dom.offsetHeight - parent.offsetHeight;
+        }
       }
     }
 
@@ -1215,7 +1215,7 @@ export function otpInputOnInputEvent(e: Event, otpIdx: number, elementList, call
   }
 }
 
-export function getListIndexWhereAttributeExists(selector: string, attribute:string, value: string) {
+export function getListIndexWhereAttributeExists(selector: string, attribute: string, value: string) {
   const tiles = document.querySelectorAll(selector);
   if (!tiles) {
     return -1;
