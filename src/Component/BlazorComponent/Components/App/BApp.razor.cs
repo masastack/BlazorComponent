@@ -19,6 +19,8 @@ namespace BlazorComponent
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
 
+        protected string Styles { get; set; } = "";
+
         protected override void OnInitialized()
         {
             PopupProvider.StateChanged += OnStateChanged;
