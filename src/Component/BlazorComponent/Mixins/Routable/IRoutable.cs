@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+﻿using System.Text.RegularExpressions;
 
 namespace BlazorComponent;
 
@@ -9,15 +8,19 @@ public interface IRoutable
 
     bool Disabled { get; }
 
-    string Href { get; }
+    string? Href { get; }
 
     bool Link { get; }
 
     EventCallback<MouseEventArgs> OnClick { get; }
 
-    string Tag { get; }
+    string? Tag { get; }
 
-    string Target { get; }
+    string? Target { get; }
+
+    bool Exact { get; }
+
+    NavigationManager NavigationManager { get; }
 
     public bool IsClickable => !Disabled && (IsLink || OnClick.HasDelegate || Tabindex > 0);
 
@@ -25,7 +28,7 @@ public interface IRoutable
 
     public int Tabindex => Attributes.TryGetValue("tabindex", out var tabindex) ? Convert.ToInt32(tabindex) : 0;
 
-    public (string tag, Dictionary<string, object>) GenerateRouteLink()
+    public(string tag, Dictionary<string, object>) GenerateRouteLink()
     {
         string tag;
         Dictionary<string, object> attrs = new(Attributes);
@@ -46,5 +49,40 @@ public interface IRoutable
         }
 
         return (tag, attrs);
+    }
+
+    // TODO: rename
+    public bool MatchRoute()
+    {
+        var baseRelativePath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+
+        return MatchRoute(Href, baseRelativePath, Exact);
+    }
+
+    public static bool MatchRoute(string href, string relativePath, bool exact)
+    {
+        href = FormatUrl(href);
+
+        relativePath = relativePath.Split('#', '?')[0];
+        relativePath = FormatUrl(relativePath);
+
+        if (exact || href == "/")
+        {
+            href += "$";
+        }
+
+        href = "^" + href;
+
+        return Regex.Match(relativePath, href, RegexOptions.IgnoreCase).Success;
+    }
+
+    private static string FormatUrl(string url)
+    {
+        if (!url.StartsWith("/"))
+        {
+            return "/" + url;
+        }
+
+        return url;
     }
 }

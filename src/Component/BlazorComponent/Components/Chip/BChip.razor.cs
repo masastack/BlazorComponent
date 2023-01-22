@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BChip : BGroupItem<ItemGroupBase>, IRoutable
     {
@@ -9,6 +7,9 @@ namespace BlazorComponent
         public BChip() : base(GroupType.ChipGroup)
         {
         }
+        
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
 
         [Parameter]
         public bool Active { get; set; } = true;
@@ -48,6 +49,8 @@ namespace BlazorComponent
 
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
+
+        public bool Exact { get; set; }
 
         public bool IsDark
         {

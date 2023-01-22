@@ -68,8 +68,16 @@ namespace BlazorComponent
             List?.Register(this);
 
             NavigationManager.LocationChanged += OnLocationChanged;
+        }
 
-            UpdateActiveForLinkage();
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            await base.OnAfterRenderAsync(firstRender);
+
+            if (firstRender)
+            {
+                UpdateActiveForRoutable();
+            }
         }
 
         protected override void OnParametersSet()
@@ -82,7 +90,7 @@ namespace BlazorComponent
 
         private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
         {
-            var shouldRender = UpdateActiveForLinkage();
+            var shouldRender = UpdateActiveForRoutable();
             if (shouldRender)
             {
                 InvokeStateHasChanged();
@@ -119,7 +127,7 @@ namespace BlazorComponent
             return Group.Any(item => Regex.Match(relativePath, item, RegexOptions.IgnoreCase).Success);
         }
 
-        private bool UpdateActiveForLinkage()
+        private bool UpdateActiveForRoutable()
         {
             var isActive = IsActive;
 
