@@ -1,6 +1,6 @@
 param(
   [Parameter(Mandatory = $true, HelpMessage = "main | echarts | input | markdownit | gridstack")]
-  [ValidateSet("main", "echarts", "input", "markdownit", "gridstack", "activatable", "outsideclick", "maps")]
+  [ValidateSet("main", "echarts", "input", "markdownit", "gridstack", "activatable", "outsideclick", "baidumap")]
   [string]$file
 )
 
@@ -32,8 +32,8 @@ if (Get-Command npm -ErrorAction SilentlyContinue) {
     elseif ($file -eq 'outsideclick') {
       npm run build:outsideclick
     }
-    elseif ($file -eq 'maps') {
-      npm run build:maps
+    elseif ($file -eq 'baidumap') {
+      npm run build:baidumap
     }
 
     Write-Host

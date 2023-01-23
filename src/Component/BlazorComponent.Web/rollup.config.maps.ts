@@ -12,5 +12,5 @@ export default defineConfig({
       sourcemap: true,
     },
   ],
-  plugins: [typescript(), terser()],
+  plugins: [terser()],
 });

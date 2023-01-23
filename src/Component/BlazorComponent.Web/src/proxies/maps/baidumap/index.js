@@ -1,11 +1,14 @@
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-var map;
-
 async function injectBaiduMapScript(ak) {
+    // if script has been loaded, return. 
+    if (document.getElementById("baidumap-script"))
+        return;
+
     var script = document.createElement("script");
     script.src = "https://api.map.baidu.com/getscript?type=webgl&v=1.0&ak=" + ak;
     script.type = "text/javascript";
+    script.id = "baidumap-script";
 
     var css = document.createElement("link");
     css.href = "https://api.map.baidu.com/res/webgl/10/bmap.css";
@@ -19,13 +22,14 @@ async function injectBaiduMapScript(ak) {
 
 async function loadMap(divID, initArgs) {
     try {
-        map = new BMapGL.Map(divID);
+        var map = new BMapGL.Map(divID);
         map.enableScrollWheelZoom(initArgs.canZoom);
         map.centerAndZoom(initArgs.mapCenter, initArgs.zoom);
+        return map;
     } catch (error) {
         await delay(100);
-        await loadMap(divID);
+        return await loadMap(divID);
     }
 }
 
-export { injectBaiduMapScript, loadMap, map }
+export { injectBaiduMapScript, loadMap }
