@@ -20,15 +20,15 @@ async function injectBaiduMapScript(ak) {
     document["head"].append(script, css);
 }
 
-async function loadMap(containerID, initArgs) {
+async function loadMap(containerId, initArgs) {
     try {
-        var map = new BMapGL.Map(containerID);
+        var map = new BMapGL.Map(containerId);
         map.enableScrollWheelZoom(initArgs.canZoom);
         map.centerAndZoom(new BMapGL.Point(initArgs.mapCenter.x, initArgs.mapCenter.y), initArgs.zoom);
         return map;
     } catch (error) {
         await delay(100);
-        return await loadMap(containerID);
+        return await loadMap(containerId, initArgs);
     }
 }
 
