@@ -24,7 +24,7 @@ async function loadMap(containerID, initArgs) {
     try {
         var map = new BMapGL.Map(containerID);
         map.enableScrollWheelZoom(initArgs.canZoom);
-        map.centerAndZoom(initArgs.mapCenter, initArgs.zoom);
+        map.centerAndZoom(new BMapGL.Point(initArgs.mapCenter.x, initArgs.mapCenter.y), initArgs.zoom);
         return map;
     } catch (error) {
         await delay(100);

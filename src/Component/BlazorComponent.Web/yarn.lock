@@ -138,11 +138,6 @@
   "resolved" "https://registry.npmmirror.com/@types/blazor__javascript-interop/-/blazor__javascript-interop-3.1.2.tgz"
   "version" "3.1.2"
 
-"@types/circular-json@^0.4.0":
-  "integrity" "sha512-7+kYB7x5a7nFWW1YPBh3KxhwKfiaI4PbZ1RvzBU91LZy7lWJO822CI+pqzSre/DZ7KsCuMKdHnLHHFu8AyXbQg=="
-  "resolved" "https://registry.npmjs.org/@types/circular-json/-/circular-json-0.4.0.tgz"
-  "version" "0.4.0"
-
 "@types/echarts@^4.9.16":
   "integrity" "sha512-bfiagfPw3dWauAIJ9fgoJQoL4hLWlGcltqwbE6LGye0NIY5xnbZau+mDmadCzGojic3MWuFDCUiO25kl4sRGeA=="
   "resolved" "https://registry.npmmirror.com/@types/echarts/-/echarts-4.9.16.tgz"
