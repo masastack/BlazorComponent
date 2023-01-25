@@ -1,6 +1,8 @@
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-async function initMap(containerId, initArgs) {
+var dotNetObjectReference;
+
+async function initMap(containerId, initArgs, dotNetObjRef) {
     try {
         var map = new BMapGL.Map(containerId);
 
@@ -15,6 +17,12 @@ async function initMap(containerId, initArgs) {
             map.setMapStyleV2({
                 styleId: initArgs.darkThemeId
             });
+
+        dotNetObjectReference = dotNetObjRef;
+
+        map.addEventListener('zoomend', async function (e) {
+            await dotNetObjRef.invokeMethodAsync("OnJsZoomEnd", map.getZoom());
+        });
 
         return map;
     } catch (error) {
