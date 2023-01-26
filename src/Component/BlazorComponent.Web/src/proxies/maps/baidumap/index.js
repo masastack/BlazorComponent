@@ -24,6 +24,10 @@ async function initMap(containerId, initArgs, dotNetObjRef) {
             await dotNetObjRef.invokeMethodAsync("OnJsZoomEnd", map.getZoom());
         });
 
+        map.addEventListener('moveend', async function (e) {
+            await dotNetObjRef.invokeMethodAsync("OnJsMoveEnd", map.getCenter());
+        });
+
         return map;
     } catch (error) {
         console.log(error);
