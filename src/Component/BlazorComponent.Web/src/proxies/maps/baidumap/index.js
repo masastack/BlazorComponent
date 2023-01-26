@@ -1,39 +1,25 @@
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+async function init(containerId, initArgs, dotNetObjRef) {
+    var map = new BMapGL.Map(containerId);
 
-var dotNetObjectReference;
+    if (initArgs.enableScrollWheelZoom)
+        map.enableScrollWheelZoom();
 
-async function initMap(containerId, initArgs, dotNetObjRef) {
-    try {
-        var map = new BMapGL.Map(containerId);
+    map.centerAndZoom(new BMapGL.Point(initArgs.center.x, initArgs.center.y), initArgs.zoom);
 
-        if (initArgs.enableScrollWheelZoom)
-            map.enableScrollWheelZoom();
-        else
-            map.disableScrollWheelZoom();
-
-        map.centerAndZoom(new BMapGL.Point(initArgs.center.x, initArgs.center.y), initArgs.zoom);
-
-        if (initArgs.dark)
-            map.setMapStyleV2({
-                styleId: initArgs.darkThemeId
-            });
-
-        dotNetObjectReference = dotNetObjRef;
-
-        map.addEventListener('zoomend', async function (e) {
-            await dotNetObjRef.invokeMethodAsync("OnJsZoomEnd", map.getZoom());
+    if (initArgs.dark)
+        map.setMapStyleV2({
+            styleId: initArgs.darkThemeId
         });
 
-        map.addEventListener('moveend', async function (e) {
-            await dotNetObjRef.invokeMethodAsync("OnJsMoveEnd", map.getCenter());
-        });
+    map.addEventListener('zoomend', async function (e) {
+        await dotNetObjRef.invokeMethodAsync("OnJsZoomEnd", map.getZoom());
+    });
 
-        return map;
-    } catch (error) {
-        console.log(error);
-        await delay(100);
-        return await initMap(containerId, initArgs);
-    }
+    map.addEventListener('moveend', async function (e) {
+        await dotNetObjRef.invokeMethodAsync("OnJsMoveEnd", map.getCenter());
+    });
+
+    return map;
 }
 
-export { initMap }
+export { init }
