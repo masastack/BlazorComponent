@@ -4,7 +4,7 @@ async function init(containerId, initArgs, dotNetObjRef) {
     if (initArgs.enableScrollWheelZoom)
         map.enableScrollWheelZoom();
 
-    map.centerAndZoom(new BMapGL.Point(initArgs.center.x, initArgs.center.y), initArgs.zoom);
+    map.centerAndZoom(initArgs.center, initArgs.zoom);
 
     if (initArgs.dark)
         map.setMapStyleV2({
