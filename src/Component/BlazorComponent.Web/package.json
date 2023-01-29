@@ -17,7 +17,9 @@
     "dev:activatable": "rollup --config rollup.config.activatable.ts --watch",
     "build:activatable": "rollup --config rollup.config.activatable.ts",
     "dev:outsideclick": "rollup --config rollup.config.outsideclick.ts --watch",
-    "build:outsideclick": "rollup --config rollup.config.outsideclick.ts"
+    "build:outsideclick": "rollup --config rollup.config.outsideclick.ts",
+    "dev:baidumap": "rollup --config rollup.config.maps.ts --watch",
+    "build:baidumap": "rollup --config rollup.config.maps.ts"
   },
   "author": "",
   "license": "MIT",
