@@ -145,15 +145,15 @@
   dependencies:
     "@types/zrender" "*"
 
-"@types/estree@*", "@types/estree@0.0.39":
-  "integrity" "sha512-EYNwp3bU+98cpU4lAWYYL7Zz+2gryWH1qbdDTidVd6hkiR6weksdbMadyXKXNPEkQFhXM+hVO9ZygomHXp+AIw=="
-  "resolved" "https://registry.npmmirror.com/@types/estree/-/estree-0.0.39.tgz"
-  "version" "0.0.39"
-
-"@types/estree@^1.0.0":
+"@types/estree@*", "@types/estree@^1.0.0":
   "integrity" "sha512-WulqXMDUTYAXCjZnk6JtIHPigp55cVtDgDrO2gHRwhyJto21+1zbVCtOYB2L1F9w4qCQ0rOGWBnBe0FNTiEJIQ=="
   "resolved" "https://registry.npmmirror.com/@types/estree/-/estree-1.0.0.tgz"
   "version" "1.0.0"
+
+"@types/estree@0.0.39":
+  "integrity" "sha512-EYNwp3bU+98cpU4lAWYYL7Zz+2gryWH1qbdDTidVd6hkiR6weksdbMadyXKXNPEkQFhXM+hVO9ZygomHXp+AIw=="
+  "resolved" "https://registry.npmmirror.com/@types/estree/-/estree-0.0.39.tgz"
+  "version" "0.0.39"
 
 "@types/linkify-it@*":
   "integrity" "sha512-HZQYqbiFVWufzCwexrvh694SOim8z2d+xJl5UNamcvQFejLY/2YUtzXHYi3cHdI7PMlS8ejH2slRAOJQ32aNbA=="
@@ -304,10 +304,10 @@
     "minimatch" "^5.0.1"
     "once" "^1.3.0"
 
-"gridstack@^7.1.0":
-  "integrity" "sha512-lLRUfZvDNphtmHtf/wVSA1dgipFeHQUi21G5rO+YtYzC8kbTWkLE8GoNA5k8qbUj8uzEhK7iKNrppo3hJWRWRA=="
-  "resolved" "https://registry.npmmirror.com/gridstack/-/gridstack-7.1.0.tgz"
-  "version" "7.1.0"
+"gridstack@^7.2.1":
+  "integrity" "sha512-9swEjbisKhtZlbmNiTCxOarp/9NWit5mLg6Z73sUhd4LKur5ZptMH16CUJu7HjMHxgI86FbQI5ZfMM/2TuMqdw=="
+  "resolved" "https://registry.npmjs.org/gridstack/-/gridstack-7.2.2.tgz"
+  "version" "7.2.2"
 
 "has-flag@^3.0.0":
   "integrity" "sha512-sKJf1+ceQBr4SMkvQnBDNDtf4TXpVhVGateu0t918bl30FnbE2m4vNLX+VWe/dpjlb+HugGYzW7uQXH98HPEYw=="
@@ -407,6 +407,11 @@
   "integrity" "sha512-53Zfv8PTb6rlVFDlD106xcZHKBSsRZKJ2IW/rTxEJBEVbVaoxaNsmRkG0HXfbHl2SK8kaxZ2QKqdthWy/QBwmA=="
   "resolved" "https://registry.npmmirror.com/markdown-it-attrs/-/markdown-it-attrs-4.1.4.tgz"
   "version" "4.1.4"
+
+"markdown-it-container@^3.0.0":
+  "integrity" "sha512-y6oKTq4BB9OQuY/KLfk/O3ysFhB3IMYoIWhGJEidXt1NQFocFK2sA2t0NYZAMyMShAGL6x5OPIbrmXPIqaN9rw=="
+  "resolved" "https://registry.npmjs.org/markdown-it-container/-/markdown-it-container-3.0.0.tgz"
+  "version" "3.0.0"
 
 "markdown-it-front-matter@^0.2.3":
   "integrity" "sha512-s9+rcClLmZsZc3YL8Awjg/YO/VdphlE20LJ9Bx5a8RAFLI5a1vq6Mll8kOzG6w/wy8yhFLBupaa6Mfd60GATkA=="
