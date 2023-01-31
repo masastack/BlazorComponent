@@ -124,32 +124,38 @@ export function getElementSelector(el) {
 
 export function getDom(elOrString: Element | string | undefined) {
   let element: HTMLElement;
-  if (!elOrString) {
-    element = document.body;
-  } else if (typeof elOrString === "string") {
-    if (elOrString === "document") {
-      element = document.documentElement;
-    } else if (elOrString.indexOf("__.__") > 0) {
-      // for example: el__.__parentElement
-      let array = elOrString.split("__.__");
-      let i = 0;
-      let el = document.querySelector(array[i++]);
 
-      if (el) {
-        while (array[i]) {
-          el = el[array[i]];
-          i++;
+  try {
+    if (!elOrString) {
+      element = document.body;
+    } else if (typeof elOrString === "string") {
+      if (elOrString === "document") {
+        element = document.documentElement;
+      } else if (elOrString.indexOf("__.__") > 0) {
+        // for example: el__.__parentElement
+        let array = elOrString.split("__.__");
+        let i = 0;
+        let el = document.querySelector(array[i++]);
+
+        if (el) {
+          while (array[i]) {
+            el = el[array[i]];
+            i++;
+          }
         }
-      }
 
-      if (el instanceof HTMLElement) {
-        element = el;
+        if (el instanceof HTMLElement) {
+          element = el;
+        }
+      } else {
+        element = document.querySelector(elOrString);
       }
     } else {
-      element = document.querySelector(elOrString);
+      element = elOrString as HTMLElement;
     }
-  } else {
-    element = elOrString as HTMLElement;
+
+  } catch (error) {
+    console.error(error)
   }
 
   return element;
