@@ -5,7 +5,7 @@
     {
         [CascadingParameter]
         public TGroup? ItemGroup { get; set; }
-        
+
         [Parameter]
         public string? ActiveClass { get; set; }
 
