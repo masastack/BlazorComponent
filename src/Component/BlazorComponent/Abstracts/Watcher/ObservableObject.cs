@@ -6,13 +6,13 @@ namespace BlazorComponent
 {
     public class ObservableObject : INotifyPropertyChanged
     {
-        private ConcurrentDictionary<string, IObservableProperty> _props = new();
+        private readonly ConcurrentDictionary<string, IObservableProperty> _props = new();
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        protected TValue GetValue<TValue>(TValue @default = default, [CallerMemberName] string name = "")
+        protected TValue? GetValue<TValue>(TValue? @default = default, [CallerMemberName] string name = "")
         {
-            var prop = _props.GetOrAdd(name, key => new ObservableProperty<TValue>(name, @default));
+            var prop = _props.GetOrAdd(name, _ => new ObservableProperty<TValue>(name, @default));
             var property = (ObservableProperty<TValue>)prop;
             return property.Value;
         }
@@ -24,7 +24,7 @@ namespace BlazorComponent
 
         private void SetValue<TValue>(string name, TValue value)
         {
-            var prop = _props.GetOrAdd(name, key => new ObservableProperty<TValue>(name, value));
+            var prop = _props.GetOrAdd(name, _ => new ObservableProperty<TValue>(name, value));
             var property = (ObservableProperty<TValue>)prop;
 
             property.OnChange += NotifyPropertyChange;

@@ -12,7 +12,7 @@ namespace BlazorComponent
         protected IErrorHandler? ErrorHandler { get; set; }
 
         [Parameter]
-        public ForwardRef RefBack { get; set; } = new();
+        public ForwardRef? RefBack { get; set; } = new();
 
         private string[] _dirtyParameters = Array.Empty<string>();
 

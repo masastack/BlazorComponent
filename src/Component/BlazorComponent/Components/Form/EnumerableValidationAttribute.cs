@@ -6,7 +6,7 @@ namespace BlazorComponent
     [AttributeUsage(AttributeTargets.Property)]
     public class EnumerableValidationAttribute : ValidationAttribute
     {
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
             var result = new EnumerableValidationResult();
 
