@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface ISlideGroup : IHasProviderComponent
     {
-        string ActiveClass { get; }
+        string? ActiveClass { get; }
 
         bool CenterActive { get; }
 

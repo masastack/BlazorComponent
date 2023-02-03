@@ -10,7 +10,7 @@ namespace BlazorComponent
         }
 
         [Parameter]
-        public string ActiveClass { get; set; }
+        public string? ActiveClass { get; set; }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }

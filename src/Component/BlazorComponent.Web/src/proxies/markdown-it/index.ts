@@ -11,6 +11,7 @@ type MarkdownParser = {
   md: MarkdownIt;
   scope?: string;
   useContainer: (name: string) => void;
+  defaultSlugify: (s: string) => string;
   afterRenderCallbacks: (() => void)[];
   frontMatter: {
     meta?: string;
@@ -32,6 +33,7 @@ function create(
 
   const parser = {
     scope,
+    defaultSlugify: hashString,
     afterRenderCallbacks: [],
     frontMatter: {},
     toc: {},
@@ -55,7 +57,7 @@ function create(
   parser.useContainer = (name) => md.use(markdownItContainer, name);
 
   if (anchorOptions) {
-    let slugify = (s: string) => hashString(s);
+    let slugify = parser.defaultSlugify;
     if (window.MasaBlazor.markdownItAnchorSlugify) {
       slugify = (s) => window.MasaBlazor.markdownItAnchorSlugify(scope, s);
     }

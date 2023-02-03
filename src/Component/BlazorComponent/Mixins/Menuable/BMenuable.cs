@@ -1,10 +1,8 @@
 ﻿using BlazorComponent.Web;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public class BMenuable : BBootable, IActivatable, IAsyncDisposable
+    public class BMenuable : BBootable, IAsyncDisposable
     {
         [Parameter]
         public bool Absolute { get; set; }
@@ -416,7 +414,7 @@ namespace BlazorComponent
             base.Dispose(disposing);
         }
 
-        public new async ValueTask DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
             try
             {

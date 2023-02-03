@@ -2,7 +2,7 @@
 
 namespace BlazorComponent
 {
-    public partial class BBreadcrumbs : BDomComponentBase, IBreadcrumbs, IBreadcrumbsDivider, IThemeable
+    public partial class BBreadcrumbs : BDomComponentBase, IBreadcrumbs, IBreadcrumbsDivider, IThemeable, IAncestorRoutable
     {
         protected string Tag { get; init; } = "ul";
 
@@ -15,7 +15,7 @@ namespace BlazorComponent
         public RenderFragment DividerContent { get; set; }
 
         [Parameter]
-        public bool Linkage { get; set; }
+        public bool Routable { get; set; }
 
         [Parameter]
         public IReadOnlyList<BreadcrumbItem> Items { get; set; } = new List<BreadcrumbItem>();

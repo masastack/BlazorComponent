@@ -1,0 +1,28 @@
+﻿@namespace BlazorComponent
+@inherits BDomComponentBase
+@inject I18n.I18n I18n
+
+<span class="@CssProvider.GetClass()"
+      style="@CssProvider.GetStyle()"
+      id="@Id"
+      @attributes="@Attributes"
+      @ref="@Ref">
+    @if (_value is not null)
+    {
+        @_value
+    }
+    else
+    {
+        foreach (var (text, placeholderIndex) in _segments)
+        {
+            if (placeholderIndex != -1 && PlaceholderContent is not null)
+            {
+                @PlaceholderContent(placeholderIndex)
+            }
+            else
+            {
+                @text
+            }
+        }
+    }
+</span>

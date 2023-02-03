@@ -4,7 +4,7 @@ namespace BlazorComponent
 {
     public interface IGroupable
     {
-        string ActiveClass { get; set; }
+        string? ActiveClass { get; set; }
 
         bool Disabled { get; set; }
 

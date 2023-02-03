@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
-using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public partial class BBreadcrumbsItem : BDomComponentBase, IBreadcrumbsItem, IBreadcrumbsDivider, IRoutable, ILinkable
+    public partial class BBreadcrumbsItem : BDomComponentBase, IBreadcrumbsItem, IBreadcrumbsDivider, IRoutable
     {
-        private Linker _linker;
         private IRoutable _router;
 
         protected string WrappedTag { get; set; } = "li";
@@ -26,48 +24,51 @@ namespace BlazorComponent
         public bool Exact { get; set; }
 
         [Parameter]
-        public string Href { get; set; }
+        public string? Href { get; set; }
 
         [Parameter]
         public bool Link { get; set; }
 
-        [Parameter]
-        public bool Linkage { get; set; }
-
         public EventCallback<MouseEventArgs> OnClick { get; set; }
 
         [Parameter]
-        public string Tag { get; set; } = "div";
+        public string? Tag { get; set; } = "div";
 
         [Parameter]
-        public string Target { get; set; }
+        public string? Target { get; set; }
 
         [Parameter]
-        public string Text { get; set; }
+        public string? Text { get; set; }
 
         [Parameter]
         public RenderFragment<(bool IsLast, bool IsDisabled)> ChildContent { get; set; }
 
         protected bool IsDisabled => Disabled || Matched;
 
-        public bool IsLinkage => Href != null && (Breadcrumbs?.Linkage ?? Linkage);
+        public bool IsRoutable => Href != null && (Breadcrumbs?.Routable is true);
 
         protected override void OnInitialized()
         {
             base.OnInitialized();
 
-            _linker = new Linker(this);
-
             Breadcrumbs?.AddSubBreadcrumbsItem(this);
 
             NavigationManager.LocationChanged += OnLocationChanged;
+        }
 
-            UpdateActiveForLinkage();
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            await base.OnAfterRenderAsync(firstRender);
+
+            if (firstRender)
+            {
+                UpdateActiveForRoutable();
+            }
         }
 
         private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
         {
-            var shouldRender = UpdateActiveForLinkage();
+            var shouldRender = UpdateActiveForRoutable();
             if (shouldRender)
             {
                 InvokeStateHasChanged();
@@ -76,8 +77,6 @@ namespace BlazorComponent
 
         protected override void OnParametersSet()
         {
-            _linker = new Linker(this);
-
             _router = new Router(this);
 
             (Tag, Attributes) = _router.GenerateRouteLink();
@@ -98,13 +97,13 @@ namespace BlazorComponent
 
         #endregion
 
-        private bool UpdateActiveForLinkage()
+        private bool UpdateActiveForRoutable()
         {
             var matched = Matched;
 
-            if (IsLinkage)
+            if (IsRoutable)
             {
-                Matched = _linker.MatchRoute(Href);
+                Matched = _router.MatchRoute();
             }
 
             return matched != Matched;
