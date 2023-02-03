@@ -15,8 +15,6 @@ public static class StringExtensions
             return str;
         }
 
-        // todo: regex.replace is more fast?
-
         str = str.Remove(index, oldValue.Length);
         return str.Insert(index, newValue);
     }

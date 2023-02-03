@@ -12,7 +12,7 @@ public partial class BI18n : BDomComponentBase
     public RenderFragment<int>? PlaceholderContent { get; set; }
 
     [Parameter]
-    public string[]? Args { get; set; }
+    public object[]? Args { get; set; }
 
     private List<I18nValueSegment> _segments = new();
     private string? _value;
