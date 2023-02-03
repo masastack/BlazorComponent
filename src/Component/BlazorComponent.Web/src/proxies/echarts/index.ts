@@ -8,6 +8,20 @@ function init(elOrString, theme, initOptions) {
     chart.resize({ width, height });
   });
 
+  const observer = new IntersectionObserver((entries) => {
+    if (entries.some((e) => e.isIntersecting)) {
+      chart.resize();
+    }
+  });
+
+  observer.observe(chart.getDom());
+
+  chart["origin_dispose"] = chart.dispose;
+  chart.dispose = () => {
+    observer.disconnect();
+    chart["origin_dispose"] && chart["origin_dispose"]();
+  };
+
   return chart;
 }
 
