@@ -2,7 +2,7 @@
 
 namespace BlazorComponent
 {
-    public partial class BTreeview<TItem, TKey> : ITreeview<TItem, TKey>
+    public partial class BTreeview<TItem, TKey> : ITreeview<TItem, TKey> where TKey : notnull
     {
         private List<TItem> _oldItems;
         private string _oldItemsKeys;
@@ -138,8 +138,6 @@ namespace BlazorComponent
 
         [Parameter]
         public string ExpandIcon { get; set; } = "mdi-menu-down";
-
-        public TKey ActiveKey { get; private set; }
 
         public Dictionary<TKey, NodeState<TItem, TKey>> Nodes { get; private set; } = new();
 

@@ -117,7 +117,7 @@ namespace BlazorComponent
             }
         }
 
-        public async Task SetWidths(StringNumber selectedValue = null)
+        public async Task SetWidths(StringNumber? selectedValue = null)
         {
             (WrapperWidth, ContentWidth) = await GetWidths();
 
@@ -180,7 +180,7 @@ namespace BlazorComponent
             StateHasChanged();
         }
 
-        protected async Task ScrollToView(StringNumber selectedValue)
+        protected async Task ScrollToView(StringNumber? selectedValue)
         {
             if (selectedValue == null && Items.Any())
             {

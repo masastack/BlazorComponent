@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
-    public partial class BTabs : BDomComponentBase, ITabs
+    public partial class BTabs : BDomComponentBase, ITabs, IAncestorRoutable
     {
         [CascadingParameter(Name = "rtl")]
         public bool Rtl { get; set; }
@@ -58,6 +56,9 @@ namespace BlazorComponent
         public StringBoolean ShowArrows { get; set; }
 
         [Parameter]
+        public bool Routable { get; set; }
+
+        [Parameter]
         public bool Dark { get; set; }
 
         [Parameter]
@@ -72,7 +73,7 @@ namespace BlazorComponent
 
         private object TabsBarRef { get; set; }
 
-        protected (StringNumber height, StringNumber left, StringNumber right, StringNumber top, StringNumber width) Slider { get; set; }
+        protected(StringNumber height, StringNumber left, StringNumber right, StringNumber top, StringNumber width) Slider { get; set; }
 
         public bool IsDark
         {
@@ -96,6 +97,8 @@ namespace BlazorComponent
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
+            await base.OnAfterRenderAsync(firstRender);
+            
             if (firstRender)
             {
                 await CallSlider();

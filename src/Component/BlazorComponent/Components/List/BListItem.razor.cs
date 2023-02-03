@@ -1,19 +1,12 @@
 ﻿using Microsoft.AspNetCore.Components.Routing;
-using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public partial class BListItem : BGroupItem<ItemGroupBase>, IRoutable, ILinkable
+    public partial class BListItem : BRoutableGroupItem<ItemGroupBase>
     {
-        private Linker _linker;
-        private IRoutable _router;
-
         public BListItem() : base(GroupType.ListItemGroup)
         {
         }
-
-        [Inject]
-        public NavigationManager NavigationManager { get; set; }
 
         [CascadingParameter(Name = "IsInGroup")]
         public bool IsInGroup { get; set; }
@@ -28,34 +21,13 @@ namespace BlazorComponent
         public bool IsInNav { get; set; }
 
         [CascadingParameter]
-        public BList List { get; set; }
+        public BList? List { get; set; }
 
         [Parameter]
         public string Color { get; set; }
 
         [Parameter]
-        public bool Exact { get; set; }
-
-        [Parameter]
-        public string Href { get; set; }
-
-        [Parameter]
         public RenderFragment<ItemContext> ItemContent { get; set; }
-
-        [Parameter]
-        public bool Link { get; set; }
-
-        [Parameter]
-        public bool Linkage { get; set; }
-
-        [Parameter]
-        public EventCallback<MouseEventArgs> OnClick { get; set; }
-
-        [Parameter]
-        public string Tag { get; set; } = "div";
-
-        [Parameter]
-        public string Target { get; set; }
 
         [Parameter]
         public bool Dark { get; set; }
@@ -86,43 +58,17 @@ namespace BlazorComponent
 
         protected RenderFragment ComputedItemContent => ItemContent(GenItemContext());
 
-        public bool IsClickable => _router.IsClickable || Matched;
+        public bool IsClickable => Router.IsClickable || Matched;
 
-        public bool IsLink => _router.IsLink;
+        public bool IsLink => Router.IsLink;
 
-        public bool IsLinkage => Href != null && (List?.Linkage ?? Linkage);
-
-        protected override async Task OnInitializedAsync()
-        {
-            await base.OnInitializedAsync();
-
-            _linker = new Linker(this);
-
-            NavigationManager.LocationChanged += OnLocationChanged;
-
-            await UpdateActiveForLinkage();
-        }
+        protected override bool IsRoutable => Href != null && List?.Routable is true;
 
         protected override void OnParametersSet()
         {
             base.OnParametersSet();
 
-            _linker = new Linker(this);
-
-            _router = new Router(this);
-            (Tag, Attributes) = _router.GenerateRouteLink();
-
             SetAttrs();
-        }
-
-
-        private async void OnLocationChanged(object sender, LocationChangedEventArgs e)
-        {
-            var shouldRender = await UpdateActiveForLinkage();
-            if (shouldRender)
-            {
-                await InvokeStateHasChangedAsync();
-            }
         }
 
         protected override bool AfterHandleEventShouldRender() => false;
@@ -181,26 +127,6 @@ namespace BlazorComponent
                 Ref = RefBack,
                 Value = Value
             };
-        }
-
-        private async Task<bool> UpdateActiveForLinkage()
-        {
-            if (IsLinkage)
-            {
-                var isActive = InternalIsActive;
-                var matched = _linker.MatchRoute(Href);
-                await SetInternalIsActive(matched);
-                return isActive != matched;
-            }
-
-            return false;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            NavigationManager.LocationChanged -= OnLocationChanged;
-
-            base.Dispose(disposing);
         }
     }
 }
