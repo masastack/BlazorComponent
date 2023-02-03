@@ -16,11 +16,16 @@ function init(elOrString, theme, initOptions) {
 
   observer.observe(chart.getDom());
 
-  chart["origin_dispose"] = chart.dispose;
-  chart.dispose = () => {
-    observer.disconnect();
-    chart["origin_dispose"] && chart["origin_dispose"]();
-  };
+  if (!!chart["origin_dispose"]) {
+    chart["origin_dispose"] = chart.dispose;
+    chart.dispose = () => {
+      if (chart.isDisposed()) return;
+
+      observer.disconnect();
+
+      chart["origin_dispose"] && chart["origin_dispose"]();
+    };
+  }
 
   return chart;
 }
