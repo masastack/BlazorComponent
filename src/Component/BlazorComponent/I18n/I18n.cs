@@ -68,7 +68,7 @@ public class I18n
 
     public IEnumerable<CultureInfo> SupportedCultures => I18nCache.GetCultures();
 
-    public string? T(string? key, bool matchLastLevel = false, [DoesNotReturnIf(true)] bool whenNullReturnKey = true, params object[] args)
+    public string? T(string? key, bool matchLastLevel = false, bool whenNullReturnKey = true, params object[] args)
     {
         if (key is null)
         {
@@ -102,7 +102,7 @@ public class I18n
         }
     }
 
-    public string? T(string? scope, string? key, [DoesNotReturnIf(true)] bool whenNullReturnKey = true, params object[] args)
+    public string? T(string? scope, string? key, bool whenNullReturnKey = true, params object[] args)
     {
         if (key is null)
         {
