@@ -1,8 +1,6 @@
 ﻿@namespace BlazorComponent
 @inherits BMenuable
 
-@ComputedActivatorContent
-
 <div style="@CssProvider.GetStyle()" class="@CssProvider.GetClass()" @ref="Ref">
     @if (IsBooted)
     {
@@ -23,3 +21,5 @@
         </CascadingValue>
     }
 </div>
+
+@ComputedActivatorContent
