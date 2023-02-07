@@ -29,6 +29,18 @@ namespace BlazorComponent
                 invokers);
         }
 
+        public async Task ResizeObserver(string selector, Func<Task> func)
+        {
+            var invoker = DotNetObjectReference.Create(new Invoker(func));
+
+            _references.Add(invoker);
+
+            await _jsRuntime.InvokeVoidAsync(
+                JsInteropConstants.ResizeObserver,
+                selector,
+                invoker);
+        }
+
         public void Dispose()
         {
             foreach (var reference in _references)
