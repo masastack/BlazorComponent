@@ -47,7 +47,8 @@ namespace BlazorComponent
         public StringNumber? ZIndex { get; set; }
 
         [Parameter]
-        public string? Attach { get; set; }
+        [ApiDefaultValue(false)]
+        public StringBoolean? Attach { get; set; } = false;
 
         [Parameter]
         public bool Left { get; set; }
@@ -84,7 +85,7 @@ namespace BlazorComponent
             {
                 var activator = Dimensions.Activator;
                 var content = Dimensions.Content;
-                var activatorLeft = Attach != null ? activator.OffsetLeft : activator.Left;
+                var activatorLeft = Attach is not { AsT1: false } ? activator.OffsetLeft : activator.Left;
                 var minWidth = Math.Max(activator.Width, content.Width);
 
                 double left = 0;
@@ -180,11 +181,11 @@ namespace BlazorComponent
 
         protected bool HasActivator => ActivatorContent != null || ExternalActivator;
 
-        protected virtual string? AttachSelector => Attach;
+        protected virtual string? AttachSelector => default;
 
         protected int ComputedZIndex => ZIndex != null ? ZIndex.ToInt32() : Math.Max(ActivateZIndex, StackMinZIndex);
 
-        protected MenuableDimensions Dimensions { get; } = new MenuableDimensions();
+        protected MenuableDimensions Dimensions { get; } = new();
 
         protected double AbsoluteX { get; set; }
 
@@ -207,16 +208,10 @@ namespace BlazorComponent
         public bool Attached { get; protected set; }
 
         protected StringNumber? CalcLeft(double menuWidth)
-        {
-            var left = Attach != null ? ComputedLeft : CalcXOverflow(ComputedLeft, menuWidth);
-            return left > 0 ? left : null;
-        }
+            => Attach != null ? ComputedLeft : CalcXOverflow(ComputedLeft, menuWidth);
 
         protected StringNumber? CalcTop()
-        {
-            var top = Attach != null ? ComputedTop : CalcYOverflow(ComputedTop);
-            return top > 0 ? top : null;
-        }
+            => Attach != null ? ComputedTop : CalcYOverflow(ComputedTop);
 
         protected double CalcXOverflow(double left, double menuWidth)
         {
@@ -301,6 +296,11 @@ namespace BlazorComponent
 
         protected virtual async Task UpdateDimensionsAsync()
         {
+            if (!Attached && Attach is not null && ((Attach.IsT0 && string.IsNullOrWhiteSpace(Attach.AsT0)) || Attach.IsT1 && Attach.AsT1))
+            {
+                Attached = true;
+            }
+
             //Invoke multiple method
             //1、Attach
             //2、Window,Document
@@ -309,9 +309,11 @@ namespace BlazorComponent
             var windowProps = new string[] { "innerHeight", "innerWidth", "pageXOffset", "pageYOffset" };
             var documentProps = new string[] { "clientHeight", "clientWidth", "scrollLeft", "scrollTop" };
 
+            Console.Out.WriteLine("AttachSelector = {0}", AttachSelector);
+
             var hasActivator = HasActivator && !Absolute;
             var multipleResult = await JsInvokeAsync<MultipleResult>(JsInteropConstants.InvokeMultipleMethod, windowProps, documentProps,
-                hasActivator, ActivatorSelector, Attach, ContentElement, Attached, AttachSelector, Ref);
+                hasActivator, ActivatorSelector, Attach is not { AsT1: false }, ContentElement, Attached, AttachSelector, Ref);
             var windowAndDocument = multipleResult.WindowAndDocument;
 
             //We want to reduce js interop
