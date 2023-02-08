@@ -35,4 +35,14 @@ async function constructCircle(circle) {
     return c;
 }
 
-export { init, constructCircle }
+async function constructMarker(marker) {
+    var c = new BMapGL.Marker(marker.point, {
+        offset: marker.offset,
+        rotation: marker.rotation,
+        title: marker.title
+    });
+
+    return c;
+}
+
+export { init, constructCircle, constructMarker }
