@@ -85,7 +85,7 @@ namespace BlazorComponent
             {
                 var activator = Dimensions.Activator;
                 var content = Dimensions.Content;
-                var activatorLeft = Attach is not { AsT1: false } ? activator.OffsetLeft : activator.Left;
+                var activatorLeft = !IsDefaultAttach ? activator.OffsetLeft : activator.Left;
                 var minWidth = Math.Max(activator.Width, content.Width);
 
                 double left = 0;
@@ -135,7 +135,7 @@ namespace BlazorComponent
 
                 if (Top) top += activator.Height - content.Height;
 
-                if (Attach is not { AsT1: false })
+                if (!IsDefaultAttach)
                 {
                     top += activator.OffsetTop;
                 }
@@ -187,6 +187,16 @@ namespace BlazorComponent
 
         protected virtual string? AttachSelector => default;
 
+        /// <summary>
+        /// Attached to the current element but not to other element.
+        /// </summary>
+        protected bool IsAttachSelf => Attach is not null && Attach.IsT1 && Attach.AsT1;
+
+        /// <summary>
+        /// Determines whether the <see cref="Attach"/> value is false.
+        /// </summary>
+        protected bool IsDefaultAttach => Attach is not null && Attach.IsT1 && Attach.AsT1 == false;
+
         protected int ComputedZIndex => ZIndex != null ? ZIndex.ToInt32() : Math.Max(ActivateZIndex, StackMinZIndex);
 
         protected MenuableDimensions Dimensions { get; } = new();
@@ -212,10 +222,10 @@ namespace BlazorComponent
         public bool Attached { get; protected set; }
 
         protected StringNumber? CalcLeft(double menuWidth)
-            => Attach is not { AsT1: false } ? ComputedLeft : CalcXOverflow(ComputedLeft, menuWidth);
+            => !IsDefaultAttach ? ComputedLeft : CalcXOverflow(ComputedLeft, menuWidth);
 
         protected StringNumber? CalcTop()
-            => Attach is not { AsT1: false } ? ComputedTop : CalcYOverflow(ComputedTop);
+            => !IsDefaultAttach ? ComputedTop : CalcYOverflow(ComputedTop);
 
         protected double CalcXOverflow(double left, double menuWidth)
         {
@@ -317,7 +327,7 @@ namespace BlazorComponent
 
             var hasActivator = HasActivator && !Absolute;
             var multipleResult = await JsInvokeAsync<MultipleResult>(JsInteropConstants.InvokeMultipleMethod, windowProps, documentProps,
-                hasActivator, ActivatorSelector, Attach is not { AsT1: false }, ContentElement, Attached, AttachSelector, Ref);
+                hasActivator, ActivatorSelector, IsDefaultAttach, ContentElement, Attached, AttachSelector, Ref);
             var windowAndDocument = multipleResult.WindowAndDocument;
 
             //We want to reduce js interop
