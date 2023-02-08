@@ -1,30 +1,38 @@
-﻿namespace BlazorComponent
+﻿using BlazorComponent.Web;
+
+namespace BlazorComponent
 {
     public partial class BTabs : BDomComponentBase, ITabs, IAncestorRoutable
     {
+        [Inject]
+        private DomEventJsInterop? DomEventJsInterop { get; set; }
+
         [CascadingParameter(Name = "rtl")]
         public bool Rtl { get; set; }
+
+        [CascadingParameter(Name = "IsDark")]
+        public bool CascadingIsDark { get; set; }
 
         [Parameter]
         public virtual bool HideSlider { get; set; }
 
         [Parameter]
-        public string Color { get; set; }
+        public string? Color { get; set; }
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
         public bool Optional { get; set; }
 
         [Parameter]
-        public string SliderColor { get; set; }
+        public string? SliderColor { get; set; }
 
         [Parameter]
         public StringNumber SliderSize { get; set; } = 2;
 
         [Parameter]
-        public StringNumber Value { get; set; }
+        public StringNumber? Value { get; set; }
 
         private EventCallback<StringNumber>? _valueChanged;
 
@@ -47,13 +55,13 @@
         public bool Vertical { get; set; }
 
         [Parameter]
-        public string NextIcon { get; set; }
+        public string? NextIcon { get; set; }
 
         [Parameter]
-        public string PrevIcon { get; set; }
+        public string? PrevIcon { get; set; }
 
         [Parameter]
-        public StringBoolean ShowArrows { get; set; }
+        public StringBoolean? ShowArrows { get; set; }
 
         [Parameter]
         public bool Routable { get; set; }
@@ -64,12 +72,9 @@
         [Parameter]
         public bool Light { get; set; }
 
-        [CascadingParameter(Name = "IsDark")]
-        public bool CascadingIsDark { get; set; }
+        private StringNumber? _prevValue;
 
-        private StringNumber _prevValue;
-
-        private List<ITabItem> TabItems { get; set; }
+        private List<ITabItem> TabItems { get; set; } = new();
 
         private object TabsBarRef { get; set; }
 
@@ -98,9 +103,11 @@
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
-            
+
             if (firstRender)
             {
+                DomEventJsInterop?.ResizeObserver(Ref.GetSelector(), OnResize);
+
                 await CallSlider();
             }
             else if (_prevValue != Value)
@@ -116,8 +123,6 @@
 
         public void RegisterTabItem(ITabItem tabItem)
         {
-            TabItems ??= new List<ITabItem>();
-
             tabItem.Value ??= TabItems.Count;
 
             if (TabItems.Any(item => item.Value.Equals(tabItem.Value))) return;
@@ -152,6 +157,16 @@
             }
 
             StateHasChanged();
+        }
+
+        private async Task OnResize()
+        {
+            if (IsDisposed)
+            {
+                return;
+            }
+
+            await CallSlider();
         }
     }
 }

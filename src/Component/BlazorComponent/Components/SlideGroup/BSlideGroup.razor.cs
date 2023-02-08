@@ -40,13 +40,13 @@ namespace BlazorComponent
         public StringBoolean ShowArrows { get; set; }
 
         [Parameter]
-        public string NextIcon { get; set; }
+        public string? NextIcon { get; set; }
 
         [Parameter]
         public RenderFragment NextContent { get; set; }
 
         [Parameter]
-        public string PrevIcon { get; set; }
+        public string? PrevIcon { get; set; }
 
         [Parameter]
         public RenderFragment PrevContent { get; set; }
