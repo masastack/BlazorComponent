@@ -323,8 +323,6 @@ namespace BlazorComponent
             var windowProps = new string[] { "innerHeight", "innerWidth", "pageXOffset", "pageYOffset" };
             var documentProps = new string[] { "clientHeight", "clientWidth", "scrollLeft", "scrollTop" };
 
-            Console.Out.WriteLine("AttachSelector = {0}", AttachSelector);
-
             var hasActivator = HasActivator && !Absolute;
             var multipleResult = await JsInvokeAsync<MultipleResult>(JsInteropConstants.InvokeMultipleMethod, windowProps, documentProps,
                 hasActivator, ActivatorSelector, IsDefaultAttach, ContentElement, Attached, AttachSelector, Ref);
