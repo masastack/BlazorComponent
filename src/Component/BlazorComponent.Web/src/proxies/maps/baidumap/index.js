@@ -54,17 +54,30 @@ async function constructLabel(label) {
     return l;
 }
 
-async function constructPolyline(polyLine) {
-    var pl = new BMapGL.Polyline(polyLine.points, {
-        strokeColor: polyLine.strokeColor,
-        strokeWeight: polyLine.strokeWeight,
-        strokeOpacity: polyLine.strokeOpacity,
-        strokeStyle: polyLine.strokeStyle == 0 ? "solid" : "dashed",
-        geodesic: polyLine.geodesic,
-        clip: polyLine.clip
-    })
+async function constructPolyline(polyline) {
+    var pl = new BMapGL.Polyline(polyline.points, {
+        strokeColor: polyline.strokeColor,
+        strokeWeight: polyline.strokeWeight,
+        strokeOpacity: polyline.strokeOpacity,
+        strokeStyle: polyline.strokeStyle == 0 ? "solid" : "dashed",
+        geodesic: polyline.geodesic,
+        clip: polyline.clip
+    });
 
     return pl;
 }
 
-export { init, constructCircle, constructMarker, constructLabel, constructPolyline }
+async function constructPolygon(polygon) {
+    var pg = new BMapGL.Polygon(polygon.points, {
+        strokeColor: polygon.strokeColor,
+        strokeWeight: polygon.strokeWeight,
+        strokeOpacity: polygon.strokeOpacity,
+        strokeStyle: polygon.strokeStyle == 0 ? "solid" : "dashed",
+        fillColor: polygon.fillColor,
+        fillOpacity: polygon.fillOpacity
+    });
+
+    return pg;
+}
+
+export { init, constructCircle, constructMarker, constructLabel, constructPolyline, constructPolygon }
