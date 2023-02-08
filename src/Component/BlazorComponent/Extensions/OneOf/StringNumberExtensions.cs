@@ -2,7 +2,7 @@
 {
     public static class StringNumberExtensions
     {
-        public static string ToUnit(this StringNumber stringNumber, string unit = "px")
+        public static string ToUnit(this StringNumber? stringNumber, string unit = "px")
         {
             if (stringNumber == null)
             {
@@ -19,7 +19,7 @@
         // TODO: ConvertToUnit更接近vuetify源码
         // TODO: 是否可以把上面的ToUnit删掉
 
-        public static string? ConvertToUnit(this StringNumber stringNumber, string unit = "px")
+        public static string? ConvertToUnit(this StringNumber? stringNumber, string unit = "px")
         {
             if (stringNumber == null)
             {

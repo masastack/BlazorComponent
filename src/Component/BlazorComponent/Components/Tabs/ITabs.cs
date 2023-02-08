@@ -6,14 +6,14 @@ namespace BlazorComponent
     {
         bool HideSlider { get; }
 
-        string SliderColor { get; }
+        string? SliderColor { get; }
 
         StringNumber SliderSize { get; }
 
-        RenderFragment ChildContent { get; }
+        RenderFragment? ChildContent { get; }
 
         List<ITabItem> TabItems { get; }
 
-        StringNumber Value { get; }
+        StringNumber? Value { get; }
     }
 }

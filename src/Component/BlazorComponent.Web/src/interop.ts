@@ -1040,7 +1040,7 @@ export function copyText(text) {
   });
 }
 
-export function getMenuableDimensions(hasActivator, activatorSelector, attach, contentElement, attached, attachSelector) {
+export function getMenuableDimensions(hasActivator, activatorSelector, isDefaultAttach, contentElement, attached, attachSelector) {
   if (!attached) {
     var container = document.querySelector(attachSelector);
     if (contentElement.nodeType) {
@@ -1057,9 +1057,9 @@ export function getMenuableDimensions(hasActivator, activatorSelector, attach, c
 
   if (hasActivator) {
     var activator = document.querySelector(activatorSelector);
-    dimensions.activator = measure(activator, attach)
+    dimensions.activator = measure(activator, isDefaultAttach)
     dimensions.activator.offsetLeft = activator.offsetLeft
-    if (attach !== null) {
+    if (!isDefaultAttach) {
       // account for css padding causing things to not line up
       // this is mostly for v-autocomplete, hopefully it won't break anything
       dimensions.activator.offsetTop = activator.offsetTop
@@ -1082,20 +1082,20 @@ export function getMenuableDimensions(hasActivator, activatorSelector, attach, c
         }
       }
 
-      dimensions.content = measure(contentElement, attach)
+      dimensions.content = measure(contentElement, isDefaultAttach)
     }
   }, contentElement);
 
   return dimensions;
 }
 
-function measure(el: HTMLElement, attach) {
+function measure(el: HTMLElement, isDefaultAttach) {
   if (!el) return null
 
   const rect = getRoundedBoundedClientRect(el)
 
   // Account for activator margin
-  if (attach !== null) {
+  if (!isDefaultAttach) {
     const style = window.getComputedStyle(el)
 
     rect.left = parseInt(style.marginLeft!)
