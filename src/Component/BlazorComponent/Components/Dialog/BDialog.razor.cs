@@ -127,8 +127,6 @@ public partial class BDialog : BBootable, IDependent, IAsyncDisposable
 
             await JsInvokeAsync(JsInteropConstants.AddElementTo, OverlayRef, AttachSelector);
             await JsInvokeAsync(JsInteropConstants.AddElementTo, ContentRef, AttachSelector);
-
-            StateHasChanged();
         }
     }
 
