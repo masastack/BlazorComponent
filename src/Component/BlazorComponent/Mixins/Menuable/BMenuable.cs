@@ -93,12 +93,16 @@ namespace BlazorComponent
 
                 if (OffsetX)
                 {
-                    double maxWidth = 0;
+                    double maxWidth;
 
                     if (MaxWidth != null)
                     {
                         (var isNumber, maxWidth) = MaxWidth.TryGetNumber();
                         maxWidth = isNumber ? Math.Min(activator.Width, maxWidth) : activator.Width;
+                    }
+                    else
+                    {
+                        maxWidth = activator.Width;
                     }
 
                     left += Left ? -maxWidth : activator.Width;
@@ -131,7 +135,7 @@ namespace BlazorComponent
 
                 if (Top) top += activator.Height - content.Height;
 
-                if (Attach != null)
+                if (Attach is not { AsT1: false })
                 {
                     top += activator.OffsetTop;
                 }
@@ -208,10 +212,10 @@ namespace BlazorComponent
         public bool Attached { get; protected set; }
 
         protected StringNumber? CalcLeft(double menuWidth)
-            => Attach != null ? ComputedLeft : CalcXOverflow(ComputedLeft, menuWidth);
+            => Attach is not { AsT1: false } ? ComputedLeft : CalcXOverflow(ComputedLeft, menuWidth);
 
         protected StringNumber? CalcTop()
-            => Attach != null ? ComputedTop : CalcYOverflow(ComputedTop);
+            => Attach is not { AsT1: false } ? ComputedTop : CalcYOverflow(ComputedTop);
 
         protected double CalcXOverflow(double left, double menuWidth)
         {

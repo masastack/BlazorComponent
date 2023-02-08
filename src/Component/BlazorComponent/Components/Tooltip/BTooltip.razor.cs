@@ -31,7 +31,7 @@ namespace BlazorComponent
                 if (activator == null || content == null) return 0;
 
                 var unknown = !Bottom && !Left && !Top && !Right;
-                var activatorLeft = Attach != null ? activator.OffsetLeft : activator.Left;
+                var activatorLeft = Attach is not { AsT1: false } ? activator.OffsetLeft : activator.Left;
                 double left = 0;
 
                 if (Top || Bottom || unknown)
@@ -67,7 +67,7 @@ namespace BlazorComponent
                 var content = Dimensions.Content;
                 if (activator == null || content == null) return 0;
 
-                var activatorTop = Attach != null ? activator.OffsetTop : activator.Top;
+                var activatorTop = Attach is not { AsT1: false } ? activator.OffsetTop : activator.Top;
                 double top = 0;
 
                 if (Top || Bottom)
