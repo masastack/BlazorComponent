@@ -6,12 +6,14 @@ namespace BlazorComponent
     {
         public static async ValueTask TryInvokeVoidAsync(this IJSObjectReference? jsObjectReference, string identifier, params object?[]? args)
         {
-            if (jsObjectReference is null)
-            {
-                return;
-            }
+            if (jsObjectReference is not null)
+                await jsObjectReference.InvokeVoidAsync(identifier, args);
+        }
 
-            await jsObjectReference.InvokeVoidAsync(identifier, args);
+        public static async ValueTask TryInvokeVoidAsync(this IJSObjectReference? jsObjectReference, Func<bool> conditions, string identifier, params object?[]? args)
+        {
+            if (jsObjectReference is not null && conditions())
+                await jsObjectReference.InvokeVoidAsync(identifier, args);
         }
     }
 }

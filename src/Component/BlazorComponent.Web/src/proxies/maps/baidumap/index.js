@@ -36,13 +36,35 @@ async function constructCircle(circle) {
 }
 
 async function constructMarker(marker) {
-    var c = new BMapGL.Marker(marker.point, {
+    var m = new BMapGL.Marker(marker.point, {
         offset: marker.offset,
         rotation: marker.rotation,
         title: marker.title
     });
 
-    return c;
+    return m;
 }
 
-export { init, constructCircle, constructMarker }
+async function constructLabel(label) {
+    var l = new BMapGL.Label(label.content, {
+        offset: label.offset,
+        position: label.position
+    });
+
+    return l;
+}
+
+async function constructPolyline(polyLine) {
+    var pl = new BMapGL.Polyline(polyLine.points, {
+        strokeColor: polyLine.strokeColor,
+        strokeWeight: polyLine.strokeWeight,
+        strokeOpacity: polyLine.strokeOpacity,
+        strokeStyle: polyLine.strokeStyle == 0 ? "solid" : "dashed",
+        geodesic: polyLine.geodesic,
+        clip: polyLine.clip
+    })
+
+    return pl;
+}
+
+export { init, constructCircle, constructMarker, constructLabel, constructPolyline }
