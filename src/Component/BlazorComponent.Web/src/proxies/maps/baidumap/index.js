@@ -22,4 +22,17 @@ async function init(containerId, initArgs, dotNetObjRef) {
     return map;
 }
 
-export { init }
+async function constructCircle(circle) {
+    var c = new BMapGL.Circle(circle.center, circle.radius, {
+        strokeColor: circle.strokeColor,
+        strokeWeight: circle.strokeWeight,
+        strokeOpacity: circle.strokeOpacity,
+        strokeStyle: circle.strokeStyle == 0 ? "solid" : "dashed",
+        fillColor: circle.fillColor,
+        fillOpacity: circle.fillOpacity
+    });
+
+    return c;
+}
+
+export { init, constructCircle }
