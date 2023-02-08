@@ -18,7 +18,7 @@ namespace BlazorComponent
         [EditorRequired]
         public RenderFragment? ChildContent { get; set; }
 
-        [DefaultValue("mdi-close-circle")]
+        [ApiDefaultValue("mdi-close-circle")]
         [Parameter]
         public string CloseIcon { get; set; } = "mdi-close-circle";
 
@@ -76,7 +76,7 @@ namespace BlazorComponent
             await ValueChanged.InvokeAsync(false);
         }
 
-        [PublicMethod]
+        [ApiPublicMethod]
         public async Task ToggleAsync()
         {
             Value = !Value;

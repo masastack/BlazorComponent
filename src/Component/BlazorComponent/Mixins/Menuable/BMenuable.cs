@@ -47,7 +47,8 @@ namespace BlazorComponent
         public StringNumber? ZIndex { get; set; }
 
         [Parameter]
-        public string? Attach { get; set; }
+        [ApiDefaultValue(false)]
+        public StringBoolean? Attach { get; set; } = false;
 
         [Parameter]
         public bool Left { get; set; }
@@ -84,7 +85,7 @@ namespace BlazorComponent
             {
                 var activator = Dimensions.Activator;
                 var content = Dimensions.Content;
-                var activatorLeft = Attach != null ? activator.OffsetLeft : activator.Left;
+                var activatorLeft = !IsDefaultAttach ? activator.OffsetLeft : activator.Left;
                 var minWidth = Math.Max(activator.Width, content.Width);
 
                 double left = 0;
@@ -92,12 +93,16 @@ namespace BlazorComponent
 
                 if (OffsetX)
                 {
-                    double maxWidth = 0;
+                    double maxWidth;
 
                     if (MaxWidth != null)
                     {
                         (var isNumber, maxWidth) = MaxWidth.TryGetNumber();
                         maxWidth = isNumber ? Math.Min(activator.Width, maxWidth) : activator.Width;
+                    }
+                    else
+                    {
+                        maxWidth = activator.Width;
                     }
 
                     left += Left ? -maxWidth : activator.Width;
@@ -130,7 +135,7 @@ namespace BlazorComponent
 
                 if (Top) top += activator.Height - content.Height;
 
-                if (Attach != null)
+                if (!IsDefaultAttach)
                 {
                     top += activator.OffsetTop;
                 }
@@ -180,11 +185,21 @@ namespace BlazorComponent
 
         protected bool HasActivator => ActivatorContent != null || ExternalActivator;
 
-        protected virtual string? AttachSelector => Attach;
+        protected virtual string? AttachSelector => default;
+
+        /// <summary>
+        /// Attached to the current element but not to other element.
+        /// </summary>
+        protected bool IsAttachSelf => Attach is not null && Attach.IsT1 && Attach.AsT1;
+
+        /// <summary>
+        /// Determines whether the <see cref="Attach"/> value is false.
+        /// </summary>
+        protected bool IsDefaultAttach => Attach is not null && Attach.IsT1 && Attach.AsT1 == false;
 
         protected int ComputedZIndex => ZIndex != null ? ZIndex.ToInt32() : Math.Max(ActivateZIndex, StackMinZIndex);
 
-        protected MenuableDimensions Dimensions { get; } = new MenuableDimensions();
+        protected MenuableDimensions Dimensions { get; } = new();
 
         protected double AbsoluteX { get; set; }
 
@@ -207,16 +222,10 @@ namespace BlazorComponent
         public bool Attached { get; protected set; }
 
         protected StringNumber? CalcLeft(double menuWidth)
-        {
-            var left = Attach != null ? ComputedLeft : CalcXOverflow(ComputedLeft, menuWidth);
-            return left > 0 ? left : null;
-        }
+            => !IsDefaultAttach ? ComputedLeft : CalcXOverflow(ComputedLeft, menuWidth);
 
         protected StringNumber? CalcTop()
-        {
-            var top = Attach != null ? ComputedTop : CalcYOverflow(ComputedTop);
-            return top > 0 ? top : null;
-        }
+            => !IsDefaultAttach ? ComputedTop : CalcYOverflow(ComputedTop);
 
         protected double CalcXOverflow(double left, double menuWidth)
         {
@@ -301,6 +310,11 @@ namespace BlazorComponent
 
         protected virtual async Task UpdateDimensionsAsync()
         {
+            if (!Attached && Attach is not null && ((Attach.IsT0 && string.IsNullOrWhiteSpace(Attach.AsT0)) || Attach.IsT1 && Attach.AsT1))
+            {
+                Attached = true;
+            }
+
             //Invoke multiple method
             //1、Attach
             //2、Window,Document
@@ -311,7 +325,7 @@ namespace BlazorComponent
 
             var hasActivator = HasActivator && !Absolute;
             var multipleResult = await JsInvokeAsync<MultipleResult>(JsInteropConstants.InvokeMultipleMethod, windowProps, documentProps,
-                hasActivator, ActivatorSelector, Attach, ContentElement, Attached, AttachSelector, Ref);
+                hasActivator, ActivatorSelector, IsDefaultAttach, ContentElement, Attached, AttachSelector, Ref);
             var windowAndDocument = multipleResult.WindowAndDocument;
 
             //We want to reduce js interop
