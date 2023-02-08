@@ -27,7 +27,7 @@ namespace BlazorComponent
         public RenderFragment<TreeviewItem<TItem>> LabelContent { get; set; }
 
         [Parameter]
-        public Func<TItem, Task> LoadChildren { get; set; }
+        public EventCallback<TItem>? LoadChildren { get; set; }
 
         [Parameter]
         public Func<TItem, string> ItemText { get; set; }
@@ -146,7 +146,7 @@ namespace BlazorComponent
 
             try
             {
-                await LoadChildren(Item);
+                await LoadChildren.Value.InvokeAsync(Item);
             }
             finally
             {
