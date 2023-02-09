@@ -67,8 +67,16 @@ async function constructPolyline(polyline) {
     return pl;
 }
 
+const toBMapGLPoint = (point) => new BMapGL.Point(point.lng, point.lat);
+
 async function constructPolygon(polygon) {
-    var pg = new BMapGL.Polygon(polygon.points, {
+    var bmapPoints = [];
+
+    polygon.points.forEach(element => {
+        bmapPoints.push(toBMapGLPoint(element));
+    });
+
+    var pg = new BMapGL.Polygon(bmapPoints, {
         strokeColor: polygon.strokeColor,
         strokeWeight: polygon.strokeWeight,
         strokeOpacity: polygon.strokeOpacity,
