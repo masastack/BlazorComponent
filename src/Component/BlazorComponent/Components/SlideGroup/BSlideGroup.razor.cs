@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BSlideGroup : BItemGroup, ISlideGroup
     {
@@ -12,21 +10,8 @@ namespace BlazorComponent
         {
         }
 
-        protected bool IsMobile { get; set; }
-
-        protected ElementReference WrapperRef { get; set; }
-
-        protected ElementReference ContentRef { get; set; }
-
-        protected double WrapperWidth { get; set; }
-
-        protected double ContentWidth { get; set; }
-
-        protected double ScrollOffset
-        {
-            get => GetValue<double>();
-            set => SetValue(value);
-        }
+        [Inject]
+        protected DomEventJsInterop? DomEventJsInterop { get; set; }
 
         protected double StartX { get; set; }
 
@@ -54,6 +39,22 @@ namespace BlazorComponent
         private int _prevItemsLength;
         private StringNumber _prevValue;
         private bool _prevIsOverflowing;
+
+        protected bool IsMobile { get; set; }
+
+        protected ElementReference WrapperRef { get; set; }
+
+        protected ElementReference ContentRef { get; set; }
+
+        protected double WrapperWidth { get; set; }
+
+        protected double ContentWidth { get; set; }
+
+        protected double ScrollOffset
+        {
+            get => GetValue<double>();
+            set => SetValue(value);
+        }
 
         protected override void OnWatcherInitialized()
         {
@@ -94,6 +95,8 @@ namespace BlazorComponent
         {
             if (firstRender)
             {
+                DomEventJsInterop?.ResizeObserver(Ref.GetSelector(), OnResize);
+
                 IsMobile = await JsInvokeAsync<bool>(JsInteropConstants.IsMobile);
                 await SetWidths(Value);
             }
@@ -274,6 +277,16 @@ namespace BlazorComponent
             var newAbsoluteOffset = sign * currentScrollOffset + (direction == "prev" ? -1 : 1) * wrapperWidth;
 
             return sign * Math.Max(Math.Min(newAbsoluteOffset, contentWidth - wrapperWidth), 0);
+        }
+
+        private async Task OnResize()
+        {
+            if (IsDisposed)
+            {
+                return;
+            }
+
+            await SetWidths();
         }
     }
 }
