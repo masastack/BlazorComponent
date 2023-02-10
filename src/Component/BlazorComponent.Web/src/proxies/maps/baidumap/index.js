@@ -22,7 +22,7 @@ async function init(containerId, initArgs, dotNetObjRef) {
     return map;
 }
 
-async function constructCircle(circle) {
+async function initAndAddCircle(circle, map) {
     var c = new BMapGL.Circle(circle.center, circle.radius, {
         strokeColor: circle.strokeColor,
         strokeWeight: circle.strokeWeight,
@@ -32,29 +32,35 @@ async function constructCircle(circle) {
         fillOpacity: circle.fillOpacity
     });
 
+    map.addOverlay(c);
+
     return c;
 }
 
-async function constructMarker(marker) {
+async function initAndAddMarker(marker, map) {
     var m = new BMapGL.Marker(marker.point, {
         offset: marker.offset,
         rotation: marker.rotation,
         title: marker.title
     });
 
+    map.addOverlay(m);
+
     return m;
 }
 
-async function constructLabel(label) {
+async function initAndAddLabel(label, map) {
     var l = new BMapGL.Label(label.content, {
         offset: label.offset,
         position: label.position
     });
 
+    map.addOverlay(l);
+
     return l;
 }
 
-async function constructPolyline(polyline) {
+async function initAndAddPolyline(polyline, map) {
     var pl = new BMapGL.Polyline(polyline.points, {
         strokeColor: polyline.strokeColor,
         strokeWeight: polyline.strokeWeight,
@@ -64,12 +70,14 @@ async function constructPolyline(polyline) {
         clip: polyline.clip
     });
 
+    map.addOverlay(pl);
+
     return pl;
 }
 
 const toBMapGLPoint = (point) => new BMapGL.Point(point.lng, point.lat);
 
-async function constructPolygon(polygon) {
+async function initAndAddPolygon(polygon, map) {
     var bmapPoints = [];
 
     polygon.points.forEach(element => {
@@ -85,7 +93,9 @@ async function constructPolygon(polygon) {
         fillOpacity: polygon.fillOpacity
     });
 
+    map.addOverlay(pg);
+
     return pg;
 }
 
-export { init, constructCircle, constructMarker, constructLabel, constructPolyline, constructPolygon }
+export { init, initAndAddCircle, initAndAddMarker, initAndAddLabel, initAndAddPolyline, initAndAddPolygon }
