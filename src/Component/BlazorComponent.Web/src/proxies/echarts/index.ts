@@ -3,6 +3,7 @@ import { ECharts, EChartsResizeOption } from "echarts";
 class EChartsProxy {
   instance: ECharts;
   observer: IntersectionObserver;
+  dotNetHelper: DotNet.DotNetObject;
 
   constructor(
     elOrString: HTMLDivElement | HTMLCanvasElement,
@@ -24,6 +25,19 @@ class EChartsProxy {
     this.observer.observe(this.instance.getDom());
   }
 
+  setDotNetObjectReference(
+    dotNetHelper: DotNet.DotNetObject,
+    events: string[]
+  ) {
+    this.dotNetHelper = dotNetHelper;
+
+    events.forEach((e) => this.#registerEvent(e));
+  }
+
+  getOriginInstance() {
+    return this.instance;
+  }
+
   setOption(
     option: any,
     notMerge: boolean = false,
@@ -42,6 +56,42 @@ class EChartsProxy {
     this.observer.disconnect();
 
     this.instance.dispose();
+  }
+
+  #registerEvent(eventName: string) {
+    this.instance.on(eventName, (params: any) => {
+      const {
+        componentType,
+        seriesType,
+        seriesIndex,
+        seriesName,
+        name,
+        dataIndex,
+        data,
+        dataType,
+        value,
+        color,
+      } = params;
+
+      this.dotNetHelper.invokeMethodAsync(
+        "OnEvent",
+        eventName,
+        eventName === "globalout"
+          ? null
+          : {
+              componentType,
+              seriesType,
+              seriesIndex,
+              seriesName,
+              name,
+              dataIndex,
+              data,
+              dataType,
+              value: Array.isArray(value) ? value : [value],
+              color,
+            }
+      );
+    });
   }
 }
 
