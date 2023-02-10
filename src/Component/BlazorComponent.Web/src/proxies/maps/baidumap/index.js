@@ -61,6 +61,9 @@ async function initAndAddLabel(label, map) {
 }
 
 async function initAndAddPolyline(polyline, map) {
+    if (polyline.points == null)
+        return null;
+    
     var pl = new BMapGL.Polyline(polyline.points, {
         strokeColor: polyline.strokeColor,
         strokeWeight: polyline.strokeWeight,
@@ -78,8 +81,10 @@ async function initAndAddPolyline(polyline, map) {
 const toBMapGLPoint = (point) => new BMapGL.Point(point.lng, point.lat);
 
 async function initAndAddPolygon(polygon, map) {
-    var bmapPoints = [];
+    if (polygon.points == null)
+        return null;
 
+    var bmapPoints = [];
     polygon.points.forEach(element => {
         bmapPoints.push(toBMapGLPoint(element));
     });
