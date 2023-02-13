@@ -72,7 +72,6 @@ export function highlightToStream(str: string, lang: string): ArrayBuffer {
 function getLangCodeFromExtension(extension) {
   const extensionMap = {
     cs: "csharp",
-    html: "markup",
     md: "markdown",
     ts: "typescript",
     py: "python",
