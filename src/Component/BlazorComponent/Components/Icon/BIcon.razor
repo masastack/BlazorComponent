@@ -3,12 +3,26 @@
 @inherits BDomComponentBase
 
 <CascadingValue Value="IsDark" Name="IsDark">
-    @if (RegexHelper.RegexSvgPath(Icon))
-    {
-        @RenderPart(typeof(BSvgIconSlot<>))
-    }
-    else
-    {
-        @RenderPart(typeof(BFontIconSlot<>))
-    }
+    <IfTransitionElement
+        Tag="@Tag"
+        Value="@If"
+        Class="@CssProvider.GetClass()"
+        Style="@CssProvider.GetStyle()"
+        ReferenceCaptureAction="_ => Ref = _"
+        @attributes="@Attributes">
+        @if (IconType == IconType.Svg)
+        {
+            <svg class="@CssProvider.GetClass("svg")"
+                 style="@CssProvider.GetStyle("svg")"
+                 xmlns="http://www.w3.org/2000/svg"
+                 @attributes="@SvgAttrs">
+                <path d="@Icon">
+                </path>
+            </svg>
+        }
+        else if (IconType == IconType.WebfontNoPseudo)
+        {
+            @Icon
+        }
+    </IfTransitionElement>
 </CascadingValue>
