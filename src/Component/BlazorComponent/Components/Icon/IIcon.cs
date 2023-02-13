@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface IIcon : IHasProviderComponent, ITransitionIf
     {
@@ -17,18 +14,10 @@ namespace BlazorComponent
 
         StringNumber Size { get; set; }
 
-        string Icon { get; set; }
-
         string Tag { get; set; }
-
-        string NewChildren { get; set; }
-
-        Dictionary<string, object> SvgAttrs { get; set; }
 
         EventCallback<MouseEventArgs> OnClick { get; set; }
 
         Task HandleOnClick(MouseEventArgs args);
-
-        IDictionary<string, object> Attrs { get; }
     }
 }
