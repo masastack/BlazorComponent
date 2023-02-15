@@ -1,28 +1,58 @@
-async function init(containerId, initArgs, dotNetObjRef) {
-    var map = new BMapGL.Map(containerId);
+class BaiduMapProxy {
+    instance;
+    dotNetHelper;
 
-    if (initArgs.enableScrollWheelZoom)
-        map.enableScrollWheelZoom();
+    constructor(containerId, initArgs) {
+        this.instance = new BMapGL.Map(containerId);
 
-    map.centerAndZoom(initArgs.center, initArgs.zoom);
+        if (initArgs.enableScrollWheelZoom)
+            this.instance.enableScrollWheelZoom();
 
-    if (initArgs.dark)
-        map.setMapStyleV2({
-            styleId: initArgs.darkThemeId
+        this.instance.centerAndZoom(initArgs.center, initArgs.zoom);
+
+        if (initArgs.dark)
+            this.instance.setMapStyleV2({
+                styleId: initArgs.darkThemeId
+            });
+    }
+
+    setDotNetObjectReference(dotNetHelper, events) {
+        this.dotNetHelper = dotNetHelper;
+
+        events.forEach((event_name) => {
+            this.instance.addEventListener(event_name, async function (e) {
+                if (event_name == "dragstart" ||
+                    event_name == "dragging" ||
+                    event_name == "dragend" ||
+                    event_name == "dblclick")
+
+                    await dotNetHelper.invokeMethodAsync("OnEvent", event_name, {
+                        latlng: e.point,
+                        pixel: e.pixel,
+                    });
+
+                else if (event_name == "click" ||
+                         event_name == "rightclick" ||
+                         event_name == "rightdblclick" ||
+                         event_name == "mousemove")
+
+                    await dotNetHelper.invokeMethodAsync("OnEvent", event_name, {
+                        latlng: e.latlng,
+                        pixel: e.pixel,
+                    });
+
+                else
+                    await dotNetHelper.invokeMethodAsync("OnEvent", event_name, null);
+            });
         });
+    }
 
-/*     map.addEventListener('zoomend', async function (e) {
-        await dotNetObjRef.invokeMethodAsync("OnJsZoomEnd", map.getZoom());
-    });
-
-    map.addEventListener('moveend', async function (e) {
-        await dotNetObjRef.invokeMethodAsync("OnJsMoveEnd", map.getCenter());
-    }); */
-
-    return map;
+    getOriginInstance = () => this.instance;
 }
 
-async function initCircle(circle, map) {
+const init = (containerId, initArgs) => new BaiduMapProxy(containerId, initArgs);
+
+async function initCircle(circle) {
     var c = new BMapGL.Circle(circle.center, circle.radius, {
         strokeColor: circle.strokeColor,
         strokeWeight: circle.strokeWeight,
@@ -35,7 +65,7 @@ async function initCircle(circle, map) {
     return c;
 }
 
-async function initMarker(marker, map) {
+async function initMarker(marker) {
     var m = new BMapGL.Marker(marker.point, {
         offset: marker.offset,
         rotation: marker.rotation,
@@ -45,7 +75,7 @@ async function initMarker(marker, map) {
     return m;
 }
 
-async function initLabel(label, map) {
+async function initLabel(label) {
     var l = new BMapGL.Label(label.content, {
         offset: label.offset,
         position: label.position
@@ -54,10 +84,10 @@ async function initLabel(label, map) {
     return l;
 }
 
-async function initPolyline(polyline, map) {
+async function initPolyline(polyline) {
     if (polyline.points == null)
         return null;
-    
+
     var pl = new BMapGL.Polyline(polyline.points, {
         strokeColor: polyline.strokeColor,
         strokeWeight: polyline.strokeWeight,
@@ -72,7 +102,7 @@ async function initPolyline(polyline, map) {
 
 const toBMapGLPoint = (point) => new BMapGL.Point(point.lng, point.lat);
 
-async function initPolygon(polygon, map) {
+async function initPolygon(polygon) {
     if (polygon.points == null)
         return null;
 
