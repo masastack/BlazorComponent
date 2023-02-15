@@ -11,18 +11,18 @@ async function init(containerId, initArgs, dotNetObjRef) {
             styleId: initArgs.darkThemeId
         });
 
-    map.addEventListener('zoomend', async function (e) {
+/*     map.addEventListener('zoomend', async function (e) {
         await dotNetObjRef.invokeMethodAsync("OnJsZoomEnd", map.getZoom());
     });
 
     map.addEventListener('moveend', async function (e) {
         await dotNetObjRef.invokeMethodAsync("OnJsMoveEnd", map.getCenter());
-    });
+    }); */
 
     return map;
 }
 
-async function initAndAddCircle(circle, map) {
+async function initCircle(circle, map) {
     var c = new BMapGL.Circle(circle.center, circle.radius, {
         strokeColor: circle.strokeColor,
         strokeWeight: circle.strokeWeight,
@@ -32,35 +32,29 @@ async function initAndAddCircle(circle, map) {
         fillOpacity: circle.fillOpacity
     });
 
-    map.addOverlay(c);
-
     return c;
 }
 
-async function initAndAddMarker(marker, map) {
+async function initMarker(marker, map) {
     var m = new BMapGL.Marker(marker.point, {
         offset: marker.offset,
         rotation: marker.rotation,
         title: marker.title
     });
 
-    map.addOverlay(m);
-
     return m;
 }
 
-async function initAndAddLabel(label, map) {
+async function initLabel(label, map) {
     var l = new BMapGL.Label(label.content, {
         offset: label.offset,
         position: label.position
     });
 
-    map.addOverlay(l);
-
     return l;
 }
 
-async function initAndAddPolyline(polyline, map) {
+async function initPolyline(polyline, map) {
     if (polyline.points == null)
         return null;
     
@@ -73,14 +67,12 @@ async function initAndAddPolyline(polyline, map) {
         clip: polyline.clip
     });
 
-    map.addOverlay(pl);
-
     return pl;
 }
 
 const toBMapGLPoint = (point) => new BMapGL.Point(point.lng, point.lat);
 
-async function initAndAddPolygon(polygon, map) {
+async function initPolygon(polygon, map) {
     if (polygon.points == null)
         return null;
 
@@ -98,9 +90,7 @@ async function initAndAddPolygon(polygon, map) {
         fillOpacity: polygon.fillOpacity
     });
 
-    map.addOverlay(pg);
-
     return pg;
 }
 
-export { init, initAndAddCircle, initAndAddMarker, initAndAddLabel, initAndAddPolyline, initAndAddPolygon }
+export { init, initCircle, initMarker, initLabel, initPolyline, initPolygon }
