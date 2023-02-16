@@ -11,7 +11,6 @@ namespace BlazorComponent
             CssProvider.StaticClass = () => Class;
             CssProvider.StaticStyle = () => Style;
             Watcher = new PropertyWatcher(GetType());
-            OnWatcherInitialized(); // TODO: can i move this to OnInitialized?
         }
 
         [Inject]
@@ -49,7 +48,7 @@ namespace BlazorComponent
 
         public ComponentAbstractProvider AbstractProvider { get; } = new();
 
-        public PropertyWatcher Watcher { get; }
+        protected PropertyWatcher Watcher { get; }
 
         /// <summary>
         /// Returned ElementRef reference for DOM element.
@@ -77,7 +76,7 @@ namespace BlazorComponent
             }
         }
 
-        protected virtual void OnWatcherInitialized()
+        protected virtual void OnWatcherInitialized(PropertyWatcher watcher)
         {
         }
 
@@ -91,6 +90,11 @@ namespace BlazorComponent
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
+
+            if (firstRender)
+            {
+                OnWatcherInitialized(Watcher);
+            }
 
             if (_elementReferenceChanged)
             {
@@ -148,7 +152,7 @@ namespace BlazorComponent
             return AbstractProvider.GetPartContent(keyType, this, builderAction);
         }
 
-        protected RenderFragment? RenderPart(Type keyType, object arg0, [CallerArgumentExpression("arg0")]string arg0Name = "")
+        protected RenderFragment? RenderPart(Type keyType, object arg0, [CallerArgumentExpression("arg0")] string arg0Name = "")
         {
             return AbstractProvider.GetPartContent(keyType, this, builder =>
             {
@@ -157,7 +161,8 @@ namespace BlazorComponent
             });
         }
 
-        protected RenderFragment? RenderPart(Type keyType, object arg0, object arg1, [CallerArgumentExpression("arg0")] string arg0Name = "", [CallerArgumentExpression("arg1")] string arg1Name = "")
+        protected RenderFragment? RenderPart(Type keyType, object arg0, object arg1, [CallerArgumentExpression("arg0")] string arg0Name = "",
+            [CallerArgumentExpression("arg1")] string arg1Name = "")
         {
             return AbstractProvider.GetPartContent(keyType, this, builder =>
             {
@@ -167,7 +172,9 @@ namespace BlazorComponent
             });
         }
 
-        protected RenderFragment? RenderPart(Type keyType, object arg0, object arg1, object arg2, [CallerArgumentExpression("arg0")] string arg0Name = "", [CallerArgumentExpression("arg1")] string arg1Name = "", [CallerArgumentExpression("arg2")] string arg2Name = "")
+        protected RenderFragment? RenderPart(Type keyType, object arg0, object arg1, object arg2,
+            [CallerArgumentExpression("arg0")] string arg0Name = "", [CallerArgumentExpression("arg1")] string arg1Name = "",
+            [CallerArgumentExpression("arg2")] string arg2Name = "")
         {
             return AbstractProvider.GetPartContent(keyType, this, builder =>
             {

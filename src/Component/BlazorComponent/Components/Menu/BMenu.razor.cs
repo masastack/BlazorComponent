@@ -164,14 +164,14 @@ public partial class BMenu : BMenuable, IDependent
         CascadingDependent?.RegisterChild(this);
     }
 
-    protected override void OnWatcherInitialized()
+    protected override void OnWatcherInitialized(PropertyWatcher watcher)
     {
-        base.OnWatcherInitialized();
+        base.OnWatcherInitialized(watcher);
 
         // BUG: defaultValue is required, because there is a bug about Watcher
         // default value would not works if GetValue(defaultValue) int CloseOnContentClick's getter never be called,
         // so there need to assign the default value at Watch method.
-        Watcher.Watch(nameof(CloseOnContentClick), () => ResetPopupEvents(CloseOnContentClick), defaultValue: true);
+        watcher.Watch(nameof(CloseOnContentClick), () => ResetPopupEvents(CloseOnContentClick), defaultValue: true);
     }
 
     public void RegisterChild(IDependent dependent)

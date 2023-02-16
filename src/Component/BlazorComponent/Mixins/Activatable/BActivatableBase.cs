@@ -69,11 +69,11 @@ public class BActivatableBase : BToggleable, IActivatableJsCallbacks
 
     protected override bool AfterHandleEventShouldRender() => false;
 
-    protected override void OnWatcherInitialized()
+    protected override void OnWatcherInitialized(PropertyWatcher watcher)
     {
-        base.OnWatcherInitialized();
+        base.OnWatcherInitialized(watcher);
 
-        Watcher
+        watcher
             .Watch<bool>(nameof(Disabled), ResetActivatorEvents)
             .Watch<bool>(nameof(OpenOnFocus), ResetActivatorEvents)
             .Watch<bool>(nameof(OpenOnHover), ResetActivatorEvents)

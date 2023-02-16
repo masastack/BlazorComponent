@@ -241,9 +241,9 @@ namespace BlazorComponent
                 cancellationToken: _cancellationTokenSource.Token);
         }
 
-        protected override void OnWatcherInitialized()
+        protected override void OnWatcherInitialized(PropertyWatcher watcher)
         {
-            Watcher
+            watcher
                 .Watch<TValue>(nameof(Value), OnValueChanged, immediate: true)
                 .Watch<TValue>(nameof(LazyValue), OnLazyValueChange)
                 .Watch<TValue>(nameof(InternalValue), OnInternalValueChange)
