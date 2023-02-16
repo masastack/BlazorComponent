@@ -19,5 +19,13 @@ namespace BlazorComponent
                 
             await jsObjectReference.InvokeVoidAsync(identifier, args);
         }
+
+        public static async ValueTask<TOut?> TryInvokeAsync<TOut>(this IJSObjectReference? jsObjectReference, string identifier, params object?[]? args)
+        {
+            if (jsObjectReference is null)
+                return default;
+
+            return await jsObjectReference.InvokeAsync<TOut>(identifier, args);
+        }
     }
 }
