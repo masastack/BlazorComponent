@@ -30,7 +30,6 @@ class BaiduMapProxy {
                   pixel: e.pixel,
                 });
             }
-
             else if (event_name == "click" ||
               event_name == "rightclick" ||
               event_name == "rightdblclick" ||
@@ -40,7 +39,6 @@ class BaiduMapProxy {
                   pixel: e.pixel,
                 });
             }
-
             else {
               await dotNetHelper.invokeMethodAsync("OnEvent", event_name, null);
             }
