@@ -164,9 +164,9 @@ public partial class BMenu : BMenuable, IDependent
         CascadingDependent?.RegisterChild(this);
     }
 
-    protected override void OnWatcherInitialized(PropertyWatcher watcher)
+    protected override void RegisterWatchers(PropertyWatcher watcher)
     {
-        base.OnWatcherInitialized(watcher);
+        base.RegisterWatchers(watcher);
 
         // BUG: defaultValue is required, because there is a bug about Watcher
         // default value would not works if GetValue(defaultValue) int CloseOnContentClick's getter never be called,

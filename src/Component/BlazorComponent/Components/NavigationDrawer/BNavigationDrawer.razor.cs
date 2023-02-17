@@ -162,9 +162,9 @@ namespace BlazorComponent
             }
         }
 
-        protected override void OnWatcherInitialized(PropertyWatcher watcher)
+        protected override void RegisterWatchers(PropertyWatcher watcher)
         {
-            base.OnWatcherInitialized(watcher);
+            base.RegisterWatchers(watcher);
 
             watcher.Watch<bool>(nameof(MiniVariant), CallUpdate);
         }

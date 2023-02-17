@@ -56,9 +56,9 @@
             set => SetValue(value);
         }
 
-        protected override void OnWatcherInitialized(PropertyWatcher watcher)
+        protected override void RegisterWatchers(PropertyWatcher watcher)
         {
-            base.OnWatcherInitialized(watcher);
+            base.RegisterWatchers(watcher);
 
             watcher.Watch<double>(nameof(ScrollOffset), OnScrollOffsetChanged);
         }
