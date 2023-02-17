@@ -87,14 +87,19 @@ namespace BlazorComponent
             SetComponentClass();
         }
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+        protected override void OnAfterRender(bool firstRender)
         {
-            await base.OnAfterRenderAsync(firstRender);
+            base.OnAfterRender(firstRender);
 
             if (firstRender)
             {
                 OnWatcherInitialized(Watcher);
             }
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            await base.OnAfterRenderAsync(firstRender);
 
             if (_elementReferenceChanged)
             {
