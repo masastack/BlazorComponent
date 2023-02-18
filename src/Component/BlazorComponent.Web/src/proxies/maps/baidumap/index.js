@@ -8,12 +8,19 @@ class BaiduMapProxy {
     if (initArgs.enableScrollWheelZoom)
       this.instance.enableScrollWheelZoom();
 
-      this.instance.centerAndZoom(initArgs.center, initArgs.zoom);
+    this.instance.setMaxZoom(initArgs.maxZoom);
+    this.instance.setMinZoom(initArgs.minZoom);
+    this.instance.centerAndZoom(initArgs.center, initArgs.zoom);
 
-      if (initArgs.dark)
-        this.instance.setMapStyleV2({
-          styleId: initArgs.darkThemeId
-        });
+    this.instance.setMapType(initArgs.mapTypeString);
+
+    if(initArgs.trafficOn)
+      this.instance.setTrafficOn();
+
+    if (initArgs.dark)
+      this.instance.setMapStyleV2({
+        styleId: initArgs.darkThemeId
+      });
   }
 
   setDotNetObjectReference(dotNetHelper, events) {
