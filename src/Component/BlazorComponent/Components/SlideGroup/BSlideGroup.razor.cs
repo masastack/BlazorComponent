@@ -56,11 +56,11 @@
             set => SetValue(value);
         }
 
-        protected override void OnWatcherInitialized()
+        protected override void RegisterWatchers(PropertyWatcher watcher)
         {
-            base.OnWatcherInitialized();
+            base.RegisterWatchers(watcher);
 
-            Watcher.Watch<double>(nameof(ScrollOffset), OnScrollOffsetChanged);
+            watcher.Watch<double>(nameof(ScrollOffset), OnScrollOffsetChanged);
         }
 
         private async void OnScrollOffsetChanged(double val)
@@ -93,6 +93,8 @@
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
+            await base.OnAfterRenderAsync(firstRender);
+
             if (firstRender)
             {
                 DomEventJsInterop?.ResizeObserver(Ref.GetSelector(), OnResize);

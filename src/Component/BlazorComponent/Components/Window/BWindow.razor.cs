@@ -54,16 +54,11 @@ namespace BlazorComponent
 
         public bool HasPrev => Continuous || InternalIndex > 0;
 
-        protected override void OnInitialized()
+        protected override void RegisterWatchers(PropertyWatcher watcher)
         {
-            base.OnInitialized();
+            base.RegisterWatchers(watcher);
 
-            WatchInternalIndex();
-        }
-
-        private void WatchInternalIndex()
-        {
-            Watcher.Watch(nameof(InternalIndex),
+            watcher.Watch(nameof(InternalIndex),
                 (newVal, oldVal) => IsReverse = UpdateReverse(newVal, oldVal),
                 () => Items.FindIndex(item => item.Value == Value),
                 new[] { nameof(Value), nameof(Values) },
@@ -74,8 +69,6 @@ namespace BlazorComponent
         public override void Register(IGroupable item)
         {
             base.Register(item);
-
-            WatchInternalIndex();
 
             StateHasChanged();
         }

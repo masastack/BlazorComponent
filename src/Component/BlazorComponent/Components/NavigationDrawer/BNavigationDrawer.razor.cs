@@ -9,7 +9,7 @@ namespace BlazorComponent
 {
     public abstract partial class BNavigationDrawer : BDomComponentBase, IDependent, IOutsideClickJsCallback
     {
-        private CancellationTokenSource _cancellationTokenSource;
+        private CancellationTokenSource? _cancellationTokenSource;
         private bool _disposed;
         private readonly List<IDependent> _dependents = new();
 
@@ -37,7 +37,7 @@ namespace BlazorComponent
         public bool Permanent { get; set; }
 
         [Parameter]
-        public string Src { get; set; }
+        public string? Src { get; set; }
 
         [Parameter]
         public bool Stateless { get; set; }
@@ -140,21 +140,10 @@ namespace BlazorComponent
             }
         }
 
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
-
-            Watcher.Watch<bool>(nameof(MiniVariant), CallUpdate);
-        }
-
-        protected virtual async void CallUpdate()
-        {
-        }
-
         public void RegisterChild(IDependent dependent)
         {
             _dependents.Add(dependent);
-            
+
             OutsideClickJsModule?.UpdateDependentElements(DependentSelectors.ToArray());
         }
 
@@ -171,6 +160,17 @@ namespace BlazorComponent
                     await UpdateValue(!IsMobile);
                 }
             }
+        }
+
+        protected override void RegisterWatchers(PropertyWatcher watcher)
+        {
+            base.RegisterWatchers(watcher);
+
+            watcher.Watch<bool>(nameof(MiniVariant), CallUpdate);
+        }
+
+        protected virtual async void CallUpdate()
+        {
         }
 
         public virtual Task HandleOnClickAsync(MouseEventArgs e)

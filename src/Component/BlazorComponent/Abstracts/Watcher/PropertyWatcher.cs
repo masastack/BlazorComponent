@@ -158,7 +158,7 @@ namespace BlazorComponent
 
             if (immediate)
             {
-                changeCallback.Invoke(default, default);
+                changeCallback.Invoke(property.Value, default);
             }
 
             return this;
@@ -188,7 +188,7 @@ namespace BlazorComponent
 
             if (immediate)
             {
-                changeCallback.Invoke(default, default);
+                changeCallback.Invoke(property.Value, default);
             }
 
             return this;
