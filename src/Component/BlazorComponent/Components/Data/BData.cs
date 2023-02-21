@@ -388,36 +388,6 @@ namespace BlazorComponent
         {
             base.OnInitialized();
 
-            Watcher
-                .Watch<int>(nameof(Page), value =>
-                {
-                    InternalOptions.Page = value;
-                })
-                .Watch<int>(nameof(ItemsPerPage), value =>
-                {
-                    InternalOptions.ItemsPerPage = value;
-                })
-                .Watch<bool>(nameof(MultiSort), value =>
-                {
-                    InternalOptions.MultiSort = value;
-                })
-                .Watch<bool>(nameof(MustSort), value =>
-                {
-                    InternalOptions.MustSort = value;
-                })
-                .Watch<int>(nameof(PageCount), value =>
-                {
-                    OnPageCount.InvokeAsync(value);
-                })
-                .Watch<OneOf<string, IList<string>>>(nameof(SortBy), val =>
-                {
-                    InternalOptions.SortBy = WrapperInArray(val);
-                })
-                .Watch<OneOf<bool, IList<bool>>>(nameof(SortDesc), val =>
-                {
-                    InternalOptions.SortDesc = WrapperInArray(val);
-                });
-
             UpdateOptions(options =>
             {
                 options.Page = Page;
@@ -448,6 +418,20 @@ namespace BlazorComponent
                     }
                 }
             }, false);
+        }
+
+        protected override void RegisterWatchers(PropertyWatcher watcher)
+        {
+            base.RegisterWatchers(watcher);
+
+            watcher
+                .Watch<int>(nameof(Page), value => { InternalOptions.Page = value; })
+                .Watch<int>(nameof(ItemsPerPage), value => { InternalOptions.ItemsPerPage = value; })
+                .Watch<bool>(nameof(MultiSort), value => { InternalOptions.MultiSort = value; })
+                .Watch<bool>(nameof(MustSort), value => { InternalOptions.MustSort = value; })
+                .Watch<int>(nameof(PageCount), value => { OnPageCount.InvokeAsync(value); })
+                .Watch<OneOf<string, IList<string>>>(nameof(SortBy), val => { InternalOptions.SortBy = WrapperInArray(val); })
+                .Watch<OneOf<bool, IList<bool>>>(nameof(SortDesc), val => { InternalOptions.SortDesc = WrapperInArray(val); });
         }
 
         protected IList<TValue> WrapperInArray<TValue>(OneOf<TValue, IList<TValue>> val)

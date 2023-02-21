@@ -46,12 +46,11 @@ public partial class BSpeedDial : BBootable
 
     protected ElementReference ContentElement { get; set; }
 
-    protected override void OnWatcherInitialized()
+    protected override void RegisterWatchers(PropertyWatcher watcher)
     {
-        base.OnWatcherInitialized();
+        base.RegisterWatchers(watcher);
 
-        Watcher.Watch<bool>(nameof(OpenOnHover),
-            () => ResetPopupEvents(true));
+        watcher.Watch<bool>(nameof(OpenOnHover), () => ResetPopupEvents(true));
     }
 
     protected override async Task WhenIsActiveUpdating(bool value)

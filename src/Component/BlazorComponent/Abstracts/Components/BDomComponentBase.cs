@@ -6,12 +6,12 @@ namespace BlazorComponent
 {
     public abstract class BDomComponentBase : BComponentBase, IHasProviderComponent
     {
-        public BDomComponentBase()
+        protected BDomComponentBase()
         {
+            _watcher = new PropertyWatcher(GetType());
+
             CssProvider.StaticClass = () => Class;
             CssProvider.StaticStyle = () => Style;
-            Watcher = new PropertyWatcher(GetType());
-            OnWatcherInitialized(); // TODO: can i move this to OnInitialized?
         }
 
         [Inject]
@@ -41,6 +41,8 @@ namespace BlazorComponent
 
         protected const int BROWSER_RENDER_INTERVAL = 16;
 
+        private readonly PropertyWatcher _watcher;
+
         private ElementReference _ref;
         private ElementReference? _prevRef;
         private bool _elementReferenceChanged;
@@ -48,8 +50,6 @@ namespace BlazorComponent
         public ComponentCssProvider CssProvider { get; } = new();
 
         public ComponentAbstractProvider AbstractProvider { get; } = new();
-
-        public PropertyWatcher Watcher { get; }
 
         /// <summary>
         /// Returned ElementRef reference for DOM element.
@@ -77,7 +77,11 @@ namespace BlazorComponent
             }
         }
 
-        protected virtual void OnWatcherInitialized()
+        /// <summary>
+        /// Register watchers at the first render.
+        /// </summary>
+        /// <param name="watcher"></param>
+        protected virtual void RegisterWatchers(PropertyWatcher watcher)
         {
         }
 
@@ -86,6 +90,16 @@ namespace BlazorComponent
             Id ??= ComponentIdGenerator.Generate(this);
             base.OnInitialized();
             SetComponentClass();
+        }
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            base.OnAfterRender(firstRender);
+
+            if (firstRender)
+            {
+                RegisterWatchers(_watcher);
+            }
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -110,32 +124,32 @@ namespace BlazorComponent
 
         protected TValue? GetValue<TValue>(TValue? @default = default, [CallerMemberName] string name = "", bool disableIListAlwaysNotifying = false)
         {
-            return Watcher.GetValue(@default, name, disableIListAlwaysNotifying);
+            return _watcher.GetValue(@default, name, disableIListAlwaysNotifying);
         }
 
         protected TValue? GetComputedValue<TValue>([CallerMemberName] string name = "")
         {
-            return Watcher.GetComputedValue<TValue>(name);
+            return _watcher.GetComputedValue<TValue>(name);
         }
 
         protected TValue? GetComputedValue<TValue>(Expression<Func<TValue>> valueExpression, [CallerMemberName] string name = "")
         {
-            return Watcher.GetComputedValue(valueExpression, name);
+            return _watcher.GetComputedValue(valueExpression, name);
         }
 
         protected TValue? GetComputedValue<TValue>(Func<TValue> valueFactory, string[] dependencyProperties, [CallerMemberName] string name = "")
         {
-            return Watcher.GetComputedValue(valueFactory, dependencyProperties, name);
+            return _watcher.GetComputedValue(valueFactory, dependencyProperties, name);
         }
 
         protected void SetValue<TValue>(TValue value, [CallerMemberName] string name = "", bool disableIListAlwaysNotifying = false)
         {
-            Watcher.SetValue(value, name, disableIListAlwaysNotifying);
+            _watcher.SetValue(value, name, disableIListAlwaysNotifying);
         }
 
         protected void SetValue<TValue, TFirstValue>(TValue value, string propertySetFirst, [CallerMemberName] string name = "")
         {
-            Watcher.SetValue<TValue, TFirstValue>(value, name, propertySetFirst);
+            _watcher.SetValue<TValue, TFirstValue>(value, name, propertySetFirst);
         }
 
         protected RenderFragment? RenderPart(Type keyType)
@@ -148,7 +162,7 @@ namespace BlazorComponent
             return AbstractProvider.GetPartContent(keyType, this, builderAction);
         }
 
-        protected RenderFragment? RenderPart(Type keyType, object arg0, [CallerArgumentExpression("arg0")]string arg0Name = "")
+        protected RenderFragment? RenderPart(Type keyType, object arg0, [CallerArgumentExpression("arg0")] string arg0Name = "")
         {
             return AbstractProvider.GetPartContent(keyType, this, builder =>
             {
@@ -157,7 +171,8 @@ namespace BlazorComponent
             });
         }
 
-        protected RenderFragment? RenderPart(Type keyType, object arg0, object arg1, [CallerArgumentExpression("arg0")] string arg0Name = "", [CallerArgumentExpression("arg1")] string arg1Name = "")
+        protected RenderFragment? RenderPart(Type keyType, object arg0, object arg1, [CallerArgumentExpression("arg0")] string arg0Name = "",
+            [CallerArgumentExpression("arg1")] string arg1Name = "")
         {
             return AbstractProvider.GetPartContent(keyType, this, builder =>
             {
@@ -167,7 +182,9 @@ namespace BlazorComponent
             });
         }
 
-        protected RenderFragment? RenderPart(Type keyType, object arg0, object arg1, object arg2, [CallerArgumentExpression("arg0")] string arg0Name = "", [CallerArgumentExpression("arg1")] string arg1Name = "", [CallerArgumentExpression("arg2")] string arg2Name = "")
+        protected RenderFragment? RenderPart(Type keyType, object arg0, object arg1, object arg2,
+            [CallerArgumentExpression("arg0")] string arg0Name = "", [CallerArgumentExpression("arg1")] string arg1Name = "",
+            [CallerArgumentExpression("arg2")] string arg2Name = "")
         {
             return AbstractProvider.GetPartContent(keyType, this, builder =>
             {

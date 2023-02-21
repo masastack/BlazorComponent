@@ -241,12 +241,12 @@ namespace BlazorComponent
                 cancellationToken: _cancellationTokenSource.Token);
         }
 
-        protected override void OnWatcherInitialized()
+        protected override void RegisterWatchers(PropertyWatcher watcher)
         {
-            Watcher
+            watcher
                 .Watch<TValue>(nameof(Value), OnValueChanged, immediate: true)
                 .Watch<TValue>(nameof(LazyValue), OnLazyValueChange)
-                .Watch<TValue>(nameof(InternalValue), OnInternalValueChange)
+                .Watch<TValue>(nameof(InternalValue), OnInternalValueChange, immediate: true)
                 .Watch<bool>(nameof(IsFocused), async val =>
                 {
                     if (!val && !IsDisabled)
@@ -260,6 +260,8 @@ namespace BlazorComponent
 
                     await OnIsFocusedChange(val);
                 });
+
+            StateHasChanged();
         }
 
         protected override void OnParametersSet()
