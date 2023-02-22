@@ -16,6 +16,7 @@
 
         public StringNumber? MaxHeight { get; set; }
 
+        public StringNumber? MaxWidth { get; set; }
         public StringNumber? MinWidth { get; set; }
 
         public StringNumber? NudgeBottom { get; set; }
