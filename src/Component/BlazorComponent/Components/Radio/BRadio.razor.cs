@@ -92,7 +92,10 @@ namespace BlazorComponent
                 await OnChange.InvokeAsync(new ChangeEventArgs { Value = Value });
             }
 
-            RadioGroup?.Toggle(Value);
+            if (RadioGroup is not null)
+            {
+                await RadioGroup.Toggle(Value);
+            }
         }
 
         public void RefreshState()
