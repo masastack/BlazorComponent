@@ -153,11 +153,11 @@ namespace BlazorComponent
             }
         }
 
-        public virtual bool IsDisabled => Disabled || (Form != null && Form.Disabled);
+        public virtual bool IsDisabled => Disabled || Form is { Disabled: true };
 
         public bool IsInteractive => !IsDisabled && !IsReadonly;
 
-        public virtual bool IsReadonly => Readonly || (Form != null && Form.Readonly);
+        public virtual bool IsReadonly => Readonly || Form is { Readonly: true };
 
         public virtual bool ShouldValidate
         {
@@ -195,6 +195,8 @@ namespace BlazorComponent
         {
             base.OnInitialized();
 
+            LazyValue = Value;
+
             Form?.Register(this);
         }
 
@@ -206,6 +208,11 @@ namespace BlazorComponent
             {
                 _inputJsInterop = new InputJsInterop(this, Js);
                 await _inputJsInterop.InitializeAsync(InputElement, InputSlotElement, InternalDebounceInterval);
+
+                if (Value is not null && !DisableSetValueByJsInterop)
+                {
+                    _ = SetValueByJsInterop(Value.ToString());
+                }
             }
         }
 
@@ -244,9 +251,9 @@ namespace BlazorComponent
         protected override void RegisterWatchers(PropertyWatcher watcher)
         {
             watcher
-                .Watch<TValue>(nameof(Value), OnValueChanged, immediate: true)
+                .Watch<TValue>(nameof(Value), OnValueChanged)
                 .Watch<TValue>(nameof(LazyValue), OnLazyValueChange)
-                .Watch<TValue>(nameof(InternalValue), OnInternalValueChange, immediate: true)
+                .Watch<TValue>(nameof(InternalValue), OnInternalValueChange)
                 .Watch<bool>(nameof(IsFocused), async val =>
                 {
                     if (!val && !IsDisabled)
@@ -271,6 +278,8 @@ namespace BlazorComponent
 
         protected virtual void OnValueChanged(TValue val)
         {
+            LazyValue = val.TryDeepClone();
+
             // OnInternalValueChange has to invoke manually because
             // LazyValue is the getter of InternalValue, LazyValue changes cannot notify the watcher of InternalValue
             var isEqual = true;
@@ -291,8 +300,6 @@ namespace BlazorComponent
                 _internalValueChangingFromOnValueChanged = true;
                 InternalValue = val;
             }
-
-            LazyValue = val.TryDeepClone();
 
             if (!ValueChangedInternally)
             {
