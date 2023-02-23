@@ -167,6 +167,15 @@ class BaiduMapProxy {
 
     return pg;
   }
+
+  contains(overlay){
+    var os = this.instance.getOverlays();
+    for (let index = 0; index < os.length; index++) {
+      if(os[index] === overlay)
+        return true;
+    }
+    return false;
+  }
 }
 
 const init = (containerId, initArgs) => new BaiduMapProxy(containerId, initArgs);
