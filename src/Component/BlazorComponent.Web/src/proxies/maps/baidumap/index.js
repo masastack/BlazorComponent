@@ -87,6 +87,8 @@ class BaiduMapProxy {
 
   clearOverlays = () => this.instance.clearOverlays();
 
+  destroy = () => this.instance.destroy();
+
   addCircle(circle) {
     var c = new BMapGL.Circle(circle.center, circle.radius, {
       strokeColor: circle.strokeColor,
