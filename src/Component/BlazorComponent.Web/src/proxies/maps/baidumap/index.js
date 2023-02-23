@@ -151,7 +151,7 @@ class BaiduMapProxy {
 
     var bmapPoints = [];
     polygon.points.forEach(element => {
-      bmapPoints.push(toBMapGLPoint(element));
+      bmapPoints.push(this.toBMapGLPoint(element));
     });
 
     var pg = new BMapGL.Polygon(bmapPoints, {
