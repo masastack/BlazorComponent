@@ -12,7 +12,7 @@ public interface IRadioGroup<TValue>
 
     bool Dense { get; }
 
-    void Toggle(TValue? value);
+    Task Toggle(TValue? value);
 
     void AddRadio(IRadio<TValue> radio);
 }
