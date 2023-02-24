@@ -3,5 +3,19 @@
 @inherits ComponentPartBase<TAlert>
 
 <div class="@CssProvider.GetClass("content")">
+    @if (HasTitle)
+    {
+        <div class="@CssProvider.GetClass("title")">
+            @if (TitleContent == null)
+            {
+                @Title
+            }
+            else
+            {
+                @TitleContent
+            }
+        </div>
+    }
+
     @ChildContent
 </div>
