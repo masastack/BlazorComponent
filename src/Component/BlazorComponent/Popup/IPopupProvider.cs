@@ -4,7 +4,7 @@ public interface IPopupProvider
 {
     event EventHandler StateChanged;
 
-    ProviderItem Add(Type componentType, Dictionary<string, object> attributes, object service, string serviceName);
+    ProviderItem Add(Type componentType, IDictionary<string, object> attributes, object service, string serviceName);
 
     void Remove(ProviderItem item);
 

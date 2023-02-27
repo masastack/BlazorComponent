@@ -1,6 +1,6 @@
 ﻿namespace BlazorComponent
 {
-    public abstract partial class BApp : BDomComponentBase, IThemeable
+    public abstract partial class BApp : BDomComponentBase, IThemeable, IDefaultsProvider
     {
         [Inject]
         private IPopupProvider PopupProvider { get; set; } = null!;
@@ -18,6 +18,8 @@
         public bool CascadingIsDark { get; set; }
 
         protected string ThemeStyleMarkups { get; set; } = "";
+
+        public virtual IDictionary<string, IDictionary<string, object?>?>? Defaults { get; }
 
         protected override void OnInitialized()
         {
