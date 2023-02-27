@@ -23,6 +23,7 @@ public static class ComponentExtensions
         foreach (var property in properties)
         {
             var value = property.GetValue(obj);
+            if (value is null) continue;
             result.Add(property.Name, value);
         }
 
