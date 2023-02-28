@@ -1,12 +1,13 @@
-﻿using Microsoft.JSInterop;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public abstract class BComponentBase : NextTickComponentBase, IHandleEvent
     {
         [Inject]
         [NotNull]
         public virtual IJSRuntime? Js { get; set; }
+
+        [CascadingParameter]
+        protected IDefaultsProvider? DefaultsProvider { get; set; }
 
         [CascadingParameter]
         protected IErrorHandler? ErrorHandler { get; set; }
@@ -16,11 +17,22 @@ namespace BlazorComponent
 
         private string[] _dirtyParameters = Array.Empty<string>();
 
-        public override Task SetParametersAsync(ParameterView parameters)
-        {
-             _dirtyParameters = parameters.ToDictionary().Keys.ToArray();
+        protected virtual string ComponentName => this.GetType().Name;
 
-            return base.SetParametersAsync(parameters);
+        public override async Task SetParametersAsync(ParameterView parameters)
+        {
+            _dirtyParameters = parameters.ToDictionary().Keys.ToArray();
+
+            if (parameters.TryGetValue<IDefaultsProvider>(nameof(DefaultsProvider), out var defaultsProvider)
+                && defaultsProvider.Defaults is not null
+                && defaultsProvider.Defaults.TryGetValue(ComponentName, out var dictionary)
+                && dictionary is not null)
+            {
+                var defaults = ParameterView.FromDictionary(dictionary);
+                await base.SetParametersAsync(defaults);
+            }
+
+            await base.SetParametersAsync(parameters);
         }
 
         /// <summary>

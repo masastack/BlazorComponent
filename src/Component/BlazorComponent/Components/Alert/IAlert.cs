@@ -23,6 +23,10 @@ namespace BlazorComponent
 
         string Tag { get; }
 
+        string? Title { get; }
+
+        RenderFragment? TitleContent { get; }
+
         AlertTypes Type { get; }
 
         bool Value { get; }
