@@ -1,14 +1,12 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
-    public abstract partial class BApp : BDomComponentBase, IThemeable
+    public abstract partial class BApp : BDomComponentBase, IThemeable, IDefaultsProvider
     {
         [Inject]
-        private IPopupProvider PopupProvider { get; set; }
+        private IPopupProvider PopupProvider { get; set; } = null!;
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
         public bool Dark { get; set; }
@@ -20,6 +18,8 @@ namespace BlazorComponent
         public bool CascadingIsDark { get; set; }
 
         protected string ThemeStyleMarkups { get; set; } = "";
+
+        public virtual IDictionary<string, IDictionary<string, object?>?>? Defaults { get; }
 
         protected override void OnInitialized()
         {
@@ -56,10 +56,7 @@ namespace BlazorComponent
         {
             base.Dispose(disposing);
 
-            if (PopupProvider is not null)
-            {
-                PopupProvider.StateChanged -= OnStateChanged;
-            }
+            PopupProvider.StateChanged -= OnStateChanged;
         }
     }
 }

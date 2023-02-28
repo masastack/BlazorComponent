@@ -1,5 +1,6 @@
 import registerDirective from "./directive/index";
 import { registerExtraEvents } from "./events/index";
+import { parseTouchEvent } from './events/EventType';
 import { getDom, getElementSelector } from "./utils/helper";
 
 export function getZIndex(el?: Element | null): number {
@@ -236,7 +237,7 @@ export function addHtmlElementEventListener<K extends keyof HTMLElementTagNameMa
       return;
     }
 
-    const obj = {};
+    let obj = {};
 
     for (var k in args) {
       if (typeof args[k] == 'string' || typeof args[k] == 'number') {
@@ -252,19 +253,7 @@ export function addHtmlElementEventListener<K extends keyof HTMLElementTagNameMa
         }
         obj[k] = target;
       } else if (k == 'touches' || k == 'targetTouches' || k == 'changedTouches') {
-        var list = [];
-        args[k].forEach(touch => {
-          var item = {};
-
-          for (var attr in touch) {
-            if (typeof (touch[attr]) == 'string' || typeof (touch[attr]) == 'number') {
-              item[attr] = touch[attr];
-            }
-          }
-          list.push(item);
-        });
-
-        obj[k] = list;
+        obj = parseTouchEvent(args)
       }
     }
 

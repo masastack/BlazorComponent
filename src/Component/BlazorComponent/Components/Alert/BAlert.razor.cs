@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BAlert : BDomComponentBase, IAlert, IThemeable
     {
@@ -33,6 +31,12 @@ namespace BlazorComponent
 
         [Parameter]
         public string Tag { get; set; } = "div";
+
+        [Parameter]
+        public string? Title { get; set; }
+
+        [Parameter]
+        public RenderFragment? TitleContent { get; set; }
 
         [Parameter]
         public AlertTypes Type { get; set; }
