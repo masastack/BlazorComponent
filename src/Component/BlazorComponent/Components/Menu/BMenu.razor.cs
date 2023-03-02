@@ -178,6 +178,8 @@ public partial class BMenu : BMenuable, IDependent
     {
         Dependents.Add(dependent);
         Module?.UpdateDependentElements(DependentSelectors.ToArray());
+        
+        Console.WriteLine($"{Id} update dependents: {string.Join(",", DependentSelectors)}");
     }
 
     //TODO:keydown event
@@ -196,6 +198,8 @@ public partial class BMenu : BMenuable, IDependent
         if (!OpenOnHover && CloseOnClick && Module is { Initialized: false })
         {
             await Module.InitializeAsync(this, DependentSelectors.ToArray());
+
+            Console.Out.WriteLine($"{Id} init dependents: {string.Join(",", DependentSelectors)}");
         }
     }
 

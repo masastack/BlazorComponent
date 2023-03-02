@@ -10,6 +10,8 @@ class OutsideClick {
 
   genListener() {
     this.listener = (e) => {
+console.log('this.excludedSelectors', this.excludedSelectors)
+
       if (
         this.excludedSelectors.some((selector) => {
           const el = document.querySelector(selector);
