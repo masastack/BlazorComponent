@@ -1,6 +1,6 @@
 ﻿namespace BlazorComponent
 {
-    public partial class BSliderThumb<TValue, TInput> where TInput : ISlider<TValue>
+    public partial class BSliderThumb<TValue, TNumeric, TInput> where TInput : ISlider<TValue, TNumeric>
     {
     }
 }

@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
-    public interface IRangeSlider<TValue> : ISlider<IList<TValue>>
+    public interface IRangeSlider<TValue> : ISlider<IList<TValue>, TValue>
     {
         ElementReference SecondThumbElement { set; }
 
@@ -12,4 +9,3 @@ namespace BlazorComponent
         Task HandleOnSecondBlurAsync(FocusEventArgs args);
     }
 }
-

@@ -1,5 +1,6 @@
 ﻿@namespace BlazorComponent
 @typeparam TValue
+@typeparam TNumeric
 @typeparam TInput
 @inherits ComponentPartBase<TInput>
 
@@ -9,9 +10,9 @@
      @onblur="OnBlur"
      @onkeydown="OnKeyDown"
      @onkeydown:preventDefault>
-     @RenderPart(typeof(BSliderThumb<,>))
+     @RenderPart(typeof(BSliderThumb<,,>))
     @if (ShowThumbLabel)
     {
-        @RenderPart(typeof(BSliderThumbLabel<,>))
+        @RenderPart(typeof(BSliderThumbLabel<,,>))
     }
 </div>
