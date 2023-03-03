@@ -6,7 +6,7 @@ public class ProviderItem
 
     public PopupProvider Provider { get; set; }
 
-    public TaskCompletionSource<object> TaskCompletionSource { get; set; }
+    public TaskCompletionSource<object?> TaskCompletionSource { get; set; }
 
     public object Service { get; set; }
 
@@ -24,7 +24,7 @@ public class ProviderItem
         ServiceName = serviceName;
     }
 
-    public void Discard(object result)
+    public void Discard(object? result)
     {
         TaskCompletionSource.TrySetResult(result);
         Provider.Remove(this);

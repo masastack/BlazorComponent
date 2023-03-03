@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
-    public partial class BSliderSlider<TValue, TInput> where TInput : ISlider<TValue>
+    public partial class BSliderSlider<TValue, TNumeric, TInput> where TInput : ISlider<TValue, TNumeric>
     {
         public EventCallback<MouseEventArgs> HandleOnSliderClickAsync => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnSliderClickAsync);
 

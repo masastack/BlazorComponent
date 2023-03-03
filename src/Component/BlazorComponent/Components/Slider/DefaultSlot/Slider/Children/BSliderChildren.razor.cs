@@ -1,8 +1,6 @@
 ﻿namespace BlazorComponent
 {
-    public partial class BSliderChildren<TValue, TInput> where TInput : ISlider<TValue>
+    public partial class BSliderChildren<TValue, TNumeric, TInput> where TInput : ISlider<TValue, TNumeric>
     {
-
     }
 }
-

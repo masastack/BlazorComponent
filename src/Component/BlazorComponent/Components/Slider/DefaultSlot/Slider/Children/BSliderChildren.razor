@@ -1,10 +1,11 @@
 ﻿@namespace BlazorComponent
 @typeparam TValue
+@typeparam TNumeric
 @typeparam TInput
 @inherits ComponentPartBase<TInput>
 
-@RenderPart(typeof(BSliderInput<,>))
-@RenderPart(typeof(BSliderTrackContainer<,>))
-@RenderPart(typeof(BSliderSteps<,>))
-@RenderPart(typeof(BSliderThumbContainer<,>))
+@RenderPart(typeof(BSliderInput<,,>))
+@RenderPart(typeof(BSliderTrackContainer<,,>))
+@RenderPart(typeof(BSliderSteps<,,>))
+@RenderPart(typeof(BSliderThumbContainer<,,>))
 

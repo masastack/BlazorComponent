@@ -9,10 +9,10 @@
      @onblur="OnBlur"
      @onkeydown="OnKeyDown"
      @onkeydown:preventDefault>
-    @RenderPart(typeof(BSliderThumb<,>))
+    @RenderPart(typeof(BSliderThumb<,,>))
     @if (ShowThumbLabel)
     {
-        @RenderPart(typeof(BSliderThumbLabel<,>))
+        @RenderPart(typeof(BSliderThumbLabel<,,>))
     }
 </div>
 
@@ -23,10 +23,10 @@
      @onblur="OnSecondBlur"
      @onkeydown="OnKeyDown"
      @onkeydown:preventDefault>
-    @RenderPart(typeof(BSliderThumb<,>))
+    @RenderPart(typeof(BSliderThumb<,,>))
     @if (ShowThumbLabel)
     {
-        @RenderPart(typeof(BSliderThumbLabel<,>),1,arg0Name:"Index")
+        @RenderPart(typeof(BSliderThumbLabel<,,>),1,arg0Name:"Index")
     }
 </div>
 

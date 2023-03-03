@@ -1,16 +1,10 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
-    public partial class BSliderTrackContainer<TValue, TInput> where TInput : ISlider<TValue>
+    public partial class BSliderTrackContainer<TValue, TNumeric, TInput> where TInput : ISlider<TValue, TNumeric>
     {
         public ElementReference TrackElement
         {
-            set
-            {
-                Component.TrackElement = value;
-            }
+            set { Component.TrackElement = value; }
         }
     }
 }
-
