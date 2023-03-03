@@ -9,6 +9,7 @@
         Class="@CssProvider.GetClass()"
         Style="@CssProvider.GetStyle()"
         ReferenceCaptureAction="_ => Ref = _"
+        type="@(OnClick.HasDelegate ? "button" : null)"
         @attributes="@Attributes">
         @if (IconType == IconType.Svg)
         {
