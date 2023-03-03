@@ -22,7 +22,7 @@ namespace BlazorComponent
 
             if (!property.HasValue)
             {
-                property.Value = @default;
+                property.SetValueWithNoEffect(@default);
             }
 
             return property.Value;

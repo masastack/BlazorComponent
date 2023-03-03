@@ -55,6 +55,15 @@ namespace BlazorComponent
             }
         }
 
+        /// <summary>
+        /// Set value without notification
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetValueWithNoEffect(TValue? value)
+        {
+            _value = value;
+        }
+
         public Func<TValue> ValueFactory { get; set; }
 
         public bool DisableIListAlwaysNotifying { get; set; }
