@@ -12,6 +12,12 @@ public partial class BMenu : BMenuable, IDependent
     [Inject]
     private OutsideClickJSModule? Module { get; set; }
 
+    [CascadingParameter]
+    public IDependent? CascadingDependent { get; set; }
+
+    [CascadingParameter(Name = "AppIsDark")]
+    public bool AppIsDark { get; set; }
+
     [Parameter]
     public bool Auto { get; set; }
 
@@ -58,12 +64,6 @@ public partial class BMenu : BMenuable, IDependent
 
     [Parameter]
     public bool Light { get; set; }
-
-    [CascadingParameter]
-    public IDependent? CascadingDependent { get; set; }
-
-    [CascadingParameter(Name = "AppIsDark")]
-    public bool AppIsDark { get; set; }
 
     private bool _isPopupEventsRegistered;
 
@@ -140,7 +140,7 @@ public partial class BMenu : BMenuable, IDependent
     {
         get
         {
-            var elements = Dependents
+            var elements = _dependents
                            .SelectMany(dependent => dependent.DependentSelectors)
                            .ToList();
 
@@ -153,7 +153,7 @@ public partial class BMenu : BMenuable, IDependent
         }
     }
 
-    protected List<IDependent> Dependents { get; } = new();
+    private readonly List<IDependent> _dependents = new();
 
     protected int DefaultOffset { get; set; } = 8;
 
@@ -161,7 +161,10 @@ public partial class BMenu : BMenuable, IDependent
     {
         base.OnInitialized();
 
-        CascadingDependent?.RegisterChild(this);
+        if (CascadingDependent is not null)
+        {
+            (this as IDependent).CascadingDependents.ForEach(item => item.RegisterChild(this));
+        }
     }
 
     protected override void RegisterWatchers(PropertyWatcher watcher)
@@ -176,7 +179,7 @@ public partial class BMenu : BMenuable, IDependent
 
     public void RegisterChild(IDependent dependent)
     {
-        Dependents.Add(dependent);
+        _dependents.Add(dependent);
         Module?.UpdateDependentElements(DependentSelectors.ToArray());
     }
 
