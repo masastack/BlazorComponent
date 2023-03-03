@@ -11,10 +11,12 @@ namespace BlazorComponent
     {
         private CancellationTokenSource? _cancellationTokenSource;
         private bool _disposed;
-        private readonly List<IDependent> _dependents = new();
 
         [Inject]
         private OutsideClickJSModule? OutsideClickJsModule { get; set; }
+        
+        [CascadingParameter]
+        public IDependent? CascadingDependent { get; set; }
 
         [Parameter]
         public bool ExpandOnHover
@@ -100,6 +102,8 @@ namespace BlazorComponent
 
         [Parameter]
         public RenderFragment<Dictionary<string, object>> ImgContent { get; set; }
+
+        private readonly List<IDependent> _dependents = new();
 
         protected object Overlay { get; set; }
 

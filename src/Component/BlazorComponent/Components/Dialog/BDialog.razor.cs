@@ -12,6 +12,12 @@ public partial class BDialog : BBootable, IDependent, IAsyncDisposable
     [Inject]
     private OutsideClickJSModule? OutsideClickJsModule { get; set; }
 
+    [CascadingParameter]
+    public IDependent? CascadingDependent { get; set; }
+
+    [CascadingParameter(Name = "IsDark")]
+    public bool CascadingIsDark { get; set; }
+
     [Parameter]
     public string? Attach { get; set; }
 
@@ -42,10 +48,7 @@ public partial class BDialog : BBootable, IDependent, IAsyncDisposable
     [Parameter]
     public bool Light { get; set; }
 
-    [CascadingParameter(Name = "IsDark")]
-    public bool CascadingIsDark { get; set; }
-
-    private List<IDependent> _dependents = new();
+    private readonly List<IDependent> _dependents = new();
 
     public bool IsDark
     {
