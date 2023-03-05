@@ -77,13 +77,13 @@ namespace BlazorComponent
 
         public virtual ElementReference InputElement { get; set; }
 
-        protected virtual TValue LazyValue
+        protected virtual TValue? LazyValue
         {
             get => GetValue<TValue>();
             set => SetValue(value);
         }
 
-        protected TValue InternalValue
+        protected TValue? InternalValue
         {
             get
             {
@@ -206,12 +206,14 @@ namespace BlazorComponent
 
             if (firstRender)
             {
+                LazyValue = Value;
+
                 _inputJsInterop = new InputJsInterop(this, Js);
                 await _inputJsInterop.InitializeAsync(InputElement, InputSlotElement, InternalDebounceInterval);
 
                 if (Value is not null && !DisableSetValueByJsInterop)
                 {
-                    _ = SetValueByJsInterop(Value.ToString());
+                    _ = SetValueByJsInterop(Value?.ToString());
                 }
             }
         }
