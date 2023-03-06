@@ -12,11 +12,11 @@
 
         bool Multiple { get; }
 
-        string NextIcon { get; }
+        string? NextIcon { get; }
 
         RenderFragment NextContent { get; set; }
 
-        string PrevIcon { get; }
+        string? PrevIcon { get; }
 
         RenderFragment PrevContent { get; set; }
 
@@ -26,6 +26,6 @@
 
         bool HasPrev { get; }
 
-        StringBoolean ShowArrows { get; }
+        StringBoolean? ShowArrows { get; }
     }
 }
