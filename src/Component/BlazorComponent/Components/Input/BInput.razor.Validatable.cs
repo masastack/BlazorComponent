@@ -210,11 +210,6 @@ namespace BlazorComponent
 
                 _inputJsInterop = new InputJsInterop(this, Js);
                 await _inputJsInterop.InitializeAsync(InputElement, InputSlotElement, InternalDebounceInterval);
-
-                if (Value is not null && !DisableSetValueByJsInterop)
-                {
-                    _ = SetValueByJsInterop(Value?.ToString());
-                }
             }
         }
 
@@ -252,8 +247,10 @@ namespace BlazorComponent
 
         protected override void RegisterWatchers(PropertyWatcher watcher)
         {
+            base.RegisterWatchers(watcher);
+
             watcher
-                .Watch<TValue>(nameof(Value), OnValueChanged)
+                .Watch<TValue>(nameof(Value), OnValueChanged, immediate: true)
                 .Watch<TValue>(nameof(LazyValue), OnLazyValueChange)
                 .Watch<TValue>(nameof(InternalValue), OnInternalValueChange)
                 .Watch<bool>(nameof(IsFocused), async val =>
@@ -269,8 +266,6 @@ namespace BlazorComponent
 
                     await OnIsFocusedChange(val);
                 });
-
-            StateHasChanged();
         }
 
         protected override void OnParametersSet()
