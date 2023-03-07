@@ -13,8 +13,6 @@
         [Inject]
         protected DomEventJsInterop? DomEventJsInterop { get; set; }
 
-        protected double StartX { get; set; }
-
         [CascadingParameter(Name = "rtl")]
         public bool Rtl { get; set; }
 
@@ -22,7 +20,7 @@
         public bool CenterActive { get; set; }
 
         [Parameter]
-        public StringBoolean ShowArrows { get; set; }
+        public StringBoolean? ShowArrows { get; set; }
 
         [Parameter]
         public string? NextIcon { get; set; }
@@ -37,7 +35,7 @@
         public RenderFragment PrevContent { get; set; }
 
         private int _prevItemsLength;
-        private StringNumber _prevValue;
+        private StringNumber? _prevInternalValue;
         private bool _prevIsOverflowing;
 
         protected bool IsMobile { get; set; }
@@ -107,10 +105,10 @@
                 _prevItemsLength = Items.Count;
                 await SetWidths(Value);
             }
-            else if (_prevValue != Value)
+            else if (_prevInternalValue != InternalValue)
             {
-                _prevValue = Value;
-                await SetWidths(Value);
+                _prevInternalValue = InternalValue;
+                await SetWidths(InternalValue);
             }
             else if (_prevIsOverflowing != IsOverflowing)
             {

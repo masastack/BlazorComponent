@@ -13,13 +13,13 @@ namespace BlazorComponent
         public bool Continuous { get; set; }
 
         [Parameter]
-        public string NextIcon { get; set; }
+        public string? NextIcon { get; set; }
 
         [Parameter]
         public RenderFragment<Action> NextContent { get; set; }
 
         [Parameter]
-        public string PrevIcon { get; set; }
+        public string? PrevIcon { get; set; }
 
         [Parameter]
         public RenderFragment<Action> PrevContent { get; set; }
@@ -60,8 +60,8 @@ namespace BlazorComponent
 
             watcher.Watch(nameof(InternalIndex),
                 (newVal, oldVal) => IsReverse = UpdateReverse(newVal, oldVal),
-                () => Items.FindIndex(item => item.Value == Value),
-                new[] { nameof(Value), nameof(Values) },
+                () => Items.FindIndex(item => item.Value == InternalValue),
+                new[] { nameof(InternalValues) },
                 false,
                 true);
         }

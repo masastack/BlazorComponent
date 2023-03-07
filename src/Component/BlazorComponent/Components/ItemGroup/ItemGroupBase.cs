@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Force.DeepCloner;
+using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
@@ -25,26 +26,13 @@ namespace BlazorComponent
         public bool Multiple { get; set; }
 
         [Parameter]
-        public StringNumber? Value
-        {
-            get => InternalValues.LastOrDefault();
-            set
-            {
-                InternalValues.Clear();
-                InternalValues.Add(value);
-                SetValue(value);
-            }
-        }
+        public StringNumber? Value { get; set; }
 
         [Parameter]
         public EventCallback<StringNumber> ValueChanged { get; set; }
 
         [Parameter]
-        public List<StringNumber> Values
-        {
-            get => InternalValues;
-            set => InternalValues = value;
-        }
+        public List<StringNumber>? Values { get; set; }
 
         [Parameter]
         public EventCallback<List<StringNumber>> ValuesChanged { get; set; }
@@ -55,11 +43,19 @@ namespace BlazorComponent
 
         public List<StringNumber> AllValues => Items.Select(item => item.Value).ToList();
 
-        protected List<StringNumber> InternalValues { get; set; } = new();
+        internal List<StringNumber> InternalValues
+        {
+            get => GetValue<List<StringNumber>>(new()) ?? new List<StringNumber>();
+            set => SetValue(value);
+        }
+
+        protected StringNumber? InternalValue => InternalValues?.LastOrDefault();
 
         protected override void OnParametersSet()
         {
             base.OnParametersSet();
+
+            InitOrUpdateInternalValues();
 
             if (TargetGroup.HasValue)
             {
@@ -82,10 +78,27 @@ namespace BlazorComponent
 
             // if no value provided and mandatory
             // assign first registered item
-            if (Mandatory && Value == null)
+            if (Mandatory)
             {
-                Value = item.Value;
-                ValueChanged.InvokeAsync(item.Value);
+                if (InternalValues.Count == 0)
+                {
+                    InternalValues = new List<StringNumber>() { item.Value };
+
+                    if (Multiple)
+                    {
+                        if (ValuesChanged.HasDelegate)
+                        {
+                            ValuesChanged.InvokeAsync(InternalValues.ToList());
+                        }
+                    }
+                    else
+                    {
+                        if (ValueChanged.HasDelegate)
+                        {
+                            ValueChanged.InvokeAsync(item.Value);
+                        }
+                    }
+                }
             }
 
             RefreshItemsState();
@@ -113,9 +126,8 @@ namespace BlazorComponent
 
         public async Task ToggleAsync(StringNumber key)
         {
-            UpdateValue(key);
-
-            RefreshItemsState();
+            // have to invoke the InternalValues's setter
+            InternalValues = UpdateInternalValues(key);
 
             if (Multiple)
             {
@@ -125,7 +137,11 @@ namespace BlazorComponent
                 }
                 else
                 {
-                    Values = InternalValues;
+                    if (Values != null)
+                    {
+                        InternalValues = Values.ToList();
+                    }
+
                     StateHasChanged();
                 }
             }
@@ -138,32 +154,54 @@ namespace BlazorComponent
                 }
                 else
                 {
-                    Value = value;
+                    if (Value != null)
+                    {
+                        InternalValues = new List<StringNumber>() { Value };
+                    }
+
                     StateHasChanged();
                 }
             }
+
+            RefreshItemsState();
         }
 
-        protected virtual void UpdateValue(StringNumber key)
+        private void InitOrUpdateInternalValues()
         {
-            if (InternalValues.Contains(key))
+            if (Multiple)
             {
-                InternalValues.Remove(key);
+                InternalValues = Values == null ? new List<StringNumber>() : Values.ToList();
+            }
+            else
+            {
+                InternalValues = Value == null ? new List<StringNumber>() : new List<StringNumber>() { Value };
+            }
+        }
+
+        protected virtual List<StringNumber> UpdateInternalValues(StringNumber key)
+        {
+            var internalValues = InternalValues.ToList();
+
+            if (internalValues.Contains(key))
+            {
+                internalValues.Remove(key);
             }
             else
             {
                 if (!Multiple)
                 {
-                    InternalValues.Clear();
+                    internalValues.Clear();
                 }
 
-                InternalValues.Add(key);
+                internalValues.Add(key);
             }
 
-            if (Mandatory && InternalValues.Count == 0)
+            if (Mandatory && internalValues.Count == 0)
             {
-                InternalValues.Add(key);
+                internalValues.Add(key);
             }
+
+            return internalValues;
         }
     }
 }

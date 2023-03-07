@@ -37,9 +37,11 @@ namespace BlazorComponent
         [Parameter]
         public bool Tile { get; set; }
 
-        protected override void UpdateValue(StringNumber value)
+        protected override List<StringNumber> UpdateInternalValues(StringNumber value)
         {
-            if (InternalValues.Contains(value))
+            var internalValues = InternalValues.ToList();
+
+            if (internalValues.Contains(value))
             {
                 Remove(value);
             }
@@ -47,20 +49,22 @@ namespace BlazorComponent
             {
                 if (!Multiple)
                 {
-                    InternalValues.Clear();
+                    internalValues.Clear();
                     NextActiveKeys.Clear();
                 }
 
-                if (Max == null || InternalValues.Count < Max.TryGetNumber().number)
+                if (Max == null || internalValues.Count < Max.TryGetNumber().number)
                 {
                     Add(value);
                 }
             }
 
-            if (Mandatory && InternalValues.Count == 0)
+            if (Mandatory && internalValues.Count == 0)
             {
                 Add(value);
             }
+
+            return internalValues;
         }
 
         private void Add(StringNumber value)
