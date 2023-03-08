@@ -1,18 +1,17 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Force.DeepCloner;
+using Microsoft.AspNetCore.Components;
 
 namespace BlazorComponent
 {
     public abstract class ItemGroupBase : BDomComponentBase
     {
-        protected List<StringNumber> _values = new();
-
         public ItemGroupBase(GroupType groupType)
         {
             GroupType = groupType;
         }
 
         [Parameter]
-        public string ActiveClass { get; set; }
+        public string? ActiveClass { get; set; }
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
@@ -27,26 +26,13 @@ namespace BlazorComponent
         public bool Multiple { get; set; }
 
         [Parameter]
-        public StringNumber Value
-        {
-            get => _values.LastOrDefault();
-            set
-            {
-                _values.Clear();
-                _values.Add(value);
-                SetValue(value);
-            }
-        }
+        public StringNumber? Value { get; set; }
 
         [Parameter]
         public EventCallback<StringNumber> ValueChanged { get; set; }
 
         [Parameter]
-        public List<StringNumber> Values
-        {
-            get => _values;
-            set => _values = value;
-        }
+        public List<StringNumber>? Values { get; set; }
 
         [Parameter]
         public EventCallback<List<StringNumber>> ValuesChanged { get; set; }
@@ -57,33 +43,65 @@ namespace BlazorComponent
 
         public List<StringNumber> AllValues => Items.Select(item => item.Value).ToList();
 
+        internal List<StringNumber> InternalValues
+        {
+            get => GetValue<List<StringNumber>>(new()) ?? new List<StringNumber>();
+            set => SetValue(value);
+        }
+
+        protected StringNumber? InternalValue => InternalValues?.LastOrDefault();
+
         protected override void OnParametersSet()
         {
             base.OnParametersSet();
+
+            InitOrUpdateInternalValues();
 
             if (TargetGroup.HasValue)
             {
                 GroupType = TargetGroup.Value;
             }
+
+            RefreshItemsState();
+        }
+
+        private void RefreshItemsState()
+        {
+            Items.ForEach(item => item.RefreshState());
         }
 
         public virtual void Register(IGroupable item)
         {
             item.Value ??= Items.Count;
 
-            // TODO: check exists
             Items.Add(item);
 
             // if no value provided and mandatory
             // assign first registered item
-            if (Mandatory && Value == null)
+            if (Mandatory)
             {
-                Value = item.Value;
-                if (ValueChanged.HasDelegate)
+                if (InternalValues.Count == 0)
                 {
-                    _ = ValueChanged.InvokeAsync(Value);
+                    InternalValues = new List<StringNumber>() { item.Value };
+
+                    if (Multiple)
+                    {
+                        if (ValuesChanged.HasDelegate)
+                        {
+                            ValuesChanged.InvokeAsync(InternalValues.ToList());
+                        }
+                    }
+                    else
+                    {
+                        if (ValueChanged.HasDelegate)
+                        {
+                            ValueChanged.InvokeAsync(item.Value);
+                        }
+                    }
                 }
             }
+
+            RefreshItemsState();
         }
 
         public virtual void Unregister(IGroupable item)
@@ -106,44 +124,84 @@ namespace BlazorComponent
             await ToggleAsync(item.Value);
         }
 
-        public async virtual Task ToggleAsync(StringNumber key)
+        public async Task ToggleAsync(StringNumber key)
         {
-            UpdateValue(key);
+            // have to invoke the InternalValues's setter
+            InternalValues = UpdateInternalValues(key);
 
-            if (ValuesChanged.HasDelegate)
+            if (Multiple)
             {
-                await ValuesChanged.InvokeAsync(_values);
-            }
-            else if (ValueChanged.HasDelegate)
-            {
-                await ValueChanged.InvokeAsync(_values.LastOrDefault());
+                if (ValuesChanged.HasDelegate)
+                {
+                    await ValuesChanged.InvokeAsync(InternalValues);
+                }
+                else
+                {
+                    if (Values != null)
+                    {
+                        InternalValues = Values.ToList();
+                    }
+
+                    StateHasChanged();
+                }
             }
             else
             {
-                StateHasChanged();
+                var value = InternalValues.LastOrDefault();
+                if (ValueChanged.HasDelegate)
+                {
+                    await ValueChanged.InvokeAsync(value);
+                }
+                else
+                {
+                    if (Value != null)
+                    {
+                        InternalValues = new List<StringNumber>() { Value };
+                    }
+
+                    StateHasChanged();
+                }
+            }
+
+            RefreshItemsState();
+        }
+
+        private void InitOrUpdateInternalValues()
+        {
+            if (Multiple)
+            {
+                InternalValues = Values == null ? new List<StringNumber>() : Values.ToList();
+            }
+            else
+            {
+                InternalValues = Value == null ? new List<StringNumber>() : new List<StringNumber>() { Value };
             }
         }
 
-        private void UpdateValue(StringNumber key)
+        protected virtual List<StringNumber> UpdateInternalValues(StringNumber key)
         {
-            if (_values.Contains(key))
+            var internalValues = InternalValues.ToList();
+
+            if (internalValues.Contains(key))
             {
-                _values.Remove(key);
+                internalValues.Remove(key);
             }
             else
             {
                 if (!Multiple)
                 {
-                    _values.Clear();
+                    internalValues.Clear();
                 }
 
-                _values.Add(key);
+                internalValues.Add(key);
             }
 
-            if (Mandatory && _values.Count == 0)
+            if (Mandatory && internalValues.Count == 0)
             {
-                _values.Add(key);
+                internalValues.Add(key);
             }
+
+            return internalValues;
         }
     }
 }

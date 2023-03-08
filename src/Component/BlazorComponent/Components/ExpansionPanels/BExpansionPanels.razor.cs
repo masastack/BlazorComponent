@@ -37,9 +37,11 @@ namespace BlazorComponent
         [Parameter]
         public bool Tile { get; set; }
 
-        public async override Task ToggleAsync(StringNumber value)
+        protected override List<StringNumber> UpdateInternalValues(StringNumber value)
         {
-            if (_values.Contains(value))
+            var internalValues = InternalValues.ToList();
+
+            if (internalValues.Contains(value))
             {
                 Remove(value);
             }
@@ -47,39 +49,27 @@ namespace BlazorComponent
             {
                 if (!Multiple)
                 {
-                    _values.Clear();
+                    internalValues.Clear();
                     NextActiveKeys.Clear();
                 }
 
-                if (Max == null || _values.Count < Max.TryGetNumber().number)
+                if (Max == null || internalValues.Count < Max.TryGetNumber().number)
                 {
                     Add(value);
                 }
             }
 
-            if (Mandatory && _values.Count == 0)
+            if (Mandatory && internalValues.Count == 0)
             {
                 Add(value);
             }
 
-            if (ValueChanged.HasDelegate)
-            {
-                await ValueChanged.InvokeAsync(_values.LastOrDefault());
-            }
-            else if (ValuesChanged.HasDelegate)
-            {
-                await ValuesChanged.InvokeAsync(_values);
-            }
-            else
-            {
-                StateHasChanged();
-            }
+            return internalValues;
         }
-
 
         private void Add(StringNumber value)
         {
-            _values.Add(value);
+            InternalValues.Add(value);
 
             var index = AllValues.IndexOf(value);
             if (index > 1)
@@ -90,7 +80,7 @@ namespace BlazorComponent
 
         private void Remove(StringNumber value)
         {
-            _values.Remove(value);
+            InternalValues.Remove(value);
 
             var index = AllValues.IndexOf(value);
             if (index > 1)

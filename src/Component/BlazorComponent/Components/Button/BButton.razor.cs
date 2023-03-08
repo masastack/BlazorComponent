@@ -1,31 +1,24 @@
-﻿using Microsoft.AspNetCore.Components.Web;
+﻿using Microsoft.AspNetCore.Components.Routing;
 
 namespace BlazorComponent
 {
-    public partial class BButton : BGroupItem<ItemGroupBase>, IThemeable, IButton, IRoutable
+    public partial class BButton : BRoutableGroupItem<ItemGroupBase>, IThemeable, IButton
     {
-        protected BButton() : base(GroupType.ButtonGroup)
+        protected BButton() : base(GroupType.ButtonGroup, "button")
         {
         }
 
-        /// <summary>
-        /// Determine whether rendering a loader component
-        /// </summary>
-        protected bool HasLoader { get; set; }
-
-        /// <summary>
-        /// Set the button's type attribute
-        /// </summary>
-        protected string TypeAttribute { get; set; } = "button";
+        [CascadingParameter(Name = "IsDark")]
+        public bool CascadingIsDark { get; set; }
 
         [Parameter]
         public bool Block { get; set; }
 
         [Parameter]
-        public string Color { get; set; }
+        public string? Color { get; set; }
 
         [Parameter]
-        public StringNumber Height { get; set; }
+        public StringNumber? Height { get; set; }
 
         [Parameter]
         public RenderFragment LoaderContent { get; set; }
@@ -34,37 +27,22 @@ namespace BlazorComponent
         public virtual bool Loading { get; set; }
 
         [Parameter]
-        public StringNumber MaxHeight { get; set; }
+        public StringNumber? MaxHeight { get; set; }
 
         [Parameter]
-        public StringNumber MaxWidth { get; set; }
+        public StringNumber? MaxWidth { get; set; }
 
         [Parameter]
-        public StringNumber MinHeight { get; set; }
+        public StringNumber? MinHeight { get; set; }
 
         [Parameter]
-        public StringNumber MinWidth { get; set; }
+        public StringNumber? MinWidth { get; set; }
 
         [Parameter]
         public bool Outlined { get; set; }
 
         [Parameter]
         public StringNumber Width { get; set; }
-
-        [Parameter]
-        public string Href { get; set; }
-
-        [Parameter]
-        public bool Link { get; set; }
-
-        [Parameter]
-        public EventCallback<MouseEventArgs> OnClick { get; set; }
-
-        [Parameter]
-        public string Tag { get; set; } = "button";
-
-        [Parameter]
-        public string Target { get; set; }
 
         [Parameter]
         public bool StopPropagation { get; set; }
@@ -81,8 +59,15 @@ namespace BlazorComponent
         [Parameter]
         public string? Key { get; set; }
 
-        [CascadingParameter(Name = "IsDark")]
-        public bool CascadingIsDark { get; set; }
+        /// <summary>
+        /// Determine whether rendering a loader component
+        /// </summary>
+        protected bool HasLoader { get; set; }
+
+        /// <summary>
+        /// Set the button's type attribute
+        /// </summary>
+        protected string TypeAttribute { get; set; } = "button";
 
         public bool IsDark
         {
@@ -100,15 +85,6 @@ namespace BlazorComponent
 
                 return CascadingIsDark;
             }
-        }
-
-        protected override void OnParametersSet()
-        {
-            base.OnParametersSet();
-
-            IRoutable router = new Router(this);
-
-            (Tag, Attributes) = router.GenerateRouteLink();
         }
 
         protected override bool AfterHandleEventShouldRender() => false;

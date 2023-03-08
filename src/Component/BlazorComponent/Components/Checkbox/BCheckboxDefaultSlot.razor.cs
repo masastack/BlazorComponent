@@ -1,7 +1,6 @@
 ﻿namespace BlazorComponent
 {
-    public partial class BCheckboxDefaultSlot<TCheckbox> where TCheckbox : ICheckbox
+    public partial class BCheckboxDefaultSlot<TValue> : BInputDefaultSlot<TValue, ICheckbox<TValue>>
     {
-
     }
 }

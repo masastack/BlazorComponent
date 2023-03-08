@@ -1,10 +1,10 @@
 ﻿namespace BlazorComponent.Attributes;
 
-public class DefaultValue : Attribute
+public class ApiDefaultValueAttribute : Attribute
 {
     public object Value { get; }
 
-    public DefaultValue(object value)
+    public ApiDefaultValueAttribute(object value)
     {
         Value = value;
     }

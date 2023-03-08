@@ -5,22 +5,17 @@ namespace BlazorComponent
 {
     public partial class BListGroup : BDomComponentBase
     {
-        private const string PREPEND = "prepend";
-        private const string APPEND = "append";
-
-        private bool _value;
-
         [Inject]
-        public NavigationManager NavigationManager { get; set; }
+        public NavigationManager NavigationManager { get; set; } = null!;
 
         [CascadingParameter]
-        public BList List { get; set; }
+        public BList? List { get; set; }
 
         [Parameter]
         public bool Disabled { get; set; }
 
         [Parameter]
-        public List<string> Group { get; set; }
+        public List<string>? Group { get; set; }
 
         [Parameter]
         public bool Value
@@ -37,25 +32,31 @@ namespace BlazorComponent
         public EventCallback<bool> ValueChanged { get; set; }
 
         [Parameter]
-        public string PrependIcon { get; set; }
+        public string? PrependIcon { get; set; }
 
         [Parameter]
-        public RenderFragment PrependIconContent { get; set; }
+        public RenderFragment? PrependIconContent { get; set; }
 
         [Parameter]
-        public string AppendIcon { get; set; }
+        public string? AppendIcon { get; set; }
 
         [Parameter]
-        public RenderFragment AppendIconContent { get; set; }
+        public RenderFragment? AppendIconContent { get; set; }
 
         [Parameter]
-        public RenderFragment ActivatorContent { get; set; }
+        public RenderFragment? ActivatorContent { get; set; }
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
         public bool SubGroup { get; set; }
+
+        private const string PREPEND = "prepend";
+        private const string APPEND = "append";
+
+        private bool _value;
+        private string _previousAbsoutePath;
 
         protected bool IsActive { get; set; }
 
@@ -69,7 +70,17 @@ namespace BlazorComponent
 
             NavigationManager.LocationChanged += OnLocationChanged;
 
-            UpdateActiveForLinkage();
+            _previousAbsoutePath = NavigationManager.GetAbsolutePath();
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            await base.OnAfterRenderAsync(firstRender);
+
+            if (firstRender)
+            {
+                UpdateActiveForRoutable();
+            }
         }
 
         protected override void OnParametersSet()
@@ -82,7 +93,15 @@ namespace BlazorComponent
 
         private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
         {
-            var shouldRender = UpdateActiveForLinkage();
+            var absolutePath = NavigationManager.GetAbsolutePath();
+            if (_previousAbsoutePath == absolutePath)
+            {
+                return;
+            }
+
+            _previousAbsoutePath = absolutePath;
+
+            var shouldRender = UpdateActiveForRoutable();
             if (shouldRender)
             {
                 InvokeStateHasChanged();
@@ -115,11 +134,13 @@ namespace BlazorComponent
 
         private bool MatchRoute(string path)
         {
+            if (Group is null) return false;
+
             var relativePath = "/" + NavigationManager.ToBaseRelativePath(path);
             return Group.Any(item => Regex.Match(relativePath, item, RegexOptions.IgnoreCase).Success);
         }
 
-        private bool UpdateActiveForLinkage()
+        private bool UpdateActiveForRoutable()
         {
             var isActive = IsActive;
 

@@ -7,11 +7,16 @@ using Microsoft.JSInterop;
 
 namespace BlazorComponent
 {
-    public abstract partial class BNavigationDrawer : BDomComponentBase, IDependent
+    public abstract partial class BNavigationDrawer : BDomComponentBase, IDependent, IOutsideClickJsCallback
     {
-        private CancellationTokenSource _cancellationTokenSource;
+        private CancellationTokenSource? _cancellationTokenSource;
         private bool _disposed;
-        private readonly List<IDependent> _dependents = new();
+
+        [Inject]
+        private OutsideClickJSModule? OutsideClickJsModule { get; set; }
+        
+        [CascadingParameter]
+        public IDependent? CascadingDependent { get; set; }
 
         [Parameter]
         public bool ExpandOnHover
@@ -34,7 +39,7 @@ namespace BlazorComponent
         public bool Permanent { get; set; }
 
         [Parameter]
-        public string Src { get; set; }
+        public string? Src { get; set; }
 
         [Parameter]
         public bool Stateless { get; set; }
@@ -98,8 +103,7 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment<Dictionary<string, object>> ImgContent { get; set; }
 
-        [Inject]
-        private Document Document { get; set; }
+        private readonly List<IDependent> _dependents = new();
 
         protected object Overlay { get; set; }
 
@@ -127,35 +131,24 @@ namespace BlazorComponent
 
         protected bool ShowOverlay => !HideOverlay && IsActive && (IsMobile || Temporary);
 
-        public IEnumerable<HtmlElement> DependentElements
+        public virtual IEnumerable<string> DependentSelectors
         {
             get
             {
-                var elements = _dependents
-                               .SelectMany(dependent => dependent.DependentElements)
-                               .ToList();
+                var elements = _dependents.SelectMany(dependent => dependent.DependentSelectors).ToList();
 
-                var element = Document.GetElementByReference(Ref);
-                elements.Add(element);
+                // do not use the Ref elementReference because it's delay assignment.
+                elements.Add($"#{Id}");
 
                 return elements;
             }
         }
 
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
-
-            Watcher.Watch<bool>(nameof(MiniVariant), CallUpdate);
-        }
-
-        protected virtual async void CallUpdate()
-        {
-        }
-
         public void RegisterChild(IDependent dependent)
         {
             _dependents.Add(dependent);
+
+            OutsideClickJsModule?.UpdateDependentElements(DependentSelectors.ToArray());
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -164,13 +157,24 @@ namespace BlazorComponent
 
             if (firstRender)
             {
-                await Js.AddOutsideClickEventListener(HandleOnOutsideClickAsync, DependentElements.Select(element => element.Selector));
+                await OutsideClickJsModule!.InitializeAsync(this, DependentSelectors.ToArray());
 
                 if (!Permanent && !Stateless && !Temporary)
                 {
                     await UpdateValue(!IsMobile);
                 }
             }
+        }
+
+        protected override void RegisterWatchers(PropertyWatcher watcher)
+        {
+            base.RegisterWatchers(watcher);
+
+            watcher.Watch<bool>(nameof(MiniVariant), CallUpdate);
+        }
+
+        protected virtual async void CallUpdate()
+        {
         }
 
         public virtual Task HandleOnClickAsync(MouseEventArgs e)
@@ -203,12 +207,6 @@ namespace BlazorComponent
         }
 
         //TODO ontransitionend事件
-
-        private async Task HandleOnOutsideClickAsync(object _)
-        {
-            if (!CloseConditional()) return;
-            await UpdateValue(false);
-        }
 
         protected virtual bool IsFullscreen => false;
 
@@ -248,6 +246,12 @@ namespace BlazorComponent
         protected override void Dispose(bool disposing)
         {
             _disposed = true;
+        }
+
+        public async Task HandleOnOutsideClickAsync()
+        {
+            if (!CloseConditional()) return;
+            await UpdateValue(false);
         }
     }
 }

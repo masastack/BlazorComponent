@@ -8,28 +8,29 @@ namespace BlazorComponent
     /// </summary>
     public sealed class PropertyWatcher
     {
-        private ConcurrentDictionary<string, IObservableProperty> _props = new();
-        private Type _objectType;
+        private readonly ConcurrentDictionary<string, IObservableProperty> _props = new();
+        private readonly Type _objectType;
 
         public PropertyWatcher(Type objectType)
         {
             _objectType = objectType;
         }
 
-        public TValue GetValue<TValue>(TValue @default = default, string name = null, bool disableIListAlwaysNotifying = false)
+        public TValue? GetValue<TValue>(TValue? @default = default, string name = "", bool disableIListAlwaysNotifying = false)
         {
             var property = GetProperty(@default, name, disableIListAlwaysNotifying);
-            if (!property.HasValue && property != default)
+
+            if (!property.HasValue)
             {
-                property.Value = @default;
+                property.SetValueWithNoEffect(@default);
             }
 
             return property.Value;
         }
 
-        private ObservableProperty<TValue> GetProperty<TValue>(TValue @default, string name, bool disableIListAlwaysNotifying = false)
+        private ObservableProperty<TValue> GetProperty<TValue>(TValue? @default, string name, bool disableIListAlwaysNotifying = false)
         {
-            var prop = _props.GetOrAdd(name, key => new ObservableProperty<TValue>(name, @default, disableIListAlwaysNotifying));
+            var prop = _props.GetOrAdd(name, _ => new ObservableProperty<TValue>(name, @default, disableIListAlwaysNotifying));
             if (prop.GetType() == typeof(ObservableProperty))
             {
                 //Internal watch may before `ObservableProperty<TValue>` be created 
@@ -44,13 +45,13 @@ namespace BlazorComponent
             return property;
         }
 
-        public TValue GetComputedValue<TValue>(string name)
+        public TValue? GetComputedValue<TValue>(string name)
         {
             var property = GetProperty<TValue>(default, name);
             return !property.HasValue ? default : property.Value;
         }
 
-        public TValue GetComputedValue<TValue>(Expression<Func<TValue>> valueExpression, string name)
+        public TValue? GetComputedValue<TValue>(Expression<Func<TValue>> valueExpression, string name)
         {
             var property = GetProperty<TValue>(default, name);
             if (!property.HasValue)
@@ -63,7 +64,7 @@ namespace BlazorComponent
                 var visitor = new MemberAccessVisitor();
                 visitor.Visit(valueExpression);
 
-                var propertyInfos = visitor.PropertyInfos.Where(r => _objectType.IsSubclassOf(r.DeclaringType));
+                var propertyInfos = visitor.PropertyInfos.Where(r => r.DeclaringType is not null && _objectType.IsSubclassOf(r.DeclaringType));
                 foreach (var propertyInfo in propertyInfos)
                 {
                     Watch(propertyInfo.Name, () =>
@@ -77,7 +78,7 @@ namespace BlazorComponent
             return property.Value;
         }
 
-        public TValue GetComputedValue<TValue>(Func<TValue> valueFactory, string[] dependencyProperties, string name)
+        public TValue? GetComputedValue<TValue>(Func<TValue> valueFactory, string[] dependencyProperties, string name)
         {
             var property = GetProperty<TValue>(default, name);
             if (!property.HasValue)
@@ -126,17 +127,20 @@ namespace BlazorComponent
             }
         }
 
-        public PropertyWatcher Watch<TValue>(string name, Action changeCallback)
+        public PropertyWatcher Watch<TValue>(string name, Action changeCallback, bool immediate = false, bool @override = false,
+            TValue? defaultValue = default)
         {
-            return Watch<TValue>(name, (newValue, oldValue) => changeCallback?.Invoke());
+            return Watch(name, (_, _) => changeCallback.Invoke(), immediate, @override, defaultValue);
         }
 
-        public PropertyWatcher Watch<TValue>(string name, Action<TValue> changeCallback, bool immediate = false, bool @override = false)
+        public PropertyWatcher Watch<TValue>(string name, Action<TValue?> changeCallback, bool immediate = false, bool @override = false,
+            TValue? defaultValue = default)
         {
-            return Watch<TValue>(name, (newValue, _) => changeCallback?.Invoke(newValue), immediate, @override);
+            return Watch(name, (newValue, _) => changeCallback.Invoke(newValue), immediate, @override, defaultValue);
         }
 
-        public PropertyWatcher Watch<TValue>(string name, Action<TValue, TValue> changeCallback, bool immediate = false, bool @override = false)
+        public PropertyWatcher Watch<TValue>(string name, Action<TValue?, TValue?> changeCallback, bool immediate = false, bool @override = false,
+            TValue? defaultValue = default)
         {
             if (@override)
             {
@@ -146,15 +150,21 @@ namespace BlazorComponent
             var property = GetProperty<TValue>(default, name);
             property.OnValueChange += changeCallback;
 
+            // TODO: defaultValue should not set to property, also in GetValue(defaultValue)
+            if (defaultValue is not null && !EqualityComparer<TValue>.Default.Equals(defaultValue, default))
+            {
+                property.Value = defaultValue;
+            }
+
             if (immediate)
             {
-                changeCallback.Invoke(default, default);
+                changeCallback.Invoke(property.Value, default);
             }
 
             return this;
         }
 
-        public PropertyWatcher Watch<TValue>(string name, Action<TValue, TValue> changeCallback, Func<TValue> valueFactory,
+        public PropertyWatcher Watch<TValue>(string name, Action<TValue?, TValue?> changeCallback, Func<TValue> valueFactory,
             string[] dependencyProperties, bool immediate = false, bool @override = false)
         {
             if (@override)
@@ -178,7 +188,7 @@ namespace BlazorComponent
 
             if (immediate)
             {
-                changeCallback.Invoke(default, default);
+                changeCallback.Invoke(property.Value, default);
             }
 
             return this;
@@ -191,9 +201,9 @@ namespace BlazorComponent
 
         private void Watch(string name, Action changeCallback)
         {
-            //Internal watch can'not infer the TValue,can we get a better solution?
-            var prop = _props.GetOrAdd(name, key => new ObservableProperty(name));
-            prop.OnChange += _ => changeCallback?.Invoke();
+            //Internal watch can not infer the TValue,can we get a better solution?
+            var prop = _props.GetOrAdd(name, _ => new ObservableProperty(name));
+            prop.OnChange += _ => changeCallback.Invoke();
         }
     }
 }

@@ -2,11 +2,10 @@
 @typeparam TItem
 @typeparam TKey
 @inherits BDomComponentBase
-@implements ITreeview<TItem, TKey>
 
 <CascadingValue Value="IsDark" Name="IsDark">
     <BCascadingValue Value="this" IsFixed>
-        <div class="@CssProvider.GetClass()">
+        <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">
             @if (ComputedItems != null && ComputedItems.Any())
             {
                 foreach (var item in ComputedItems)

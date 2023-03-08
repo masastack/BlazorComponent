@@ -3,6 +3,7 @@
     public interface IThemeable
     {
         public bool Dark { get; set; }
+
         public bool Light { get; set; }
 
         public bool IsDark
@@ -24,7 +25,6 @@
                     // inherit from parent, or default false if there is none
                     return false;
                 }
-
             }
         }
     }

@@ -1,11 +1,14 @@
-﻿using BlazorComponent.Web;
+﻿namespace BlazorComponent.Mixins;
 
-namespace BlazorComponent.Mixins
+public interface IDependent
 {
-    public interface IDependent
-    {
-        void RegisterChild(IDependent dependent);
+    void RegisterChild(IDependent dependent);
 
-        IEnumerable<HtmlElement> DependentElements { get; }
-    }
+    IDependent? CascadingDependent { get; }
+
+    public List<IDependent> CascadingDependents => CascadingDependent is not null
+        ? CascadingDependent.CascadingDependents.Concat(new[] { CascadingDependent }).ToList()
+        : new List<IDependent>();
+
+    IEnumerable<string> DependentSelectors { get; }
 }

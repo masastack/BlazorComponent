@@ -38,7 +38,7 @@ public class I18n
         }
         else
         {
-            cultureName = _cookieStorage.GetCookie(CultureCookieKey);
+            cultureName = _cookieStorage.GetCookie(CultureCookieKey) ?? "";
         }
 
         var culture = GetValidCulture(cultureName);
@@ -46,9 +46,11 @@ public class I18n
         SetCultureAndLocale(culture);
     }
 
-    public CultureInfo Culture { get; private set; }
+    [NotNull]
+    public CultureInfo? Culture { get; private set; }
 
-    public IReadOnlyDictionary<string, string> Locale { get; private set; }
+    [NotNull]
+    public IReadOnlyDictionary<string, string>? Locale { get; private set; }
 
     public void SetCulture(CultureInfo culture)
     {
@@ -66,28 +68,41 @@ public class I18n
 
     public IEnumerable<CultureInfo> SupportedCultures => I18nCache.GetCultures();
 
-    public string? T(string? key, bool matchLastLevel = false, [DoesNotReturnIf(true)] bool whenNullReturnKey = true)
+    public string? T(string? key, bool matchLastLevel = false, bool whenNullReturnKey = true, params object[] args)
     {
         if (key is null)
         {
             return null;
         }
 
-        if (matchLastLevel)
+        var value = Locale.GetValueOrDefault(key);
+
+        if (value is null && matchLastLevel)
         {
-            return Locale.FirstOrDefault(kv => kv.Key.EndsWith($".{key}") || kv.Key == key).Value ?? (whenNullReturnKey ? key : null);
+            var matchKey = Locale.Keys.FirstOrDefault(k => k.EndsWith($".{key}"));
+
+            if (matchKey is not null)
+            {
+                value = Locale[matchKey];
+            }
         }
 
-        var value = Locale.GetValueOrDefault(key);
-        if (value is not null)
+        if (value is null && whenNullReturnKey)
+        {
+            return key.Split('.').Last();
+        }
+
+        try
+        {
+            return value is null ? null : string.Format(value, args);
+        }
+        catch (FormatException)
         {
             return value;
         }
-
-        return whenNullReturnKey ? key.Split('.').Last() : null;
     }
 
-    public string? T(string? scope, string? key, [DoesNotReturnIf(true)] bool whenNullReturnKey = true)
+    public string? T(string? scope, string? key, bool whenNullReturnKey = true, params object[] args)
     {
         if (key is null)
         {
@@ -95,12 +110,20 @@ public class I18n
         }
 
         var value = Locale.GetValueOrDefault($"{scope}.{key}");
-        if (value is not null)
+
+        if (value is null && whenNullReturnKey)
+        {
+            return key.Split('.').Last();
+        }
+
+        try
+        {
+            return value is null ? null : string.Format(value, args);
+        }
+        catch (FormatException)
         {
             return value;
         }
-
-        return whenNullReturnKey ? key.Split('.').Last() : null;
     }
 
     private void SetCultureAndLocale(CultureInfo culture)

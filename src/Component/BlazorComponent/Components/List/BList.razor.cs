@@ -2,7 +2,7 @@
 
 namespace BlazorComponent
 {
-    public partial class BList : BDomComponentBase, ITransitionIf
+    public partial class BList : BDomComponentBase, ITransitionIf, IAncestorRoutable
     {
         // TODO: add cascading value in Menu
         [CascadingParameter(Name = "IsInMenu")]
@@ -20,7 +20,7 @@ namespace BlazorComponent
         public virtual bool Expand { get; set; }
 
         [Parameter]
-        public bool Linkage { get; set; }
+        public bool Routable { get; set; }
 
         [Parameter]
         public virtual string Tag { get; set; } = "div";

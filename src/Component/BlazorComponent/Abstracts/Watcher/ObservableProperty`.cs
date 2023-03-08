@@ -8,10 +8,10 @@ namespace BlazorComponent
         private readonly IObservableProperty _internalProperty;
 
         private bool _hasValue;
-        private TValue _oldValue;
-        private TValue _value;
+        private TValue? _oldValue;
+        private TValue? _value;
 
-        public ObservableProperty(string name, TValue value, bool disableIListAlwaysNotifying = false)
+        public ObservableProperty(string name, TValue? value, bool disableIListAlwaysNotifying = false)
             : base(name)
         {
             Value = value;
@@ -19,7 +19,7 @@ namespace BlazorComponent
             DisableIListAlwaysNotifying = disableIListAlwaysNotifying;
         }
 
-        public ObservableProperty(IObservableProperty property, TValue value, bool disableIListAlwaysNotifying = false)
+        public ObservableProperty(IObservableProperty property, TValue? value, bool disableIListAlwaysNotifying = false)
             : base(property.Name)
         {
             Value = value;
@@ -27,15 +27,15 @@ namespace BlazorComponent
             DisableIListAlwaysNotifying = disableIListAlwaysNotifying;
         }
 
-        public TValue Value
+        public TValue? Value
         {
-            get { return _value; }
+            get => _value;
             set
             {
                 //First time set value
                 if (!_hasValue && value is INotifyPropertyChanged notify)
                 {
-                    notify.PropertyChanged += (sender, args) => { NotifyChange(_value, _oldValue); };
+                    notify.PropertyChanged += (_, _) => { NotifyChange(_value, _oldValue); };
                 }
 
                 //We can't detect whether reference type has changed
@@ -55,6 +55,15 @@ namespace BlazorComponent
             }
         }
 
+        /// <summary>
+        /// Set value without notification
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetValueWithNoEffect(TValue? value)
+        {
+            _value = value;
+        }
+
         public Func<TValue> ValueFactory { get; set; }
 
         public bool DisableIListAlwaysNotifying { get; set; }
@@ -64,9 +73,9 @@ namespace BlazorComponent
         /// </summary>
         public bool HasValue => _hasValue;
 
-        public event Action<TValue, TValue> OnValueChange;
+        public event Action<TValue?, TValue?> OnValueChange;
 
-        public void NotifyChange(TValue newValue, TValue oldValue)
+        public void NotifyChange(TValue? newValue, TValue? oldValue)
         {
             OnValueChange?.Invoke(newValue, oldValue);
             _internalProperty?.NotifyChange();

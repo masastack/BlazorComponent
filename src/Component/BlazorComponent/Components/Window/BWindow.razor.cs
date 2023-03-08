@@ -13,13 +13,13 @@ namespace BlazorComponent
         public bool Continuous { get; set; }
 
         [Parameter]
-        public string NextIcon { get; set; }
+        public string? NextIcon { get; set; }
 
         [Parameter]
         public RenderFragment<Action> NextContent { get; set; }
 
         [Parameter]
-        public string PrevIcon { get; set; }
+        public string? PrevIcon { get; set; }
 
         [Parameter]
         public RenderFragment<Action> PrevContent { get; set; }
@@ -54,19 +54,14 @@ namespace BlazorComponent
 
         public bool HasPrev => Continuous || InternalIndex > 0;
 
-        protected override void OnInitialized()
+        protected override void RegisterWatchers(PropertyWatcher watcher)
         {
-            base.OnInitialized();
+            base.RegisterWatchers(watcher);
 
-            WatchInternalIndex();
-        }
-
-        private void WatchInternalIndex()
-        {
-            Watcher.Watch(nameof(InternalIndex),
+            watcher.Watch(nameof(InternalIndex),
                 (newVal, oldVal) => IsReverse = UpdateReverse(newVal, oldVal),
-                () => Items.FindIndex(item => item.Value == Value),
-                new[] { nameof(Value) },
+                () => Items.FindIndex(item => item.Value == InternalValue),
+                new[] { nameof(InternalValues) },
                 false,
                 true);
         }
@@ -74,8 +69,6 @@ namespace BlazorComponent
         public override void Register(IGroupable item)
         {
             base.Register(item);
-
-            WatchInternalIndex();
 
             StateHasChanged();
         }
@@ -92,14 +85,7 @@ namespace BlazorComponent
             var nextIndex = GetNextIndex(InternalIndex);
             var nextItem = Items[nextIndex];
 
-            if (ValueChanged.HasDelegate)
-            {
-                ValueChanged.InvokeAsync(nextItem.Value);
-            }
-            else
-            {
-                Value = nextItem.Value;
-            }
+            _ = ToggleAsync(nextItem.Value);
         }
 
         protected void Prev()
@@ -107,16 +93,9 @@ namespace BlazorComponent
             if (!HasActiveItems || !HasPrev) return;
 
             var prevIndex = GetPrevIndex(InternalIndex);
-            var pervItem = Items[prevIndex];
+            var prevItem = Items[prevIndex];
 
-            if (ValueChanged.HasDelegate)
-            {
-                ValueChanged.InvokeAsync(pervItem.Value);
-            }
-            else
-            {
-                Value = pervItem.Value;
-            }
+            _ = ToggleAsync(prevItem.Value);
         }
 
         protected int GetNextIndex(int currentIndex)

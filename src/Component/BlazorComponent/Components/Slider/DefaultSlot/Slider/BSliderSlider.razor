@@ -1,5 +1,6 @@
 ﻿@namespace BlazorComponent
 @typeparam TValue
+@typeparam TNumeric
 @typeparam TInput
 @inherits ComponentPartBase<TInput>
 
@@ -12,5 +13,5 @@
      @onmouseup:preventDefault
      @onmouseup:stopPropagation
      @onexmousedown:preventDefault>
-    @RenderPart(typeof(BSliderChildren<,>))
+    @RenderPart(typeof(BSliderChildren<,,>))
 </div>

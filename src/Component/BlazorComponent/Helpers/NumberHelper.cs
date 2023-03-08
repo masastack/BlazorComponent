@@ -12,11 +12,13 @@ public static class NumberHelper
     /// <summary>
     /// Same as parseInt in javascript. Return 0 if input is invalid.
     /// </summary>
-    /// <param name="s"></param>
+    /// <param name="str"></param>
     /// <returns></returns>
-    public static int ParseInt(string s)
+    public static int ParseInt(string? str)
     {
-        var match = LeadingInteger.Match(s);
+        if (str == null) return 0;
+
+        var match = LeadingInteger.Match(str);
         return !match.Success ? 0 : int.Parse(match.Value);
     }
 
@@ -25,22 +27,23 @@ public static class NumberHelper
     /// <summary>
     /// Same as parseFloat in javascript. Return 0 if input is invalid.
     /// </summary>
-    /// <param name="number"></param>
-    /// <param name="s"></param>
+    /// <param name="str"></param>
     /// <returns></returns>
-    public static double ParseDouble(string s)
+    public static double ParseDouble(string? str)
     {
-        var match = LeadingDouble.Match(s);
+        if (str == null) return 0;
+
+        var match = LeadingDouble.Match(str);
         return !match.Success ? 0 : double.Parse(match.Value);
     }
 
-    public static bool TryParseDouble(string s, out double value)
+    public static bool TryParseDouble(string? str, out double value)
     {
         value = 0;
 
-        if (s == null) return false;
+        if (str == null) return false;
 
-        var match = LeadingDouble.Match(s);
+        var match = LeadingDouble.Match(str);
 
         if (!match.Success) return false;
 

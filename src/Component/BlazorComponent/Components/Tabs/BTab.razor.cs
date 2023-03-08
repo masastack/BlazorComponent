@@ -1,45 +1,35 @@
-﻿using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
-    public partial class BTab : BGroupItem<ItemGroupBase>, IRoutable
+    public partial class BTab : BRoutableGroupItem<ItemGroupBase>
     {
         public BTab() : base(GroupType.SlideGroup)
         {
         }
 
         [CascadingParameter]
-        public BTabs Tabs { get; set; }
+        public BTabs? Tabs { get; set; }
 
-        [Parameter]
-        public string Href { get; set; }
+        protected override bool HasRoutableAncestor => Tabs?.Routable is true;
 
-        [Parameter]
-        public bool Link { get; set; }
-
-        [Parameter]
-        public EventCallback<MouseEventArgs> OnClick { get; set; }
-
-        [Parameter]
-        public string Tag { get; set; } = "div";
-
-        [Parameter]
-        public string Target { get; set; }
+        protected override bool IsRoutable => Href != null && HasRoutableAncestor;
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
+            await base.OnAfterRenderAsync(firstRender);
+
             if (firstRender)
             {
+                if (Tabs is null) return;
+
                 await Tabs.CallSlider();
             }
         }
 
-        protected override void OnParametersSet()
+        protected override async Task OnActiveUpdatedForRoutable()
         {
-            base.OnParametersSet();
+            if (Tabs == null) return;
 
-            IRoutable router = new Router(this);
-            (Tag, Attributes) = router.GenerateRouteLink();
+            await Tabs.CallSlider();
         }
 
         protected override bool AfterHandleEventShouldRender() => false;

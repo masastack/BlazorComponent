@@ -1,10 +1,8 @@
 ﻿using BlazorComponent.Web;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public class BMenuable : BBootable, IActivatable, IAsyncDisposable
+    public class BMenuable : BBootable, IAsyncDisposable
     {
         [Parameter]
         public bool Absolute { get; set; }
@@ -13,28 +11,28 @@ namespace BlazorComponent
         public bool AllowOverflow { get; set; }
 
         [Parameter]
-        public string ContentClass { get; set; }
+        public string? ContentClass { get; set; }
 
         [Parameter]
-        public StringNumber MaxWidth { get; set; }
+        public StringNumber? MaxWidth { get; set; }
 
         [Parameter]
-        public StringNumber MinWidth { get; set; }
+        public StringNumber? MinWidth { get; set; }
 
         [Parameter]
-        public StringNumber NudgeBottom { get; set; }
+        public StringNumber? NudgeBottom { get; set; }
 
         [Parameter]
-        public StringNumber NudgeLeft { get; set; }
+        public StringNumber? NudgeLeft { get; set; }
 
         [Parameter]
-        public StringNumber NudgeRight { get; set; }
+        public StringNumber? NudgeRight { get; set; }
 
         [Parameter]
-        public StringNumber NudgeTop { get; set; }
+        public StringNumber? NudgeTop { get; set; }
 
         [Parameter]
-        public StringNumber NudgeWidth { get; set; }
+        public StringNumber? NudgeWidth { get; set; }
 
         [Parameter]
         public bool OffsetOverflow { get; set; }
@@ -46,10 +44,11 @@ namespace BlazorComponent
         public double? PositionY { get; set; }
 
         [Parameter]
-        public StringNumber ZIndex { get; set; }
+        public StringNumber? ZIndex { get; set; }
 
         [Parameter]
-        public string Attach { get; set; }
+        [ApiDefaultValue(false)]
+        public StringBoolean? Attach { get; set; } = false;
 
         [Parameter]
         public bool Left { get; set; }
@@ -73,10 +72,12 @@ namespace BlazorComponent
         public bool ExternalActivator { get; set; }
 
         [Inject]
-        public Window Window { get; set; }
+        [NotNull]
+        public Window? Window { get; set; }
 
         [Inject]
-        public Document Document { get; set; }
+        [NotNull]
+        public Document? Document { get; set; }
 
         protected double ComputedLeft
         {
@@ -84,7 +85,7 @@ namespace BlazorComponent
             {
                 var activator = Dimensions.Activator;
                 var content = Dimensions.Content;
-                var activatorLeft = Attach != null ? activator.OffsetLeft : activator.Left;
+                var activatorLeft = !IsDefaultAttach ? activator.OffsetLeft : activator.Left;
                 var minWidth = Math.Max(activator.Width, content.Width);
 
                 double left = 0;
@@ -92,12 +93,16 @@ namespace BlazorComponent
 
                 if (OffsetX)
                 {
-                    double maxWidth = 0;
+                    double maxWidth;
 
                     if (MaxWidth != null)
                     {
                         (var isNumber, maxWidth) = MaxWidth.TryGetNumber();
                         maxWidth = isNumber ? Math.Min(activator.Width, maxWidth) : activator.Width;
+                    }
+                    else
+                    {
+                        maxWidth = activator.Width;
                     }
 
                     left += Left ? -maxWidth : activator.Width;
@@ -130,7 +135,7 @@ namespace BlazorComponent
 
                 if (Top) top += activator.Height - content.Height;
 
-                if (Attach != null)
+                if (!IsDefaultAttach)
                 {
                     top += activator.OffsetTop;
                 }
@@ -180,11 +185,21 @@ namespace BlazorComponent
 
         protected bool HasActivator => ActivatorContent != null || ExternalActivator;
 
-        protected virtual string AttachSelector => Attach;
+        protected virtual string? AttachSelector => default;
+
+        /// <summary>
+        /// Attached to the current element but not to other element.
+        /// </summary>
+        protected bool IsAttachSelf => Attach is not null && Attach.IsT1 && Attach.AsT1;
+
+        /// <summary>
+        /// Determines whether the <see cref="Attach"/> value is false.
+        /// </summary>
+        protected bool IsDefaultAttach => Attach is not null && Attach.IsT1 && Attach.AsT1 == false;
 
         protected int ComputedZIndex => ZIndex != null ? ZIndex.ToInt32() : Math.Max(ActivateZIndex, StackMinZIndex);
 
-        protected MenuableDimensions Dimensions { get; } = new MenuableDimensions();
+        protected MenuableDimensions Dimensions { get; } = new();
 
         protected double AbsoluteX { get; set; }
 
@@ -206,17 +221,11 @@ namespace BlazorComponent
 
         public bool Attached { get; protected set; }
 
-        protected StringNumber CalcLeft(double menuWidth)
-        {
-            var left = Attach != null ? ComputedLeft : CalcXOverflow(ComputedLeft, menuWidth);
-            return left > 0 ? left : null;
-        }
+        protected StringNumber? CalcLeft(double menuWidth)
+            => !IsDefaultAttach ? ComputedLeft : CalcXOverflow(ComputedLeft, menuWidth);
 
-        protected StringNumber CalcTop()
-        {
-            var top = Attach != null ? ComputedTop : CalcYOverflow(ComputedTop);
-            return top > 0 ? top : null;
-        }
+        protected StringNumber? CalcTop()
+            => !IsDefaultAttach ? ComputedTop : CalcYOverflow(ComputedTop);
 
         protected double CalcXOverflow(double left, double menuWidth)
         {
@@ -285,19 +294,6 @@ namespace BlazorComponent
             Window.OnResize += HandleOnResizeAsync;
         }
 
-        protected override void OnParametersSet()
-        {
-            if (OpenDelay < 48)
-            {
-                OpenDelay = 48;
-            }
-
-            if (CloseDelay < 48)
-            {
-                CloseDelay = 48;
-            }
-        }
-
         private async Task HandleOnResizeAsync()
         {
             if (!IsActive)
@@ -314,6 +310,11 @@ namespace BlazorComponent
 
         protected virtual async Task UpdateDimensionsAsync()
         {
+            if (!Attached && Attach is not null && ((Attach.IsT0 && string.IsNullOrWhiteSpace(Attach.AsT0)) || Attach.IsT1 && Attach.AsT1))
+            {
+                Attached = true;
+            }
+
             //Invoke multiple method
             //1、Attach
             //2、Window,Document
@@ -324,7 +325,7 @@ namespace BlazorComponent
 
             var hasActivator = HasActivator && !Absolute;
             var multipleResult = await JsInvokeAsync<MultipleResult>(JsInteropConstants.InvokeMultipleMethod, windowProps, documentProps,
-                hasActivator, ActivatorSelector, Attach, ContentElement, Attached, AttachSelector, Ref);
+                hasActivator, ActivatorSelector, IsDefaultAttach, ContentElement, Attached, AttachSelector, Ref);
             var windowAndDocument = multipleResult.WindowAndDocument;
 
             //We want to reduce js interop
@@ -370,7 +371,7 @@ namespace BlazorComponent
             RelativeYOffset = dimensions.RelativeYOffset;
         }
 
-        protected override async Task HandleOnClickAsync(MouseEventArgs args)
+        public override async Task HandleOnClickAsync(MouseEventArgs args)
         {
             AbsoluteX = args.ClientX;
             AbsoluteY = args.ClientY;
@@ -427,7 +428,7 @@ namespace BlazorComponent
             base.Dispose(disposing);
         }
 
-        public new async ValueTask DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
             try
             {

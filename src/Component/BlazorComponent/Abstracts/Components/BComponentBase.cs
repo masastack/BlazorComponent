@@ -1,36 +1,48 @@
-﻿using Microsoft.JSInterop;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public abstract class BComponentBase : NextTickComponentBase, IHandleEvent
     {
         [Inject]
-        public virtual IJSRuntime Js { get; set; }
+        [NotNull]
+        public virtual IJSRuntime? Js { get; set; }
+
+        [CascadingParameter]
+        protected IDefaultsProvider? DefaultsProvider { get; set; }
 
         [CascadingParameter]
         protected IErrorHandler? ErrorHandler { get; set; }
 
         [Parameter]
-        public ForwardRef RefBack { get; set; } = new();
+        public ForwardRef? RefBack { get; set; } = new();
 
-        private ParameterView ParameterView { get; set; }
+        private string[] _dirtyParameters = Array.Empty<string>();
 
-        public override Task SetParametersAsync(ParameterView parameters)
+        protected virtual string ComponentName => this.GetType().Name;
+
+        public override async Task SetParametersAsync(ParameterView parameters)
         {
-            ParameterView = parameters;
+            _dirtyParameters = parameters.ToDictionary().Keys.ToArray();
 
-            return base.SetParametersAsync(parameters);
+            if (parameters.TryGetValue<IDefaultsProvider>(nameof(DefaultsProvider), out var defaultsProvider)
+                && defaultsProvider.Defaults is not null
+                && defaultsProvider.Defaults.TryGetValue(ComponentName, out var dictionary)
+                && dictionary is not null)
+            {
+                var defaults = ParameterView.FromDictionary(dictionary);
+                await base.SetParametersAsync(defaults);
+            }
+
+            await base.SetParametersAsync(parameters);
         }
 
         /// <summary>
         /// Check whether the parameter has been assigned value.
         /// </summary>
         /// <param name="parameterName"></param>
-        /// <typeparam name="TValue"></typeparam>
         /// <returns></returns>
-        protected bool IsDirtyParameter<TValue>(string parameterName)
+        protected bool IsDirtyParameter(string parameterName)
         {
-            return ParameterView.TryGetValue<TValue>(parameterName, out _);
+            return _dirtyParameters.Contains(parameterName);
         }
 
         protected void InvokeStateHasChanged()
@@ -49,12 +61,12 @@ namespace BlazorComponent
             }
         }
 
-        protected async Task<T> JsInvokeAsync<T>(string code, params object[] args)
+        protected async Task<T> JsInvokeAsync<T>(string code, params object?[] args)
         {
             return await Js.InvokeAsync<T>(code, args);
         }
 
-        protected async Task JsInvokeAsync(string code, params object[] args)
+        protected async Task JsInvokeAsync(string code, params object?[] args)
         {
             await Js.InvokeVoidAsync(code, args);
         }

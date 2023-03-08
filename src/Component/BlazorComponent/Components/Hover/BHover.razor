@@ -1,4 +1,4 @@
 ﻿@namespace BlazorComponent
-@inherits BDomComponentBase
+@inherits BActivatableBase
 
-@ChildContent(Props)
+@ChildContent?.Invoke(new HoverProps(IsActive, ActivatorAttributes))

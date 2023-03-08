@@ -12,6 +12,7 @@
         <PackageReleaseNotes />
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -25,8 +26,8 @@
 
     <ItemGroup>
         <PackageReference Include="DeepCloner" Version="0.10.4" />
-        <PackageReference Include="FluentValidation" Version="11.0.3" />
-        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.0.3" />
+        <PackageReference Include="FluentValidation" Version="11.4.0" />
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.4.0" />
         <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.0-preview.7.21378.6" />
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
         <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />

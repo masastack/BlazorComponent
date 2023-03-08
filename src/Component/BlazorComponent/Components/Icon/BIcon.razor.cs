@@ -7,10 +7,11 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public partial class BIcon : IThemeable, ITransitionIf
+    public partial class BIcon : IIcon, IThemeable
     {
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        [EditorRequired]
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
         public bool If { get; set; } = true;
@@ -30,16 +31,10 @@ namespace BlazorComponent
         public bool Right { get; set; }
 
         [Parameter]
-        public StringNumber Size { get; set; }
-
-        public string Icon { get; set; }
+        public StringNumber? Size { get; set; }
 
         [Parameter]
         public string Tag { get; set; } = "i";
-
-        public string NewChildren { get; set; }
-
-        public Dictionary<string, object> SvgAttrs { get; set; }
 
         #endregion
 
@@ -71,7 +66,7 @@ namespace BlazorComponent
         }
 
         [Parameter]
-        public string Color { get; set; }
+        public string? Color { get; set; }
 
         [Parameter]
         public EventCallback<MouseEventArgs> OnClick { get; set; }
@@ -83,14 +78,44 @@ namespace BlazorComponent
         public bool OnClickStopPropagation { get; set; }
 
         [Inject]
-        public Document Document { get; set; }
+        [NotNull]
+        public Document? Document { get; set; }
 
         private bool _clickEventRegistered;
 
-        protected override Task OnParametersSetAsync()
+        protected string? Icon { get; set; }
+
+        protected IconType IconType { get; set; }
+
+        protected Dictionary<string, object>? SvgAttrs { get; set; }
+
+        protected override void OnInitialized()
         {
+            base.OnInitialized();
+
+            SvgAttrs = new()
+            {
+                { "viewBox", "0 0 24 24" },
+                { "role", "img" },
+                { "aria-hidden", "true" }
+            };
+        }
+
+        public override async Task SetParametersAsync(ParameterView parameters)
+        {
+            await base.SetParametersAsync(parameters);
+
             InitIcon();
-            return base.OnParametersSetAsync();
+        }
+
+        protected override void OnParametersSet()
+        {
+            base.OnParametersSet();
+
+            if (OnClick.HasDelegate)
+            {
+                Tag = "button";
+            }
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -134,25 +159,31 @@ namespace BlazorComponent
         private void InitIcon()
         {
             var builder = new RenderTreeBuilder();
-            ChildContent(builder);
+            ChildContent?.Invoke(builder);
 
 #pragma warning disable BL0006 // Do not use RenderTree types
-            var frames = builder.GetFrames().Array;
-            //todo Array will change
+
             var frame = builder.GetFrames().Array
-                               .FirstOrDefault(u => u.FrameType == RenderTreeFrameType.Text || u.FrameType == RenderTreeFrameType.Markup);
+                               .FirstOrDefault(u => u.FrameType is RenderTreeFrameType.Text or RenderTreeFrameType.Markup);
 
             char[] charsToTrim = { '\r', ' ', '\n' };
-            Icon = frame.TextContent.Trim(charsToTrim);
-            //is material icons
-            if (Icon.IndexOf("-") <= -1 && !RegexHelper.RegexSvgPath(Icon))
+            var textContent = frame.TextContent.Trim(charsToTrim);
+
+            if (RegexHelper.RegexSvgPath(textContent))
             {
-                NewChildren = Icon;
+                IconType = IconType.Svg;
+            }
+            else if (textContent.IndexOf("-", StringComparison.Ordinal) < 0)
+            {
+                IconType = IconType.WebfontNoPseudo;
             }
             else
             {
-                NewChildren = string.Empty;
+                IconType = IconType.Webfont;
             }
+
+            Icon = textContent;
+
 #pragma warning restore BL0006 // Do not use RenderTree types
         }
     }

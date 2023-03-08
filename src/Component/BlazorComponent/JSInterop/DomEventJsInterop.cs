@@ -29,6 +29,18 @@ namespace BlazorComponent
                 invokers);
         }
 
+        public async Task ResizeObserver(string selector, Func<Task> func)
+        {
+            var invoker = DotNetObjectReference.Create(new Invoker(func));
+
+            _references.Add(invoker);
+
+            await _jsRuntime.InvokeVoidAsync(
+                JsInteropConstants.ResizeObserver,
+                selector,
+                invoker);
+        }
+
         public void Dispose()
         {
             foreach (var reference in _references)
@@ -40,8 +52,8 @@ namespace BlazorComponent
 
     public class Invoker
     {
-        private readonly Action _action;
-        private readonly Func<Task> _func;
+        private readonly Action? _action;
+        private readonly Func<Task>? _func;
 
         public Invoker(Action action)
         {
@@ -69,8 +81,8 @@ namespace BlazorComponent
 
     public class Invoker<T>
     {
-        private readonly Action<T> _action;
-        private readonly Func<T, Task> _func;
+        private readonly Action<T>? _action;
+        private readonly Func<T, Task>? _func;
 
         public Invoker(Action<T> action)
         {

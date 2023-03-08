@@ -51,7 +51,7 @@ public partial class StringNumberBoolean : OneOfBase<string, int, bool>
         return base.GetHashCode();
     }
 
-    public override string ToString()
+    public override string? ToString()
     {
         return Convert.ToString(Value);
     }

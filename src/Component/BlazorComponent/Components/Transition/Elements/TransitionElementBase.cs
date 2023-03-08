@@ -15,7 +15,8 @@ public abstract class TransitionElementBase : Element
 public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAsyncDisposable
 {
     [Inject]
-    protected IJSRuntime Js { get; set; }
+    [NotNull]
+    protected IJSRuntime? Js { get; set; }
 
     [CascadingParameter]
     public Transition? Transition { get; set; }
@@ -137,7 +138,7 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
         }
     }
 
-    private bool _requestingAnimationFrame;
+    protected bool RequestingAnimationFrame;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -171,12 +172,14 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
                 await RegisterTransitionEventsAsync();
             }
 
-            if (!_requestingAnimationFrame)
+            if (CanMoveNext)
             {
                 await NextAsync(CurrentState);
             }
         }
     }
+
+    protected virtual bool CanMoveNext => !RequestingAnimationFrame;
 
     protected bool IsLeaveTransitionState => CurrentState is TransitionState.Leave or TransitionState.LeaveTo;
 
@@ -224,9 +227,9 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
 
     protected async Task RequestAnimationFrameAsync(Func<Task> callback)
     {
-        _requestingAnimationFrame = true;
+        RequestingAnimationFrame = true;
         await Task.Delay(16);
-        _requestingAnimationFrame = false;
+        RequestingAnimationFrame = false;
         await callback();
     }
 

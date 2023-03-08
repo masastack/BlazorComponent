@@ -1,13 +1,18 @@
 import MarkdownIt from "markdown-it";
 import markdownItAnchor from "markdown-it-anchor";
 import markdownItAttrs from "markdown-it-attrs";
+import markdownItContainer from "markdown-it-container";
 import markdownItFrontMatter from "markdown-it-front-matter";
 import markdownItHeaderSections from "markdown-it-header-sections";
 
-import { highlight } from "./highlighter";
+import { highlight, highlightToStream } from "./highlighter";
 
 type MarkdownParser = {
   md: MarkdownIt;
+  scope?: string;
+  useContainer: (name: string) => void;
+  defaultSlugify: (s: string) => string;
+  afterRenderCallbacks: (() => void)[];
   frontMatter: {
     meta?: string;
     cb: (s: string) => void;
@@ -27,6 +32,9 @@ function create(
   options = { ...options, highlight };
 
   const parser = {
+    scope,
+    defaultSlugify: hashString,
+    afterRenderCallbacks: [],
     frontMatter: {},
     toc: {},
   } as MarkdownParser;
@@ -41,12 +49,15 @@ function create(
     parser.toc.contents = array;
   };
 
-  const md = new MarkdownIt(options)
+  const md: MarkdownIt = new MarkdownIt(options)
     .use(markdownItAttrs)
     .use(markdownItFrontMatter, parser.frontMatter.cb);
 
+  parser.md = md;
+  parser.useContainer = (name) => md.use(markdownItContainer, name);
+
   if (anchorOptions) {
-    let slugify = (s: string) => hashString(s);
+    let slugify = parser.defaultSlugify;
     if (window.MasaBlazor.markdownItAnchorSlugify) {
       slugify = (s) => window.MasaBlazor.markdownItAnchorSlugify(scope, s);
     }
@@ -72,10 +83,8 @@ function create(
   }
 
   if (window.MasaBlazor && window.MasaBlazor.markdownItRules) {
-    window.MasaBlazor.markdownItRules(scope, md);
+    window.MasaBlazor.markdownItRules(parser);
   }
-
-  parser.md = md;
 
   return parser;
 }
@@ -90,16 +99,29 @@ function parseAll(parser: MarkdownParser, src: string) {
     parser.frontMatter.meta = undefined;
     parser.toc.contents = [];
 
-    const markup = parser.md.render(src);
+    try {
+      const markup = parser.md.render(src);
 
-    return {
-      frontMatter: parser.frontMatter.meta,
-      markup: markup,
-      toc: parser.toc.contents,
-    };
+      return {
+        frontMatter: parser.frontMatter.meta,
+        markup: markup,
+        toc: parser.toc.contents,
+      };
+    } catch (error) {
+      console.log("markdown-it-proxy error:", error);
+    }
   }
 
   return {};
+}
+
+function afterRender(parser: MarkdownParser) {
+  if (parser.afterRenderCallbacks) {
+    while (parser.afterRenderCallbacks.length > 0) {
+      const cb = parser.afterRenderCallbacks.shift();
+      cb && cb();
+    }
+  }
 }
 
 function hashString(str: string) {
@@ -118,4 +140,4 @@ function hashString(str: string) {
   return encodeURIComponent(slug);
 }
 
-export { create, parse, parseAll, highlight };
+export { create, parse, parseAll, afterRender, highlight, highlightToStream };

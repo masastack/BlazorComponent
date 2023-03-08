@@ -4,16 +4,16 @@ namespace BlazorComponent
 {
     public interface IBadge : IHasProviderComponent
     {
-        string Transition => default;
+        string Transition { get; }
 
-        bool Dot => default;
+        bool Dot { get; }
 
-        RenderFragment BadgeContent => default;
+        RenderFragment BadgeContent { get; }
 
-        StringNumber Content => default;
+        StringNumber Content { get; }
 
-        string Icon => default;
+        string Icon { get; }
 
-        bool Value => default;
+        bool Value { get; }
     }
 }

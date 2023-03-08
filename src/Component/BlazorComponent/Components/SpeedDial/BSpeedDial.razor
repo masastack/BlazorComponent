@@ -6,9 +6,15 @@
 
     @*TODO: implement TransitionGroup*@
     <Transition Name="@Transition" Origin="@Origin">
-        <ShowTransitionElement @attributes="@ContentAttributes" Value="Value" Tag="@Tag" class="@CssProvider.GetClass("dial-list")" style="@CssProvider.GetStyle("dial-list")" id="@Id" ReferenceCaptureAction="el => ContentElement = el">
+        <ShowTransitionElement
+            Value="IsActive"
+            id="@Id"
+            Tag="@Tag"
+            class="@CssProvider.GetClass("dial-list")"
+            style="@CssProvider.GetStyle("dial-list")"
+            @attributes="@ContentAttributes"
+            ReferenceCaptureAction="el => ContentElement = el">
             @ChildContent
         </ShowTransitionElement>
     </Transition>
 </div>
-

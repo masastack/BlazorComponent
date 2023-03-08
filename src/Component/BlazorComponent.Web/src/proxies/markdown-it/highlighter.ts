@@ -64,10 +64,14 @@ export function highlight(code: string, lang: string) {
   }
 }
 
+export function highlightToStream(str: string, lang: string): ArrayBuffer {
+  var htmlCode = highlight(str, lang);
+  return new TextEncoder().encode(htmlCode);
+}
+
 function getLangCodeFromExtension(extension) {
   const extensionMap = {
     cs: "csharp",
-    html: "markup",
     md: "markdown",
     ts: "typescript",
     py: "python",

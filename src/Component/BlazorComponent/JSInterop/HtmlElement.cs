@@ -1,5 +1,4 @@
 ﻿using Microsoft.JSInterop;
-using OneOf;
 
 namespace BlazorComponent.Web
 {
@@ -15,9 +14,9 @@ namespace BlazorComponent.Web
             Selector = selector;
         }
 
-        public HtmlElement ParentElement => new HtmlElement(JS, $"{Selector}.parentElement");
+        public HtmlElement ParentElement => new HtmlElement(JS, $"{Selector}__.__parentElement");
 
-        public HtmlElement OffsetParent => new HtmlElement(JS, $"{Selector}.offsetParent");
+        public HtmlElement OffsetParent => new HtmlElement(JS, $"{Selector}__.__offsetParent");
 
         public async Task AddClass(string className)
         {
@@ -63,11 +62,11 @@ namespace BlazorComponent.Web
         }
 
         public async Task AddEventListenerAsync(string type, EventCallback listener, OneOf<EventListenerOptions, bool> options,
-            EventListenerExtras extras = null)
+            EventListenerExtras? extras = null)
         {
             await JS.InvokeVoidAsync(JsInteropConstants.AddHtmlElementEventListener, Selector, type, DotNetObjectReference.Create(
                 new Invoker<object>(
-                    async (p) =>
+                    async _ =>
                     {
                         if (listener.HasDelegate)
                         {
@@ -80,7 +79,7 @@ namespace BlazorComponent.Web
         {
             await JS.InvokeVoidAsync(JsInteropConstants.AddHtmlElementEventListener, Selector, type, DotNetObjectReference.Create(
                 new Invoker<object>(
-                    async (p) =>
+                    async _ =>
                     {
                         if (listener.HasDelegate)
                         {
@@ -94,7 +93,7 @@ namespace BlazorComponent.Web
         }
 
         public async Task AddEventListenerAsync<T>(string type, EventCallback<T> listener, OneOf<EventListenerOptions, bool> options,
-            EventListenerExtras extras = null)
+            EventListenerExtras? extras = null)
         {
             await JS.InvokeVoidAsync(JsInteropConstants.AddHtmlElementEventListener, Selector, type, DotNetObjectReference.Create(
                 new Invoker<T>(
@@ -112,7 +111,7 @@ namespace BlazorComponent.Web
         {
             await JS.InvokeVoidAsync(JsInteropConstants.AddHtmlElementEventListener, Selector, type, DotNetObjectReference.Create(new Invoker<T>((p) =>
             {
-                listener?.Invoke(p);
+                listener.Invoke(p);
             })), options.Value);
         }
 

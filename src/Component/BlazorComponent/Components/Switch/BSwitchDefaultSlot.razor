@@ -1,5 +1,6 @@
 ﻿@namespace BlazorComponent
-@inherits BInputDefaultSlot<bool,ISwitch>
+@typeparam TValue
+@inherits BInputDefaultSlot<TValue, ISwitch<TValue>>
 
-@RenderPart(typeof(BSwitchSwitch<>))
+@RenderPart(typeof(BSwitchSwitch<,>))
 @RenderPart(typeof(BInputLabel<,>))

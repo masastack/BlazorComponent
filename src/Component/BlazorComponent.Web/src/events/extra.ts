@@ -5,7 +5,7 @@ export function registerExtraMouseEvent(eventType: string, eventName: string) {
   if (Blazor) {
     Blazor.registerCustomEventType(eventType, {
       browserEventName: eventName,
-      createEventArgs: e => sharedCreateEventArgs("mouse", e)
+      createEventArgs: e => createSharedEventArgs("mouse", e)
     })
   }
 }
@@ -14,12 +14,12 @@ export function registerExtraTouchEvent(eventType: string, eventName: string) {
   if (Blazor) {
     Blazor.registerCustomEventType(eventType, {
       browserEventName: eventName,
-      createEventArgs: e => sharedCreateEventArgs("touch", e)
+      createEventArgs: e => createSharedEventArgs("touch", e)
     })
   }
 }
 
-function sharedCreateEventArgs(type: "mouse" | "touch", e: Event,) {
+export function createSharedEventArgs(type: "mouse" | "touch", e: Event,) {
   let args = { target: {} }
   if (type === 'mouse') {
     args = {

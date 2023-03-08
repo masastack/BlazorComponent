@@ -6,6 +6,6 @@
 @inherits ComponentPartBase<TInput>
 
 @{
-    var props = new SelectSelectionProps<TItem>(Item, Index, Selected);
+    var props = new SelectSelectionProps<TItem>(Item, Index, Selected, Disabled);
     @SelectionContent(props)
 }

@@ -1,30 +1,32 @@
-﻿namespace BlazorComponent
+﻿using System.Reflection;
+
+namespace BlazorComponent;
+
+public static class ComponentExtensions
 {
-    public static class ComponentExtensions
+    public static IDictionary<string, object?> ToParameters(this ComponentBase component)
     {
-        public static IDictionary<string, object> ToParameters<T>(this T t)
+        return ToParameters(component, p => p.CustomAttributes.Any(attr => attr.AttributeType == typeof(ParameterAttribute)));
+    }
+
+    public static IDictionary<string, object?> ToParameters(this object obj, Func<PropertyInfo, bool>? condition = null)
+    {
+        var result = new Dictionary<string, object?>();
+
+        var properties = obj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
+
+        if (condition is not null)
         {
-            if (t == null)
-                return default;
-
-            if (t is not ComponentBase)
-                return default;
-
-            var finds = t.GetType().GetProperties().Where(p => p.CanWrite && p.CanRead && p.CustomAttributes.Any(attr => attr.AttributeType == typeof(ParameterAttribute))).ToArray();
-            if (finds == null)
-                return default;
-            var result = new Dictionary<string, object>();
-            foreach (var p in finds)
-            {
-                var value = p.GetValue(t);
-                if (value == null)
-                    continue;
-                result.Add(p.Name, value);
-            }
-            if (result.Count == 0)
-                return default;
-
-            return result;
+            properties = properties.Where(condition).ToArray();
         }
+
+        foreach (var property in properties)
+        {
+            var value = property.GetValue(obj);
+            if (value is null) continue;
+            result.Add(property.Name, value);
+        }
+
+        return result;
     }
 }

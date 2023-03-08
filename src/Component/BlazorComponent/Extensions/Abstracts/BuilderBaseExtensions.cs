@@ -2,10 +2,14 @@
 {
     public static class BuilderBaseExtensions
     {
-        public static TBuilder Add<TBuilder>(this TBuilder builder, string name)
+        public static TBuilder Add<TBuilder>(this TBuilder builder, string? name)
             where TBuilder : BuilderBase
         {
-            builder._mapper.TryAdd(() => name, () => true);
+            if (name != null)
+            {
+                builder._mapper.TryAdd(() => name, () => true);
+            }
+
             return builder;
         }
 
@@ -30,7 +34,7 @@
             return builder;
         }
 
-        public static TBuilder AddFirstIf<TBuilder>(this TBuilder builder, params (Func<string> funcName, Func<bool> func)[] list)
+        public static TBuilder AddFirstIf<TBuilder>(this TBuilder builder, params(Func<string> funcName, Func<bool> func)[] list)
             where TBuilder : BuilderBase
         {
             var item = list.FirstOrDefault(u => u.func.Invoke());
@@ -43,7 +47,7 @@
             return builder;
         }
 
-        public static TBuilder AddFirstIf<TBuilder>(this TBuilder builder, params (string name, Func<bool> func)[] list)
+        public static TBuilder AddFirstIf<TBuilder>(this TBuilder builder, params(string name, Func<bool> func)[] list)
             where TBuilder : BuilderBase
         {
             var item = list.FirstOrDefault(u => u.func.Invoke());
@@ -63,7 +67,7 @@
             return builder;
         }
 
-        public static string GetClass(this Dictionary<Func<string>, Func<bool>> mapper)
+        public static string? GetClass(this Dictionary<Func<string>, Func<bool>> mapper)
         {
             var classList = mapper.Where(i => i.Value() && !string.IsNullOrWhiteSpace(i.Key())).Select(i => i.Key()?.Trim());
             if (!classList.Any())

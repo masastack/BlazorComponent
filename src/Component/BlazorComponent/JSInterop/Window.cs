@@ -35,7 +35,7 @@ namespace BlazorComponent.Web
 
         public Document Document { get; }
 
-        public event Func<Task> OnResize;
+        public event Func<Task>? OnResize;
 
         public async Task AddEventListenerAsync(string type, Func<Task> listener, OneOf<EventListenerOptions, bool> options)
         {

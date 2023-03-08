@@ -6,10 +6,12 @@ namespace BlazorComponent
     public class AbstractComponent : ComponentBase
     {
         [Parameter]
-        public AbstractMetadata Metadata { get; set; }
+        [NotNull]
+        [EditorRequired]
+        public AbstractMetadata? Metadata { get; set; }
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter(CaptureUnmatchedValues = true)]
         public Dictionary<string, object> AdditionalAttributes { get; set; } = new Dictionary<string, object>();
@@ -39,6 +41,12 @@ namespace BlazorComponent
             builder.AddComponentReferenceCapture(sequence++, component => Instance = component);
 
             builder.CloseComponent();
+        }
+
+        protected override void OnParametersSet()
+        {
+            base.OnParametersSet();
+            ArgumentNullException.ThrowIfNull(Metadata);
         }
     }
 }

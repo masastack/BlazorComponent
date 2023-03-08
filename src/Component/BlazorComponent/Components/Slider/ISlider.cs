@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
-    public interface ISlider<TValue> : IInput<TValue>, ILoadable
+    public interface ISlider<TValue, out TNumeric> : IInput<TValue>, ILoadable
     {
         bool InverseLabel => default;
 
@@ -11,7 +8,7 @@ namespace BlazorComponent
 
         ElementReference TrackElement { set; }
 
-        double Step { get; }
+        TNumeric Step { get; }
 
         bool ShowTicks { get; }
 
@@ -35,7 +32,7 @@ namespace BlazorComponent
 
         bool ShowThumbLabelContainer { get; }
 
-        RenderFragment<int> ThumbLabelContent { get; }
+        RenderFragment<int> ComputedThumbLabelContent { get; }
 
         Task HandleOnSliderClickAsync(MouseEventArgs args)
         {

@@ -4,7 +4,7 @@
     {
         public ComponentKey(Type type)
         {
-            Type = type ?? throw new ArgumentNullException(nameof(type));
+            Type = type;
         }
 
         public ComponentKey(Type type, string name)
@@ -20,14 +20,14 @@
 
         public Type Type { get; }
 
-        public string Name { get; }
+        public string? Name { get; }
 
         public override int GetHashCode()
         {
             return Name != null ? Type.GetHashCode() ^ Name.GetHashCode() : Type.GetHashCode();
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj != null && obj is ComponentKey key && key.Type == Type && key.Name == Name;
         }

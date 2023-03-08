@@ -2,11 +2,10 @@
 using System.Globalization;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Linq.Expressions;
-using Microsoft.JSInterop;
 
 namespace BlazorComponent
 {
-    public partial class BInput<TValue> : IValidatable, IAsyncDisposable
+    public partial class BInput<TValue> : IInputJsCallbacks, IValidatable, IAsyncDisposable
     {
         [Parameter]
         public bool Disabled { get; set; }
@@ -18,7 +17,7 @@ namespace BlazorComponent
         public bool ValidateOnBlur { get; set; }
 
         [Parameter]
-        public virtual TValue Value
+        public virtual TValue? Value
         {
             get => GetValue(DefaultValue);
             set => SetValue(value);
@@ -66,7 +65,7 @@ namespace BlazorComponent
 
         private bool _forceStatus;
 
-        protected virtual TValue DefaultValue => default;
+        protected virtual TValue? DefaultValue => default;
 
         protected EditContext OldEditContext { get; set; }
 
@@ -78,13 +77,13 @@ namespace BlazorComponent
 
         public virtual ElementReference InputElement { get; set; }
 
-        protected virtual TValue LazyValue
+        protected virtual TValue? LazyValue
         {
             get => GetValue<TValue>();
             set => SetValue(value);
         }
 
-        protected TValue InternalValue
+        protected TValue? InternalValue
         {
             get
             {
@@ -154,11 +153,11 @@ namespace BlazorComponent
             }
         }
 
-        public virtual bool IsDisabled => Disabled || (Form != null && Form.Disabled);
+        public virtual bool IsDisabled => Disabled || Form is { Disabled: true };
 
         public bool IsInteractive => !IsDisabled && !IsReadonly;
 
-        public virtual bool IsReadonly => Readonly || (Form != null && Form.Readonly);
+        public virtual bool IsReadonly => Readonly || Form is { Readonly: true };
 
         public virtual bool ShouldValidate
         {
@@ -188,13 +187,15 @@ namespace BlazorComponent
         private bool _internalValueChangingFromOnValueChanged;
         private CancellationTokenSource _cancellationTokenSource;
 
-        protected IJSObjectReference InputJsObjectReference { get; private set; }
+        private InputJsInterop? _inputJsInterop;
 
         protected virtual int InternalDebounceInterval => 0;
 
         protected override void OnInitialized()
         {
             base.OnInitialized();
+
+            LazyValue = Value;
 
             Form?.Register(this);
         }
@@ -205,12 +206,10 @@ namespace BlazorComponent
 
             if (firstRender)
             {
-                InputJsObjectReference = await Js.InvokeAsync<IJSObjectReference>("import", "./_content/BlazorComponent/js/input.js");
-                await InputJsObjectReference.InvokeVoidAsync(
-                    "registerInputEvents",
-                    InputElement,
-                    DotNetObjectReference.Create(new Invoker<ChangeEventArgs>(HandleOnInputAsync)),
-                    InternalDebounceInterval);
+                LazyValue = Value;
+
+                _inputJsInterop = new InputJsInterop(this, Js);
+                await _inputJsInterop.InitializeAsync(InputElement, InputSlotElement, InternalDebounceInterval);
             }
         }
 
@@ -241,18 +240,16 @@ namespace BlazorComponent
         {
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource = new();
-            await NextTickWhile(async () =>
-                {
-                    await InputJsObjectReference.InvokeVoidAsync("setValue", InputElement, val);
-                    StateHasChanged();
-                },
-                () => InputJsObjectReference is null,
+            await NextTickWhile(() => _inputJsInterop!.SetValue(val),
+                () => _inputJsInterop is not { Initialized: true },
                 cancellationToken: _cancellationTokenSource.Token);
         }
 
-        protected override void OnWatcherInitialized()
+        protected override void RegisterWatchers(PropertyWatcher watcher)
         {
-            Watcher
+            base.RegisterWatchers(watcher);
+
+            watcher
                 .Watch<TValue>(nameof(Value), OnValueChanged, immediate: true)
                 .Watch<TValue>(nameof(LazyValue), OnLazyValueChange)
                 .Watch<TValue>(nameof(InternalValue), OnInternalValueChange)
@@ -278,6 +275,8 @@ namespace BlazorComponent
 
         protected virtual void OnValueChanged(TValue val)
         {
+            LazyValue = val.TryDeepClone();
+
             // OnInternalValueChange has to invoke manually because
             // LazyValue is the getter of InternalValue, LazyValue changes cannot notify the watcher of InternalValue
             var isEqual = true;
@@ -298,8 +297,6 @@ namespace BlazorComponent
                 _internalValueChangingFromOnValueChanged = true;
                 InternalValue = val;
             }
-
-            LazyValue = val.TryDeepClone();
 
             if (!ValueChangedInternally)
             {
@@ -510,9 +507,9 @@ namespace BlazorComponent
         {
             try
             {
-                if (InputJsObjectReference != null)
+                if (_inputJsInterop is not null)
                 {
-                    await InputJsObjectReference.DisposeAsync();
+                    await _inputJsInterop.DisposeAsync();
                 }
             }
             catch

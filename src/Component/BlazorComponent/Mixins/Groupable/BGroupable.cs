@@ -4,10 +4,10 @@
         where TGroup : ItemGroupBase
     {
         [CascadingParameter]
-        public TGroup ItemGroup { get; set; }
+        public TGroup? ItemGroup { get; set; }
 
         [Parameter]
-        public string ActiveClass { get; set; }
+        public string? ActiveClass { get; set; }
 
         [Parameter]
         public virtual bool Disabled { get; set; }
@@ -21,7 +21,7 @@
         }
 
         [Parameter]
-        public StringNumber Value
+        public StringNumber? Value
         {
             get => _value;
             set
@@ -66,11 +66,21 @@
             _bootable = bootable;
         }
 
-        protected string ComputedActiveClass => ActiveClass ?? ItemGroup?.ActiveClass;
+        protected string? ComputedActiveClass => ActiveClass ?? ItemGroup?.ActiveClass;
+
+        /// <summary>
+        /// Determines whether the component has a routable ancestor component.
+        /// </summary>
+        protected virtual bool HasRoutableAncestor => ItemGroup is IAncestorRoutable { Routable: true };
+
+        /// <summary>
+        /// The routable ancestor.
+        /// </summary>
+        protected IAncestorRoutable? RoutableAncestor => HasRoutableAncestor ? (IAncestorRoutable)ItemGroup! : null;
 
         protected bool Matched => ItemGroup != null && (ItemGroup.GroupType == _groupType);
 
-        protected bool ValueMatched => Matched && ItemGroup.Values.Contains(Value);
+        protected bool ValueMatched => Matched && ItemGroup!.InternalValues.Contains(Value);
 
         public bool InternalIsActive { get; private set; }
 
@@ -87,7 +97,7 @@
 
             if (this is IGroupable item)
             {
-                ItemGroup.Register(item);
+                ItemGroup!.Register(item);
             }
         }
 
@@ -96,10 +106,6 @@
             if (_isActive.HasValue) // if setting by [Parameter]IsActive, Matched is not required.
             {
                 await SetInternalIsActive(_isActive.Value);
-            }
-            else if (Matched)
-            {
-                await SetInternalIsActive(ValueMatched);
             }
         }
 
@@ -117,14 +123,22 @@
             }
         }
 
+        public async Task RefreshState()
+        {
+            if (!Matched || HasRoutableAncestor) return;
+
+            await SetInternalIsActive(ValueMatched);
+            StateHasChanged();
+        }
+
         protected virtual async Task ToggleAsync()
         {
             if (!Matched) return;
 
-            await ItemGroup.ToggleAsync(Value);
+            await ItemGroup!.ToggleAsync(Value);
         }
 
-        protected async Task SetInternalIsActive(bool val)
+        protected async Task SetInternalIsActive(bool val, bool force = false)
         {
             if (_bootable && !IsBooted)
             {
@@ -139,7 +153,7 @@
                     StateHasChanged();
                 }
             }
-            else if (InternalIsActive != val)
+            else if (InternalIsActive != val || force)
             {
                 if (_firstRenderAfterBooting)
                 {
@@ -157,7 +171,7 @@
         {
             if (Matched && this is IGroupable item)
             {
-                ItemGroup.Unregister(item);
+                ItemGroup!.Unregister(item);
             }
 
             base.Dispose(disposing);

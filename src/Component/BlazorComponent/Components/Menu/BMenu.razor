@@ -1,8 +1,6 @@
 ﻿@namespace BlazorComponent
 @inherits BMenuable
 
-@ComputedActivatorContent
-
 <div style="@CssProvider.GetStyle()" class="@CssProvider.GetClass()" @ref="Ref">
     @if (IsBooted)
     {
@@ -14,7 +12,7 @@
                         id="@Id"
                         style="@CssProvider.GetStyle("content")"
                         class="@CssProvider.GetClass("content")"
-                        @attributes="@ContentAttributes"
+                        @attributes="@Attributes"
                         ReferenceCaptureAction="el => ContentElement = el">
                         @ChildContent
                     </ShowTransitionElement>
@@ -23,3 +21,5 @@
         </CascadingValue>
     }
 </div>
+
+@ComputedActivatorContent

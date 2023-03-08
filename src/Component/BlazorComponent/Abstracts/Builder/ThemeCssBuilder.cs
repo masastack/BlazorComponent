@@ -8,8 +8,6 @@
             combinePrefix ??= string.Empty;
             combinePrefix = combinePrefix.EndsWith(' ') ? combinePrefix : $"{combinePrefix} ";
 
-            if (theme == null) return string.Empty;
-
             var lstCss = new List<string>()
             {
                 $"{combinePrefix}a {{ color: {theme.Primary}; }}",

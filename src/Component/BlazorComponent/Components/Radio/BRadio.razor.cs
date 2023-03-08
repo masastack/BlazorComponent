@@ -3,13 +3,16 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public partial class BRadio<TValue>
+    public partial class BRadio<TValue> : IRadio<TValue>
     {
-        [Parameter]
-        public string OnIcon { get; set; }
+        [CascadingParameter]
+        public IRadioGroup<TValue>? RadioGroup { get; set; }
 
         [Parameter]
-        public string OffIcon { get; set; }
+        public string? OnIcon { get; set; }
+
+        [Parameter]
+        public string? OffIcon { get; set; }
 
         [Parameter]
         public bool Disabled { get; set; }
@@ -18,10 +21,10 @@ namespace BlazorComponent
         public bool Readonly { get; set; }
 
         [Parameter]
-        public RenderFragment LabelContent { get; set; }
+        public RenderFragment? LabelContent { get; set; }
 
-        [Parameter]
-        public TValue Value { get; set; }
+        [Parameter, EditorRequired]
+        public TValue? Value { get; set; }
 
         [Parameter]
         public EventCallback<FocusEventArgs> OnBlur { get; set; }
@@ -36,7 +39,7 @@ namespace BlazorComponent
         public EventCallback<KeyboardEventArgs> OnKeyDown { get; set; }
 
         [Parameter]
-        public string Label { get; set; }
+        public string? Label { get; set; }
 
         [Parameter]
         public bool Ripple { get; set; } = true;
@@ -53,9 +56,9 @@ namespace BlazorComponent
         [CascadingParameter(Name = "Input_IsDisabled")]
         protected bool InputIsDisabled { get; set; }
 
-        protected bool IsActive { get; set; }
+        protected bool IsActive { get; private set; }
 
-        public bool IsDark
+        protected bool IsDark
         {
             get
             {
@@ -73,11 +76,13 @@ namespace BlazorComponent
             }
         }
 
-        public event Func<BRadio<TValue>, Task> NotifyChange;
+        private bool IsDisabled => Disabled || RadioGroup?.IsDisabled is true;
 
-        protected virtual async Task HandleClick(MouseEventArgs args)
+        private bool IsReadonly => Readonly || RadioGroup?.IsReadonly is true;
+
+        private async Task HandleClick(MouseEventArgs args)
         {
-            if (Disabled || Readonly || IsActive)
+            if (IsDisabled || IsReadonly || IsActive)
             {
                 return;
             }
@@ -87,28 +92,17 @@ namespace BlazorComponent
                 await OnChange.InvokeAsync(new ChangeEventArgs { Value = Value });
             }
 
-            await NotifyChange?.Invoke(this);
+            if (RadioGroup is not null)
+            {
+                await RadioGroup.Toggle(Value);
+            }
         }
 
-        public void Active()
+        public void RefreshState()
         {
-            if (IsActive)
-            {
-                return;
-            }
+            if (RadioGroup is null) return;
 
-            IsActive = true;
-            StateHasChanged();
-        }
-
-        public void DeActive()
-        {
-            if (!IsActive)
-            {
-                return;
-            }
-
-            IsActive = false;
+            IsActive = EqualityComparer<TValue>.Default.Equals(RadioGroup.Value, Value);
             StateHasChanged();
         }
     }

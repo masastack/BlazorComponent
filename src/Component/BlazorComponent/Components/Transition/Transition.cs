@@ -7,13 +7,14 @@ namespace BlazorComponent
     public partial class Transition : ComponentBase
     {
         [Inject]
-        protected IJSRuntime Js { get; set; }
+        [NotNull]
+        protected IJSRuntime? Js { get; set; }
 
         [Parameter]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [Parameter]
-        public string Origin { get; set; }
+        public string? Origin { get; set; }
 
         [Parameter]
         public int Duration { get; set; } // TODO: 先实现css的动画时间
@@ -25,7 +26,8 @@ namespace BlazorComponent
         public TransitionMode? Mode { get; set; }
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        [EditorRequired]
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
         public Func<ElementReference, Task>? OnBeforeEnter { get; set; }
@@ -58,7 +60,7 @@ namespace BlazorComponent
 
         internal TransitionElementBase? TransitionElement { get; set; }
 
-        public virtual string GetClass(TransitionState transitionState)
+        public virtual string? GetClass(TransitionState transitionState)
         {
             return transitionState switch
             {
@@ -70,7 +72,7 @@ namespace BlazorComponent
             };
         }
 
-        public virtual string GetStyle(TransitionState transitionState)
+        public virtual string? GetStyle(TransitionState transitionState)
         {
             if (Origin != null && transitionState != TransitionState.None)
             {

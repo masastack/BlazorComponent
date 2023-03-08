@@ -4,11 +4,14 @@ namespace BlazorComponent
 {
     public partial class BSnackbar : BDomComponentBase
     {
-        [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        [Parameter, EditorRequired]
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
-        public string Transition { get; set; }
+        public string? Transition { get; set; }
+
+        [Parameter]
+        public string? ContentClass { get; set; }
 
         [Parameter]
         public bool Text { get; set; }

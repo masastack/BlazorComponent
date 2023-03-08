@@ -5,18 +5,11 @@ public class PopupProvider : IPopupProvider
     private readonly List<ProviderItem> _items = new();
     private readonly object _obj = new();
 
-    public event EventHandler StateChanged;
+    public event EventHandler? StateChanged;
 
-    public ProviderItem Add(Type componentType, Dictionary<string, object> attributes, object service, string serviceName)
+    public ProviderItem Add(Type componentType, IDictionary<string, object> attributes, object service, string serviceName)
     {
-        var item = new ProviderItem()
-        {
-            Provider = this,
-            ComponentType = componentType,
-            Parameters = attributes,
-            Service = service,
-            ServiceName = serviceName,
-        };
+        var item = new ProviderItem(componentType, attributes, this, service, serviceName);
 
         lock (_obj)
         {

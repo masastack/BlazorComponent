@@ -2,7 +2,7 @@
 
 namespace BlazorComponent
 {
-    public partial class BTreeview<TItem, TKey> : ITreeview<TItem, TKey>
+    public partial class BTreeview<TItem, TKey> : ITreeview<TItem, TKey> where TKey : notnull
     {
         private List<TItem> _oldItems;
         private string _oldItemsKeys;
@@ -24,6 +24,9 @@ namespace BlazorComponent
 
         [Parameter]
         public RenderFragment<TreeviewItem<TItem>> LabelContent { get; set; }
+
+        [Parameter]
+        public RenderFragment<TreeviewItem<TItem>> AppendContent { get; set; }
 
         [EditorRequired]
         [Parameter]
@@ -53,7 +56,7 @@ namespace BlazorComponent
         public SelectionType SelectionType { get; set; }
 
         [Parameter]
-        public List<TKey> Value { get; set; }
+        public List<TKey>? Value { get; set; }
 
         [Parameter]
         public EventCallback<List<TKey>> ValueChanged { get; set; }
@@ -65,13 +68,13 @@ namespace BlazorComponent
         public bool MandatoryActive { get; set; }
 
         [Parameter]
-        public List<TKey> Active { get; set; }
+        public List<TKey>? Active { get; set; }
 
         [Parameter]
         public EventCallback<List<TKey>> ActiveChanged { get; set; }
 
         [Parameter]
-        public List<TKey> Open { get; set; }
+        public List<TKey>? Open { get; set; }
 
         [Parameter]
         public EventCallback<List<TKey>> OpenChanged { get; set; }
@@ -127,18 +130,11 @@ namespace BlazorComponent
             }
         }
 
-        public RenderFragment AppendContent { get; }
-
-        //TODO:
-        public bool IsLoading { get; }
-
         [Parameter]
         public string LoadingIcon { get; set; } = "mdi-cached";
 
         [Parameter]
         public string ExpandIcon { get; set; } = "mdi-menu-down";
-
-        public TKey ActiveKey { get; private set; }
 
         public Dictionary<TKey, NodeState<TItem, TKey>> Nodes { get; private set; } = new();
 
@@ -541,15 +537,63 @@ namespace BlazorComponent
                     Node = oldNode.Node,
                     Parent = parent,
                     Children = children.Select(ItemKey),
-                    Item = item,
+                    Item = item
                 };
 
                 BuildTree(children, key);
+
+                if (SelectionType != SelectionType.Independent && parent != null && !Nodes.ContainsKey(key) && Nodes.ContainsKey(parent))
+                {
+                    newNode.IsSelected = Nodes[parent].IsSelected;
+                }
+                else
+                {
+                    newNode.IsSelected = oldNode.IsSelected;
+                    newNode.IsIndeterminate = oldNode.IsIndeterminate;
+                }
 
                 newNode.IsActive = oldNode.IsActive;
                 newNode.IsOpen = oldNode.IsOpen;
 
                 Nodes[key] = newNode;
+
+                // TODO: there is still some logic in Vuetify but no implementation here, it's necessarily?
+
+                if (newNode.IsSelected && (SelectionType == SelectionType.Independent || !newNode.Children.Any()))
+                {
+                    if (Value == null)
+                    {
+                        Value = new List<TKey> { key };
+                    }
+                    else
+                    {
+                        Value.Add(key);
+                    }
+                }
+
+                if (newNode.IsActive)
+                {
+                    if (Active == null)
+                    {
+                        Active = new List<TKey> { key };
+                    }
+                    else
+                    {
+                        Active.Add(key);
+                    }
+                }
+
+                if (newNode.IsOpen)
+                {
+                    if (Open == null)
+                    {
+                        Open = new List<TKey> { key };
+                    }
+                    else
+                    {
+                        Open.Add(key);
+                    }
+                }
             }
         }
     }

@@ -1,5 +1,6 @@
 import registerDirective from "./directive/index";
 import { registerExtraEvents } from "./events/index";
+import { parseTouchEvent } from './events/EventType';
 import { getDom, getElementSelector } from "./utils/helper";
 
 export function getZIndex(el?: Element | null): number {
@@ -92,12 +93,12 @@ export function getDomInfo(element, selector = "body") {
   var dom = getDom(element);
 
   if (dom) {
-    if (dom.style && dom.style['display'] === 'none') {
-      // clone and set display not none becuase
+    if (dom.style && dom.style["display"] === "none") {
+      // clone and set display not none because
       // element with display:none can not get the dom info
-      var cloned = dom.cloneNode(true);
-      cloned.style['display'] = 'inline-block';
-      cloned.style['z-index'] = -1000;
+      var cloned = dom.cloneNode(true) as HTMLElement;
+      cloned.style["display"] = "inline-block";
+      cloned.style["z-index"] = -1000;
       dom.parentElement.appendChild(cloned);
 
       result = getDomInfoObj(cloned);
@@ -179,20 +180,20 @@ export function setProperty(element, name, value) {
 export function getBoundingClientRect(element, attach = "body") {
   let dom = getDom(element);
 
-  var result = {}
+  var result = {};
 
   if (dom && dom.getBoundingClientRect) {
-    if (dom.style && dom.style['display'] === 'none') {
-      var cloned = dom.cloneNode(true);
-      cloned.style['display'] = 'inline-block';
-      cloned.style['z-index'] = -1000;
+    if (dom.style && dom.style["display"] === "none") {
+      var cloned = dom.cloneNode(true) as HTMLElement;
+      cloned.style["display"] = "inline-block";
+      cloned.style["z-index"] = -1000;
       document.querySelector(attach)?.appendChild(cloned);
 
       result = cloned.getBoundingClientRect();
 
       document.querySelector(attach)?.removeChild(cloned);
     } else {
-      result = dom.getBoundingClientRect()
+      result = dom.getBoundingClientRect();
     }
   }
 
@@ -236,7 +237,7 @@ export function addHtmlElementEventListener<K extends keyof HTMLElementTagNameMa
       return;
     }
 
-    const obj = {};
+    let obj = {};
 
     for (var k in args) {
       if (typeof args[k] == 'string' || typeof args[k] == 'number') {
@@ -252,19 +253,7 @@ export function addHtmlElementEventListener<K extends keyof HTMLElementTagNameMa
         }
         obj[k] = target;
       } else if (k == 'touches' || k == 'targetTouches' || k == 'changedTouches') {
-        var list = [];
-        args[k].forEach(touch => {
-          var item = {};
-
-          for (var attr in touch) {
-            if (typeof (touch[attr]) == 'string' || typeof (touch[attr]) == 'number') {
-              item[attr] = touch[attr];
-            }
-          }
-          list.push(item);
-        });
-
-        obj[k] = list;
+        obj = parseTouchEvent(args)
       }
     }
 
@@ -327,48 +316,6 @@ export function removeHtmlElementEventListener(selector, type, k?: string) {
     });
 
     htmlElementEventListennerConfigs[k] = []
-  }
-}
-
-var outsideClickListenerCaches: { [key: string]: any } = {}
-
-export function addOutsideClickEventListener(invoker, noInvokeSelectors: string[], invokeSelectors: string[]) {
-  if (!noInvokeSelectors) return;
-
-  noInvokeSelectors = noInvokeSelectors.filter(s => !!s)
-
-  var listener = function (args) {
-    var exists = noInvokeSelectors.some(s => getDom(s)?.contains(args.target));
-    if (exists) return;
-
-    var pointerSelector = getElementSelector(args.target)
-
-    if (invokeSelectors) {
-      if (invokeSelectors.some(s => getDom(s)?.contains(args.target))) {
-        invoker.invokeMethodAsync("Invoke", {pointerSelector});
-      }
-    } else {
-      invoker.invokeMethodAsync("Invoke", {pointerSelector});
-    }
-  }
-
-  document.addEventListener("click", listener, true);
-
-  var key = `(${noInvokeSelectors.join(',')})document:click`
-
-  outsideClickListenerCaches[key] = listener;
-}
-
-export function removeOutsideClickEventListener(noInvokeSelectors: string[]) {
-  if (!noInvokeSelectors) return;
-
-  noInvokeSelectors = noInvokeSelectors.filter(s => !!s)
-
-  var key = `(${noInvokeSelectors.join(',')})document:click`
-
-  if (outsideClickListenerCaches[key]) {
-    document.removeEventListener('click', outsideClickListenerCaches[key], true);
-    outsideClickListenerCaches[key] = undefined
   }
 }
 
@@ -457,28 +404,6 @@ export function blur(selector) {
 
 export function log(text) {
   console.log(text);
-}
-
-export function backTop(target: string) {
-  let dom = getDom(target);
-  if (dom) {
-    slideTo(dom.scrollTop);
-  } else {
-    slideTo(0);
-  }
-}
-
-function slideTo(targetPageY) {
-  var timer = setInterval(function () {
-    var currentY = document.documentElement.scrollTop || document.body.scrollTop;
-    var distance = targetPageY > currentY ? targetPageY - currentY : currentY - targetPageY;
-    var speed = Math.ceil(distance / 10);
-    if (currentY == targetPageY) {
-      clearInterval(timer);
-    } else {
-      window.scrollTo(0, targetPageY > currentY ? currentY + speed : currentY - speed);
-    }
-  }, 10);
 }
 
 export function scrollIntoView(target, arg?: boolean | ScrollIntoViewOptions) {
@@ -570,6 +495,7 @@ export function scrollTo(target, options: ScrollToOptions) {
 
 export function scrollToElement(target, offset: number, behavior?: ScrollBehavior) {
   const dom = getDom(target)
+  if (!dom) return;
   const domPosition = dom.getBoundingClientRect().top;
   const offsetPosition = domPosition + window.pageYOffset - offset;
   window.scrollTo({
@@ -1103,7 +1029,7 @@ export function copyText(text) {
   });
 }
 
-export function getMenuableDimensions(hasActivator, activatorSelector, attach, contentElement, attached, attachSelector) {
+export function getMenuableDimensions(hasActivator, activatorSelector, isDefaultAttach, contentElement, attached, attachSelector) {
   if (!attached) {
     var container = document.querySelector(attachSelector);
     if (contentElement.nodeType) {
@@ -1120,9 +1046,9 @@ export function getMenuableDimensions(hasActivator, activatorSelector, attach, c
 
   if (hasActivator) {
     var activator = document.querySelector(activatorSelector);
-    dimensions.activator = measure(activator, attach)
+    dimensions.activator = measure(activator, isDefaultAttach)
     dimensions.activator.offsetLeft = activator.offsetLeft
-    if (attach !== null) {
+    if (!isDefaultAttach) {
       // account for css padding causing things to not line up
       // this is mostly for v-autocomplete, hopefully it won't break anything
       dimensions.activator.offsetTop = activator.offsetTop
@@ -1145,20 +1071,20 @@ export function getMenuableDimensions(hasActivator, activatorSelector, attach, c
         }
       }
 
-      dimensions.content = measure(contentElement, attach)
+      dimensions.content = measure(contentElement, isDefaultAttach)
     }
   }, contentElement);
 
   return dimensions;
 }
 
-function measure(el: HTMLElement, attach) {
+function measure(el: HTMLElement, isDefaultAttach) {
   if (!el) return null
 
   const rect = getRoundedBoundedClientRect(el)
 
   // Account for activator margin
-  if (attach !== null) {
+  if (!isDefaultAttach) {
     const style = window.getComputedStyle(el)
 
     rect.left = parseInt(style.marginLeft!)
@@ -1254,7 +1180,7 @@ export function otpInputFocus(focusIndex: number, elementList) {
 }
 
 export function otpInputFocusEvent(e: Event, otpIdx: number, elementList) {
-  const element = getDom(elementList[otpIdx]);
+  const element = getDom(elementList[otpIdx]) as HTMLInputElement;
   if (element && document.activeElement === element) {
     element.select();
   }

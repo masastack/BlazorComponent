@@ -1,17 +1,20 @@
-﻿using Microsoft.JSInterop;
+﻿namespace BlazorComponent;
 
-namespace BlazorComponent;
-
-public class BDelayable : BDomComponentBase, IAsyncDisposable
+public class BDelayable : BDomComponentBase, IDelayable
 {
     [Parameter]
-    public int OpenDelay { get; set; }
+    public int OpenDelay
+    {
+        get => GetValue<int>();
+        set => SetValue(value);
+    }
 
     [Parameter]
-    public int CloseDelay { get; set; }
-
-    private IJSObjectReference? _module;
-    private DotNetObjectReference<BDelayable> _dotNetRef;
+    public int CloseDelay
+    {
+        get => GetValue<int>();
+        set => SetValue(value);
+    }
 
     protected bool IsActive { get; private set; }
 
@@ -20,23 +23,18 @@ public class BDelayable : BDomComponentBase, IAsyncDisposable
     /// </summary>
     public Func<bool, Task>? AfterShowContent { get; set; }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            _dotNetRef = DotNetObjectReference.Create(this);
+    private CancellationTokenSource? _cancellationTokenSource;
 
-            _module = await Js.InvokeAsync<IJSObjectReference>("import", "./_content/BlazorComponent/js/delayable.js");
-            await _module!.InvokeVoidAsync("init", _dotNetRef, OpenDelay, CloseDelay);
+    protected async Task SetActiveInternal(bool value)
+    {
+        _cancellationTokenSource?.Cancel();
+
+        if (_cancellationTokenSource is null || value)
+        {
+            _cancellationTokenSource = new();
         }
 
-        await base.OnAfterRenderAsync(firstRender);
-    }
-
-    [JSInvokable("SetActive")]
-    public async Task SetIsActive(bool value)
-    {
-        bool isLazyContent = false;
+        var isLazyContent = false;
 
         if (value)
         {
@@ -45,11 +43,16 @@ public class BDelayable : BDomComponentBase, IAsyncDisposable
 
         await WhenIsActiveUpdating(value);
 
+        if (value && _cancellationTokenSource.Token.IsCancellationRequested)
+        {
+            return;
+        }
+
         IsActive = value;
 
         StateHasChanged();
 
-        if (AfterShowContent is not null)
+        if (value && AfterShowContent is not null)
         {
             await AfterShowContent(isLazyContent);
         }
@@ -67,47 +70,5 @@ public class BDelayable : BDomComponentBase, IAsyncDisposable
     protected virtual Task WhenIsActiveUpdating(bool value)
     {
         return Task.CompletedTask;
-    }
-
-    protected async Task RunOpenDelayAsync()
-    {
-        if (_module is not null)
-        {
-            await _module.InvokeVoidAsync("runDelay", _dotNetRef, "open");
-        }
-        else
-        {
-            await SetIsActive(true);
-        }
-    }
-
-    protected async Task RunCloseDelayAsync()
-    {
-        if (_module is not null)
-        {
-            await _module.InvokeVoidAsync("runDelay", _dotNetRef, "close");
-        }
-        else
-        {
-            await SetIsActive(false);
-        }
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        try
-        {
-            if (_module is not null && _dotNetRef is not null)
-            {
-                await _module.InvokeVoidAsync("remove", _dotNetRef);
-                await _module.DisposeAsync();
-            }
-
-            _dotNetRef?.Dispose();
-        }
-        catch (Exception)
-        {
-            // ignored
-        }
     }
 }

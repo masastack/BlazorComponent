@@ -13,7 +13,7 @@ namespace BlazorComponent
         }
 
         [Parameter]
-        public StringNumber Max { get; set; }
+        public StringNumber? Max { get; set; }
 
         [Parameter]
         public bool Dark { get; set; }
@@ -42,42 +42,33 @@ namespace BlazorComponent
             }
         }
 
-        public async override Task ToggleAsync(StringNumber value)
+        protected override List<StringNumber> UpdateInternalValues(StringNumber value)
         {
-            if (_values.Contains(value))
+            var internalValues = InternalValues.ToList();
+
+            if (internalValues.Contains(value))
             {
-                _values.Remove(value);
+                internalValues.Remove(value);
             }
             else
             {
                 if (!Multiple)
                 {
-                    _values.Clear();
+                    internalValues.Clear();
                 }
 
-                if (Max == null || _values.Count < Max.TryGetNumber().number)
+                if (Max == null || internalValues.Count < Max.TryGetNumber().number)
                 {
-                    _values.Add(value);
+                    internalValues.Add(value);
                 }
             }
 
-            if (Mandatory && _values.Count == 0)
+            if (Mandatory && internalValues.Count == 0)
             {
-                _values.Add(value);
+                internalValues.Add(value);
             }
 
-            if (ValuesChanged.HasDelegate)
-            {
-                await ValuesChanged.InvokeAsync(_values);
-            }
-            else if (ValueChanged.HasDelegate)
-            {
-                await ValueChanged.InvokeAsync(_values.LastOrDefault());
-            }
-            else
-            {
-                StateHasChanged();
-            }
+            return internalValues;
         }
     }
 }

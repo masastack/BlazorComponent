@@ -15,6 +15,6 @@ namespace BlazorComponent.Web
 
         public IJSRuntime JS { get; }
 
-        public string Selector { get; protected set; }
+        public string? Selector { get; protected set; }
     }
 }

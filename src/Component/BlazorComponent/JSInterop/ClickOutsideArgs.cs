@@ -2,5 +2,5 @@
 
 public class ClickOutsideArgs
 {
-    public string PointerSelector { get; set; }
+    public string? PointerSelector { get; set; }
 }

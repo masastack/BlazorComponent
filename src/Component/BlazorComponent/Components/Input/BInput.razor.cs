@@ -27,7 +27,7 @@ namespace BlazorComponent
         public RenderFragment PrependContent { get; set; }
 
         [Parameter]
-        public StringBoolean HideDetails { get; set; } = false;
+        public StringBoolean? HideDetails { get; set; } = false;
 
         [Parameter]
         public string Hint { get; set; }
@@ -42,13 +42,13 @@ namespace BlazorComponent
         public RenderFragment<string> MessageContent { get; set; }
 
         [Parameter]
-        public EventCallback<ExMouseEventArgs> OnClick { get; set; }
+        public EventCallback<MouseEventArgs> OnClick { get; set; }
 
         [Parameter]
         public EventCallback<MouseEventArgs> OnMouseDown { get; set; }
 
         [Parameter]
-        public EventCallback<ExMouseEventArgs> OnMouseUp { get; set; }
+        public EventCallback<MouseEventArgs> OnMouseUp { get; set; }
 
         public ElementReference InputSlotElement { get; set; }
 
@@ -93,7 +93,7 @@ namespace BlazorComponent
 
         public bool IsLoading => Loading != null && Loading != false;
 
-        public virtual bool ShowDetails => HideDetails == false || (HideDetails == "auto" && HasDetails);
+        public virtual bool ShowDetails => HideDetails is null || HideDetails == false || (HideDetails == "auto" && HasDetails);
 
         public virtual bool HasHint => !HasError && !string.IsNullOrEmpty(Hint) && (PersistentHint || IsFocused);
 
@@ -161,6 +161,11 @@ namespace BlazorComponent
             {
                 await OnMouseUp.InvokeAsync(args);
             }
+        }
+
+        public void StateHasChangedForJsInvokable()
+        {
+            StateHasChanged();
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿namespace BlazorComponent
 {
-    public partial class BSwitchSwitch<TInput> where TInput : ISwitch
+    public partial class BSwitchSwitch<TInput, TValue> where TInput : ISwitch<TValue>
     {
-        string LeftText => Component.LeftText;
+        string? LeftText => Component.LeftText;
 
-        string RightText => Component.RightText;
+        string? RightText => Component.RightText;
     }
 }

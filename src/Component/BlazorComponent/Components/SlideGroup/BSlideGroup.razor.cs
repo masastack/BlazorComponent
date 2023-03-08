@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BSlideGroup : BItemGroup, ISlideGroup
     {
@@ -11,6 +9,34 @@ namespace BlazorComponent
         public BSlideGroup(GroupType groupType) : base(groupType)
         {
         }
+
+        [Inject]
+        protected DomEventJsInterop? DomEventJsInterop { get; set; }
+
+        [CascadingParameter(Name = "rtl")]
+        public bool Rtl { get; set; }
+
+        [Parameter]
+        public bool CenterActive { get; set; }
+
+        [Parameter]
+        public StringBoolean? ShowArrows { get; set; }
+
+        [Parameter]
+        public string? NextIcon { get; set; }
+
+        [Parameter]
+        public RenderFragment NextContent { get; set; }
+
+        [Parameter]
+        public string? PrevIcon { get; set; }
+
+        [Parameter]
+        public RenderFragment PrevContent { get; set; }
+
+        private int _prevItemsLength;
+        private StringNumber? _prevInternalValue;
+        private bool _prevIsOverflowing;
 
         protected bool IsMobile { get; set; }
 
@@ -28,38 +54,11 @@ namespace BlazorComponent
             set => SetValue(value);
         }
 
-        protected double StartX { get; set; }
-
-        [CascadingParameter(Name = "rtl")]
-        public bool Rtl { get; set; }
-
-        [Parameter]
-        public bool CenterActive { get; set; }
-
-        [Parameter]
-        public StringBoolean ShowArrows { get; set; }
-
-        [Parameter]
-        public string NextIcon { get; set; }
-
-        [Parameter]
-        public RenderFragment NextContent { get; set; }
-
-        [Parameter]
-        public string PrevIcon { get; set; }
-
-        [Parameter]
-        public RenderFragment PrevContent { get; set; }
-
-        private int _prevItemsLength;
-        private StringNumber _prevValue;
-        private bool _prevIsOverflowing;
-
-        protected override void OnWatcherInitialized()
+        protected override void RegisterWatchers(PropertyWatcher watcher)
         {
-            base.OnWatcherInitialized();
+            base.RegisterWatchers(watcher);
 
-            Watcher.Watch<double>(nameof(ScrollOffset), OnScrollOffsetChanged);
+            watcher.Watch<double>(nameof(ScrollOffset), OnScrollOffsetChanged);
         }
 
         private async void OnScrollOffsetChanged(double val)
@@ -77,7 +76,6 @@ namespace BlazorComponent
                 scroll = -scroll;
             }
 
-
             if (ContentRef.Context != null)
             {
                 await JsInvokeAsync(JsInteropConstants.SetStyle, ContentRef, "transform", $"translateX({scroll}px)");
@@ -93,8 +91,12 @@ namespace BlazorComponent
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
+            await base.OnAfterRenderAsync(firstRender);
+
             if (firstRender)
             {
+                DomEventJsInterop?.ResizeObserver(Ref.GetSelector(), OnResize);
+
                 IsMobile = await JsInvokeAsync<bool>(JsInteropConstants.IsMobile);
                 await SetWidths(Value);
             }
@@ -103,10 +105,10 @@ namespace BlazorComponent
                 _prevItemsLength = Items.Count;
                 await SetWidths(Value);
             }
-            else if (_prevValue != Value)
+            else if (_prevInternalValue != InternalValue)
             {
-                _prevValue = Value;
-                await SetWidths(Value);
+                _prevInternalValue = InternalValue;
+                await SetWidths(InternalValue);
             }
             else if (_prevIsOverflowing != IsOverflowing)
             {
@@ -118,7 +120,7 @@ namespace BlazorComponent
             }
         }
 
-        public async Task SetWidths(StringNumber selectedValue = null)
+        public async Task SetWidths(StringNumber? selectedValue = null)
         {
             (WrapperWidth, ContentWidth) = await GetWidths();
 
@@ -181,7 +183,7 @@ namespace BlazorComponent
             StateHasChanged();
         }
 
-        protected async Task ScrollToView(StringNumber selectedValue)
+        protected async Task ScrollToView(StringNumber? selectedValue)
         {
             if (selectedValue == null && Items.Any())
             {
@@ -275,6 +277,16 @@ namespace BlazorComponent
             var newAbsoluteOffset = sign * currentScrollOffset + (direction == "prev" ? -1 : 1) * wrapperWidth;
 
             return sign * Math.Max(Math.Min(newAbsoluteOffset, contentWidth - wrapperWidth), 0);
+        }
+
+        private async Task OnResize()
+        {
+            if (IsDisposed)
+            {
+                return;
+            }
+
+            await SetWidths();
         }
     }
 }

@@ -5,6 +5,6 @@
     /// </summary>
     public class ExMouseEventArgs : MouseEventArgs
     {
-        public EventTarget Target { get; set; }
+        public EventTarget? Target { get; set; }
     }
 }

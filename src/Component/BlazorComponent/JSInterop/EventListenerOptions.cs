@@ -11,7 +11,7 @@ public class EventListenerOptions
 
 public class EventListenerExtras
 {
-    public string Key { get; set; }
+    public string? Key { get; set; }
 
     public bool StopPropagation { get; set; }
 

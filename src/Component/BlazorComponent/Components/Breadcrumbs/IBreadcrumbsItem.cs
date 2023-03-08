@@ -4,11 +4,11 @@ namespace BlazorComponent
 {
     public interface IBreadcrumbsItem : IHasProviderComponent
     {
-        string Text { get; }
+        string? Text { get; }
 
-        string Href { get; }
+        string? Href { get; }
 
-        string Target { get; }
+        string? Target { get; }
 
         bool Disabled { get; }
 
