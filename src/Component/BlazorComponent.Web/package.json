@@ -8,6 +8,8 @@
     "build": "rollup --config rollup.config.ts",
     "dev:echarts": "rollup --config rollup.config.echarts.ts --watch",
     "build:echarts": "rollup --config rollup.config.echarts.ts",
+    "dev:monacoseditor": "rollup --config rollup.config.monaco-editor.ts --watch",
+    "build:monacoseditor": "rollup --config rollup.config.monaco-editor.ts",
     "dev:gridstack": "rollup --config rollup.config.gridstack.ts --watch",
     "build:gridstack": "rollup --config rollup.config.gridstack.ts",
     "dev:input": "rollup --config rollup.config.input.ts --watch",
@@ -45,6 +47,7 @@
     "rollup": "^2.79.0",
     "rollup-plugin-terser": "^7.0.2",
     "tslib": "^2.4.0",
-    "typescript": "^4.8.2"
+    "typescript": "^4.8.2",
+    "monaco-editor": "^0.36.1"
   }
 }
