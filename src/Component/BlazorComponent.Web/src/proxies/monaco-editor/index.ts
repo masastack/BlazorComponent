@@ -1,60 +1,54 @@
-import { editor as MonacoEditor ,Selection} from "monaco-editor";
+import { editor } from "monaco-editor";
 
-interface Monaco {
-  editor: typeof MonacoEditor;
+function init(id: string, options: editor.IStandaloneEditorConstructionOptions) {
+  return editor.create(document.getElementById(id), options);
 }
 
-declare const monaco: Monaco;
-
-function init(id: string, options: MonacoEditor.IStandaloneEditorConstructionOptions) {
-  return monaco.editor.create(document.getElementById(id), options);
+function defineTheme(name, value: editor.IStandaloneThemeData) {
+  editor.defineTheme(name, value)
 }
 
-function defineTheme(name,value:MonacoEditor.IStandaloneThemeData){
-    monaco.editor.defineTheme(name,value)
-}
-
-function getValue(instance: MonacoEditor.IStandaloneCodeEditor) {
+function getValue(instance: editor.IStandaloneCodeEditor) {
   return instance.getValue();
 }
 
-function setValue(instance: MonacoEditor.IStandaloneCodeEditor, value) {
+function setValue(instance: editor.IStandaloneCodeEditor, value) {
   instance.setValue(value);
 }
 
 function setTheme(theme: string) {
-  monaco.editor.setTheme(theme);
+  editor.setTheme(theme);
 }
 
-function colorizeElement(id:string,options:any){
-    monaco.editor.colorizeElement(document.getElementById(id),options);
+function colorizeElement(id: string, options: any) {
+  editor.colorizeElement(document.getElementById(id), options);
 }
 
-function updateOptions(instance: MonacoEditor.IStandaloneCodeEditor,options:any){
-    instance.updateOptions(options);
+function updateOptions(instance: editor.IStandaloneCodeEditor, options: any) {
+  instance.updateOptions(options);
 }
 
 function getModels() {
-  return monaco.editor.getModels();
+  return editor.getModels();
 }
 
-function getModel(instance: MonacoEditor.IStandaloneCodeEditor) {
+function getModel(instance: editor.IStandaloneCodeEditor) {
   return instance.getModel();
 }
 
-function setModelLanguage(instance: MonacoEditor.IStandaloneCodeEditor, languageId: string) {
-  monaco.editor.setModelLanguage(instance.getModel(), languageId);
+function setModelLanguage(instance: editor.IStandaloneCodeEditor, languageId: string) {
+  editor.setModelLanguage(instance.getModel(), languageId);
 }
 function remeasureFonts() {
-  monaco.editor.remeasureFonts();
+  editor.remeasureFonts();
 }
 
-function addKeybindingRules(rules: MonacoEditor.IKeybindingRule[]) {
-  monaco.editor.addKeybindingRules(rules);
+function addKeybindingRules(rules: editor.IKeybindingRule[]) {
+  editor.addKeybindingRules(rules);
 }
 
-function addKeybindingRule(rule: MonacoEditor.IKeybindingRule) {
-  monaco.editor.addKeybindingRule(rule);
+function addKeybindingRule(rule: editor.IKeybindingRule) {
+  editor.addKeybindingRule(rule);
 }
 
 export {
