@@ -1,6 +1,4 @@
-﻿using BlazorComponent.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public class BMenuable : BBootable, IAsyncDisposable
     {
@@ -185,7 +183,25 @@ namespace BlazorComponent
 
         protected bool HasActivator => ActivatorContent != null || ExternalActivator;
 
-        protected virtual string? AttachSelector => default;
+        protected virtual string? DefaultAttachSelector => default;
+
+        protected string? AttachSelector
+        {
+            get
+            {
+                if (IsDefaultAttach)
+                {
+                    return DefaultAttachSelector;
+                }
+
+                if (IsAttachSelf)
+                {
+                    return Ref.GetSelector();
+                }
+
+                return Attach?.AsT0;
+            }
+        }
 
         /// <summary>
         /// Attached to the current element but not to other element.
@@ -195,7 +211,7 @@ namespace BlazorComponent
         /// <summary>
         /// Determines whether the <see cref="Attach"/> value is false.
         /// </summary>
-        protected bool IsDefaultAttach => Attach is not null && Attach.IsT1 && Attach.AsT1 == false;
+        protected bool IsDefaultAttach => Attach is null || (Attach is not null && Attach.IsT1 && Attach.AsT1 == false);
 
         protected int ComputedZIndex => ZIndex != null ? ZIndex.ToInt32() : Math.Max(ActivateZIndex, StackMinZIndex);
 
