@@ -74,7 +74,7 @@ public partial class BDialog : BBootable, IDependent, IAsyncDisposable
 
     protected int StackMinZIndex { get; set; } = 200;
 
-    protected virtual string AttachSelector { get; set; }
+    protected virtual string? AttachSelector => default;
 
     public ElementReference ContentRef { get; set; }
 

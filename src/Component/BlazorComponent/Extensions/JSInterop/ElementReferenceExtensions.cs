@@ -7,7 +7,7 @@ public static class ElementReferenceExtensions
         return elementReference?.GetSelector();
     }
 
-    public static string GetSelector(this ElementReference elementReference)
+    public static string? GetSelector(this ElementReference elementReference)
     {
         if (elementReference.Context is null)
         {

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BExpansionPanels : BItemGroup
     {
@@ -43,7 +41,8 @@ namespace BlazorComponent
 
             if (internalValues.Contains(value))
             {
-                Remove(value);
+                internalValues.Remove(value);
+                RemoveNextActiveKey(value);
             }
             else
             {
@@ -55,22 +54,22 @@ namespace BlazorComponent
 
                 if (Max == null || internalValues.Count < Max.TryGetNumber().number)
                 {
-                    Add(value);
+                    internalValues.Add(value);
+                    AddNextActiveKey(value);
                 }
             }
 
             if (Mandatory && internalValues.Count == 0)
             {
-                Add(value);
+                internalValues.Add(value);
+                AddNextActiveKey(value);
             }
 
             return internalValues;
         }
 
-        private void Add(StringNumber value)
+        private void AddNextActiveKey(StringNumber value)
         {
-            InternalValues.Add(value);
-
             var index = AllValues.IndexOf(value);
             if (index > 1)
             {
@@ -78,10 +77,8 @@ namespace BlazorComponent
             }
         }
 
-        private void Remove(StringNumber value)
+        private void RemoveNextActiveKey(StringNumber value)
         {
-            InternalValues.Remove(value);
-
             var index = AllValues.IndexOf(value);
             if (index > 1)
             {
