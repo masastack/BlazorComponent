@@ -15,7 +15,7 @@ public class CookieStorage
         "(function(name){const reg = new RegExp(`(^| )${name}=([^;]*)(;|$)`);const arr = document.cookie.match(reg);if (arr) {return unescape(arr[2]);}return null;})";
 
     const string SetCookieJs =
-        "(function(name,value){ var Days = 30;var exp = new Date();exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);document.cookie = `${name}=${escape(value.toString())};path=/;expires=${exp.toUTCString()}`;})";
+        "(function(name,value,domain){ var Days = 30;var exp = new Date();exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);document.cookie = `${name}=${escape(value.toString())};path=/;expires=${exp.toUTCString()};${(domain===null||domain==='')?'':`domain=${domain}`}`;})";
 
     public async Task<string> GetCookieAsync(string key)
     {
@@ -34,11 +34,11 @@ public class CookieStorage
         return null;
     }
 
-    public async void SetItemAsync<T>(string key, T? value)
+    public async void SetItemAsync<T>(string key, T? value,string? domain="")
     {
         try
         {
-            await _jsRuntime.InvokeVoidAsync("eval", $"{SetCookieJs}('{key}','{value}')");
+            await _jsRuntime.InvokeVoidAsync("eval", $"{SetCookieJs}('{key}','{value}','{domain}')");
         }
         catch
         {
