@@ -1,6 +1,4 @@
-﻿using BlazorComponent.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BTabs : BDomComponentBase, ITabs, IAncestorRoutable
     {
@@ -73,6 +71,7 @@ namespace BlazorComponent
         public bool Light { get; set; }
 
         private StringNumber? _prevValue;
+        private int _registeredTabItemsIndex = 0;
 
         private List<ITabItem> TabItems { get; set; } = new();
 
@@ -123,7 +122,7 @@ namespace BlazorComponent
 
         public void RegisterTabItem(ITabItem tabItem)
         {
-            tabItem.Value ??= TabItems.Count;
+            tabItem.Value ??= _registeredTabItemsIndex++;
 
             if (TabItems.Any(item => item.Value.Equals(tabItem.Value))) return;
 

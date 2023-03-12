@@ -37,6 +37,8 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<List<StringNumber>> ValuesChanged { get; set; }
 
+        private int _registeredItemsIndex;
+
         public GroupType GroupType { get; private set; }
 
         public List<IGroupable> Items { get; } = new();
@@ -72,7 +74,7 @@ namespace BlazorComponent
 
         public virtual void Register(IGroupable item)
         {
-            item.Value ??= Items.Count;
+            item.Value ??= _registeredItemsIndex++;
 
             Items.Add(item);
 
