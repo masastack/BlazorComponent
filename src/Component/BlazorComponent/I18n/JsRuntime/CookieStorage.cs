@@ -15,7 +15,7 @@ public class CookieStorage
         "(function(name){const reg = new RegExp(`(^| )${name}=([^;]*)(;|$)`);const arr = document.cookie.match(reg);if (arr) {return unescape(arr[2]);}return null;})";
 
     const string SetCookieJs =
-        "(function(name,value){ var Days = 30;var exp = new Date();exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);document.cookie = `${name}=${escape(value.toString())};path=/;expires=${exp.toUTCString()}`;})";
+        "(function(name,value){ var hostArraies=document.location.host.split('.');var Days = 30;var exp = new Date();exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);document.cookie = `${name}=${escape(value.toString())};path=/;expires=${exp.toUTCString()};domain=.${hostArraies[hostArraies.length-2]}.${hostArraies[hostArraies.length-1]}`;})";
 
     public async Task<string> GetCookieAsync(string key)
     {
