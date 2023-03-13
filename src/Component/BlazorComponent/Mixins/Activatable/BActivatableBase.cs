@@ -110,9 +110,14 @@ public class BActivatableBase : BToggleable, IActivatableJsCallbacks
         await SetActiveInternal(val);
     }
 
-    protected virtual void RunDirectly(bool val)
+    protected void UpdateActiveInJS(bool val)
     {
         _ = Module?.SetActive(val);
+    }
+
+    protected virtual void RunDirectly(bool val)
+    {
+        UpdateActiveInJS(val);
     }
 
     protected void RegisterPopupEvents(string selector, bool closeOnContentClick)
