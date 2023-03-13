@@ -4,7 +4,9 @@
 
 @if (Close)
 {
-    <BIcon @attributes="@(GetAttributes(typeof(BIcon),"close"))">
+    <BIcon OnClickPreventDefault
+           OnClickStopPropagation
+           @attributes="@(GetAttributes(typeof(BIcon), "close"))">
         @CloseIcon
     </BIcon>
 }
