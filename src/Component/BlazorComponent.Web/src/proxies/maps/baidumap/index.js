@@ -174,6 +174,11 @@ class BaiduMapProxy {
     }
     return false;
   }
+
+  destroyMap() {
+    if (this.instance != null)
+      delete this.instance;
+  }
 }
 
 BMapGL.Polygon.prototype.setPathWithGeoPoint = (points, polygon) => {
