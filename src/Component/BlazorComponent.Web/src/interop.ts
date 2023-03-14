@@ -1265,3 +1265,41 @@ export function checkIfThresholdIsExceededWhenScrolling(el: Element, parent: Ele
 
   return (current >= elementTop - threshold)
 }
+
+export function get_top_domain() {
+  var i, h,
+    weird_cookie = 'weird_get_top_level_domain=cookie',
+    hostname = document.location.hostname.split('.');
+  for (i = hostname.length - 1; i >= 0; i--) {
+    h = hostname.slice(i).join('.');
+    document.cookie = weird_cookie + ';domain=.' + h + ';';
+    if (document.cookie.indexOf(weird_cookie) > -1) {
+        // We were able to store a cookie! This must be it
+        document.cookie = weird_cookie.split('=')[0] + '=;domain=.' + h + ';expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        return h;
+    }
+  }
+}
+
+export function setCookie(name, value) {
+  var domain = get_top_domain();
+  if (domain === undefined || domain === null) {
+    domain = '';
+  }
+  if (domain !== '' && isNaN(domain[0])) {
+    domain = `.${domain}`;
+  }
+  var Days = 30;
+  var exp = new Date();
+  exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+  document.cookie = `${name}=${escape(value.toString())};path=/;expires=${exp.toUTCString()};domain=${domain}`;
+}
+
+export function getCookie(name) {
+  const reg = new RegExp(`(^| )${name}=([^;]*)(;|$)`);
+  const arr = document.cookie.match(reg);
+  if (arr) {
+    return unescape(arr[2]);
+  }
+  return null;
+}
