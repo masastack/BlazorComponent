@@ -14,7 +14,7 @@ class BaiduMapProxy {
 
     this.instance.setMapType(initArgs.mapTypeString);
 
-    if(initArgs.trafficOn)
+    if (initArgs.trafficOn)
       this.instance.setTrafficOn();
 
     if (initArgs.dark)
@@ -24,33 +24,33 @@ class BaiduMapProxy {
   }
 
   setDotNetObjectReference(dotNetHelper, events) {
-      this.dotNetHelper = dotNetHelper;
+    this.dotNetHelper = dotNetHelper;
 
-      events.forEach((event_name) => {
-        this.instance.addEventListener(event_name, async function (e) {
-          if (event_name == "dragstart" ||
-              event_name == "dragging" ||
-              event_name == "dragend" ||
-              event_name == "dblclick") {
-                await dotNetHelper.invokeMethodAsync("OnEvent", event_name, {
-                  latlng: e.point,
-                  pixel: e.pixel,
-                });
-            }
-            else if (event_name == "click" ||
-              event_name == "rightclick" ||
-              event_name == "rightdblclick" ||
-              event_name == "mousemove") {
-                await dotNetHelper.invokeMethodAsync("OnEvent", event_name, {
-                  latlng: e.latlng,
-                  pixel: e.pixel,
-                });
-            }
-            else {
-              await dotNetHelper.invokeMethodAsync("OnEvent", event_name, null);
-            }
+    events.forEach((event_name) => {
+      this.instance.addEventListener(event_name, async function (e) {
+        if (event_name == "dragstart" ||
+          event_name == "dragging" ||
+          event_name == "dragend" ||
+          event_name == "dblclick") {
+          await dotNetHelper.invokeMethodAsync("OnEvent", event_name, {
+            latlng: e.point,
+            pixel: e.pixel,
           });
-        });
+        }
+        else if (event_name == "click" ||
+          event_name == "rightclick" ||
+          event_name == "rightdblclick" ||
+          event_name == "mousemove") {
+          await dotNetHelper.invokeMethodAsync("OnEvent", event_name, {
+            latlng: e.latlng,
+            pixel: e.pixel,
+          });
+        }
+        else {
+          await dotNetHelper.invokeMethodAsync("OnEvent", event_name, null);
+        }
+      });
+    });
   }
 
   getOriginInstance = () => this.instance;
@@ -143,15 +143,13 @@ class BaiduMapProxy {
     return pl;
   }
 
-  toBMapGLPoint = (point) => new BMapGL.Point(point.lng, point.lat);
-
   addPolygon(polygon) {
     if (polygon.points == null)
       return null;
 
     var bmapPoints = [];
     polygon.points.forEach(element => {
-      bmapPoints.push(this.toBMapGLPoint(element));
+      bmapPoints.push(toBMapGLPoint(element));
     });
 
     var pg = new BMapGL.Polygon(bmapPoints, {
@@ -168,15 +166,29 @@ class BaiduMapProxy {
     return pg;
   }
 
-  contains(overlay){
+  contains(overlay) {
     var os = this.instance.getOverlays();
     for (let index = 0; index < os.length; index++) {
-      if(os[index] === overlay)
+      if (os[index] === overlay)
         return true;
     }
     return false;
   }
 }
+
+BMapGL.Polygon.prototype.setPathWithGeoPoint = (points, polygon) => {
+  if (points == null)
+    return;
+
+  var bmapPoints = [];
+  points.forEach(element => {
+    bmapPoints.push(toBMapGLPoint(element));
+  });
+
+  polygon.setPath(bmapPoints);
+}
+
+const toBMapGLPoint = (point) => new BMapGL.Point(point.lng, point.lat);
 
 const init = (containerId, initArgs) => new BaiduMapProxy(containerId, initArgs);
 
