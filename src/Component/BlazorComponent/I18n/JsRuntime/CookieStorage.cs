@@ -11,22 +11,16 @@ public class CookieStorage
         _jsRuntime = jsRuntime;
     }
 
-    const string GetCookieJs =
-        "(function(name){const reg = new RegExp(`(^| )${name}=([^;]*)(;|$)`);const arr = document.cookie.match(reg);if (arr) {return unescape(arr[2]);}return null;})";
-
-    const string SetCookieJs =
-        @"(function(name,value){var domain=get_top_domain()if(domain===undefined||domain===null){domain=''}if(domain!==''&&isNaN(domain[0])){domain=`.${domain}`}var Days=30;var exp=new Date();exp.setTime(exp.getTime()+Days*24*60*60*1000);document.cookie=`${name}=${escape(value.toString())};path=/;expires=${exp.toUTCString()};domain=${domain}`})";
-
     public async Task<string> GetCookieAsync(string key)
     {
-        return await _jsRuntime.InvokeAsync<string>("eval", $"{GetCookieJs}('{key}')");
+        return await _jsRuntime.InvokeAsync<string>("getCookie", key);
     }
 
     public string? GetCookie(string key)
     {
         if (_jsRuntime is IJSInProcessRuntime jsInProcess)
         {
-            return jsInProcess.Invoke<string>("eval", $"{GetCookieJs}('{key}')");
+            return jsInProcess.Invoke<string>("getCookie", key);
         }
 
         // TODO: how to read config in MAUI?
@@ -38,7 +32,7 @@ public class CookieStorage
     {
         try
         {
-            await _jsRuntime.InvokeVoidAsync("eval", $"{SetCookieJs}('{key}','{value}')");
+            await _jsRuntime.InvokeVoidAsync("setCookie", key, value?.ToString());
         }
         catch
         {
