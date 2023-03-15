@@ -135,5 +135,9 @@
         public static string UpdateWindowTransition => $"{JsInteropFuncNamePrefix}updateWindowTransition";
 
         public static string InvokeMultipleMethod => $"{JsInteropFuncNamePrefix}invokeMultipleMethod";
+
+        public static string SetCookie => $"{JsInteropFuncNamePrefix}setCookie";
+
+        public static string GetCookie => $"{JsInteropFuncNamePrefix}getCookie";
     }
 }
