@@ -2,6 +2,8 @@ import { editor as MonacoEditor } from "monaco-editor";
 
 interface Monaco {
   editor: typeof MonacoEditor;
+  KeyMod: any;
+  KeyCode: any;
 }
 
 declare const monaco: Monaco;
@@ -42,6 +44,16 @@ function updateOptions(instance: MonacoEditor.IStandaloneCodeEditor, options: an
   instance.updateOptions(options);
 }
 
+function addCommand(
+  instance: MonacoEditor.IStandaloneCodeEditor,
+  keybinding: number,
+  dotNetHelper,
+  method: string
+) {
+  instance.addCommand(keybinding, function () {
+    dotNetHelper.invokeMethodAsync(method);
+  });
+}
 
 function getModel(instance: MonacoEditor.IStandaloneCodeEditor) {
   return instance.getModel();
@@ -71,6 +83,7 @@ export {
   addKeybindingRules,
   colorizeElement,
   defineTheme,
+  addCommand,
   updateOptions,
   addKeybindingRule
 }
