@@ -1283,10 +1283,9 @@ export function get_top_domain() {
 
 export function setCookie(name, value) {
   var domain = get_top_domain();
-  if (domain === undefined || domain === null) {
+  if (!domain) {
     domain = '';
-  }
-  if (domain !== '' && isNaN(domain[0])) {
+  }else if (domain !== '' && isNaN(domain[0])) {
     domain = `.${domain}`;
   }
   var Days = 30;
