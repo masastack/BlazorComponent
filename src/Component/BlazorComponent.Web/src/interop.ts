@@ -1285,7 +1285,7 @@ export function setCookie(name, value) {
   var domain = get_top_domain();
   if (!domain) {
     domain = '';
-  }else if (domain !== '' && isNaN(domain[0])) {
+  }else if (isNaN(domain[0])) {
     domain = `.${domain}`;
   }
   var Days = 30;
