@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Http;
 
 namespace BlazorComponent.I18n;
@@ -68,7 +69,8 @@ public class I18n
 
     public IEnumerable<CultureInfo> SupportedCultures => I18nCache.GetCultures();
 
-    public string? T(string? key, bool matchLastLevel = false, bool whenNullReturnKey = true, params object[] args)
+    [return: NotNullIfNotNull("defaultValue")]
+    public string? T(string? key, [DoesNotReturnIf(true)] bool whenNullReturnKey = true, string? defaultValue = null, params object[] args)
     {
         if (key is null)
         {
@@ -77,24 +79,29 @@ public class I18n
 
         var value = Locale.GetValueOrDefault(key);
 
-        if (value is null && matchLastLevel)
-        {
-            var matchKey = Locale.Keys.FirstOrDefault(k => k.EndsWith($".{key}"));
-
-            if (matchKey is not null)
-            {
-                value = Locale[matchKey];
-            }
-        }
-
         if (value is null && whenNullReturnKey)
         {
+            if (key.StartsWith(".") || key.EndsWith("."))
+            {
+                return key;
+            }
+
             return key.Split('.').Last();
+        }
+
+        if (value is null)
+        {
+            return defaultValue;
+        }
+
+        if (args.Length == 0)
+        {
+            return value;
         }
 
         try
         {
-            return value is null ? null : string.Format(value, args);
+            return string.Format(value, args);
         }
         catch (FormatException)
         {
@@ -102,7 +109,10 @@ public class I18n
         }
     }
 
-    public string? T(string? scope, string? key, bool whenNullReturnKey = true, params object[] args)
+    [return: NotNullIfNotNull("defaultValue")]
+    public string? T(string? scope, string? key, [DoesNotReturnIf(true)] bool whenNullReturnKey = true,
+        [CallerArgumentExpression("key")] string? defaultValue = null,
+        params object[] args)
     {
         if (key is null)
         {
@@ -113,12 +123,27 @@ public class I18n
 
         if (value is null && whenNullReturnKey)
         {
+            if (key.StartsWith(".") || key.EndsWith("."))
+            {
+                return key;
+            }
+
             return key.Split('.').Last();
+        }
+
+        if (value is null)
+        {
+            return defaultValue;
+        }
+
+        if (args.Length == 0)
+        {
+            return value;
         }
 
         try
         {
-            return value is null ? null : string.Format(value, args);
+            return string.Format(value, args);
         }
         catch (FormatException)
         {
