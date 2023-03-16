@@ -68,6 +68,9 @@ namespace BlazorComponent
         [Parameter]
         public Func<TItem, TKey> ItemKey { get; set; }
 
+        [Parameter]
+        public Func<TItem, bool> LeafPredicate { get; set; }
+
         public List<TItem> ComputedChildren
         {
             get
@@ -93,7 +96,7 @@ namespace BlazorComponent
 
         public bool IsIndeterminate => Treeview.IsIndeterminate(Key);
 
-        public bool IsLeaf => Children != null;
+        public bool IsLeaf => LeafPredicate is null ? Children == null : LeafPredicate.Invoke(Item);
 
         public bool IsSelected => Treeview.IsSelected(Key);
 
@@ -164,7 +167,7 @@ namespace BlazorComponent
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            
+
             Treeview.AddNode(this);
         }
 
