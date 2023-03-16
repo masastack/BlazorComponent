@@ -79,7 +79,9 @@
       "reloadTab": "重新加载",
       "closeTabsToTheLeft": "关闭左侧",
       "closeTabsToTheRight": "关闭右侧",
-      "closeOtherTabs": "关闭其他"
+      "closeOtherTabs": "关闭其他",
+      "closeTab": "关闭标签页",
+      "closeTabConfirm": "您确定要关闭标签页（{0}）吗？"
     },
     "cron": {
       "period": {
@@ -176,6 +178,6 @@
       "failedToLoad": "加载失败",
       "reload": "重新加载",
       "loading": "加载中"
-    }
+    },
   }
 }
