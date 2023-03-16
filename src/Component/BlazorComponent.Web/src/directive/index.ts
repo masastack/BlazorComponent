@@ -6,7 +6,7 @@ export default function registerDirective() {
       if (mutation.type === "childList") {
         var target: any = mutation.target;
         //ripple
-        if (!target._bind && target.attributes["ripple"]) {
+        if (!target._bind && target.attributes && target.attributes["ripple"]) {
           target.addEventListener("mousedown", rippleShow);
           target.addEventListener("mouseup", rippleHide);
           target.addEventListener("mouseleave", rippleHide);
