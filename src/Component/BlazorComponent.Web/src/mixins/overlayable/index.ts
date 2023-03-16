@@ -38,8 +38,8 @@ function scrollListener (e: WheelEvent & KeyboardEvent, overlay, content, dialog
       (e.target as HTMLElement).isContentEditable
     ) return
 
-    const up = [keyCodes.up, keyCodes.pageup]
-    const down = [keyCodes.down, keyCodes.pagedown]
+    const up:number[] = [keyCodes.up, keyCodes.pageup]
+    const down:number[] = [keyCodes.down, keyCodes.pagedown]
 
     if (up.includes(e.keyCode)) {
       (e as any).deltaY = -1

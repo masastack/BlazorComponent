@@ -257,7 +257,7 @@ internal sealed class ValidationEventSubscriptions : IDisposable
     {
         if (EnableI18n)
         {
-            message = _i18n.T(message, true);
+            message = _i18n.T(message);
         }
 
         _messageStore.Add(fieldIdentifier, message);
