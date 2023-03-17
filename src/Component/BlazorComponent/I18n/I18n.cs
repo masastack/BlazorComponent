@@ -72,21 +72,27 @@ public class I18n
     [return: NotNullIfNotNull("defaultValue")]
     public string? T(string? key, [DoesNotReturnIf(true)] bool whenNullReturnKey = true, string? defaultValue = null, params object[] args)
     {
+        string? value;
+
         if (key is null)
         {
-            return null;
+            value = null;
         }
-
-        var value = Locale.GetValueOrDefault(key);
-
-        if (value is null && whenNullReturnKey)
+        else
         {
-            if (key.StartsWith(".") || key.EndsWith("."))
-            {
-                return key;
-            }
+            value = Locale.GetValueOrDefault(key);
 
-            return key.Split('.').Last();
+            if (value is null && whenNullReturnKey)
+            {
+                if (key.StartsWith(".") || key.EndsWith("."))
+                {
+                    value = key;
+                }
+                else
+                {
+                    value = key.Split('.').Last();
+                }
+            }
         }
 
         if (value is null)
@@ -114,21 +120,27 @@ public class I18n
         [CallerArgumentExpression("key")] string? defaultValue = null,
         params object[] args)
     {
+        string? value;
+
         if (key is null)
         {
-            return null;
+            value = null;
         }
-
-        var value = Locale.GetValueOrDefault($"{scope}.{key}");
-
-        if (value is null && whenNullReturnKey)
+        else
         {
-            if (key.StartsWith(".") || key.EndsWith("."))
-            {
-                return key;
-            }
+            value = Locale.GetValueOrDefault($"{scope}.{key}");
 
-            return key.Split('.').Last();
+            if (value is null && whenNullReturnKey)
+            {
+                if (key.StartsWith(".") || key.EndsWith("."))
+                {
+                    value = key;
+                }
+                else
+                {
+                    value = key.Split('.').Last();
+                }
+            }
         }
 
         if (value is null)
