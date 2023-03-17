@@ -14,6 +14,7 @@
             ReferenceCaptureAction="reference => Ref = reference"
             @onclick="HandleOnClick"
             __internal_stopPropagation_onclick="@StopPropagation"
+            __internal_preventDefault_onclick="@OnClickPreventDefault"
             @attributes="Attributes">
 
             @if (HasLoader)
@@ -36,6 +37,7 @@
             ReferenceCaptureAction="reference => Ref = reference"
             @onclick="HandleOnClick"
             __internal_stopPropagation_onclick="@StopPropagation"
+            __internal_preventDefault_onclick="@OnClickPreventDefault"
             @attributes="Attributes">
 
             @if (HasLoader)

@@ -48,6 +48,9 @@ namespace BlazorComponent
         public bool StopPropagation { get; set; }
 
         [Parameter]
+        public bool OnClickPreventDefault { get; set; }
+
+        [Parameter]
         public bool Dark { get; set; }
 
         [Parameter]

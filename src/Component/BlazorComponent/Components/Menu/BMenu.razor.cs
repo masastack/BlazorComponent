@@ -177,6 +177,18 @@ public partial class BMenu : BMenuable, IDependent
         watcher.Watch(nameof(CloseOnContentClick), () => ResetPopupEvents(CloseOnContentClick), defaultValue: true);
     }
 
+    protected override void RunDirectly(bool val)
+    {
+        if (ActivatorContent is not null || CloseOnContentClick)
+        {
+            UpdateActiveInJS(val);
+        }
+        else
+        {
+            _ = SetActive(val);
+        }
+    }
+
     public void RegisterChild(IDependent dependent)
     {
         _dependents.Add(dependent);

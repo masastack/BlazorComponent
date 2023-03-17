@@ -79,7 +79,9 @@
       "reloadTab": "Reload Tab",
       "closeTabsToTheLeft": "Close Tabs to the Left",
       "closeTabsToTheRight": "Close Tabs to the Right",
-      "closeOtherTabs": "Close Other Tabs"
+      "closeOtherTabs": "Close Other Tabs",
+      "closeTab": "Close tab",
+      "closeTabConfirm": "Are you sure you want to close this tab ({0}) ?"
     },
     "cron": {
       "period": {
