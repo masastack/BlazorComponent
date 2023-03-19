@@ -11,9 +11,10 @@ public static class I18nReader
         AllowTrailingCommas = true
     };
 
-    public static Dictionary<string, string> Read(string jsonData)
+    public static Dictionary<string, string> Read(string jsonData, Encoding encoding = null)
     {
-        var reader = new Utf8JsonReader(Encoding.Default.GetBytes(jsonData), _jsonReaderOptions);
+        if (encoding == null) encoding = Encoding.UTF8;
+        var reader = new Utf8JsonReader(encoding.GetBytes(jsonData), _jsonReaderOptions);
         var map = new Dictionary<string, string>();
         BuildMap(ref reader, map);
         return map;
