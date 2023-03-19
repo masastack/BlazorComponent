@@ -48,7 +48,7 @@ public static class I18nServiceCollectionExtensions
         }
         else
         {
-            var assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var assemblyPath = AppContext.BaseDirectory;
             var i18nPath = Path.Combine(assemblyPath, localeDirectory);
             if (Directory.Exists(i18nPath))
             {
