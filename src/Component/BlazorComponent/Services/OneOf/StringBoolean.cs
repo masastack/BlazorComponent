@@ -1,4 +1,4 @@
-﻿using OneOf;
+﻿#nullable enable
 
 namespace BlazorComponent;
 
