@@ -93,7 +93,7 @@ namespace BlazorComponent
 
         public bool IsIndeterminate => Treeview.IsIndeterminate(Key);
 
-        public bool IsLeaf => Children != null;
+        public bool IsLeaf => Children == null || Children.Count < 1;
 
         public bool IsSelected => Treeview.IsSelected(Key);
 
@@ -164,7 +164,7 @@ namespace BlazorComponent
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            
+
             Treeview.AddNode(this);
         }
 

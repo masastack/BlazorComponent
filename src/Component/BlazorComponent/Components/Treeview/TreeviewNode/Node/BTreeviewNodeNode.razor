@@ -6,7 +6,7 @@
 
 <div class="@CssProvider.GetClass("root")" @onclick="HandleOnClick">
     @RenderPart(typeof(BTreeviewNodeLevel<,,>),Level)
-    @if (HasChildren)
+    @if (!IsLeaf)
     {
         @RenderPart(typeof(BTreeviewNodeToggle<,,>))
     }

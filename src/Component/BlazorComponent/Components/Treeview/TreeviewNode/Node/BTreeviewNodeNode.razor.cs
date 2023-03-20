@@ -11,6 +11,8 @@ namespace BlazorComponent
 
         public bool HasChildren => Component.HasChildren;
 
+        public bool IsLeaf => Component.IsLeaf;
+
         public int Level => Component.Level;
     }
 }
