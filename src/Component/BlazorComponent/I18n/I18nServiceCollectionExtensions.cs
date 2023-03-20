@@ -74,7 +74,7 @@ public static class I18nServiceCollectionExtensions
         return builder;
     }
 
-    public static async Task<IBlazorComponentBuilder> AddI18nForWasmAsync(this IBlazorComponentBuilder builder, string localesDirectoryApi, Encoding encoding = null)
+    public static async Task<IBlazorComponentBuilder> AddI18nForWasmAsync(this IBlazorComponentBuilder builder, string localesDirectoryApi, Encoding? encoding = null)
     {
         using var httpclient = new HttpClient();
 
