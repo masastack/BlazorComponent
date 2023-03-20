@@ -33,6 +33,9 @@ namespace BlazorComponent
         public Func<TItem, string> ItemText { get; set; }
 
         [Parameter]
+        public Func<TItem, bool> LeafPredicate { get; set; }
+
+        [Parameter]
         public bool ParentIsDisabled { get; set; }
 
         [Parameter]
@@ -93,7 +96,7 @@ namespace BlazorComponent
 
         public bool IsIndeterminate => Treeview.IsIndeterminate(Key);
 
-        public bool IsLeaf => Children == null || Children.Count < 1;
+        public bool IsLeaf => LeafPredicate == null ? (Children == null || Children.Count < 1) : LeafPredicate.Invoke(Item);
 
         public bool IsSelected => Treeview.IsSelected(Key);
 
