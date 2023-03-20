@@ -40,7 +40,7 @@ public static class I18nServiceCollectionExtensions
     /// <param name="builder"></param>
     /// <param name="localeDirectory">i18n resource folder physical path,i18n resource file name will be used as culture name</param>
     /// <returns></returns>
-    public static IBlazorComponentBuilder AddI18nForServer(this IBlazorComponentBuilder builder, string localeDirectory, Encoding encoding = null)
+    public static IBlazorComponentBuilder AddI18nForServer(this IBlazorComponentBuilder builder, string localeDirectory, Encoding? encoding = null)
     {
         if (Directory.Exists(localeDirectory))
         {
