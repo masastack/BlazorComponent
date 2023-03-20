@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Globalization;
 using System.Net.Http.Json;
 using System.Reflection;
+using System.Text;
 using System.Text.Json;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -21,13 +22,13 @@ public static class I18nServiceCollectionExtensions
         return services;
     }
 
-    public static IBlazorComponentBuilder AddI18n(this IBlazorComponentBuilder builder, params(string cultureName, Dictionary<string, string> map)[] locales)
+    public static IBlazorComponentBuilder AddI18n(this IBlazorComponentBuilder builder, params (string cultureName, Dictionary<string, string> map)[] locales)
     {
         AddI18n(locales);
         return builder;
     }
 
-    public static IBlazorComponentBuilder AddI18n(this IBlazorComponentBuilder builder, params(CultureInfo culture, Dictionary<string, string> map)[] locales)
+    public static IBlazorComponentBuilder AddI18n(this IBlazorComponentBuilder builder, params (CultureInfo culture, Dictionary<string, string> map)[] locales)
     {
         AddI18n(locales);
         return builder;
@@ -39,19 +40,19 @@ public static class I18nServiceCollectionExtensions
     /// <param name="builder"></param>
     /// <param name="localeDirectory">i18n resource folder physical path,i18n resource file name will be used as culture name</param>
     /// <returns></returns>
-    public static IBlazorComponentBuilder AddI18nForServer(this IBlazorComponentBuilder builder, string localeDirectory)
+    public static IBlazorComponentBuilder AddI18nForServer(this IBlazorComponentBuilder builder, string localeDirectory, Encoding? encoding = null)
     {
         if (Directory.Exists(localeDirectory))
         {
-            AddI18nFromPath(localeDirectory);
+            AddI18nFromPath(localeDirectory, encoding);
         }
         else
         {
-            var assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var assemblyPath = AppContext.BaseDirectory;
             var i18nPath = Path.Combine(assemblyPath, localeDirectory);
             if (Directory.Exists(i18nPath))
             {
-                AddI18nFromPath(i18nPath);
+                AddI18nFromPath(i18nPath, encoding);
             }
             else if (localeDirectory.StartsWith("wwwroot"))
             {
@@ -62,7 +63,7 @@ public static class I18nServiceCollectionExtensions
                     i18nPath = Directory.GetDirectories(wwwrootPath, i18nDirectory, SearchOption.AllDirectories).FirstOrDefault();
                     if (i18nPath is not null)
                     {
-                        AddI18nFromPath(i18nPath);
+                        AddI18nFromPath(i18nPath, encoding);
                     }
                     else throw new Exception($"Can't find path：{localeDirectory}");
                 }
@@ -73,7 +74,7 @@ public static class I18nServiceCollectionExtensions
         return builder;
     }
 
-    public static async Task<IBlazorComponentBuilder> AddI18nForWasmAsync(this IBlazorComponentBuilder builder, string localesDirectoryApi)
+    public static async Task<IBlazorComponentBuilder> AddI18nForWasmAsync(this IBlazorComponentBuilder builder, string localesDirectoryApi, Encoding? encoding = null)
     {
         using var httpclient = new HttpClient();
 
@@ -88,7 +89,7 @@ public static class I18nServiceCollectionExtensions
         {
             await using var stream = await httpclient.GetStreamAsync(Path.Combine(localesDirectoryApi, $"{culture}.json"));
             using StreamReader reader = new StreamReader(stream);
-            var map = I18nReader.Read(reader.ReadToEnd());
+            var map = I18nReader.Read(reader.ReadToEnd(), encoding);
             locales.Add((culture, map));
         }
 
@@ -97,7 +98,7 @@ public static class I18nServiceCollectionExtensions
         return builder;
     }
 
-    private static void AddI18nFromPath(string path)
+    private static void AddI18nFromPath(string path, Encoding? encoding = null)
     {
         var files = new List<string>();
         var locales = new List<(string culture, Dictionary<string, string>)>();
@@ -116,7 +117,7 @@ public static class I18nServiceCollectionExtensions
         {
             var culture = Path.GetFileNameWithoutExtension(filePath);
             var json = File.ReadAllText(filePath);
-            var locale = I18nReader.Read(json);
+            var locale = I18nReader.Read(json, encoding);
             locales.Add((culture, locale));
         }
 
