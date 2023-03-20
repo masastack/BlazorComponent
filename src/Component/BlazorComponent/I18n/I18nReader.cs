@@ -13,7 +13,7 @@ public static class I18nReader
 
     public static Dictionary<string, string> Read(string jsonData, Encoding? encoding = null)
     {
-        if (encoding == null) encoding = Encoding.UTF8;
+        encoding ??= Encoding.UTF8;
         var reader = new Utf8JsonReader(encoding.GetBytes(jsonData), _jsonReaderOptions);
         var map = new Dictionary<string, string>();
         BuildMap(ref reader, map);
