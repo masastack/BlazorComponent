@@ -98,7 +98,7 @@ public static class I18nServiceCollectionExtensions
         return builder;
     }
 
-    private static void AddI18nFromPath(string path, Encoding encoding = null)
+    private static void AddI18nFromPath(string path, Encoding? encoding = null)
     {
         var files = new List<string>();
         var locales = new List<(string culture, Dictionary<string, string>)>();
