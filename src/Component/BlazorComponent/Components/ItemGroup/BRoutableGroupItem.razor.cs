@@ -48,7 +48,11 @@ public partial class BRoutableGroupItem<TGroup> : BGroupItem<TGroup>, IRoutable
 
         if (firstRender)
         {
-            await UpdateActiveForRoutable();
+            var shouldRender = await UpdateActiveForRoutable();
+            if (shouldRender)
+            {
+                StateHasChanged();
+            }
         }
     }
 
@@ -61,7 +65,7 @@ public partial class BRoutableGroupItem<TGroup> : BGroupItem<TGroup>, IRoutable
         (Tag, Attributes) = Router.GenerateRouteLink();
     }
 
-    private async void OnLocationChanged(object sender, LocationChangedEventArgs e)
+    private async void OnLocationChanged(object? sender, LocationChangedEventArgs e)
     {
         var shouldRender = await UpdateActiveForRoutable();
         if (shouldRender)
