@@ -172,10 +172,14 @@ namespace BlazorComponent
         {
             if (Multiple)
             {
+                if (!IsDirtyParameter(nameof(Values))) return;
+
                 InternalValues = Values == null ? new List<StringNumber>() : Values.ToList();
             }
             else
             {
+                if (!IsDirtyParameter(nameof(Value))) return;
+
                 InternalValues = Value == null ? new List<StringNumber>() : new List<StringNumber>() { Value };
             }
         }
