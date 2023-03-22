@@ -116,8 +116,7 @@ public class I18n
     }
 
     [return: NotNullIfNotNull("defaultValue")]
-    public string? T(string? scope, string? key, [DoesNotReturnIf(true)] bool whenNullReturnKey = true,
-        [CallerArgumentExpression("key")] string? defaultValue = null,
+    public string? T(string? scope, string? key, [DoesNotReturnIf(true)] bool whenNullReturnKey = true, string? defaultValue = null,
         params object[] args)
     {
         string? value;
