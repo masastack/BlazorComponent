@@ -15,6 +15,9 @@ namespace BlazorComponent
         }
 
         [Inject]
+        private ILoggerFactory LoggerFactory { get; set; }
+
+        [Inject]
         [NotNull]
         public IComponentIdGenerator? ComponentIdGenerator { get; set; }
 
@@ -46,6 +49,8 @@ namespace BlazorComponent
         private ElementReference _ref;
         private ElementReference? _prevRef;
         private bool _elementReferenceChanged;
+
+        protected ILogger Logger => LoggerFactory.CreateLogger(GetType());
 
         public ComponentCssProvider CssProvider { get; } = new();
 

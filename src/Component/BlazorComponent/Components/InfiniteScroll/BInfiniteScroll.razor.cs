@@ -1,6 +1,5 @@
 ﻿using BlazorComponent.JSInterop;
 using BlazorComponent.Web;
-using Microsoft.Extensions.Logging;
 
 namespace BlazorComponent;
 
