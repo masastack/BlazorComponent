@@ -5,17 +5,17 @@ namespace BlazorComponent
 {
     public interface ITextField<TValue> : IInput<TValue>, ILoadable
     {
-        string AppendOuterIcon { get; }
+        string? AppendOuterIcon { get; }
 
-        RenderFragment AppendOuterContent { get; }
+        RenderFragment? AppendOuterContent { get; }
 
         bool HasCounter { get; }
 
         StringNumberBoolean Counter { get; }
 
-        string PrependInnerIcon { get; }
+        string? PrependInnerIcon { get; }
 
-        RenderFragment PrependInnerContent { get; }
+        RenderFragment? PrependInnerContent { get; }
 
         Action<TextFieldNumberProperty> NumberProps { get; set; }
 
