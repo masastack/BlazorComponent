@@ -84,7 +84,7 @@ public partial class BRoutableGroupItem<TGroup> : BGroupItem<TGroup>, IRoutable
 
         await SetInternalIsActive(matched, true);
 
-        if (matched && ItemGroup is not null)
+        if (matched && ItemGroup is not null && !isActive)
         {
             await ItemGroup.ToggleAsync(Value);
             await OnActiveUpdatedForRoutable();

@@ -85,6 +85,8 @@ namespace BlazorComponent
                 await OnClick.InvokeAsync(new MouseEventWithRefArgs(args, Ref));
             }
 
+            if (IsRoutable) return;
+
             await ToggleAsync();
         }
 
