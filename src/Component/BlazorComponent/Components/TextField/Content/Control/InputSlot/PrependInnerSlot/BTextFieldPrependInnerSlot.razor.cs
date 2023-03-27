@@ -1,16 +1,12 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+﻿namespace BlazorComponent;
 
-namespace BlazorComponent
+public partial class BTextFieldPrependInnerSlot<TValue, TInput> where TInput : ITextField<TValue>
 {
-    public partial class BTextFieldPrependInnerSlot<TValue, TInput> where TInput : ITextField<TValue>
-    {
-        public RenderFragment PrependInnerContent => Component.PrependInnerContent;
+    public RenderFragment? PrependInnerContent => Component.PrependInnerContent;
 
-        public string PrependInnerIcon => Component.PrependInnerIcon;
+    public string? PrependInnerIcon => Component.PrependInnerIcon;
 
-        public EventCallback<MouseEventArgs> HandleOnPrependInnerClickAsync => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnPrependInnerClickAsync);
+    public EventCallback<MouseEventArgs> HandleOnPrependInnerClickAsync => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnPrependInnerClickAsync);
 
-        public Action<ElementReference> PrependInnerReferenceCapture => element => Component.PrependInnerElement = element;
-    }
+    public Action<ElementReference> PrependInnerReferenceCapture => element => Component.PrependInnerElement = element;
 }

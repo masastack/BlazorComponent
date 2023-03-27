@@ -3,9 +3,9 @@
 @typeparam TInput
 @inherits ComponentPartBase<TInput>
 
-@if (PrependInnerContent != null || PrependInnerIcon != null)
+@if (PrependInnerContent != null || !string.IsNullOrWhiteSpace(PrependInnerIcon))
 {
-    var childContent = (RenderFragment)null;
+    var childContent = (RenderFragment?)null;
 
     if (PrependInnerContent != null)
     {

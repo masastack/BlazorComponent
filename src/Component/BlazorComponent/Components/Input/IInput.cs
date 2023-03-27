@@ -7,7 +7,7 @@ namespace BlazorComponent
     {
         TValue? Value { get; }
 
-        RenderFragment AppendContent
+        RenderFragment? AppendContent
         {
             get
             {
@@ -15,7 +15,7 @@ namespace BlazorComponent
             }
         }
 
-        string AppendIcon
+        string? AppendIcon
         {
             get
             {
@@ -35,7 +35,7 @@ namespace BlazorComponent
 
         bool ShowDetails => default;
 
-        RenderFragment PrependContent
+        RenderFragment? PrependContent
         {
             get
             {
@@ -43,7 +43,7 @@ namespace BlazorComponent
             }
         }
 
-        string PrependIcon
+        string? PrependIcon
         {
             get
             {

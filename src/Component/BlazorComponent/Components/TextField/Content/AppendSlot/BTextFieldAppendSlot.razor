@@ -2,9 +2,9 @@
 @typeparam TValue
 @inherits BInputAppendSlot<TValue,ITextField<TValue>>
 
-@if (AppendOuterContent != null || AppendOuterIcon != null)
+@if (AppendOuterContent != null || !string.IsNullOrWhiteSpace(AppendOuterIcon))
 {
-    var childContent = (RenderFragment)null;
+    var childContent = (RenderFragment?)null;
 
     if (AppendOuterContent != null)
     {
