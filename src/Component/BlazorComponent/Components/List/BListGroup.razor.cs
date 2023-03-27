@@ -79,11 +79,20 @@ namespace BlazorComponent
 
             if (firstRender)
             {
-                UpdateActiveForRoutable();
+                var shouldRender = UpdateActiveForRoutable();
+                if (shouldRender)
+                {
+                    StateHasChanged();
+                }
             }
         }
 
         protected override void OnParametersSet()
+        {
+            EnsureBooted();
+        }
+
+        private void EnsureBooted()
         {
             if (IsActive && !IsBooted)
             {
@@ -106,12 +115,6 @@ namespace BlazorComponent
             {
                 InvokeStateHasChanged();
             }
-        }
-
-        internal void Toggle(string id)
-        {
-            IsActive = Id == id;
-            _ = UpdateValue(IsActive);
         }
 
         private async Task HandleOnClick(EventArgs args)
@@ -147,6 +150,7 @@ namespace BlazorComponent
             if (Group != null)
             {
                 IsActive = MatchRoute(NavigationManager.Uri);
+                EnsureBooted();
             }
 
             return isActive != IsActive;
