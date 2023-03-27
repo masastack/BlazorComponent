@@ -8,7 +8,7 @@
 
     @if (RenderDivider && !IsLast)
     {
-        <BBreadcrumbsDivider @attributes="GetAttributes(typeof(BBreadcrumbsDivider))"></BBreadcrumbsDivider>
+        <BBreadcrumbsDivider Divider="@Divider" DividerContent="@DividerContent" @attributes="GetAttributes(typeof(BBreadcrumbsDivider))"></BBreadcrumbsDivider>
     }
 }
 else
