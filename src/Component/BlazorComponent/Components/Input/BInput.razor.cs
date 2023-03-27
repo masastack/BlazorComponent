@@ -15,7 +15,11 @@ namespace BlazorComponent
         public RenderFragment ChildContent { get; set; }
 
         [Parameter]
-        public string Label { get; set; }
+        public string Label
+        {
+            get => GetValue<string>();
+            set => SetValue(value);
+        }
 
         [Parameter]
         public virtual string PrependIcon { get; set; }

@@ -133,6 +133,12 @@ namespace BlazorComponent
             return Watch(name, (_, _) => changeCallback.Invoke(), immediate, @override, defaultValue);
         }
 
+        public PropertyWatcher Watch<TValue>(string name, Func<Task> changeCallback, bool immediate = false, bool @override = false,
+            TValue? defaultValue = default)
+        {
+            return Watch(name, (_, _) => changeCallback.Invoke(), immediate, @override, defaultValue);
+        }
+
         public PropertyWatcher Watch<TValue>(string name, Action<TValue?> changeCallback, bool immediate = false, bool @override = false,
             TValue? defaultValue = default)
         {
