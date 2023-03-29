@@ -47,7 +47,7 @@ namespace BlazorComponent
         [Parameter]
         public string Tag
         {
-            get => GetValue(App ? "nav" : "aside");
+            get => GetValue(App ? "nav" : "aside")!;
             set => SetValue(value);
         }
 
@@ -98,16 +98,16 @@ namespace BlazorComponent
         }
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
-        public RenderFragment<Dictionary<string, object>> ImgContent { get; set; }
+        public RenderFragment<Dictionary<string, object>>? ImgContent { get; set; }
 
         private readonly List<IDependent> _dependents = new();
 
-        protected object Overlay { get; set; }
+        protected object? Overlay { get; set; }
 
-        protected ElementReference? OverlayRef => ((BOverlay)Overlay)?.Ref;
+        protected ElementReference? OverlayRef => (Overlay as BOverlay)?.Ref;
 
         protected bool IsMouseover
         {

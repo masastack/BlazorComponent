@@ -1,17 +1,14 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿namespace BlazorComponent;
 
-namespace BlazorComponent
+public interface INavigationDrawer : IHasProviderComponent
 {
-    public interface INavigationDrawer : IHasProviderComponent
-    {
-        RenderFragment PrependContent { get; }
+    RenderFragment? PrependContent { get; }
 
-        RenderFragment ChildContent { get; }
+    RenderFragment? ChildContent { get; }
 
-        RenderFragment AppendContent { get; }
+    RenderFragment? AppendContent { get; }
 
-        RenderFragment<Dictionary<string, object>> ImgContent { get; }
+    RenderFragment<Dictionary<string, object>>? ImgContent { get; }
 
-        string Src { get; }
-    }
+    string? Src { get; }
 }

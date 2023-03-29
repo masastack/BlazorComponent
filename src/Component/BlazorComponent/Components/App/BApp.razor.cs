@@ -23,9 +23,9 @@
 
         protected override void OnInitialized()
         {
-            PopupProvider.StateChanged += OnStateChanged;
-
             base.OnInitialized();
+
+            PopupProvider.StateChanged += OnStateChanged;
         }
 
         public bool IsDark
@@ -45,7 +45,6 @@
                 return CascadingIsDark;
             }
         }
-
 
         private void OnStateChanged(object? sender, EventArgs e)
         {
