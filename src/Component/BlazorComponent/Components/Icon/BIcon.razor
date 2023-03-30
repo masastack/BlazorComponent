@@ -10,6 +10,8 @@
         Style="@CssProvider.GetStyle()"
         ReferenceCaptureAction="_ => Ref = _"
         type="@(OnClick.HasDelegate ? "button" : null)"
+        __internal_stopPropagation_onmouseup="OnMouseupStopPropagation"
+        __internal_preventDefault_onmouseup="OnMouseupPreventDefault"
         @attributes="@Attributes">
         @if (IconType == IconType.Svg)
         {

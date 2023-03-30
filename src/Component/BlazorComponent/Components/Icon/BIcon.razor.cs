@@ -77,6 +77,12 @@ namespace BlazorComponent
         [Parameter]
         public bool OnClickStopPropagation { get; set; }
 
+        [Parameter]
+        public bool OnMouseupPreventDefault { get; set; }
+
+        [Parameter]
+        public bool OnMouseupStopPropagation { get; set; }
+
         [Inject]
         [NotNull]
         public Document? Document { get; set; }
