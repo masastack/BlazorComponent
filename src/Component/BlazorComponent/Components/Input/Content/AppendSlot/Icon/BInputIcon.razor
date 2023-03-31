@@ -4,7 +4,12 @@
 @inherits ComponentPartBase<TInput>
 
 <div class="@CssProvider.GetClass(Type)" @ref="Element">
-    <BIcon OnClick="OnClick" @attributes="@GetAttributes(typeof(BIcon), Type, OnClick)">
+    <BIcon OnClick="OnClick"
+           OnClickPreventDefault
+           OnClickStopPropagation
+           OnMouseupPreventDefault
+           OnMouseupStopPropagation
+           @attributes="@GetAttributes(typeof(BIcon), Type, OnClick)">
         @Icon
     </BIcon>
 </div>
