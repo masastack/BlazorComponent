@@ -1,6 +1,8 @@
 <img src="docs/logo-v.png" alt="logo" style="zoom:50%;" />
 
-> 早期借鉴于 [ant-design-blazor](https://github.com/ant-design-blazor/ant-design-blazor) 的组件库部分核心功能。
+<!-- 已基本完成重构
+> 早期借鉴于 [ant-design-blazor](https://github.com/ant-design-blazor/ant-design-blazor) 的组件库部分核心功能。 
+-->
 
 抽离出无样式的底层组件框架，支持基于属性、插槽、自由内嵌组件等方式二次开发自己的UI组件库。
 
