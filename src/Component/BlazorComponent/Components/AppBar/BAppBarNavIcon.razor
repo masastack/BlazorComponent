@@ -2,7 +2,14 @@
 @inherits BDomComponentBase
 
 <BButton @attributes="GetAttributes(typeof(BButton))">
-    <BIcon @attributes="GetAttributes(typeof(BIcon))">
-        mdi-menu
-    </BIcon>
+    @if (ChildContent is null)
+    {
+        <BIcon @attributes="GetAttributes(typeof(BIcon))">
+            mdi-menu
+        </BIcon>
+    }
+    else
+    {
+        @ChildContent
+    }
 </BButton>
