@@ -51,7 +51,6 @@ class EChartsProxy {
         notMerge: boolean = false,
         lazyUpdate: boolean = false
   ) {
-      debugger;
       this.instance.setOption(eval("option=" + option), notMerge, lazyUpdate);
   }
   
