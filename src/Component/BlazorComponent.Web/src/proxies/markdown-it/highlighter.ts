@@ -38,11 +38,11 @@ export function highlight(code: string, lang: string) {
     console.warn(
       `Highlighter(Prismjs or Highlight.js) is required!`
     );
-    return code;
+    return encodeHTML(code);
   }
 
-  if (!lang) {
-    return code;
+  if (!lang || !lang.trim()) {
+    return encodeHTML(code);
   }
 
   lang = getLangCodeFromExtension(lang.toLowerCase());
@@ -81,4 +81,10 @@ function getLangCodeFromExtension(extension) {
   };
 
   return extensionMap[extension] || extension;
+}
+
+function encodeHTML(rawStr: string) {
+  return rawStr.replace(/[\u00A0-\u9999<>\&]/g, function(i) {
+    return '&#'+i.charCodeAt(0)+';';
+  });
 }
