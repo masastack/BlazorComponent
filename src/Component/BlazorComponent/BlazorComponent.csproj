@@ -6,7 +6,7 @@
         <PackageProjectUrl></PackageProjectUrl>
         <PackageIcon>BlazorComponent32_32.png</PackageIcon>
         <PackageIconUrl />
-        <RepositoryUrl>https://github.com/BlazorComponent/BlazorComponent</RepositoryUrl>
+        <RepositoryUrl>https://github.com/masastack/BlazorComponent</RepositoryUrl>
         <RepositoryType>github</RepositoryType>
         <Description>BlazorComponent</Description>
         <PackageReleaseNotes />

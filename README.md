@@ -28,7 +28,7 @@
 
 感谢所有为本项目做出过贡献的朋友。
 
-<a href="https://github.com/blazorcomponent/blazorcomponent/graphs/contributors"> 
+<a href="https://github.com/masastack/blazorcomponent/graphs/contributors"> 
     <img src="https://contrib.rocks/image?repo=blazorcomponent/blazorcomponent" /> 
 </a>
 
@@ -39,7 +39,7 @@
 
 ## 授权协议
 
-[![BlazorComponent](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://github.com/BlazorComponent/BlazorComponent/blob/master/LICENSE)
+[![BlazorComponent](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](https://github.com/masastack/BlazorComponent/blob/master/LICENSE)
 
 Copyright (c) 2021-present BlazorComponent
 
