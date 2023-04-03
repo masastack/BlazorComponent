@@ -44,8 +44,17 @@ class EChartsProxy {
     lazyUpdate: boolean = false
   ) {
     this.instance.setOption(option, notMerge, lazyUpdate);
-  }
+    }
 
+  setJsonOption(
+        option: any,
+        notMerge: boolean = false,
+        lazyUpdate: boolean = false
+  ) {
+      debugger;
+      this.instance.setOption(eval("option=" + option), notMerge, lazyUpdate);
+  }
+  
   resize(opts?: EChartsResizeOption) {
     this.instance.resize(opts);
   }
