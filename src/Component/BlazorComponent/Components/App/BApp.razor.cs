@@ -1,6 +1,6 @@
 ﻿namespace BlazorComponent
 {
-    public abstract partial class BApp : BDomComponentBase, IThemeable, IDefaultsProvider
+    public abstract partial class BApp : BDomComponentBase, IDefaultsProvider
     {
         [Inject]
         private IPopupProvider PopupProvider { get; set; } = null!;
@@ -8,16 +8,9 @@
         [Parameter]
         public RenderFragment? ChildContent { get; set; }
 
-        [Parameter]
-        public bool Dark { get; set; }
-
-        [Parameter]
-        public bool Light { get; set; }
-
-        [CascadingParameter(Name = "IsDark")]
-        public bool CascadingIsDark { get; set; }
-
         protected string ThemeStyleMarkups { get; set; } = "";
+
+        protected virtual bool IsDark => false;
 
         public virtual IDictionary<string, IDictionary<string, object?>?>? Defaults { get; }
 
@@ -26,24 +19,6 @@
             base.OnInitialized();
 
             PopupProvider.StateChanged += OnStateChanged;
-        }
-
-        public bool IsDark
-        {
-            get
-            {
-                if (Dark)
-                {
-                    return true;
-                }
-
-                if (Light)
-                {
-                    return false;
-                }
-
-                return CascadingIsDark;
-            }
         }
 
         private void OnStateChanged(object? sender, EventArgs e)
