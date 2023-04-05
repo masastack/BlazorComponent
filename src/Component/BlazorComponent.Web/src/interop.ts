@@ -752,8 +752,18 @@ export function disposeObj(objReferenceName) {
   delete objReferenceDict[objReferenceName];
 }
 
-export function insertAdjacentHTML(position, text: string) {
-  document.head.insertAdjacentHTML(position, text);
+export function upsertThemeStyle(id: string, style: string) {
+  const d = document.getElementById(id);
+  if (d) {
+    document.head.removeChild(d);
+  }
+
+  const d_style = document.createElement('style')
+  d_style.id = id;
+  d_style.type = "text/css";
+  d_style.innerHTML = style;
+
+  document.head.insertAdjacentElement('beforeend', d_style)
 }
 
 export function getImageDimensions(src: string) {

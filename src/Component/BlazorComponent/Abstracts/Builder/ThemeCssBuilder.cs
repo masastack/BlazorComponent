@@ -22,7 +22,7 @@
 
             theme.UserDefined?.ForEach(kvp => { lstCss.Add(Build(combinePrefix, kvp.Key.ToLowerInvariant(), kvp.Value)); });
 
-            return $"<style>{string.Concat(lstCss)}</style>";
+            return string.Concat(lstCss);
         }
 
         private string Build(string combinePrefix, string selector, string color)

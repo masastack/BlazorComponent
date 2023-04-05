@@ -82,7 +82,7 @@
 
         public static string RegisterTextFieldOnMouseDown => $"{JsInteropFuncNamePrefix}registerTextFieldOnMouseDown";
 
-        public static string InsertAdjacentHTML => $"{JsInteropFuncNamePrefix}insertAdjacentHTML";
+        public static string UpsertThemeStyle => $"{JsInteropFuncNamePrefix}upsertThemeStyle";
 
         public static string GetImageDimensions => $"{JsInteropFuncNamePrefix}getImageDimensions";
 
