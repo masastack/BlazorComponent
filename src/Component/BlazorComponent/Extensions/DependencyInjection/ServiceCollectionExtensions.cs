@@ -11,7 +11,6 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IBlazorComponentBuilder AddBlazorComponent(this IServiceCollection services)
         {
             services.TryAddScoped<DomEventJsInterop>();
-            services.TryAddScoped<HeadJsInterop>();
             services.TryAddScoped<Document>();
             services.TryAddScoped(serviceProvider => new Window(serviceProvider.GetRequiredService<Document>()));
             services.TryAddScoped<IPopupProvider, PopupProvider>();
