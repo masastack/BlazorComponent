@@ -32,7 +32,7 @@ public static class NavigationManagerExtensions
     /// </summary>
     /// <param name="navigationManager"></param>
     /// <returns></returns>
-    private static Uri ToUri(this NavigationManager navigationManager)
+    public static Uri ToUri(this NavigationManager navigationManager)
     {
         return new Uri(navigationManager.Uri);
     }
