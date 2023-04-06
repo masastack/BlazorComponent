@@ -34,34 +34,31 @@ function getHighlighter() {
 export function highlight(code: string, lang: string) {
   const highlighter = getHighlighter();
 
-  if (!highlighter) {
-    console.warn(
-      `Highlighter(Prismjs or Highlight.js) is required!`
-    );
-    return encodeHTML(code);
-  }
+  if (highlighter) {
+    if (lang && lang.trim()) {
+      lang = getLangCodeFromExtension(lang.toLowerCase());
 
-  if (!lang || !lang.trim()) {
-    return encodeHTML(code);
-  }
-
-  lang = getLangCodeFromExtension(lang.toLowerCase());
-
-  if (highlighter.getLanguage(lang)) {
-    try {
-      return highlighter.highlight(code, lang);
-    } catch (error) {
-      console.error(
-        `Syntax highlight for language ${lang} failed.`
-      );
-      return code;
+      if (highlighter.getLanguage(lang)) {
+        try {
+          return highlighter.highlight(code, lang);
+        } catch (error) {
+        console.error(
+          `Syntax highlight for language ${lang} failed.`
+        );
+        }
+      } else {
+        console.warn(
+          `[markdown-it-proxy] Syntax highlight for language "${lang}" is not supported.`
+        );
+      }
     }
   } else {
     console.warn(
-      `[markdown-it-proxy] Syntax highlight for language "${lang}" is not supported.`
+      `Highlighter(Prismjs or Highlight.js) is required!`
     );
-    return code;
   }
+
+  return encodeHTML(code);
 }
 
 export function highlightToStream(str: string, lang: string): ArrayBuffer {
