@@ -18,9 +18,8 @@ public class BDelayable : BDomComponentBase, IDelayable
 
     protected bool IsActive { get; private set; }
 
-    /// <summary>
-    /// 
-    /// </summary>
+    public Func<Task>? BeforeShowContent { get; set; }
+
     public Func<bool, Task>? AfterShowContent { get; set; }
 
     private CancellationTokenSource? _cancellationTokenSource;
@@ -49,6 +48,11 @@ public class BDelayable : BDomComponentBase, IDelayable
         }
 
         IsActive = value;
+
+        if (value && BeforeShowContent is not null)
+        {
+            await BeforeShowContent();
+        }
 
         StateHasChanged();
 

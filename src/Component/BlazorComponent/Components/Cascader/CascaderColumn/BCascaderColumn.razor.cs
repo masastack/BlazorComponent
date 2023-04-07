@@ -8,18 +8,15 @@ namespace BlazorComponent
     public partial class BCascaderColumn<TItem, TValue>
     {
         [CascadingParameter]
-        [NotNull]
         protected ICascader<TItem, TValue>? Cascader { get; set; }
-        
-        [Parameter]
-        [NotNull]
-        [EditorRequired]
-        public IList<TItem>? Items { get; set; }
 
         [Parameter]
-        [NotNull]
         [EditorRequired]
-        public Func<TItem, string>? ItemText { get; set; }
+        public IList<TItem> Items { get; set; } = null!;
+
+        [Parameter]
+        [EditorRequired]
+        public Func<TItem, string> ItemText { get; set; } = null!;
 
         [Parameter]
         public Func<TItem, TValue>? ItemValue { get; set; }
@@ -28,9 +25,8 @@ namespace BlazorComponent
         public IList<TItem>? SelectedItems { get; set; }
 
         [Parameter]
-        [NotNull]
         [EditorRequired]
-        public Func<TItem, List<TItem>?>? ItemChildren { get; set; }
+        public Func<TItem, List<TItem>?> ItemChildren { get; set; } = null!;
 
         [Parameter]
         public Func<TItem, Task>? LoadChildren { get; set; }
@@ -78,7 +74,33 @@ namespace BlazorComponent
                 }
             }
 
-            Cascader.Register(this);
+            Cascader?.Register(this);
+        }
+
+        protected override void OnParametersSet()
+        {
+            base.OnParametersSet();
+
+            ArgumentNullException.ThrowIfNull(Items);
+            ArgumentNullException.ThrowIfNull(ItemChildren);
+            ArgumentNullException.ThrowIfNull(ItemText);
+        }
+
+        public void ActiveSelectedOrNot()
+        {
+            var selectedItem = SelectedItems is not null ? SelectedItems.ElementAtOrDefault(ColumnIndex) : default;
+            if (selectedItem is not null)
+            {
+                SelectedItem = selectedItem;
+                SelectedItemIndex = Items.IndexOf(selectedItem);
+                Children = ItemChildren(selectedItem);
+            }
+            else
+            {
+                SelectedItem = default;
+                SelectedItemIndex = -1;
+                Children = null;
+            }
         }
 
         public async Task ScrollToSelected()
@@ -119,14 +141,6 @@ namespace BlazorComponent
             {
                 await OnSelect.InvokeAsync((item, IsLast, ColumnIndex));
             }
-        }
-
-        protected override void OnParametersSet()
-        {
-            base.OnParametersSet();
-            ArgumentNullException.ThrowIfNull(Items);
-            ArgumentNullException.ThrowIfNull(ItemChildren);
-            ArgumentNullException.ThrowIfNull(ItemText);
         }
     }
 }
