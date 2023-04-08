@@ -5,11 +5,11 @@
 
 <div class="@CssProvider.GetClass(Type)" @ref="Element">
     <BIcon OnClick="OnClick"
-           OnClickPreventDefault
-           OnClickStopPropagation
-           OnMouseupPreventDefault
-           OnMouseupStopPropagation
-           @attributes="@GetAttributes(typeof(BIcon), Type, OnClick)">
+           OnClickPreventDefault="OnClick.HasDelegate"
+           OnClickStopPropagation="OnClick.HasDelegate"
+           OnMouseupPreventDefault="OnClick.HasDelegate"
+           OnMouseupStopPropagation="OnClick.HasDelegate"
+           @attributes="@GetAttributes(typeof(BIcon))">
         @Icon
     </BIcon>
 </div>
