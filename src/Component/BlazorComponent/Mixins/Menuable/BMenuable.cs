@@ -131,6 +131,11 @@
 
                 double top = 0;
 
+                if (activator is null || content is null)
+                {
+                    return top;
+                }
+
                 if (Top) top += activator.Height - content.Height;
 
                 if (!IsDefaultAttach)
