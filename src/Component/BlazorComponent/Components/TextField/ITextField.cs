@@ -1,19 +1,20 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface ITextField<TValue> : IInput<TValue>, ILoadable
     {
         string? AppendOuterIcon { get; }
 
         RenderFragment? AppendOuterContent { get; }
+        
+        EventCallback<MouseEventArgs> OnAppendOuterClick { get; }
 
         bool HasCounter { get; }
 
         StringNumberBoolean Counter { get; }
 
         string? PrependInnerIcon { get; }
+
+        EventCallback<MouseEventArgs> OnPrependInnerClick { get; }
 
         RenderFragment? PrependInnerContent { get; }
 

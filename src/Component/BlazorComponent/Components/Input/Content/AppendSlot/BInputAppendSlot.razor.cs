@@ -6,5 +6,8 @@ public partial class BInputAppendSlot<TValue, TInput> where TInput : IInput<TVal
 
     public RenderFragment? AppendContent => Component.AppendContent;
 
-    public EventCallback<MouseEventArgs> HandleOnAppendClickAsync => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnAppendClickAsync);
+    public EventCallback<MouseEventArgs> HandleOnAppendClickAsync =>
+        Component.OnAppendClick.HasDelegate
+            ? EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnAppendClickAsync)
+            : default;
 }

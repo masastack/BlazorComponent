@@ -6,5 +6,8 @@ public partial class BTextFieldAppendSlot<TValue>
 
     public RenderFragment? AppendOuterContent => Component.AppendOuterContent;
 
-    public EventCallback<MouseEventArgs> HandleOnAppendOuterClickAsync => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnAppendOuterClickAsync);
+    public EventCallback<MouseEventArgs> HandleOnAppendOuterClickAsync =>
+        Component.OnAppendOuterClick.HasDelegate
+            ? EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnAppendOuterClickAsync)
+            : default;
 }
