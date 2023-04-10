@@ -96,7 +96,11 @@ class EChartsProxy {
 }
 
 function init(elOrString, theme, initOptions) {
-  return new EChartsProxy(elOrString, theme, initOptions);
+  try {
+    return new EChartsProxy(elOrString, theme, initOptions);
+  } catch (error) {
+    console.error(error.message)
+  }
 }
 
 export { init };
