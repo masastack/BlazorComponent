@@ -1,36 +1,35 @@
 class Delayable {
-    #dotNetHelper = {};
-
-    #openDelay = 0;
-    #closeDelay = 0;
-    #openTimeout;
-    #closeTimeout;
+    dotNetHelper;
+    openDelay;
+    closeDelay;
+    openTimeout;
+    closeTimeout;
 
     constructor(dotNet, openDelay, closeDelay) {
-        this.#dotNetHelper = dotNet;
-        this.#openDelay = openDelay;
-        this.#closeDelay = closeDelay;
+        this.dotNetHelper = dotNet;
+        this.openDelay = openDelay;
+        this.closeDelay = closeDelay;
     }
 
     clearDelay() {
-        clearTimeout(this.#openTimeout);
-        clearTimeout(this.#closeTimeout);
+        clearTimeout(this.openTimeout);
+        clearTimeout(this.closeTimeout);
     }
 
     runDelay(type, cb) {
         this.clearDelay();
 
         if (type === "open") {
-            const delay = parseInt(this.#openDelay, 10);
+            const delay = parseInt(this.openDelay, 10);
 
-            this.#openTimeout = setTimeout(cb || (() => {
-                this.#dotNetHelper.invokeMethodAsync('SetActive', true);
+            this.openTimeout = setTimeout(cb || (() => {
+                this.dotNetHelper.invokeMethodAsync('SetActive', true);
             }), delay)
         } else {
-            const delay = parseInt(this.#closeDelay, 10);
+            const delay = parseInt(this.closeDelay, 10);
 
-            this.#closeTimeout = setTimeout(cb || (() => {
-                this.#dotNetHelper.invokeMethodAsync('SetActive', false);
+            this.closeTimeout = setTimeout(cb || (() => {
+                this.dotNetHelper.invokeMethodAsync('SetActive', false);
             }), delay)
         }
     }
