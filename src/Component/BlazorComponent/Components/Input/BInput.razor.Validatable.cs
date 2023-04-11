@@ -275,10 +275,6 @@ namespace BlazorComponent
 
         protected virtual void OnValueChanged(TValue val)
         {
-            LazyValue = val.TryDeepClone();
-
-            // OnInternalValueChange has to invoke manually because
-            // LazyValue is the getter of InternalValue, LazyValue changes cannot notify the watcher of InternalValue
             var isEqual = true;
             if (val is IList valList && InternalValue is IList internalValueList)
             {
@@ -308,6 +304,8 @@ namespace BlazorComponent
             {
                 ValueChangedInternally = false;
             }
+
+            LazyValue = val.TryDeepClone();
         }
 
         protected virtual void OnInternalValueChange(TValue val)
