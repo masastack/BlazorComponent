@@ -8,8 +8,13 @@ interface Monaco {
 
 declare const monaco: Monaco;
 
-function init(id: string, options: MonacoEditor.IStandaloneEditorConstructionOptions) {
-  return monaco.editor.create(document.getElementById(id), options);
+function init(id: string, options: MonacoEditor.IStandaloneEditorConstructionOptions, dotNetHelper) {
+  const editor = monaco.editor.create(document.getElementById(id), options);
+  editor.onDidChangeModelContent(()=> {
+    dotNetHelper.invokeMethodAsync("OnChange", editor.getValue());
+  });
+
+  return editor;
 }
 
 function defineTheme(name, value: MonacoEditor.IStandaloneThemeData) {
