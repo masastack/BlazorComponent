@@ -10,7 +10,7 @@ public class I18n
 
     private readonly CookieStorage _cookieStorage;
 
-    public I18n(IOptionsSnapshot<BlazorComponentOptions> options, CookieStorage cookieStorage, IHttpContextAccessor httpContextAccessor)
+    public I18n(IOptions<BlazorComponentOptions> options, CookieStorage cookieStorage, IHttpContextAccessor httpContextAccessor)
     {
         _cookieStorage = cookieStorage;
 
@@ -30,19 +30,15 @@ public class I18n
                                   .Select(lang =>
                                   {
                                       var arr = lang.Split(';');
-                                      if (arr.Length == 1) return (arr[0], 1);
-                                      else return (arr[0], Convert.ToDecimal(arr[1].Split("=")[1]));
+                                      return arr.Length == 1 ? (arr[0], 1) : (arr[0], Convert.ToDecimal(arr[1].Split("=")[1]));
                                   })
                                   .OrderByDescending(lang => lang.Item2)
-                                  .FirstOrDefault(lang => I18nCache.ContainsCulture(lang.Item1)).Item1;
+                                  .FirstOrDefault().Item1;
                 }
             }
         }
 
-        if (cultureName is null && options.Value.Locale is not null)
-        {
-            cultureName = options.Value.Locale.Current;
-        }
+        cultureName ??= options.Value.Locale?.Current;
 
         var culture = GetValidCulture(cultureName, options.Value.Locale?.Fallback ?? "en-us");
 
