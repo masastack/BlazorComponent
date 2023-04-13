@@ -42,7 +42,7 @@ public class I18n
 
         var culture = GetValidCulture(cultureName, options.Value.Locale?.Fallback ?? "en-us");
 
-        SetCultureAndLocale(culture);
+        SetCulture(culture);
     }
 
     [NotNull]
