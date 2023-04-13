@@ -44,7 +44,7 @@ public class I18n
 
         var culture = GetValidCulture(cultureName);
 
-        SetCultureAndLocale(culture);
+        SetCulture(culture);
     }
 
     [NotNull]
