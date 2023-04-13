@@ -7,24 +7,14 @@ internal static class I18nCache
 {
     private static readonly ConcurrentDictionary<CultureInfo, IReadOnlyDictionary<string, string>> Cache;
 
-    private static CultureInfo? _defaultCulture = new("en-US");
-
     static I18nCache()
     {
         Cache = new ConcurrentDictionary<CultureInfo, IReadOnlyDictionary<string, string>>();
     }
 
-    public static CultureInfo DefaultCulture
-    {
-        get => _defaultCulture ?? Cache.Keys.FirstOrDefault() ?? throw new Exception("Please add Language !");
-        set => _defaultCulture = value;
-    }
-
-    public static void AddLocale(CultureInfo culture, IReadOnlyDictionary<string, string>? locale, bool isDefault = false)
+    public static void AddLocale(CultureInfo culture, IReadOnlyDictionary<string, string>? locale)
     {
         if (locale is null) return;
-
-        if (isDefault) DefaultCulture = culture;
 
         Cache.AddOrUpdate(culture, locale, (_,  dictionary) => Merge(dictionary, locale));
     }

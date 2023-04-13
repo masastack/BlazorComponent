@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
-using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace BlazorComponent.I18n;
 
@@ -10,12 +10,13 @@ public class I18n
 
     private readonly CookieStorage _cookieStorage;
 
-    public I18n(CookieStorage cookieStorage, IHttpContextAccessor httpContextAccessor)
+    public I18n(IOptionsSnapshot<BlazorComponentOptions> options, CookieStorage cookieStorage, IHttpContextAccessor httpContextAccessor)
     {
         _cookieStorage = cookieStorage;
 
-        string cultureName;
-        if (httpContextAccessor.HttpContext is not null)
+        var cultureName = _cookieStorage.GetCookie(CultureCookieKey);
+
+        if (cultureName is null && httpContextAccessor.HttpContext is not null)
         {
             cultureName = httpContextAccessor.HttpContext.Request.Cookies[CultureCookieKey];
 
@@ -37,12 +38,13 @@ public class I18n
                 }
             }
         }
-        else
+
+        if (cultureName is null && options.Value.Locale is not null)
         {
-            cultureName = _cookieStorage.GetCookie(CultureCookieKey) ?? "";
+            cultureName = options.Value.Locale.Current;
         }
 
-        var culture = GetValidCulture(cultureName);
+        var culture = GetValidCulture(cultureName, options.Value.Locale?.Fallback ?? "en-us");
 
         SetCultureAndLocale(culture);
     }
@@ -62,10 +64,7 @@ public class I18n
         CultureInfo.DefaultThreadCurrentUICulture = culture;
     }
 
-    public void AddLocale(CultureInfo culture, IReadOnlyDictionary<string, string>? locale, bool isDefault = false)
-    {
-        I18nCache.AddLocale(culture, locale, isDefault);
-    }
+    public void AddLocale(CultureInfo culture, IReadOnlyDictionary<string, string>? locale) => I18nCache.AddLocale(culture, locale);
 
     public IEnumerable<CultureInfo> SupportedCultures => I18nCache.GetCultures();
 
@@ -173,7 +172,7 @@ public class I18n
         Locale = I18nCache.GetLocale(culture);
     }
 
-    private static CultureInfo GetValidCulture(string cultureName)
+    private static CultureInfo GetValidCulture(string cultureName, string fallbackCultureName)
     {
         CultureInfo culture;
 
@@ -181,14 +180,16 @@ public class I18n
         {
             culture = CultureInfo.CreateSpecificCulture(cultureName);
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            culture = CultureInfo.CurrentUICulture;
-        }
-
-        if (culture.Name == string.Empty)
-        {
-            culture = I18nCache.DefaultCulture;
+            try
+            {
+                culture = CultureInfo.CreateSpecificCulture(fallbackCultureName);
+            }
+            catch (Exception)
+            {
+                culture = CultureInfo.CurrentUICulture;
+            }
         }
 
         // https://github.com/dotnet/runtime/issues/18998#issuecomment-254565364
