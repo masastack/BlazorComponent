@@ -8,19 +8,21 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ServiceCollectionExtensions
     {
-        public static IBlazorComponentBuilder AddBlazorComponent(this IServiceCollection services)
+        public static IBlazorComponentBuilder AddBlazorComponent(this IServiceCollection services,
+            Action<BlazorComponentOptions>? optionsAction = null)
         {
+            services.AddOptions<BlazorComponentOptions>().Configure(optionsAction);
+
             services.TryAddScoped<DomEventJsInterop>();
             services.TryAddScoped<Document>();
             services.TryAddScoped(serviceProvider => new Window(serviceProvider.GetRequiredService<Document>()));
             services.TryAddScoped<IPopupProvider, PopupProvider>();
             services.TryAddSingleton<IComponentIdGenerator, GuidComponentIdGenerator>();
             services.AddScoped(typeof(BDragDropService));
-            CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CurrentCulture;
             services.AddSingleton<IComponentActivator, AbstractComponentActivator>();
             services.AddValidators();
             services.AddI18n();
-            
+
             services.TryAddTransient<ActivatableJsModule>();
             services.TryAddTransient<OutsideClickJSModule>();
 
@@ -30,7 +32,7 @@ namespace Microsoft.Extensions.DependencyInjection
         internal static IServiceCollection AddValidators(this IServiceCollection services)
         {
             var referenceAssembles = AppDomain.CurrentDomain.GetAssemblies();
-            services.AddValidatorsFromAssemblies(referenceAssembles, ServiceLifetime.Scoped, includeInternalTypes: true);          
+            services.AddValidatorsFromAssemblies(referenceAssembles, ServiceLifetime.Scoped, includeInternalTypes: true);
 
             return services;
         }

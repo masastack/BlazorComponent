@@ -11,7 +11,6 @@ namespace Microsoft.Extensions.DependencyInjection;
 public static class I18nServiceCollectionExtensions
 {
     const string SupportedCulturesJson = "supportedCultures.json";
-    const string DefaultCultureKey = "$DefaultCulture";
 
     internal static IServiceCollection AddI18n(this IServiceCollection services)
     {
@@ -139,9 +138,6 @@ public static class I18nServiceCollectionExtensions
             }
 
             I18nCache.AddLocale(culture, map);
-
-            if (map.TryGetValue(DefaultCultureKey, out string defaultCulture) && defaultCulture == "true")
-                I18nCache.DefaultCulture = culture;
         }
     }
 }
