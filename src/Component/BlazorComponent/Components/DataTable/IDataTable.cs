@@ -22,21 +22,23 @@ public interface IDataTable<TItem> : IDataIterator<TItem>
 
     bool IsExpanded(TItem item);
 
+    bool IsSelected(TItem item);
+
     bool HasBottom { get; }
 
     Dictionary<string, object> ColspanAttrs { get; }
 
-    Task HandleOnRowClickAsync(MouseEventArgs args);
+    Task HandleOnRowClickAsync(DataTableRowMouseEventArgs<TItem> args);
 
     RenderFragment BodyPrependContent { get; }
 
-    Task HandleOnRowContextMenuAsync(MouseEventArgs arg);
+    Task HandleOnRowContextmenuAsync(DataTableRowMouseEventArgs<TItem> args);
 
     RenderFragment BodyAppendContent { get; }
 
     RenderFragment GroupContent { get; }
 
-    Task HandleOnRowDbClickAsync(MouseEventArgs arg);
+    Task HandleOnRowDbClickAsync(DataTableRowMouseEventArgs<TItem> args);
 
     RenderFragment<(IEnumerable<DataTableHeader<TItem>> Headers, TItem Item)> ExpandedItemContent { get; }
 
@@ -69,4 +71,6 @@ public interface IDataTable<TItem> : IDataIterator<TItem>
     DataOptions Options { get; }
 
     bool IsMobile { get; }
+
+    bool OnRowContextmenuPreventDefault { get; }
 }

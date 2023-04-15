@@ -26,11 +26,29 @@ namespace BlazorComponent
 
         public RenderFragment ItemDataTableSelectContent => Component.ItemDataTableSelectContent;
 
-        public EventCallback<MouseEventArgs> HandleOnRowClickAsync => CreateEventCallback<MouseEventArgs>(Component.HandleOnRowClickAsync);
+        private bool IsSelected => Component.IsSelected(Item);
 
-        public EventCallback<MouseEventArgs> HandleOnRowContextMenuAsync => CreateEventCallback<MouseEventArgs>(Component.HandleOnRowContextMenuAsync);
+        private bool IsExpanded => Component.IsExpanded(Item);
 
-        public EventCallback<MouseEventArgs> HandleOnRowDbClickAsync => CreateEventCallback<MouseEventArgs>(Component.HandleOnRowDbClickAsync);
+        public bool OnRowContextmenuPreventDefault => Component.OnRowContextmenuPreventDefault;
+
+        private async Task HandleOnRowClickAsync(MouseEventArgs args)
+        {
+            var rowMouseEventArgs = new DataTableRowMouseEventArgs<TItem>(Item, IsMobile, IsSelected, IsExpanded, args);
+            await Component.HandleOnRowClickAsync(rowMouseEventArgs);
+        }
+
+        private async Task HandleOnRowContextmenuAsync(MouseEventArgs args)
+        {
+            var rowMouseEventArgs = new DataTableRowMouseEventArgs<TItem>(Item, IsMobile, IsSelected, IsExpanded, args);
+            await Component.HandleOnRowContextmenuAsync(rowMouseEventArgs);
+        }
+
+        private async Task HandleOnRowDbClickAsync(MouseEventArgs args)
+        {
+            var rowMouseEventArgs = new DataTableRowMouseEventArgs<TItem>(Item, IsMobile, IsSelected, IsExpanded, args);
+            await Component.HandleOnRowDbClickAsync(rowMouseEventArgs);
+        }
 
         private bool HasExpand(ItemColProps<TItem> props) => props.Header.Value == "data-table-expand" && ShowExpand;
 
