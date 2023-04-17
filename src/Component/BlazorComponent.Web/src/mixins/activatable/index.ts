@@ -8,7 +8,7 @@ type Listeners = Record<
 
 class Activatable extends Delayable {
   activator?: HTMLElement;
-  popupElement: HTMLElement;
+  popupElement?: HTMLElement;
   disabled: boolean;
   openOnClick: boolean;
   openOnHover: boolean;
@@ -18,8 +18,8 @@ class Activatable extends Delayable {
   closeOnContentClick: boolean;
 
   isActive: boolean;
-  activatorListeners: Listeners;
-  popupListeners: Listeners;
+  activatorListeners: Listeners = {};
+  popupListeners: Listeners = {};
 
   constructor(
     activatorSelector: string,
