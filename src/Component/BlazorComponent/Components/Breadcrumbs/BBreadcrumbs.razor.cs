@@ -57,9 +57,14 @@ namespace BlazorComponent
         {
             base.OnAfterRender(firstRender);
 
+            if (firstRender)
+            {
+                return;
+            }
+
             if (SubBreadcrumbsItems.Any())
             {
-                SubBreadcrumbsItems.ForEach(sub => sub.InternalStateHasChanged());
+                SubBreadcrumbsItems.ToList().ForEach(sub => sub.InternalStateHasChanged());
             }
         }
 
