@@ -43,7 +43,7 @@ public class BActivatableBase : BToggleable, IActivatableJsCallbacks
         { "aria-expanded", IsActive }
     };
 
-    private string ActivatorId => _activatorId ??= $"_activator_{Guid.NewGuid()}";
+    protected string ActivatorId => _activatorId ??= $"_activator_{Guid.NewGuid()}";
 
     public string ActivatorSelector => $"[{ActivatorId}]";
 
