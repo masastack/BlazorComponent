@@ -26,7 +26,7 @@
             }
         }
 
-        public Func<object, string, TItem, bool> Filter { get; set; }
+        public Func<object?, string?, TItem, bool>? Filter { get; set; }
 
         public bool Filterable { get; set; } = true;
     }
