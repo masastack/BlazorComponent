@@ -57,10 +57,18 @@ function registerInputEvent(
     dotNetHelper.invokeMethodAsync("OnInput", changeEventArgs);
   });
 
-  inputElement.addEventListener("input", (event: InputEvent) => {
+  inputElement.addEventListener("input", (event: ChangeEvent) => {
     if (compositionInputting) return;
 
     var changeEventArgs = parseChangeEvent(event);
+    if (event.target.type === 'number') {
+
+      const value = event.target.value
+      const valueAsNumber = event.target.valueAsNumber
+      if (!!value && value !== valueAsNumber.toString()) {
+        inputElement.value = isNaN(valueAsNumber) ? "": valueAsNumber.toString();
+      }
+    }
 
     clearTimeout(timeout);
     timeout = setTimeout(() => {

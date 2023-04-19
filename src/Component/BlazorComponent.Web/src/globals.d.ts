@@ -149,4 +149,8 @@ declare global {
       type: string;
     }
   }
+
+  interface ChangeEvent extends InputEvent {
+    target: HTMLInputElement;
+  }
 }
