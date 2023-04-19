@@ -1,12 +1,18 @@
 param(
   [Parameter(Mandatory = $true, HelpMessage = "main | echarts | input | markdownit | gridstack")]
   [ValidateSet("main", "echarts", "input", "markdownit", "gridstack", "activatable", "outsideclick", "baidumap")]
-  [string]$file
-)
+  [string]$file,
+
+  [Parameter()]
+  [Alias("skip")]
+  [switch]$skipInstall
+  )
 
 if (Get-Command npm -ErrorAction SilentlyContinue) {
-  Write-Host "Installing packages..." -ForegroundColor Yellow
-  npm install
+  if ($skipInstall -eq $false) {
+    Write-Host "Installing packages..." -ForegroundColor Yellow
+    npm install
+  }
 
   Write-Host
   Write-Host "Building js..." -ForegroundColor Yellow
