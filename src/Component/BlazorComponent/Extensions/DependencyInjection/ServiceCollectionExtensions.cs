@@ -11,7 +11,10 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IBlazorComponentBuilder AddBlazorComponent(this IServiceCollection services,
             Action<BlazorComponentOptions>? optionsAction = null)
         {
-            services.AddOptions<BlazorComponentOptions>().Configure(optionsAction);
+            if (optionsAction is not null)
+            {
+                services.AddOptions<BlazorComponentOptions>().Configure(optionsAction);
+            }
 
             services.TryAddScoped<DomEventJsInterop>();
             services.TryAddScoped<Document>();
