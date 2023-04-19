@@ -6,7 +6,8 @@
 @if (IsMobile)
 {
     <BDataTableMobileRow @onclick="HandleOnRowClickAsync"
-                         @oncontextmenu="HandleOnRowContextMenuAsync"
+                         @oncontextmenu="HandleOnRowContextmenuAsync"
+                        __internal_preventDefault_oncontextmenu="@OnRowContextmenuPreventDefault"
                          @ondblclick="HandleOnRowDbClickAsync"
                          Index="Index"
                          Item="Item"
@@ -46,7 +47,8 @@
 else
 {
     <BDataTableRow @onclick="HandleOnRowClickAsync"
-                   @oncontextmenu="HandleOnRowContextMenuAsync"
+                   @oncontextmenu="HandleOnRowContextmenuAsync"
+                   __internal_preventDefault_oncontextmenu="@OnRowContextmenuPreventDefault"
                    @ondblclick="HandleOnRowDbClickAsync"
                    Index="Index"
                    Item="Item"
@@ -73,7 +75,7 @@ else
                 }
                 else
                 {
-                    <BSimpleCheckbox @attributes="GetAttributes(typeof(BSimpleCheckbox), data: Item)"></BSimpleCheckbox>
+                    <BSimpleCheckbox @attributes="@GetAttributes(typeof(BSimpleCheckbox), data: Item)"></BSimpleCheckbox>
                 }
             }
             else if (HasItemColContent())
