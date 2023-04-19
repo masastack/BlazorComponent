@@ -1,6 +1,6 @@
 ﻿namespace BlazorComponent
 {
-    public class AttributesDictionary : Dictionary<string, object>
+    public class AttributesDictionary : Dictionary<string, object?>
     {
         public AttributesDictionary()
         {
