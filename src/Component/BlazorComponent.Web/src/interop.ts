@@ -1049,7 +1049,7 @@ export function getMenuableDimensions(hasActivator, activatorSelector, isDefault
 
   var dimensions = {
     activator: {} as any,
-    content: null,
+    content: {},
     relativeYOffset: 0,
     offsetParentLeft: 0
   };
@@ -1089,7 +1089,7 @@ export function getMenuableDimensions(hasActivator, activatorSelector, isDefault
 }
 
 function measure(el: HTMLElement, isDefaultAttach) {
-  if (!el) return null
+  if (!el) return {}
 
   const rect = getRoundedBoundedClientRect(el)
 
