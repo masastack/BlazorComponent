@@ -14,7 +14,7 @@ public class OutsideClickJSModule : JSModule
     }
 
     public bool Initialized { get; private set; }
-    
+
     public async ValueTask InitializeAsync(IOutsideClickJsCallback owner, params string[] excludedSelectors)
     {
         _owner = owner;
