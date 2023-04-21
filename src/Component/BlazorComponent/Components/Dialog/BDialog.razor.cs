@@ -90,18 +90,11 @@ public partial class BDialog : BBootable, IDependent, IAsyncDisposable
     {
         if (ContentRef.Context is not null)
         {
-            Console.Out.WriteLine("No nexttick attach async......");
             await AttachAsync(value);
-                OutsideClickJsModule?.UpdateDependentElements(DependentSelectors.ToArray());
         }
         else
         {
-            NextTick(async () =>
-            {
-                await AttachAsync(value);
-                Console.Out.WriteLine("UpdateDependentElements self................");
-                OutsideClickJsModule?.UpdateDependentElements(DependentSelectors.ToArray());
-            });
+            NextTick(() => AttachAsync(value));
         }
 
         if (value)
@@ -131,8 +124,6 @@ public partial class BDialog : BBootable, IDependent, IAsyncDisposable
 
     private async Task AttachAsync(bool value)
     {
-        Console.Out.WriteLine($"AttachAsync {OutsideClickJsModule is {Initialized: false}}");
-        
         if (OutsideClickJsModule is { Initialized: false })
         {
             await OutsideClickJsModule.InitializeAsync(this, DependentSelectors.ToArray());
@@ -226,11 +217,6 @@ public partial class BDialog : BBootable, IDependent, IAsyncDisposable
 
     public override async Task HandleOnOutsideClickAsync()
     {
-        if (OutsideClickJsModule is { IsUpdating: true })
-        {
-            return;
-        }
-
         var maxZIndex = await GetMaxZIndex();
 
         // TODO: should ignore the click if e.target was dragged onto the overlay
@@ -246,11 +232,7 @@ public partial class BDialog : BBootable, IDependent, IAsyncDisposable
     {
         _dependents.Add(dependent);
 
-        var d = DependentSelectors.ToArray();
-
-        Console.Out.WriteLine("d = {0},OutsideClickJsModule is null={1}", d.Length, OutsideClickJsModule is null);
-
-        OutsideClickJsModule?.UpdateDependentElements(d);
+        OutsideClickJsModule?.UpdateDependentElements(DependentSelectors.ToArray());
     }
 
     public virtual IEnumerable<string> DependentSelectors

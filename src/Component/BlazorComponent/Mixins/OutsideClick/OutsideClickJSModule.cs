@@ -7,6 +7,7 @@ public class OutsideClickJSModule : JSModule
     private IOutsideClickJsCallback? _owner;
     private DotNetObjectReference<OutsideClickJSModule>? _selfReference;
     private IJSObjectReference? _instance;
+    private CancellationTokenSource? _cts;
 
     public OutsideClickJSModule(IJSRuntime js) : base(js, "./_content/BlazorComponent/js/outside-click.js")
     {
@@ -14,8 +15,6 @@ public class OutsideClickJSModule : JSModule
 
     public bool Initialized { get; private set; }
     
-    public bool IsUpdating { get; private set; }
-
     public async ValueTask InitializeAsync(IOutsideClickJsCallback owner, params string[] excludedSelectors)
     {
         _owner = owner;
@@ -24,22 +23,15 @@ public class OutsideClickJSModule : JSModule
 
         Initialized = true;
     }
-    
-    private CancellationTokenSource _cts = new();
 
     public async Task UpdateDependentElements(params string[] selectors)
     {
-        Console.Out.WriteLine("_instance is null = {0}", _instance is null);
         if (_instance is null) return;
 
-        Console.Out.WriteLine($"UpdateDependentElements {selectors.Length}");
-        
-        _cts.Cancel();
+        _cts?.Cancel();
         _cts = new CancellationTokenSource();
-        await Task.Delay(100, _cts.Token);
+        await Task.Delay(16, _cts.Token);
 
-        Console.Out.WriteLine("UpdateDependentElements js.................");
-        
         await _instance.InvokeAsync<bool>("updateExcludeSelectors", selectors.ToList());
     }
 
