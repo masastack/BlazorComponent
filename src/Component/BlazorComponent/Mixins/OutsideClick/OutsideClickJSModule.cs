@@ -13,6 +13,8 @@ public class OutsideClickJSModule : JSModule
     }
 
     public bool Initialized { get; private set; }
+    
+    public bool IsUpdating { get; private set; }
 
     public async ValueTask InitializeAsync(IOutsideClickJsCallback owner, params string[] excludedSelectors)
     {
@@ -22,15 +24,23 @@ public class OutsideClickJSModule : JSModule
 
         Initialized = true;
     }
+    
+    private CancellationTokenSource _cts = new();
 
-    public void UpdateDependentElements(params string[] selectors)
+    public async Task UpdateDependentElements(params string[] selectors)
     {
+        Console.Out.WriteLine("_instance is null = {0}", _instance is null);
         if (_instance is null) return;
 
-        Task.Run(async () =>
-        {
-            await _instance.InvokeVoidAsync("updateExcludeSelectors", selectors.ToList());
-        });
+        Console.Out.WriteLine($"UpdateDependentElements {selectors.Length}");
+        
+        _cts.Cancel();
+        _cts = new CancellationTokenSource();
+        await Task.Delay(100, _cts.Token);
+
+        Console.Out.WriteLine("UpdateDependentElements js.................");
+        
+        await _instance.InvokeAsync<bool>("updateExcludeSelectors", selectors.ToList());
     }
 
     [JSInvokable]
