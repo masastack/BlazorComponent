@@ -157,11 +157,11 @@ public partial class BMenu : BMenuable, IDependent
 
     protected int DefaultOffset { get; set; } = 8;
 
-    protected override void OnInitialized()
+    protected override void OnAfterRender(bool firstRender)
     {
-        base.OnInitialized();
+        base.OnAfterRender(firstRender);
 
-        if (CascadingDependent is not null)
+        if (firstRender && CascadingDependent is not null)
         {
             (this as IDependent).CascadingDependents.ForEach(item => item.RegisterChild(this));
         }
