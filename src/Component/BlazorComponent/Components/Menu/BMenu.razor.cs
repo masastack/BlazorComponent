@@ -89,7 +89,7 @@ public partial class BMenu : BMenuable, IDependent
     {
         get
         {
-            var menuWidth = Math.Max(Dimensions.Content.Width, NumberHelper.ParseDouble(CalculatedMinWidth));
+            var menuWidth = Math.Max(Dimensions.Content?.Width ?? 0, NumberHelper.ParseDouble(CalculatedMinWidth));
 
             if (!Auto) return CalcLeft(menuWidth);
 

@@ -84,7 +84,7 @@
                 var activator = Dimensions.Activator;
                 var content = Dimensions.Content;
                 var activatorLeft = !IsDefaultAttach ? activator.OffsetLeft : activator.Left;
-                var minWidth = Math.Max(activator.Width, content.Width);
+                var minWidth = Math.Max(activator.Width, content?.Width ?? 0);
 
                 double left = 0;
                 left += Left ? activatorLeft - (minWidth - activator.Width) : activatorLeft;
@@ -274,7 +274,7 @@
             var documentHeight = GetInnerHeight();
             var toTop = PageYOffset + documentHeight;
             var activator = Dimensions.Activator;
-            var contentHeight = Dimensions.Content.Height;
+            var contentHeight = Dimensions.Content?.Height ?? 0;
             var totalHeight = top + contentHeight;
             var isOverflowing = toTop < totalHeight;
 
