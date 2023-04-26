@@ -2,7 +2,7 @@
 
 public class NextTickComponentBase : ComponentBase, IDisposable
 {
-    private readonly Queue<Func<Task>> _nextTickQueue = new();
+    private readonly Queue<(Func<Task>, Func<bool>)> _nextTickQueue = new();
 
     protected bool IsDisposed { get; private set; }
 
@@ -10,25 +10,38 @@ public class NextTickComponentBase : ComponentBase, IDisposable
     {
         if (_nextTickQueue.Count > 0)
         {
-            var callbacks = _nextTickQueue.ToArray();
+            var queue = _nextTickQueue.ToArray();
             _nextTickQueue.Clear();
 
-            foreach (var callback in callbacks)
+            foreach (var item in queue)
             {
                 if (IsDisposed)
                 {
                     return;
                 }
 
-                await callback();
+                var (callback, moveNext) = item;
+
+                if (moveNext())
+                {
+                    _nextTickQueue.Enqueue(item);
+                }
+                else
+                {
+                    await callback();
+                }
             }
         }
     }
 
+    private void NextTick(Func<Task> callback, Func<bool> moveNext)
+    {
+        _nextTickQueue.Enqueue((callback, moveNext));
+    }
 
     protected void NextTick(Func<Task> callback)
     {
-        _nextTickQueue.Enqueue(callback);
+        NextTick(callback, () => false);
     }
 
     protected void NextTick(Action callback)
@@ -64,7 +77,36 @@ public class NextTickComponentBase : ComponentBase, IDisposable
         }
     }
 
-    protected async Task NextTickWhile(Func<Task> callback, Func<bool> @while, int retryTimes = 20, CancellationToken cancellationToken = default)
+    protected void NextTickWhile(Func<Task> callback, Func<bool> @while)
+    {
+        if (@while.Invoke())
+        {
+            NextTick(callback, @while);
+        }
+        else
+        {
+            callback.Invoke();
+        }
+    }
+
+    protected void NextTickWhile(Action callback, Func<bool> @while)
+    {
+        if (@while.Invoke())
+        {
+            NextTick(() =>
+            {
+                callback.Invoke();
+                return Task.CompletedTask;
+            }, @while);
+        }
+        else
+        {
+            callback.Invoke();
+        }
+    }
+
+    protected async Task Retry(Func<Task> callback, Func<bool> @while, int retryTimes = 20, int delay = 100,
+        CancellationToken cancellationToken = default)
     {
         if (retryTimes > 0 && !cancellationToken.IsCancellationRequested)
         {
@@ -72,9 +114,9 @@ public class NextTickComponentBase : ComponentBase, IDisposable
             {
                 retryTimes--;
 
-                await Task.Delay(100, cancellationToken);
+                await Task.Delay(delay, cancellationToken);
 
-                await NextTickWhile(callback, @while, retryTimes, cancellationToken);
+                await Retry(callback, @while, retryTimes, delay, cancellationToken);
             }
             else
             {

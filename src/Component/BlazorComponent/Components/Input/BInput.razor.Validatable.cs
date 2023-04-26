@@ -240,7 +240,7 @@ namespace BlazorComponent
         {
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource = new();
-            await NextTickWhile(() => _inputJsInterop!.SetValue(val),
+            await Retry(() => _inputJsInterop!.SetValue(val),
                 () => _inputJsInterop is not { Initialized: true },
                 cancellationToken: _cancellationTokenSource.Token);
         }
