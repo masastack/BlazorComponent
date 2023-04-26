@@ -157,11 +157,11 @@ public partial class BMenu : BMenuable, IDependent
 
     protected int DefaultOffset { get; set; } = 8;
 
-    protected override void OnAfterRender(bool firstRender)
+    protected override void OnInitialized()
     {
-        base.OnAfterRender(firstRender);
+        base.OnInitialized();
 
-        if (firstRender && CascadingDependent is not null)
+        if (CascadingDependent is not null)
         {
             (this as IDependent).CascadingDependents.ForEach(item => item.RegisterChild(this));
         }
@@ -192,7 +192,7 @@ public partial class BMenu : BMenuable, IDependent
     public void RegisterChild(IDependent dependent)
     {
         _dependents.Add(dependent);
-        Module?.UpdateDependentElements(DependentSelectors.ToArray());
+        NextTickWhile(() => { Module?.UpdateDependentElements(DependentSelectors.ToArray()); }, () => Module == null || Module.Initialized == false);
     }
 
     //TODO:keydown event

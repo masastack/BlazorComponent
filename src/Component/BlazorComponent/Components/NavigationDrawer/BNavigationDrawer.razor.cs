@@ -148,7 +148,8 @@ namespace BlazorComponent
         {
             _dependents.Add(dependent);
 
-            OutsideClickJsModule?.UpdateDependentElements(DependentSelectors.ToArray());
+            NextTickWhile(() => { OutsideClickJsModule?.UpdateDependentElements(DependentSelectors.ToArray()); },
+                () => OutsideClickJsModule == null || OutsideClickJsModule.Initialized == false);
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
