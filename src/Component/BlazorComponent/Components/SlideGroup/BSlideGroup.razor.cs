@@ -37,6 +37,7 @@
         private int _prevItemsLength;
         private StringNumber? _prevInternalValue;
         private bool _prevIsOverflowing;
+        private CancellationTokenSource? _cts;
 
         protected bool IsMobile { get; set; }
 
@@ -97,7 +98,6 @@
             {
                 DomEventJsInterop?.ResizeObserver(Ref.GetSelector(), OnResize);
 
-                IsMobile = await JsInvokeAsync<bool>(JsInteropConstants.IsMobile);
                 await SetWidths(Value);
             }
             else if (_prevItemsLength != Items.Count)
@@ -122,6 +122,10 @@
 
         public async Task SetWidths(StringNumber? selectedValue = null)
         {
+            _cts?.Cancel();
+            _cts = new CancellationTokenSource();
+            await Task.Delay(16, _cts.Token);
+
             (WrapperWidth, ContentWidth) = await GetWidths();
 
             // The first time IsOverflowing is true, WrapperWidth will become smaller
@@ -148,7 +152,7 @@
             {
                 var hasAffixes = !IsMobile && (IsOverflowing || Math.Abs(ScrollOffset) > 0);
 
-                if (ShowArrows == null) return hasAffixes;
+                if (ShowArrows is null) return hasAffixes;
 
                 return ShowArrows.Match(
                     str =>
@@ -279,7 +283,7 @@
             return sign * Math.Max(Math.Min(newAbsoluteOffset, contentWidth - wrapperWidth), 0);
         }
 
-        private async Task OnResize()
+        protected async Task OnResize()
         {
             if (IsDisposed)
             {
