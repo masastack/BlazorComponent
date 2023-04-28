@@ -19,13 +19,13 @@
                  style="@CssProvider.GetStyle("svg")"
                  xmlns="http://www.w3.org/2000/svg"
                  @attributes="@SvgAttrs">
-                <path d="@Icon">
+                <path d="@ComputedIcon">
                 </path>
             </svg>
         }
         else if (IconType == IconType.WebfontNoPseudo)
         {
-            @Icon
+            @ComputedIcon
         }
     </IfTransitionElement>
 </CascadingValue>

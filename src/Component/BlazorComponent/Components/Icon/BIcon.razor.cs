@@ -91,6 +91,8 @@ namespace BlazorComponent
 
         protected string? Icon { get; set; }
 
+        protected virtual string? ComputedIcon => Icon;
+
         protected IconType IconType { get; set; }
 
         protected Dictionary<string, object>? SvgAttrs { get; set; }
