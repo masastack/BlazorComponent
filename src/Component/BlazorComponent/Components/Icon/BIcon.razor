@@ -13,19 +13,22 @@
         __internal_stopPropagation_onmouseup="@OnMouseupStopPropagation"
         __internal_preventDefault_onmouseup="@OnMouseupPreventDefault"
         @attributes="@Attributes">
-        @if (IconType == IconType.Svg)
+        @if (ComputedIcon is { IsSvg:true })
         {
             <svg class="@CssProvider.GetClass("svg")"
                  style="@CssProvider.GetStyle("svg")"
                  xmlns="http://www.w3.org/2000/svg"
                  @attributes="@SvgAttrs">
-                <path d="@ComputedIcon">
-                </path>
+                @foreach (var path in ComputedIcon.GetSvgPaths())
+                {
+                    <path d="@path.D" fill-opacity="@path.Opacity">
+                    </path>
+                }
             </svg>
         }
-        else if (IconType == IconType.WebfontNoPseudo)
+        else
         {
-            @ComputedIcon
+            @ComputedIcon?.AsT0
         }
     </IfTransitionElement>
 </CascadingValue>
