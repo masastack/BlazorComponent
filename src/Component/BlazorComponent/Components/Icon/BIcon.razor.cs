@@ -9,6 +9,9 @@ namespace BlazorComponent
 {
     public partial class BIcon : IIcon, IThemeable
     {
+        [Inject]
+        public Document? Document { get; set; }
+        
         [Parameter]
         [EditorRequired]
         public RenderFragment? ChildContent { get; set; }
@@ -81,10 +84,6 @@ namespace BlazorComponent
 
         [Parameter]
         public bool OnMouseupStopPropagation { get; set; }
-
-        [Inject]
-        [NotNull]
-        public Document? Document { get; set; }
 
         private bool _clickEventRegistered;
 
@@ -177,7 +176,7 @@ namespace BlazorComponent
 
                 if (!string.IsNullOrWhiteSpace(textContent) && CheckIfSvg(textContent))
                 {
-                    ComputedIcon = new SvgPath(textContent, 1);
+                    ComputedIcon = new SvgPath(textContent);
                 }
                 else
                 {

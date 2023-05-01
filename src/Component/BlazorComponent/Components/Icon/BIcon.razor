@@ -21,7 +21,7 @@
                  @attributes="@SvgAttrs">
                 @foreach (var path in ComputedIcon.GetSvgPaths())
                 {
-                    <path d="@path.D" fill-opacity="@path.Opacity">
+                    <path d="@path.D" @attributes="@path.Attributes">
                     </path>
                 }
             </svg>
