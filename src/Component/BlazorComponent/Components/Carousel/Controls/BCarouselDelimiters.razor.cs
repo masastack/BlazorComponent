@@ -4,7 +4,7 @@ public partial class BCarouselDelimiters<TCarousel> : ComponentPartBase<TCarouse
 {
     public bool HideDelimiters => Component.HideDelimiters;
 
-    public string Icon => Component.DelimiterIcon ?? "mdi-circle";
+    public string Icon => Component.DelimiterIcon ?? "$delimiter";
 
     public StringNumber InternalValue => Component.InternalValue;
 

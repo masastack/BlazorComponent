@@ -16,9 +16,9 @@
         [EditorRequired]
         public RenderFragment? ChildContent { get; set; }
 
-        [ApiDefaultValue("mdi-close-circle")]
+        [ApiDefaultValue("$cancel")]
         [Parameter]
-        public string CloseIcon { get; set; } = "mdi-close-circle";
+        public string CloseIcon { get; set; } = "$cancel";
 
         [Parameter]
         public virtual string CloseLabel { get; set; } = "Close";

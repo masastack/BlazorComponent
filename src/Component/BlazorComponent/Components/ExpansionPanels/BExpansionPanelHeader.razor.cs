@@ -29,7 +29,7 @@ namespace BlazorComponent
         public bool DisableIconRotate { get; set; }
 
         [Parameter]
-        public string ExpandIcon { get; set; }
+        public string? ExpandIcon { get; set; }
 
         [Parameter]
         public bool HideActions { get; set; }
