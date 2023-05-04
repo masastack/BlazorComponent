@@ -5,8 +5,8 @@
 
 @if (Type == "number" && !Props.HideControl)
 {
-    var upButtonChildContent = RenderPart(typeof(BInputIcon<,>), "append-icon-number-up", "mdi-chevron-up", HandleOnNumberUpClickAsync, arg0Name: "Type", arg1Name: "Icon", arg2Name: "OnClick");
-    var downButtonChildContent = RenderPart(typeof(BInputIcon<,>), "append-icon-number-down", "mdi-chevron-down", HandleOnNumberDownClickAsync, arg0Name: "Type", arg1Name: "Icon", arg2Name: "OnClick");
+    var upButtonChildContent = RenderPart(typeof(BInputIcon<,>), "append-icon-number-up", "$increase", HandleOnNumberUpClickAsync, arg0Name: "Type", arg1Name: "Icon", arg2Name: "OnClick");
+    var downButtonChildContent = RenderPart(typeof(BInputIcon<,>), "append-icon-number-down", "$decrease", HandleOnNumberDownClickAsync, arg0Name: "Type", arg1Name: "Icon", arg2Name: "OnClick");
     <div class="@CssProvider.GetClass("number-wrap")">
         @RenderPart(typeof(BInputSlot<,>), "append", "inner", downButtonChildContent, arg0Name:"Type", "Location", "ChildContent")
         @RenderPart(typeof(BInputSlot<,>), "append", "inner", upButtonChildContent, arg0Name:"Type", "Location", "ChildContent")

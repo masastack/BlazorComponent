@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Globalization;
+using System.Reflection;
 
 namespace BlazorComponent;
 
@@ -11,7 +12,12 @@ public static class ComponentExtensions
 
     public static IDictionary<string, object?> ToParameters(this object obj, Func<PropertyInfo, bool>? condition = null)
     {
-        var result = new Dictionary<string, object?>();
+        return obj.ToDictionary<object?>(condition);
+    }
+
+    public static IDictionary<string, TValue?> ToDictionary<TValue>(this object obj, Func<PropertyInfo, bool>? condition = null)
+    {
+        var result = new Dictionary<string, TValue?>();
 
         var properties = obj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
 
@@ -24,7 +30,7 @@ public static class ComponentExtensions
         {
             var value = property.GetValue(obj);
             if (value is null) continue;
-            result.Add(property.Name, value);
+            result.Add(property.Name, (TValue)value);
         }
 
         return result;

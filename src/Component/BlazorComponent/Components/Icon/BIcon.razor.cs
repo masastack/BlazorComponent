@@ -9,6 +9,9 @@ namespace BlazorComponent
 {
     public partial class BIcon : IIcon, IThemeable
     {
+        [Inject]
+        public Document? Document { get; set; }
+        
         [Parameter]
         [EditorRequired]
         public RenderFragment? ChildContent { get; set; }
@@ -16,13 +19,14 @@ namespace BlazorComponent
         [Parameter]
         public bool If { get; set; } = true;
 
-        #region IIcon
-
         [Parameter]
         public bool Dense { get; set; }
 
         [Parameter]
         public bool Disabled { get; set; }
+
+        [Parameter]
+        public Icon? Icon { get; set; }
 
         [Parameter]
         public bool Left { get; set; }
@@ -35,8 +39,6 @@ namespace BlazorComponent
 
         [Parameter]
         public string Tag { get; set; } = "i";
-
-        #endregion
 
         [Parameter]
         public bool Dark { get; set; }
@@ -83,15 +85,14 @@ namespace BlazorComponent
         [Parameter]
         public bool OnMouseupStopPropagation { get; set; }
 
-        [Inject]
-        [NotNull]
-        public Document? Document { get; set; }
-
         private bool _clickEventRegistered;
 
-        protected string? Icon { get; set; }
+        /// <summary>
+        /// Icon from ChildContent
+        /// </summary>
+        protected string? IconContent { get; set; }
 
-        protected IconType IconType { get; set; }
+        protected virtual Icon? ComputedIcon { get; set; }
 
         protected Dictionary<string, object>? SvgAttrs { get; set; }
 
@@ -162,35 +163,31 @@ namespace BlazorComponent
             }
         }
 
-        private void InitIcon()
+        protected virtual void InitIcon()
         {
-            var builder = new RenderTreeBuilder();
-            ChildContent?.Invoke(builder);
-
-#pragma warning disable BL0006 // Do not use RenderTree types
-
-            var frame = builder.GetFrames().Array
-                               .FirstOrDefault(u => u.FrameType is RenderTreeFrameType.Text or RenderTreeFrameType.Markup);
-
-            char[] charsToTrim = { '\r', ' ', '\n' };
-            var textContent = frame.TextContent.Trim(charsToTrim);
-
-            if (RegexHelper.RegexSvgPath(textContent))
+            if (Icon is not null)
             {
-                IconType = IconType.Svg;
-            }
-            else if (textContent.IndexOf("-", StringComparison.Ordinal) < 0)
-            {
-                IconType = IconType.WebfontNoPseudo;
+                ComputedIcon = Icon;
             }
             else
             {
-                IconType = IconType.Webfont;
+                var textContent = ChildContent?.GetTextContent();
+                IconContent = textContent;
+
+                if (!string.IsNullOrWhiteSpace(textContent) && CheckIfSvg(textContent))
+                {
+                    ComputedIcon = new SvgPath(textContent);
+                }
+                else
+                {
+                    ComputedIcon = textContent;
+                }
             }
+        }
 
-            Icon = textContent;
-
-#pragma warning restore BL0006 // Do not use RenderTree types
+        protected static bool CheckIfSvg(string iconOrPath)
+        {
+            return RegexHelper.RegexSvgPath(iconOrPath);
         }
     }
 }

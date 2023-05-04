@@ -131,10 +131,10 @@ namespace BlazorComponent
         }
 
         [Parameter]
-        public string LoadingIcon { get; set; } = "mdi-cached";
+        public string LoadingIcon { get; set; } = "$loading";
 
         [Parameter]
-        public string ExpandIcon { get; set; } = "mdi-menu-down";
+        public string ExpandIcon { get; set; } = "$subgroup";
 
         public Dictionary<TKey, NodeState<TItem, TKey>> Nodes { get; private set; } = new();
 

@@ -18,7 +18,7 @@
         public bool Close { get; set; }
 
         [Parameter]
-        public string CloseIcon { get; set; }
+        public string? CloseIcon { get; set; }
 
         [Parameter]
         public string CloseLabel { get; set; } = "Close";
