@@ -15,6 +15,7 @@
         [Parameter]
         public ForwardRef? RefBack { get; set; } = new();
 
+        private bool _shouldRender = true;
         private string[] _dirtyParameters = Array.Empty<string>();
 
         protected virtual string ComponentName => this.GetType().Name;
@@ -34,6 +35,8 @@
 
             await base.SetParametersAsync(parameters);
         }
+
+        protected override bool ShouldRender() => _shouldRender;
 
         /// <summary>
         /// Check whether the parameter has been assigned value.
@@ -69,6 +72,20 @@
         protected async Task JsInvokeAsync(string code, params object?[] args)
         {
             await Js.InvokeVoidAsync(code, args);
+        }
+
+        protected void PreventRenderingUtil(params Action[] actions)
+        {
+            _shouldRender = false;
+            actions.ForEach(action => action());
+            _shouldRender = true;
+        }
+
+        protected async Task PreventRenderingUtil(params Func<Task>[] funcs)
+        {
+            _shouldRender = false;
+            await funcs.ForEachAsync(func => func());
+            _shouldRender = true;
         }
 
         protected virtual bool AfterHandleEventShouldRender()
