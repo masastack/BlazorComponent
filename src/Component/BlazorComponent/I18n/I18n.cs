@@ -67,47 +67,7 @@ public class I18n
     [return: NotNullIfNotNull("defaultValue")]
     public string? T(string? key, [DoesNotReturnIf(true)] bool whenNullReturnKey = true, string? defaultValue = null, params object[] args)
     {
-        string? value;
-
-        if (key is null)
-        {
-            value = null;
-        }
-        else
-        {
-            value = Locale.GetValueOrDefault(key);
-
-            if (value is null && whenNullReturnKey)
-            {
-                if (key.StartsWith(".") || key.EndsWith("."))
-                {
-                    value = key;
-                }
-                else
-                {
-                    value = key.Split('.').Last();
-                }
-            }
-        }
-
-        if (value is null)
-        {
-            return defaultValue;
-        }
-
-        if (args.Length == 0)
-        {
-            return value;
-        }
-
-        try
-        {
-            return string.Format(value, args);
-        }
-        catch (FormatException)
-        {
-            return value;
-        }
+        return T(null, key, whenNullReturnKey, defaultValue, args);
     }
 
     [return: NotNullIfNotNull("defaultValue")]
@@ -122,11 +82,13 @@ public class I18n
         }
         else
         {
-            value = Locale.GetValueOrDefault($"{scope}.{key}");
+            var scopeKey = scope is null ? key : $"{scope}.{key}";
+
+            value = Locale.GetValueOrDefault(scopeKey);
 
             if (value is null && whenNullReturnKey)
             {
-                if (key.StartsWith(".") || key.EndsWith("."))
+                if (key.Trim().Contains(' ') || key.StartsWith(".") || key.EndsWith("."))
                 {
                     value = key;
                 }
