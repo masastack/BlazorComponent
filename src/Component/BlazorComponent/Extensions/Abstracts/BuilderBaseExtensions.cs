@@ -27,7 +27,7 @@
             return builder;
         }
 
-        public static TBuilder AddIf<TBuilder>(this TBuilder builder, string name, Func<bool> func)
+        public static TBuilder AddIf<TBuilder>(this TBuilder builder, string? name, Func<bool> func)
             where TBuilder : BuilderBase
         {
             builder._mapper.TryAdd(() => name, func);
