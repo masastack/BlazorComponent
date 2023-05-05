@@ -1,16 +1,12 @@
-﻿using BlazorComponent.Web;
-using Microsoft.JSInterop;
+﻿namespace BlazorComponent;
 
-namespace BlazorComponent
+public interface IScrollable
 {
-    public interface IScrollable
-    {
-        bool CanScroll { get; }
+    bool CanScroll { get; }
 
-        string ScrollTarget { get; }
+    string ScrollTarget { get; }
 
-        double ScrollThreshold { get; }
+    double ScrollThreshold { get; }
 
-        IJSRuntime Js { get; }
-    }
+    IJSRuntime Js { get; }
 }

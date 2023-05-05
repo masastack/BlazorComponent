@@ -1,5 +1,4 @@
-﻿using BlazorComponent.Web;
-using Microsoft.JSInterop;
+﻿#nullable enable
 
 namespace BlazorComponent;
 

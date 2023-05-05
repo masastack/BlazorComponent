@@ -11,12 +11,12 @@ namespace BlazorComponent
         int SelectedIndex { get; set; }
         object Menu { set; }
         bool HasChips { get; }
-        RenderFragment PrependItemContent { get; }
-        RenderFragment AppendItemContent { get; }
-        RenderFragment<SelectSelectionProps<TItem>> SelectionContent { get; }
-        RenderFragment NoDataContent { get; }
-        string GetText(TItem item);
-        TItemValue GetValue(TItem item);
+        RenderFragment? PrependItemContent { get; }
+        RenderFragment? AppendItemContent { get; }
+        RenderFragment<SelectSelectionProps<TItem>>? SelectionContent { get; }
+        RenderFragment? NoDataContent { get; }
+        string? GetText(TItem item);
+        TItemValue? GetValue(TItem item);
         bool GetDisabled(TItem item);
     }
 }

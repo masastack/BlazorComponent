@@ -1,25 +1,22 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿namespace BlazorComponent;
 
-namespace BlazorComponent
+public interface IResponsive : IHasProviderComponent
 {
-    public interface IResponsive : IHasProviderComponent
-    {
-        StringNumber AspectRatio { get; }
+    StringNumber? AspectRatio { get; }
 
-        string ContentClass { get; }
+    string? ContentClass { get; }
 
-        StringNumber Height { get; }
+    StringNumber? Height { get; }
 
-        StringNumber MaxHeight { get; }
+    StringNumber? MaxHeight { get; }
 
-        StringNumber MinHeight { get; }
+    StringNumber? MinHeight { get; }
 
-        StringNumber Width { get; }
+    StringNumber? Width { get; }
 
-        StringNumber MaxWidth { get; }
+    StringNumber? MaxWidth { get; }
 
-        StringNumber MinWidth { get; }
+    StringNumber? MinWidth { get; }
 
-        RenderFragment ChildContent { get; }
-    }
+    RenderFragment? ChildContent { get; }
 }

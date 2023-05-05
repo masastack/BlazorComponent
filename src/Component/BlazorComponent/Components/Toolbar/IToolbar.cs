@@ -1,17 +1,15 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface IToolbar : ISheet
     {
-        string Src { get; }
+        string? Src { get; }
 
-        RenderFragment<Dictionary<string, object>> ImgContent { get; }
+        RenderFragment<Dictionary<string, object>>? ImgContent { get; }
 
-        StringNumber Height { get; }
+        StringNumber? Height { get; }
 
         bool IsExtended { get; }
 
-        RenderFragment ExtensionContent { get; }
+        RenderFragment? ExtensionContent { get; }
     }
 }
