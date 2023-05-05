@@ -1,11 +1,9 @@
-﻿using OneOf;
-
-namespace BlazorComponent;
+﻿namespace BlazorComponent;
 
 [GenerateOneOf]
 public partial class StringBoolean : OneOfBase<string, bool>
 {
-    public static bool operator ==(StringBoolean left, StringBoolean right)
+    public static bool operator ==(StringBoolean? left, StringBoolean? right)
     {
         if (Equals(left, right))
         {
@@ -20,7 +18,7 @@ public partial class StringBoolean : OneOfBase<string, bool>
         return left.Value == right.Value;
     }
 
-    public static bool operator !=(StringBoolean left, StringBoolean right)
+    public static bool operator !=(StringBoolean? left, StringBoolean? right)
     {
         if (Equals(left, right))
         {

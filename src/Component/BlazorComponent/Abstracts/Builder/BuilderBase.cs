@@ -2,7 +2,7 @@
 {
     public class BuilderBase
     {
-        internal readonly Dictionary<Func<string>, Func<bool>> _mapper = new();
+        internal readonly Dictionary<Func<string?>, Func<bool>> _mapper = new();
 
         public int Index { get; internal set; }
 
