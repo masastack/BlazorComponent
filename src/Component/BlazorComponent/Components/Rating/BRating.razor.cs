@@ -5,7 +5,7 @@ namespace BlazorComponent
     public partial class BRating : BDomComponentBase
     {
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
         public RenderFragment<RatingItem> ItemContent { get; set; }

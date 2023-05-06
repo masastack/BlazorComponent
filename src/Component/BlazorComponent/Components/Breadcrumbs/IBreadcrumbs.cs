@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface IBreadcrumbs : IHasProviderComponent
     {
@@ -8,8 +6,8 @@ namespace BlazorComponent
 
         IReadOnlyList<BreadcrumbItem> Items { get; }
 
-        RenderFragment<BreadcrumbItem> ItemContent { get; }
+        RenderFragment<BreadcrumbItem>? ItemContent { get; }
 
-        RenderFragment ChildContent { get; }
+        RenderFragment? ChildContent { get; }
     }
 }

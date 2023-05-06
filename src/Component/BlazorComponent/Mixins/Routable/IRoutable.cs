@@ -4,7 +4,7 @@ namespace BlazorComponent;
 
 public interface IRoutable
 {
-    IDictionary<string, object> Attributes { get; }
+    IDictionary<string, object?> Attributes { get; }
 
     bool Disabled { get; }
 
@@ -28,10 +28,10 @@ public interface IRoutable
 
     public int Tabindex => Attributes.TryGetValue("tabindex", out var tabindex) ? Convert.ToInt32(tabindex) : 0;
 
-    public(string tag, Dictionary<string, object>) GenerateRouteLink()
+    public(string tag, Dictionary<string, object?>) GenerateRouteLink()
     {
         string tag;
-        Dictionary<string, object> attrs = new(Attributes);
+        Dictionary<string, object?> attrs = new(Attributes);
 
         if (Href != null)
         {
@@ -54,6 +54,8 @@ public interface IRoutable
     // TODO: rename
     public bool MatchRoute()
     {
+        if (Href is null) return false;
+
         var baseRelativePath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
 
         return MatchRoute(Href, baseRelativePath, Exact);

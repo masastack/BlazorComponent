@@ -1,17 +1,15 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface IProgressCircular : IHasProviderComponent
     {
-        Dictionary<string, object> SvgAttrs => new();
+        Dictionary<string, object?> SvgAttrs => new();
 
-        Dictionary<string, object> CircleAttrs => new();
+        Dictionary<string, object?> CircleAttrs => new();
 
-        RenderFragment ChildContent { get; }
+        RenderFragment? ChildContent { get; }
 
         bool Indeterminate => default;
 
-        string StrokeDashOffset => default;
+        string? StrokeDashOffset => default;
     }
 }

@@ -5,9 +5,15 @@
         private readonly Dictionary<string, Action<CssBuilder>> _cssConfig = new();
         private readonly Dictionary<string, Action<StyleBuilder>> _styleConfig = new();
 
-        internal Func<string> StaticClass { get; set; } = () => string.Empty;
+        private Func<string?> StaticClass { get; }
 
-        internal Func<string> StaticStyle { get; set; } = () => string.Empty;
+        private Func<string?> StaticStyle { get; }
+
+        public ComponentCssProvider(Func<string?> staticClass, Func<string?> staticStyle)
+        {
+            StaticClass = staticClass;
+            StaticStyle = staticStyle;
+        }
 
         /// <summary>
         /// Apply css to default element
@@ -68,7 +74,7 @@
                 _cssConfig[name] = cssBuilder =>
                 {
                     cssAction?.Invoke(cssBuilder);
-                    mergeCssAction?.Invoke(cssBuilder);
+                    mergeCssAction(cssBuilder);
                 };
             }
 
@@ -78,7 +84,7 @@
                 _styleConfig[name] = styleBuilder =>
                 {
                     styleAction?.Invoke(styleBuilder);
-                    mergeStyleAction?.Invoke(styleBuilder);
+                    mergeStyleAction(styleBuilder);
                 };
             }
 
@@ -112,7 +118,7 @@
         /// Get style of default element
         /// </summary>
         /// <returns></returns>
-        public string GetStyle() => GetStyle("default");
+        public string? GetStyle() => GetStyle("default");
 
         /// <summary>
         /// Get class of named element
@@ -149,7 +155,7 @@
         /// <param name="index"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        public string GetStyle(string name, int index = 0, object? data = null)
+        public string? GetStyle(string name, int index = 0, object? data = null)
         {
             var action = _styleConfig.GetValueOrDefault(name);
 

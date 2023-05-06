@@ -24,10 +24,10 @@ namespace BlazorComponent
         public BList? List { get; set; }
 
         [Parameter]
-        public string Color { get; set; }
+        public string? Color { get; set; }
 
         [Parameter]
-        public RenderFragment<ItemContext> ItemContent { get; set; }
+        public RenderFragment<ItemContext>? ItemContent { get; set; }
 
         [Parameter]
         public bool Dark { get; set; }
@@ -121,14 +121,13 @@ namespace BlazorComponent
 
         private ItemContext GenItemContext()
         {
-            return new ItemContext()
-            {
-                Active = InternalIsActive,
-                ActiveClass = InternalIsActive ? ComputedActiveClass : "",
-                Toggle = ToggleAsync,
-                Ref = RefBack,
-                Value = Value
-            };
+            return new ItemContext(
+                InternalIsActive,
+                InternalIsActive ? ComputedActiveClass : "",
+                ToggleAsync,
+                RefBack,
+                Value
+            );
         }
     }
 }

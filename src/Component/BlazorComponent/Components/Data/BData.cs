@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using OneOf;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public abstract class BData<TItem> : BDomComponentBase
     {

@@ -4,7 +4,7 @@ public interface IScrollable
 {
     bool CanScroll { get; }
 
-    string ScrollTarget { get; }
+    string? ScrollTarget { get; }
 
     double ScrollThreshold { get; }
 

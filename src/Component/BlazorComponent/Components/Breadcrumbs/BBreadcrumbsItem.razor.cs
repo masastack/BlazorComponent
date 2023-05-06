@@ -5,17 +5,17 @@ namespace BlazorComponent
 {
     public partial class BBreadcrumbsItem : BDomComponentBase, IBreadcrumbsItem, IBreadcrumbsDivider, IRoutable
     {
-        private IRoutable _router;
+        private IRoutable? _router;
 
         protected string WrappedTag { get; set; } = "li";
 
         protected bool Matched { get; set; }
 
         [Inject]
-        public NavigationManager NavigationManager { get; set; }
+        public NavigationManager NavigationManager { get; set; } = null!;
 
         [CascadingParameter]
-        public BBreadcrumbs Breadcrumbs { get; set; }
+        public BBreadcrumbs? Breadcrumbs { get; set; }
 
         [Parameter]
         public bool Disabled { get; set; }
@@ -29,9 +29,9 @@ namespace BlazorComponent
         [Parameter]
         public bool Link { get; set; }
 
-        public EventCallback<MouseEventArgs> OnClick { get; set; }
+        public EventCallback<MouseEventArgs> OnClick { get; }
 
-        [Parameter]
+        [Parameter, ApiDefaultValue("div")]
         public string? Tag { get; set; } = "div";
 
         [Parameter]
@@ -41,7 +41,7 @@ namespace BlazorComponent
         public string? Text { get; set; }
 
         [Parameter]
-        public RenderFragment<(bool IsLast, bool IsDisabled)> ChildContent { get; set; }
+        public RenderFragment<(bool IsLast, bool IsDisabled)>? ChildContent { get; set; }
 
         protected bool IsDisabled => Disabled || Matched;
 
@@ -88,7 +88,7 @@ namespace BlazorComponent
 
         public string Divider => Breadcrumbs?.Divider ?? "/";
 
-        public RenderFragment DividerContent => Breadcrumbs?.DividerContent;
+        public RenderFragment? DividerContent => Breadcrumbs?.DividerContent;
 
         internal void InternalStateHasChanged()
         {
@@ -103,7 +103,7 @@ namespace BlazorComponent
 
             if (IsRoutable)
             {
-                Matched = _router.MatchRoute();
+                Matched = _router!.MatchRoute();
             }
 
             return matched != Matched;

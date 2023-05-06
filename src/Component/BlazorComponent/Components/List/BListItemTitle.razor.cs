@@ -5,6 +5,6 @@ namespace BlazorComponent
     public partial class BListItemTitle : BDomComponentBase
     {
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
     }
 }

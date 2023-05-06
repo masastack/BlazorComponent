@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface IDialog : IHasProviderComponent, IActivatable
     {
@@ -9,9 +6,9 @@ namespace BlazorComponent
 
         ElementReference DialogRef { set; }
 
-        string Transition { get; }
+        string? Transition { get; }
 
-        RenderFragment ChildContent { get; }
+        RenderFragment? ChildContent { get; }
 
         Dictionary<string, object> ContentAttrs { get; }
 

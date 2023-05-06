@@ -38,7 +38,8 @@ namespace BlazorComponent
         public StringNumber? Size { get; set; }
 
         [Parameter]
-        public string Tag { get; set; } = "i";
+        [ApiDefaultValue("i")]
+        public string? Tag { get; set; } = "i";
 
         [Parameter]
         public bool Dark { get; set; }

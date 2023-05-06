@@ -2,7 +2,7 @@
 {
     public partial class BChip : BGroupItem<ItemGroupBase>, IRoutable
     {
-        protected IRoutable _router;
+        protected IRoutable Router;
 
         public BChip() : base(GroupType.ChipGroup)
         {
@@ -12,6 +12,7 @@
         public NavigationManager NavigationManager { get; set; }
 
         [Parameter]
+        [ApiDefaultValue(true)]
         public bool Active { get; set; } = true;
 
         [Parameter]
@@ -21,10 +22,11 @@
         public string? CloseIcon { get; set; }
 
         [Parameter]
-        public string CloseLabel { get; set; } = "Close";
+        [ApiDefaultValue("Close")]
+        public string? CloseLabel { get; set; } = "Close";
 
         [Parameter]
-        public string Href { get; set; }
+        public string? Href { get; set; }
 
         [Parameter]
         public bool Link { get; set; }
@@ -36,10 +38,11 @@
         public EventCallback<MouseEventArgs> OnCloseClick { get; set; }
 
         [Parameter]
-        public string Tag { get; set; } = "span";
+        [ApiDefaultValue("span")]
+        public string? Tag { get; set; } = "span";
 
         [Parameter]
-        public string Target { get; set; }
+        public string? Target { get; set; }
 
         [Parameter]
         public bool Light { get; set; }
@@ -70,19 +73,19 @@
             }
         }
 
-        public bool IsClickable => _router.IsClickable || Matched;
+        public bool IsClickable => Router.IsClickable || Matched;
 
-        public bool IsLink => _router.IsLink;
+        public bool IsLink => Router.IsLink;
 
-        public int Tabindex => _router.Tabindex;
+        public int Tabindex => Router.Tabindex;
 
         protected override void OnParametersSet()
         {
             base.OnParametersSet();
 
-            _router = new Router(this);
+            Router = new Router(this);
 
-            (Tag, Attributes) = _router.GenerateRouteLink();
+            (Tag, Attributes) = Router.GenerateRouteLink();
         }
 
         protected override bool AfterHandleEventShouldRender() => false;

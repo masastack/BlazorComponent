@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface IChip : IHasProviderComponent
     {
-        RenderFragment ChildContent { get; }
+        RenderFragment? ChildContent { get; }
 
         bool Filter => default;
 

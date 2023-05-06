@@ -2,6 +2,6 @@
 {
     public class StyleBuilder : BuilderBase
     {
-        public string Style => _mapper.GetStyle();
+        public string? Style => Mapper.GetStyle();
     }
 }

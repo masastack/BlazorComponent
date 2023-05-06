@@ -1,6 +1,4 @@
-﻿using Microsoft.JSInterop;
-
-namespace BlazorComponent.I18n;
+﻿namespace BlazorComponent.I18n;
 
 public class CookieStorage
 {

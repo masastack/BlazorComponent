@@ -1,14 +1,12 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface ISnackbar : IHasProviderComponent
     {
-        RenderFragment ChildContent { get; }
+        RenderFragment? ChildContent { get; }
 
-        string Action => default;
+        string? Action => default;
 
-        RenderFragment ActionContent { get; }
+        RenderFragment? ActionContent { get; }
 
         bool Value { get; }
     }

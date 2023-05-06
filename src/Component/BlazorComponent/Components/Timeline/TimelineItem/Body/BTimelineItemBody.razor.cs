@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BTimelineItemBody<TTimelineItem> where TTimelineItem : ITimelineItem
     {
-        public RenderFragment ComponentChildContent => Component.ChildContent;
+        public RenderFragment? ComponentChildContent => Component.ChildContent;
     }
 }

@@ -17,25 +17,25 @@
                  .Apply(typeof(BInputAppendSlot<,>), typeof(BInputAppendSlot<TValue, IInput<TValue>>));
         }
 
-        public static ComponentAbstractProvider ApplyInputPrependIcon(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>>? propertiesAction = null)
+        public static ComponentAbstractProvider ApplyInputPrependIcon(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object?>>? propertiesAction = null)
         {
             return abstractProvider
                 .Apply(typeof(BIcon), type, "prepend-icon", propertiesAction);
         }
 
-        public static ComponentAbstractProvider ApplyInputLabel(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>>? propertiesAction = null)
+        public static ComponentAbstractProvider ApplyInputLabel(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object?>>? propertiesAction = null)
         {
             return abstractProvider
                 .Apply(typeof(BLabel), type, propertiesAction);
         }
 
-        public static ComponentAbstractProvider ApplyInputMessages(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>>? propertiesAction = null)
+        public static ComponentAbstractProvider ApplyInputMessages(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object?>>? propertiesAction = null)
         {
             return abstractProvider
                 .Apply(typeof(BMessages), type, propertiesAction);
         }
 
-        public static ComponentAbstractProvider ApplyInputAppendIcon(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object>>? propertiesAction = null)
+        public static ComponentAbstractProvider ApplyInputAppendIcon(this ComponentAbstractProvider abstractProvider, Type type, Action<Dictionary<string, object?>>? propertiesAction = null)
         {
             return abstractProvider
                 .Apply(typeof(BIcon), type, "append-icon", propertiesAction);

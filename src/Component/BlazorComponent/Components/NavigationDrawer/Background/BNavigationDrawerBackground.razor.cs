@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BNavigationDrawerBackground<TNavigationDrawer> where TNavigationDrawer : INavigationDrawer
     {

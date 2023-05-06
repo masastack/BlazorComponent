@@ -36,13 +36,13 @@ namespace BlazorComponent
         public IEnumerable<TItem> SelectedItems { get; set; }
 
         [Parameter]
-        public RenderFragment NoDataContent { get; set; }
+        public RenderFragment? NoDataContent { get; set; }
 
         [Parameter]
-        public RenderFragment PrependItemContent { get; set; }
+        public RenderFragment? PrependItemContent { get; set; }
 
         [Parameter]
-        public RenderFragment AppendItemContent { get; set; }
+        public RenderFragment? AppendItemContent { get; set; }
 
         [Parameter]
         public int SelectedIndex { get; set; }

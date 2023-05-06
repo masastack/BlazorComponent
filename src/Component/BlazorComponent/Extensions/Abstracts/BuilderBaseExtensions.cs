@@ -7,30 +7,30 @@
         {
             if (name != null)
             {
-                builder._mapper.TryAdd(() => name, () => true);
+                builder.Mapper.TryAdd(() => name, () => true);
             }
 
             return builder;
         }
 
-        public static TBuilder Add<TBuilder>(this TBuilder builder, Func<string> funcName)
+        public static TBuilder Add<TBuilder>(this TBuilder builder, Func<string?> funcName)
             where TBuilder : BuilderBase
         {
-            builder._mapper.TryAdd(funcName, () => true);
+            builder.Mapper.TryAdd(funcName, () => true);
             return builder;
         }
 
-        public static TBuilder AddIf<TBuilder>(this TBuilder builder, Func<string> funcName, Func<bool> func)
+        public static TBuilder AddIf<TBuilder>(this TBuilder builder, Func<string?> funcName, Func<bool> func)
             where TBuilder : BuilderBase
         {
-            builder._mapper.TryAdd(funcName, func);
+            builder.Mapper.TryAdd(funcName, func);
             return builder;
         }
 
         public static TBuilder AddIf<TBuilder>(this TBuilder builder, string? name, Func<bool> func)
             where TBuilder : BuilderBase
         {
-            builder._mapper.TryAdd(() => name, func);
+            builder.Mapper.TryAdd(() => name, func);
             return builder;
         }
 
@@ -41,7 +41,7 @@
 
             if (!item.Equals(default))
             {
-                builder._mapper.TryAdd(item.funcName, item.func);
+                builder.Mapper.TryAdd(item.funcName, item.func);
             }
 
             return builder;
@@ -54,7 +54,7 @@
 
             if (!item.Equals(default))
             {
-                builder._mapper.TryAdd(() => item.name, item.func);
+                builder.Mapper.TryAdd(() => item.name, item.func);
             }
 
             return builder;
@@ -63,13 +63,17 @@
         public static TBuilder Clear<TBuilder>(this TBuilder builder)
             where TBuilder : BuilderBase
         {
-            builder._mapper.Clear();
+            builder.Mapper.Clear();
             return builder;
         }
 
-        public static string? GetClass(this Dictionary<Func<string>, Func<bool>> mapper)
+        public static string? GetClass(this Dictionary<Func<string?>, Func<bool>> mapper)
         {
-            var classList = mapper.Where(i => i.Value() && !string.IsNullOrWhiteSpace(i.Key())).Select(i => i.Key()?.Trim());
+            var classList = mapper
+                            .Where(i => i.Value() && !string.IsNullOrWhiteSpace(i.Key()))
+                            .Select(i => i.Key()?.Trim())
+                            .ToList();
+
             if (!classList.Any())
             {
                 //In this case,style will never render as class="" but nothing
@@ -79,9 +83,13 @@
             return string.Join(" ", classList);
         }
 
-        public static string GetStyle(this Dictionary<Func<string>, Func<bool>> mapper)
+        public static string? GetStyle(this Dictionary<Func<string?>, Func<bool>> mapper)
         {
-            var styleList = mapper.Where(i => i.Value() && !string.IsNullOrWhiteSpace(i.Key())).Select(i => i.Key()?.Trim().Trim(';'));
+            var styleList = mapper
+                            .Where(i => i.Value() && !string.IsNullOrWhiteSpace(i.Key()))
+                            .Select(i => i.Key()?.Trim().Trim(';'))
+                            .ToList();
+
             if (!styleList.Any())
             {
                 //In this case,style will never render as style="" but nothing

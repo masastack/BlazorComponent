@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BDataTableDefaultSlot<TItem, TDataTable> where TDataTable : IDataTable<TItem>
     {
-        public RenderFragment TopContent => Component.TopContent;
+        public RenderFragment? TopContent => Component.TopContent;
 
         public bool HasTop => Component.HasTop;
 

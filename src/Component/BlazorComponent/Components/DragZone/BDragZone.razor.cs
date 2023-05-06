@@ -3,13 +3,13 @@
     public partial class BDragZone : BDomComponentBase, IThemeable
     {
         [Inject]
-        public BDragDropService DragDropService { get; set; }
+        public BDragDropService DragDropService { get; set; } = null!;
 
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
         public bool Dark { get; set; }
@@ -21,24 +21,23 @@
         public List<BDragItem> Items { get; set; } = new();
 
         private bool _firstRender = true;
-
-        protected bool _isRender = true;
+        protected bool IsRender = true;
 
         protected override void OnParametersSet()
         {
-            _isRender = true;
+            IsRender = true;
             base.OnParametersSet();
         }
 
         protected override Task OnParametersSetAsync()
         {
-            _isRender = true;
+            IsRender = true;
             return base.OnParametersSetAsync();
         }
 
         protected override bool ShouldRender()
         {
-            return base.ShouldRender() && _isRender;
+            return base.ShouldRender() && IsRender;
         }
 
         protected override void OnAfterRender(bool firstRender)

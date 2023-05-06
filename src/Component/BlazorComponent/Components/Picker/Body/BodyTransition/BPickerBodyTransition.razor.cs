@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BPickerBodyTransition<TPicker> where TPicker : IPicker
     {
@@ -8,6 +6,6 @@ namespace BlazorComponent
 
         public bool NoTitle => Component.NoTitle;
 
-        public RenderFragment ComponentChildContent => Component.ChildContent;
+        public RenderFragment? ComponentChildContent => Component.ChildContent;
     }
 }

@@ -14,7 +14,7 @@
 
         public bool ShowAdjacentMonths => Component.ShowAdjacentMonths;
 
-        public List<List<(string Type, Dictionary<string, object> Attrs)>> Children
+        public List<List<(string Type, Dictionary<string, object?> Attrs)>> Children
         {
             get
             {

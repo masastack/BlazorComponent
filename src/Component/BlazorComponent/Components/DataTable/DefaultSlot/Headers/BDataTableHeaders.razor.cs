@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BDataTableHeaders<TItem, TDataTable> where TDataTable : IDataTable<TItem>
     {
-        public RenderFragment HeaderContent => Component.HeaderContent;
+        public RenderFragment? HeaderContent => Component.HeaderContent;
 
         public bool HideDefaultHeader => Component.HideDefaultHeader;
 

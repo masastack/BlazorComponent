@@ -6,19 +6,19 @@ namespace BlazorComponent
     public class Element : ComponentBase
     {
         [Parameter]
-        public string Tag { get; set; } = "div";
+        public string? Tag { get; set; } = "div";
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
-        public string Class { get; set; }
+        public string? Class { get; set; }
 
         [Parameter]
-        public string Style { get; set; }
+        public string? Style { get; set; }
 
         [Parameter]
-        public Action<ElementReference> ReferenceCaptureAction { get; set; }
+        public Action<ElementReference>? ReferenceCaptureAction { get; set; }
 
         [Parameter(CaptureUnmatchedValues = true)]
         public virtual IDictionary<string, object> AdditionalAttributes { get; set; } = new Dictionary<string, object>();
@@ -27,9 +27,9 @@ namespace BlazorComponent
 
         protected bool ElementReferenceChanged { get; set; }
 
-        protected virtual string ComputedClass => Class;
+        protected virtual string? ComputedClass => Class;
 
-        protected virtual string ComputedStyle => Style;
+        protected virtual string? ComputedStyle => Style;
 
         public ElementReference Reference
         {
@@ -48,7 +48,7 @@ namespace BlazorComponent
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
             var sequence = 0;
-            builder.OpenElement(sequence++, Tag);
+            builder.OpenElement(sequence++, (Tag ?? "div"));
 
             builder.AddMultipleAttributes(sequence++, AdditionalAttributes);
             builder.AddAttribute(sequence++, "class", ComputedClass);

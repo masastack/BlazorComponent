@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public abstract class BGroupItem<TGroup> : BGroupable<TGroup>
         where TGroup : ItemGroupBase
@@ -14,6 +12,6 @@ namespace BlazorComponent
         }
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
     }
 }

@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BTimelineItemOpposite<TTimelineItem> where TTimelineItem : ITimelineItem
     {
-        public RenderFragment OppositeContent => Component.OppositeContent;
+        public RenderFragment? OppositeContent => Component.OppositeContent;
     }
 }

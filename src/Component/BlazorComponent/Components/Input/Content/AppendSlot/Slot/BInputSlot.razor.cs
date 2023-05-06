@@ -10,7 +10,7 @@ public partial class BInputSlot<TValue, TInput> : ComponentPartBase<TInput>
     public string Location { get; set; }
 
     [Parameter]
-    public RenderFragment ChildContent { get; set; }
+    public RenderFragment? ChildContent { get; set; }
 
     [Parameter]
     public Action<ElementReference> ReferenceCapture { get; set; }

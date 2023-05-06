@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent;
+﻿namespace BlazorComponent;
 
 // TODO: remove 'onmouseleave' and 'onmouseenter' when the target framework is updated to .NET 7
 [EventHandler("onmouseleave", typeof(MouseEventArgs), true, true)]

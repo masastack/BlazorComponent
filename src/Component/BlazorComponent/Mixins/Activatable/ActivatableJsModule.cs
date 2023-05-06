@@ -1,6 +1,4 @@
 ﻿using BlazorComponent.JSInterop;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.JSInterop;
 
 namespace BlazorComponent;
 

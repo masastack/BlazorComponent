@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface ITimePicker : IHasProviderComponent
     {
@@ -8,9 +6,9 @@ namespace BlazorComponent
 
         bool AmPmInTitle { get; }
         
-        string AmText { get; }
+        string? AmText { get; }
         
-        string PmText { get; }
+        string? PmText { get; }
 
         bool IsAmPm { get; }
 

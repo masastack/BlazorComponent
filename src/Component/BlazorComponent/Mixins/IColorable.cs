@@ -2,6 +2,6 @@
 {
     public interface IColorable
     {
-        string Color { get; }
+        string? Color { get; }
     }
 }

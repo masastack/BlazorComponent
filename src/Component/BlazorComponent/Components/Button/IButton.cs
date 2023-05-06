@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface IButton : IHasProviderComponent
     {
         bool Block { get; }
 
-        RenderFragment ChildContent { get; }
+        RenderFragment? ChildContent { get; }
 
         string? Color { get; }
 
@@ -14,7 +12,7 @@ namespace BlazorComponent
 
         StringNumber? Height { get; }
 
-        RenderFragment LoaderContent { get; }
+        RenderFragment? LoaderContent { get; }
 
         bool Loading { get; }
 

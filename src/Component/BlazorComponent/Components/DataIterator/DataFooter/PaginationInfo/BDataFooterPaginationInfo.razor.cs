@@ -1,13 +1,11 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BDataFooterPaginationInfo<TComponent> where TComponent : IDataFooter
     {
-        public DataPagination Pagination => Component.Pagination;
+        public DataPagination? Pagination => Component.Pagination;
 
-        public RenderFragment<(int PageStart, int PageStop, int ItemsLength)> PageTextContent => Component.PageTextContent;
+        public RenderFragment<(int PageStart, int PageStop, int ItemsLength)>? PageTextContent => Component.PageTextContent;
 
-        public string PageText => Component.PageText;
+        public string? PageText => Component.PageText;
     }
 }

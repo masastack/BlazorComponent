@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface ISimpleTable : IHasProviderComponent
     {
-        RenderFragment WrapperContent { get; }
+        RenderFragment? WrapperContent { get; }
 
-        RenderFragment ChildContent { get; }
+        RenderFragment? ChildContent { get; }
 
         Task HandleOnScrollAsync(EventArgs args);
 

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BTextFieldAffix<TValue, TInput> where TInput : ITextField<TValue>
     {
@@ -8,7 +6,7 @@ namespace BlazorComponent
         public string Type { get; set; }
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
         public Action<ElementReference> ReferenceCapture { get; set; }

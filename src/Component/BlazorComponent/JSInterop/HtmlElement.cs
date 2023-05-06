@@ -1,6 +1,4 @@
-﻿using Microsoft.JSInterop;
-
-namespace BlazorComponent.Web
+﻿namespace BlazorComponent.Web
 {
     public class HtmlElement : JSObject
     {

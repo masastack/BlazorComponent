@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface IOverlay : IHasProviderComponent
     {
         bool Value { get; }
 
-        RenderFragment ChildContent { get; }
+        RenderFragment? ChildContent { get; }
     }
 }

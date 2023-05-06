@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Web;
-using Microsoft.JSInterop;
-
-namespace BlazorComponent;
+﻿namespace BlazorComponent;
 
 public class InputJsInterop : IAsyncDisposable
 {

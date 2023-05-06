@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public abstract partial class BSkeletonLoader : BDomComponentBase
     {
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
         public bool Dark { get; set; }
@@ -34,6 +32,6 @@ namespace BlazorComponent
             }
         }
 
-        public RenderFragment SkeletonLoaderContent { get; set; }
+        public RenderFragment? SkeletonLoaderContent { get; set; }
     }
 }

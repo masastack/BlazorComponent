@@ -1,5 +1,4 @@
 ﻿using BlazorComponent.JSInterop;
-using Microsoft.JSInterop;
 
 namespace BlazorComponent.Web
 {

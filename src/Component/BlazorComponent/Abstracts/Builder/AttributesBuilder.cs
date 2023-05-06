@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public class AttributesBuilder
     {
@@ -26,7 +24,7 @@ namespace BlazorComponent
             }
         }
 
-        public AttributesBuilder SetAttributes(Dictionary<string, object> attributes)
+        public AttributesBuilder SetAttributes(Dictionary<string, object?> attributes)
         {
             //We may combine this with other attributes
             _attributes = attributes;

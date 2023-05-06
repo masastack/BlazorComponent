@@ -5,13 +5,13 @@ namespace BlazorComponent
     public partial class BSimpleTable
     {
         [Parameter]
-        public RenderFragment TopContent { get; set; }
+        public RenderFragment? TopContent { get; set; }
 
         [Parameter]
-        public RenderFragment BottomContent { get; set; }
+        public RenderFragment? BottomContent { get; set; }
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
         public bool Dark { get; set; }

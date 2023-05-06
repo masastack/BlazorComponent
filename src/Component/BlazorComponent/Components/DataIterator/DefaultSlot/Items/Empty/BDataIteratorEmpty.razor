@@ -5,47 +5,19 @@
 
 @if (!Items.Any() && Loading == true)
 {
-    var childContent = (RenderFragment)null;
+    var childContent = LoadingContent ?? RenderText(LoadingText);
 
-    if (LoadingContent != null)
-    {
-        childContent = LoadingContent;
-    }
-    else
-    {
-        childContent = RenderText(LoadingText);
-    }
-
-    @RenderPart(typeof(BDataIteratorEmptyWrapper<,>),childContent)
+    @RenderPart(typeof(BDataIteratorEmptyWrapper<,>), childContent)
 }
 else if (!Items.Any())
 {
-    var childContent = (RenderFragment)null;
+    var childContent = NoDataContent ?? RenderText(NoDataText);
 
-    if (NoDataContent != null)
-    {
-        childContent = NoDataContent;
-    }
-    else
-    {
-        childContent = RenderText(NoDataText);
-    }
-
-    @RenderPart(typeof(BDataIteratorEmptyWrapper<,>),childContent)
+    @RenderPart(typeof(BDataIteratorEmptyWrapper<,>), childContent)
 }
 else if (Pagination.ItemsLength == 0)
 {
-    var childContent = (RenderFragment)null;
+    var childContent = NoResultsContent ?? RenderText(NoResultsText);
 
-    if (NoResultsContent != null)
-    {
-        childContent = NoResultsContent;
-    }
-    else
-    {
-        childContent = RenderText(NoResultsText);
-    }
-
-    @RenderPart(typeof(BDataIteratorEmptyWrapper<,>),childContent)
+    @RenderPart(typeof(BDataIteratorEmptyWrapper<,>), childContent)
 }
-

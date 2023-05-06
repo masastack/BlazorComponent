@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BTreeviewNodeLabel<TItem, TKey, TTreeviewNode> where TTreeviewNode : ITreeviewNode<TItem, TKey>
     {
@@ -8,7 +6,7 @@ namespace BlazorComponent
 
         public string Text => Component.Text;
 
-        public RenderFragment ComputedLabelContent => LabelContent?.Invoke(new TreeviewItem<TItem>()
+        public RenderFragment? ComputedLabelContent => LabelContent?.Invoke(new TreeviewItem<TItem>()
         {
             Item = Component.Item,
             Leaf = Component.IsLeaf,

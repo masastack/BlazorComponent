@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent.Web
+﻿namespace BlazorComponent.Web
 {
     public static class DocumentExtensions
     {

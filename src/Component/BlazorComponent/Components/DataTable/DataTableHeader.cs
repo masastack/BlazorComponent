@@ -23,9 +23,9 @@
 
         public bool Divider { get; set; }
 
-        public string Value { get; set; }
+        public string? Value { get; set; }
 
-        public string Text { get; set; }
+        public string? Text { get; set; }
 
         public bool Sortable { get; set; } = true;
 
@@ -34,10 +34,10 @@
         public bool Groupable { get; set; } = true;
         
         // TODO: non implementation
-        public string Class { get; set; }
+        public string? Class { get; set; }
 
-        public string CellClass { get; set; }
+        public string? CellClass { get; set; }
 
-        public StringNumber Width { get; set; }
+        public StringNumber? Width { get; set; }
     }
 }

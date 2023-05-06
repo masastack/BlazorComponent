@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface IInput<TValue> : IHasProviderComponent
     {
@@ -23,13 +20,13 @@ namespace BlazorComponent
             }
         }
 
-        RenderFragment ChildContent { get; }
+        RenderFragment? ChildContent { get; }
 
         string Id { get; }
 
-        string Label => default;
+        string? Label => default;
 
-        RenderFragment LabelContent => default;
+        RenderFragment? LabelContent => default;
 
         bool HasLabel => default;
 
@@ -63,7 +60,7 @@ namespace BlazorComponent
             }
         }
 
-        TValue InternalValue { get; }
+        TValue? InternalValue { get; }
 
         EventCallback<MouseEventArgs> OnAppendClick { get; }
 

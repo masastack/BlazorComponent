@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BTooltipContent<TTooltip> where TTooltip : ITooltip
     {
@@ -33,6 +31,6 @@ namespace BlazorComponent
 
         public string Transition => Component.Transition;
 
-        public RenderFragment ComponentChildContent => Component.ChildContent;
+        public RenderFragment? ComponentChildContent => Component.ChildContent;
     }
 }

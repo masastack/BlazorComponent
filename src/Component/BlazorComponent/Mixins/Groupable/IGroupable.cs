@@ -10,9 +10,9 @@
 
         ElementReference Ref { get; set; }
 
-        string Class { get; set; }
+        string? Class { get; set; }
 
-        string Style { get; set; }
+        string? Style { get; set; }
 
         Task RefreshState();
     }

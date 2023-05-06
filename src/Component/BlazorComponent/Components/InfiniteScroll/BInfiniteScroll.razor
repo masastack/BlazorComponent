@@ -1,7 +1,5 @@
 ﻿@namespace BlazorComponent
-@using Microsoft.Extensions.Logging
 @inherits BDomComponentBase
-@inject ILogger<BInfiniteScroll> Logger
 
 <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" @ref="Ref">
     @if (ChildContent != null)

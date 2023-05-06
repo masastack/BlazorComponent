@@ -70,7 +70,7 @@ public partial class BDialog : BBootable, IDependent, IAsyncDisposable
 
     protected bool ShowOverlay => !Fullscreen && !HideOverlay;
 
-    protected ElementReference? OverlayRef => ((BOverlay)Overlay)?.Ref;
+    protected ElementReference? OverlayRef => Overlay?.Ref;
 
     protected int StackMinZIndex { get; set; } = 200;
 
@@ -80,7 +80,7 @@ public partial class BDialog : BBootable, IDependent, IAsyncDisposable
 
     public ElementReference DialogRef { get; set; }
 
-    protected object Overlay { get; set; }
+    protected BOverlay? Overlay { get; set; }
 
     protected int ZIndex { get; set; }
 
@@ -157,12 +157,14 @@ public partial class BDialog : BBootable, IDependent, IAsyncDisposable
         return maxZindex > StackMinZIndex ? maxZindex : StackMinZIndex;
     }
 
-    public async Task Keydown(KeyboardEventArgs args)
+    public Task Keydown(KeyboardEventArgs args)
     {
         if (args.Key == "Escape")
         {
             Close();
         }
+
+        return Task.CompletedTask;
     }
 
     private void Close()
@@ -242,7 +244,11 @@ public partial class BDialog : BBootable, IDependent, IAsyncDisposable
         {
             var elements = _dependents.SelectMany(dependent => dependent.DependentSelectors).ToList();
 
-            elements.Add(ContentRef.GetSelector());
+            var selector = ContentRef.GetSelector();
+            if (selector is not null)
+            {
+                elements.Add(selector);
+            }
 
             return elements;
         }

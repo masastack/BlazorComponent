@@ -13,6 +13,6 @@ namespace BlazorComponent
         public string Divider { get; set; } = "/";
 
         [Parameter]
-        public RenderFragment DividerContent { get; set; }
+        public RenderFragment? DividerContent { get; set; }
     }
 }

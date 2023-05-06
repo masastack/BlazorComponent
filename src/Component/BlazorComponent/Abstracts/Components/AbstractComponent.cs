@@ -14,7 +14,7 @@ namespace BlazorComponent
         public RenderFragment? ChildContent { get; set; }
 
         [Parameter(CaptureUnmatchedValues = true)]
-        public Dictionary<string, object> AdditionalAttributes { get; set; } = new Dictionary<string, object>();
+        public Dictionary<string, object> AdditionalAttributes { get; set; } = new();
 
         public object? Instance { get; private set; }
 
@@ -38,7 +38,7 @@ namespace BlazorComponent
                 builder.AddAttribute(sequence++, nameof(ChildContent), ChildContent);
             }
 
-            builder.AddComponentReferenceCapture(sequence++, component => Instance = component);
+            builder.AddComponentReferenceCapture(sequence, component => Instance = component);
 
             builder.CloseComponent();
         }

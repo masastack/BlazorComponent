@@ -5,10 +5,10 @@ namespace BlazorComponent
     public partial class BMessages : BDomComponentBase, IMessages
     {
         [Parameter]
-        public List<string> Value { get; set; }
+        public List<string>? Value { get; set; }
 
         [Parameter]
-        public RenderFragment<string> ChildContent { get; set; }
+        public RenderFragment<string>? ChildContent { get; set; }
 
         [Parameter]
         public bool Dark { get; set; }

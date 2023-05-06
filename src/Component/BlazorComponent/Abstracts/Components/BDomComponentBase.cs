@@ -10,12 +10,12 @@ namespace BlazorComponent
         {
             _watcher = new PropertyWatcher(GetType());
 
-            CssProvider.StaticClass = () => Class;
-            CssProvider.StaticStyle = () => Style;
+            CssProvider = new(() => Class, () => Style);
+            AbstractProvider = new();
         }
 
         [Inject]
-        private ILoggerFactory LoggerFactory { get; set; }
+        private ILoggerFactory LoggerFactory { get; set; } = null!;
 
         [Inject]
         [NotNull]
@@ -28,19 +28,19 @@ namespace BlazorComponent
         /// Specifies one or more class names for an DOM element.
         /// </summary>
         [Parameter]
-        public string Class { get; set; } = "";
+        public string? Class { get; set; }
 
         /// <summary>
         /// Specifies an inline style for an DOM element.
         /// </summary>
         [Parameter]
-        public string Style { get; set; } = "";
+        public string? Style { get; set; }
 
         /// <summary>
         /// Custom attributes
         /// </summary>
         [Parameter(CaptureUnmatchedValues = true)]
-        public virtual IDictionary<string, object> Attributes { get; set; } = new Dictionary<string, object>();
+        public virtual IDictionary<string, object?> Attributes { get; set; } = new Dictionary<string, object?>();
 
         protected const int BROWSER_RENDER_INTERVAL = 16;
 
@@ -52,9 +52,9 @@ namespace BlazorComponent
 
         protected ILogger Logger => LoggerFactory.CreateLogger(GetType());
 
-        public ComponentCssProvider CssProvider { get; } = new();
+        public ComponentCssProvider CssProvider { get; }
 
-        public ComponentAbstractProvider AbstractProvider { get; } = new();
+        public ComponentAbstractProvider AbstractProvider { get; }
 
         /// <summary>
         /// Returned ElementRef reference for DOM element.
@@ -200,12 +200,12 @@ namespace BlazorComponent
             });
         }
 
-        protected Dictionary<string, object> GetAttributes(Type type, object? data = null)
+        protected Dictionary<string, object?> GetAttributes(Type type, object? data = null)
         {
             return AbstractProvider.GetMetadata(type, data).Attributes;
         }
 
-        protected Dictionary<string, object> GetAttributes(Type type, string name, object? data = null)
+        protected Dictionary<string, object?> GetAttributes(Type type, string name, object? data = null)
         {
             return AbstractProvider.GetMetadata(type, name, data).Attributes;
         }

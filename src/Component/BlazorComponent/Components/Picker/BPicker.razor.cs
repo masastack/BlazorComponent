@@ -5,13 +5,13 @@ namespace BlazorComponent
     public partial class BPicker : BDomComponentBase
     {
         [Parameter]
-        public RenderFragment TitleContent { get; set; }
+        public RenderFragment? TitleContent { get; set; }
 
         [Parameter]
-        public RenderFragment ActionsContent { get; set; }
+        public RenderFragment? ActionsContent { get; set; }
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
         public bool Dark { get; set; }

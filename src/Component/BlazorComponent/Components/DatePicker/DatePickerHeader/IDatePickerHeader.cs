@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface IDatePickerHeader : IHasProviderComponent
     {
@@ -16,7 +14,7 @@ namespace BlazorComponent
 
         Dictionary<string, object> ButtonAttrs { get; }
 
-        RenderFragment ChildContent { get; }
+        RenderFragment? ChildContent { get; }
 
         Func<DateOnly, string> Formatter { get; }
     }

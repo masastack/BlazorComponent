@@ -24,16 +24,16 @@ namespace BlazorComponent
         }
 
         [Parameter]
-        public EventCallback<TValue> ValueChanged { get; set; }
+        public EventCallback<TValue?> ValueChanged { get; set; }
 
         [Parameter]
-        public Expression<Func<TValue>> ValueExpression { get; set; }
+        public Expression<Func<TValue?>>? ValueExpression { get; set; }
 
         [CascadingParameter]
-        public BForm Form { get; set; }
+        public BForm? Form { get; set; }
 
         [CascadingParameter]
-        public EditContext EditContext { get; set; }
+        public EditContext? EditContext { get; set; }
 
         [Parameter]
         public bool Error { get; set; }
@@ -42,10 +42,10 @@ namespace BlazorComponent
         public int ErrorCount { get; set; } = 1;
 
         [Parameter]
-        public List<string> ErrorMessages { get; set; } = new();
+        public List<string>? ErrorMessages { get; set; } = new();
 
         [Parameter]
-        public List<string> Messages { get; set; } = new();
+        public List<string>? Messages { get; set; } = new();
 
         [Parameter]
         public EventCallback<TValue> OnInput { get; set; }
@@ -54,7 +54,7 @@ namespace BlazorComponent
         public bool Success { get; set; }
 
         [Parameter]
-        public List<string> SuccessMessages { get; set; }
+        public List<string>? SuccessMessages { get; set; }
 
         [Parameter]
         public IEnumerable<Func<TValue, StringBoolean>> Rules
@@ -129,17 +129,17 @@ namespace BlazorComponent
         {
             get
             {
-                if (ErrorMessages.Count > 0)
+                if (ErrorMessages?.Count > 0)
                 {
                     return ErrorMessages;
                 }
 
-                if (SuccessMessages != null && SuccessMessages.Count > 0)
+                if (SuccessMessages?.Count > 0)
                 {
                     return SuccessMessages;
                 }
 
-                if (Messages != null && Messages.Count > 0)
+                if (Messages?.Count > 0)
                 {
                     return Messages;
                 }

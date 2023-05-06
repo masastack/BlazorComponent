@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BRangeSliderThumbContainer<TValue, TRangeSlider> where TRangeSlider : IRangeSlider<TValue>
     {

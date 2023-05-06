@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface IBreadcrumbsDivider : IHasProviderComponent
     {
-        string Divider { get; }
+        string? Divider { get; }
 
-        RenderFragment DividerContent { get; }
+        RenderFragment? DividerContent { get; }
     }
 }

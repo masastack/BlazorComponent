@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BBreadcrumbs : BDomComponentBase, IBreadcrumbs, IBreadcrumbsDivider, IThemeable, IAncestorRoutable
     {
@@ -8,11 +6,11 @@ namespace BlazorComponent
 
         public bool RenderDivider { get; protected set; } = true;
 
-        [Parameter]
-        public string Divider { get; set; } = "/";
+        [Parameter, ApiDefaultValue("/")]
+        public string? Divider { get; set; } = "/";
 
         [Parameter]
-        public RenderFragment DividerContent { get; set; }
+        public RenderFragment? DividerContent { get; set; }
 
         [Parameter]
         public bool Routable { get; set; }
@@ -21,10 +19,10 @@ namespace BlazorComponent
         public IReadOnlyList<BreadcrumbItem> Items { get; set; } = new List<BreadcrumbItem>();
 
         [Parameter]
-        public RenderFragment<BreadcrumbItem> ItemContent { get; set; }
+        public RenderFragment<BreadcrumbItem>? ItemContent { get; set; }
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
         public bool Dark { get; set; }
@@ -35,7 +33,7 @@ namespace BlazorComponent
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
 
-        protected bool IsDark
+        public bool IsDark
         {
             get
             {

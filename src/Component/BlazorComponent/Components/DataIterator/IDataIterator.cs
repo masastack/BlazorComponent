@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface IDataIterator<TItem> : IHasProviderComponent, ILoadable
     {
         bool IsEmpty { get; }
 
-        RenderFragment ChildContent { get; }
+        RenderFragment? ChildContent { get; }
 
         RenderFragment<ItemProps<TItem>> ItemContent { get; }
 
@@ -14,23 +12,23 @@ namespace BlazorComponent
 
         bool HideDefaultFooter { get; }
 
-        RenderFragment HeaderContent { get; }
+        RenderFragment? HeaderContent { get; }
 
-        RenderFragment FooterContent { get; }
+        RenderFragment? FooterContent { get; }
 
         IEnumerable<TItem> Items { get; }
 
         DataPagination Pagination { get; }
 
-        RenderFragment LoadingContent { get; }
+        RenderFragment? LoadingContent { get; }
 
         string LoadingText { get; }
 
-        RenderFragment NoDataContent { get; }
+        RenderFragment? NoDataContent { get; }
 
         string NoDataText { get; }
 
-        RenderFragment NoResultsContent { get; }
+        RenderFragment? NoResultsContent { get; }
 
         string NoResultsText { get; }
 

@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BDatePickerTitleTitleDate<TDatePickerTitle> where TDatePickerTitle : IDatePickerTitle
     {

@@ -13,7 +13,7 @@ namespace BlazorComponent
         public bool IsInNav { get; set; }
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
         // TODO: bool? _expand
         [Parameter]
@@ -23,6 +23,7 @@ namespace BlazorComponent
         public bool Routable { get; set; }
 
         [Parameter]
+        [ApiDefaultValue("div")]
         public virtual string Tag { get; set; } = "div";
 
         [Parameter]
@@ -35,6 +36,7 @@ namespace BlazorComponent
         public bool CascadingIsDark { get; set; }
 
         [Parameter]
+        [ApiDefaultValue(true)]
         public bool If { get; set; } = true;
 
         public bool IsDark

@@ -253,8 +253,10 @@ internal sealed class ValidationEventSubscriptions : IDisposable
         }
     }
 
-    private void AddValidationMessage(in FieldIdentifier fieldIdentifier, string message)
+    private void AddValidationMessage(in FieldIdentifier fieldIdentifier, string? message)
     {
+        if (message == null) return;
+        
         if (EnableI18n)
         {
             message = _i18n.T(message);

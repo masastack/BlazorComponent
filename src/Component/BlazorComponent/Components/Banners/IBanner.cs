@@ -1,17 +1,15 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface IBanner : IHasProviderComponent
     {
         bool HasIcon => default;
 
-        string Icon => default;
+        string? Icon => default;
 
-        RenderFragment ChildContent { get; }
+        RenderFragment? ChildContent { get; }
 
-        RenderFragment IconContent { get; }
+        RenderFragment? IconContent { get; }
 
-        RenderFragment ComputedActionsContent { get; }
+        RenderFragment? ComputedActionsContent { get; }
     }
 }

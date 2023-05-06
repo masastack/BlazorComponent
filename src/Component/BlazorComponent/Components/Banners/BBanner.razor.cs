@@ -2,12 +2,13 @@
 
 namespace BlazorComponent
 {
-    public partial class BBanner : BDomComponentBase, IHasProviderComponent, IThemeable
+    public partial class BBanner : BDomComponentBase, IThemeable
     {
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
+        [ApiDefaultValue(true)]
         public bool Value { get; set; } = true;
 
         [Parameter]

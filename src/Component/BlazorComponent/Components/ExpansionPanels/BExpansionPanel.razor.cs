@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BExpansionPanel : BGroupItem<BExpansionPanels>
     {
@@ -11,11 +9,11 @@ namespace BlazorComponent
         [Parameter]
         public bool Readonly { get; set; }
 
-        public bool NextActive => ItemGroup.NextActiveKeys.Contains(Value);
+        public bool NextActive => ItemGroup != null && ItemGroup.NextActiveKeys.Contains(Value);
 
-        public bool IsDisabled => ItemGroup.Disabled || Disabled;
+        public bool IsDisabled => ItemGroup != null && (ItemGroup.Disabled || Disabled);
 
-        public bool IsReadonly => ItemGroup.Readonly || Readonly;
+        public bool IsReadonly => ItemGroup != null && (ItemGroup.Readonly || Readonly);
 
         public async Task Toggle()
         {

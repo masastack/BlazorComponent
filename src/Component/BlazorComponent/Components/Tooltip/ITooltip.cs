@@ -1,15 +1,13 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface ITooltip : IHasProviderComponent, IActivatable, IMenuable
     {
         ElementReference ContentElement { set; }
 
-        string Transition { get; }
+        string? Transition { get; }
 
-        RenderFragment ChildContent { get; }
+        RenderFragment? ChildContent { get; }
 
-        RenderFragment<ActivatorProps> ActivatorContent { get; }
+        RenderFragment<ActivatorProps>? ActivatorContent { get; }
     }
 }

@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BDataTableHeaderSelectAll<TDataTableHeader> where TDataTableHeader : IDataTableHeader
     {
-        public RenderFragment DataTableSelectContent => Component.DataTableSelectContent;
+        public RenderFragment? DataTableSelectContent => Component.DataTableSelectContent;
     }
 }

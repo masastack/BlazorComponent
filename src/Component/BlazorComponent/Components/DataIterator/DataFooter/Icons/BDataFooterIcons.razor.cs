@@ -1,13 +1,10 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BDataFooterIcons<TComponent> where TComponent : IDataFooter
     {
         public bool ShowCurrentPage => Component.ShowCurrentPage;
 
-        public DataOptions Options => Component.Options;
+        public DataOptions? Options => Component.Options;
 
         public EventCallback<MouseEventArgs> HandleOnPreviousPageAsync => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnPreviousPageAsync);
 
@@ -19,18 +16,18 @@ namespace BlazorComponent
 
         public bool RTL => Component.RTL;
 
-        public string NextIcon => Component.NextIcon;
+        public string? NextIcon => Component.NextIcon;
 
-        public string PrevIcon => Component.PrevIcon;
+        public string? PrevIcon => Component.PrevIcon;
 
-        public string LastIcon => Component.LastIcon;
+        public string? LastIcon => Component.LastIcon;
 
-        public string FirstIcon => Component.FirstIcon;
+        public string? FirstIcon => Component.FirstIcon;
 
         public bool DisableNextPageIcon => Component.DisableNextPageIcon;
 
         public bool ShowFirstLastPage => Component.ShowFirstLastPage;
 
-        public DataPagination Pagination => Component.Pagination;
+        public DataPagination? Pagination => Component.Pagination;
     }
 }

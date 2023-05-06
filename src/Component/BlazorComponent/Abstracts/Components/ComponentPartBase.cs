@@ -1,5 +1,4 @@
 ﻿using BlazorComponent.Abstracts;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using System.Runtime.CompilerServices;
 
@@ -48,7 +47,7 @@ namespace BlazorComponent
             return AbstractProvider.GetPartContent(keyType, name, Component);
         }
 
-        protected RenderFragment? RenderPart(Type keyType, Dictionary<string, object> attributes)
+        protected RenderFragment? RenderPart(Type keyType, Dictionary<string, object?> attributes)
         {
             return AbstractProvider.GetPartContent(keyType, Component, builder =>
             {
@@ -113,20 +112,19 @@ namespace BlazorComponent
             return EventCallback.Factory.Create(Component, callback);
         }
 
-        protected Dictionary<string, object> GetAttributes(Type type, int index)
+        protected Dictionary<string, object?> GetAttributes(Type type, int index)
         {
             return AbstractProvider.GetMetadata(type, index).Attributes;
         }
 
-        protected Dictionary<string, object> GetAttributes(Type type, object? data = null)
+        protected Dictionary<string, object?> GetAttributes(Type type, object? data = null)
         {
             return AbstractProvider.GetMetadata(type, data).Attributes;
         }
 
-        protected Dictionary<string, object> GetAttributes(Type type, string name, object? data = null)
+        protected Dictionary<string, object?> GetAttributes(Type type, string name, object? data = null)
         {
-            var attrs = AbstractProvider.GetMetadata(type, name, data).Attributes;
-            return attrs;
+            return AbstractProvider.GetMetadata(type, name, data).Attributes;
         }
 
         protected virtual void BuildRenderTree(RenderTreeBuilder builder)

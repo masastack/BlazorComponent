@@ -1,16 +1,14 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface IPicker : IHasProviderComponent
     {
-        RenderFragment TitleContent { get; }
+        RenderFragment? TitleContent { get; }
 
-        RenderFragment ActionsContent { get; }
+        RenderFragment? ActionsContent { get; }
 
-        string Transition { get; }
+        string? Transition { get; }
 
-        RenderFragment ChildContent { get; }
+        RenderFragment? ChildContent { get; }
 
         bool NoTitle { get; }
     }

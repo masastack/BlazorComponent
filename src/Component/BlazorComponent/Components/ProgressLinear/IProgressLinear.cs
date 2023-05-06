@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface IProgressLinear : IHasProviderComponent
     {
@@ -8,6 +6,6 @@ namespace BlazorComponent
 
         double Value { get; }
 
-        RenderFragment<double> ChildContent { get; }
+        RenderFragment<double>? ChildContent { get; }
     }
 }

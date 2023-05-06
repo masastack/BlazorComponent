@@ -1,49 +1,48 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
-    public partial class BInput<TValue> : BDomComponentBase, IInput<TValue>
+    public partial class BInput<TValue> : BDomComponentBase
     {
         [Parameter]
-        public RenderFragment AppendContent { get; set; }
+        public RenderFragment? AppendContent { get; set; }
 
         [Parameter]
-        public virtual string AppendIcon { get; set; }
+        public virtual string? AppendIcon { get; set; }
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
-        public string Label
+        public string? Label
         {
-            get => GetValue<string>();
+            get => GetValue<string?>();
             set => SetValue(value);
         }
 
         [Parameter]
-        public virtual string PrependIcon { get; set; }
+        public virtual string? PrependIcon { get; set; }
 
         [Parameter]
-        public RenderFragment LabelContent { get; set; }
+        public RenderFragment? LabelContent { get; set; }
 
         [Parameter]
-        public RenderFragment PrependContent { get; set; }
+        public RenderFragment? PrependContent { get; set; }
 
         [Parameter]
+        [ApiDefaultValue(false)]
         public StringBoolean? HideDetails { get; set; } = false;
 
         [Parameter]
-        public string Hint { get; set; }
+        public string? Hint { get; set; }
 
         [Parameter]
         public bool PersistentHint { get; set; }
 
         [Parameter]
+        [ApiDefaultValue(false)]
         public StringBoolean Loading { get; set; } = false;
 
         [Parameter]
-        public RenderFragment<string> MessageContent { get; set; }
+        public RenderFragment<string>? MessageContent { get; set; }
 
         [Parameter]
         public EventCallback<MouseEventArgs> OnClick { get; set; }
@@ -107,10 +106,7 @@ namespace BlazorComponent
             {
                 if (HasHint)
                 {
-                    return new List<string>
-                    {
-                        Hint
-                    };
+                    return new List<string> { Hint! };
                 }
 
                 if (!HasMessages)
@@ -123,7 +119,7 @@ namespace BlazorComponent
         }
 
         //We want InternalValue to be protected
-        TValue IInput<TValue>.InternalValue => InternalValue;
+        TValue? IInput<TValue>.InternalValue => InternalValue;
 
         public virtual async Task HandleOnPrependClickAsync(MouseEventArgs args)
         {

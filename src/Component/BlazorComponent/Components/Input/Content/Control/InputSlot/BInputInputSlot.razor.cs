@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BInputInputSlot<TValue, TInput> : ComponentPartBase<TInput>
         where TInput : IInput<TValue>

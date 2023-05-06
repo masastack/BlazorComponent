@@ -1,24 +1,21 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public abstract partial class BCol : BDomComponentBase
     {
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
-        public StringNumber Cols { get; set; }
+        public StringNumber? Cols { get; set; }
 
         [Parameter]
-        public StringNumber Order { get; set; }
+        public StringNumber? Order { get; set; }
 
         [Parameter]
-        public StringNumber Offset { get; set; }
+        public StringNumber? Offset { get; set; }
 
         [Parameter]
+        [ApiDefaultValue("div")]
         public virtual string Tag { get; set; } = "div";
-
-        private string GutterStyle { get; set; }
     }
 }

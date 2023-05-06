@@ -6,11 +6,7 @@ public class MobilePickerColumn<TItem>
     
     public int Index { get; set; }
 
-    public string ClassName { get; set; }
-
-    public MobilePickerColumn()
-    {
-    }
+    public string? ClassName { get; set; }
 
     public MobilePickerColumn(List<TItem> values)
     {

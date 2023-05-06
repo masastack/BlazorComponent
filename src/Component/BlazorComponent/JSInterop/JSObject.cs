@@ -1,6 +1,4 @@
-﻿using Microsoft.JSInterop;
-
-namespace BlazorComponent.Web
+﻿namespace BlazorComponent.Web
 {
     public abstract class JSObject
     {

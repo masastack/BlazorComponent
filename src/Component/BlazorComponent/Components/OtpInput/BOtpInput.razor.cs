@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.JSInterop;
-using System.Text.Json;
+﻿using System.Text.Json;
 
 namespace BlazorComponent
 {
@@ -134,7 +131,7 @@ namespace BlazorComponent
         {
             var jsResult = JsonSerializer.Deserialize<OtpJsResult>(result);
 
-            switch (jsResult.type)
+            switch (jsResult?.type)
             {
                 case "Backspace":
                 case "Input":

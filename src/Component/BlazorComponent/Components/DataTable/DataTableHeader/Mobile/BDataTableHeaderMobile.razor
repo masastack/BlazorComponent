@@ -40,7 +40,7 @@
 @code {
 
     [Parameter]
-    public List<DataTableHeader> Headers { get; set; }
+    public List<DataTableHeader> Headers { get; set; } = null!;
 
     public bool SingleSelect => Component.SingleSelect;
 

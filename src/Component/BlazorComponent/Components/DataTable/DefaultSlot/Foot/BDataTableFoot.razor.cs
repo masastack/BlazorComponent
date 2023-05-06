@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BDataTableFoot<TItem, TDataTable> where TDataTable : IDataTable<TItem>
     {
-        public RenderFragment FootContent => Component.FootContent;
+        public RenderFragment? FootContent => Component.FootContent;
     }
 }

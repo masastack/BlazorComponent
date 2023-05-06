@@ -2,25 +2,25 @@
 using Microsoft.AspNetCore.Components.Forms;
 using System.Collections.Concurrent;
 using System.Reflection;
-using System.Text.Json;
 
 namespace BlazorComponent
 {
     public partial class BForm : BDomComponentBase
     {
-        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _modelPropertiesMap = new();
+        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> s_modelPropertiesMap = new();
 
         [Inject]
-        public IServiceProvider ServiceProvider { get; set; }
+        public IServiceProvider ServiceProvider { get; set; } = null!;
 
         [Parameter]
-        public RenderFragment<FormContext> ChildContent { get; set; }
+        public RenderFragment<FormContext>? ChildContent { get; set; }
 
         [Parameter]
         public EventCallback<EventArgs> OnSubmit { get; set; }
 
         [Parameter]
-        public object Model { get; set; }
+        [EditorRequired]
+        public object? Model { get; set; }
 
         [Parameter]
         public bool EnableValidation { get; set; }
@@ -46,12 +46,12 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback OnInvalidSubmit { get; set; }
 
-        private object _oldModel;
-        private IDisposable _editContextValidation;
+        private object? _oldModel;
+        private IDisposable? _editContextValidation;
 
-        public EditContext EditContext { get; protected set; }
+        public EditContext? EditContext { get; protected set; }
 
-        protected ValidationMessageStore ValidationMessageStore { get; set; }
+        protected ValidationMessageStore? ValidationMessageStore { get; set; }
 
         protected List<IValidatable> Validatables { get; } = new();
 
@@ -59,7 +59,7 @@ namespace BlazorComponent
         {
             base.OnParametersSet();
 
-            if (_oldModel != Model)
+            if (Model != null && _oldModel != Model)
             {
                 EditContext = new EditContext(Model);
 
@@ -152,7 +152,7 @@ namespace BlazorComponent
         }
 
         /// <summary>
-        /// parse form validation result,if parse faield return false
+        /// parse form validation result,if parse failed return false
         /// </summary>
         /// <param name="validationResult">
         /// validation result
@@ -168,11 +168,11 @@ namespace BlazorComponent
             var validationResults = new List<ValidationResult>();
             foreach (var resultStr in resultStrs)
             {
-                int startIndex = resultStr.IndexOf(" -- ") + 4;
+                int startIndex = resultStr.IndexOf(" -- ", StringComparison.Ordinal) + 4;
                 if (startIndex < 4) continue;
-                int colonIndex = resultStr.IndexOf(": ");
+                int colonIndex = resultStr.IndexOf(": ", StringComparison.Ordinal);
                 var field = resultStr.Substring(startIndex, colonIndex - startIndex);
-                int severityIndex = resultStr.IndexOf("Severity: ");
+                int severityIndex = resultStr.IndexOf("Severity: ", StringComparison.Ordinal);
                 colonIndex += 2;
                 var msg = resultStr.Substring(colonIndex, severityIndex - colonIndex);
                 Enum.TryParse<ValidationResultTypes>(resultStr.Substring(severityIndex + 10), out var type);
@@ -191,6 +191,8 @@ namespace BlazorComponent
 
         public void ParseFormValidation(IEnumerable<ValidationResult> validationResults)
         {
+            if (Model == null) return;
+
             foreach (var validationResult in validationResults.Where(item => item.ValidationResultType == ValidationResultTypes.Error))
             {
                 var model = Model;
@@ -210,22 +212,22 @@ namespace BlazorComponent
                 var validatable = Validatables.FirstOrDefault(item => item.ValueIdentifier.Equals(fieldIdentifier));
                 if (validatable is not null)
                 {
-                    ValidationMessageStore.Clear(fieldIdentifier);
-                    ValidationMessageStore.Add(fieldIdentifier, validationResult.Message);
+                    ValidationMessageStore?.Clear(fieldIdentifier);
+                    ValidationMessageStore?.Add(fieldIdentifier, validationResult.Message);
                 }
             }
 
-            EditContext.NotifyValidationStateChanged();
+            EditContext?.NotifyValidationStateChanged();
 
             _ = UpdateValue(false);
 
             object GetModelValue(object model, string fieldChunk, Action whenError)
             {
                 var type = model.GetType();
-                if (_modelPropertiesMap.TryGetValue(type, out var propertyInfos) is false)
+                if (s_modelPropertiesMap.TryGetValue(type, out var propertyInfos) is false)
                 {
                     propertyInfos = type.GetProperties();
-                    _modelPropertiesMap[type] = propertyInfos;
+                    s_modelPropertiesMap[type] = propertyInfos;
                 }
 
                 if (fieldChunk.Contains('['))

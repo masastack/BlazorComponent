@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BTreeview<TItem, TKey> : ITreeview<TItem, TKey> where TKey : notnull
     {
@@ -11,26 +9,25 @@ namespace BlazorComponent
         private List<TKey> _oldOpen = new();
 
         [Parameter]
-        public List<TItem> Items { get; set; }
+        public List<TItem>? Items { get; set; }
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
-        public string Search { get; set; }
+        public string? Search { get; set; }
 
         [Parameter]
-        public RenderFragment<TreeviewItem<TItem>> PrependContent { get; set; }
+        public RenderFragment<TreeviewItem<TItem>>? PrependContent { get; set; }
 
         [Parameter]
-        public RenderFragment<TreeviewItem<TItem>> LabelContent { get; set; }
+        public RenderFragment<TreeviewItem<TItem>>? LabelContent { get; set; }
 
         [Parameter]
-        public RenderFragment<TreeviewItem<TItem>> AppendContent { get; set; }
+        public RenderFragment<TreeviewItem<TItem>>? AppendContent { get; set; }
 
-        [EditorRequired]
-        [Parameter]
-        public Func<TItem, string> ItemText { get; set; }
+        [Parameter, EditorRequired]
+        public Func<TItem, string>? ItemText { get; set; }
 
         [Parameter]
         public bool Selectable { get; set; }
@@ -39,18 +36,18 @@ namespace BlazorComponent
         public bool OpenAll { get; set; }
 
         [Parameter]
-        public Func<TItem, bool> ItemDisabled { get; set; }
+        public Func<TItem, bool>? ItemDisabled { get; set; }
 
         [EditorRequired]
         [Parameter]
-        public Func<TItem, TKey> ItemKey { get; set; }
+        public Func<TItem, TKey>? ItemKey { get; set; }
 
         [EditorRequired]
         [Parameter]
-        public Func<TItem, List<TItem>> ItemChildren { get; set; }
+        public Func<TItem, List<TItem>>? ItemChildren { get; set; }
 
         [Parameter]
-        public Func<TItem, string, Func<TItem, string>, bool> Filter { get; set; }
+        public Func<TItem, string, Func<TItem, string>, bool>? Filter { get; set; }
 
         [Parameter]
         public SelectionType SelectionType { get; set; }

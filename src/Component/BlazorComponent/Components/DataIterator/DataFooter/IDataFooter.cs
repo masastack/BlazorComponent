@@ -4,7 +4,7 @@
     {
         IEnumerable<DataItemsPerPageOption> ComputedDataItemsPerPageOptions { get; }
 
-        RenderFragment<(int PageStart, int PageStop, int ItemsLength)> PageTextContent { get; }
+        RenderFragment<(int PageStart, int PageStop, int ItemsLength)>? PageTextContent { get; }
 
         Task HandleOnPreviousPageAsync();
 

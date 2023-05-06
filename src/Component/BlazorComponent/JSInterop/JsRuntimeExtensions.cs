@@ -1,7 +1,4 @@
-﻿using BlazorComponent.Web;
-using Microsoft.JSInterop;
-
-namespace BlazorComponent.JSInterop;
+﻿namespace BlazorComponent.JSInterop;
 
 public static class JsRuntimeExtensions
 {
@@ -43,7 +40,10 @@ public static class JsRuntimeExtensions
     public static async Task ScrollTo(this IJSRuntime jsRuntime, ElementReference el, double? top, double? left = null,
         ScrollBehavior behavior = ScrollBehavior.Smooth)
     {
-        await jsRuntime.ScrollTo(el.GetSelector(), top, left, behavior);
+        if (el.TryGetSelector(out var selector))
+        {
+            await jsRuntime.ScrollTo(selector, top, left, behavior);
+        }
     }
 
     public static async Task ScrollIntoView(this IJSRuntime jsRuntime, ElementReference el, ScrollLogicalPosition? block,
@@ -66,6 +66,9 @@ public static class JsRuntimeExtensions
     public static async Task ScrollIntoParentView(this IJSRuntime jsRuntime, ElementReference el, bool inline = false, bool start = false,
         int level = 1, ScrollBehavior behavior = ScrollBehavior.Smooth)
     {
-        await jsRuntime.ScrollIntoParentView(el.GetSelector(), inline, start, level, behavior);
+        if (el.TryGetSelector(out var selector))
+        {
+            await jsRuntime.ScrollIntoParentView(selector, inline, start, level, behavior);
+        }
     }
 }

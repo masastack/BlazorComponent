@@ -11,16 +11,17 @@ namespace BlazorComponent
         }
 
         [Parameter]
-        public string Color { get; set; }
+        public string? Color { get; set; }
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
+        [ApiDefaultValue("span")]
         public string Tag { get; set; } = "span";
 
         [Parameter]
-        public string Transition { get; set; }
+        public string? Transition { get; set; }
 
         protected double CalculatedLeft
         {

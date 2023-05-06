@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BToolbarBody<TToolbar> where TToolbar : IToolbar
     {
@@ -12,7 +10,7 @@ namespace BlazorComponent
 
         public bool IsExtended => Component.IsExtended;
 
-        public RenderFragment ExtensionContent => Component.ExtensionContent;
+        public RenderFragment? ExtensionContent => Component.ExtensionContent;
 
         public Dictionary<string, object> ImgProps => new()
         {

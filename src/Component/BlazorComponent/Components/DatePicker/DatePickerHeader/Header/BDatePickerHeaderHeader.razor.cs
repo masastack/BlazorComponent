@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BDatePickerHeaderHeader<TDatePickerHeader> where TDatePickerHeader : IDatePickerHeader
     {
@@ -8,7 +6,7 @@ namespace BlazorComponent
 
         public DateOnly Value => Component.Value;
 
-        public RenderFragment ComponentChildContent => Component.ChildContent;
+        public RenderFragment? ComponentChildContent => Component.ChildContent;
 
         public Dictionary<string, object> HeaderAttrs => Component.ButtonAttrs;
 
