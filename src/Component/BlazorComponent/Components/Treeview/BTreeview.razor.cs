@@ -2,14 +2,23 @@
 {
     public partial class BTreeview<TItem, TKey> : ITreeview<TItem, TKey> where TKey : notnull
     {
-        private List<TItem> _oldItems;
-        private string _oldItemsKeys;
+        private List<TItem>? _oldItems;
+        private string? _oldItemsKeys;
         private List<TKey> _oldValue = new();
         private List<TKey> _oldActive = new();
         private List<TKey> _oldOpen = new();
 
-        [Parameter]
-        public List<TItem>? Items { get; set; }
+        [Parameter, EditorRequired]
+        public List<TItem> Items { get; set; } = null!;
+
+        [Parameter, EditorRequired]
+        public Func<TItem, string> ItemText { get; set; } = null!;
+
+        [Parameter, EditorRequired]
+        public Func<TItem, TKey> ItemKey { get; set; } = null!;
+
+        [Parameter, EditorRequired]
+        public Func<TItem, List<TItem>> ItemChildren { get; set; } = null!;
 
         [Parameter]
         public RenderFragment? ChildContent { get; set; }
@@ -26,25 +35,14 @@
         [Parameter]
         public RenderFragment<TreeviewItem<TItem>>? AppendContent { get; set; }
 
-        [Parameter, EditorRequired]
-        public Func<TItem, string>? ItemText { get; set; }
+        [Parameter]
+        public Func<TItem, bool>? ItemDisabled { get; set; }
 
         [Parameter]
         public bool Selectable { get; set; }
 
         [Parameter]
         public bool OpenAll { get; set; }
-
-        [Parameter]
-        public Func<TItem, bool>? ItemDisabled { get; set; }
-
-        [EditorRequired]
-        [Parameter]
-        public Func<TItem, TKey>? ItemKey { get; set; }
-
-        [EditorRequired]
-        [Parameter]
-        public Func<TItem, List<TItem>>? ItemChildren { get; set; }
 
         [Parameter]
         public Func<TItem, string, Func<TItem, string>, bool>? Filter { get; set; }
@@ -75,6 +73,12 @@
 
         [Parameter]
         public EventCallback<List<TKey>> OpenChanged { get; set; }
+
+        [Parameter, ApiDefaultValue("$loading")]
+        public string LoadingIcon { get; set; } = "$loading";
+
+        [Parameter, ApiDefaultValue("$subgroup")]
+        public string ExpandIcon { get; set; } = "$subgroup";
 
         [Parameter]
         public EventCallback<List<TItem>> OnInput { get; set; }
@@ -120,18 +124,10 @@
                 {
                     return Items;
                 }
-                else
-                {
-                    return Items.Where(r => !IsExcluded(ItemKey(r))).ToList();
-                }
+
+                return Items.Where(r => !IsExcluded(ItemKey.Invoke(r))).ToList();
             }
         }
-
-        [Parameter]
-        public string LoadingIcon { get; set; } = "$loading";
-
-        [Parameter]
-        public string ExpandIcon { get; set; } = "$subgroup";
 
         public Dictionary<TKey, NodeState<TItem, TKey>> Nodes { get; private set; } = new();
 
@@ -153,6 +149,16 @@
 
                 return excluded;
             }
+        }
+
+        public override async Task SetParametersAsync(ParameterView parameters)
+        {
+            await base.SetParametersAsync(parameters);
+            
+            Items.ThrowIfNull(ComponentName);
+            ItemText.ThrowIfNull(ComponentName);
+            ItemKey.ThrowIfNull(ComponentName);
+            ItemChildren.ThrowIfNull(ComponentName);
         }
 
         public void AddNode(ITreeviewNode<TItem, TKey> node)

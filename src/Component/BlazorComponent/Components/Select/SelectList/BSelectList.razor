@@ -6,7 +6,7 @@
 
 <BList @attributes="@GetAttributes(typeof(BList))">
     @{
-        var children = new List<RenderFragment>();
+        var children = new List<RenderFragment?>();
 
         for (var index = 0; index < Items.Count; index++)
         {
@@ -21,11 +21,11 @@
             {
                 children.Add(RenderPart(typeof(BSelectListTile<,,>), item, index));
             }
-            else if (ItemHeader(item) != null)
+            else if (ItemHeader?.Invoke(item) != null)
             {
                 children.Add(RenderPart(typeof(BSelectListHeader<,,>), ItemHeader(item), arg0Name: "Header"));
             }
-            else if (ItemDivider(item))
+            else if (ItemDivider?.Invoke(item) != null)
             {
                 children.Add(RenderPart(typeof(BSelectListDivider<,,>)));
             }

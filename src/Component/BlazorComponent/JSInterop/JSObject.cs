@@ -2,10 +2,6 @@
 {
     public abstract class JSObject
     {
-        public JSObject()
-        {
-        }
-
         public JSObject(IJSRuntime js)
         {
             JS = js;

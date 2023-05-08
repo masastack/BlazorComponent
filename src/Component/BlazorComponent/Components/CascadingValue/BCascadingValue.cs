@@ -5,9 +5,6 @@ namespace BlazorComponent
 {
     public class BCascadingValue<TValue> : ComponentBase
     {
-        [NotNull]
-        private Type? _cascadingValueType { get; set; }
-
         [Parameter]
         [EditorRequired]
         public TValue? Value { get; set; }
@@ -22,24 +19,30 @@ namespace BlazorComponent
         [EditorRequired]
         public RenderFragment? ChildContent { get; set; }
 
+        private Type? _cascadingValueType;
+
         protected override void OnInitialized()
         {
+            if (Value is null) return;
+
             _cascadingValueType = typeof(CascadingValue<>).MakeGenericType(Value.GetType());
         }
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
+            if (Value is null) return;
+            
             var sequence = 0;
-            builder.OpenComponent(sequence++, _cascadingValueType);
+            builder.OpenComponent(sequence++, _cascadingValueType!);
             builder.AddAttribute(sequence++, nameof(Value), Value);
             if (!string.IsNullOrEmpty(Name))
             {
                 builder.AddAttribute(sequence++, nameof(Name), Name);
             }
+
             builder.AddAttribute(sequence++, nameof(IsFixed), IsFixed);
-            builder.AddAttribute(sequence++, nameof(ChildContent), ChildContent);
+            builder.AddAttribute(sequence, nameof(ChildContent), ChildContent);
             builder.CloseComponent();
         }
     }
-
 }

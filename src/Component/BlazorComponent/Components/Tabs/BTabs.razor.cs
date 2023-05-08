@@ -72,11 +72,11 @@
         public bool Light { get; set; }
 
         private StringNumber? _prevValue;
-        private int _registeredTabItemsIndex = 0;
+        private int _registeredTabItemsIndex;
 
         private List<ITabItem> TabItems { get; set; } = new();
 
-        private object TabsBarRef { get; set; }
+        private object? TabsBarRef { get; set; }
 
         protected(StringNumber height, StringNumber left, StringNumber right, StringNumber top, StringNumber width) Slider { get; set; }
 
@@ -106,7 +106,10 @@
 
             if (firstRender)
             {
-                DomEventJsInterop?.ResizeObserver(Ref.GetSelector(), OnResize);
+                if (Ref.TryGetSelector(out var selector))
+                {
+                    DomEventJsInterop?.ResizeObserver(selector, OnResize);
+                }
 
                 await CallSlider();
             }
@@ -119,13 +122,13 @@
 
         public bool IsReversed => Rtl && Vertical;
 
-        public BSlideGroup Instance => TabsBarRef as BSlideGroup;
+        public BSlideGroup? Instance => TabsBarRef as BSlideGroup;
 
         public void RegisterTabItem(ITabItem tabItem)
         {
             tabItem.Value ??= _registeredTabItemsIndex++;
 
-            if (TabItems.Any(item => item.Value.Equals(tabItem.Value))) return;
+            if (TabItems.Any(item => item.Value != null && item.Value.Equals(tabItem.Value))) return;
 
             TabItems.Add(tabItem);
         }

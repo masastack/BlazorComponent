@@ -6,6 +6,6 @@
 
         public IList<TItemValue> InternalValues => Component.InternalValues;
 
-        public TValue InternalValue => Component.InternalValue;
+        public TValue? InternalValue => Component.InternalValue;
     }
 }

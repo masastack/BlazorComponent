@@ -14,6 +14,6 @@
 
         public bool? IsHalfHovered { get; set; }
 
-        public Action<ExMouseEventArgs> Click { get; set; }
+        public Action<ExMouseEventArgs>? Click { get; set; }
     }
 }

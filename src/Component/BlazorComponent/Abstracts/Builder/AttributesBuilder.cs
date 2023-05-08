@@ -4,7 +4,7 @@
     {
         private Dictionary<string, object?> _attributes = new();
 
-        public AttributesBuilder Add(string name, object value)
+        public AttributesBuilder Add(string name, object? value)
         {
             _attributes.Add(name, value);
             return this;
@@ -16,13 +16,7 @@
             return this;
         }
 
-        public IDictionary<string, object?> Attributes
-        {
-            get
-            {
-                return _attributes;
-            }
-        }
+        public IDictionary<string, object?> Attributes => _attributes;
 
         public AttributesBuilder SetAttributes(Dictionary<string, object?> attributes)
         {

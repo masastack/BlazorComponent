@@ -2,14 +2,14 @@
 {
     public partial class BChip : BGroupItem<ItemGroupBase>, IRoutable
     {
-        protected IRoutable Router;
+        private IRoutable? _router;
 
         public BChip() : base(GroupType.ChipGroup)
         {
         }
-        
+
         [Inject]
-        public NavigationManager NavigationManager { get; set; }
+        public NavigationManager NavigationManager { get; set; } = null!;
 
         [Parameter]
         [ApiDefaultValue(true)]
@@ -53,7 +53,7 @@
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
 
-        public bool Exact { get; set; }
+        public bool Exact { get; }
 
         public bool IsDark
         {
@@ -73,24 +73,24 @@
             }
         }
 
-        public bool IsClickable => Router.IsClickable || Matched;
+        public bool IsClickable => _router?.IsClickable is true || Matched;
 
-        public bool IsLink => Router.IsLink;
+        public bool IsLink => _router?.IsLink is true;
 
-        public int Tabindex => Router.Tabindex;
+        public int Tabindex => _router?.Tabindex ?? 0;
 
         protected override void OnParametersSet()
         {
             base.OnParametersSet();
 
-            Router = new Router(this);
+            _router = new Router(this);
 
-            (Tag, Attributes) = Router.GenerateRouteLink();
+            (Tag, Attributes) = _router.GenerateRouteLink();
         }
 
         protected override bool AfterHandleEventShouldRender() => false;
 
-        protected async Task HandleOnClick(MouseEventArgs args)
+        private async Task HandleOnClick(MouseEventArgs args)
         {
             await ToggleAsync();
 

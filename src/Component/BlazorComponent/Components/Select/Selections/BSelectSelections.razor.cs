@@ -4,7 +4,7 @@
     {
         protected bool HasChips => Component.HasChips;
 
-        protected RenderFragment<SelectSelectionProps<TItem>> SelectionContent => Component.SelectionContent;
+        protected RenderFragment<SelectSelectionProps<TItem>>? SelectionContent => Component.SelectionContent;
 
         protected IList<TItem> SelectedItems => Component.SelectedItems;
 

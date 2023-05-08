@@ -4,7 +4,7 @@ namespace BlazorComponent
 {
     public partial class BSnackbar : BDomComponentBase
     {
-        [Parameter, EditorRequired]
+        [Parameter]
         public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
@@ -53,12 +53,6 @@ namespace BlazorComponent
             }
         }
 
-        protected bool HasBackground
-        {
-            get
-            {
-                return !Text && !Outlined;
-            }
-        }
+        protected bool HasBackground => !Text && !Outlined;
     }
 }

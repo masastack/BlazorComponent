@@ -21,7 +21,7 @@ public class ToggleableTransitionElement : TransitionElementBase<bool>
 
     protected bool LazyValue { get; private set; }
 
-    protected override string ComputedClass
+    protected override string? ComputedClass
     {
         get
         {

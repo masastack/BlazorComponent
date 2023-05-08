@@ -4,7 +4,7 @@
     {
         public bool IsOpen => Component.IsOpen;
 
-        public List<TItem> ComputedChildren => Component.ComputedChildren;
+        public List<TItem>? ComputedChildren => Component.ComputedChildren;
 
         public bool Disabled => Component.Disabled;
     }

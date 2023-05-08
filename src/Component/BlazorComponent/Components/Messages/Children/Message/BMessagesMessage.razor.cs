@@ -3,8 +3,8 @@
     public partial class BMessagesMessage<TMessages> where TMessages : IMessages
     {
         [Parameter]
-        public string Message { get; set; }
+        public string Message { get; set; } = null!;
 
-        public RenderFragment<string> ComponentChildContent => Component.ChildContent;
+        public RenderFragment<string>? ComponentChildContent => Component.ChildContent;
     }
 }

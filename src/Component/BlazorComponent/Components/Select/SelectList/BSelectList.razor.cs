@@ -8,32 +8,29 @@ namespace BlazorComponent
         [Parameter]
         public bool HideSelected { get; set; }
 
-        [EditorRequired]
-        [Parameter]
-        public IList<TItem> Items { get; set; }
+        [Parameter, EditorRequired]
+        public IList<TItem> Items { get; set; } = null!;
 
         [Parameter]
-        public Func<TItem, bool> ItemDisabled { get; set; }
+        public Func<TItem, bool>? ItemDisabled { get; set; }
 
-        [EditorRequired]
-        [Parameter]
-        public Func<TItem, string> ItemText { get; set; }
+        [Parameter, EditorRequired]
+        public Func<TItem, string> ItemText { get; set; } = null!;
 
-        [EditorRequired]
-        [Parameter]
-        public Func<TItem, TItemValue> ItemValue { get; set; }
+        [Parameter, EditorRequired]
+        public Func<TItem, TItemValue?> ItemValue { get; set; } = null!;
 
         [Parameter]
-        public Func<TItem, bool> ItemDivider { get; set; }
-
-        [Parameter] 
-        public Func<TItem, string> ItemHeader { get; set; }
+        public Func<TItem, bool>? ItemDivider { get; set; }
 
         [Parameter]
-        public string NoDataText { get; set; }
+        public Func<TItem, string>? ItemHeader { get; set; }
 
         [Parameter]
-        public IEnumerable<TItem> SelectedItems { get; set; }
+        public string? NoDataText { get; set; }
+
+        [Parameter]
+        public IEnumerable<TItem> SelectedItems { get; set; }  = null!;
 
         [Parameter]
         public RenderFragment? NoDataContent { get; set; }
@@ -47,11 +44,11 @@ namespace BlazorComponent
         [Parameter]
         public int SelectedIndex { get; set; }
 
-        protected IList<TItemValue> ParsedItems => SelectedItems.Select(ItemValue).ToList();
+        private IList<TItemValue?> ParsedItems => SelectedItems.Select(item => ItemValue(item)).ToList();
 
         protected bool HasItem(TItem item)
         {
-            return ParsedItems.IndexOf(ItemValue(item)) > -1;
+            return ParsedItems.IndexOf(ItemValue.Invoke(item)) > -1;
         }
     }
 }

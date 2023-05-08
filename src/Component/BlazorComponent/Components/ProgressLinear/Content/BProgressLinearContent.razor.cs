@@ -4,6 +4,6 @@
     {
         public double Value => Component.Value;
 
-        public RenderFragment<double> ComponentChildContent => Component.ChildContent;
+        public RenderFragment<double>? ComponentChildContent => Component.ChildContent;
     }
 }

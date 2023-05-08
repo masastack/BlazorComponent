@@ -5,7 +5,7 @@
         [Parameter]
         public int ItemIndex { get; set; }
 
-        public RenderFragment<RatingItem> ItemContent => Component.ItemContent;
+        public RenderFragment<RatingItem>? ItemContent => Component.ItemContent;
 
         public string GetIconName(RatingItem item) => Component.GetIconName(item);
 

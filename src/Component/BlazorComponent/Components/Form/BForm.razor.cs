@@ -20,7 +20,7 @@ namespace BlazorComponent
 
         [Parameter]
         [EditorRequired]
-        public object? Model { get; set; }
+        public object Model { get; set; } = null!;
 
         [Parameter]
         public bool EnableValidation { get; set; }
@@ -54,6 +54,13 @@ namespace BlazorComponent
         protected ValidationMessageStore? ValidationMessageStore { get; set; }
 
         protected List<IValidatable> Validatables { get; } = new();
+
+        public override async Task SetParametersAsync(ParameterView parameters)
+        {
+            await base.SetParametersAsync(parameters);
+
+            Model.ThrowIfNull("Form");
+        }
 
         protected override void OnParametersSet()
         {
@@ -203,9 +210,10 @@ namespace BlazorComponent
                     field = fieldChunks.Last();
                     foreach (var fieldChunk in fieldChunks)
                     {
-                        if(fieldChunk != field)
-                            model = GetModelValue(model, fieldChunk, () => throw new Exception($"{validationResult.Field} is error,can not read {fieldChunk}"));
-                    }                
+                        if (fieldChunk != field)
+                            model = GetModelValue(model, fieldChunk,
+                                () => throw new Exception($"{validationResult.Field} is error,can not read {fieldChunk}"));
+                    }
                 }
 
                 var fieldIdentifier = new FieldIdentifier(model, field);

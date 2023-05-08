@@ -18,7 +18,7 @@
 
         Task HandleOnGroup(string group);
 
-        Task HandleOnHeaderColClick(string value);
+        Task HandleOnHeaderColClick(string? value);
 
         DataOptions Options { get; }
     }

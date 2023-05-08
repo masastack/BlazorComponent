@@ -45,11 +45,11 @@ public partial class BInfiniteScroll : BDomComponentBase
     {
         await base.OnParametersSetAsync();
 
-        if (!_isAttached && Parent?.Context is not null)
+        if (!_isAttached && Parent?.Id is not null)
         {
             _isAttached = true;
 
-            await Js.AddHtmlElementEventListener(Parent!.GetSelector()!, "scroll", OnScroll, false, new EventListenerExtras(0, 100));
+            await Js.AddHtmlElementEventListener(Parent.GetSelector()!, "scroll", OnScroll, false, new EventListenerExtras(0, 100));
 
             // Run manually once to check whether the threshold is exceeded.
             // Use NextTick to wait for the list rendering to complete,

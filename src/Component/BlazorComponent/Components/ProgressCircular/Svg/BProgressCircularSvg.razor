@@ -2,10 +2,10 @@
 @typeparam TProgressCircular
 @inherits ComponentPartBase<TProgressCircular>
 
-<svg style="@CssProvider.GetStyle("svg")" @attributes="SvgAttrs">
+<svg style="@CssProvider.GetStyle("svg")" @attributes="@SvgAttrs">
     @if (!Indeterminate)
     {
-        @RenderPart(typeof(BProgressCircularCircle<>),"underlay","0",arg0Name:"Name",arg1Name:"Offset")
+        @RenderPart(typeof(BProgressCircularCircle<>), "underlay", "0", arg0Name: "Name", arg1Name: "Offset")
     }
-    @RenderPart(typeof(BProgressCircularCircle<>),"overlay",StrokeDashOffset,arg0Name:"Name",arg1Name:"Offset")
+    @RenderPart(typeof(BProgressCircularCircle<>), "overlay", StrokeDashOffset, arg0Name: "Name", arg1Name: "Offset")
 </svg>

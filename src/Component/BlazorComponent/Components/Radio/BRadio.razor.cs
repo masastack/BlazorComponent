@@ -25,7 +25,7 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment? LabelContent { get; set; }
 
-        [Parameter, EditorRequired]
+        [Parameter]
         public TValue? Value { get; set; }
 
         [Parameter]

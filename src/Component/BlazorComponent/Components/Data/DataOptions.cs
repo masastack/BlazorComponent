@@ -26,13 +26,13 @@ public class DataOptions : ObservableObject
 
     public IList<bool> SortDesc
     {
-        get => GetValue<IList<bool>>(new List<bool>());
+        get => GetValue<IList<bool>>() ?? new List<bool>();
         set => SetValue(value);
     }
 
     public IList<bool> GroupDesc
     {
-        get => GetValue<IList<bool>>(new List<bool>());
+        get => GetValue<IList<bool>>() ?? new List<bool>();
         set => SetValue(value);
     }
 
@@ -50,13 +50,13 @@ public class DataOptions : ObservableObject
 
     public IList<string> SortBy
     {
-        get => GetValue<IList<string>>(new List<string>());
+        get => GetValue<IList<string>>() ?? new List<string>();
         set => SetValue(value);
     }
 
     public IList<string> GroupBy
     {
-        get => GetValue<IList<string>>(new List<string>());
+        get => GetValue<IList<string>>() ?? new List<string>();
         set => SetValue(value);
     }
 }

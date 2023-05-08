@@ -4,7 +4,7 @@
     {
         public bool Filter => Component.Filter;
 
-        string FilterIcon => Component.FilterIcon;
+        string? FilterIcon => Component.FilterIcon;
 
         public bool IsActive => Component.InternalIsActive;
     }

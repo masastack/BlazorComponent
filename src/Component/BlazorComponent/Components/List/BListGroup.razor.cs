@@ -56,7 +56,7 @@ namespace BlazorComponent
         private const string APPEND = "append";
 
         private bool _value;
-        private string _previousAbsoutePath;
+        private string? _previousAbsolutePath;
 
         protected bool IsActive { get; set; }
 
@@ -70,7 +70,7 @@ namespace BlazorComponent
 
             NavigationManager.LocationChanged += OnLocationChanged;
 
-            _previousAbsoutePath = NavigationManager.GetAbsolutePath();
+            _previousAbsolutePath = NavigationManager.GetAbsolutePath();
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -103,12 +103,12 @@ namespace BlazorComponent
         private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
         {
             var absolutePath = NavigationManager.GetAbsolutePath();
-            if (_previousAbsoutePath == absolutePath)
+            if (_previousAbsolutePath == absolutePath)
             {
                 return;
             }
 
-            _previousAbsoutePath = absolutePath;
+            _previousAbsolutePath = absolutePath;
 
             var shouldRender = UpdateActiveForRoutable();
             if (shouldRender)

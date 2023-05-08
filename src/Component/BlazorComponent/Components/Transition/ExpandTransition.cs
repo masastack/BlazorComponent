@@ -30,7 +30,7 @@ public class ExpandTransition : Transition
 
     public override string GetStyle(TransitionState transitionState)
     {
-        var styles = new List<string>
+        var styles = new List<string?>
         {
             base.GetStyle(transitionState)
         };

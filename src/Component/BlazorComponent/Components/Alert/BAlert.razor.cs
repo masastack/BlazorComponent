@@ -13,7 +13,6 @@ public partial class BAlert : BDomComponentBase, IAlert, IThemeable
     public Borders Border { get; set; }
 
     [Parameter]
-    [EditorRequired]
     public RenderFragment? ChildContent { get; set; }
 
     [Parameter]

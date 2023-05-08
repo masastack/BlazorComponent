@@ -6,7 +6,6 @@ namespace BlazorComponent
     public class AbstractComponent : ComponentBase
     {
         [Parameter]
-        [NotNull]
         [EditorRequired]
         public AbstractMetadata? Metadata { get; set; }
 
@@ -14,12 +13,14 @@ namespace BlazorComponent
         public RenderFragment? ChildContent { get; set; }
 
         [Parameter(CaptureUnmatchedValues = true)]
-        public Dictionary<string, object> AdditionalAttributes { get; set; } = new();
+        public Dictionary<string, object?> AdditionalAttributes { get; set; } = new();
 
         public object? Instance { get; private set; }
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
+            if (Metadata == null) return;
+
             var type = Metadata.Type;
             var attrs = Metadata.Attributes;
 
@@ -41,12 +42,6 @@ namespace BlazorComponent
             builder.AddComponentReferenceCapture(sequence, component => Instance = component);
 
             builder.CloseComponent();
-        }
-
-        protected override void OnParametersSet()
-        {
-            base.OnParametersSet();
-            ArgumentNullException.ThrowIfNull(Metadata);
         }
     }
 }

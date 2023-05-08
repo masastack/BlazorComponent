@@ -26,7 +26,6 @@ namespace BlazorComponent
         public TransitionMode? Mode { get; set; }
 
         [Parameter]
-        [EditorRequired]
         public RenderFragment? ChildContent { get; set; }
 
         [Parameter]

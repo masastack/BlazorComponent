@@ -2,8 +2,8 @@
 {
     public partial class BChipClose<TChip> where TChip : IChip
     {
-        public bool Close => Component.Close;
+        private bool Close => Component.Close;
 
-        string CloseIcon => Component.CloseIcon;
+        private string? CloseIcon => Component.CloseIcon;
     }
 }

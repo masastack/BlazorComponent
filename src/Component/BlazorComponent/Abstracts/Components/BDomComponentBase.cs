@@ -167,7 +167,7 @@ namespace BlazorComponent
             return AbstractProvider.GetPartContent(keyType, this, builderAction);
         }
 
-        protected RenderFragment? RenderPart(Type keyType, object arg0, [CallerArgumentExpression("arg0")] string arg0Name = "")
+        protected RenderFragment? RenderPart(Type keyType, object? arg0, [CallerArgumentExpression("arg0")] string arg0Name = "")
         {
             return AbstractProvider.GetPartContent(keyType, this, builder =>
             {
@@ -176,7 +176,7 @@ namespace BlazorComponent
             });
         }
 
-        protected RenderFragment? RenderPart(Type keyType, object arg0, object arg1, [CallerArgumentExpression("arg0")] string arg0Name = "",
+        protected RenderFragment? RenderPart(Type keyType, object? arg0, object? arg1, [CallerArgumentExpression("arg0")] string arg0Name = "",
             [CallerArgumentExpression("arg1")] string arg1Name = "")
         {
             return AbstractProvider.GetPartContent(keyType, this, builder =>
@@ -187,7 +187,7 @@ namespace BlazorComponent
             });
         }
 
-        protected RenderFragment? RenderPart(Type keyType, object arg0, object arg1, object arg2,
+        protected RenderFragment? RenderPart(Type keyType, object? arg0, object? arg1, object? arg2,
             [CallerArgumentExpression("arg0")] string arg0Name = "", [CallerArgumentExpression("arg1")] string arg1Name = "",
             [CallerArgumentExpression("arg2")] string arg2Name = "")
         {

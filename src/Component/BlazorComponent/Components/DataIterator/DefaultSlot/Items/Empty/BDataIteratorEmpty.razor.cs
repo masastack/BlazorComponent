@@ -6,7 +6,7 @@
 
         public DataPagination Pagination => Component.Pagination;
 
-        public StringBoolean Loading => Component.Loading;
+        public StringBoolean? Loading => Component.Loading;
 
         public RenderFragment? LoadingContent => Component.LoadingContent;
 

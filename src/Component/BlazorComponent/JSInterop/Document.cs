@@ -4,9 +4,7 @@ namespace BlazorComponent.Web
 {
     public class Document : JSObject
     {
-        public Document(IJSRuntime js)
-            : base(js)
-
+        public Document(IJSRuntime js) : base(js)
         {
             Selector = "document";
         }

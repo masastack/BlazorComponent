@@ -13,7 +13,6 @@ namespace BlazorComponent
         public Document? Document { get; set; }
         
         [Parameter]
-        [EditorRequired]
         public RenderFragment? ChildContent { get; set; }
 
         [Parameter]

@@ -5,6 +5,6 @@
         [Parameter]
         public RenderFragment? ChildContent { get; set; }
 
-        public Dictionary<string, object> ColspanAttrs => Component.ColspanAttrs;
+        public Dictionary<string, object?> ColspanAttrs => Component.ColspanAttrs;
     }
 }

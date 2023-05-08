@@ -7,7 +7,7 @@
 
 <div class="@CssProvider.GetClass("selections")">
     @{
-        var selection = (Type)null;
+        Type selection;
         if (SelectionContent != null)
         {
             selection = typeof(BSelectSlotSelection<,,,>);

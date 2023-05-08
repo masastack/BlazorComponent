@@ -6,7 +6,7 @@
         public int Index { get; set; }
 
         [Parameter]
-        public string Value { get; set; }
+        public string? Value { get; set; }
 
         public OtpInputType Type => Component.Type;
 

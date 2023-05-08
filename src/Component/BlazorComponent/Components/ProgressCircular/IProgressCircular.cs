@@ -10,6 +10,6 @@
 
         bool Indeterminate => default;
 
-        string? StrokeDashOffset => default;
+        string StrokeDashOffset => null!;
     }
 }

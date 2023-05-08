@@ -6,7 +6,7 @@ namespace BlazorComponent
     {
         private Func<TItem, object>? _factory;
 
-        public ItemValue(string name)
+        public ItemValue(string? name)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
         }

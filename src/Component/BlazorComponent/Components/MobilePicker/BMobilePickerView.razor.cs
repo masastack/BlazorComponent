@@ -5,13 +5,13 @@ namespace BlazorComponent;
 public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> : BDomComponentBase
 {
     [Parameter, EditorRequired]
-    public virtual List<TColumn> Columns { get; set; } = new();
+    public virtual List<TColumn> Columns { get; set; } = null!;
 
     [Parameter, EditorRequired]
-    public virtual Func<TColumnItem, string>? ItemText { get; set; }
+    public virtual Func<TColumnItem, string> ItemText { get; set; } = null!;
 
     [Parameter, EditorRequired]
-    public virtual Func<TColumnItem, TColumnItemValue>? ItemValue { get; set; }
+    public virtual Func<TColumnItem, TColumnItemValue> ItemValue { get; set; } = null!;
 
     [Parameter]
     public virtual Func<TColumnItem, List<TColumnItem>>? ItemChildren { get; set; }
@@ -21,15 +21,18 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
 
     // TODO: change int to StringNumber, support px, vh, vw, rem
     [Parameter]
+    [ApiDefaultValue(40)]
     public int ItemHeight { get; set; } = 40;
 
     [Parameter]
     public EventCallback<List<TColumnItem>> OnSelect { get; set; }
 
     [Parameter]
+    [ApiDefaultValue(1000)]
     public int SwipeDuration { get; set; } = 1000;
 
     [Parameter]
+    [ApiDefaultValue(6)]
     public int VisibleItemCount { get; set; } = 6;
 
     [Parameter]
@@ -77,6 +80,15 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
     private List<TColumnItemValue> _value = new();
 
     private List<TColumnItemValue> InternalValue { get; set; } = new();
+
+    public override async Task SetParametersAsync(ParameterView parameters)
+    {
+        await base.SetParametersAsync(parameters);
+
+        Columns.ThrowIfNull(ComponentName);
+        ItemText.ThrowIfNull(ComponentName);
+        ItemValue.ThrowIfNull(ComponentName);
+    }
 
     protected override void OnParametersSet()
     {
@@ -189,7 +201,7 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
             FormattedColumns.Add(new MobilePickerColumn<TColumnItem>(column, index));
         }
 
-        InternalValue = FormattedColumns.Select(c => ItemValue(c.Values.ElementAtOrDefault(c.Index))).ToList();
+        InternalValue = FormattedColumns.Select(c => ItemValue(c.Values.ElementAt(c.Index))).ToList();
     }
 
     private class Cursor
@@ -261,7 +273,7 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
 
         FormattedColumns = formatted;
 
-        InternalValue = FormattedColumns.Select(c => ItemValue(c.Values.ElementAtOrDefault(c.Index))).ToList();
+        InternalValue = FormattedColumns.Select(c => ItemValue(c.Values.ElementAt(c.Index))).ToList();
     }
 
     private async Task HandleOnChange(int columnIndex, TColumnItemValue value)

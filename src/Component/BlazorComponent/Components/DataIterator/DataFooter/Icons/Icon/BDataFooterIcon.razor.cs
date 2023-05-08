@@ -3,7 +3,7 @@
     public partial class BDataFooterIcon<TComponent> where TComponent : IDataFooter
     {
         [Parameter]
-        public string Icon { get; set; }
+        public string? Icon { get; set; }
 
         [Parameter]
         public bool Disabled { get; set; }

@@ -32,7 +32,6 @@ public partial class BMenu : BMenuable, IDependent
     }
 
     [Parameter]
-    [EditorRequired]
     public RenderFragment? ChildContent { get; set; }
 
     [Parameter]
