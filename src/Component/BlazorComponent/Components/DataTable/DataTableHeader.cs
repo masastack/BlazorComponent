@@ -5,7 +5,7 @@
         public DataTableHeader()
         {
         }
-
+        
         public DataTableHeader(string text, string value, bool sortable = true)
         {
             Text = text ?? throw new ArgumentNullException(nameof(text));
@@ -27,7 +27,7 @@
 
         public string? Text { get; set; }
 
-        public bool Sortable { get; set; } = true;
+        public bool Sortable { get; set; }
 
         public DataTableHeaderAlign Align { get; set; } = DataTableHeaderAlign.Start;
 

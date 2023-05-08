@@ -101,7 +101,7 @@ namespace BlazorComponent
         public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
-        public RenderFragment<Dictionary<string, object>>? ImgContent { get; set; }
+        public RenderFragment<Dictionary<string, object?>>? ImgContent { get; set; }
 
         private readonly List<IDependent> _dependents = new();
 

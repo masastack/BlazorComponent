@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace BlazorComponent;
+﻿namespace BlazorComponent;
 
 public class Scroller : IScrollable
 {

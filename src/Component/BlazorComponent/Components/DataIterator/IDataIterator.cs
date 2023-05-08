@@ -1,12 +1,12 @@
 ﻿namespace BlazorComponent
 {
-    public interface IDataIterator<TItem> : IHasProviderComponent, ILoadable
+    public interface IDataIterator<TItem> : ILoadable
     {
         bool IsEmpty { get; }
 
         RenderFragment? ChildContent { get; }
 
-        RenderFragment<ItemProps<TItem>> ItemContent { get; }
+        RenderFragment<ItemProps<TItem>>? ItemContent { get; }
 
         IEnumerable<TItem> ComputedItems { get; }
 
@@ -22,15 +22,15 @@
 
         RenderFragment? LoadingContent { get; }
 
-        string LoadingText { get; }
+        string? LoadingText { get; }
 
         RenderFragment? NoDataContent { get; }
 
-        string NoDataText { get; }
+        string? NoDataText { get; }
 
         RenderFragment? NoResultsContent { get; }
 
-        string NoResultsText { get; }
+        string? NoResultsText { get; }
 
         IEnumerable<IGrouping<string, TItem>> GroupedItems { get; }
     }

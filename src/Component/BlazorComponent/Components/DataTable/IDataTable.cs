@@ -40,7 +40,7 @@ public interface IDataTable<TItem> : IDataIterator<TItem>
 
     RenderFragment<(IEnumerable<DataTableHeader<TItem>> Headers, TItem Item)>? ExpandedItemContent { get; }
 
-    Func<TItem, string> ItemKey { get; }
+    Func<TItem, string>? ItemKey { get; }
 
     bool HideDefaultHeader { get; }
 
@@ -62,7 +62,7 @@ public interface IDataTable<TItem> : IDataIterator<TItem>
 
     string GroupMinusIcon { get; }
 
-    string GroupCloseIcon { get; }
+    string GroupCloseIcon { get; } 
 
     string GroupPlusIcon { get; }
 

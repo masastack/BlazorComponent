@@ -127,6 +127,7 @@
         public EventCallback<DataOptions> OnOptionsUpdate { get; set; }
 
         private Func<IEnumerable<TItem>, IEnumerable<ItemValue<TItem>>, string?, IEnumerable<TItem>>? _customFilter;
+
         private Func<IEnumerable<TItem>, IEnumerable<ItemValue<TItem>>, IList<string>, List<bool>, string, IEnumerable<TItem>>? _customSort;
 
         private Func<IEnumerable<TItem>, IEnumerable<ItemValue<TItem>>, IList<string>, IList<bool>, IEnumerable<IGrouping<string, TItem>>>?
@@ -233,7 +234,7 @@
             return items.Where(item => itemValues.Any(itemValue => DefaultFilter(itemValue.Invoke(item), search, item)));
         }
 
-        public static bool DefaultFilter(object? value, string search, TItem item)
+        public static bool DefaultFilter(object? value, string? search, TItem item)
         {
             return value?.ToString() != null && search != null &&
                    value.ToString()!.ToLowerInvariant().IndexOf(search.ToLowerInvariant(), StringComparison.Ordinal) != -1;
@@ -283,7 +284,7 @@
 
         public bool IsGrouped => InternalOptions.GroupBy.Count > 0;
 
-        public IEnumerable<IGrouping<string, TItem>> GroupedItems 
+        public IEnumerable<IGrouping<string, TItem>> GroupedItems
             => IsGrouped ? GroupItems(ComputedItems) : Enumerable.Empty<IGrouping<string, TItem>>();
 
         public IEnumerable<TItem> ComputedItems
@@ -503,7 +504,7 @@
         public IEnumerable<TItem> PaginateItems(IEnumerable<TItem> items)
         {
             var cacheItems = items.ToList();
-            
+
             if (ServerItemsLength == -1 && cacheItems.Count <= PageStart)
             {
                 InternalOptions.Page = Math.Max(1, (int)Math.Ceiling(cacheItems.Count / (InternalOptions.ItemsPerPage * 1.0)));

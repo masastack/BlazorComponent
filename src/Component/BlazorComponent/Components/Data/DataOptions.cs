@@ -48,9 +48,9 @@ public class DataOptions : ObservableObject
         set => SetValue(value);
     }
 
-    public IList<string> SortBy
+    public IList<string?> SortBy
     {
-        get => GetValue<IList<string>>() ?? new List<string>();
+        get => GetValue<IList<string?>>() ?? new List<string?>();
         set => SetValue(value);
     }
 
