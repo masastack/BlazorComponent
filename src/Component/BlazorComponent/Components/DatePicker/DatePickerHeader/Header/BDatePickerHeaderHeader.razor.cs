@@ -2,7 +2,7 @@
 {
     public partial class BDatePickerHeaderHeader<TDatePickerHeader> where TDatePickerHeader : IDatePickerHeader
     {
-        public string Transition => Component.Transition;
+        public string? Transition => Component.Transition;
 
         public DateOnly Value => Component.Value;
 
