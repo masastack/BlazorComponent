@@ -422,7 +422,7 @@ namespace BlazorComponent
 
             if (Rules != null && Rules.Any())
             {
-                var value = val is null ? InternalValue : val;
+                var value = EqualityComparer<TValue>.Default.Equals(val, default) ? InternalValue : val;
 
                 ErrorBucket.Clear();
 
