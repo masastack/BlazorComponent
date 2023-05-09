@@ -5,7 +5,7 @@ using Microsoft.JSInterop;
 
 namespace BlazorComponent;
 
-public class KeyTransitionElement<TValue> : TransitionElementBase<TValue> where TValue : notnull
+public class KeyTransitionElement<TValue> : TransitionElementBase<TValue>
 {
     private KeyTransitionElementState<TValue>[]? _states;
 
