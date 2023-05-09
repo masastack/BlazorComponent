@@ -10,13 +10,10 @@
     <ul class="@CssProvider.GetClass("column-wrapper")" style="@CssProvider.GetStyle("column-wrapper")"
         @ontransitionend="OnTransitionEnd"
         @ref="Wrapper">
-        
-        @for (int i = 0; i < Items.Count; i++)
+
+        @foreach (var (item, index) in Items.Select((item, index) => (item, index)))
         {
-            var item = Items[i];
-            var index = i;
-            
-            <li class="@CssProvider.GetClass("column-item", data: ItemDisabled(item))"
+            <li class="@CssProvider.GetClass("column-item", data: ItemDisabled?.Invoke(item) is true)"
                 style="@CssProvider.GetStyle("column-item")"
                 @onclick="@(() => OnClickItem(index))">
                 <div class="@CssProvider.GetClass("column-text")">@ItemText?.Invoke(item)</div>

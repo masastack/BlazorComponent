@@ -14,7 +14,7 @@ public partial class BMobilePickerColumn<TColumnItem>
     public Func<TColumnItem, string>? ItemText { get; set; }
 
     [Parameter]
-    public Func<TColumnItem, bool> ItemDisabled { get; set; } = _ => false;
+    public Func<TColumnItem, bool>? ItemDisabled { get; set; }
 
     [Parameter]
     public int SelectedIndex { get; set; }
@@ -207,12 +207,12 @@ public partial class BMobilePickerColumn<TColumnItem>
 
         for (int i = index; i < Count; i++)
         {
-            if (!ItemDisabled(Items[i])) return i;
+            if (ItemDisabled?.Invoke(Items[i]) is not true) return i;
         }
 
         for (int i = index - 1; i >= 0; i--)
         {
-            if (!ItemDisabled(Items[i])) return i;
+            if (ItemDisabled?.Invoke(Items[i]) is not true) return i;
         }
 
         return null;
