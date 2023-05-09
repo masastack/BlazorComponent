@@ -4,11 +4,11 @@
     {
         bool RTL { get; }
 
-        string PrevIcon { get; }
+        string? PrevIcon { get; }
 
-        string NextIcon { get; }
+        string? NextIcon { get; }
 
-        string Transition { get; }
+        string? Transition { get; }
 
         DateOnly Value { get; }
 

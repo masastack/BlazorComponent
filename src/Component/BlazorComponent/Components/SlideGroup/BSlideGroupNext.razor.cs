@@ -5,9 +5,9 @@
     {
         protected bool Active => Component.HasNext;
 
-        protected string Icon => Component.NextIcon;
+        protected string? Icon => Component.NextIcon;
 
-        protected RenderFragment IconContent => Component.NextContent;
+        protected RenderFragment? IconContent => Component.NextContent;
 
         protected bool Visible => !(Component.ShowArrows == null && !Active);
 

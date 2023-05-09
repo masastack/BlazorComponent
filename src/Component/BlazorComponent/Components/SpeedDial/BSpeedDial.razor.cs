@@ -52,15 +52,15 @@ public partial class BSpeedDial : BBootable
     {
         await base.WhenIsActiveUpdating(value);
 
-        if (OutsideClickJSModule is { Initialized: false })
+        if (OutsideClickJSModule is { Initialized: false } && ContentElement.TryGetSelector(out var selector))
         {
-            await OutsideClickJSModule.InitializeAsync(this, ActivatorSelector, ContentElement.GetSelector());
+            await OutsideClickJSModule.InitializeAsync(this, ActivatorSelector, selector);
 
-            RegisterPopupEvents(ContentElement.GetSelector(), true);
+            RegisterPopupEvents(selector, true);
         }
     }
 
-    private Dictionary<string, object> ContentAttributes => new(Attributes) { { "close-condition", IsActive } };
+    private Dictionary<string, object?> ContentAttributes => new(Attributes) { { "close-condition", IsActive } };
 
     public override Task HandleOnOutsideClickAsync()
     {

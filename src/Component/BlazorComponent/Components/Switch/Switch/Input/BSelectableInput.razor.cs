@@ -2,14 +2,14 @@
 {
     public partial class BSelectableInput<TInput, TValue> where TInput : ISelectable<TValue>
     {
-        [Parameter]
-        public string Type { get; set; }
+        [Parameter, EditorRequired]
+        public string Type { get; set; } = null!;
 
-        public string Id => Component.Id;
+        public string? Id => Component.Id;
 
         public bool IsDisabled => Component.IsDisabled;
 
-        public TValue InternalValue => Component.InternalValue;
+        public TValue? InternalValue => Component.InternalValue;
 
         public Dictionary<string, object> InputAttrs => Component.InputAttrs;
 

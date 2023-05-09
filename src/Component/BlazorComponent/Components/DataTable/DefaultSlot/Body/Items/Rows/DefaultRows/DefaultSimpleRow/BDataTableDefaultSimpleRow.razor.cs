@@ -10,7 +10,7 @@
 
         public bool IsMobile => Component.IsMobile;
 
-        public Func<TItem, string> ItemKey => Component.ItemKey;
+        public Func<TItem, string>? ItemKey => Component.ItemKey;
 
         public bool ShowExpand => Component.ShowExpand;
 
@@ -18,7 +18,7 @@
 
         public string ExpandIcon => Component.ExpandIcon;
 
-        public RenderFragment<ItemColProps<TItem>> ItemColContent => Component.ItemColContent;
+        public RenderFragment<ItemColProps<TItem>>? ItemColContent => Component.ItemColContent;
 
         public RenderFragment? ItemDataTableExpandContent => Component.ItemDataTableExpandContent;
 

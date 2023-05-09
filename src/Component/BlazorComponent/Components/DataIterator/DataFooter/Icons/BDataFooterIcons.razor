@@ -5,9 +5,9 @@
 <div class="@CssProvider.GetClass("icons-before")">
     @if (ShowFirstLastPage)
     {
-        @RenderPart(typeof(BDataFooterIcon<>),HandleOnFirstPageAsync,Options.Page==1,RTL?LastIcon:FirstIcon,arg0Name:"OnClick",arg1Name:"Disabled",arg2Name:"Icon")
+        @RenderPart(typeof(BDataFooterIcon<>), HandleOnFirstPageAsync, Options.Page == 1, RTL ? LastIcon : FirstIcon, arg0Name: "OnClick", arg1Name: "Disabled", arg2Name: "Icon")
     }
-    @RenderPart(typeof(BDataFooterIcon<>),HandleOnPreviousPageAsync,Options.Page==1,RTL?NextIcon:PrevIcon,arg0Name:"OnClick",arg1Name:"Disabled",arg2Name:"Icon")
+    @RenderPart(typeof(BDataFooterIcon<>), HandleOnPreviousPageAsync, Options.Page == 1, RTL ? NextIcon : PrevIcon, arg0Name: "OnClick", arg1Name: "Disabled", arg2Name: "Icon")
 </div>
 @if (ShowCurrentPage)
 {
@@ -16,10 +16,9 @@
     </span>
 }
 <div class="@CssProvider.GetClass("icons-after")">
-    @RenderPart(typeof(BDataFooterIcon<>),HandleOnNextPageAsync,DisableNextPageIcon,RTL?PrevIcon:NextIcon,arg0Name:"OnClick",arg1Name:"Disabled",arg2Name:"Icon")
+    @RenderPart(typeof(BDataFooterIcon<>), HandleOnNextPageAsync, DisableNextPageIcon, RTL ? PrevIcon : NextIcon, arg0Name: "OnClick", arg1Name: "Disabled", arg2Name: "Icon")
     @if (ShowFirstLastPage)
     {
-        @RenderPart(typeof(BDataFooterIcon<>),HandleOnLastPageAsync,Options.Page>=Pagination.PageCount||Options.ItemsPerPage==-1,RTL?FirstIcon:LastIcon,arg0Name:"OnClick",arg1Name:"Disabled",arg2Name:"Icon")
+        @RenderPart(typeof(BDataFooterIcon<>), HandleOnLastPageAsync, Options.Page >= Pagination.PageCount || Options.ItemsPerPage == -1, RTL ? FirstIcon : LastIcon, arg0Name: "OnClick", arg1Name: "Disabled", arg2Name: "Icon")
     }
 </div>
-

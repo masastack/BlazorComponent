@@ -16,7 +16,7 @@
 
         Task HandleItemClickAsync(StringNumber item);
 
-        string PrevIcon => default;
+        string? PrevIcon => default;
 
         int Value => default;
     }

@@ -1,6 +1,6 @@
 ﻿namespace BlazorComponent;
 
-public class KeyTransitionElementState<TValue>
+public class KeyTransitionElementState<TValue> where TValue : notnull
 {
     private TValue? _key;
 
@@ -9,7 +9,7 @@ public class KeyTransitionElementState<TValue>
         Element = element;
     }
 
-    protected object? Value => Element.Value;
+    protected object Value => Element.Value;
 
     protected Transition? Transition => Element.Transition;
 

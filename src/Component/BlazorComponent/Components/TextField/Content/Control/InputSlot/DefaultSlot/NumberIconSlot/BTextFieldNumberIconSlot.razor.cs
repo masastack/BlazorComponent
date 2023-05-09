@@ -2,7 +2,7 @@
 {
     public partial class BTextFieldNumberIconSlot<TValue, TInput> where TInput : ITextField<TValue>
     {
-        public string Type => Component.Type;
+        public string? Type => Component.Type;
 
         public TextFieldNumberProperty Props => Component.Props;
 

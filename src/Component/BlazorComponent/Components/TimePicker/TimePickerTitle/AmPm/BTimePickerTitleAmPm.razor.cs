@@ -10,8 +10,8 @@
 
         public EventCallback<MouseEventArgs> OnPmClick => CreateEventCallback<MouseEventArgs>(Component.HandleOnPmClickAsync);
 
-        public string AmText => Component.AmText;
+        public string? AmText => Component.AmText;
 
-        public  string PmText => Component.PmText;
+        public  string? PmText => Component.PmText;
     }
 }

@@ -6,7 +6,7 @@ namespace BlazorComponent.I18n;
 
 public class I18n
 {
-    private const string CultureCookieKey = "Masa_I18nConfig_Culture";
+    private const string CULTURE_COOKIE_KEY = "Masa_I18nConfig_Culture";
 
     private readonly CookieStorage _cookieStorage;
 
@@ -14,11 +14,11 @@ public class I18n
     {
         _cookieStorage = cookieStorage;
 
-        var cultureName = _cookieStorage.GetCookie(CultureCookieKey);
+        var cultureName = _cookieStorage.GetCookie(CULTURE_COOKIE_KEY);
 
         if (cultureName is null && httpContextAccessor.HttpContext is not null)
         {
-            cultureName = httpContextAccessor.HttpContext.Request.Cookies[CultureCookieKey];
+            cultureName = httpContextAccessor.HttpContext.Request.Cookies[CULTURE_COOKIE_KEY];
 
             if (cultureName is null)
             {
@@ -53,7 +53,7 @@ public class I18n
 
     public void SetCulture(CultureInfo culture)
     {
-        _cookieStorage?.SetItemAsync(CultureCookieKey, culture);
+        _cookieStorage?.SetItemAsync(CULTURE_COOKIE_KEY, culture);
 
         SetCultureAndLocale(culture);
 
@@ -130,15 +130,20 @@ public class I18n
         Locale = I18nCache.GetLocale(culture);
     }
 
-    private static CultureInfo GetValidCulture(string cultureName, string fallbackCultureName)
+    private static CultureInfo GetValidCulture(string? cultureName, string fallbackCultureName)
     {
-        CultureInfo culture;
+        CultureInfo? culture = null;
 
         try
         {
-            culture = CultureInfo.CreateSpecificCulture(cultureName);
+            culture = CultureInfo.CreateSpecificCulture(cultureName ?? fallbackCultureName);
         }
         catch (Exception)
+        {
+            // ignored
+        }
+
+        if (culture is null && cultureName is not null)
         {
             try
             {
@@ -146,9 +151,11 @@ public class I18n
             }
             catch (Exception)
             {
-                culture = CultureInfo.CurrentUICulture;
+                // ignored
             }
         }
+
+        culture ??= CultureInfo.CurrentUICulture;
 
         // https://github.com/dotnet/runtime/issues/18998#issuecomment-254565364
         // `CultureInfo.CreateSpecificCulture` has the different behavior in different OS,

@@ -45,7 +45,7 @@
         public bool OpenAll { get; set; }
 
         [Parameter]
-        public Func<TItem, string, Func<TItem, string>, bool>? Filter { get; set; }
+        public Func<TItem, string?, Func<TItem, string>, bool>? Filter { get; set; }
 
         [Parameter]
         public SelectionType SelectionType { get; set; }
@@ -154,7 +154,7 @@
         public override async Task SetParametersAsync(ParameterView parameters)
         {
             await base.SetParametersAsync(parameters);
-            
+
             Items.ThrowIfNull(ComponentName);
             ItemText.ThrowIfNull(ComponentName);
             ItemKey.ThrowIfNull(ComponentName);
@@ -230,7 +230,7 @@
 
         public async Task EmitActiveAsync()
         {
-            var active = Nodes.Values.Where(r => r.IsActive).Select(r => r.Item).ToList();
+            var active = Nodes.Values.Where(r => r.IsActive).Select(r => r.Item!).ToList();
 
             if (OnActiveUpdate.HasDelegate)
             {
@@ -257,7 +257,7 @@
 
         public async Task EmitOpenAsync()
         {
-            var open = Nodes.Values.Where(r => r.IsOpen).Select(r => r.Item).ToList();
+            var open = Nodes.Values.Where(r => r.IsOpen).Select(r => r.Item!).ToList();
 
             if (OnOpenUpdate.HasDelegate)
             {
@@ -322,12 +322,9 @@
             BuildTree(Items, default);
         }
 
-        private void UpdateParentSelected(TKey parent, bool isIndeterminate = false)
+        private void UpdateParentSelected(TKey? parent, bool isIndeterminate = false)
         {
-            if (parent == null)
-            {
-                return;
-            }
+            if (parent == null) return;
 
             if (Nodes.TryGetValue(parent, out var nodeState))
             {
@@ -339,7 +336,10 @@
                 else
                 {
                     var children = Nodes
-                                   .Where(r => nodeState.Children.Contains(r.Key)).Select(r => r.Value);
+                                   .Where(r => nodeState.Children.Contains(r.Key))
+                                   .Select(r => r.Value)
+                                   .ToList();
+
                     if (children.All(r => r.IsSelected))
                     {
                         nodeState.IsSelected = true;
@@ -361,8 +361,10 @@
             }
         }
 
-        private void UpdateChildrenSelected(IEnumerable<TKey> children, bool isSelected)
+        private void UpdateChildrenSelected(IEnumerable<TKey>? children, bool isSelected)
         {
+            if (children == null) return;
+
             foreach (var child in children)
             {
                 if (Nodes.TryGetValue(child, out var nodeState))
@@ -405,11 +407,16 @@
             return false;
         }
 
-        private bool FilterTreeItem(TItem item, string search, Func<TItem, string> itemText)
+        private bool FilterTreeItem(TItem item, string? search, Func<TItem, string> itemText)
         {
             if (Filter is not null)
             {
                 return Filter.Invoke(item, search, itemText);
+            }
+            
+            if (string.IsNullOrEmpty(search))
+            {
+                return true;
             }
 
             var text = itemText(item);
@@ -513,7 +520,7 @@
             nodeState.IsOpen = isOpen;
         }
 
-        private async Task HandleUpdate(List<TKey> old, List<TKey> value, Action<TKey, bool> updateFn, Func<Task> emitFn)
+        private async Task HandleUpdate(List<TKey> old, List<TKey>? value, Action<TKey, bool> updateFn, Func<Task> emitFn)
         {
             if (value == null) return;
 
@@ -523,40 +530,36 @@
             await emitFn.Invoke();
         }
 
-        private void BuildTree(List<TItem> items, TKey parent)
+        private void BuildTree(List<TItem> items, TKey? parent)
         {
             foreach (var item in items)
             {
                 var key = ItemKey(item);
                 var children = ItemChildren(item) ?? new List<TItem>();
 
-                if (!Nodes.TryGetValue(key, out var oldNode))
-                {
-                    oldNode = new NodeState<TItem, TKey>();
-                }
+                Nodes.TryGetValue(key, out var oldNode);
 
-                var newNode = new NodeState<TItem, TKey>
-                {
-                    Node = oldNode.Node,
-                    Parent = parent,
-                    Children = children.Select(ItemKey),
-                    Item = item
-                };
+                var newNode = new NodeState<TItem, TKey>(item, children.Select(ItemKey), parent);
 
                 BuildTree(children, key);
 
-                if (SelectionType != SelectionType.Independent && parent != null && !Nodes.ContainsKey(key) && Nodes.ContainsKey(parent))
+                if (SelectionType != SelectionType.Independent && parent != null && !Nodes.ContainsKey(key) &&
+                    Nodes.TryGetValue(parent, out var node))
                 {
-                    newNode.IsSelected = Nodes[parent].IsSelected;
+                    newNode.IsSelected = node.IsSelected;
                 }
-                else
+                else if (oldNode is not null)
                 {
                     newNode.IsSelected = oldNode.IsSelected;
                     newNode.IsIndeterminate = oldNode.IsIndeterminate;
                 }
 
-                newNode.IsActive = oldNode.IsActive;
-                newNode.IsOpen = oldNode.IsOpen;
+                if (oldNode is not null)
+                {
+                    newNode.Node = oldNode.Node;
+                    newNode.IsActive = oldNode.IsActive;
+                    newNode.IsOpen = oldNode.IsOpen;
+                }
 
                 Nodes[key] = newNode;
 

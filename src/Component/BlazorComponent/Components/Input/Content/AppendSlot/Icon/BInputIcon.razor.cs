@@ -1,6 +1,4 @@
-﻿
-
-namespace BlazorComponent;
+﻿namespace BlazorComponent;
 
 public partial class BInputIcon<TValue, TInput> : ComponentPartBase<TInput>
     where TInput : IInput<TValue>
@@ -8,8 +6,8 @@ public partial class BInputIcon<TValue, TInput> : ComponentPartBase<TInput>
     [Parameter]
     public string? Icon { get; set; }
 
-    [Parameter]
-    public string? Type { get; set; }
+    [Parameter, EditorRequired]
+    public string Type { get; set; } = null!;
 
     [Parameter]
     public EventCallback<MouseEventArgs> OnClick { get; set; }

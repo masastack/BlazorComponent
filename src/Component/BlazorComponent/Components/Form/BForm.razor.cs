@@ -19,8 +19,7 @@ namespace BlazorComponent
         public EventCallback<EventArgs> OnSubmit { get; set; }
 
         [Parameter]
-        [EditorRequired]
-        public object Model { get; set; } = null!;
+        public object? Model { get; set; }
 
         [Parameter]
         public bool EnableValidation { get; set; }
@@ -54,13 +53,6 @@ namespace BlazorComponent
         protected ValidationMessageStore? ValidationMessageStore { get; set; }
 
         protected List<IValidatable> Validatables { get; } = new();
-
-        public override async Task SetParametersAsync(ParameterView parameters)
-        {
-            await base.SetParametersAsync(parameters);
-
-            Model.ThrowIfNull("Form");
-        }
 
         protected override void OnParametersSet()
         {
@@ -183,12 +175,7 @@ namespace BlazorComponent
                 colonIndex += 2;
                 var msg = resultStr.Substring(colonIndex, severityIndex - colonIndex);
                 Enum.TryParse<ValidationResultTypes>(resultStr.Substring(severityIndex + 10), out var type);
-                validationResults.Add(new ValidationResult
-                {
-                    Message = msg,
-                    Field = field,
-                    ValidationResultType = type
-                });
+                validationResults.Add(new ValidationResult(msg, field, type));
             }
 
             ParseFormValidation(validationResults.ToArray());
@@ -204,17 +191,19 @@ namespace BlazorComponent
             {
                 var model = Model;
                 var field = validationResult.Field;
-                if (validationResult.Field.Contains('.'))
+                if (validationResult.Field?.Contains('.') is true)
                 {
                     var fieldChunks = validationResult.Field.Split('.');
                     field = fieldChunks.Last();
                     foreach (var fieldChunk in fieldChunks)
                     {
                         if (fieldChunk != field)
-                            model = GetModelValue(model, fieldChunk,
+                            model = GetModelValue(model!, fieldChunk,
                                 () => throw new Exception($"{validationResult.Field} is error,can not read {fieldChunk}"));
                     }
                 }
+
+                if (model is null) return;
 
                 var fieldIdentifier = new FieldIdentifier(model, field);
                 var validatable = Validatables.FirstOrDefault(item => item.ValueIdentifier.Equals(fieldIdentifier));
@@ -229,7 +218,7 @@ namespace BlazorComponent
 
             _ = UpdateValue(false);
 
-            object GetModelValue(object model, string fieldChunk, Action whenError)
+            object? GetModelValue(object model, string fieldChunk, Action whenError)
             {
                 var type = model.GetType();
                 if (s_modelPropertiesMap.TryGetValue(type, out var propertyInfos) is false)
@@ -244,27 +233,39 @@ namespace BlazorComponent
                     var rightBracketsIndex = fieldChunk.IndexOf(']');
                     var filedName = fieldChunk.Substring(0, leftBracketsIndex - 1);
                     var propertyInfo = propertyInfos.FirstOrDefault(item => item.Name == filedName);
-                    if (propertyInfo is null) whenError.Invoke();
-                    model = propertyInfo.GetValue(model);
-                    var enumerable = model as System.Collections.IEnumerable;
-                    var index = Convert.ToInt32(fieldChunk.Substring(leftBracketsIndex, rightBracketsIndex - leftBracketsIndex));
-                    var i = 0;
-                    foreach (var item in enumerable)
+                    if (propertyInfo is null)
                     {
-                        if (i == index)
+                        whenError.Invoke();
+                    }
+                    else
+                    {
+                        model = propertyInfo.GetValue(model);
+                        var enumerable = model as System.Collections.IEnumerable;
+                        var index = Convert.ToInt32(fieldChunk.Substring(leftBracketsIndex, rightBracketsIndex - leftBracketsIndex));
+                        var i = 0;
+                        foreach (var item in enumerable)
                         {
-                            model = item;
-                            break;
-                        }
+                            if (i == index)
+                            {
+                                model = item;
+                                break;
+                            }
 
-                        i++;
+                            i++;
+                        }
                     }
                 }
                 else
                 {
                     var propertyInfo = propertyInfos.FirstOrDefault(item => item.Name == fieldChunk);
-                    if (propertyInfo is null) whenError.Invoke();
-                    model = propertyInfo.GetValue(model);
+                    if (propertyInfo is null)
+                    {
+                        whenError.Invoke();
+                    }
+                    else
+                    {
+                        model = propertyInfo.GetValue(model);
+                    }
                 }
 
                 return model;

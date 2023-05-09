@@ -3,11 +3,11 @@
     public partial class BDataTableDefaultGroupedRow<TItem, TDataTable> where TDataTable : IDataTable<TItem>
     {
         [Parameter]
-        public IGrouping<string, TItem> Group { get; set; }
+        public IGrouping<string, TItem> Group { get; set; } = null!;
 
         public RenderFragment? GroupHeaderContent => Component.GroupHeaderContent;
 
-        public Dictionary<string, object> ColspanAttrs => Component.ColspanAttrs;
+        public Dictionary<string, object?> ColspanAttrs => Component.ColspanAttrs;
 
         public Dictionary<string, bool> OpenCache => Component.OpenCache;
 

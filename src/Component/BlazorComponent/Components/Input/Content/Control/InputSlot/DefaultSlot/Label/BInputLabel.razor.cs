@@ -5,7 +5,7 @@
     {
         public bool HasLabel => Component.HasLabel;
 
-        public string Label => Component.Label;
+        public string? Label => Component.Label;
 
         public RenderFragment? LabelContent => Component.LabelContent;
     }

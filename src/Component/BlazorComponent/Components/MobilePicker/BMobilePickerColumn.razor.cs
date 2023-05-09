@@ -61,8 +61,6 @@ public partial class BMobilePickerColumn<TColumnItem>
 
     protected int BaseOffset => ItemHeight * (VisibleItemCount.ToInt32(6) - 1) / 2;
 
-    private int _prevSelectedIndex;
-
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
@@ -73,6 +71,8 @@ public partial class BMobilePickerColumn<TColumnItem>
             SetIndex(SelectedIndex);
         }
     }
+
+    private int _prevSelectedIndex;
 
     private async Task OnTouchstart(TouchEventArgs args)
     {

@@ -4,6 +4,10 @@ namespace BlazorComponent.Web
 {
     public class Window : JSObject
     {
+        public Window()
+        {
+        }
+        
         public Window(Document document)
             : base(document.JS)
         {

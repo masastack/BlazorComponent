@@ -56,11 +56,9 @@ namespace BlazorComponent
             }
         }
 
-        protected RenderFragment ComputedItemContent => ItemContent(GenItemContext());
+        protected bool IsClickable => Router?.IsClickable is true || Matched;
 
-        public bool IsClickable => Router.IsClickable || Matched;
-
-        public bool IsLink => Router.IsLink;
+        public bool IsLink => Router?.IsLink is true;
 
         protected override bool IsRoutable => Href != null && List?.Routable is true;
 

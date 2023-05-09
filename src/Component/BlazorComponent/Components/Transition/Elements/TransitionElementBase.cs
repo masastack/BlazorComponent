@@ -10,7 +10,7 @@ public abstract class TransitionElementBase : Element
     internal BlazorComponent.Web.Element? ElementInfo { get; set; }
 }
 
-public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAsyncDisposable
+public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAsyncDisposable where TValue : notnull
 {
     [Inject]
     [NotNull]
@@ -19,10 +19,10 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
     [CascadingParameter]
     public Transition? Transition { get; set; }
 
-    [Parameter]
-    public TValue Value { get; set; }
+    [Parameter, EditorRequired]
+    public TValue Value { get; set; } = default!;
 
-    private TValue _preValue;
+    private TValue? _preValue;
     private TransitionJsInvoker? _transitionJsInvoker;
 
     protected bool FirstRender { get; private set; } = true;
@@ -181,7 +181,7 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
 
     protected bool IsLeaveTransitionState => CurrentState is TransitionState.Leave or TransitionState.LeaveTo;
 
-    protected override string ComputedStyle
+    protected override string? ComputedStyle
     {
         get
         {

@@ -4,12 +4,12 @@
     {
         public ElementReference DialogRef
         {
-            set { Component.DialogRef = value; }
+            set => Component.DialogRef = value;
         }
 
         public bool IsActive => Component.IsActive;
 
-        public string Transition => Component.Transition;
+        public string? Transition => Component.Transition;
 
         public RenderFragment? ComponentChildContent => Component.ChildContent;
     }

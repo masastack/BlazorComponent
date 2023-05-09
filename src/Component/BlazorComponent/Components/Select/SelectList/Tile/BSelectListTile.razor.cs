@@ -3,15 +3,13 @@
 public partial class BSelectListTile<TItem, TItemValue, TValue>
 {
     [Parameter]
-    public TItem Item { get; set; }
+    public TItem? Item { get; set; }
 
     [Parameter]
     public int Index { get; set; }
 
     [Parameter]
     public bool? Disabled { get; set; }
-
-    protected Func<TItem, bool> HasItem => Component.HasItem;
 
     protected bool Action => Component.Action;
 
@@ -21,11 +19,13 @@ public partial class BSelectListTile<TItem, TItemValue, TValue>
 
     protected RenderFragment<SelectListItemProps<TItem>> ItemContent => Component.ItemContent;
 
-    private bool Value => HasItem(Item);
+    private bool Value => Item != null && Component.HasItem(Item);
+
+    private bool IsDisabled => Item != null && Component.GetDisabled(Item);
 
     private async Task HandleOnClick()
     {
-        if (Component.GetDisabled(Item))
+        if (IsDisabled)
         {
             return;
         }

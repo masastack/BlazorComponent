@@ -4,7 +4,7 @@
     {
         string? Src { get; }
 
-        RenderFragment<Dictionary<string, object>>? ImgContent { get; }
+        RenderFragment<Dictionary<string, object?>>? ImgContent { get; }
 
         StringNumber? Height { get; }
 

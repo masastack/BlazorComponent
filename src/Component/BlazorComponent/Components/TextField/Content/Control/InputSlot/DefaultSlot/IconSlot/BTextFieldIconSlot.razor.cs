@@ -2,7 +2,7 @@
 
 public partial class BTextFieldIconSlot<TValue, TInput> where TInput : ITextField<TValue>
 {
-    public string AppendIcon => Component.AppendIcon;
+    public string? AppendIcon => Component.AppendIcon;
 
     public RenderFragment? AppendContent => Component.AppendContent;
 

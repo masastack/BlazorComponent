@@ -6,8 +6,7 @@ namespace BlazorComponent
 {
     public class ComponentPartBase<TComponent> : IComponentPart where TComponent : IHasProviderComponent
     {
-        [NotNull]
-        public TComponent? Component { get; set; }
+        public TComponent Component { get; private set; } = default!;
 
         protected ComponentCssProvider CssProvider => Component.CssProvider;
 
@@ -32,7 +31,7 @@ namespace BlazorComponent
             parameterView.SetParameterProperties(this);
         }
 
-        protected RenderFragment RenderText(object text)
+        protected RenderFragment RenderText(object? text)
         {
             return builder => builder.AddContent(0, text);
         }

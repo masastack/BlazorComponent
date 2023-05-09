@@ -43,7 +43,7 @@
         private readonly GroupType _groupType;
 
         private bool? _isActive;
-        private StringNumber _value;
+        private StringNumber? _value;
         private bool _firstRenderAfterBooting;
 
         /// <summary>

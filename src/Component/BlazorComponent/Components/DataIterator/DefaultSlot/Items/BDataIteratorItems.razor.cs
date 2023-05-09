@@ -6,7 +6,7 @@
 
         public RenderFragment? ComponentChildContent => Component.ChildContent;
 
-        public RenderFragment<ItemProps<TItem>> ItemContent => Component.ItemContent;
+        public RenderFragment<ItemProps<TItem>>? ItemContent => Component.ItemContent;
 
         public IEnumerable<TItem> ComputedItems => Component.ComputedItems;
     }

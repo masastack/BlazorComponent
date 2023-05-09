@@ -3,7 +3,7 @@
     public partial class BSelectListTileContent<TItem, TItemValue, TValue>
     {
         [Parameter]
-        public TItem Item { get; set; }
+        public TItem? Item { get; set; }
 
         [Parameter]
         public bool Value { get; set; }

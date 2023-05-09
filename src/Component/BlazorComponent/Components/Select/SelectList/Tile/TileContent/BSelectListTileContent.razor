@@ -2,7 +2,7 @@
 @typeparam TItem
 @typeparam TItemValue
 @typeparam TValue
-@inherits ComponentPartBase<ISelectList<TItem,TItemValue,TValue>>
+@inherits ComponentPartBase<ISelectList<TItem, TItemValue, TValue>>
 
 <BListItemContent @attributes="GetAttributes(typeof(BListItemContent))">
     <BListItemTitle @attributes="GetAttributes(typeof(BListItemTitle))">
@@ -10,7 +10,7 @@
         {
             @ChildContent
         }
-        else
+        else if (Item != null)
         {
             @((MarkupString)GetFilteredText(Item))
         }

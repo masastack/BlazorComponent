@@ -6,6 +6,6 @@
 
         public RenderFragment? ComponentIconContent => Component.IconContent;
 
-        public string Icon => Component.Icon;
+        public string? Icon => Component.Icon;
     }
 }

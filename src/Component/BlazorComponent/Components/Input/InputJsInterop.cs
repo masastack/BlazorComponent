@@ -55,7 +55,7 @@ public class InputJsInterop : IAsyncDisposable
         _owner.StateHasChangedForJsInvokable();
     }
 
-    public async Task SetValue(string val)
+    public async Task SetValue(string? val)
     {
         ArgumentNullException.ThrowIfNull(_inputJsReference);
 

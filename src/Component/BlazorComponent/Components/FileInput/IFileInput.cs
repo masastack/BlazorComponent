@@ -6,7 +6,7 @@ namespace BlazorComponent
     {
         RenderFragment<(int index, string text)>? SelectionContent { get; }
 
-        IList<string> Text { get; }
+        IList<string?> Text { get; }
 
         bool HasChips { get; }
 

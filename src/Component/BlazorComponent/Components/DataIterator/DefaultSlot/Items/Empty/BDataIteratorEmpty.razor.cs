@@ -10,14 +10,14 @@
 
         public RenderFragment? LoadingContent => Component.LoadingContent;
 
-        public string LoadingText => Component.LoadingText;
+        public string? LoadingText => Component.LoadingText;
 
         public RenderFragment? NoDataContent => Component.NoDataContent;
 
-        public string NoDataText => Component.NoDataText;
+        public string? NoDataText => Component.NoDataText;
 
         public RenderFragment? NoResultsContent => Component.NoResultsContent;
 
-        public string NoResultsText => Component.NoResultsText;
+        public string? NoResultsText => Component.NoResultsText;
     }
 }

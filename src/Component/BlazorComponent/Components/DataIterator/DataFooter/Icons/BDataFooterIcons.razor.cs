@@ -4,7 +4,7 @@
     {
         public bool ShowCurrentPage => Component.ShowCurrentPage;
 
-        public DataOptions? Options => Component.Options;
+        public DataOptions Options => Component.Options;
 
         public EventCallback<MouseEventArgs> HandleOnPreviousPageAsync => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnPreviousPageAsync);
 
@@ -28,6 +28,6 @@
 
         public bool ShowFirstLastPage => Component.ShowFirstLastPage;
 
-        public DataPagination? Pagination => Component.Pagination;
+        public DataPagination Pagination => Component.Pagination;
     }
 }

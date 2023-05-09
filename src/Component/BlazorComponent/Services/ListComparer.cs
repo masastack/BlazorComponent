@@ -2,7 +2,7 @@
 {
     public class ListComparer
     {
-        public static bool Equals<TValue>(IList<TValue> left, IList<TValue> right)
+        public static bool Equals<TValue>(IList<TValue>? left, IList<TValue>? right)
         {
             if (ReferenceEquals(left, right))
             {

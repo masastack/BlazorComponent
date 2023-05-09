@@ -6,7 +6,11 @@ namespace BlazorComponent
     public class Element : ComponentBase
     {
         [Parameter]
-        public string? Tag { get; set; } = "div";
+        public string Tag
+        {
+            get => _tag ?? "div";
+            set => _tag = value;
+        }
 
         [Parameter]
         public RenderFragment? ChildContent { get; set; }
@@ -21,8 +25,9 @@ namespace BlazorComponent
         public Action<ElementReference>? ReferenceCaptureAction { get; set; }
 
         [Parameter(CaptureUnmatchedValues = true)]
-        public virtual IDictionary<string, object> AdditionalAttributes { get; set; } = new Dictionary<string, object>();
+        public virtual IDictionary<string, object?> AdditionalAttributes { get; set; } = new Dictionary<string, object?>();
 
+        private string? _tag;
         private ElementReference? _reference;
 
         protected bool ElementReferenceChanged { get; set; }
@@ -54,7 +59,7 @@ namespace BlazorComponent
             builder.AddAttribute(sequence++, "class", ComputedClass);
             builder.AddAttribute(sequence++, "style", ComputedStyle);
             builder.AddContent(sequence++, ChildContent);
-            builder.AddElementReferenceCapture(sequence++, reference =>
+            builder.AddElementReferenceCapture(sequence, reference =>
             {
                 ReferenceCaptureAction?.Invoke(reference);
                 Reference = reference;

@@ -2,7 +2,7 @@
 {
     public partial class BPickerBodyTransition<TPicker> where TPicker : IPicker
     {
-        public string Transition => Component.Transition;
+        public string? Transition => Component.Transition;
 
         public bool NoTitle => Component.NoTitle;
 

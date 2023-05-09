@@ -16,7 +16,7 @@
 
         RenderFragment<DataTableHeader>? HeaderColContent { get; }
 
-        Task HandleOnGroup(string group);
+        Task HandleOnGroup(string? group);
 
         Task HandleOnHeaderColClick(string? value);
 

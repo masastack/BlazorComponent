@@ -18,14 +18,14 @@
         {
             get
             {
-                var children = new List<List<(string Type, Dictionary<string, object> Attrs)>>();
+                var children = new List<List<(string Type, Dictionary<string, object?> Attrs)>>();
                 var daysInMonth = DateTime.DaysInMonth(DisplayedYear, DisplayedMonth + 1);
-                var rows = new List<(string Type, Dictionary<string, object> Attrs)>();
+                var rows = new List<(string Type, Dictionary<string, object?> Attrs)>();
                 var day = WeekDaysBeforeFirstDayOfTheMonth;
 
                 if (ShowWeek)
                 {
-                    rows.Add(("WeekNumber", new Dictionary<string, object>
+                    rows.Add(("WeekNumber", new Dictionary<string, object?>
                     {
                         {"WeekNumber",GetWeekNumber(1)}
                     }));
@@ -39,7 +39,7 @@
                 while (day-- > 0)
                 {
                     var date = new DateOnly(prevMonthYear, prevMonth + 1, firstDayFormPreviousMonth - day);
-                    rows.Add(("ShowAdjacentMonthsButton", new Dictionary<string, object>
+                    rows.Add(("ShowAdjacentMonthsButton", new Dictionary<string, object?>
                     {
                         {"Date",date},
                         {"IsFloating",true},
@@ -50,7 +50,7 @@
                 for (day = 1; day <= daysInMonth; day++)
                 {
                     var date = new DateOnly(DisplayedYear, DisplayedMonth + 1, day);
-                    rows.Add(("Button", new Dictionary<string, object>
+                    rows.Add(("Button", new Dictionary<string, object?>
                     {
                         {"Date",date},
                         {"IsFloating",true}
@@ -59,10 +59,10 @@
                     if (rows.Count % cellsInRow == 0)
                     {
                         children.Add(rows);
-                        rows = new List<(string Type, Dictionary<string, object> Attrs)>();
+                        rows = new List<(string Type, Dictionary<string, object?> Attrs)>();
                         if (ShowWeek && (day < daysInMonth || ShowAdjacentMonths))
                         {
-                            rows.Add(("WeekNumber", new Dictionary<string, object>
+                            rows.Add(("WeekNumber", new Dictionary<string, object?>
                             {
                                 {"WeekNumber",GetWeekNumber(day+7)}
                             }));
@@ -77,7 +77,7 @@
                 while (rows.Count < cellsInRow)
                 {
                     var date = new DateOnly(nextMonthYear, nextMonth + 1, nextMonthDay++);
-                    rows.Add(("ShowAdjacentMonthsButton", new Dictionary<string, object>
+                    rows.Add(("ShowAdjacentMonthsButton", new Dictionary<string, object?>
                     {
                         {"Date",date},
                         {"IsFloating",true},

@@ -32,6 +32,6 @@
             }
         }
 
-        protected virtual string ComputedTransition { get; }
+        protected virtual string? ComputedTransition { get; }
     }
 }

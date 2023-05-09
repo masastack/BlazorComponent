@@ -4,7 +4,7 @@ namespace BlazorComponent
 {
     public partial class BFileInputSelections<TValue, TInput> where TInput : IFileInput<TValue>
     {
-        public RenderFragment<(int index, string text)> SelectionContent => Component.SelectionContent;
+        public RenderFragment<(int index, string text)>? SelectionContent => Component.SelectionContent;
 
         public IList<IBrowserFile> Files => Component.Files;
 

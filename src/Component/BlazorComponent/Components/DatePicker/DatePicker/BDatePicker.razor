@@ -4,7 +4,7 @@
 <CascadingValue Value="IsDark" Name="IsDark">
     @{
         //We want default to be null,so that BPicker Title will render nothing
-        var titleContent = (RenderFragment)null;
+        var titleContent = (RenderFragment?)null;
         @if (!NoTitle)
         {
             titleContent =@<BDatePickerTitle @attributes="GetAttributes(typeof(BDatePickerTitle))"></BDatePickerTitle>;

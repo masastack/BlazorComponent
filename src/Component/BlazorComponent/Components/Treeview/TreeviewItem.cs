@@ -2,15 +2,25 @@
 
 public class TreeviewItem<TItem>
 {
-    public TItem Item { get; set; }
+    public TreeviewItem(TItem item, bool leaf, bool selected, bool indeterminate, bool active, bool open)
+    {
+        Item = item;
+        Leaf = leaf;
+        Selected = selected;
+        Indeterminate = indeterminate;
+        Active = active;
+        Open = open;
+    }
 
-    public bool Leaf { get; set; }
+    public TItem Item { get; }
 
-    public bool Selected { get; set; }
+    public bool Leaf { get; }
 
-    public bool Indeterminate { get; set; }
+    public bool Selected { get; }
 
-    public bool Active { get; set; }
+    public bool Indeterminate { get; }
 
-    public bool Open { get; set; }
+    public bool Active { get; }
+
+    public bool Open { get; }
 }

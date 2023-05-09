@@ -24,7 +24,7 @@
 
         bool Outlined { get; }
 
-        string? LegendInnerHTML { get; }
+        string LegendInnerHTML { get; }
 
         bool ShowLabel { get; }
 

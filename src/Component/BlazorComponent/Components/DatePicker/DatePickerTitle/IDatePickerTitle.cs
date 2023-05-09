@@ -2,13 +2,13 @@
 {
     public interface IDatePickerTitle : IHasProviderComponent
     {
-        string Year { get; }
+        string? Year { get; }
 
-        string YearIcon { get; }
+        string? YearIcon { get; }
 
-        string ComputedTransition { get; }
+        string? ComputedTransition { get; }
 
-        string Date { get; }
+        string? Date { get; }
 
         DateOnly Value { get; }
 

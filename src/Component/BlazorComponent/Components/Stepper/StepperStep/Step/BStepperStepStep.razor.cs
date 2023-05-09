@@ -4,11 +4,11 @@
     {
         public bool HasError => Component.HasError;
 
-        public string ErrorIcon => Component.ErrorIcon;
+        public string? ErrorIcon => Component.ErrorIcon;
 
-        public string CompleteIcon => Component.CompleteIcon;
+        public string? CompleteIcon => Component.CompleteIcon;
 
-        public string EditIcon => Component.EditIcon;
+        public string? EditIcon => Component.EditIcon;
 
         public bool Complete => Component.Complete;
 

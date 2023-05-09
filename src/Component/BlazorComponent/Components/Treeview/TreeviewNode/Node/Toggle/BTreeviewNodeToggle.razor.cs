@@ -6,8 +6,8 @@
 
         public bool IsLoading => Component.IsLoading;
 
-        public string LoadingIcon => Component.LoadingIcon;
+        public string? LoadingIcon => Component.LoadingIcon;
 
-        public string ExpandIcon => Component.ExpandIcon;
+        public string? ExpandIcon => Component.ExpandIcon;
     }
 }

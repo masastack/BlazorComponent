@@ -5,6 +5,6 @@
     {
         List<ITabItem> TabItems => Component.TabItems;
 
-        StringNumber Value => Component.Value;
+        StringNumber? Value => Component.Value;
     }
 }

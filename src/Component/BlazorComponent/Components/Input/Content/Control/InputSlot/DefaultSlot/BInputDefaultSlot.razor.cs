@@ -7,7 +7,7 @@
 
         public RenderFragment? ComponentChildContent => Component.ChildContent;
 
-        public string Label => Component.Label;
+        public string? Label => Component.Label;
 
         public RenderFragment? LabelContent => Component.LabelContent;
     }

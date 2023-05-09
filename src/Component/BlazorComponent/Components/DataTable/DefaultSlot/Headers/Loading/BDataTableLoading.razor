@@ -5,9 +5,8 @@
 
 <thead>
     <tr class="@CssProvider.GetClass("progress")">
-        <th class="@CssProvider.GetClass("column")" @attributes="ColspanAttrs">
+        <th class="@CssProvider.GetClass("column")" @attributes="@ColspanAttrs">
             @RenderPart(typeof(BLoadableProgress<>))
         </th>
     </tr>
 </thead>
-

@@ -4,9 +4,9 @@ public interface IDatePickerTable : IHasProviderComponent
 {
     int DisplayedYear { get; }
 
-    Dictionary<string, object> GetButtonAttrs(DateOnly value);
+    Dictionary<string, object?> GetButtonAttrs(DateOnly value);
 
-    Func<DateOnly, string> Formatter { get; }
+    Func<DateOnly, string>? Formatter { get; }
 
     OneOf<DateOnly[], Func<DateOnly, bool>>? Events { get; }
 

@@ -3,6 +3,6 @@
     public partial class BSelectListHeader<TItem, TItemValue, TValue>
     {
         [Parameter]
-        public string Header { get; set; }
+        public string? Header { get; set; }
     }
 }

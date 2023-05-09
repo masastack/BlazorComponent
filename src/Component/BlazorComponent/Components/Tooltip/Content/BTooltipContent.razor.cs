@@ -4,10 +4,7 @@
     {
         public ElementReference ContentElement
         {
-            set
-            {
-                Component.ContentElement = value;
-            }
+            set => Component.ContentElement = value;
         }
 
         protected string TransitionName
@@ -29,7 +26,7 @@
 
         public bool IsBooted => Component.IsBooted;
 
-        public string Transition => Component.Transition;
+        public string? Transition => Component.Transition;
 
         public RenderFragment? ComponentChildContent => Component.ChildContent;
     }

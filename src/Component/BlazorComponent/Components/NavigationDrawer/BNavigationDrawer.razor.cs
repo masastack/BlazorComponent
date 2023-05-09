@@ -174,7 +174,7 @@ namespace BlazorComponent
             watcher.Watch<bool>(nameof(MiniVariant), CallUpdate);
         }
 
-        protected virtual async void CallUpdate()
+        protected virtual void CallUpdate()
         {
         }
 

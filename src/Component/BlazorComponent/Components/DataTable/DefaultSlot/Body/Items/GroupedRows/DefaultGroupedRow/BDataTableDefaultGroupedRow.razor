@@ -5,21 +5,21 @@
 
 <BDataTableRowGroup Value="IsOpen" @attributes="GetAttributes(typeof(BDataTableRowGroup))">
     <ColumnHeaderContent>
-        @if(GroupHeaderContent!=null)
+        @if (GroupHeaderContent != null)
         {
             @GroupHeaderContent
         }
         else
         {
-            <td class="@CssProvider.GetClass("group-header")" @attributes="ColspanAttrs">
-                <BButton @attributes="@(GetAttributes(typeof(BButton),"group-toggle",data:Group.Key))">
-                    <BIcon @attributes="@(GetAttributes(typeof(BIcon),"group-toggle-icon"))">
-                        @(IsOpen?GroupMinusIcon:GroupPlusIcon)
+            <td class="@CssProvider.GetClass("group-header")" @attributes="@ColspanAttrs">
+                <BButton @attributes="@(GetAttributes(typeof(BButton), "group-toggle", data: Group.Key))">
+                    <BIcon @attributes="@(GetAttributes(typeof(BIcon), "group-toggle-icon"))">
+                        @(IsOpen ? GroupMinusIcon : GroupPlusIcon)
                     </BIcon>
                 </BButton>
                 @($"{Options.GroupBy[0]}: {Group.Key}")
-                <BButton @attributes="@(GetAttributes(typeof(BButton),"group-remove"))">
-                    <BIcon @attributes="@(GetAttributes(typeof(BIcon),"group-remove-icon"))">
+                <BButton @attributes="@(GetAttributes(typeof(BButton), "group-remove"))">
+                    <BIcon @attributes="@(GetAttributes(typeof(BIcon), "group-remove-icon"))">
                         @GroupCloseIcon
                     </BIcon>
                 </BButton>
@@ -27,7 +27,6 @@
         }
     </ColumnHeaderContent>
     <RowContentContent>
-        @RenderPart(typeof(BDataTableRows<,>),Group,arg0Name:"Items")
+        @RenderPart(typeof(BDataTableRows<,>), Group, arg0Name: "Items")
     </RowContentContent>
 </BDataTableRowGroup>
-

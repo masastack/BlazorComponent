@@ -5,7 +5,7 @@
 
 @if (Clearable)
 {
-    var childContent = (RenderFragment)null;
+    RenderFragment? childContent;
 
     if (!IsDirty)
     {
@@ -13,8 +13,8 @@
     }
     else
     {
-        childContent = RenderPart(typeof(BInputIcon<,>), "clear-icon", ClearIcon, HandleOnClearClickAsync, arg0Name:"Type",arg1Name:"Icon",arg2Name:"OnClick");
+        childContent = RenderPart(typeof(BInputIcon<,>), "clear-icon", ClearIcon, HandleOnClearClickAsync, arg0Name: "Type", arg1Name: "Icon", arg2Name: "OnClick");
     }
 
-    @RenderPart(typeof(BInputSlot<,>),"append","inner",childContent,arg0Name:"Type","Location")
+    @RenderPart(typeof(BInputSlot<,>), "append", "inner", childContent, arg0Name: "Type", "Location")
 }
