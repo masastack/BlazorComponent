@@ -41,6 +41,9 @@ namespace BlazorComponent
         public string Tag { get; set; } = "i";
 
         [Parameter]
+        public Dictionary<string, object?>? SvgAttributes { get; set; }
+
+        [Parameter]
         public bool Dark { get; set; }
 
         [Parameter]
@@ -85,6 +88,13 @@ namespace BlazorComponent
         [Parameter]
         public bool OnMouseupStopPropagation { get; set; }
 
+        private readonly static Dictionary<string, object?> s_defaultSvgAttrs = new()
+        {
+            { "viewBox", "0 0 24 24" },
+            { "role", "img" },
+            { "aria-hidden", "true" }
+        }; 
+
         private bool _clickEventRegistered;
 
         /// <summary>
@@ -94,18 +104,21 @@ namespace BlazorComponent
 
         protected virtual Icon? ComputedIcon { get; set; }
 
-        protected Dictionary<string, object>? SvgAttrs { get; set; }
-
-        protected override void OnInitialized()
+        private Dictionary<string, object?> SvgAttrs
         {
-            base.OnInitialized();
-
-            SvgAttrs = new()
+            get
             {
-                { "viewBox", "0 0 24 24" },
-                { "role", "img" },
-                { "aria-hidden", "true" }
-            };
+                if (SvgAttributes is null) return s_defaultSvgAttrs;
+
+                var attrs = new Dictionary<string, object?>(SvgAttributes);
+
+                foreach (var (k, v) in s_defaultSvgAttrs)
+                {
+                    attrs.TryAdd(k, v);
+                }
+
+                return attrs;
+            }
         }
 
         public override async Task SetParametersAsync(ParameterView parameters)
