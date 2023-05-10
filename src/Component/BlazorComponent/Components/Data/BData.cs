@@ -1,102 +1,64 @@
-﻿using Microsoft.AspNetCore.Components;
-using OneOf;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public abstract class BData<TItem> : BDomComponentBase
     {
         [Parameter]
+        [EditorRequired]
         public IEnumerable<TItem> Items
         {
-            get
-            {
-                return GetValue<IEnumerable<TItem>>(new List<TItem>());
-            }
-            set
-            {
-                SetValue(value);
-            }
+            get => GetValue<IEnumerable<TItem>>() ?? new List<TItem>();
+            set => SetValue(value);
         }
 
         [Parameter]
         public OneOf<string, IList<string>> SortBy
         {
-            get
-            {
-                return GetValue<OneOf<string, IList<string>>>(new List<string>());
-            }
-            set
-            {
-                SetValue(value);
-            }
+            get => GetValue<OneOf<string, IList<string>>>(new List<string>());
+            set => SetValue(value);
         }
 
         [Parameter]
         public OneOf<bool, IList<bool>> SortDesc
         {
-            get
-            {
-                return GetValue<OneOf<bool, IList<bool>>>(new List<bool>());
-            }
-            set
-            {
-                SetValue(value);
-            }
+            get => GetValue<OneOf<bool, IList<bool>>>(new List<bool>());
+            set => SetValue(value);
         }
 
         [Parameter]
-        public Func<IEnumerable<TItem>, IEnumerable<ItemValue<TItem>>, IList<string>, List<bool>, string, IEnumerable<TItem>> CustomSort { get; set; } = DefaultSortItems;
+        public Func<IEnumerable<TItem>, IEnumerable<ItemValue<TItem>>, IList<string>, List<bool>, string, IEnumerable<TItem>> CustomSort
+        {
+            get => _customSort ?? DefaultSortItems;
+            set => _customSort = value;
+        }
 
         [Parameter]
         public bool MustSort
         {
-            get
-            {
-                return GetValue<bool>();
-            }
-            set
-            {
-                SetValue(value);
-            }
+            get => GetValue<bool>();
+            set => SetValue(value);
         }
 
         [Parameter]
         public bool MultiSort
         {
-            get
-            {
-                return GetValue<bool>();
-            }
-            set
-            {
-                SetValue(value);
-            }
+            get => GetValue<bool>();
+            set => SetValue(value);
         }
 
         [Parameter]
+        [ApiDefaultValue(1)]
         public int Page
         {
-            get
-            {
-                return GetValue(1);
-            }
-            set
-            {
-                SetValue(value);
-            }
+            get => GetValue(1);
+            set => SetValue(value);
         }
 
         [Parameter]
+        [ApiDefaultValue(10)]
         public int ItemsPerPage
         {
-            get
-            {
-                return GetValue(10);
-            }
-            set
-            {
-                SetValue(value);
-            }
+            get => GetValue(10);
+            set => SetValue(value);
         }
 
         [Parameter]
@@ -106,9 +68,15 @@ namespace BlazorComponent
         public IList<bool> GroupDesc { get; set; } = new List<bool>();
 
         [Parameter]
-        public Func<IEnumerable<TItem>, IEnumerable<ItemValue<TItem>>, IList<string>, IList<bool>, IEnumerable<IGrouping<string, TItem>>> CustomGroup { get; set; } = DefaultGroupItems;
+        public Func<IEnumerable<TItem>, IEnumerable<ItemValue<TItem>>, IList<string>, IList<bool>, IEnumerable<IGrouping<string, TItem>>> CustomGroup
+        {
+            get => _customGroup ?? DefaultGroupItems;
+            set => _customGroup = value;
+        }
 
+        // TODO: check if this is implemented correctly
         [Parameter]
+        [ApiDefaultValue("en-US")]
         public string Locale { get; set; } = "en-US";
 
         [Parameter]
@@ -117,56 +85,36 @@ namespace BlazorComponent
         [Parameter]
         public bool DisablePagination
         {
-            get
-            {
-                return GetValue<bool>();
-            }
-            set
-            {
-                SetValue(value);
-            }
+            get => GetValue<bool>();
+            set => SetValue(value);
         }
 
         [Parameter]
         public bool DisableFiltering
         {
-            get
-            {
-                return GetValue<bool>();
-            }
-            set
-            {
-                SetValue(value);
-            }
+            get => GetValue<bool>();
+            set => SetValue(value);
         }
 
         [Parameter]
-        public string Search
+        public string? Search
         {
-            get
-            {
-                return GetValue<string>();
-            }
-            set
-            {
-                SetValue(value);
-            }
+            get => GetValue<string>();
+            set => SetValue(value);
         }
 
         [Parameter]
-        public Func<IEnumerable<TItem>, IEnumerable<ItemValue<TItem>>, string, IEnumerable<TItem>> CustomFilter { get; set; } = DefaultSearchItems;
+        public Func<IEnumerable<TItem>, IEnumerable<ItemValue<TItem>>, string?, IEnumerable<TItem>> CustomFilter
+        {
+            get => _customFilter ?? DefaultSearchItems;
+            set => _customFilter = value;
+        }
 
         [Parameter]
         public int ServerItemsLength
         {
-            get
-            {
-                return GetValue(-1);
-            }
-            set
-            {
-                SetValue(value);
-            }
+            get => GetValue(-1);
+            set => SetValue(value);
         }
 
         [Parameter]
@@ -178,16 +126,17 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback<DataOptions> OnOptionsUpdate { get; set; }
 
+        private Func<IEnumerable<TItem>, IEnumerable<ItemValue<TItem>>, string?, IEnumerable<TItem>>? _customFilter;
+
+        private Func<IEnumerable<TItem>, IEnumerable<ItemValue<TItem>>, IList<string>, List<bool>, string, IEnumerable<TItem>>? _customSort;
+
+        private Func<IEnumerable<TItem>, IEnumerable<ItemValue<TItem>>, IList<string>, IList<bool>, IEnumerable<IGrouping<string, TItem>>>?
+            _customGroup;
+
         protected DataOptions InternalOptions
         {
-            get
-            {
-                return GetValue(new DataOptions());
-            }
-            set
-            {
-                SetValue(value);
-            }
+            get => GetValue(new DataOptions())!;
+            set => SetValue(value);
         }
 
         public DataPagination Pagination => new()
@@ -227,14 +176,14 @@ namespace BlazorComponent
                     }
 
                     return items;
-                }, new string[]
+                }, new[]
                 {
                     nameof(DisableFiltering),
                     nameof(ServerItemsLength),
                     nameof(ItemValues),
                     nameof(Items),
                     nameof(Search)
-                });
+                })!;
             }
         }
 
@@ -243,7 +192,7 @@ namespace BlazorComponent
             get
             {
                 return GetComputedValue(() =>
-                     ServerItemsLength >= 0 ? ServerItemsLength : FilteredItems.Count());
+                    ServerItemsLength >= 0 ? ServerItemsLength : FilteredItems.Count());
             }
         }
 
@@ -270,11 +219,11 @@ namespace BlazorComponent
             get
             {
                 return GetComputedValue(() =>
-                     InternalOptions.ItemsPerPage <= 0 ? 1 : (int)Math.Ceiling(ItemsLength / (InternalOptions.ItemsPerPage * 1.0)));
+                    InternalOptions.ItemsPerPage <= 0 ? 1 : (int)Math.Ceiling(ItemsLength / (InternalOptions.ItemsPerPage * 1.0)));
             }
         }
 
-        public static IEnumerable<TItem> DefaultSearchItems(IEnumerable<TItem> items, IEnumerable<ItemValue<TItem>> itemValues, string search)
+        public static IEnumerable<TItem> DefaultSearchItems(IEnumerable<TItem> items, IEnumerable<ItemValue<TItem>> itemValues, string? search)
         {
             if (string.IsNullOrWhiteSpace(search))
             {
@@ -285,19 +234,21 @@ namespace BlazorComponent
             return items.Where(item => itemValues.Any(itemValue => DefaultFilter(itemValue.Invoke(item), search, item)));
         }
 
-        public static bool DefaultFilter(object value, string search, TItem item)
+        public static bool DefaultFilter(object? value, string? search, TItem item)
         {
-            return value != null && search != null && value is not bool && value.ToString().ToLowerInvariant().IndexOf(search.ToLowerInvariant()) != -1;
+            return value?.ToString() != null && search != null &&
+                   value.ToString()!.ToLowerInvariant().IndexOf(search.ToLowerInvariant(), StringComparison.Ordinal) != -1;
         }
 
-        public static IEnumerable<TItem> DefaultSortItems(IEnumerable<TItem> items, IEnumerable<ItemValue<TItem>> itemValues, IList<string> sortBy, List<bool> sortDesc, string locale)
+        public static IEnumerable<TItem> DefaultSortItems(IEnumerable<TItem> items, IEnumerable<ItemValue<TItem>> itemValues, IList<string> sortBy,
+            List<bool> sortDesc, string locale)
         {
             var sortedItems = default(IOrderedEnumerable<TItem>);
 
-            for (int i = 0; i < sortBy.Count; i++)
+            for (var i = 0; i < sortBy.Count; i++)
             {
                 var itemValue = itemValues.FirstOrDefault(itemValue => itemValue == sortBy[i]);
-                if (itemValue == null)
+                if (itemValue?.Factory == null)
                 {
                     continue;
                 }
@@ -307,36 +258,23 @@ namespace BlazorComponent
 
                 if (i == 0)
                 {
-                    if (!desc)
-                    {
-                        sortedItems = items.OrderBy(selector);
-                    }
-                    else
-                    {
-                        sortedItems = items.OrderByDescending(selector);
-                    }
+                    sortedItems = !desc ? items.OrderBy(selector) : items.OrderByDescending(selector);
                 }
                 else
                 {
-                    if (!desc)
-                    {
-                        sortedItems = sortedItems.ThenBy(selector);
-                    }
-                    else
-                    {
-                        sortedItems = sortedItems.ThenByDescending(selector);
-                    }
+                    sortedItems = !desc ? sortedItems!.ThenBy(selector) : sortedItems!.ThenByDescending(selector);
                 }
             }
 
             return sortedItems ?? items;
         }
 
-        private static IEnumerable<IGrouping<string, TItem>> DefaultGroupItems(IEnumerable<TItem> items, IEnumerable<ItemValue<TItem>> itemValues, IList<string> groupBy, IList<bool> groupDesc)
+        private static IEnumerable<IGrouping<string, TItem>> DefaultGroupItems(IEnumerable<TItem> items, IEnumerable<ItemValue<TItem>> itemValues,
+            IList<string> groupBy, IList<bool> groupDesc)
         {
             var key = groupBy.FirstOrDefault();
             var itemValue = itemValues.FirstOrDefault(itemValue => itemValue == key);
-            if (key == null)
+            if (itemValue == null || key == null)
             {
                 return new List<IGrouping<string, TItem>>();
             }
@@ -347,40 +285,35 @@ namespace BlazorComponent
         public bool IsGrouped => InternalOptions.GroupBy.Count > 0;
 
         public IEnumerable<IGrouping<string, TItem>> GroupedItems
-        {
-            get
-            {
-                return IsGrouped ? GroupItems(ComputedItems) : Enumerable.Empty<IGrouping<string, TItem>>();
-            }
-        }
+            => IsGrouped ? GroupItems(ComputedItems) : Enumerable.Empty<IGrouping<string, TItem>>();
 
         public IEnumerable<TItem> ComputedItems
         {
             get
             {
                 return GetComputedValue(() =>
-                 {
-                     IEnumerable<TItem> items = new List<TItem>(FilteredItems);
+                {
+                    IEnumerable<TItem> items = new List<TItem>(FilteredItems);
 
-                     if ((!DisableSort || InternalOptions.GroupBy.Count > 0) && ServerItemsLength <= 0)
-                     {
-                         items = SortItems(items);
-                     }
+                    if ((!DisableSort || InternalOptions.GroupBy.Count > 0) && ServerItemsLength <= 0)
+                    {
+                        items = SortItems(items);
+                    }
 
-                     if (!DisablePagination && ServerItemsLength <= 0)
-                     {
-                         items = PaginateItems(items);
-                     }
+                    if (!DisablePagination && ServerItemsLength <= 0)
+                    {
+                        items = PaginateItems(items);
+                    }
 
-                     return items;
-                 }, new string[]
-                 {
+                    return items;
+                }, new[]
+                {
                     nameof(FilteredItems),
                     nameof(DisableSort),
                     nameof(InternalOptions),
                     nameof(ServerItemsLength),
                     nameof(DisablePagination)
-                 });
+                })!;
             }
         }
 
@@ -442,15 +375,12 @@ namespace BlazorComponent
             }
 
             return val.Match(
-                t1 => new List<TValue>
-                {
-                    t1
-                },
-                t2 => t2
-                );
+                t1 => new List<TValue> { t1 },
+                t2 => t2);
         }
 
-        public (IList<string> by, IList<bool> desc, int page) Toggle(string key, IList<string> oldBy, IList<bool> oldDesc, int page, bool mustSort, bool multiSort)
+        public(IList<string> by, IList<bool> desc, int page) Toggle(string key, IList<string> oldBy, IList<bool> oldDesc, int page, bool mustSort,
+            bool multiSort)
         {
             var by = oldBy;
             var desc = oldDesc;
@@ -467,7 +397,7 @@ namespace BlazorComponent
                 by.Add(key);
                 desc.Add(false);
             }
-            else if (byIndex >= 0 && !desc[byIndex])
+            else if (!desc[byIndex])
             {
                 desc[byIndex] = true;
             }
@@ -505,8 +435,9 @@ namespace BlazorComponent
                 SortArray(key.AsT1);
                 return;
             }
-            
-            var (sortBy, sortDesc, page) = Toggle(key.AsT0, InternalOptions.SortBy, InternalOptions.SortDesc, InternalOptions.Page, InternalOptions.MustSort, InternalOptions.MultiSort);
+
+            var (sortBy, sortDesc, page) = Toggle(key.AsT0, InternalOptions.SortBy, InternalOptions.SortDesc, InternalOptions.Page,
+                InternalOptions.MustSort, InternalOptions.MultiSort);
 
             UpdateOptions(options =>
             {
@@ -523,7 +454,7 @@ namespace BlazorComponent
                 var i = InternalOptions.SortBy.ToList().FindIndex(k => k == s);
                 return i > -1 ? InternalOptions.SortDesc[i] : false;
             }).ToList();
-            
+
             UpdateOptions(options =>
             {
                 options.SortBy = sortBy;
@@ -572,12 +503,14 @@ namespace BlazorComponent
 
         public IEnumerable<TItem> PaginateItems(IEnumerable<TItem> items)
         {
-            if (ServerItemsLength == -1 && items.Count() <= PageStart)
+            var cacheItems = items.ToList();
+
+            if (ServerItemsLength == -1 && cacheItems.Count <= PageStart)
             {
-                InternalOptions.Page = Math.Max(1, (int)Math.Ceiling(items.Count() / (InternalOptions.ItemsPerPage * 1.0)));
+                InternalOptions.Page = Math.Max(1, (int)Math.Ceiling(cacheItems.Count / (InternalOptions.ItemsPerPage * 1.0)));
             }
 
-            return items.Skip(PageStart).Take(PageStop - PageStart);
+            return cacheItems.Skip(PageStart).Take(PageStop - PageStart);
         }
     }
 }

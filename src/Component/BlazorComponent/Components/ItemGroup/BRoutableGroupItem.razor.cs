@@ -11,16 +11,16 @@ public partial class BRoutableGroupItem<TGroup> : BGroupItem<TGroup>, IRoutable
     }
 
     [Inject]
-    public NavigationManager NavigationManager { get; set; }
+    public NavigationManager NavigationManager { get; set; } = null!;
 
     [Parameter]
     public string? Href { get; set; }
 
     [Parameter]
-    public string Tag { get; set; }
+    public string? Tag { get; set; }
 
     [Parameter]
-    public string Target { get; set; }
+    public string? Target { get; set; }
 
     [Parameter]
     public bool Link { get; set; }
@@ -31,7 +31,7 @@ public partial class BRoutableGroupItem<TGroup> : BGroupItem<TGroup>, IRoutable
     [Parameter]
     public bool Exact { get; set; }
 
-    protected IRoutable Router { get; private set; }
+    protected IRoutable? Router { get; private set; }
 
     protected virtual bool IsRoutable => Href != null && RoutableAncestor?.Routable is true;
 
@@ -76,7 +76,7 @@ public partial class BRoutableGroupItem<TGroup> : BGroupItem<TGroup>, IRoutable
 
     private async Task<bool> UpdateActiveForRoutable()
     {
-        if (!IsRoutable) return false;
+        if (!IsRoutable || Router is null) return false;
 
         var isActive = InternalIsActive;
 

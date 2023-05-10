@@ -6,9 +6,10 @@ namespace BlazorComponent
     public partial class BSheet : BDomComponentBase, IThemeable
     {
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
+        [ApiDefaultValue("div")]
         public virtual string Tag { get; set; } = "div";
 
         [Parameter]
@@ -44,6 +45,6 @@ namespace BlazorComponent
         /// <summary>
         /// Determines if the DOM element is ready to be displayed.
         /// </summary>
-        protected virtual bool IsBooted => true;
+        protected virtual bool IsBooted { get; set; } = true;
     }
 }

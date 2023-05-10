@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BDataIteratorDefaultSlot<TItem, TDataIterator> where TDataIterator : IDataIterator<TItem>
     {
-        public RenderFragment HeaderContent => Component.HeaderContent;
+        public RenderFragment? HeaderContent => Component.HeaderContent;
 
-        public RenderFragment FooterContent => Component.FooterContent;
+        public RenderFragment? FooterContent => Component.FooterContent;
     }
 }

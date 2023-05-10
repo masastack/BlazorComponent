@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public class RatingItem
     {
@@ -16,6 +14,6 @@ namespace BlazorComponent
 
         public bool? IsHalfHovered { get; set; }
 
-        public Action<ExMouseEventArgs> Click { get; set; }
+        public Action<ExMouseEventArgs>? Click { get; set; }
     }
 }

@@ -5,10 +5,9 @@
 
 @if (ItemContent != null)
 {
-    @RenderPart(typeof(BDataTableScopedRows<,>),Items)
+    @RenderPart(typeof(BDataTableScopedRows<,>), Items)
 }
 else
 {
-    @RenderPart(typeof(BDataTableDefaultRows<,>),Items)
+    @RenderPart(typeof(BDataTableDefaultRows<,>), Items)
 }
-

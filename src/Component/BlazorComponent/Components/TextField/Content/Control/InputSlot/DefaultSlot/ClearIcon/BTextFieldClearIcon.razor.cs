@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BTextFieldClearIcon<TValue, TInput> where TInput : ITextField<TValue>
     {
@@ -9,7 +6,7 @@ namespace BlazorComponent
 
         public bool IsDirty => Component.IsDirty;
 
-        public virtual string ClearIcon => Component.ClearIcon;
+        public virtual string? ClearIcon => Component.ClearIcon;
 
         public EventCallback<MouseEventArgs> HandleOnClearClickAsync => EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnClearClickAsync);
     }

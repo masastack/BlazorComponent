@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BPlaceholderSlot<TImage> : ComponentPartBase<TImage> where TImage : IImage
     {
         public bool IsLoading => Component.IsLoading;
 
-        public RenderFragment PlaceholderContent => Component.PlaceholderContent;
+        public RenderFragment? PlaceholderContent => Component.PlaceholderContent;
     }
 }

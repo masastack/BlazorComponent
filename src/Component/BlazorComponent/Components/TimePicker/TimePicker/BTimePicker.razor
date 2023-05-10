@@ -3,7 +3,7 @@
 
 @{
     //We want default to be null,so that BPicker Title will render nothing
-    var titleContent = (RenderFragment)null;
+    var titleContent = (RenderFragment?)null;
     @if (!NoTitle)
     {
         titleContent =@<BTimePickerTitle @attributes="GetAttributes(typeof(BTimePickerTitle))"></BTimePickerTitle>;

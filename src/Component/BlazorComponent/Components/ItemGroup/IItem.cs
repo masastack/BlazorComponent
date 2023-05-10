@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface IItem : IGroupable
     {
-        RenderFragment ChildContent { get; set; }
+        RenderFragment? ChildContent { get; set; }
     }
 }

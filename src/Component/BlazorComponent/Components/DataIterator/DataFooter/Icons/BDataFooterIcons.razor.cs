@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BDataFooterIcons<TComponent> where TComponent : IDataFooter
     {
@@ -19,13 +16,13 @@ namespace BlazorComponent
 
         public bool RTL => Component.RTL;
 
-        public string NextIcon => Component.NextIcon;
+        public string? NextIcon => Component.NextIcon;
 
-        public string PrevIcon => Component.PrevIcon;
+        public string? PrevIcon => Component.PrevIcon;
 
-        public string LastIcon => Component.LastIcon;
+        public string? LastIcon => Component.LastIcon;
 
-        public string FirstIcon => Component.FirstIcon;
+        public string? FirstIcon => Component.FirstIcon;
 
         public bool DisableNextPageIcon => Component.DisableNextPageIcon;
 

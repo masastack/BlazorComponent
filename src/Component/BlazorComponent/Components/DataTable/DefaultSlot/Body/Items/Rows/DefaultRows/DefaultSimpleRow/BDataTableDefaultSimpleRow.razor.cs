@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BDataTableDefaultSimpleRow<TItem, TDataTable> where TDataTable : IDataTable<TItem>
     {
@@ -8,11 +6,11 @@ namespace BlazorComponent
         public int Index { get; set; }
 
         [Parameter]
-        public TItem Item { get; set; }
+        public TItem Item { get; set; } = default!;
 
         public bool IsMobile => Component.IsMobile;
 
-        public Func<TItem, string> ItemKey => Component.ItemKey;
+        public Func<TItem, string>? ItemKey => Component.ItemKey;
 
         public bool ShowExpand => Component.ShowExpand;
 
@@ -20,11 +18,11 @@ namespace BlazorComponent
 
         public string ExpandIcon => Component.ExpandIcon;
 
-        public RenderFragment<ItemColProps<TItem>> ItemColContent => Component.ItemColContent;
+        public RenderFragment<ItemColProps<TItem>>? ItemColContent => Component.ItemColContent;
 
-        public RenderFragment ItemDataTableExpandContent => Component.ItemDataTableExpandContent;
+        public RenderFragment? ItemDataTableExpandContent => Component.ItemDataTableExpandContent;
 
-        public RenderFragment ItemDataTableSelectContent => Component.ItemDataTableSelectContent;
+        public RenderFragment? ItemDataTableSelectContent => Component.ItemDataTableSelectContent;
 
         private bool IsSelected => Component.IsSelected(Item);
 

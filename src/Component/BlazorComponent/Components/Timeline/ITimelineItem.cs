@@ -1,17 +1,15 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface ITimelineItem : IHasProviderComponent
     {
-        RenderFragment ChildContent { get; }
+        RenderFragment? ChildContent { get; }
 
         bool HideDot => default;
 
-        string Icon => default;
+        string? Icon => default;
 
-        RenderFragment IconContent { get; }
+        RenderFragment? IconContent { get; }
 
-        RenderFragment OppositeContent { get; }
+        RenderFragment? OppositeContent { get; }
     }
 }

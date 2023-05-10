@@ -10,10 +10,9 @@ namespace BlazorComponent
     public partial class BIcon : IIcon, IThemeable
     {
         [Inject]
-        public Document? Document { get; set; }
-        
+        public Document Document { get; set; } = null!;
+
         [Parameter]
-        [EditorRequired]
         public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
@@ -38,7 +37,8 @@ namespace BlazorComponent
         public StringNumber? Size { get; set; }
 
         [Parameter]
-        public string Tag { get; set; } = "i";
+        [ApiDefaultValue("i")]
+        public string? Tag { get; set; } = "i";
 
         [Parameter]
         public bool Dark { get; set; }
@@ -155,6 +155,8 @@ namespace BlazorComponent
                 _clickEventRegistered = true;
 
                 var button = Document.GetElementByReference(Ref);
+                if (button is null) return;
+
                 await button.AddEventListenerAsync("click", CreateEventCallback<MouseEventArgs>(HandleOnClick), false, new EventListenerExtras
                 {
                     PreventDefault = OnClickPreventDefault,

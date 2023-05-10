@@ -13,8 +13,13 @@
         protected IErrorHandler? ErrorHandler { get; set; }
 
         [Parameter]
-        public ForwardRef? RefBack { get; set; } = new();
+        public ForwardRef RefBack
+        {
+            get => _refBack ?? new ForwardRef();
+            set => _refBack = value;
+        }
 
+        private ForwardRef? _refBack;
         private bool _shouldRender = true;
         private string[] _dirtyParameters = Array.Empty<string>();
 

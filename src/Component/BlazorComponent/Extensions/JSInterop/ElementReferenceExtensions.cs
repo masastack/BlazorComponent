@@ -9,11 +9,22 @@ public static class ElementReferenceExtensions
 
     public static string? GetSelector(this ElementReference elementReference)
     {
-        if (elementReference.Context is null)
+        elementReference.TryGetSelector(out var selector);
+
+        return selector;
+    }
+
+    public static bool TryGetSelector(this ElementReference elementReference, [NotNullWhen(true)] out string? selector)
+    {
+        selector = null;
+
+        if (elementReference.Id is null)
         {
-            return null;
+            return false;
         }
 
-        return $"[_bl_{elementReference.Id}]";
+        selector = $"[_bl_{elementReference.Id}]";
+
+        return true;
     }
 }

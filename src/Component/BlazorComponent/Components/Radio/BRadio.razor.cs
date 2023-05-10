@@ -9,10 +9,12 @@ namespace BlazorComponent
         public IRadioGroup<TValue>? RadioGroup { get; set; }
 
         [Parameter]
-        public string? OnIcon { get; set; }
+        [ApiDefaultValue("$radioOn")]
+        public string? OnIcon { get; set; } = "$radioOn";
 
         [Parameter]
-        public string? OffIcon { get; set; }
+        [ApiDefaultValue("$radioOff")]
+        public string? OffIcon { get; set; } = "$radioOff";
 
         [Parameter]
         public bool Disabled { get; set; }
@@ -23,7 +25,7 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment? LabelContent { get; set; }
 
-        [Parameter, EditorRequired]
+        [Parameter]
         public TValue? Value { get; set; }
 
         [Parameter]
@@ -42,6 +44,7 @@ namespace BlazorComponent
         public string? Label { get; set; }
 
         [Parameter]
+        [ApiDefaultValue(true)]
         public bool Ripple { get; set; } = true;
 
         [Parameter]

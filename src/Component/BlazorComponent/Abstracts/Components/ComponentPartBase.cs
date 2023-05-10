@@ -1,5 +1,4 @@
 ﻿using BlazorComponent.Abstracts;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using System.Runtime.CompilerServices;
 
@@ -7,8 +6,7 @@ namespace BlazorComponent
 {
     public class ComponentPartBase<TComponent> : IComponentPart where TComponent : IHasProviderComponent
     {
-        [NotNull]
-        public TComponent? Component { get; set; }
+        public TComponent Component { get; private set; } = default!;
 
         protected ComponentCssProvider CssProvider => Component.CssProvider;
 
@@ -33,7 +31,7 @@ namespace BlazorComponent
             parameterView.SetParameterProperties(this);
         }
 
-        protected RenderFragment RenderText(object text)
+        protected RenderFragment RenderText(object? text)
         {
             return builder => builder.AddContent(0, text);
         }
@@ -48,7 +46,7 @@ namespace BlazorComponent
             return AbstractProvider.GetPartContent(keyType, name, Component);
         }
 
-        protected RenderFragment? RenderPart(Type keyType, Dictionary<string, object> attributes)
+        protected RenderFragment? RenderPart(Type keyType, Dictionary<string, object?> attributes)
         {
             return AbstractProvider.GetPartContent(keyType, Component, builder =>
             {
@@ -57,7 +55,7 @@ namespace BlazorComponent
             });
         }
 
-        protected RenderFragment? RenderPart(Type keyType, string name, object arg0, [CallerArgumentExpression("arg0")] string arg0Name = "")
+        protected RenderFragment? RenderPart(Type keyType, string name, object? arg0, [CallerArgumentExpression("arg0")] string arg0Name = "")
         {
             return AbstractProvider.GetPartContent(keyType, name, Component, builder =>
             {
@@ -66,7 +64,7 @@ namespace BlazorComponent
             });
         }
 
-        protected RenderFragment? RenderPart(Type keyType, object arg0, [CallerArgumentExpression("arg0")] string arg0Name = "")
+        protected RenderFragment? RenderPart(Type keyType, object? arg0, [CallerArgumentExpression("arg0")] string arg0Name = "")
         {
             return AbstractProvider.GetPartContent(keyType, Component, builder =>
             {
@@ -75,7 +73,7 @@ namespace BlazorComponent
             });
         }
 
-        protected RenderFragment? RenderPart(Type keyType, object arg0, object arg1, [CallerArgumentExpression("arg0")] string arg0Name = "", [CallerArgumentExpression("arg1")] string arg1Name = "")
+        protected RenderFragment? RenderPart(Type keyType, object? arg0, object? arg1, [CallerArgumentExpression("arg0")] string arg0Name = "", [CallerArgumentExpression("arg1")] string arg1Name = "")
         {
             return AbstractProvider.GetPartContent(keyType, Component, builder =>
             {
@@ -85,7 +83,7 @@ namespace BlazorComponent
             });
         }
 
-        protected RenderFragment? RenderPart(Type keyType, object arg0, object arg1, object arg2, [CallerArgumentExpression("arg0")] string arg0Name = "", [CallerArgumentExpression("arg1")] string arg1Name = "", [CallerArgumentExpression("arg2")] string arg2Name = "")
+        protected RenderFragment? RenderPart(Type keyType, object? arg0, object? arg1, object? arg2, [CallerArgumentExpression("arg0")] string arg0Name = "", [CallerArgumentExpression("arg1")] string arg1Name = "", [CallerArgumentExpression("arg2")] string arg2Name = "")
         {
             return AbstractProvider.GetPartContent(keyType, Component, builder =>
             {
@@ -96,7 +94,7 @@ namespace BlazorComponent
             });
         }
 
-        protected RenderFragment? RenderPart(Type keyType, object arg0, object arg1, object arg2, object arg3, [CallerArgumentExpression("arg0")] string arg0Name = "", [CallerArgumentExpression("arg1")] string arg1Name = "", [CallerArgumentExpression("arg2")] string arg2Name = "", [CallerArgumentExpression("arg3")] string arg3Name = "")
+        protected RenderFragment? RenderPart(Type keyType, object? arg0, object? arg1, object? arg2, object? arg3, [CallerArgumentExpression("arg0")] string arg0Name = "", [CallerArgumentExpression("arg1")] string arg1Name = "", [CallerArgumentExpression("arg2")] string arg2Name = "", [CallerArgumentExpression("arg3")] string arg3Name = "")
         {
             return AbstractProvider.GetPartContent(keyType, Component, builder =>
             {
@@ -113,20 +111,19 @@ namespace BlazorComponent
             return EventCallback.Factory.Create(Component, callback);
         }
 
-        protected Dictionary<string, object> GetAttributes(Type type, int index)
+        protected Dictionary<string, object?> GetAttributes(Type type, int index)
         {
             return AbstractProvider.GetMetadata(type, index).Attributes;
         }
 
-        protected Dictionary<string, object> GetAttributes(Type type, object? data = null)
+        protected Dictionary<string, object?> GetAttributes(Type type, object? data = null)
         {
             return AbstractProvider.GetMetadata(type, data).Attributes;
         }
 
-        protected Dictionary<string, object> GetAttributes(Type type, string name, object? data = null)
+        protected Dictionary<string, object?> GetAttributes(Type type, string name, object? data = null)
         {
-            var attrs = AbstractProvider.GetMetadata(type, name, data).Attributes;
-            return attrs;
+            return AbstractProvider.GetMetadata(type, name, data).Attributes;
         }
 
         protected virtual void BuildRenderTree(RenderTreeBuilder builder)

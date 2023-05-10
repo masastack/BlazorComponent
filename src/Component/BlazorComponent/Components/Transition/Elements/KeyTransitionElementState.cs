@@ -1,8 +1,8 @@
 ﻿namespace BlazorComponent;
 
-public class KeyTransitionElementState<TValue>
+public class KeyTransitionElementState<TValue> where TValue : notnull
 {
-    private TValue _key;
+    private TValue? _key;
 
     public KeyTransitionElementState(KeyTransitionElement<TValue> element)
     {
@@ -11,11 +11,11 @@ public class KeyTransitionElementState<TValue>
 
     protected object Value => Element.Value;
 
-    protected Transition Transition => Element.Transition;
+    protected Transition? Transition => Element.Transition;
 
-    protected string Class => Element.Class;
+    protected string? Class => Element.Class;
 
-    protected string Style => Element.Style;
+    protected string? Style => Element.Style;
 
     protected bool IsLeaveTransitionState => TransitionState is TransitionState.Leave or TransitionState.LeaveTo;
 
@@ -28,9 +28,9 @@ public class KeyTransitionElementState<TValue>
     /// </summary>
     public TransitionState TransitionState { get; set; }
 
-    public TValue Key
+    public TValue? Key
     {
-        get { return _key; }
+        get => _key;
         set
         {
             _key = value;
@@ -40,11 +40,11 @@ public class KeyTransitionElementState<TValue>
 
     public bool IsEmpty { get; set; } = true;
 
-    public string ComputedClass
+    public string? ComputedClass
     {
         get
         {
-            var transitionName = Transition.Name;
+            var transitionName = Transition?.Name;
             if (transitionName == null || TransitionState == TransitionState.None)
             {
                 return Class;
@@ -74,7 +74,7 @@ public class KeyTransitionElementState<TValue>
                 styles.Add(Style);
             }
 
-            if (IsLeaveTransitionState && Transition.LeaveAbsolute && Element.ElementInfo is not null)
+            if (IsLeaveTransitionState && Transition?.LeaveAbsolute is true && Element.ElementInfo is not null)
             {
                 styles.Add("position:absolute");
                 styles.Add($"top:{Element.ElementInfo.OffsetTop}px");

@@ -14,16 +14,16 @@ namespace BlazorComponent
         protected bool IsReadonly => ExpansionPanel?.IsReadonly ?? false;
 
         [CascadingParameter]
-        public BExpansionPanel ExpansionPanel { get; set; }
+        public BExpansionPanel? ExpansionPanel { get; set; }
 
         [Parameter]
-        public RenderFragment ActionsContent { get; set; }
+        public RenderFragment? ActionsContent { get; set; }
 
         [Parameter]
-        public RenderFragment<bool> ChildContent { get; set; }
+        public RenderFragment<bool>? ChildContent { get; set; }
 
         [Parameter]
-        public string Color { get; set; }
+        public string? Color { get; set; }
 
         [Parameter]
         public bool DisableIconRotate { get; set; }
@@ -48,6 +48,8 @@ namespace BlazorComponent
 
             if (!(IsReadonly || IsDisabled))
             {
+                if (ExpansionPanel is null) return;
+
                 await ExpansionPanel.Toggle();
             }
         }

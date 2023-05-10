@@ -8,6 +8,6 @@
 
         int Step { get; }
 
-        Func<int, string> Format { get; }
+        Func<int, string>? Format { get; }
     }
 }

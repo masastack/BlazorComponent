@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BPickerActions<TPicker> where TPicker : IPicker
     {
-        public RenderFragment ActionsContent => Component.ActionsContent;
+        public RenderFragment? ActionsContent => Component.ActionsContent;
     }
 }

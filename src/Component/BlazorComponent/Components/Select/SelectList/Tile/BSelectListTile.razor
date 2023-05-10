@@ -6,8 +6,8 @@
 
 <BListItem @onmousedown:preventDefault
            @key="Item"
-           Disabled="@Component.GetDisabled(Item)"
-           OnClick="HandleOnClick"
+           Disabled="@IsDisabled"
+           OnClick="@HandleOnClick"
            @attributes="@GetAttributes(typeof(BListItem), data: (Item,Value))">
     @if (ItemContent == null)
     {

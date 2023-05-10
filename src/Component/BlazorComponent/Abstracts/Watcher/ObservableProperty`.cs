@@ -64,7 +64,7 @@ namespace BlazorComponent
             _value = value;
         }
 
-        public Func<TValue> ValueFactory { get; set; }
+        public Func<TValue>? ValueFactory { get; set; }
 
         public bool DisableIListAlwaysNotifying { get; set; }
 
@@ -73,7 +73,7 @@ namespace BlazorComponent
         /// </summary>
         public bool HasValue => _hasValue;
 
-        public event Action<TValue?, TValue?> OnValueChange;
+        public event Action<TValue?, TValue?>? OnValueChange;
 
         public void NotifyChange(TValue? newValue, TValue? oldValue)
         {

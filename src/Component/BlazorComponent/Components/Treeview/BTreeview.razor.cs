@@ -1,36 +1,42 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BTreeview<TItem, TKey> : ITreeview<TItem, TKey> where TKey : notnull
     {
-        private List<TItem> _oldItems;
-        private string _oldItemsKeys;
+        private List<TItem>? _oldItems;
+        private string? _oldItemsKeys;
         private List<TKey> _oldValue = new();
         private List<TKey> _oldActive = new();
         private List<TKey> _oldOpen = new();
 
-        [Parameter]
-        public List<TItem> Items { get; set; }
+        [Parameter, EditorRequired]
+        public List<TItem> Items { get; set; } = null!;
+
+        [Parameter, EditorRequired]
+        public Func<TItem, string> ItemText { get; set; } = null!;
+
+        [Parameter, EditorRequired]
+        public Func<TItem, TKey> ItemKey { get; set; } = null!;
+
+        [Parameter, EditorRequired]
+        public Func<TItem, List<TItem>> ItemChildren { get; set; } = null!;
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
-        public string Search { get; set; }
+        public string? Search { get; set; }
 
         [Parameter]
-        public RenderFragment<TreeviewItem<TItem>> PrependContent { get; set; }
+        public RenderFragment<TreeviewItem<TItem>>? PrependContent { get; set; }
 
         [Parameter]
-        public RenderFragment<TreeviewItem<TItem>> LabelContent { get; set; }
+        public RenderFragment<TreeviewItem<TItem>>? LabelContent { get; set; }
 
         [Parameter]
-        public RenderFragment<TreeviewItem<TItem>> AppendContent { get; set; }
+        public RenderFragment<TreeviewItem<TItem>>? AppendContent { get; set; }
 
-        [EditorRequired]
         [Parameter]
-        public Func<TItem, string> ItemText { get; set; }
+        public Func<TItem, bool>? ItemDisabled { get; set; }
 
         [Parameter]
         public bool Selectable { get; set; }
@@ -39,18 +45,7 @@ namespace BlazorComponent
         public bool OpenAll { get; set; }
 
         [Parameter]
-        public Func<TItem, bool> ItemDisabled { get; set; }
-
-        [EditorRequired]
-        [Parameter]
-        public Func<TItem, TKey> ItemKey { get; set; }
-
-        [EditorRequired]
-        [Parameter]
-        public Func<TItem, List<TItem>> ItemChildren { get; set; }
-
-        [Parameter]
-        public Func<TItem, string, Func<TItem, string>, bool> Filter { get; set; }
+        public Func<TItem, string?, Func<TItem, string>, bool>? Filter { get; set; }
 
         [Parameter]
         public SelectionType SelectionType { get; set; }
@@ -78,6 +73,12 @@ namespace BlazorComponent
 
         [Parameter]
         public EventCallback<List<TKey>> OpenChanged { get; set; }
+
+        [Parameter, ApiDefaultValue("$loading")]
+        public string LoadingIcon { get; set; } = "$loading";
+
+        [Parameter, ApiDefaultValue("$subgroup")]
+        public string ExpandIcon { get; set; } = "$subgroup";
 
         [Parameter]
         public EventCallback<List<TItem>> OnInput { get; set; }
@@ -123,18 +124,10 @@ namespace BlazorComponent
                 {
                     return Items;
                 }
-                else
-                {
-                    return Items.Where(r => !IsExcluded(ItemKey(r))).ToList();
-                }
+
+                return Items.Where(r => !IsExcluded(ItemKey.Invoke(r))).ToList();
             }
         }
-
-        [Parameter]
-        public string LoadingIcon { get; set; } = "$loading";
-
-        [Parameter]
-        public string ExpandIcon { get; set; } = "$subgroup";
 
         public Dictionary<TKey, NodeState<TItem, TKey>> Nodes { get; private set; } = new();
 
@@ -156,6 +149,16 @@ namespace BlazorComponent
 
                 return excluded;
             }
+        }
+
+        public override async Task SetParametersAsync(ParameterView parameters)
+        {
+            await base.SetParametersAsync(parameters);
+
+            Items.ThrowIfNull(ComponentName);
+            ItemText.ThrowIfNull(ComponentName);
+            ItemKey.ThrowIfNull(ComponentName);
+            ItemChildren.ThrowIfNull(ComponentName);
         }
 
         public void AddNode(ITreeviewNode<TItem, TKey> node)
@@ -227,7 +230,7 @@ namespace BlazorComponent
 
         public async Task EmitActiveAsync()
         {
-            var active = Nodes.Values.Where(r => r.IsActive).Select(r => r.Item).ToList();
+            var active = Nodes.Values.Where(r => r.IsActive).Select(r => r.Item!).ToList();
 
             if (OnActiveUpdate.HasDelegate)
             {
@@ -254,7 +257,7 @@ namespace BlazorComponent
 
         public async Task EmitOpenAsync()
         {
-            var open = Nodes.Values.Where(r => r.IsOpen).Select(r => r.Item).ToList();
+            var open = Nodes.Values.Where(r => r.IsOpen).Select(r => r.Item!).ToList();
 
             if (OnOpenUpdate.HasDelegate)
             {
@@ -319,12 +322,9 @@ namespace BlazorComponent
             BuildTree(Items, default);
         }
 
-        private void UpdateParentSelected(TKey parent, bool isIndeterminate = false)
+        private void UpdateParentSelected(TKey? parent, bool isIndeterminate = false)
         {
-            if (parent == null)
-            {
-                return;
-            }
+            if (parent == null) return;
 
             if (Nodes.TryGetValue(parent, out var nodeState))
             {
@@ -336,7 +336,10 @@ namespace BlazorComponent
                 else
                 {
                     var children = Nodes
-                                   .Where(r => nodeState.Children.Contains(r.Key)).Select(r => r.Value);
+                                   .Where(r => nodeState.Children.Contains(r.Key))
+                                   .Select(r => r.Value)
+                                   .ToList();
+
                     if (children.All(r => r.IsSelected))
                     {
                         nodeState.IsSelected = true;
@@ -358,8 +361,10 @@ namespace BlazorComponent
             }
         }
 
-        private void UpdateChildrenSelected(IEnumerable<TKey> children, bool isSelected)
+        private void UpdateChildrenSelected(IEnumerable<TKey>? children, bool isSelected)
         {
+            if (children == null) return;
+
             foreach (var child in children)
             {
                 if (Nodes.TryGetValue(child, out var nodeState))
@@ -402,11 +407,16 @@ namespace BlazorComponent
             return false;
         }
 
-        private bool FilterTreeItem(TItem item, string search, Func<TItem, string> itemText)
+        private bool FilterTreeItem(TItem item, string? search, Func<TItem, string> itemText)
         {
             if (Filter is not null)
             {
                 return Filter.Invoke(item, search, itemText);
+            }
+            
+            if (string.IsNullOrEmpty(search))
+            {
+                return true;
             }
 
             var text = itemText(item);
@@ -510,7 +520,7 @@ namespace BlazorComponent
             nodeState.IsOpen = isOpen;
         }
 
-        private async Task HandleUpdate(List<TKey> old, List<TKey> value, Action<TKey, bool> updateFn, Func<Task> emitFn)
+        private async Task HandleUpdate(List<TKey> old, List<TKey>? value, Action<TKey, bool> updateFn, Func<Task> emitFn)
         {
             if (value == null) return;
 
@@ -520,40 +530,36 @@ namespace BlazorComponent
             await emitFn.Invoke();
         }
 
-        private void BuildTree(List<TItem> items, TKey parent)
+        private void BuildTree(List<TItem> items, TKey? parent)
         {
             foreach (var item in items)
             {
                 var key = ItemKey(item);
                 var children = ItemChildren(item) ?? new List<TItem>();
 
-                if (!Nodes.TryGetValue(key, out var oldNode))
-                {
-                    oldNode = new NodeState<TItem, TKey>();
-                }
+                Nodes.TryGetValue(key, out var oldNode);
 
-                var newNode = new NodeState<TItem, TKey>
-                {
-                    Node = oldNode.Node,
-                    Parent = parent,
-                    Children = children.Select(ItemKey),
-                    Item = item
-                };
+                var newNode = new NodeState<TItem, TKey>(item, children.Select(ItemKey), parent);
 
                 BuildTree(children, key);
 
-                if (SelectionType != SelectionType.Independent && parent != null && !Nodes.ContainsKey(key) && Nodes.ContainsKey(parent))
+                if (SelectionType != SelectionType.Independent && parent != null && !Nodes.ContainsKey(key) &&
+                    Nodes.TryGetValue(parent, out var node))
                 {
-                    newNode.IsSelected = Nodes[parent].IsSelected;
+                    newNode.IsSelected = node.IsSelected;
                 }
-                else
+                else if (oldNode is not null)
                 {
                     newNode.IsSelected = oldNode.IsSelected;
                     newNode.IsIndeterminate = oldNode.IsIndeterminate;
                 }
 
-                newNode.IsActive = oldNode.IsActive;
-                newNode.IsOpen = oldNode.IsOpen;
+                if (oldNode is not null)
+                {
+                    newNode.Node = oldNode.Node;
+                    newNode.IsActive = oldNode.IsActive;
+                    newNode.IsOpen = oldNode.IsOpen;
+                }
 
                 Nodes[key] = newNode;
 

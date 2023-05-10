@@ -8,10 +8,10 @@
              ReferenceCaptureAction="_ => Ref = _"
              id="@Id"
              @onclick="HandleOnClick"
-             @attributes="Attributes">
+             @attributes="@Attributes">
         @if (ItemContent != null)
         {
-            @ComputedItemContent
+            @ItemContent?.Invoke(GenItemContext())
         }
         else
         {

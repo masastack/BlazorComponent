@@ -15,7 +15,7 @@
 </Element>
 
 <!--When using razor definition without `Items` parameter-->
-@if (Breadcrumbs.ChildContent != null && !IsLast)
+@if (Breadcrumbs?.ChildContent != null && !IsLast)
 {
     <BBreadcrumbsDivider Divider="@Breadcrumbs.Divider" DividerContent="@Breadcrumbs.DividerContent" @attributes="GetAttributes(typeof(BBreadcrumbsDivider))"></BBreadcrumbsDivider>
 }

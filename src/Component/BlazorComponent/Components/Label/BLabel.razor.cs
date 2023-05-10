@@ -5,15 +5,16 @@ namespace BlazorComponent
     public partial class BLabel : BDomComponentBase
     {
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
-        public string For { get; set; }
+        public string? For { get; set; }
 
         [Parameter]
         public bool Required { get; set; }
 
         [Parameter]
+        [ApiDefaultValue("label")]
         public string Tag { get; set; } = "label";
 
         [Parameter]

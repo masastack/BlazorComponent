@@ -8,7 +8,7 @@ public interface INavigationDrawer : IHasProviderComponent
 
     RenderFragment? AppendContent { get; }
 
-    RenderFragment<Dictionary<string, object>>? ImgContent { get; }
+    RenderFragment<Dictionary<string, object?>>? ImgContent { get; }
 
     string? Src { get; }
 }

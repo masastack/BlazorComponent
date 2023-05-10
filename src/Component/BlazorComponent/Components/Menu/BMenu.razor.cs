@@ -32,7 +32,6 @@ public partial class BMenu : BMenuable, IDependent
     }
 
     [Parameter]
-    [EditorRequired]
     public RenderFragment? ChildContent { get; set; }
 
     [Parameter]
@@ -205,7 +204,7 @@ public partial class BMenu : BMenuable, IDependent
         {
             _isPopupEventsRegistered = true;
 
-            RegisterPopupEvents(ContentElement.GetSelector(), CloseOnContentClick);
+            RegisterPopupEvents(ContentElement.GetSelector()!, CloseOnContentClick);
         }
 
         if (!OpenOnHover && CloseOnClick && Module is { Initialized: false })

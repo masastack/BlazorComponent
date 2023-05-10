@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface ILoadable : IHasProviderComponent
     {
-        public StringBoolean Loading { get; }
+        public StringBoolean? Loading { get; }
 
-        public RenderFragment ProgressContent { get; }
+        public RenderFragment? ProgressContent { get; }
     }
 }

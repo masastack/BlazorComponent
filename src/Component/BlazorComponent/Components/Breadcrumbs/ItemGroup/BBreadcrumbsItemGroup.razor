@@ -2,25 +2,28 @@
 @typeparam TBreadcrumbs
 @inherits ComponentPartBase<TBreadcrumbs>
 
-@if (ItemContent != null)
+@if (Item != null)
 {
-    @ItemContent(Item)
+    if (ItemContent != null)
+    {
+        @ItemContent(Item)
 
-    @if (RenderDivider && !IsLast)
-    {
-        <BBreadcrumbsDivider Divider="@Divider" DividerContent="@DividerContent" @attributes="GetAttributes(typeof(BBreadcrumbsDivider))"></BBreadcrumbsDivider>
+        @if (RenderDivider && !IsLast)
+        {
+            <BBreadcrumbsDivider Divider="@Divider" DividerContent="@DividerContent" @attributes="GetAttributes(typeof(BBreadcrumbsDivider))"></BBreadcrumbsDivider>
+        }
     }
-}
-else
-{
-    <BBreadcrumbsItem Text="@Item.Text"
-                      Href="@Item.Href"
-                      Disabled="@Item.Disabled"
-                      Exact="@Item.Exact"
-                      @attributes="GetAttributes(typeof(BBreadcrumbsItem))">
-    </BBreadcrumbsItem>
-    @if (RenderDivider && !IsLast)
+    else
     {
-        <BBreadcrumbsDivider Divider="@Divider" DividerContent="@DividerContent" @attributes="GetAttributes(typeof(BBreadcrumbsDivider))"></BBreadcrumbsDivider>
+        <BBreadcrumbsItem Text="@Item.Text"
+                          Href="@Item.Href"
+                          Disabled="@Item.Disabled"
+                          Exact="@Item.Exact"
+                          @attributes="GetAttributes(typeof(BBreadcrumbsItem))">
+        </BBreadcrumbsItem>
+        @if (RenderDivider && !IsLast)
+        {
+            <BBreadcrumbsDivider Divider="@Divider" DividerContent="@DividerContent" @attributes="GetAttributes(typeof(BBreadcrumbsDivider))"></BBreadcrumbsDivider>
+        }
     }
 }

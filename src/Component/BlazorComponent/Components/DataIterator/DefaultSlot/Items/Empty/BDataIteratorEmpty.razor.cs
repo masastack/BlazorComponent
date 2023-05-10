@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BDataIteratorEmpty<TItem, TComponent> where TComponent : IDataIterator<TItem>
     {
@@ -8,18 +6,18 @@ namespace BlazorComponent
 
         public DataPagination Pagination => Component.Pagination;
 
-        public StringBoolean Loading => Component.Loading;
+        public StringBoolean? Loading => Component.Loading;
 
-        public RenderFragment LoadingContent => Component.LoadingContent;
+        public RenderFragment? LoadingContent => Component.LoadingContent;
 
-        public string LoadingText => Component.LoadingText;
+        public string? LoadingText => Component.LoadingText;
 
-        public RenderFragment NoDataContent => Component.NoDataContent;
+        public RenderFragment? NoDataContent => Component.NoDataContent;
 
-        public string NoDataText => Component.NoDataText;
+        public string? NoDataText => Component.NoDataText;
 
-        public RenderFragment NoResultsContent => Component.NoResultsContent;
+        public RenderFragment? NoResultsContent => Component.NoResultsContent;
 
-        public string NoResultsText => Component.NoResultsText;
+        public string? NoResultsText => Component.NoResultsText;
     }
 }

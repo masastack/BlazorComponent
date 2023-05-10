@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Globalization;
 using System.Net.Http.Json;
-using System.Reflection;
 using System.Text;
 using System.Text.Json;
 
@@ -10,7 +9,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class I18nServiceCollectionExtensions
 {
-    const string SupportedCulturesJson = "supportedCultures.json";
+    private const string SUPPORTED_CULTURES_JSON = "supportedCultures.json";
 
     internal static IServiceCollection AddI18n(this IServiceCollection services)
     {
@@ -21,13 +20,15 @@ public static class I18nServiceCollectionExtensions
         return services;
     }
 
-    public static IBlazorComponentBuilder AddI18n(this IBlazorComponentBuilder builder, params (string cultureName, Dictionary<string, string> map)[] locales)
+    public static IBlazorComponentBuilder AddI18n(this IBlazorComponentBuilder builder,
+        params(string cultureName, Dictionary<string, string> map)[] locales)
     {
         AddI18n(locales);
         return builder;
     }
 
-    public static IBlazorComponentBuilder AddI18n(this IBlazorComponentBuilder builder, params (CultureInfo culture, Dictionary<string, string> map)[] locales)
+    public static IBlazorComponentBuilder AddI18n(this IBlazorComponentBuilder builder,
+        params(CultureInfo culture, Dictionary<string, string> map)[] locales)
     {
         AddI18n(locales);
         return builder;
@@ -38,6 +39,7 @@ public static class I18nServiceCollectionExtensions
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="localeDirectory">i18n resource folder physical path,i18n resource file name will be used as culture name</param>
+    /// <param name="encoding"></param>
     /// <returns></returns>
     public static IBlazorComponentBuilder AddI18nForServer(this IBlazorComponentBuilder builder, string localeDirectory, Encoding? encoding = null)
     {
@@ -77,7 +79,7 @@ public static class I18nServiceCollectionExtensions
     {
         using var httpclient = new HttpClient();
 
-        string supportedCulturesApi = Path.Combine(localesDirectoryApi, SupportedCulturesJson);
+        string supportedCulturesApi = Path.Combine(localesDirectoryApi, SUPPORTED_CULTURES_JSON);
 
         var cultures = await httpclient.GetFromJsonAsync<string[]>(supportedCulturesApi) ??
                        throw new Exception("Failed to read supportedCultures json file data!");
@@ -101,10 +103,12 @@ public static class I18nServiceCollectionExtensions
     {
         var files = new List<string>();
         var locales = new List<(string culture, Dictionary<string, string>)>();
-        var supportedCulturesPath = Path.Combine(path, SupportedCulturesJson);
+        var supportedCulturesPath = Path.Combine(path, SUPPORTED_CULTURES_JSON);
         if (File.Exists(supportedCulturesPath))
         {
             var cultures = JsonSerializer.Deserialize<string[]>(File.ReadAllText(supportedCulturesPath));
+            if (cultures is null) return;
+
             files.AddRange(cultures.Select(culture => Path.Combine(path, $"{culture}.json")));
         }
         else

@@ -6,8 +6,8 @@
 
         public bool ShowSize => Component.ShowSize;
 
-        public StringNumberBoolean Counter => Component.Counter;
+        public StringNumberBoolean? Counter => Component.Counter;
 
-        public StringNumber ComputedCounterValue => Component.ComputedCounterValue;
+        public StringNumber? ComputedCounterValue => Component.ComputedCounterValue;
     }
 }

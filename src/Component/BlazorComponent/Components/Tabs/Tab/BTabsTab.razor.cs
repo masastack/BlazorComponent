@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BTabsTab<TTabs> : ComponentPartBase<TTabs>
         where TTabs : ITabs
     {
-        protected RenderFragment ComponentChildContent => Component.ChildContent;
+        protected RenderFragment? ComponentChildContent => Component.ChildContent;
     }
 }

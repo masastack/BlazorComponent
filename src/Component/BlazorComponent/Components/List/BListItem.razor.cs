@@ -24,10 +24,10 @@ namespace BlazorComponent
         public BList? List { get; set; }
 
         [Parameter]
-        public string Color { get; set; }
+        public string? Color { get; set; }
 
         [Parameter]
-        public RenderFragment<ItemContext> ItemContent { get; set; }
+        public RenderFragment<ItemContext>? ItemContent { get; set; }
 
         [Parameter]
         public bool Dark { get; set; }
@@ -56,11 +56,9 @@ namespace BlazorComponent
             }
         }
 
-        protected RenderFragment ComputedItemContent => ItemContent(GenItemContext());
+        protected bool IsClickable => Router?.IsClickable is true || Matched;
 
-        public bool IsClickable => Router.IsClickable || Matched;
-
-        public bool IsLink => Router.IsLink;
+        public bool IsLink => Router?.IsLink is true;
 
         protected override bool IsRoutable => Href != null && List?.Routable is true;
 
@@ -121,14 +119,13 @@ namespace BlazorComponent
 
         private ItemContext GenItemContext()
         {
-            return new ItemContext()
-            {
-                Active = InternalIsActive,
-                ActiveClass = InternalIsActive ? ComputedActiveClass : "",
-                Toggle = ToggleAsync,
-                Ref = RefBack,
-                Value = Value
-            };
+            return new ItemContext(
+                InternalIsActive,
+                InternalIsActive ? ComputedActiveClass : "",
+                ToggleAsync,
+                RefBack,
+                Value
+            );
         }
     }
 }

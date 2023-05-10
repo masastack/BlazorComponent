@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface IPagination : IHasProviderComponent
     {
@@ -18,7 +16,7 @@ namespace BlazorComponent
 
         Task HandleItemClickAsync(StringNumber item);
 
-        string PrevIcon => default;
+        string? PrevIcon => default;
 
         int Value => default;
     }

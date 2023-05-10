@@ -1,6 +1,4 @@
-﻿using Microsoft.JSInterop;
-
-namespace BlazorComponent;
+﻿namespace BlazorComponent;
 
 public class TransitionJsHelper
 {

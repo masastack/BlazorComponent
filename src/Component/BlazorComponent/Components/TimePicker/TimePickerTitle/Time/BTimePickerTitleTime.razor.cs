@@ -1,15 +1,12 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BTimePickerTitleTime<TTimePickerTitle> where TTimePickerTitle : ITimePickerTitle
     {
-        public string DisplayedHour => Component.DisplayHour;
+        public string? DisplayedHour => Component.DisplayHour;
 
-        public string DisplayedMinute => Component.DisplayMinute;
+        public string? DisplayedMinute => Component.DisplayMinute;
 
-        public string DisplayedSecond => Component.DisplaySecond;
+        public string? DisplayedSecond => Component.DisplaySecond;
 
         public bool UseSeconds => Component.UseSeconds;
 

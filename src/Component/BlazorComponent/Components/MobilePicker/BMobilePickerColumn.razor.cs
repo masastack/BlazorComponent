@@ -11,10 +11,10 @@ public partial class BMobilePickerColumn<TColumnItem>
     public int ItemHeight { get; set; }
 
     [Parameter]
-    public Func<TColumnItem, string> ItemText { get; set; }
+    public Func<TColumnItem, string>? ItemText { get; set; }
 
     [Parameter]
-    public Func<TColumnItem, bool> ItemDisabled { get; set; } = _ => false;
+    public Func<TColumnItem, bool>? ItemDisabled { get; set; }
 
     [Parameter]
     public int SelectedIndex { get; set; }
@@ -23,24 +23,25 @@ public partial class BMobilePickerColumn<TColumnItem>
     public int SwipeDuration { get; set; }
 
     [Parameter]
-    public StringNumber VisibleItemCount { get; set; }
+    [ApiDefaultValue(6)]
+    public StringNumber? VisibleItemCount { get; set; } = 6;
 
     [Parameter]
     public EventCallback<int> OnChange { get; set; }
 
-    private const int DefaultDuration = 200;
+    private const int DEFAULT_DURATION = 200;
 
     // 惯性滑动思路:
     // 在手指离开屏幕时，如果和上一次 move 时的间隔小于 `MomentumLimitTime` 且 move
     // 距离大于 `MomentumLimitDistance` 时，执行惯性滑动
-    private const int MomentumLimitTime  = 300;
-    private const int MomentumLimitDistance  = 15;
+    private const int MOMENTUM_LIMIT_TIME  = 300;
+    private const int MOMENTUM_LIMIT_DISTANCE  = 15;
 
     private static long MillisecondFrom19700101 => (DateTime.UtcNow.Ticks - 621355968000000000) / 1000;
 
     private bool _moving;
     private double _startOffset;
-    private Func<Task> _transitionEndTrigger;
+    private Func<Task>? _transitionEndTrigger;
     private long _touchStartTime;
     private double _momentumOffset;
     private double _startX;
@@ -49,7 +50,7 @@ public partial class BMobilePickerColumn<TColumnItem>
     private double _deltaY;
     private double _offsetX;
     private double _offsetY;
-    private string _direction;
+    private string? _direction;
 
     private ElementReference Wrapper { get; set; }
 
@@ -58,9 +59,7 @@ public partial class BMobilePickerColumn<TColumnItem>
 
     private int Count => Items.Count;
 
-    protected int BaseOffset => ItemHeight * (VisibleItemCount.ToInt32() - 1) / 2;
-
-    private int _prevSelectedIndex;
+    protected int BaseOffset => ItemHeight * (VisibleItemCount.ToInt32(6) - 1) / 2;
 
     protected override void OnParametersSet()
     {
@@ -72,6 +71,8 @@ public partial class BMobilePickerColumn<TColumnItem>
             SetIndex(SelectedIndex);
         }
     }
+
+    private int _prevSelectedIndex;
 
     private async Task OnTouchstart(TouchEventArgs args)
     {
@@ -107,7 +108,7 @@ public partial class BMobilePickerColumn<TColumnItem>
         Offset = Range(_startOffset + _deltaY, -(Count * ItemHeight), ItemHeight);
 
         var now = MillisecondFrom19700101;
-        if (now - _touchStartTime > MomentumLimitTime)
+        if (now - _touchStartTime > MOMENTUM_LIMIT_TIME)
         {
             _touchStartTime = now;
             _momentumOffset = Offset;
@@ -118,7 +119,7 @@ public partial class BMobilePickerColumn<TColumnItem>
     {
         var distance = Offset - _momentumOffset;
         var duration = MillisecondFrom19700101 - _touchStartTime;
-        var allowMomentum = duration < MomentumLimitTime && Math.Abs(distance) > MomentumLimitDistance;
+        var allowMomentum = duration < MOMENTUM_LIMIT_TIME && Math.Abs(distance) > MOMENTUM_LIMIT_DISTANCE;
 
         if (allowMomentum)
         {
@@ -127,7 +128,7 @@ public partial class BMobilePickerColumn<TColumnItem>
         }
 
         var index = GetIndexByOffset(Offset);
-        Duration =  DefaultDuration;
+        Duration =  DEFAULT_DURATION;
         SetIndex((int)Math.Ceiling(index), true);
 
         // compatible with desktop scenario
@@ -196,7 +197,7 @@ public partial class BMobilePickerColumn<TColumnItem>
         }
 
         _transitionEndTrigger = null;
-        Duration = DefaultDuration;
+        Duration = DEFAULT_DURATION;
         SetIndex(index, true);
     }
 
@@ -206,12 +207,12 @@ public partial class BMobilePickerColumn<TColumnItem>
 
         for (int i = index; i < Count; i++)
         {
-            if (!ItemDisabled(Items[i])) return i;
+            if (ItemDisabled?.Invoke(Items[i]) is not true) return i;
         }
 
         for (int i = index - 1; i >= 0; i--)
         {
-            if (!ItemDisabled(Items[i])) return i;
+            if (ItemDisabled?.Invoke(Items[i]) is not true) return i;
         }
 
         return null;

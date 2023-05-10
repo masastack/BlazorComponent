@@ -1,6 +1,4 @@
-﻿using System.Text.RegularExpressions;
-
-namespace BlazorComponent;
+﻿namespace BlazorComponent;
 
 public class Router : IRoutable
 {
@@ -17,7 +15,7 @@ public class Router : IRoutable
         NavigationManager = routable.NavigationManager;
     }
 
-    public IDictionary<string, object> Attributes { get; set; }
+    public IDictionary<string, object?> Attributes { get; set; }
 
     public bool Disabled { get; set; }
 

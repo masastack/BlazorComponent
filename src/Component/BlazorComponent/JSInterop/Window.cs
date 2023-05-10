@@ -1,6 +1,4 @@
-﻿using Microsoft.JSInterop;
-using OneOf;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace BlazorComponent.Web
 {
@@ -9,7 +7,7 @@ namespace BlazorComponent.Web
         public Window()
         {
         }
-
+        
         public Window(Document document)
             : base(document.JS)
         {

@@ -10,12 +10,10 @@
 
     if (ExpandedItemContent != null)
     {
-        @RenderPart(typeof(BDataTableDefaultExpandedRow<,>),index,item)
+        @RenderPart(typeof(BDataTableDefaultExpandedRow<,>), index, item)
     }
     else
     {
-        @RenderPart(typeof(BDataTableDefaultSimpleRow<,>),index,item)
+        @RenderPart(typeof(BDataTableDefaultSimpleRow<,>), index, item)
     }
 }
-
-

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     /// <summary>
     /// The group contains <see cref="BBreadcrumbsItem"/> and <see cref="BBreadcrumbsDivider"/>.
@@ -10,15 +8,15 @@ namespace BlazorComponent
         where TBreadcrumbs : IBreadcrumbs, IBreadcrumbsDivider
     {
         [Parameter]
-        public BreadcrumbItem Item { get; set; }
+        public BreadcrumbItem? Item { get; set; }
 
-        protected RenderFragment<BreadcrumbItem> ItemContent => Component.ItemContent;
+        protected RenderFragment<BreadcrumbItem>? ItemContent => Component.ItemContent;
 
         protected IReadOnlyList<BreadcrumbItem> Items => Component.Items;
 
-        protected string Divider => Component.Divider;
+        protected string? Divider => Component.Divider;
 
-        protected RenderFragment DividerContent => Component.DividerContent;
+        protected RenderFragment? DividerContent => Component.DividerContent;
 
         protected bool RenderDivider => Component.RenderDivider;
 

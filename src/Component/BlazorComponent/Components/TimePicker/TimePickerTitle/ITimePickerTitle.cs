@@ -1,22 +1,20 @@
-﻿using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface ITimePickerTitle : IHasProviderComponent
     {
         bool AmPmReadonly { get; }
         
-        string AmText { get; }
+        string? AmText { get; }
         
-        string PmText { get; }
+        string? PmText { get; }
 
         TimePeriod Period { get; }
 
-        string DisplayHour { get; }
+        string? DisplayHour { get; }
 
-        string DisplayMinute { get; }
+        string? DisplayMinute { get; }
 
-        string DisplaySecond { get; }
+        string? DisplaySecond { get; }
 
         bool UseSeconds { get; }
 

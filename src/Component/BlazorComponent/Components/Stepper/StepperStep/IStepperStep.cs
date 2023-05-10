@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface IStepperStep : IHasProviderComponent
     {
         int Step { get; }
 
-        RenderFragment ChildContent { get; }
+        RenderFragment? ChildContent { get; }
 
         bool Editable { get; }
 
@@ -14,10 +12,10 @@ namespace BlazorComponent
 
         bool HasError { get; }
 
-        string ErrorIcon { get; }
+        string? ErrorIcon { get; }
 
-        string CompleteIcon { get; }
+        string? CompleteIcon { get; }
 
-        string EditIcon { get; }
+        string? EditIcon { get; }
     }
 }

@@ -21,7 +21,7 @@ namespace BlazorComponent
         public StringNumber? Height { get; set; }
 
         [Parameter]
-        public RenderFragment LoaderContent { get; set; }
+        public RenderFragment? LoaderContent { get; set; }
 
         [Parameter]
         public virtual bool Loading { get; set; }
@@ -42,7 +42,7 @@ namespace BlazorComponent
         public bool Outlined { get; set; }
 
         [Parameter]
-        public StringNumber Width { get; set; }
+        public StringNumber? Width { get; set; }
 
         [Parameter]
         public bool StopPropagation { get; set; }

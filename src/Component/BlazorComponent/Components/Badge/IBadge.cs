@@ -1,18 +1,16 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface IBadge : IHasProviderComponent
     {
-        string Transition { get; }
+        string? Transition { get; }
 
         bool Dot { get; }
 
-        RenderFragment BadgeContent { get; }
+        RenderFragment? BadgeContent { get; }
 
-        StringNumber Content { get; }
+        StringNumber? Content { get; }
 
-        string Icon { get; }
+        string? Icon { get; }
 
         bool Value { get; }
     }

@@ -4,7 +4,7 @@ public partial class BCarouselProgress<TCarousel> : ComponentPartBase<TCarousel>
 {
     public bool Progress => Component.Progress;
 
-    public string ProgressColor => Component.ProgressColor;
+    public string? ProgressColor => Component.ProgressColor;
 
     public double Value => Component.ProgressValue;
 }

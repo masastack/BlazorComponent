@@ -5,7 +5,7 @@ namespace BlazorComponent
 {
     public abstract class ItemGroupBase : BDomComponentBase
     {
-        public ItemGroupBase(GroupType groupType)
+        protected ItemGroupBase(GroupType groupType)
         {
             GroupType = groupType;
         }
@@ -14,7 +14,7 @@ namespace BlazorComponent
         public string? ActiveClass { get; set; }
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
         public GroupType? TargetGroup { get; set; }
@@ -29,13 +29,13 @@ namespace BlazorComponent
         public StringNumber? Value { get; set; }
 
         [Parameter]
-        public EventCallback<StringNumber> ValueChanged { get; set; }
+        public EventCallback<StringNumber?> ValueChanged { get; set; }
 
         [Parameter]
-        public List<StringNumber>? Values { get; set; }
+        public List<StringNumber?>? Values { get; set; }
 
         [Parameter]
-        public EventCallback<List<StringNumber>> ValuesChanged { get; set; }
+        public EventCallback<List<StringNumber?>> ValuesChanged { get; set; }
 
         private int _registeredItemsIndex;
 
@@ -43,11 +43,11 @@ namespace BlazorComponent
 
         public List<IGroupable> Items { get; } = new();
 
-        public List<StringNumber> AllValues => Items.Select(item => item.Value).ToList();
+        protected List<StringNumber?> AllValues => Items.Select(item => item.Value).ToList();
 
-        internal List<StringNumber> InternalValues
+        internal List<StringNumber?> InternalValues
         {
-            get => GetValue<List<StringNumber>>(new()) ?? new List<StringNumber>();
+            get => GetValue<List<StringNumber?>>(new()) ?? new List<StringNumber?>();
             set => SetValue(value);
         }
 
@@ -84,7 +84,7 @@ namespace BlazorComponent
             {
                 if (InternalValues.Count == 0)
                 {
-                    InternalValues = new List<StringNumber>() { item.Value };
+                    InternalValues = new List<StringNumber?>() { item.Value };
 
                     if (Multiple)
                     {
@@ -126,7 +126,7 @@ namespace BlazorComponent
             await ToggleAsync(item.Value);
         }
 
-        public async Task ToggleAsync(StringNumber key)
+        public async Task ToggleAsync(StringNumber? key)
         {
             // have to invoke the InternalValues's setter
             InternalValues = UpdateInternalValues(key);
@@ -158,7 +158,7 @@ namespace BlazorComponent
                 {
                     if (Value != null)
                     {
-                        InternalValues = new List<StringNumber>() { Value };
+                        InternalValues = new List<StringNumber?>() { Value };
                     }
 
                     StateHasChanged();
@@ -174,17 +174,17 @@ namespace BlazorComponent
             {
                 if (!IsDirtyParameter(nameof(Values))) return;
 
-                InternalValues = Values == null ? new List<StringNumber>() : Values.ToList();
+                InternalValues = Values == null ? new List<StringNumber?>() : Values.ToList();
             }
             else
             {
                 if (!IsDirtyParameter(nameof(Value))) return;
 
-                InternalValues = Value == null ? new List<StringNumber>() : new List<StringNumber>() { Value };
+                InternalValues = Value == null ? new List<StringNumber?>() : new List<StringNumber?>() { Value };
             }
         }
 
-        protected virtual List<StringNumber> UpdateInternalValues(StringNumber key)
+        protected virtual List<StringNumber?> UpdateInternalValues(StringNumber? key)
         {
             var internalValues = InternalValues.ToList();
 

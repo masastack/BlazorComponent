@@ -5,7 +5,7 @@ namespace BlazorComponent;
 
 public partial class BI18n : BDomComponentBase
 {
-    [Parameter, EditorRequired]
+    [Parameter]
     public string? Key { get; set; }
 
     [Parameter]

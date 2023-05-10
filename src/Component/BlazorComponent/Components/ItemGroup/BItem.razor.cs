@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BItem : BGroupable<ItemGroupBase>
     {
@@ -9,9 +7,9 @@ namespace BlazorComponent
         }
 
         [Parameter]
-        public RenderFragment<ItemContext> ChildContent { get; set; }
+        public RenderFragment<ItemContext>? ChildContent { get; set; }
 
-        protected RenderFragment ComputedChildContent => ChildContent(GenItemContext());
+        protected RenderFragment? ComputedChildContent => ChildContent?.Invoke(GenItemContext());
 
         protected override void OnAfterRender(bool firstRender)
         {
@@ -25,14 +23,7 @@ namespace BlazorComponent
 
         private ItemContext GenItemContext()
         {
-            return new ItemContext()
-            {
-                Active = InternalIsActive,
-                ActiveClass = InternalIsActive ? ComputedActiveClass : "",
-                Toggle = ToggleAsync,
-                Ref = RefBack,
-                Value = Value
-            };
+            return new ItemContext(InternalIsActive, InternalIsActive ? ComputedActiveClass : "", ToggleAsync, RefBack, Value);
         }
     }
 }

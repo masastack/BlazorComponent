@@ -2,9 +2,9 @@
 
 public interface IRadioGroup<TValue>
 {
-    TValue Value { get; }
+    TValue? Value { get; }
 
-    string ValidationState { get; }
+    string? ValidationState { get; }
 
     bool IsDisabled { get; }
 

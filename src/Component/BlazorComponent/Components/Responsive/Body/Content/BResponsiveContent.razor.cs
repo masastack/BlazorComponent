@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BResponsiveContent<TResponsive> : ComponentPartBase<TResponsive>
         where TResponsive : IResponsive
     {
-        public RenderFragment ComponentChildContent => Component.ChildContent;
+        public RenderFragment? ComponentChildContent => Component.ChildContent;
     }
 }

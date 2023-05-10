@@ -1,23 +1,18 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BStepperContent : BDomComponentBase
     {
+        [Parameter]
+        public RenderFragment? ChildContent { get; set; }
+
         protected virtual bool IsRtl { get; set; }
 
         protected virtual bool IsVertical { get; set; }
 
         protected bool IsActive
         {
-            get
-            {
-                return GetValue<bool>();
-            }
-            set
-            {
-                SetValue(value);
-            }
+            get => GetValue<bool>();
+            set => SetValue(value);
         }
 
         protected bool IsReverse { get; set; }
@@ -31,8 +26,5 @@ namespace BlazorComponent
                 return reverse ? "tab-reverse-transition" : "tab-transition";
             }
         }
-
-        [Parameter]
-        public RenderFragment ChildContent { get; set; }
     }
 }

@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BProgressLinearContent<TProgressLinear> where TProgressLinear : IProgressLinear
     {
         public double Value => Component.Value;
 
-        public RenderFragment<double> ComponentChildContent => Component.ChildContent;
+        public RenderFragment<double>? ComponentChildContent => Component.ChildContent;
     }
 }

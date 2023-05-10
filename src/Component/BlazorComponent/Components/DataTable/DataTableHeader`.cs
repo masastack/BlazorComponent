@@ -2,7 +2,7 @@
 {
     public class DataTableHeader<TItem> : DataTableHeader
     {
-        private ItemValue<TItem> _itemValue;
+        private ItemValue<TItem>? _itemValue;
 
         public DataTableHeader()
         {

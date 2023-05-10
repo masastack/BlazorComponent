@@ -42,7 +42,7 @@ namespace BlazorComponent
             }
         }
 
-        protected override List<StringNumber> UpdateInternalValues(StringNumber value)
+        protected override List<StringNumber?> UpdateInternalValues(StringNumber? value)
         {
             var internalValues = InternalValues.ToList();
 

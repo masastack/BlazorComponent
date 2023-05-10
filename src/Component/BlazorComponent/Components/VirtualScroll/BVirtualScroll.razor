@@ -6,7 +6,7 @@
 <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref">
     <div class="@CssProvider.GetClass("container")" style="@CssProvider.GetStyle("container")">
         <Virtualize Items="Items" ItemSize=ItemSize OverscanCount="OverscanCount" TItem="TItem">
-            @ItemContent(context)
+            @ItemContent?.Invoke(context)
         </Virtualize>
     </div>
     @FooterContent

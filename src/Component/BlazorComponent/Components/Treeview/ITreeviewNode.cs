@@ -1,35 +1,32 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface ITreeviewNode<TItem, TKey> : IHasProviderComponent
     {
-        RenderFragment<TreeviewItem<TItem>> PrependContent { get; }
+        RenderFragment<TreeviewItem<TItem>>? PrependContent { get; }
 
-        RenderFragment<TreeviewItem<TItem>> LabelContent { get; }
+        RenderFragment<TreeviewItem<TItem>>? LabelContent { get; }
 
-        string Text { get; }
+        string? Text { get; }
 
-        RenderFragment<TreeviewItem<TItem>> AppendContent { get; }
+        RenderFragment<TreeviewItem<TItem>>? AppendContent { get; }
 
         bool Selectable { get; }
 
-        string ComputedIcon { get; }
+        string? ComputedIcon { get; }
 
         bool HasChildren { get; }
 
         bool IsLoading { get; }
 
-        string LoadingIcon { get; }
+        string? LoadingIcon { get; }
 
-        string ExpandIcon { get; }
+        string? ExpandIcon { get; }
 
         int Level { get; }
 
         bool IsOpen { get; }
 
-        List<TItem> ComputedChildren { get; }
+        List<TItem>? ComputedChildren { get; }
 
         bool Disabled { get; }
 

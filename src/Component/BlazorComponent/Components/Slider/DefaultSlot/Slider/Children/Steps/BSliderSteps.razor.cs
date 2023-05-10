@@ -2,7 +2,7 @@
 {
     public partial class BSliderSteps<TValue, TNumeric, TInput> where TInput : ISlider<TValue, TNumeric>
     {
-        public double Step => (double)(dynamic)Component.Step;
+        public double Step => (double)(dynamic)Component.Step!;
 
         public bool ShowTicks => Component.ShowTicks;
 

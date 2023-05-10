@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Web;
-using Microsoft.JSInterop;
-
-namespace BlazorComponent;
+﻿namespace BlazorComponent;
 
 public class InputJsInterop : IAsyncDisposable
 {
@@ -58,7 +55,7 @@ public class InputJsInterop : IAsyncDisposable
         _owner.StateHasChangedForJsInvokable();
     }
 
-    public async Task SetValue(string val)
+    public async Task SetValue(string? val)
     {
         ArgumentNullException.ThrowIfNull(_inputJsReference);
 

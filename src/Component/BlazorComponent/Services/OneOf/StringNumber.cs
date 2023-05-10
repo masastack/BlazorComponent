@@ -1,6 +1,4 @@
-﻿using OneOf;
-
-namespace BlazorComponent;
+﻿namespace BlazorComponent;
 
 [GenerateOneOf]
 public partial class StringNumber : OneOfBase<string, int, double>

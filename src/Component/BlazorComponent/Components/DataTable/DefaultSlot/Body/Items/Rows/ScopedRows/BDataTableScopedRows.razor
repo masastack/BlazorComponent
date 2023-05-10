@@ -6,10 +6,10 @@
 @for (var i = 0; i < Items.Count(); i++)
 {
     var item = Items.ElementAt(i);
-    @ItemContent(new ItemProps<TItem>(i, item))
+    @ItemContent?.Invoke(new ItemProps<TItem>(i, item))
 
     if (IsExpanded(item))
     {
-        @ExpandedItemContent((ComputedHeaders,item))
+        @ExpandedItemContent?.Invoke((ComputedHeaders,item))
     }
 }

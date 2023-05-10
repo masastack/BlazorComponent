@@ -1,8 +1,6 @@
 ﻿using BlazorComponent;
-using BlazorComponent.Web;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using System.Globalization;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

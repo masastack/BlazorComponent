@@ -4,11 +4,11 @@ namespace BlazorComponent
 {
     public partial class BCounter : IThemeable
     {
-        [Parameter]
-        public StringNumber Value { get; set; } = "";
+        [Parameter, EditorRequired]
+        public StringNumber Value { get; set; } = null!;
 
         [Parameter]
-        public StringNumber Max { get; set; }
+        public StringNumber? Max { get; set; }
 
         [Parameter]
         public bool Dark { get; set; }

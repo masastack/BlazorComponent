@@ -1,11 +1,8 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BTextFieldNumberIconSlot<TValue, TInput> where TInput : ITextField<TValue>
     {
-        public string Type => Component.Type;
+        public string? Type => Component.Type;
 
         public TextFieldNumberProperty Props => Component.Props;
 

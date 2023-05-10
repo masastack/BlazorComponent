@@ -1,13 +1,11 @@
-﻿using Microsoft.JSInterop;
-
-namespace BlazorComponent.Web
+﻿namespace BlazorComponent.Web
 {
     public abstract class JSObject
     {
         public JSObject()
         {
         }
-
+        
         public JSObject(IJSRuntime js)
         {
             JS = js;

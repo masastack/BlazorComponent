@@ -1,12 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BDataFooterIcon<TComponent> where TComponent : IDataFooter
     {
         [Parameter]
-        public string Icon { get; set; }
+        public string? Icon { get; set; }
 
         [Parameter]
         public bool Disabled { get; set; }

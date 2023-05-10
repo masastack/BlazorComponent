@@ -1,5 +1,4 @@
 ﻿using BlazorComponent.JSInterop;
-using BlazorComponent.Web;
 
 namespace BlazorComponent;
 
@@ -18,24 +17,25 @@ public partial class BInfiniteScroll : BDomComponentBase
     public ElementReference? Parent { get; set; }
 
     [Parameter]
+    [ApiDefaultValue(250)]
     public StringNumber Threshold { get; set; } = 250;
 
     [Parameter]
-    public RenderFragment<(bool HasMore, bool Failed, EventCallback Retry)> ChildContent { get; set; }
+    public RenderFragment<(bool HasMore, bool Failed, EventCallback Retry)>? ChildContent { get; set; }
 
     [Parameter]
-    public string NoMoreText { get; set; }
+    public string? NoMoreText { get; set; }
 
     [Parameter]
-    public string FailedToLoadText { get; set; }
+    public string? FailedToLoadText { get; set; }
 
     [Parameter]
-    public string LoadingText { get; set; }
+    public string? LoadingText { get; set; }
 
     [Parameter]
-    public string ReloadText { get; set; }
+    public string? ReloadText { get; set; }
 
-    private static readonly SemaphoreSlim SemaphoreSlim = new(1, 1);
+    private static readonly SemaphoreSlim s_semaphoreSlim = new(1, 1);
 
     private bool _loading;
     private bool _failed;
@@ -45,11 +45,11 @@ public partial class BInfiniteScroll : BDomComponentBase
     {
         await base.OnParametersSetAsync();
 
-        if (!_isAttached && Parent?.Context is not null)
+        if (!_isAttached && Parent?.Id is not null)
         {
             _isAttached = true;
 
-            await Js.AddHtmlElementEventListener(Parent.GetSelector(), "scroll", OnScroll, false, new EventListenerExtras(0, 100));
+            await Js.AddHtmlElementEventListener(Parent.GetSelector()!, "scroll", OnScroll, false, new EventListenerExtras(0, 100));
 
             // Run manually once to check whether the threshold is exceeded.
             // Use NextTick to wait for the list rendering to complete,
@@ -62,11 +62,11 @@ public partial class BInfiniteScroll : BDomComponentBase
     {
         if (!OnLoadMore.HasDelegate) return;
 
-        await SemaphoreSlim.WaitAsync();
+        await s_semaphoreSlim.WaitAsync();
 
         if (_failed)
         {
-            SemaphoreSlim.Release();
+            s_semaphoreSlim.Release();
             return;
         }
 
@@ -74,13 +74,13 @@ public partial class BInfiniteScroll : BDomComponentBase
         var exceeded = await JsInvokeAsync<bool>(JsInteropConstants.CheckIfThresholdIsExceededWhenScrolling, Ref, Parent, Threshold.ToDouble());
         if (!exceeded)
         {
-            SemaphoreSlim.Release();
+            s_semaphoreSlim.Release();
             return;
         }
 
         await DoLoadMore();
 
-        SemaphoreSlim.Release();
+        s_semaphoreSlim.Release();
     }
 
     private async Task DoLoadMore()

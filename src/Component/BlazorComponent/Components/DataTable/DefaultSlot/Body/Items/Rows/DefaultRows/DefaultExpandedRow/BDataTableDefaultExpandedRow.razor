@@ -9,7 +9,7 @@
     </RowHeaderContent>
     <RowContentContent>
         <tr class="@CssProvider.GetClass("expanded-content")">
-            @ExpandedItemContent(Props)
+            @ExpandedItemContent?.Invoke(Props)
         </tr>
     </RowContentContent>
 </BDataTableRowGroup>

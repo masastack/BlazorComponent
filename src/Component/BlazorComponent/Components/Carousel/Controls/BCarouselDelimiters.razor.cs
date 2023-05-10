@@ -6,11 +6,11 @@ public partial class BCarouselDelimiters<TCarousel> : ComponentPartBase<TCarouse
 
     public string Icon => Component.DelimiterIcon ?? "$delimiter";
 
-    public StringNumber InternalValue => Component.InternalValue;
+    public StringNumber? InternalValue => Component.Value;
 
     public bool Mandatory => Component.Mandatory;
 
     public List<IGroupable> Items => Component.Items;
 
-    public EventCallback<StringNumber> InternalValueChanged => EventCallback.Factory.Create<StringNumber>(Component, Component.InternalValueChanged);
+    public EventCallback<StringNumber?> InternalValueChanged => EventCallback.Factory.Create<StringNumber?>(Component, Component.InternalValueChanged);
 }

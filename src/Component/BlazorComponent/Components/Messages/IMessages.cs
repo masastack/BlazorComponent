@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface IMessages : IHasProviderComponent
     {
-        List<string> Value { get; }
+        List<string>? Value { get; }
 
-        RenderFragment<string> ChildContent { get; }
+        RenderFragment<string>? ChildContent { get; }
     }
 }

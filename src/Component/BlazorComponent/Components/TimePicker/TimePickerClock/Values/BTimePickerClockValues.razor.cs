@@ -8,6 +8,6 @@
 
         public int Step => Component.Step;
 
-        public Func<int, string> Format => Component.Format;
+        public Func<int, string>? Format => Component.Format;
     }
 }

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface IBreadcrumbsItem : IHasProviderComponent
     {
@@ -12,6 +10,6 @@ namespace BlazorComponent
 
         bool Disabled { get; }
 
-        RenderFragment<(bool IsLast, bool IsDisabled)> ChildContent { get; }
+        RenderFragment<(bool IsLast, bool IsDisabled)>? ChildContent { get; }
     }
 }

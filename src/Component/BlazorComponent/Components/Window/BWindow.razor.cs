@@ -16,13 +16,13 @@ namespace BlazorComponent
         public string? NextIcon { get; set; }
 
         [Parameter]
-        public RenderFragment<Action> NextContent { get; set; }
+        public RenderFragment<Action>? NextContent { get; set; }
 
         [Parameter]
         public string? PrevIcon { get; set; }
 
         [Parameter]
-        public RenderFragment<Action> PrevContent { get; set; }
+        public RenderFragment<Action>? PrevContent { get; set; }
 
         [Parameter]
         public bool Reverse { get; set; }
@@ -42,7 +42,7 @@ namespace BlazorComponent
 
         public int TransitionCount { get; set; }
 
-        public StringNumber TransitionHeight { get; set; }
+        public StringNumber? TransitionHeight { get; set; }
 
         public bool IsActive => TransitionCount > 0;
 

@@ -1,6 +1,4 @@
-﻿using OneOf;
-
-namespace BlazorComponent;
+﻿namespace BlazorComponent;
 
 [GenerateOneOf]
 public partial class StringEnum<T> : OneOfBase<string, T> where T : Enum
@@ -10,7 +8,7 @@ public partial class StringEnum<T> : OneOfBase<string, T> where T : Enum
         return Value?.ToString();
     }
 
-    public static bool operator ==(StringEnum<T> left, StringEnum<T> right)
+    public static bool operator ==(StringEnum<T>? left, StringEnum<T>? right)
     {
         if (Equals(left, right))
         {
@@ -25,7 +23,7 @@ public partial class StringEnum<T> : OneOfBase<string, T> where T : Enum
         return left.Value == right.Value;
     }
 
-    public static bool operator !=(StringEnum<T> left, StringEnum<T> right)
+    public static bool operator !=(StringEnum<T>? left, StringEnum<T>? right)
     {
         if (Equals(left, right))
         {

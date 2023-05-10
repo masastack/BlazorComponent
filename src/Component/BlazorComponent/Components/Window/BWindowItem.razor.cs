@@ -10,7 +10,6 @@
         /// just to refresh the component.
         /// </summary>
         [CascadingParameter(Name = "WindowValue")]
-        [NotNull]
         public string? WindowValue { get; set; }
 
         protected virtual string? ComputedTransition { get; }

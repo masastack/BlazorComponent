@@ -1,14 +1,12 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BDatePickerHeaderHeader<TDatePickerHeader> where TDatePickerHeader : IDatePickerHeader
     {
-        public string Transition => Component.Transition;
+        public string? Transition => Component.Transition;
 
         public DateOnly Value => Component.Value;
 
-        public RenderFragment ComponentChildContent => Component.ChildContent;
+        public RenderFragment? ComponentChildContent => Component.ChildContent;
 
         public Dictionary<string, object> HeaderAttrs => Component.ButtonAttrs;
 

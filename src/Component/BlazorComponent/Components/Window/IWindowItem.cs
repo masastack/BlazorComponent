@@ -2,5 +2,5 @@
 
 public interface IWindowItem : IHasProviderComponent
 {
-    RenderFragment ChildContent { get; }
+    RenderFragment? ChildContent { get; }
 }

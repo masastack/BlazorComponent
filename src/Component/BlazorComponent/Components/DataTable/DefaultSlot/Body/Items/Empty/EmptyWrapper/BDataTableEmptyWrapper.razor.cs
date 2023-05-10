@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BDataTableEmptyWrapper<TItem, TDataTable> where TDataTable : IDataTable<TItem>
     {
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
-        public Dictionary<string, object> ColspanAttrs => Component.ColspanAttrs;
+        public Dictionary<string, object?> ColspanAttrs => Component.ColspanAttrs;
     }
 }

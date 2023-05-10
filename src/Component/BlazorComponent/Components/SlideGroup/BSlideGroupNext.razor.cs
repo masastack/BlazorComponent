@@ -1,16 +1,13 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BSlideGroupNext<TSlideGroup> : ComponentPartBase<TSlideGroup>
         where TSlideGroup : ISlideGroup
     {
         protected bool Active => Component.HasNext;
 
-        protected string Icon => Component.NextIcon;
+        protected string? Icon => Component.NextIcon;
 
-        protected RenderFragment IconContent => Component.NextContent;
+        protected RenderFragment? IconContent => Component.NextContent;
 
         protected bool Visible => !(Component.ShowArrows == null && !Active);
 

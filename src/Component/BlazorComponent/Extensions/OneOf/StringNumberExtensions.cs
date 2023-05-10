@@ -32,5 +32,10 @@
                 t2 => $"{t2}{unit}"
             );
         }
+
+        public static int ToInt32(this StringNumber? stringNumber, int @default = 0)
+        {
+            return stringNumber == null ? @default : stringNumber.ToInt32();
+        }
     }
 }

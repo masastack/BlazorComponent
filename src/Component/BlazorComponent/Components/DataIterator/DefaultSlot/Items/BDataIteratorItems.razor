@@ -13,8 +13,8 @@ else if (ComponentChildContent != null)
 }
 else if (ItemContent != null)
 {
-    var items = ComputedItems;
-    for (var i = 0; i < items.Count(); i++)
+    var items = ComputedItems.ToList();
+    for (var i = 0; i < items.Count; i++)
     {
         var item = items.ElementAt(i);
         @ItemContent(new ItemProps<TItem>(i, item))

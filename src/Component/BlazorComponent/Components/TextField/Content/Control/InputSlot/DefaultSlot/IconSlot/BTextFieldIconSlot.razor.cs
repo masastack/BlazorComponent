@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent;
+﻿namespace BlazorComponent;
 
 public partial class BTextFieldIconSlot<TValue, TInput> where TInput : ITextField<TValue>
 {
-    public string AppendIcon => Component.AppendIcon;
+    public string? AppendIcon => Component.AppendIcon;
 
-    public RenderFragment AppendContent => Component.AppendContent;
+    public RenderFragment? AppendContent => Component.AppendContent;
 
     public EventCallback<MouseEventArgs> HandleOnAppendClickAsync => Component.OnAppendClick.HasDelegate
         ? EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnAppendClickAsync)

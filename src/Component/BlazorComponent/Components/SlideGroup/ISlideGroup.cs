@@ -8,17 +8,17 @@
 
         bool Mandatory { get; }
 
-        StringNumber Max { get; }
+        StringNumber? Max { get; }
 
         bool Multiple { get; }
 
         string? NextIcon { get; }
 
-        RenderFragment NextContent { get; set; }
+        RenderFragment? NextContent { get; set; }
 
         string? PrevIcon { get; }
 
-        RenderFragment PrevContent { get; set; }
+        RenderFragment? PrevContent { get; set; }
 
         internal Task OnAffixClick(string direction);
 

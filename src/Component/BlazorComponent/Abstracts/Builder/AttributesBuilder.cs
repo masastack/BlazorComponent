@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public class AttributesBuilder
     {
         private Dictionary<string, object?> _attributes = new();
 
-        public AttributesBuilder Add(string name, object value)
+        public AttributesBuilder Add(string name, object? value)
         {
             _attributes.Add(name, value);
             return this;
@@ -18,15 +16,9 @@ namespace BlazorComponent
             return this;
         }
 
-        public IDictionary<string, object?> Attributes
-        {
-            get
-            {
-                return _attributes;
-            }
-        }
+        public IDictionary<string, object?> Attributes => _attributes;
 
-        public AttributesBuilder SetAttributes(Dictionary<string, object> attributes)
+        public AttributesBuilder SetAttributes(Dictionary<string, object?> attributes)
         {
             //We may combine this with other attributes
             _attributes = attributes;

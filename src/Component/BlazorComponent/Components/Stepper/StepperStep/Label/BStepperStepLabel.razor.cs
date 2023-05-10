@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BStepperStepLabel<TStepper> where TStepper : IStepperStep
     {
-        public RenderFragment ComponentChildContent => Component.ChildContent;
+        public RenderFragment? ComponentChildContent => Component.ChildContent;
     }
 }

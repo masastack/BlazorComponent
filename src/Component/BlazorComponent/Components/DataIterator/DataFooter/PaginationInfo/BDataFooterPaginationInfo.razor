@@ -12,16 +12,16 @@
         {
             pageStart = Pagination.PageStart + 1;
             pageStop = (itemsLength < Pagination.PageStop || Pagination.PageStop < 0)
-            ? itemsLength
-            : Pagination.PageStop;
+                ? itemsLength
+                : Pagination.PageStop;
 
             if (PageTextContent != null)
             {
                 @PageTextContent((pageStart,pageStop,itemsLength))
             }
-            else
+            else if (PageText != null)
             {
-                @string.Format(PageText,pageStart,pageStop,itemsLength)
+                @string.Format(PageText, pageStart, pageStop, itemsLength)
             }
         }
         else if (PageTextContent != null)
@@ -34,4 +34,3 @@
         }
     }
 </div>
-

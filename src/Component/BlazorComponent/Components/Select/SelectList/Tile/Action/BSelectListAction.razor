@@ -4,7 +4,7 @@
 @typeparam TValue
 @inherits ComponentPartBase<ISelectList<TItem,TItemValue,TValue>>
 
-<BListItemAction @attributes="GetAttributes(typeof(BListItemAction))">
-    <BSimpleCheckbox Value="Value" @attributes="GetAttributes(typeof(BSimpleCheckbox),data:Item)">
+<BListItemAction @attributes="@GetAttributes(typeof(BListItemAction))">
+    <BSimpleCheckbox Value="Value" @attributes="@GetAttributes(typeof(BSimpleCheckbox),data:Item)">
     </BSimpleCheckbox>
 </BListItemAction>

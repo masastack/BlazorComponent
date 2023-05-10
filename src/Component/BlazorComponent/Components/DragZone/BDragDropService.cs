@@ -2,7 +2,7 @@
 {
     public class BDragDropService
     {
-        public BDragItem DragItem { get; set; }
+        public BDragItem? DragItem { get; set; }
 
         public void Reset()
         {

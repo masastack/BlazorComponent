@@ -1,15 +1,10 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BTooltipContent<TTooltip> where TTooltip : ITooltip
     {
         public ElementReference ContentElement
         {
-            set
-            {
-                Component.ContentElement = value;
-            }
+            set => Component.ContentElement = value;
         }
 
         protected string TransitionName
@@ -31,8 +26,8 @@ namespace BlazorComponent
 
         public bool IsBooted => Component.IsBooted;
 
-        public string Transition => Component.Transition;
+        public string? Transition => Component.Transition;
 
-        public RenderFragment ComponentChildContent => Component.ChildContent;
+        public RenderFragment? ComponentChildContent => Component.ChildContent;
     }
 }

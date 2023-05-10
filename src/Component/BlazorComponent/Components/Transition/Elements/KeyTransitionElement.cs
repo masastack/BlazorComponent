@@ -7,9 +7,9 @@ namespace BlazorComponent;
 
 public class KeyTransitionElement<TValue> : TransitionElementBase<TValue>
 {
-    private KeyTransitionElementState<TValue>[] _states;
+    private KeyTransitionElementState<TValue>[]? _states;
 
-    private IEnumerable<KeyTransitionElementState<TValue>> ComputedStates =>
+private IEnumerable<KeyTransitionElementState<TValue>> ComputedStates =>
         States.Where(state => !state.IsEmpty);
 
     private KeyTransitionElementState<TValue>[] States =>
@@ -204,7 +204,7 @@ public class KeyTransitionElement<TValue> : TransitionElementBase<TValue>
             builder.AddAttribute(sequence++, "class", state.ComputedClass);
             builder.AddAttribute(sequence++, "style", state.ComputedStyle);
             builder.AddContent(sequence++, RenderChildContent(state.Key));
-            builder.AddElementReferenceCapture(sequence++, reference =>
+            builder.AddElementReferenceCapture(sequence, reference =>
             {
                 ReferenceCaptureAction?.Invoke(reference);
                 Reference = reference;
@@ -215,14 +215,14 @@ public class KeyTransitionElement<TValue> : TransitionElementBase<TValue>
         }
     }
 
-    private RenderFragment RenderChildContent(TValue key)
+    private RenderFragment RenderChildContent(TValue? key)
     {
         return builder =>
         {
             var sequence = 0;
             builder.OpenComponent<Container>(sequence++);
             builder.AddAttribute(sequence++, nameof(Container.Value), EqualityComparer<TValue>.Default.Equals(key, Value));
-            builder.AddAttribute(sequence++, nameof(ChildContent), ChildContent);
+            builder.AddAttribute(sequence, nameof(ChildContent), ChildContent);
             builder.CloseComponent();
         };
     }

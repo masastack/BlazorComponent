@@ -1,36 +1,38 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BBorder : BDomComponentBase
     {
         [Parameter]
+        [ApiDefaultValue(Borders.Left)]
         public Borders Border { get; set; } = Borders.Left;
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
-        public string Color { get; set; } = "primary";
+        [ApiDefaultValue("primary")]
+        public string? Color { get; set; } = "primary";
 
         [Parameter]
         public bool Offset { get; set; }
 
         [Parameter]
-        public StringBoolean Rounded { get; set; }
+        public StringBoolean? Rounded { get; set; }
 
         [Parameter]
-        public string WrapperStyle { get; set; } = "";
+        public string? WrapperStyle { get; set; }
 
         [Parameter]
+        [ApiDefaultValue(true)]
         public bool Value { get; set; } = true;
 
         [Parameter]
+        [ApiDefaultValue(8)]
         public StringNumber Width { get; set; } = 8;
 
         protected bool Inactive => !Value || Border == Borders.None;
 
-        protected (double borderWidth, string unit) ComputedWidth()
+        protected (double borderWidth, string? unit) ComputedWidth()
         {
             var unit = "px";
 

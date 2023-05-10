@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface IRating : IHasProviderComponent
     {
-        RenderFragment<RatingItem> ItemContent { get; }
+        RenderFragment<RatingItem>? ItemContent { get; }
 
         RatingItem CreateProps(int i);
 

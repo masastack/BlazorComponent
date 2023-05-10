@@ -1,7 +1,4 @@
-﻿using BlazorComponent.Web;
-using Microsoft.JSInterop;
-
-namespace BlazorComponent;
+﻿namespace BlazorComponent;
 
 public class Scroller : IScrollable
 {

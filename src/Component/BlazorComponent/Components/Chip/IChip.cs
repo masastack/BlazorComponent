@@ -1,19 +1,17 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface IChip : IHasProviderComponent
     {
-        RenderFragment ChildContent { get; }
+        RenderFragment? ChildContent { get; }
 
         bool Filter => default;
 
-        string FilterIcon => default;
+        string? FilterIcon => default;
 
         bool InternalIsActive => default;
 
         bool Close => default;
 
-        string CloseIcon => default;
+        string? CloseIcon => default;
     }
 }

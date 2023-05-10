@@ -5,12 +5,13 @@ namespace BlazorComponent
     public partial class BRating : BDomComponentBase
     {
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
-        public RenderFragment<RatingItem> ItemContent { get; set; }
+        public RenderFragment<RatingItem>? ItemContent { get; set; }
 
         [Parameter]
+        [ApiDefaultValue(5)]
         public StringNumber Length { get; set; } = 5;
 
         [Parameter]

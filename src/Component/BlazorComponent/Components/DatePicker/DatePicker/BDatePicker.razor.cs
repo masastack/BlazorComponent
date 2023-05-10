@@ -9,7 +9,7 @@
         public DatePickerType Type { get; set; } = DatePickerType.Date;
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
         public bool Dark { get; set; }

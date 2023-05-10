@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BDataTableCaption<TItem, TDataTable> where TDataTable : IDataTable<TItem>
     {
-        public string Caption => Component.Caption;
+        public string? Caption => Component.Caption;
 
-        public RenderFragment CaptionContent => Component.CaptionContent;
+        public RenderFragment? CaptionContent => Component.CaptionContent;
     }
 }

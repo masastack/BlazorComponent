@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BButtonContent<TButton> : ComponentPartBase<TButton>
         where TButton : IButton
     {
-        protected RenderFragment ChildContent => Component.ChildContent;
+        protected RenderFragment? ChildContent => Component.ChildContent;
     }
 }

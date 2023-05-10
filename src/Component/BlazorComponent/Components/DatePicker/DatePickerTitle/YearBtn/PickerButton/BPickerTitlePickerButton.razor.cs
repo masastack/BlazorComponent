@@ -1,17 +1,14 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BPickerTitlePickerButton<TComponent> where TComponent : IHasProviderComponent
     {
         [Parameter]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         [Parameter]
         public EventCallback<MouseEventArgs> OnClick { get; set; }
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
     }
 }

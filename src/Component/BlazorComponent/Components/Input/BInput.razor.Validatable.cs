@@ -24,16 +24,16 @@ namespace BlazorComponent
         }
 
         [Parameter]
-        public EventCallback<TValue> ValueChanged { get; set; }
+        public EventCallback<TValue?> ValueChanged { get; set; }
 
         [Parameter]
-        public Expression<Func<TValue>> ValueExpression { get; set; }
+        public Expression<Func<TValue?>>? ValueExpression { get; set; }
 
         [CascadingParameter]
-        public BForm Form { get; set; }
+        public BForm? Form { get; set; }
 
         [CascadingParameter]
-        public EditContext EditContext { get; set; }
+        public EditContext? EditContext { get; set; }
 
         [Parameter]
         public bool Error { get; set; }
@@ -42,10 +42,14 @@ namespace BlazorComponent
         public int ErrorCount { get; set; } = 1;
 
         [Parameter]
-        public List<string> ErrorMessages { get; set; } = new();
+        public List<string> ErrorMessages
+        {
+            get => _errorMessages ?? new();
+            set => _errorMessages = value;
+        }
 
         [Parameter]
-        public List<string> Messages { get; set; } = new();
+        public List<string>? Messages { get; set; } = new();
 
         [Parameter]
         public EventCallback<TValue> OnInput { get; set; }
@@ -54,12 +58,12 @@ namespace BlazorComponent
         public bool Success { get; set; }
 
         [Parameter]
-        public List<string> SuccessMessages { get; set; }
+        public List<string>? SuccessMessages { get; set; }
 
         [Parameter]
-        public IEnumerable<Func<TValue, StringBoolean>> Rules
+        public IEnumerable<Func<TValue?, StringBoolean>>? Rules
         {
-            get => GetValue<IEnumerable<Func<TValue, StringBoolean>>>();
+            get => GetValue<IEnumerable<Func<TValue?, StringBoolean>>>();
             set => SetValue(value);
         }
 
@@ -67,7 +71,7 @@ namespace BlazorComponent
 
         protected virtual TValue? DefaultValue => default;
 
-        protected EditContext OldEditContext { get; set; }
+        protected EditContext? OldEditContext { get; set; }
 
         public FieldIdentifier ValueIdentifier { get; set; }
 
@@ -129,17 +133,17 @@ namespace BlazorComponent
         {
             get
             {
-                if (ErrorMessages.Count > 0)
+                if (ErrorMessages?.Count > 0)
                 {
                     return ErrorMessages;
                 }
 
-                if (SuccessMessages != null && SuccessMessages.Count > 0)
+                if (SuccessMessages?.Count > 0)
                 {
                     return SuccessMessages;
                 }
 
-                if (Messages != null && Messages.Count > 0)
+                if (Messages?.Count > 0)
                 {
                     return Messages;
                 }
@@ -185,9 +189,10 @@ namespace BlazorComponent
         protected bool ValueChangedInternally { get; set; }
 
         private bool _internalValueChangingFromOnValueChanged;
-        private CancellationTokenSource _cancellationTokenSource;
+        private CancellationTokenSource? _cancellationTokenSource;
 
         private InputJsInterop? _inputJsInterop;
+        private List<string>? _errorMessages;
 
         protected virtual int InternalDebounceInterval => 0;
 
@@ -236,7 +241,7 @@ namespace BlazorComponent
 
         protected virtual bool ValidateOnlyInFocusedState => true;
 
-        protected virtual async Task SetValueByJsInterop(string val)
+        protected virtual async Task SetValueByJsInterop(string? val)
         {
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource = new();
@@ -253,19 +258,21 @@ namespace BlazorComponent
                 .Watch<TValue>(nameof(Value), OnValueChanged, immediate: true)
                 .Watch<TValue>(nameof(LazyValue), OnLazyValueChange)
                 .Watch<TValue>(nameof(InternalValue), OnInternalValueChange)
-                .Watch<bool>(nameof(IsFocused), async val =>
-                {
-                    if (!val && !IsDisabled)
-                    {
-                        HasFocused = true;
-                        if (ValidateOnBlur)
-                        {
-                            InternalValidate();
-                        }
-                    }
+                .Watch<bool>(nameof(IsFocused), IsFocusedChangeCallback);
+        }
 
-                    await OnIsFocusedChange(val);
-                });
+        private async void IsFocusedChangeCallback(bool val)
+        {
+            if (!val && !IsDisabled)
+            {
+                HasFocused = true;
+                if (ValidateOnBlur)
+                {
+                    InternalValidate();
+                }
+            }
+
+            await OnIsFocusedChange(val);
         }
 
         protected override void OnParametersSet()
@@ -273,7 +280,7 @@ namespace BlazorComponent
             SubscribeValidationStateChanged();
         }
 
-        protected virtual void OnValueChanged(TValue val)
+        protected virtual void OnValueChanged(TValue? val)
         {
             var isEqual = true;
             if (val is IList valList && InternalValue is IList internalValueList)
@@ -308,7 +315,7 @@ namespace BlazorComponent
             LazyValue = val.TryDeepClone();
         }
 
-        protected virtual void OnInternalValueChange(TValue val)
+        protected virtual void OnInternalValueChange(TValue? val)
         {
             // If it's the first time we're setting input,
             // mark it with hasInput
@@ -336,7 +343,7 @@ namespace BlazorComponent
             }
         }
 
-        protected virtual void OnLazyValueChange(TValue val)
+        protected virtual void OnLazyValueChange(TValue? val)
         {
             HasInput = true;
         }
@@ -361,7 +368,11 @@ namespace BlazorComponent
                     OldEditContext.OnValidationStateChanged -= HandleOnValidationStateChanged;
                 }
 
-                EditContext.OnValidationStateChanged += HandleOnValidationStateChanged;
+                if (EditContext != null)
+                {
+                    EditContext.OnValidationStateChanged += HandleOnValidationStateChanged;
+                }
+
                 OldEditContext = EditContext;
             }
         }
@@ -451,7 +462,7 @@ namespace BlazorComponent
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (ValueIdentifier.Model is not null)
             {
-                EditContext.MarkAsUnmodified(ValueIdentifier);
+                EditContext?.MarkAsUnmodified(ValueIdentifier);
             }
 
             InternalValue = default;
@@ -462,17 +473,17 @@ namespace BlazorComponent
             ErrorBucket.Clear();
         }
 
-        protected virtual void HandleOnValidationStateChanged(object sender, ValidationStateChangedEventArgs e)
+        protected virtual void HandleOnValidationStateChanged(object? sender, ValidationStateChangedEventArgs e)
         {
             // The following conditions require an error message to be displayed:
             // 1. Force validation, because it validates all input elements
             // 2. The input pointed to by ValueIdentifier has been modified
-            if (!_forceStatus && EditContext.IsModified() && !EditContext.IsModified(ValueIdentifier))
+            if (!_forceStatus && EditContext?.IsModified() is true && !EditContext.IsModified(ValueIdentifier))
                 return;
 
             _forceStatus = false;
 
-            var errors = EditContext.GetValidationMessages(ValueIdentifier).ToList();
+            var errors = EditContext!.GetValidationMessages(ValueIdentifier).ToList();
 
             if (!errors.Any())
             {

@@ -3,9 +3,8 @@
 @typeparam TRangeSlider
 @inherits ComponentPartBase<TRangeSlider>
 
-    @for (var i = 0; i < 2; i++)
-    {
-        var index = i;
-        <input value="@InternalValue[index]" disabled readonly tabindex="-1" @attributes="InputAttrs" />
-    }
-
+@for (var i = 0; i < 2; i++)
+{
+    var index = i;
+    <input value="@InternalValue[index]" disabled readonly tabindex="-1" @attributes="@InputAttrs" />
+}

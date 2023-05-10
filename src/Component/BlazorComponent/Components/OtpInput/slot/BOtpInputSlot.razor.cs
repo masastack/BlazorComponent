@@ -1,8 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BOtpInputSlot<TOtpInput> : ComponentPartBase<TOtpInput> where TOtpInput : IOtpInput
     {
@@ -10,7 +6,7 @@ namespace BlazorComponent
         public int Index { get; set; }
 
         [Parameter]
-        public string Value { get; set; }
+        public string? Value { get; set; }
 
         public OtpInputType Type => Component.Type;
 

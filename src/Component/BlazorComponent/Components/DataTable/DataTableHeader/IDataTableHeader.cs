@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface IDataTableHeader : IHasProviderComponent
     {
         bool SingleSelect { get; }
 
-        RenderFragment DataTableSelectContent { get; }
+        RenderFragment? DataTableSelectContent { get; }
 
         bool DisableSort { get; }
         
@@ -16,11 +14,11 @@ namespace BlazorComponent
 
         bool ShowGroupBy { get; }
 
-        RenderFragment<DataTableHeader> HeaderColContent { get; }
+        RenderFragment<DataTableHeader>? HeaderColContent { get; }
 
-        Task HandleOnGroup(string group);
+        Task HandleOnGroup(string? group);
 
-        Task HandleOnHeaderColClick(string value);
+        Task HandleOnHeaderColClick(string? value);
 
         DataOptions Options { get; }
     }

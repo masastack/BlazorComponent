@@ -7,5 +7,5 @@
 
 @{
     var props = new SelectSelectionProps<TItem>(Item, Index, Selected, Disabled);
-    @SelectionContent(props)
+    @SelectionContent?.Invoke(props)
 }

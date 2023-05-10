@@ -26,13 +26,13 @@
         public string? NextIcon { get; set; }
 
         [Parameter]
-        public RenderFragment NextContent { get; set; }
+        public RenderFragment? NextContent { get; set; }
 
         [Parameter]
         public string? PrevIcon { get; set; }
 
         [Parameter]
-        public RenderFragment PrevContent { get; set; }
+        public RenderFragment? PrevContent { get; set; }
 
         private int _prevItemsLength;
         private StringNumber? _prevInternalValue;
@@ -96,7 +96,10 @@
 
             if (firstRender)
             {
-                DomEventJsInterop?.ResizeObserver(Ref.GetSelector(), OnResize);
+                if (Ref.TryGetSelector(out var selector))
+                {
+                    DomEventJsInterop?.ResizeObserver(selector, OnResize);
+                }
 
                 await SetWidths(Value);
             }

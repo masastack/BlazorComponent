@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public interface IMarkdown : IHasProviderComponent
     {
-        string Value { get; }
-        string Html { get; }
+        string? Value { get; }
+        string? Html { get; }
     }
 }

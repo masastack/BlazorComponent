@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BTimePickerTitleAmPm<TTimePickerTitle> where TTimePickerTitle : ITimePickerTitle
     {
@@ -13,8 +10,8 @@ namespace BlazorComponent
 
         public EventCallback<MouseEventArgs> OnPmClick => CreateEventCallback<MouseEventArgs>(Component.HandleOnPmClickAsync);
 
-        public string AmText => Component.AmText;
+        public string? AmText => Component.AmText;
 
-        public  string PmText => Component.PmText;
+        public  string? PmText => Component.PmText;
     }
 }

@@ -12,9 +12,9 @@
 
         bool Right { get; set; }
 
-        StringNumber Size { get; set; }
+        StringNumber? Size { get; set; }
 
-        string Tag { get; set; }
+        string? Tag { get; set; }
 
         EventCallback<MouseEventArgs> OnClick { get; set; }
 

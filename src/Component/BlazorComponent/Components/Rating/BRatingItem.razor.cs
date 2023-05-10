@@ -1,13 +1,11 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BRatingItem<TRating> where TRating : IRating
     {
         [Parameter]
         public int ItemIndex { get; set; }
 
-        public RenderFragment<RatingItem> ItemContent => Component.ItemContent;
+        public RenderFragment<RatingItem>? ItemContent => Component.ItemContent;
 
         public string GetIconName(RatingItem item) => Component.GetIconName(item);
 

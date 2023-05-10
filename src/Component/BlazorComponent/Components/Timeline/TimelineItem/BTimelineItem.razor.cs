@@ -1,20 +1,18 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BTimelineItem : BDomComponentBase
     {
         [CascadingParameter]
-        protected BTimeline BTimeline { get; set; }
+        protected BTimeline? BTimeline { get; set; }
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; }
+        public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
-        public RenderFragment OppositeContent { get; set; }
+        public RenderFragment? OppositeContent { get; set; }
 
         [Parameter]
-        public RenderFragment IconContent { get; set; }
+        public RenderFragment? IconContent { get; set; }
 
         [Parameter]
         public bool Dark { get; set; }

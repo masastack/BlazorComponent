@@ -6,7 +6,7 @@ public class BDefaultsProvider : ComponentBase, IDefaultsProvider
 {
     [CascadingParameter] protected IDefaultsProvider? DefaultsProvider { get; set; }
 
-    [Parameter, EditorRequired] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
 
     [Parameter] public IDictionary<string, IDictionary<string, object?>?>? Defaults { get; set; }
 

@@ -6,7 +6,7 @@
         {
         }
 
-        public List<StringNumber> NextActiveKeys { get; } = new();
+        public List<StringNumber?> NextActiveKeys { get; } = new();
 
         [Parameter]
         public bool Accordion { get; set; }
@@ -35,7 +35,7 @@
         [Parameter]
         public bool Tile { get; set; }
 
-        protected override List<StringNumber> UpdateInternalValues(StringNumber value)
+        protected override List<StringNumber?> UpdateInternalValues(StringNumber? value)
         {
             var internalValues = InternalValues.ToList();
 
@@ -68,7 +68,7 @@
             return internalValues;
         }
 
-        private void AddNextActiveKey(StringNumber value)
+        private void AddNextActiveKey(StringNumber? value)
         {
             var index = AllValues.IndexOf(value);
             if (index > 1)
@@ -77,7 +77,7 @@
             }
         }
 
-        private void RemoveNextActiveKey(StringNumber value)
+        private void RemoveNextActiveKey(StringNumber? value)
         {
             var index = AllValues.IndexOf(value);
             if (index > 1)

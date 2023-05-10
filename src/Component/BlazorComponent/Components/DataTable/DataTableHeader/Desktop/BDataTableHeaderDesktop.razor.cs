@@ -3,7 +3,7 @@
     public partial class BDataTableHeaderDesktop<TDataTableHeader> where TDataTableHeader : IDataTableHeader
     {
         [Parameter]
-        public List<DataTableHeader> Headers { get; set; }
+        public List<DataTableHeader> Headers { get; set; } = null!;
 
         public bool SingleSelect => Component.SingleSelect;
 
@@ -11,7 +11,7 @@
 
         public bool ShowGroupBy => Component.ShowGroupBy;
 
-        public RenderFragment<DataTableHeader> HeaderColContent => Component.HeaderColContent;
+        public RenderFragment<DataTableHeader>? HeaderColContent => Component.HeaderColContent;
 
         public DataOptions Options => Component.Options;
 

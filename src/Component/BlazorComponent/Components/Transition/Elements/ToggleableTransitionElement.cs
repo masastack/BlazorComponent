@@ -3,11 +3,11 @@
 public class ToggleableTransitionElement : TransitionElementBase<bool>
 {
     [Parameter(CaptureUnmatchedValues = true)]
-    public override IDictionary<string, object> AdditionalAttributes
+    public override IDictionary<string, object?> AdditionalAttributes
     {
         get
         {
-            var attributes = base.AdditionalAttributes ?? new Dictionary<string, object>();
+            var attributes = base.AdditionalAttributes ?? new Dictionary<string, object?>();
 
             attributes["class"] = ComputedClass;
             attributes["style"] = ComputedStyle;
@@ -21,7 +21,7 @@ public class ToggleableTransitionElement : TransitionElementBase<bool>
 
     protected bool LazyValue { get; private set; }
 
-    protected override string ComputedClass
+    protected override string? ComputedClass
     {
         get
         {

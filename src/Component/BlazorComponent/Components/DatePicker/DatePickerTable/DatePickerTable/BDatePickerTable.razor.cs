@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BDatePickerTable : BDomComponentBase
     {
@@ -34,6 +32,6 @@ namespace BlazorComponent
             }
         }
 
-        protected virtual string ComputedTransition { get; }
+        protected virtual string? ComputedTransition { get; }
     }
 }

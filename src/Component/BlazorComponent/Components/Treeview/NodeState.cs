@@ -2,11 +2,20 @@
 {
     public class NodeState<TItem, TKey>
     {
-        public TKey Parent { get; set; }
+        public NodeState(TItem item, IEnumerable<TKey> children, TKey? parent = default)
+        {
+            Item = item;
+            Children = children;
+            Parent = parent;
+        }
 
-        public IEnumerable<TKey> Children { get; set; }
+        public TItem Item { get; }
 
-        public ITreeviewNode<TItem, TKey> Node { get; set; }
+        public IEnumerable<TKey> Children { get; }
+
+        public TKey? Parent { get; }
+
+        public ITreeviewNode<TItem, TKey>? Node { get; set; }
 
         public bool IsActive { get; set; }
 
@@ -15,7 +24,5 @@
         public bool IsIndeterminate { get; set; }
 
         public bool IsOpen { get; set; }
-
-        public TItem Item { get; set; }
     }
 }

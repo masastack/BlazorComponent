@@ -55,7 +55,8 @@ internal sealed class ValidationEventSubscriptions : IDisposable
     [MemberNotNullWhen(true, nameof(_i18n))]
     private bool EnableI18n { get; set; }
 
-    public ValidationEventSubscriptions(EditContext editContext, ValidationMessageStore messageStore, IServiceProvider serviceProvider, bool enableI18n)
+    public ValidationEventSubscriptions(EditContext editContext, ValidationMessageStore messageStore, IServiceProvider serviceProvider,
+        bool enableI18n)
     {
         _serviceProvider = serviceProvider;
         _editContext = editContext ?? throw new ArgumentNullException(nameof(editContext));
@@ -146,6 +147,8 @@ internal sealed class ValidationEventSubscriptions : IDisposable
     private void FluentValidate(object model, ValidationMessageStore messageStore, FieldIdentifier field)
     {
         var validationResult = GetValidationResult(model);
+        if (validationResult is null) return;
+
         if (field.FieldName == "")
         {
             messageStore.Clear();
@@ -155,9 +158,8 @@ internal sealed class ValidationEventSubscriptions : IDisposable
                 if (error.PropertyName.Contains("."))
                 {
                     var propertyName = error.PropertyName.Substring(0, error.PropertyName.LastIndexOf('.'));
-                    if (propertyMap.ContainsKey(propertyName))
+                    if (propertyMap.TryGetValue(propertyName, out var modelItem))
                     {
-                        var modelItem = propertyMap[propertyName];
                         var modelItemPropertyName = error.PropertyName.Split('.').Last();
                         AddValidationMessage(new FieldIdentifier(modelItem, modelItemPropertyName), error.ErrorMessage);
                     }
@@ -192,15 +194,23 @@ internal sealed class ValidationEventSubscriptions : IDisposable
         }
     }
 
-    private FluentValidationResult GetValidationResult(object model)
+    private FluentValidationResult? GetValidationResult(object model)
     {
         var type = model.GetType();
 
         if (FluentValidationTypeMap.TryGetValue(type, out var validatorType))
         {
             var validationContext = new ValidationContext<object>(model);
-            var validator = ModelFluentValidatorMap.GetOrAdd(type, t => (IValidator)_serviceProvider.GetService(validatorType));
-            return validator.Validate(validationContext);
+            if (!ModelFluentValidatorMap.TryGetValue(type, out var validator))
+            {
+                validator = (IValidator?)_serviceProvider.GetService(validatorType);
+                if (validator is not null)
+                {
+                    ModelFluentValidatorMap.TryAdd(type, validator);
+                }
+            }
+
+            return validator?.Validate(validationContext);
         }
 
         throw new NotImplementedException($"Validator for {type} does not exists.");
@@ -229,32 +239,33 @@ internal sealed class ValidationEventSubscriptions : IDisposable
             {
                 if (property.PropertyType.IsValueType || property.PropertyType == typeof(string))
                     continue;
+
+                if (property.PropertyType.GetInterfaces().Any(gt => gt == typeof(System.Collections.IEnumerable)))
+                {
+                    Var index = -1;
+                    Expr.Foreach(value[property.Name], (item, _, _) =>
+                    {
+                        index++;
+                        var propertyPath = basePropertyPath + property.Name + "[" + index + "]";
+                        map[propertyPath] = item.Convert<object>();
+                        ;
+                        BuildPropertyMap(item, map, propertyPath + ".");
+                    });
+                }
                 else
                 {
-                    if (property.PropertyType.GetInterfaces().Any(gt => gt == typeof(System.Collections.IEnumerable)))
-                    {
-                        Var index = -1;
-                        Expr.Foreach(value[property.Name], (item, @continue, @return) =>
-                        {
-                            index++;
-                            var propertyPath = basePropertyPath + property.Name + "[" + index + "]";
-                            map[propertyPath] = item.Convert<object>(); ;
-                            BuildPropertyMap(item, map, propertyPath + ".");
-                        });
-                    }
-                    else
-                    {
-                        var propertyPath = basePropertyPath + property.Name;
-                        map[propertyPath] = value[property.Name].Convert<object>();
-                        BuildPropertyMap(value[property.Name], map, $"{propertyPath}.");
-                    }
+                    var propertyPath = basePropertyPath + property.Name;
+                    map[propertyPath] = value[property.Name].Convert<object>();
+                    BuildPropertyMap(value[property.Name], map, $"{propertyPath}.");
                 }
             }
         }
     }
 
-    private void AddValidationMessage(in FieldIdentifier fieldIdentifier, string message)
+    private void AddValidationMessage(in FieldIdentifier fieldIdentifier, string? message)
     {
+        if (message == null) return;
+
         if (EnableI18n)
         {
             message = _i18n.T(message);

@@ -8,7 +8,7 @@ public class Container : ComponentBase
     public bool Value { get; set; }
 
     [Parameter]
-    public RenderFragment ChildContent { get; set; }
+    public RenderFragment? ChildContent { get; set; }
 
     protected override bool ShouldRender()
     {

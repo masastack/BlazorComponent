@@ -11,6 +11,7 @@ namespace BlazorComponent
         public bool Value { get; set; }
 
         [Parameter]
+        [ApiDefaultValue(true)]
         public bool Dark { get; set; } = true;
 
         [Parameter]

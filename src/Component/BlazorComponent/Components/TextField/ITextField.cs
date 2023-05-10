@@ -10,7 +10,7 @@
 
         bool HasCounter { get; }
 
-        StringNumberBoolean Counter { get; }
+        StringNumberBoolean? Counter { get; }
 
         string? PrependInnerIcon { get; }
 
@@ -18,7 +18,7 @@
 
         RenderFragment? PrependInnerContent { get; }
 
-        Action<TextFieldNumberProperty> NumberProps { get; set; }
+        Action<TextFieldNumberProperty>? NumberProps { get; set; }
 
         TextFieldNumberProperty Props { get; set; }
 
@@ -28,9 +28,9 @@
 
         bool ShowLabel { get; }
 
-        string Prefix { get; }
+        string? Prefix { get; }
 
-        string Suffix { get; }
+        string? Suffix { get; }
 
         bool Autofocus { get; }
 
@@ -40,11 +40,11 @@
 
         bool PersistentPlaceholder { get; }
 
-        string Placeholder { get; }
+        string? Placeholder { get; }
 
         bool IsReadonly { get; }
 
-        string Type { get; }
+        string? Type { get; }
 
         EventCallback<FocusEventArgs> OnBlur { get; }
 
@@ -56,18 +56,18 @@
 
         bool IsDirty { get; }
 
-        string Tag { get; }
+        string? Tag { get; }
 
         /// <summary>
         /// This will pass to input and override default settings
         /// </summary>
-        Dictionary<string, object> InputAttrs { get; }
+        Dictionary<string, object?> InputAttrs { get; }
 
-        string ClearIcon { get; }
+        string? ClearIcon { get; }
 
         ElementReference InputElement { set; }
 
-        RenderFragment CounterContent { get; }
+        RenderFragment? CounterContent { get; }
 
         BLabel LabelReference { set; }
 
@@ -77,7 +77,7 @@
         
         ElementReference AppendInnerElement { set; }
 
-        Dictionary<string, object> InputSlotAttrs { get; }
+        Dictionary<string, object?> InputSlotAttrs { get; }
 
         Task HandleOnPrependInnerClickAsync(MouseEventArgs args);
 

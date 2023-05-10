@@ -2,9 +2,16 @@
 
 public class ValidationResult
 {
-    public string Field { get; set; }
+    public ValidationResult(string field, string message, ValidationResultTypes validationResultType)
+    {
+        Field = field;
+        Message = message;
+        ValidationResultType = validationResultType;
+    }
 
-    public string Message { get; set; }
+    public string Field { get; init; }
 
-    public ValidationResultTypes ValidationResultType { get; set; }
+    public string Message { get; init; }
+
+    public ValidationResultTypes ValidationResultType { get; init; }
 }

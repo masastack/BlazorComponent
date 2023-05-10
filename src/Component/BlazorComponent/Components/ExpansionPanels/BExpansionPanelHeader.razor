@@ -10,7 +10,7 @@
         Style="@CssProvider.GetStyle()"
         @attributes="@Attributes">
 
-    @ChildContent(IsActive)
+    @ChildContent?.Invoke(IsActive)
 
     @if (!HideActions)
     {
