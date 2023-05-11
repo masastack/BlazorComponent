@@ -56,17 +56,15 @@ function create(
   parser.md = md;
   parser.useContainer = (name) => md.use(markdownItContainer, name);
 
-  if (anchorOptions) {
+  // anchor and toc
+  {
     let slugify = parser.defaultSlugify;
-    if (window.MasaBlazor.markdownItAnchorSlugify) {
-      slugify = (s) => window.MasaBlazor.markdownItAnchorSlugify(scope, s);
-    }
 
     md.use(markdownItAnchor, {
-      level: anchorOptions.level,
-      permalink: anchorOptions.permalink,
-      permalinkSymbol: anchorOptions.permalinkSymbol,
-      permalinkClass: anchorOptions.permalinkClass,
+      level: anchorOptions?.level ?? 1,
+      permalink: anchorOptions?.permalink,
+      permalinkSymbol: anchorOptions?.permalinkSymbol,
+      permalinkClass: anchorOptions?.permalinkClass,
       slugify,
       callback: (_token, info) => {
         parser.toc.contents.push({
@@ -82,8 +80,8 @@ function create(
     md.use(markdownItHeaderSections);
   }
 
-  if (window.MasaBlazor && window.MasaBlazor.markdownItRules) {
-    window.MasaBlazor.markdownItRules(parser);
+  if (window.MasaBlazor && window.MasaBlazor.extendMarkdownIt) {
+    window.MasaBlazor.extendMarkdownIt(parser);
   }
 
   return parser;
