@@ -45,7 +45,7 @@ namespace BlazorComponent
         public StringNumber? Width { get; set; }
 
         [Parameter]
-        public bool StopPropagation { get; set; }
+        public bool OnClickStopPropagation { get; set; }
 
         [Parameter]
         public bool OnClickPreventDefault { get; set; }
