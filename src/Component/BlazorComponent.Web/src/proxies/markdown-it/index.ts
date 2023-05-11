@@ -59,9 +59,6 @@ function create(
   // anchor and toc
   {
     let slugify = parser.defaultSlugify;
-    if (window.MasaBlazor.markdownItAnchorSlugify) {
-      slugify = (s) => window.MasaBlazor.markdownItAnchorSlugify(scope, s);
-    }
 
     md.use(markdownItAnchor, {
       level: anchorOptions?.level ?? 1,
@@ -83,8 +80,8 @@ function create(
     md.use(markdownItHeaderSections);
   }
 
-  if (window.MasaBlazor && window.MasaBlazor.markdownItRules) {
-    window.MasaBlazor.markdownItRules(parser);
+  if (window.MasaBlazor && window.MasaBlazor.extendMarkdownIt) {
+    window.MasaBlazor.extendMarkdownIt(parser);
   }
 
   return parser;
