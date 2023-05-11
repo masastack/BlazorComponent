@@ -15,21 +15,41 @@
                     </div>
                 }
 
-                var sortHeaders = Headers.Where(h => h.Sortable && h.Value != "data-table-select")
-                                         .Select(h => (h.Text, h.Value)).ToList();
+                var sortHeaders = Headers.Where(h => h.Sortable && h.Value != "data-table-select").ToList();
 
                 if (!DisableSort && sortHeaders.Any())
                 {
-                    RenderFragment<SelectSelectionProps<(string Text, string Value)>> selectionContent = context =>
+                    RenderFragment<SelectSelectionProps<DataTableHeader>> selectionContent = context =>
                         @<BChip @attributes="@GetAttributes(typeof(BChip))"
-                                OnClick="() => Component.HandleOnHeaderColClick(context.Item.Value)">
-                            @context.Item.Text
+                                OnClick="() => Component.HandleOnHeaderColClick(context.Item.Value)"
+                                OnClickStopPropagation>
+                            @if (HeaderColContent != null)
+                            {
+                                @HeaderColContent(context.Item)
+                            }
+                            else
+                            {
+                                @context.Item.Text
+                            }
+
                             <div class="@CssProvider.GetClass("header-mobile__select-chips", data: context.Item)">
                                 @RenderPart(typeof(BDataTableHeaderSortIcon<>))
                             </div>
                         </BChip>;
 
-                    @RenderPart(typeof(BDataTableHeaderSortSelect<>), sortHeaders, selectionContent, MultiSort, "items")
+                    RenderFragment<SelectListItemProps<DataTableHeader>> itemContent = context =>
+                        @<BListItemContent>
+                            @if(HeaderColContent != null)
+                            {
+                                @HeaderColContent(context.Item!)
+                            }
+                            else
+                            {
+                                @context.Item!.Text
+                            }
+                        </BListItemContent>;
+
+                    @RenderPart(typeof(BDataTableHeaderSortSelect<>), sortHeaders, itemContent, selectionContent, MultiSort, "items")
                 }
             }
         </div>

@@ -19,4 +19,7 @@ public partial class BDataTableMobileRow<TItem>
 
     [Parameter]
     public RenderFragment<ItemColProps<TItem>> SlotContent { get; set; } = null!;
+
+    [Parameter]
+    public RenderFragment<DataTableHeader>? HeaderColContent { get; set; }
 }

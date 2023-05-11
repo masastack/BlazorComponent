@@ -6,6 +6,7 @@
 {
     <AbstractComponent Metadata="@(AbstractProvider.GetMetadata(typeof(ISelect<,,>), "sort-select-multiple"))"
                        Items="@Items"
+                       ItemContent="@ItemContent"
                        SelectionContent="@SelectionContent">
     </AbstractComponent>
 }
@@ -13,6 +14,7 @@ else
 {
     <AbstractComponent Metadata="@(AbstractProvider.GetMetadata(typeof(ISelect<,,>), "sort-select"))"
                        Items="@Items"
+                       ItemContent="@ItemContent"
                        SelectionContent="@SelectionContent">
     </AbstractComponent>
 }
