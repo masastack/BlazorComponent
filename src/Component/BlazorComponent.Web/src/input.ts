@@ -87,7 +87,7 @@ function registerClickEvent(
   dotNetHelper: DotNet.DotNetObject
 ) {
   inputSlot.addEventListener("click", (e) => {
-    if (checkIfStopPropagation(e, "click")) {
+    if (checkIfStopPropagationExistsInComposedPath(e, "click", inputSlot)) {
       return;
     }
 
@@ -101,7 +101,7 @@ function registerMouseUpEvent(
   dotNetHelper: DotNet.DotNetObject
 ) {
   inputSlot.addEventListener("mouseup", (e) => {
-    if (checkIfStopPropagation(e, "mouseup")) {
+    if (checkIfStopPropagationExistsInComposedPath(e, "mouseup", inputSlot)) {
       return;
     }
 
@@ -112,16 +112,34 @@ function registerMouseUpEvent(
 
 // @event:stopPropagation only works in Blazor,
 // so need to capture it manually.
-function checkIfStopPropagation(event: Event, eventName: string) {
-  const z = ["_blazorEvents_1", "stopPropagationFlags", eventName];
-  let isFlag = event.composedPath()[0];
+function checkIfStopPropagationExistsInComposedPath(event: Event, eventName: string, util: EventTarget) {
+  let stopPropagation = false;
+
+  for (const eventTarget of event.composedPath()) {
+    if (eventTarget === util) {
+      break;
+    }
+
+    if (checkIfStopPropagation(eventTarget, eventName)) {
+      stopPropagation = true;
+      break;
+    }
+  }
+
+  return stopPropagation;
+}
+
+function checkIfStopPropagation(eventTarget: EventTarget, eventName: string) {
+  const nestProps = ["_blazorEvents_1", "stopPropagationFlags", eventName];
+
+  let isFlag = eventTarget;
   let i = 0;
-  while (isFlag[z[i]]) {
-    isFlag = isFlag[z[i]];
+  while (isFlag[nestProps[i]]) {
+    isFlag = isFlag[nestProps[i]];
     i++;
   }
 
-  return i == z.length && typeof isFlag === "boolean" && isFlag;
+  return i == nestProps.length && typeof isFlag === "boolean" && isFlag;
 }
 
 export { registerInputEvents, setValue };

@@ -17,6 +17,8 @@
         public bool ShowSelect => Component.ShowSelect;
 
         public string ExpandIcon => Component.ExpandIcon;
+        
+        public RenderFragment<DataTableHeader>? HeaderColContent => Component.HeaderColContent;
 
         public RenderFragment<ItemColProps<TItem>>? ItemColContent => Component.ItemColContent;
 

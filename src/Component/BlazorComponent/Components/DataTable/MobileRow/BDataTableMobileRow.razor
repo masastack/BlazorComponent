@@ -10,7 +10,14 @@
                 if (header.Value != "data-table-select" && !HideDefaultHeader)
                 {
                     <div class="@CssProvider.GetClass("mobile-row__header")">
-                        @header.Text
+                        @if (HeaderColContent != null)
+                        {
+                            @HeaderColContent(header)
+                        }
+                        else
+                        {
+                            @header.Text
+                        }
                     </div>
                 }
 

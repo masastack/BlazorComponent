@@ -35,6 +35,12 @@
         public EventCallback<MouseEventArgs> OnClick { get; set; }
 
         [Parameter]
+        public bool OnClickStopPropagation { get; set; }
+
+        [Parameter]
+        public bool OnClickPreventDefault { get; set; }
+
+        [Parameter]
         public EventCallback<MouseEventArgs> OnCloseClick { get; set; }
 
         [Parameter]
