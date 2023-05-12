@@ -160,10 +160,10 @@
       "pleaseSelect": "Please select"
     },
     "infiniteScroll": {
-      "noMore": "There's no more",
-      "failedToLoad": "Failed to load",
-      "reload": "Reload",
-      "loading": "Loading"
+      "emptyText": "There's no more",
+      "errorText": "Failed to load",
+      "loadingText": "Loading...",
+      "loadMoreText": "Load more"
     }
   }
 }

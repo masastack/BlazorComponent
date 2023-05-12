@@ -1,6 +1,6 @@
 import registerDirective from "./directive/index";
+import { parseTouchEvent } from "./events/EventType";
 import { registerExtraEvents } from "./events/index";
-import { parseTouchEvent } from './events/EventType';
 import { getDom, getElementSelector } from "./utils/helper";
 
 export function getZIndex(el?: Element | null): number {
@@ -1264,14 +1264,24 @@ function isWindow(element: any | Window): element is Window {
   return element === window
 }
 
-export function checkIfThresholdIsExceededWhenScrolling(el: Element, parent: Element, threshold: number) {
+export function checkIfThresholdIsExceededWhenScrolling(el: Element, parent: any, threshold: number) {
   if (!el || !parent) return
+
+  let parentElement: HTMLElement | Window
+
+  if (parent == "window") {
+    parentElement = window;
+  } else if (parent == "document") {
+    parentElement = document.documentElement;
+  } else {
+    parentElement = document.querySelector(parent);
+  }
 
   const rect = el.getBoundingClientRect();
   const elementTop = rect.top;
-  const current = isWindow(parent)
+  const current = isWindow(parentElement)
     ? window.innerHeight
-    : parent.getBoundingClientRect().bottom
+    : parentElement.getBoundingClientRect().bottom
 
   return (current >= elementTop - threshold)
 }
