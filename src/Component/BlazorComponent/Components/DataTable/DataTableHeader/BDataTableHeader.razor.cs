@@ -8,6 +8,9 @@ namespace BlazorComponent
         public List<DataTableHeader> Headers { get; set; } = new();
 
         [Parameter]
+        public string GroupText { get; set; } = null!;
+
+        [Parameter]
         public bool IsMobile { get; set; }
     }
 }

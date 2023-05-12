@@ -24,7 +24,8 @@
         "activateDescending": "点击以降序排列。",
         "activateAscending": "点击以升序排列。"
       },
-      "sortBy": "排序方式"
+      "sortBy": "排序方式",
+      "groupText": "分组"
     },
     "dataFooter": {
       "itemsPerPageText": "每页数目：",

@@ -5,6 +5,9 @@
         [Parameter]
         public List<DataTableHeader> Headers { get; set; } = null!;
 
+        [Parameter]
+        public string GroupText { get; set; } = null!;
+
         public bool SingleSelect => Component.SingleSelect;
 
         public bool DisableSort => Component.DisableSort;

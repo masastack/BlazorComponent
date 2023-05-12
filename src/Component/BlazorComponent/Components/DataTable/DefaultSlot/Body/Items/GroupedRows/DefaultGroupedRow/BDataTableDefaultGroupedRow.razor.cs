@@ -5,6 +5,8 @@
         [Parameter]
         public IGrouping<string, TItem> Group { get; set; } = null!;
 
+        public IEnumerable<DataTableHeader<TItem>> Headers => Component.Headers;
+        
         public RenderFragment? GroupHeaderContent => Component.GroupHeaderContent;
 
         public Dictionary<string, object?> ColspanAttrs => Component.ColspanAttrs;
@@ -31,5 +33,10 @@
         public string GroupCloseIcon => Component.GroupCloseIcon;
 
         public DataOptions Options => Component.Options;
+
+        private string GetText(string value)
+        {
+            return Headers.FirstOrDefault(h => h.Value == value)?.Text ?? value;
+        }
     }
 }

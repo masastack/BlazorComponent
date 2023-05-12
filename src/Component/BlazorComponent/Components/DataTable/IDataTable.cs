@@ -10,6 +10,8 @@ public interface IDataTable<TItem> : IDataIterator<TItem>
 
     RenderFragment? CaptionContent { get; }
 
+    IEnumerable<DataTableHeader<TItem>> Headers { get; }
+
     IEnumerable<DataTableHeader<TItem>> ComputedHeaders { get; }
     
     RenderFragment<DataTableHeader>? HeaderColContent { get; }
