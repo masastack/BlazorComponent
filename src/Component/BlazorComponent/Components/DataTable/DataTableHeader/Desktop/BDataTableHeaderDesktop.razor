@@ -44,7 +44,7 @@
                 }
                 @if (ShowGroupBy && header.Groupable)
                 {
-                    @RenderPart(typeof(BDataTableGroupByToggle<>), header)
+                    @RenderPart(typeof(BDataTableGroupByToggle<>), header, arg1: GroupText)
                 }
             }
         </th>

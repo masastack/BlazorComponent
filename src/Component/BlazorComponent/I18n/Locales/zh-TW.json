@@ -21,7 +21,8 @@
         "activateDescending": "點擊以降序排列。",
         "activateAscending": "點擊以移除排序方式。"
       },
-      "sortBy": "排序方式"
+      "sortBy": "排序方式",
+      "groupText": "分組"
     },
     "dataFooter": {
       "itemsPerPageText": "每頁項目：",

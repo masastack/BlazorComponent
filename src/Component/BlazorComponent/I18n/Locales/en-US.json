@@ -24,7 +24,8 @@
         "activateDescending": "Activate to sort descending.",
         "activateAscending": "Activate to sort ascending."
       },
-      "sortBy": "Sort by"
+      "sortBy": "Sort by",
+      "groupText": "group"
     },
     "dataFooter": {
       "itemsPerPageText": "Items per page:",

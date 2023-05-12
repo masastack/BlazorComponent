@@ -17,7 +17,7 @@
                         @(IsOpen ? GroupMinusIcon : GroupPlusIcon)
                     </BIcon>
                 </BButton>
-                @($"{Options.GroupBy[0]}: {Group.Key}")
+                @($"{GetText(Options.GroupBy[0])}: {Group.Key}")
                 <BButton @attributes="@(GetAttributes(typeof(BButton), "group-remove"))">
                     <BIcon @attributes="@(GetAttributes(typeof(BIcon), "group-remove-icon"))">
                         @GroupCloseIcon
