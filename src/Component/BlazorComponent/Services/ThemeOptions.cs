@@ -29,7 +29,14 @@ public class Theme
         Themes = new Themes(lightTheme, darkTheme);
     }
 
+    public Theme(Func<IServiceProvider, Task<bool>> dark2, ThemeOptions lightTheme, ThemeOptions darkTheme) : this(false, lightTheme, darkTheme)
+    {
+        Dark2 = dark2;
+    }
+
     public bool Dark { get; set; }
+    
+    public Func<IServiceProvider, Task<bool>> Dark2 { get; set; }
 
     public Themes Themes { get; }
 }
