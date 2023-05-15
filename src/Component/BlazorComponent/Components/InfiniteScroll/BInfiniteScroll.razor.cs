@@ -5,76 +5,131 @@ namespace BlazorComponent;
 public partial class BInfiniteScroll : BDomComponentBase
 {
     [Parameter, EditorRequired]
-    public EventCallback OnLoadMore { get; set; }
-
-    [Parameter, EditorRequired]
-    public bool HasMore { get; set; }
+    public EventCallback<InfiniteScrollLoadEventArgs> OnLoad { get; set; }
 
     /// <summary>
     /// The parent element that has overflow style.
     /// </summary>
     [Parameter, EditorRequired]
-    public ElementReference? Parent { get; set; }
+    public OneOf<ElementReference, string>? Parent { get; set; }
+
+    [Parameter]
+    public string? Color { get; set; }
+
+    [Parameter]
+    public bool Manual
+    {
+        get => GetValue<bool>();
+        set => SetValue(value);
+    }
 
     [Parameter]
     [ApiDefaultValue(250)]
     public StringNumber Threshold { get; set; } = 250;
 
     [Parameter]
-    public RenderFragment<(bool HasMore, bool Failed, EventCallback Retry)>? ChildContent { get; set; }
+    public RenderFragment<(InfiniteScrollLoadStatus Status, EventCallback OnLoad)>? ChildContent { get; set; }
 
     [Parameter]
-    public string? NoMoreText { get; set; }
-
-    [Parameter]
-    public string? FailedToLoadText { get; set; }
+    public string? EmptyText { get; set; }
 
     [Parameter]
     public string? LoadingText { get; set; }
 
     [Parameter]
-    public string? ReloadText { get; set; }
+    public string? LoadMoreText { get; set; }
+
+    [Parameter]
+    public string? ErrorText { get; set; }
+
+    [Parameter]
+    public RenderFragment? EmptyContent { get; set; }
+
+    [Parameter]
+    public RenderFragment<Func<Task>>? ErrorContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? LoadingContent { get; set; }
+
+    [Parameter]
+    public RenderFragment<Func<Task>>? LoadMoreContent { get; set; }
 
     private static readonly SemaphoreSlim s_semaphoreSlim = new(1, 1);
 
-    private bool _loading;
-    private bool _failed;
     private bool _isAttached;
+    private string? _parentSelector;
+    private InfiniteScrollLoadStatus _loadStatus;
 
-    protected override async Task OnParametersSetAsync()
+    protected override void RegisterWatchers(PropertyWatcher watcher)
     {
-        await base.OnParametersSetAsync();
+        base.RegisterWatchers(watcher);
 
-        if (!_isAttached && Parent?.Id is not null)
+        watcher.Watch<bool>(nameof(Manual), ManualChangeCallback);
+    }
+
+    private async void ManualChangeCallback(bool val)
+    {
+        if (val)
         {
-            _isAttached = true;
+            await AddScrollListener();
+        }
+    }
 
-            NextTick(async () =>
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (firstRender)
+        {
+            await DoLoadMore();
+
+            NextTick(async () => { await AddScrollListener(); });
+            StateHasChanged();
+        }
+    }
+
+    private async Task AddScrollListener()
+    {
+        if (!_isAttached && Parent is { Value: not null })
+        {
+            string? selector = null;
+
+            if (Parent.Value.IsT0 && Parent.Value.AsT0.Id is not null)
             {
-                await Js.AddHtmlElementEventListener(Parent.GetSelector()!, "scroll", OnScroll, false, new EventListenerExtras(0, 100));
+                selector = Parent.Value.AsT0.GetSelector();
+            }
+            else if (Parent.Value.IsT1)
+            {
+                selector = Parent.Value.AsT1;
+            }
 
-                // Run manually once to check whether the threshold is exceeded.
-                // Use NextTick to wait for the list rendering to complete,
-                // otherwise we will get the wrong top for the first time.
-                await OnScroll();
-            });
+            if (selector is null)
+            {
+                return;
+            }
+
+            _isAttached = true;
+            _parentSelector = selector;
+
+            await Js.AddHtmlElementEventListener(selector, "scroll", OnScroll, false, new EventListenerExtras(0, 100));
         }
     }
 
     private async Task OnScroll()
     {
-        if (!OnLoadMore.HasDelegate) return;
+        if (_parentSelector is null || Manual || !OnLoad.HasDelegate) return;
 
         await s_semaphoreSlim.WaitAsync();
 
-        if (_failed)
+        if (_loadStatus == InfiniteScrollLoadStatus.Error)
         {
             s_semaphoreSlim.Release();
             return;
         }
 
         // OPTIMIZE: Combine scroll event and the following js interop.
-        var exceeded = await JsInvokeAsync<bool>(JsInteropConstants.CheckIfThresholdIsExceededWhenScrolling, Ref, Parent, Threshold.ToDouble());
+        var exceeded = await JsInvokeAsync<bool>(JsInteropConstants.CheckIfThresholdIsExceededWhenScrolling, Ref, _parentSelector,
+            Threshold.ToDouble());
         if (!exceeded)
         {
             s_semaphoreSlim.Release();
@@ -82,31 +137,28 @@ public partial class BInfiniteScroll : BDomComponentBase
         }
 
         await DoLoadMore();
+        StateHasChanged();
 
         s_semaphoreSlim.Release();
     }
 
     private async Task DoLoadMore()
     {
+        _loadStatus = InfiniteScrollLoadStatus.Loading;
+
+        var eventArgs = new InfiniteScrollLoadEventArgs();
+
         try
         {
-            _failed = false;
-            await OnLoadMore.InvokeAsync();
+            await OnLoad.InvokeAsync(eventArgs);
+            _loadStatus = eventArgs.Status;
         }
         catch (Exception e)
         {
+            _loadStatus = InfiniteScrollLoadStatus.Error;
+
             Logger.LogWarning(e, "Failed to load more");
-            _failed = true;
             StateHasChanged();
         }
-    }
-
-    private async Task Retry()
-    {
-        _loading = true;
-
-        await DoLoadMore();
-
-        _loading = false;
     }
 }

@@ -175,10 +175,10 @@
       "pleaseSelect": "请选择"
     },
     "infiniteScroll": {
-      "noMore": "没有更多了",
-      "failedToLoad": "加载失败",
-      "reload": "重新加载",
-      "loading": "加载中"
-    },
+      "emptyText": "没有更多了",
+      "errorText": "加载失败",
+      "loadingText": "加载中...",
+      "loadMoreText": "加载更多"
+    }
   }
 }
