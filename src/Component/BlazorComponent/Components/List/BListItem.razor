@@ -8,6 +8,8 @@
              ReferenceCaptureAction="_ => Ref = _"
              id="@Id"
              @onclick="HandleOnClick"
+             __internal_stopPropagation_onclick="@OnClickStopPropagation"
+             __internal_preventDefault_onclick="@OnClickPreventDefault"
              @attributes="@Attributes">
         @if (ItemContent != null)
         {

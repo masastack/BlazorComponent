@@ -30,6 +30,12 @@ namespace BlazorComponent
         public RenderFragment<ItemContext>? ItemContent { get; set; }
 
         [Parameter]
+        public bool OnClickStopPropagation { get; set; }
+
+        [Parameter]
+        public bool OnClickPreventDefault { get; set; }
+
+        [Parameter]
         public bool Dark { get; set; }
 
         [Parameter]
