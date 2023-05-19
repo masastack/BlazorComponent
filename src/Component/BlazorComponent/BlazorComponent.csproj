@@ -29,7 +29,7 @@
         <PackageReference Include="DeepCloner" Version="0.10.4" />
         <PackageReference Include="FluentValidation" Version="11.4.0" />
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.4.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.0-preview.7.21378.6" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
         <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
         <PackageReference Include="OneOf" Version="3.0.223" />
