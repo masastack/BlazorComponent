@@ -14,6 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 services.AddOptions<BlazorComponentOptions>().Configure(optionsAction);
             }
 
+            services.TryAddScoped<LocalStorage>();
             services.TryAddScoped<DomEventJsInterop>();
             services.TryAddScoped<Document>();
             services.TryAddScoped(serviceProvider => new Window(serviceProvider.GetRequiredService<Document>()));
