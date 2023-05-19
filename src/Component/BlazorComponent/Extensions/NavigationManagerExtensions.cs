@@ -7,11 +7,6 @@ public static class NavigationManagerExtensions
         navigationManager.NavigateTo(uri, replace: true);
     }
 
-    public static void ReplaceWithHash(this NavigationManager navigationManager, string hash)
-    {
-        navigationManager.Replace($"{navigationManager.GetAbsolutePath()}{hash}");
-    }
-
     /// <summary>
     /// Gets the absolute path of the current URI.
     /// </summary>
@@ -32,7 +27,7 @@ public static class NavigationManagerExtensions
     /// </summary>
     /// <param name="navigationManager"></param>
     /// <returns></returns>
-    private static Uri ToUri(this NavigationManager navigationManager)
+    public static Uri ToUri(this NavigationManager navigationManager)
     {
         return new Uri(navigationManager.Uri);
     }
