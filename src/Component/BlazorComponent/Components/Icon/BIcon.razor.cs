@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public partial class BIcon : IIcon, IThemeable
+    public partial class BIcon : BDomComponentBase, IIcon, IThemeable
     {
         [Inject]
         public Document Document { get; set; } = null!;
