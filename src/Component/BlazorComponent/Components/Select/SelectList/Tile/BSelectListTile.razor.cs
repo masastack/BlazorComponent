@@ -3,7 +3,7 @@
 public partial class BSelectListTile<TItem, TItemValue, TValue>
 {
     [Parameter]
-    public TItem? Item { get; set; }
+    public TItem Item { get; set; } = default!;
 
     [Parameter]
     public int Index { get; set; }
@@ -17,7 +17,7 @@ public partial class BSelectListTile<TItem, TItemValue, TValue>
 
     protected IList<TItem> Items => Component.Items;
 
-    protected RenderFragment<SelectListItemProps<TItem>> ItemContent => Component.ItemContent;
+    protected RenderFragment<SelectListItemProps<TItem>>? ItemContent => Component.ItemContent;
 
     private bool Value => Item != null && Component.HasItem(Item);
 
