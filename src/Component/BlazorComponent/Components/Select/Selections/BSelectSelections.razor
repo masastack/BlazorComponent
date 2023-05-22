@@ -5,7 +5,8 @@
 @typeparam TInput
 @inherits ComponentPartBase<TInput>
 
-<div class="@CssProvider.GetClass("selections")">
+<div class="@CssProvider.GetClass("selections")"
+     style="@CssProvider.GetStyle("selections")">
     @{
         Type selection;
         if (SelectionContent != null)
