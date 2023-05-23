@@ -100,26 +100,37 @@
                 {
                     DomEventJsInterop?.ResizeObserver(selector, OnResize);
                 }
-
-                await SetWidths(Value);
             }
-            else if (_prevItemsLength != Items.Count)
+
+            var needSetWidths = false;
+            StringNumber? value = null;
+
+            if (_prevItemsLength != Items.Count)
             {
                 _prevItemsLength = Items.Count;
-                await SetWidths(Value);
+                value = Value;
+                needSetWidths = true;
             }
-            else if (_prevInternalValue != InternalValue)
+
+            if (_prevInternalValue != InternalValue)
             {
                 _prevInternalValue = InternalValue;
-                await SetWidths(InternalValue);
+                value = InternalValue;
+                needSetWidths = true;
             }
-            else if (_prevIsOverflowing != IsOverflowing)
+
+            if (_prevIsOverflowing != IsOverflowing)
             {
                 _prevIsOverflowing = IsOverflowing;
-                // Make sure the value of WrapperWidth is after IsOverflowing takes effect.
+                value = Value;
                 StateHasChanged();
 
-                await SetWidths(Value);
+                needSetWidths = true;
+            }
+
+            if (needSetWidths)
+            {
+                await SetWidths(value);
             }
         }
 

@@ -15,7 +15,7 @@
         [Parameter]
         public ForwardRef RefBack
         {
-            get => _refBack ?? new ForwardRef();
+            get => _refBack ??= new ForwardRef();
             set => _refBack = value;
         }
 
