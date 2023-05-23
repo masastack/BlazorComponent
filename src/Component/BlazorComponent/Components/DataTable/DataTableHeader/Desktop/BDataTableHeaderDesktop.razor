@@ -29,7 +29,7 @@
                         @header.Text
                     }
                 </span>
-                @if (!DisableSort && header.Sortable)
+                @if (!DisableSort && header.Sortable && header.Align != DataTableHeaderAlign.End)
                 {
                     var sortIndex = Options.SortBy.IndexOf(header.Value);
                     var beingSorted = sortIndex >= 0;
