@@ -122,9 +122,10 @@
             if (_prevIsOverflowing != IsOverflowing)
             {
                 _prevIsOverflowing = IsOverflowing;
-                value = Value;
+                // Make sure the value of WrapperWidth is after IsOverflowing takes effect.
                 StateHasChanged();
 
+                value = Value;
                 needSetWidths = true;
             }
 
