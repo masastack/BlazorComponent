@@ -2,7 +2,11 @@
 @inherits BDomComponentBase
 
 <CascadingValue Value="IsDark" Name="IsDark">
-    <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" @ref="Ref" @onclick="HandleOnClickAsync">
+    <IfTransitionElement class="@CssProvider.GetClass()"
+                         style="@CssProvider.GetStyle()"
+                         ReferenceCaptureAction="e => Ref = e"
+                         Value="@If"
+                         @onclick="HandleOnClickAsync">
         @ChildContent
-    </div>
+    </IfTransitionElement>
 </CascadingValue>
