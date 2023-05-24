@@ -1,6 +1,15 @@
 // see https://github.com/dotnet/aspnetcore/blob/main/src/Components/Web.JS/src/Rendering/Events/EventTypes.ts
 // updated at 2022/08/31
 
+export const touchEvents = [
+  "touchcancel",
+  "touchend",
+  "touchmove",
+  "touchenter",
+  "touchleave",
+  "touchstart",
+];
+
 export function parseMouseEvent(event: MouseEvent): Blazor.MouseEventArgs {
   return {
     detail: event.detail,
