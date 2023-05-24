@@ -9,11 +9,13 @@
 
         protected virtual bool IsVertical { get; set; }
 
-        protected bool IsActive
+        protected bool? NullableIsActive
         {
-            get => GetValue<bool>();
+            get => GetValue<bool?>();
             set => SetValue(value);
         }
+
+        protected bool IsActive => NullableIsActive is true;
 
         protected bool IsReverse { get; set; }
 

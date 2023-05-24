@@ -25,6 +25,18 @@ public static class JsRuntimeExtensions
             extras
         );
     }
+    
+    public static async Task AddHtmlElementEventListener<T>(this IJSRuntime jsRuntime, string selector, string type, Func<T, Task> callback,
+        OneOf<EventListenerOptions, bool> options, EventListenerExtras? extras = null)
+    {
+        await jsRuntime.InvokeVoidAsync(JsInteropConstants.AddHtmlElementEventListener,
+            selector,
+            type,
+            DotNetObjectReference.Create(new Invoker<T>(callback)),
+            options.Value,
+            extras
+        );
+    }
 
     public static async Task RemoveHtmlElementEventListener(this IJSRuntime jsRuntime, string selector, string type)
     {

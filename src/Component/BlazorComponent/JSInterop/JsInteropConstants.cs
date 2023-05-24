@@ -106,12 +106,6 @@
 
         public static string GetMenuOrDialogMaxZIndex => $"{JsInteropFuncNamePrefix}getMenuOrDialogMaxZIndex";
 
-        public static string AddStepperEventListener => $"{JsInteropFuncNamePrefix}addStepperEventListener";
-
-        public static string RemoveStepperEventListener => $"{JsInteropFuncNamePrefix}removeStepperEventListener";
-
-        public static string InitStepperWrapper => $"{JsInteropFuncNamePrefix}initStepperWrapper";
-
         public static string ContainsActiveElement => $"{JsInteropFuncNamePrefix}containsActiveElement";
 
         public static string RegisterOTPInputOnInputEvent => $"{JsInteropFuncNamePrefix}registerOTPInputOnInputEvent";
