@@ -10,6 +10,8 @@ public class I18n
 
     private readonly CookieStorage _cookieStorage;
 
+    public event EventHandler? CultureChanged;
+
     public I18n(IOptions<BlazorComponentOptions> options, CookieStorage cookieStorage, IHttpContextAccessor httpContextAccessor)
     {
         _cookieStorage = cookieStorage;
@@ -56,6 +58,8 @@ public class I18n
         _cookieStorage?.SetItemAsync(CULTURE_COOKIE_KEY, culture);
 
         SetCultureAndLocale(culture);
+
+        CultureChanged?.Invoke(this, EventArgs.Empty);
 
         CultureInfo.DefaultThreadCurrentUICulture = culture;
     }

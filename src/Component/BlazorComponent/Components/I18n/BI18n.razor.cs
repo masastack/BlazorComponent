@@ -20,6 +20,22 @@ public partial class BI18n : BDomComponentBase
     private string? _prevKey;
     private CultureInfo? _prevCulture;
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        I18n.CultureChanged += I18nOnCultureChanged;
+    }
+
+    private void I18nOnCultureChanged(object? sender, EventArgs e)
+    {
+        InvokeAsync(() =>
+        {
+            AnalyzeI18nValue();
+            StateHasChanged();
+        });
+    }
+
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
@@ -85,4 +101,10 @@ public partial class BI18n : BDomComponentBase
     }
 
     private record I18nValueSegment(string Text, int PlaceholderIndex = -1);
+
+    protected override void Dispose(bool disposing)
+    {
+        base.Dispose(disposing);
+        I18n.CultureChanged -= I18nOnCultureChanged;
+    }
 }

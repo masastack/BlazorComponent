@@ -40,15 +40,16 @@ function() {
         await _jsRuntime.InvokeVoidAsync("eval", $"({SET_ITEM_SCRIPT})('{key}', '{value}')");
     }
 
-    public async Task<string> GetItemAsync(string key)
+    public async Task<string?> GetItemAsync(string key)
     {
-        return await _jsRuntime.InvokeAsync<string>("eval", $"({GET_ITEM_SCRIPT})('{key}')");
+        return await _jsRuntime.InvokeAsync<string?>("eval", $"({GET_ITEM_SCRIPT})('{key}')");
     }
 
     public async Task<T?> GetItemAsync<T>(string key)
     {
         var value = await GetItemAsync(key);
-        return JsonSerializer.Deserialize<T>(value);
+
+        return value == null ? default : JsonSerializer.Deserialize<T>(value);
     }
 
     public async Task RemoveItemAsync(string key, string value)
