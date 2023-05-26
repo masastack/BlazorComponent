@@ -12,9 +12,9 @@ public class ProviderItem
 
     public string ServiceName { get; set; }
 
-    public IDictionary<string, object?> Parameters { get; set; }
+    public IDictionary<string, object?>? Parameters { get; set; }
 
-    public ProviderItem(Type componentType, IDictionary<string, object?> parameters, PopupProvider provider, object service, string serviceName)
+    public ProviderItem(Type componentType, IDictionary<string, object?>? parameters, PopupProvider provider, object service, string serviceName)
     {
         TaskCompletionSource = new();
         Parameters = parameters;
