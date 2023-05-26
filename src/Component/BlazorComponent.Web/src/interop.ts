@@ -1,5 +1,5 @@
 import registerDirective from "./directive/index";
-import { parseTouchEvent } from "./events/EventType";
+import { parseTouchEvent, touchEvents } from "./events/EventType";
 import { registerExtraEvents } from "./events/index";
 import { getDom, getElementSelector } from "./utils/helper";
 
@@ -125,7 +125,7 @@ export function getBoundingClientRect(element, attach = "body") {
   return result;
 }
 
-var htmlElementEventListennerConfigs: { [prop: string]: any[] } = {}
+var htmlElementEventListenerConfigs: { [prop: string]: any[] } = {}
 
 export function addHtmlElementEventListener<K extends keyof HTMLElementTagNameMap>(
   selector: "window" | "document" | K,
@@ -148,38 +148,44 @@ export function addHtmlElementEventListener<K extends keyof HTMLElementTagNameMa
   //save for remove
   var config = {};
 
-  var listener = (args: any): void => {
+  var listener = (e: any): void => {
     if (extras?.stopPropagation) {
-      args.stopPropagation();
+      e.stopPropagation();
     }
 
     if (extras?.preventDefault) {
-      args.preventDefault();
+      e.preventDefault();
     }
 
     // mouseleave relatedTarget
-    if (extras?.relatedTarget && document.querySelector(extras.relatedTarget)?.contains(args.relatedTarget)) {
+    if (extras?.relatedTarget && document.querySelector(extras.relatedTarget)?.contains(e.relatedTarget)) {
       return;
     }
 
-    let obj = {};
+    let obj: any = {}
 
-    for (var k in args) {
-      if (typeof args[k] == 'string' || typeof args[k] == 'number') {
-        obj[k] = args[k];
-      } else if (k == 'target' && args.target.attributes) {
-        var target = {
-          attributes: {}
-        };
-
-        for (let index = 0; index < args.target.attributes.length; index++) {
-          const attr = args.target.attributes[index];
-          target.attributes[attr.name] = attr.value;
+    if (touchEvents.includes(e.type)) {
+      obj = parseTouchEvent(e)
+    } else {
+      for (var k in e) {
+        if (typeof e[k] == 'string' || typeof e[k] == 'number') {
+          obj[k] = e[k];
         }
-        obj[k] = target;
-      } else if (k == 'touches' || k == 'targetTouches' || k == 'changedTouches') {
-        obj = parseTouchEvent(args)
       }
+    }
+
+    if (e.target && e.target !== window) {
+      obj.target = {}
+      const target = e.target as HTMLElement;
+      const elementReferenceId = target.getAttributeNames().find(a => a.startsWith('_bl_'));
+      if (elementReferenceId) {
+        obj.target['elementReferenceId'] = elementReferenceId
+        obj.target['selector'] = `[${elementReferenceId}]`
+      } else {
+        obj.target['selector'] = getElementSelector(target)
+      }
+
+      obj.target['class'] = target.getAttribute('class')
     }
 
     invoker.invokeMethodAsync('Invoke', obj);
@@ -209,10 +215,10 @@ export function addHtmlElementEventListener<K extends keyof HTMLElementTagNameMa
 
   config['options'] = options;
 
-  if (htmlElementEventListennerConfigs[key]) {
-    htmlElementEventListennerConfigs[key].push(config);
+  if (htmlElementEventListenerConfigs[key]) {
+    htmlElementEventListenerConfigs[key].push(config);
   } else {
-    htmlElementEventListennerConfigs[key] = [config]
+    htmlElementEventListenerConfigs[key] = [config]
   }
 
   if (htmlElement) {
@@ -233,14 +239,14 @@ export function removeHtmlElementEventListener(selector, type, k?: string) {
 
   var k = k || `${selector}:${type}`;
 
-  var configs = htmlElementEventListennerConfigs[k];
+  var configs = htmlElementEventListenerConfigs[k];
 
   if (configs) {
     configs.forEach(item => {
       htmlElement?.removeEventListener(type, item["listener"], item['options']);
     });
 
-    htmlElementEventListennerConfigs[k] = []
+    htmlElementEventListenerConfigs[k] = []
   }
 }
 
