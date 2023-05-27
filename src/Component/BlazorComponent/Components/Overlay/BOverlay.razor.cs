@@ -8,7 +8,15 @@ namespace BlazorComponent
         /// Controls whether the component is visible or hidden.
         /// </summary>
         [Parameter]
-        public bool Value { get; set; }
+        public bool Value
+        {
+            get => GetValue<bool>();
+            set => SetValue(value);
+        }
+
+        [Parameter]
+        [ApiDefaultValue(true)]
+        public bool Scrim { get; set; } = true;
 
         [Parameter]
         [ApiDefaultValue(true)]
@@ -37,6 +45,5 @@ namespace BlazorComponent
                 return CascadingIsDark;
             }
         }
-
     }
 }

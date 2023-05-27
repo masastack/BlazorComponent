@@ -2,4 +2,7 @@
 @typeparam TOverlay
 @inherits ComponentPartBase<TOverlay>
 
-<div class="@CssProvider.GetClass("scrim")" style="@CssProvider.GetStyle("scrim")"></div>
+@if (Scrim)
+{
+    <div class="@CssProvider.GetClass("scrim")" style="@CssProvider.GetStyle("scrim")"></div>
+}

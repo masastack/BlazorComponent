@@ -101,8 +101,6 @@ public partial class BDialog : BBootable, IDependent, IAsyncDisposable
         {
             ZIndex = await GetActiveZIndex(true);
 
-            await HideScroll();
-
             NextTick(async () =>
             {
                 // TODO: previousActiveElement
@@ -113,10 +111,6 @@ public partial class BDialog : BBootable, IDependent, IAsyncDisposable
                     await JsInvokeAsync(JsInteropConstants.Focus, ContentRef);
                 }
             });
-        }
-        else
-        {
-            await ShowScroll();
         }
 
         await base.WhenIsActiveUpdating(value);
@@ -134,16 +128,6 @@ public partial class BDialog : BBootable, IDependent, IAsyncDisposable
     }
 
     protected virtual bool IsFullscreen => Fullscreen;
-
-    private async Task HideScroll()
-    {
-        await JsInvokeAsync(JsInteropConstants.HideScroll, IsFullscreen, OverlayRef.GetSelector(), ContentRef, DialogRef);
-    }
-
-    private async Task ShowScroll()
-    {
-        await JsInvokeAsync(JsInteropConstants.ShowScroll, OverlayRef.GetSelector());
-    }
 
     private async Task<int> GetActiveZIndex(bool isActive)
     {
@@ -196,11 +180,6 @@ public partial class BDialog : BBootable, IDependent, IAsyncDisposable
     {
         try
         {
-            if (IsActive)
-            {
-                await ShowScroll();
-            }
-
             if (ContentRef.Context != null)
             {
                 await JsInvokeAsync(JsInteropConstants.DelElementFrom, ContentRef, AttachSelector);

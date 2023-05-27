@@ -27,6 +27,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.TryAddTransient<ActivatableJsModule>();
             services.TryAddTransient<OutsideClickJSModule>();
+            services.TryAddTransient<ScrollStrategyJSModule>();
 
             return new BlazorComponentBuilder(services);
         }

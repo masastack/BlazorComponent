@@ -4,7 +4,7 @@
 
 @if (Value)
 {
-    <div class="@CssProvider.GetClass("content")">
+    <div class="@CssProvider.GetClass("content")" @ref="Ref">
         @ComponentChildContent
     </div>
 }

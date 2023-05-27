@@ -4,6 +4,9 @@
     "noEmitOnError": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "target":"ES2016"
+    "target":"ES2016",
+    "paths": {
+      "utils/*": ["./src/utils/*"]
+    }
   }
 }
