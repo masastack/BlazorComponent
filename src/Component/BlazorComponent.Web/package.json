@@ -21,7 +21,8 @@
     "dev:outsideclick": "rollup --config rollup.config.outsideclick.ts --watch",
     "build:outsideclick": "rollup --config rollup.config.outsideclick.ts",
     "dev:baidumap": "rollup --config rollup.config.maps.ts --watch",
-    "build:baidumap": "rollup --config rollup.config.maps.ts"
+    "build:baidumap": "rollup --config rollup.config.maps.ts",
+    "build:scrollStrategies": "rollup --config rollup.config.scrollStrategies.ts"
   },
   "author": "",
   "license": "MIT",
