@@ -411,6 +411,15 @@ namespace BlazorComponent
             Form?.UpdateValidValue();
         }
 
+        /// <summary>
+        /// Gives focus.
+        /// </summary>
+        [ApiPublicMethod]
+        public async Task FocusAsync()
+        {
+            await InputElement.FocusAsync().ConfigureAwait(false);
+        }
+
         public bool Validate()
         {
             return Validate(default);
