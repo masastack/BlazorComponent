@@ -66,37 +66,5 @@
             builder.Mapper.Clear();
             return builder;
         }
-
-        public static string? GetClass(this Dictionary<Func<string?>, Func<bool>> mapper)
-        {
-            var classList = mapper
-                            .Where(i => i.Value() && !string.IsNullOrWhiteSpace(i.Key()))
-                            .Select(i => i.Key()?.Trim())
-                            .ToList();
-
-            if (!classList.Any())
-            {
-                //In this case,style will never render as class="" but nothing
-                return null;
-            }
-
-            return string.Join(" ", classList);
-        }
-
-        public static string? GetStyle(this Dictionary<Func<string?>, Func<bool>> mapper)
-        {
-            var styleList = mapper
-                            .Where(i => i.Value() && !string.IsNullOrWhiteSpace(i.Key()))
-                            .Select(i => i.Key()?.Trim().Trim(';'))
-                            .ToList();
-
-            if (!styleList.Any())
-            {
-                //In this case,style will never render as style="" but nothing
-                return null;
-            }
-
-            return string.Join(";", styleList);
-        }
     }
 }
