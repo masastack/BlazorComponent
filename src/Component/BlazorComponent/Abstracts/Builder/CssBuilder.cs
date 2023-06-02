@@ -10,15 +10,6 @@
                             .Where(kv => kv.Value())
                             .Select(kv => kv.Key()?.Trim())
                             .Where(css => !string.IsNullOrWhiteSpace(css))
-                            .Select(css =>
-                            {
-                                if (Prefix == null)
-                                {
-                                    return css;
-                                }
-
-                                return css!.StartsWith(Prefix) ? css : $"{Prefix}{css}";
-                            })
                             .ToList();
 
             if (!classList.Any())

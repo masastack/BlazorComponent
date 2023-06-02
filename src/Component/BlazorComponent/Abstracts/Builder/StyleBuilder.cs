@@ -17,7 +17,7 @@
                 return null;
             }
 
-            return string.Join(";", styleList);
+            return string.Join(";", styleList) + ";";
         }
     }
 }
