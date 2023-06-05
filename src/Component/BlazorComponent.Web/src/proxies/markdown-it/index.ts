@@ -4,6 +4,7 @@ import markdownItAttrs from "markdown-it-attrs";
 import markdownItContainer from "markdown-it-container";
 import markdownItFrontMatter from "markdown-it-front-matter";
 import markdownItHeaderSections from "markdown-it-header-sections";
+import markdownItTodo from "markdown-it-todo";
 
 import { highlight, highlightToStream } from "./highlighter";
 
@@ -51,6 +52,7 @@ function create(
 
   const md: MarkdownIt = new MarkdownIt(options)
     .use(markdownItAttrs)
+    .use(markdownItTodo)
     .use(markdownItFrontMatter, parser.frontMatter.cb);
 
   parser.md = md;
