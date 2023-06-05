@@ -420,6 +420,12 @@ namespace BlazorComponent
             await InputElement.FocusAsync().ConfigureAwait(false);
         }
 
+        [ApiPublicMethod]
+        public async Task BlurAsync()
+        {
+            await Js.InvokeVoidAsync(JsInteropConstants.Blur, InputElement).ConfigureAwait(false);
+        }
+
         public bool Validate()
         {
             return Validate(default);
