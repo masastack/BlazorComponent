@@ -2,7 +2,7 @@
 {
     public interface IInput<TValue> : IHasProviderComponent
     {
-        TValue? Value { get; }
+        TValue Value { get; }
 
         RenderFragment? AppendContent
         {
@@ -60,7 +60,7 @@
             }
         }
 
-        TValue? InternalValue { get; }
+        TValue InternalValue { get; }
 
         EventCallback<MouseEventArgs> OnAppendClick { get; }
 
