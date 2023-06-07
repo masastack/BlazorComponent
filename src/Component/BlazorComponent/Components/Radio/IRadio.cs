@@ -2,7 +2,7 @@
 
 public interface IRadio<TValue>
 {
-    TValue? Value { get; }
+    TValue Value { get; }
 
     void RefreshState();
 }

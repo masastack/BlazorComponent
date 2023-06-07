@@ -17,17 +17,17 @@ namespace BlazorComponent
         public bool ValidateOnBlur { get; set; }
 
         [Parameter]
-        public virtual TValue? Value
+        public virtual TValue Value
         {
             get => GetValue(DefaultValue);
             set => SetValue(value);
         }
 
         [Parameter]
-        public EventCallback<TValue?> ValueChanged { get; set; }
+        public EventCallback<TValue> ValueChanged { get; set; }
 
         [Parameter]
-        public Expression<Func<TValue?>>? ValueExpression { get; set; }
+        public Expression<Func<TValue>>? ValueExpression { get; set; }
 
         [CascadingParameter]
         public BForm? Form { get; set; }
@@ -61,15 +61,15 @@ namespace BlazorComponent
         public List<string>? SuccessMessages { get; set; }
 
         [Parameter]
-        public IEnumerable<Func<TValue?, StringBoolean>>? Rules
+        public IEnumerable<Func<TValue, StringBoolean>>? Rules
         {
-            get => GetValue<IEnumerable<Func<TValue?, StringBoolean>>>();
+            get => GetValue<IEnumerable<Func<TValue, StringBoolean>>>();
             set => SetValue(value);
         }
 
         private bool _forceStatus;
 
-        protected virtual TValue? DefaultValue => default;
+        protected virtual TValue DefaultValue => default;
 
         protected EditContext? OldEditContext { get; set; }
 
@@ -81,13 +81,13 @@ namespace BlazorComponent
 
         public virtual ElementReference InputElement { get; set; }
 
-        protected virtual TValue? LazyValue
+        protected virtual TValue LazyValue
         {
             get => GetValue<TValue>();
             set => SetValue(value);
         }
 
-        protected TValue? InternalValue
+        protected TValue InternalValue
         {
             get
             {
@@ -280,7 +280,7 @@ namespace BlazorComponent
             SubscribeValidationStateChanged();
         }
 
-        protected virtual void OnValueChanged(TValue? val)
+        protected virtual void OnValueChanged(TValue val)
         {
             var isEqual = true;
             if (val is IList valList && InternalValue is IList internalValueList)
@@ -315,7 +315,7 @@ namespace BlazorComponent
             LazyValue = val.TryDeepClone();
         }
 
-        protected virtual void OnInternalValueChange(TValue? val)
+        protected virtual void OnInternalValueChange(TValue val)
         {
             // If it's the first time we're setting input,
             // mark it with hasInput
@@ -343,7 +343,7 @@ namespace BlazorComponent
             }
         }
 
-        protected virtual void OnLazyValueChange(TValue? val)
+        protected virtual void OnLazyValueChange(TValue val)
         {
             HasInput = true;
         }
@@ -431,7 +431,7 @@ namespace BlazorComponent
             return Validate(default);
         }
 
-        protected bool Validate(TValue? val)
+        protected bool Validate(TValue val)
         {
             var force = true;
 

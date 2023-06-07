@@ -119,7 +119,7 @@
         }
 
         //We want InternalValue to be protected
-        TValue? IInput<TValue>.InternalValue => InternalValue;
+        TValue IInput<TValue>.InternalValue => InternalValue;
 
         public virtual async Task HandleOnPrependClickAsync(MouseEventArgs args)
         {

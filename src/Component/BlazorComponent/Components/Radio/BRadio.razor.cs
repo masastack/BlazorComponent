@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
-    public partial class BRadio<TValue> : IRadio<TValue>
+    public partial class BRadio<TValue> : IRadio<TValue> where TValue : notnull
     {
         [CascadingParameter]
         public IRadioGroup<TValue>? RadioGroup { get; set; }
@@ -26,7 +26,7 @@ namespace BlazorComponent
         public RenderFragment? LabelContent { get; set; }
 
         [Parameter]
-        public TValue? Value { get; set; }
+        public TValue Value { get; set; } = default!;
 
         [Parameter]
         public EventCallback<FocusEventArgs> OnBlur { get; set; }
