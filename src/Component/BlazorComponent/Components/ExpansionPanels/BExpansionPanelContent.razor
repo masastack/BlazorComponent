@@ -1,7 +1,7 @@
 ﻿@namespace BlazorComponent
 @inherits BDomComponentBase
 
-@if (_isBooted)
+@if (_isBooted || Eager)
 {
     <ExpandTransition>
         <ShowTransitionElement Value="_isActive" class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">

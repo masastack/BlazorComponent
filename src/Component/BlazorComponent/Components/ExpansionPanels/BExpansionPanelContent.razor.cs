@@ -6,6 +6,9 @@
         public BExpansionPanel? ExpansionPanel { get; set; }
 
         [Parameter]
+        public bool Eager { get; set; }
+
+        [Parameter]
         public RenderFragment? ChildContent { get; set; }
 
         private bool _isBooted;
@@ -18,7 +21,7 @@
 
             if (ExpansionPanel != null)
             {
-                if (_isBooted && _booting == false)
+                if ((_isBooted && _booting == false) || Eager)
                 {
                     _isActive = ExpansionPanel.InternalIsActive;
                 }
