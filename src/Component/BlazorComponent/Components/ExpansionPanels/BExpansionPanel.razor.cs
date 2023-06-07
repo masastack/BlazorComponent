@@ -2,7 +2,7 @@
 {
     public partial class BExpansionPanel : BGroupItem<BExpansionPanels>
     {
-        public BExpansionPanel() : base(GroupType.ExpansionPanels)
+        public BExpansionPanel() : base(GroupType.ExpansionPanels, true)
         {
         }
 
@@ -14,6 +14,8 @@
         public bool IsDisabled => ItemGroup != null && (ItemGroup.Disabled || Disabled);
 
         public bool IsReadonly => ItemGroup != null && (ItemGroup.Readonly || Readonly);
+
+        public bool Booted => IsBooted;
 
         public async Task Toggle()
         {
