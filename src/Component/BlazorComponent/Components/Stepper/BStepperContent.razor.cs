@@ -5,6 +5,11 @@
         [Parameter]
         public RenderFragment? ChildContent { get; set; }
 
+        [Parameter]
+        public bool Eager { get; set; }
+
+        protected bool IsBooted { get; set; }
+
         protected virtual bool IsRtl { get; set; }
 
         protected virtual bool IsVertical { get; set; }
@@ -15,7 +20,7 @@
             set => SetValue(value);
         }
 
-        protected bool IsActive => NullableIsActive is true;
+        protected bool IsActive { get; set; }
 
         protected bool IsReverse { get; set; }
 
