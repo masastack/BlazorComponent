@@ -2,7 +2,7 @@
 
 public interface IRadioGroup<TValue>
 {
-    TValue? Value { get; }
+    TValue Value { get; }
 
     string? ValidationState { get; }
 
@@ -12,7 +12,7 @@ public interface IRadioGroup<TValue>
 
     bool Dense { get; }
 
-    Task Toggle(TValue? value);
+    Task Toggle(TValue value);
 
     void AddRadio(IRadio<TValue> radio);
 }

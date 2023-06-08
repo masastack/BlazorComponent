@@ -9,7 +9,7 @@
 
         public bool IsDisabled => Component.IsDisabled;
 
-        public TValue? InternalValue => Component.InternalValue;
+        public TValue InternalValue => Component.InternalValue;
 
         public Dictionary<string, object> InputAttrs => Component.InputAttrs;
 

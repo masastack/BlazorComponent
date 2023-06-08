@@ -2,7 +2,7 @@
 @typeparam TTabs
 @inherits ComponentPartBase<TTabs>
 
-@if (TabItems != null)
+@if (TabItems.Any())
 {
     <BWindow Value="Value" @attributes="GetAttributes(typeof(BWindow))">
         @foreach (var tabItem in TabItems)
