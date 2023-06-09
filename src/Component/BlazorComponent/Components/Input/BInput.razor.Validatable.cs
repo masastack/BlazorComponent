@@ -5,8 +5,11 @@ using System.Linq.Expressions;
 
 namespace BlazorComponent
 {
-    public partial class BInput<TValue> : IInputJsCallbacks, IValidatable, IAsyncDisposable
+    public partial class BInput<TValue> : IInputJsCallbacks, IValidatable
     {
+        [Inject]
+        private InputJSModule InputJSModule { get; set; } = null!;
+
         [Parameter]
         public bool Disabled { get; set; }
 
@@ -191,10 +194,9 @@ namespace BlazorComponent
         private bool _internalValueChangingFromOnValueChanged;
         private CancellationTokenSource? _cancellationTokenSource;
 
-        private InputJsInterop? _inputJsInterop;
         private List<string>? _errorMessages;
 
-        protected virtual int InternalDebounceInterval => 0;
+        public virtual int InternalDebounceInterval => 0;
 
         protected override void OnInitialized()
         {
@@ -213,8 +215,7 @@ namespace BlazorComponent
             {
                 LazyValue = Value;
 
-                _inputJsInterop = new InputJsInterop(this, Js);
-                await _inputJsInterop.InitializeAsync(InputElement, InputSlotElement, InternalDebounceInterval);
+                await InputJSModule.InitializeAsync(this);
             }
         }
 
@@ -245,8 +246,8 @@ namespace BlazorComponent
         {
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource = new();
-            await Retry(() => _inputJsInterop!.SetValue(val),
-                () => _inputJsInterop is not { Initialized: true },
+            await Retry(() => InputJSModule.SetValue(val),
+                () => InputJSModule is not { Initialized: true },
                 cancellationToken: _cancellationTokenSource.Token);
         }
 
@@ -525,21 +526,6 @@ namespace BlazorComponent
             }
 
             base.Dispose(disposing);
-        }
-
-        public async ValueTask DisposeAsync()
-        {
-            try
-            {
-                if (_inputJsInterop is not null)
-                {
-                    await _inputJsInterop.DisposeAsync();
-                }
-            }
-            catch
-            {
-                // ignored
-            }
         }
     }
 }
