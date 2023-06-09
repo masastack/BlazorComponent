@@ -1,7 +1,7 @@
 ﻿@namespace BlazorComponent
 @inherits BGroupItem<ItemGroupBase>
 
-@if (IsBooted)
+@if (IsBooted || IsEager)
 {
     <Transition Name="@ComputedTransition"
                 OnBeforeEnter="HandleOnBefore"
