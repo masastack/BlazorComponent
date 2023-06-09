@@ -29,6 +29,9 @@ public class BActivatableBase : BToggleable, IActivatableJsCallbacks
         set => SetValue(value);
     }
 
+    [Parameter]
+    public bool Eager { get; set; }
+
     private string? _activatorId;
 
     protected bool IsBooted { get; set; }
@@ -59,7 +62,7 @@ public class BActivatableBase : BToggleable, IActivatableJsCallbacks
     {
         base.OnParametersSet();
 
-        if (!IsBooted && IsActive)
+        if (!IsBooted && (IsActive || Eager))
         {
             IsBooted = true;
         }
