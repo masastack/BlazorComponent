@@ -174,7 +174,7 @@ export function addHtmlElementEventListener<K extends keyof HTMLElementTagNameMa
       }
     }
 
-    if (e.target && e.target !== window) {
+    if (e.target && e.target !== window && e.target !== document) {
       obj.target = {}
       const target = e.target as HTMLElement;
       const elementReferenceId = target.getAttributeNames().find(a => a.startsWith('_bl_'));
