@@ -8,6 +8,8 @@
         [Parameter]
         public RenderFragment? ChildContent { get; set; }
 
+        protected bool IsMasaBlazorReady { get; set; }
+
         protected virtual bool IsDark => false;
 
         public virtual IDictionary<string, IDictionary<string, object?>?>? Defaults { get; }
