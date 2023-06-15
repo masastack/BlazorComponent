@@ -154,7 +154,7 @@
                 var left = Vertical ? 0 : el.OffsetLeft;
                 var right = Vertical ? 0 : el.OffsetLeft + el.OffsetWidth;
                 var top = el.OffsetTop;
-                var width = Vertical ? SliderSize.TryGetNumber().number : el.ScrollWidth;
+                var width = Vertical ? SliderSize.TryGetNumber().number : el.ClientWidth; // REVIEW: el.ScrollWidth was used in Vuetify2
 
                 Slider = (height, left, right, top, width);
             }
