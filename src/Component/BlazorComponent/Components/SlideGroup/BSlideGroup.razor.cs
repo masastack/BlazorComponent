@@ -13,9 +13,6 @@
         [Inject]
         protected DomEventJsInterop? DomEventJsInterop { get; set; }
 
-        [CascadingParameter(Name = "rtl")]
-        public bool Rtl { get; set; }
-
         [Parameter]
         public bool CenterActive { get; set; }
 
@@ -38,6 +35,8 @@
         private StringNumber? _prevInternalValue;
         private bool _prevIsOverflowing;
         private CancellationTokenSource? _cts;
+
+        protected virtual bool RTL => false; 
 
         protected bool IsMobile { get; set; }
 
@@ -64,7 +63,7 @@
 
         private async void OnScrollOffsetChanged(double val)
         {
-            if (Rtl)
+            if (RTL)
             {
                 val = -val;
             }
@@ -72,7 +71,7 @@
             var scroll = val <= 0 ? Bias(-val) :
                 val > ContentWidth - WrapperWidth ? -(ContentWidth - WrapperWidth) + Bias(ContentWidth - WrapperWidth - val) : -val;
 
-            if (Rtl)
+            if (RTL)
             {
                 scroll = -scroll;
             }
@@ -212,7 +211,7 @@
                 var lastItemPosition = await JsInvokeAsync<BoundingClientRect>(JsInteropConstants.GetBoundingClientRect, lastItemRef);
                 var wrapperPosition = await JsInvokeAsync<BoundingClientRect>(JsInteropConstants.GetBoundingClientRect, WrapperRef);
 
-                if ((Rtl && wrapperPosition.Right < lastItemPosition.Right) || (!Rtl && wrapperPosition.Left > lastItemPosition.Left))
+                if ((RTL && wrapperPosition.Right < lastItemPosition.Right) || (!RTL && wrapperPosition.Left > lastItemPosition.Left))
                 {
                     await ScrollTo("prev");
                 }
@@ -229,11 +228,11 @@
             }
             else if (CenterActive)
             {
-                ScrollOffset = await CalculateCenteredOffset(selectedItem.Ref, WrapperWidth, ContentWidth, Rtl);
+                ScrollOffset = await CalculateCenteredOffset(selectedItem.Ref, WrapperWidth, ContentWidth, RTL);
             }
             else if (IsOverflowing)
             {
-                ScrollOffset = await CalculateUpdatedOffset(selectedItem.Ref, WrapperWidth, ContentWidth, Rtl, ScrollOffset);
+                ScrollOffset = await CalculateUpdatedOffset(selectedItem.Ref, WrapperWidth, ContentWidth, RTL, ScrollOffset);
             }
         }
 
@@ -286,7 +285,7 @@
         protected async Task ScrollTo(string direction)
         {
             (WrapperWidth, ContentWidth) = await GetWidths();
-            ScrollOffset = CalculateNewOffset(direction, WrapperWidth, ContentWidth, Rtl, ScrollOffset);
+            ScrollOffset = CalculateNewOffset(direction, WrapperWidth, ContentWidth, RTL, ScrollOffset);
         }
 
         protected static double CalculateNewOffset(string direction, double wrapperWidth, double contentWidth, bool rtl, double currentScrollOffset)

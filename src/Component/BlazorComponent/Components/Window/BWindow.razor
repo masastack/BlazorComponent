@@ -10,6 +10,9 @@
 
                     @if (ArrowsVisible)
                     {
+                        var prevIcon = RTL ? NextIcon : PrevIcon;
+                        var nextIcon = RTL ? PrevIcon : NextIcon;
+                        
                         if (HasPrev)
                         {
                             <div class="@CssProvider.GetClass("prev")">
@@ -21,7 +24,7 @@
                                 {
                                     <BButton Icon @onclick="Prev" @attributes="GetAttributes(typeof(BButton))">
                                         <BIcon @attributes="GetAttributes(typeof(BIcon))">
-                                            @PrevIcon
+                                            @prevIcon
                                         </BIcon>
                                     </BButton>
                                 }
@@ -39,7 +42,7 @@
                                 {
                                     <BButton Icon @onclick="Next" @attributes="GetAttributes(typeof(BButton))">
                                         <BIcon @attributes="GetAttributes(typeof(BIcon))">
-                                            @NextIcon
+                                            @nextIcon
                                         </BIcon>
                                     </BButton>
                                 }
