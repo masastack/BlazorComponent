@@ -65,7 +65,7 @@ namespace BlazorComponent
                 Reference = reference;
             });
 
-            builder.CloseComponent();
+            builder.CloseElement();
         }
     }
 }
