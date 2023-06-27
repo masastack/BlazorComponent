@@ -23,7 +23,14 @@
         private bool _shouldRender = true;
         private string[] _dirtyParameters = Array.Empty<string>();
 
-        protected virtual string ComponentName => this.GetType().Name;
+        protected virtual string ComponentName
+        {
+            get
+            {
+                var type = this.GetType();
+                return type.IsGenericType ? type.Name.Split('`')[0] : type.Name;
+            }
+        }
 
         public override async Task SetParametersAsync(ParameterView parameters)
         {
