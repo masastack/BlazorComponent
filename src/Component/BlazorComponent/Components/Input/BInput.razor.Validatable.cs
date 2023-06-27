@@ -216,6 +216,8 @@ namespace BlazorComponent
                 LazyValue = Value;
 
                 await InputJSModule.InitializeAsync(this);
+
+                StateHasChanged();
             }
         }
 
