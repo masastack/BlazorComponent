@@ -54,8 +54,6 @@ public partial class BInfiniteScroll : BDomComponentBase
     [Parameter]
     public RenderFragment<Func<Task>>? LoadMoreContent { get; set; }
 
-    private static readonly SemaphoreSlim s_semaphoreSlim = new(1, 1);
-
     private bool _isAttached;
     private string? _parentSelector;
     private InfiniteScrollLoadStatus _loadStatus;
@@ -117,13 +115,13 @@ public partial class BInfiniteScroll : BDomComponentBase
 
     private async Task OnScroll()
     {
-        if (_parentSelector is null || Manual || !OnLoad.HasDelegate) return;
-
-        await s_semaphoreSlim.WaitAsync();
-
-        if (_loadStatus == InfiniteScrollLoadStatus.Error)
+        if (_parentSelector is null || Manual || !OnLoad.HasDelegate || _loadStatus == InfiniteScrollLoadStatus.Empty)
         {
-            s_semaphoreSlim.Release();
+            return;
+        }
+
+        if (_loadStatus is InfiniteScrollLoadStatus.Error or InfiniteScrollLoadStatus.Empty or InfiniteScrollLoadStatus.Loading)
+        {
             return;
         }
 
@@ -132,14 +130,11 @@ public partial class BInfiniteScroll : BDomComponentBase
             Threshold.ToDouble());
         if (!exceeded)
         {
-            s_semaphoreSlim.Release();
             return;
         }
 
         await DoLoadMore();
         StateHasChanged();
-
-        s_semaphoreSlim.Release();
     }
 
     private async Task DoLoadMore()
