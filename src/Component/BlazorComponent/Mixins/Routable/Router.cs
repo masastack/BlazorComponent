@@ -13,6 +13,7 @@ public class Router : IRoutable
         Target = routable.Target;
         Exact = routable.Exact;
         NavigationManager = routable.NavigationManager;
+        MatchPattern = routable.MatchPattern;
     }
 
     public IDictionary<string, object?> Attributes { get; set; }
@@ -30,6 +31,8 @@ public class Router : IRoutable
     public string? Target { get; set; }
 
     public bool Exact { get; set; }
+
+    public string? MatchPattern { get; set; }
 
     public NavigationManager NavigationManager { get; set; }
 }

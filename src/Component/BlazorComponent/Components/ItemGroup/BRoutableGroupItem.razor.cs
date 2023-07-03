@@ -28,8 +28,13 @@ public partial class BRoutableGroupItem<TGroup> : BGroupItem<TGroup>, IRoutable
     [Parameter]
     public EventCallback<MouseEventArgs> OnClick { get; set; }
 
+    /// <inheritdoc />
     [Parameter]
     public bool Exact { get; set; }
+
+    /// <inheritdoc />
+    [Parameter]
+    public string? MatchPattern { get; set; }
 
     protected IRoutable? Router { get; private set; }
 

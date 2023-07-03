@@ -18,7 +18,19 @@ public interface IRoutable
 
     string? Target { get; }
 
+    /// <summary>
+    /// Determines whether the current location should match the exact <see cref="Href"/> path.
+    /// Do not use with <see cref="MatchPattern"/>.
+    /// </summary>
     bool Exact { get; }
+
+    /// <summary>
+    /// The regular expression pattern to match the current location. The active class will be applied if matched.
+    /// </summary>
+    /// <example>
+    /// "/foo/(bar|baz)/qux" will match /foo/bar/qux and /foo/baz/qux.
+    /// </example>
+    string? MatchPattern { get; }
 
     NavigationManager NavigationManager { get; }
 
@@ -51,22 +63,23 @@ public interface IRoutable
         return (tag, attrs);
     }
 
-    // TODO: rename
     public bool MatchRoute()
     {
         if (Href is null) return false;
 
-        var baseRelativePath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        var absolutePath = NavigationManager.GetAbsolutePath();
 
-        return MatchRoute(Href, baseRelativePath, Exact);
+        return MatchRoute(Href, absolutePath, Exact, MatchPattern);
     }
 
-    public static bool MatchRoute(string href, string relativePath, bool exact)
+    public static bool MatchRoute(string href, string absolutePath, bool exact, string? matchPattern)
     {
         href = FormatUrl(href);
 
-        relativePath = relativePath.Split('#', '?')[0];
-        relativePath = FormatUrl(relativePath);
+        if (!string.IsNullOrWhiteSpace(matchPattern))
+        {
+            return Regex.Match(absolutePath, matchPattern, RegexOptions.IgnoreCase).Success;
+        }
 
         if (exact || href == "/")
         {
@@ -75,7 +88,7 @@ public interface IRoutable
 
         href = "^" + href;
 
-        return Regex.Match(relativePath, href, RegexOptions.IgnoreCase).Success;
+        return Regex.Match(absolutePath, href, RegexOptions.IgnoreCase).Success;
     }
 
     private static string FormatUrl(string url)
