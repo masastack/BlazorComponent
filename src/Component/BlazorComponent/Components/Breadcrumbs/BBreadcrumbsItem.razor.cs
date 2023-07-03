@@ -20,9 +20,14 @@ namespace BlazorComponent
         [Parameter]
         public bool Disabled { get; set; }
 
+        /// <inheritdoc />
         [Parameter]
         public bool Exact { get; set; }
 
+        /// <inheritdoc />
+        [Parameter]
+        public string? MatchPattern { get; set; }
+        
         [Parameter]
         public string? Href { get; set; }
 

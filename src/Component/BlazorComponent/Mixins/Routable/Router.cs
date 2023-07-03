@@ -1,35 +1,24 @@
 ﻿namespace BlazorComponent;
 
-public class Router : IRoutable
+public class Router(IRoutable routable) : IRoutable
 {
-    public Router(IRoutable routable)
-    {
-        Attributes = routable.Attributes;
-        Disabled = routable.Disabled;
-        Href = routable.Href;
-        Link = routable.Link;
-        OnClick = routable.OnClick;
-        Tag = routable.Tag;
-        Target = routable.Target;
-        Exact = routable.Exact;
-        NavigationManager = routable.NavigationManager;
-    }
+    public IDictionary<string, object?> Attributes { get; set; } = routable.Attributes;
 
-    public IDictionary<string, object?> Attributes { get; set; }
+    public bool Disabled { get; set; } = routable.Disabled;
 
-    public bool Disabled { get; set; }
+    public string? Href { get; set; } = routable.Href;
 
-    public string? Href { get; set; }
+    public bool Link { get; set; } = routable.Link;
 
-    public bool Link { get; set; }
+    public EventCallback<MouseEventArgs> OnClick { get; set; } = routable.OnClick;
 
-    public EventCallback<MouseEventArgs> OnClick { get; set; }
+    public string? Tag { get; set; } = routable.Tag;
 
-    public string? Tag { get; set; }
+    public string? Target { get; set; } = routable.Target;
 
-    public string? Target { get; set; }
+    public bool Exact { get; set; } = routable.Exact;
 
-    public bool Exact { get; set; }
+    public string? MatchPattern { get; set; } = routable.MatchPattern;
 
-    public NavigationManager NavigationManager { get; set; }
+    public NavigationManager NavigationManager { get; set; } = routable.NavigationManager;
 }
