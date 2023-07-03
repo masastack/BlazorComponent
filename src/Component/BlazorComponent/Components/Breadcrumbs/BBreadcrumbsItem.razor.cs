@@ -68,6 +68,7 @@ namespace BlazorComponent
             if (firstRender)
             {
                 UpdateActiveForRoutable();
+                StateHasChanged();
             }
         }
 
