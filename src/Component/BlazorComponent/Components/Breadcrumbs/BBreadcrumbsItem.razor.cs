@@ -27,7 +27,7 @@ namespace BlazorComponent
         /// <inheritdoc />
         [Parameter]
         public string? MatchPattern { get; set; }
-        
+
         [Parameter]
         public string? Href { get; set; }
 
@@ -67,8 +67,11 @@ namespace BlazorComponent
 
             if (firstRender)
             {
-                UpdateActiveForRoutable();
-                StateHasChanged();
+                var shouldRender = UpdateActiveForRoutable();
+                if (shouldRender)
+                {
+                    StateHasChanged();
+                }
             }
         }
 
