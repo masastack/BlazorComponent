@@ -4,7 +4,7 @@
 <CascadingValue Value="IsDark" Name="IsDark">
     <CascadingValue Value="IsDark" Name="AppIsDark">
         <CascadingValue Value="this" TValue="IDefaultsProvider" IsFixed="true">
-            @if (IsMasaBlazorReady)
+            @if (IsMasaBlazorReady || RenderFirst)
             {
                 <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" id="@Id" @ref="Ref" @attributes="Attributes">
                     <div class="@CssProvider.GetClass("wrap")">
