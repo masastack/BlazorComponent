@@ -85,7 +85,6 @@ class Input {
     });
 
     this.input.addEventListener('change', (event: ChangeEvent) => {
-      console.log('change event.target.value', event.target.value)
       var changeEventArgs = parseChangeEvent(event);
       this.#formatNumberValue(event);
 
