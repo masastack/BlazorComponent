@@ -9,10 +9,10 @@ class Input {
   debounce: number;
 
   constructor(
+    dotnetHelper: DotNet.DotNetObject,
     input: HTMLInputElement | HTMLTextAreaElement,
     inputSlot: Element,
-    debounce: number,
-    dotnetHelper: DotNet.DotNetObject,
+    debounce: number
   ) {
     this.input = input;
     this.inputSlot = inputSlot;
@@ -77,21 +77,31 @@ class Input {
       if (compositionInputting) return;
 
       var changeEventArgs = parseChangeEvent(event);
-      if (event.target.type === "number") {
-        const value = event.target.value;
-        const valueAsNumber = event.target.valueAsNumber;
-        if (!!value && value !== valueAsNumber.toString()) {
-          this.input.value = isNaN(valueAsNumber)
-            ? ""
-            : valueAsNumber.toString();
-        }
-      }
 
       clearTimeout(timeout);
       timeout = setTimeout(() => {
         this.dotnetHelper.invokeMethodAsync("OnInput", changeEventArgs);
       }, this.debounce);
     });
+
+    this.input.addEventListener('change', (event: ChangeEvent) => {
+      var changeEventArgs = parseChangeEvent(event);
+      this.#formatNumberValue(event);
+
+      this.dotnetHelper.invokeMethodAsync("OnChange", changeEventArgs);
+    })
+  }
+
+  #formatNumberValue(event: ChangeEvent) {
+    if (event.target.type === "number") {
+      const value = event.target.value;
+      const valueAsNumber = event.target.valueAsNumber;
+      if (!!value && value !== valueAsNumber.toString()) {
+        this.input.value = isNaN(valueAsNumber)
+        ? ""
+        : valueAsNumber.toString();
+      }
+    }
   }
 
   #registerClickEvent() {
@@ -122,12 +132,12 @@ class Input {
 }
 
 function init(
+  dotnetHelper: DotNet.DotNetObject,
   input: HTMLInputElement | HTMLTextAreaElement,
   inputSlot: Element,
-  debounce: number,
-  dotnetHelper: DotNet.DotNetObject
+  debounce: number
 ) {
-  return new Input(input, inputSlot, debounce, dotnetHelper);
+  return new Input(dotnetHelper, input, inputSlot, debounce);
 }
 
 export { init };

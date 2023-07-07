@@ -83,8 +83,6 @@
 
         Task HandleOnAppendOuterClickAsync(MouseEventArgs args);
 
-        Task HandleOnChangeAsync(ChangeEventArgs args);
-
         Task HandleOnBlurAsync(FocusEventArgs args);
 
         Task HandleOnInputAsync(ChangeEventArgs args);

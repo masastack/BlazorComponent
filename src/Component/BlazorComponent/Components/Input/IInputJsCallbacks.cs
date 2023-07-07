@@ -10,6 +10,8 @@ public interface IInputJsCallbacks
 
     Task HandleOnInputAsync(ChangeEventArgs args);
 
+    Task HandleOnChangeAsync(ChangeEventArgs args);
+
     Task HandleOnClickAsync(ExMouseEventArgs args);
 
     Task HandleOnMouseUpAsync(ExMouseEventArgs args);
