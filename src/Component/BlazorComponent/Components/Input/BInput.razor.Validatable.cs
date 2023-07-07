@@ -240,6 +240,11 @@ namespace BlazorComponent
             }
         }
 
+        public virtual Task HandleOnChangeAsync(ChangeEventArgs args)
+        {
+            return Task.CompletedTask;
+        }
+
         protected virtual bool DisableSetValueByJsInterop => false;
 
         protected virtual bool ValidateOnlyInFocusedState => true;

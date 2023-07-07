@@ -25,8 +25,11 @@ public class InputJSModule : JSModule
         _owner = owner;
         _selfReference = DotNetObjectReference.Create(this);
 
-        _instance = await InvokeAsync<IJSObjectReference>("init", owner.InputElement, owner.InputSlotElement, owner.InternalDebounceInterval,
-            _selfReference);
+        _instance = await InvokeAsync<IJSObjectReference>("init",
+            _selfReference,
+            owner.InputElement,
+            owner.InputSlotElement,
+            owner.InternalDebounceInterval);
 
         Initialized = true;
     }
@@ -35,6 +38,13 @@ public class InputJSModule : JSModule
     public async Task OnInput(ChangeEventArgs args)
     {
         await _owner.HandleOnInputAsync(args);
+        _owner.StateHasChangedForJsInvokable();
+    }
+
+    [JSInvokable]
+    public async Task OnChange(ChangeEventArgs args)
+    {
+        await _owner.HandleOnChangeAsync(args);
         _owner.StateHasChangedForJsInvokable();
     }
 
