@@ -55,14 +55,14 @@ namespace BlazorComponent
         public bool Temporary { get; set; }
 
         [Parameter]
-        public bool Value
+        public bool? Value
         {
-            get => GetValue<bool>();
+            get => GetValue<bool?>();
             set => SetValue(value);
         }
 
         [Parameter]
-        public EventCallback<bool> ValueChanged { get; set; }
+        public EventCallback<bool?> ValueChanged { get; set; }
 
         [Parameter]
         public bool App { get; set; }
@@ -159,11 +159,6 @@ namespace BlazorComponent
             if (firstRender)
             {
                 await OutsideClickJsModule!.InitializeAsync(this, DependentSelectors.ToArray());
-
-                if (!Permanent && !Stateless && !Temporary)
-                {
-                    await UpdateValue(!IsMobile);
-                }
             }
         }
 
@@ -226,24 +221,6 @@ namespace BlazorComponent
             return IsActive && !_disposed && ReactsToClick;
         }
 
-        protected async Task UpdateValue(bool value)
-        {
-            if (Value == value)
-            {
-                return;
-            }
-
-            if (ValueChanged.HasDelegate)
-            {
-                await ValueChanged.InvokeAsync(value);
-            }
-            else
-            {
-                Value = value;
-                StateHasChanged();
-            }
-        }
-
         protected override void Dispose(bool disposing)
         {
             _disposed = true;
@@ -252,7 +229,7 @@ namespace BlazorComponent
         public async Task HandleOnOutsideClickAsync()
         {
             if (!CloseConditional()) return;
-            await UpdateValue(false);
+            IsActive = false;
         }
     }
 }

@@ -45,11 +45,7 @@ namespace BlazorComponent.Web
                 options.Value);
         }
 
-        /// <summary>
-        /// Subscribe onresize,onscroll event and update window,document props
-        /// </summary>
-        /// <returns></returns>
-        public async Task InitializeAsync()
+        public async Task AddResizeEventListenerAsync()
         {
             await AddEventListenerAsync("resize", HandleOnResizeAsync, false);
         }

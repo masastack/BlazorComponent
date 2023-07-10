@@ -2,7 +2,15 @@
 
 public interface IInputJsCallbacks
 {
+    ElementReference InputElement { get; }
+
+    ElementReference InputSlotElement { get; }
+
+    int InternalDebounceInterval { get; }
+
     Task HandleOnInputAsync(ChangeEventArgs args);
+
+    Task HandleOnChangeAsync(ChangeEventArgs args);
 
     Task HandleOnClickAsync(ExMouseEventArgs args);
 

@@ -89,6 +89,8 @@
         /// </summary>
         protected bool IsBooted { get; private set; }
 
+        protected virtual bool IsEager { get; }
+
         protected override void OnInitialized()
         {
             base.OnInitialized();
@@ -140,7 +142,7 @@
 
         protected async Task SetInternalIsActive(bool val, bool force = false)
         {
-            if (_bootable && !IsBooted)
+            if (!IsEager && _bootable && !IsBooted)
             {
                 if (val)
                 {

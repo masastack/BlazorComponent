@@ -6,7 +6,8 @@
     "allowSyntheticDefaultImports": true,
     "target":"ES2016",
     "paths": {
-      "utils/*": ["./src/utils/*"]
+      "utils/*": ["./src/utils/*"],
+      "events/*": ["./src/events/*"],
     }
   }
 }

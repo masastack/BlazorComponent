@@ -37,6 +37,8 @@ namespace BlazorComponent
         public bool Vertical { get; set; }
 
         protected bool IsReverse { get; set; }
+        
+        protected virtual bool RTL => false;
 
         public virtual bool ArrowsVisible => ShowArrowsOnHover || ShowArrows;
 

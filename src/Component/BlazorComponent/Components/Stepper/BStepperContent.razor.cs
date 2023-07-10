@@ -10,7 +10,7 @@
 
         protected bool IsBooted { get; set; }
 
-        protected virtual bool IsRtl { get; set; }
+        protected virtual bool IsRtl => false;
 
         protected virtual bool IsVertical { get; set; }
 

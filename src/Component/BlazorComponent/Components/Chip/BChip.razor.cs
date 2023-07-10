@@ -61,6 +61,8 @@
 
         public bool Exact { get; }
 
+        public string? MatchPattern { get; }
+
         public bool IsDark
         {
             get

@@ -4,7 +4,7 @@ import { terser } from "rollup-plugin-terser";
 import typescript from "@rollup/plugin-typescript";
 
 export default defineConfig({
-  input: "./src/input.ts",
+  input: "./src/mixins/input/index.ts",
   output: [
     {
       file: "../BlazorComponent/wwwroot/js/input.js",

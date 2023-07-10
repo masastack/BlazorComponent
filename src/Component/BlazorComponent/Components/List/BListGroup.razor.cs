@@ -52,6 +52,9 @@ namespace BlazorComponent
         [Parameter]
         public bool SubGroup { get; set; }
 
+        [Parameter]
+        public bool Eager { get; set; }
+
         private const string PREPEND = "prepend";
         private const string APPEND = "append";
 
@@ -94,7 +97,7 @@ namespace BlazorComponent
 
         private void EnsureBooted()
         {
-            if (IsActive && !IsBooted)
+            if (!IsBooted && (IsActive || Eager))
             {
                 IsBooted = true;
             }

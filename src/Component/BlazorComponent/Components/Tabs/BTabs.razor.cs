@@ -5,9 +5,6 @@
         [Inject]
         private DomEventJsInterop? DomEventJsInterop { get; set; }
 
-        [CascadingParameter(Name = "rtl")]
-        public bool Rtl { get; set; }
-
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
 
@@ -78,6 +75,8 @@
 
         private object? TabsBarRef { get; set; }
 
+        protected virtual bool RTL => false;
+
         protected(StringNumber height, StringNumber left, StringNumber right, StringNumber top, StringNumber width) Slider { get; set; }
 
         public bool IsDark
@@ -120,7 +119,7 @@
             }
         }
 
-        public bool IsReversed => Rtl && Vertical;
+        public bool IsReversed => RTL && Vertical;
 
         public BSlideGroup? Instance => TabsBarRef as BSlideGroup;
 
@@ -154,7 +153,7 @@
                 var left = Vertical ? 0 : el.OffsetLeft;
                 var right = Vertical ? 0 : el.OffsetLeft + el.OffsetWidth;
                 var top = el.OffsetTop;
-                var width = Vertical ? SliderSize.TryGetNumber().number : el.ScrollWidth;
+                var width = Vertical ? SliderSize.TryGetNumber().number : el.ClientWidth; // REVIEW: el.ScrollWidth was used in Vuetify2
 
                 Slider = (height, left, right, top, width);
             }
