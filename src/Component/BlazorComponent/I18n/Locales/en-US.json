@@ -10,6 +10,7 @@
     "search": "Search",
     "fold": "Fold",
     "unfold": "Unfold",
+    "required": "Required.",
     "dataIterator": {
       "noResultsText": "No matching records found",
       "loadingText": "Loading items..."
