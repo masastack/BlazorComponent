@@ -9,6 +9,14 @@
         [CascadingParameter]
         protected IDefaultsProvider? DefaultsProvider { get; set; }
 
+        /// <summary>
+        /// Disable the default value provider.
+        /// Components for internal use should not be affected by the default value provider.
+        /// Just for internal use.
+        /// </summary>
+        [CascadingParameter(Name = "DisableDefaultsProvider")]
+        public bool DisableDefaultsProvider { get; set; }
+
         [CascadingParameter]
         protected IErrorHandler? ErrorHandler { get; set; }
 
@@ -36,7 +44,10 @@
         {
             _dirtyParameters = parameters.ToDictionary().Keys.ToArray();
 
-            if (parameters.TryGetValue<IDefaultsProvider>(nameof(DefaultsProvider), out var defaultsProvider)
+            var disableDefaultsExists = parameters.TryGetValue<bool>(nameof(DisableDefaultsProvider), out var disableDefaults);
+
+            if ((!disableDefaultsExists || (disableDefaultsExists && !disableDefaults))
+                && parameters.TryGetValue<IDefaultsProvider>(nameof(DefaultsProvider), out var defaultsProvider)
                 && defaultsProvider.Defaults is not null
                 && defaultsProvider.Defaults.TryGetValue(ComponentName, out var dictionary)
                 && dictionary is not null)
