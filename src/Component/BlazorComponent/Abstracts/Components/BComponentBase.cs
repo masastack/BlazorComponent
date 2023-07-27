@@ -42,7 +42,7 @@
                 && dictionary is not null)
             {
                 var defaults = ParameterView.FromDictionary(dictionary);
-                await base.SetParametersAsync(defaults);
+                defaults.SetParameterProperties(this);
             }
 
             await base.SetParametersAsync(parameters);
