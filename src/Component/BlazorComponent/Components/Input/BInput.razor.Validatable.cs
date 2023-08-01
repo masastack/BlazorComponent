@@ -410,6 +410,8 @@ namespace BlazorComponent
 
             if (Rules != null && Rules.Any())
             {
+                var previousErrorBucket = ErrorBucket;
+
                 ErrorBucket.Clear();
 
                 foreach (var rule in Rules)
@@ -421,7 +423,7 @@ namespace BlazorComponent
                     }
                 }
 
-                if (ErrorBucket.Count > 0)
+                if (previousErrorBucket.OrderBy(e => e).SequenceEqual(ErrorBucket.OrderBy(e => e)))
                 {
                     StateHasChanged();
                 }
