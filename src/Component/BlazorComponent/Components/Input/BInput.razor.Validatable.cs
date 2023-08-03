@@ -324,7 +324,7 @@ namespace BlazorComponent
             {
                 if (DisableSetValueByJsInterop) return;
 
-                _ = SetValueByJsInterop(val?.ToString());
+                _ = SetValueByJsInterop(Formatter(val));
             }
             else
             {
@@ -430,6 +430,11 @@ namespace BlazorComponent
             }
 
             Form?.UpdateValidValue();
+        }
+
+        protected virtual string? Formatter(object? val)
+        {
+            return BindConverter.FormatValue(val, CultureInfo.CurrentUICulture)?.ToString();
         }
 
         /// <summary>
