@@ -1,6 +1,6 @@
 ﻿namespace BlazorComponent
 {
-    public partial class BTimePicker
+    public partial class BTimePicker: BDomComponentBase
     {
         [Parameter]
         public bool NoTitle { get; set; }
