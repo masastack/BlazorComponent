@@ -6,8 +6,6 @@
 
         internal string? Prefix { get; private set; }
 
-        public int Index { get; internal set; }
-
         public object? Data { get; internal set; }
 
         public void SetPrefix(string prefix)
