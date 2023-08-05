@@ -7,7 +7,7 @@ public static class BemExtensions
     public static IBem AddTheme(this IBem bem, bool isDark, bool exDark = false)
     {
         var dark = isDark || exDark;
-        bem.Add(dark ? "theme--dark" : "theme--light");
+        bem.AddClass(dark ? "theme--dark" : "theme--light");
         return bem;
     }
 
@@ -35,7 +35,7 @@ public static class BemExtensions
 
             if (apply)
             {
-                bem.Add($"{firstColor}--text");
+                bem.AddClass($"{firstColor}--text");
             }
 
             if (colors.Length == 2)
@@ -47,7 +47,7 @@ public static class BemExtensions
 
                 if (apply)
                 {
-                    bem.Add($"text--{secondColor}");
+                    bem.AddClass($"text--{secondColor}");
                 }
             }
         }
@@ -55,7 +55,7 @@ public static class BemExtensions
         {
             if (apply)
             {
-                bem.Add(color);
+                bem.AddClass(color);
             }
         }
 
