@@ -1,50 +1,26 @@
 ﻿using System.Globalization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
 namespace BlazorComponent.I18n;
 
 public class I18n
 {
-    private const string CULTURE_COOKIE_KEY = "Masa_I18nConfig_Culture";
-
-    private readonly CookieStorage _cookieStorage;
-
     public event EventHandler? CultureChanged;
 
-    public I18n(IOptions<BlazorComponentOptions> options, CookieStorage cookieStorage, IHttpContextAccessor httpContextAccessor)
+    public I18n(IOptions<BlazorComponentOptions> options)
     {
-        _cookieStorage = cookieStorage;
+        var cultureName = options.Value.Locale?.Current;
 
-        var cultureName = _cookieStorage.GetCookie(CULTURE_COOKIE_KEY);
+        var culture = GetValidCulture(cultureName, options.Value.Locale?.Fallback ?? "en-US");
+        CultureInfo? uiCulture = null;
 
-        if (cultureName is null && httpContextAccessor.HttpContext is not null)
+        var uiCultureName = options.Value.Locale?.UICurrent;
+        if (!string.IsNullOrWhiteSpace(uiCultureName))
         {
-            cultureName = httpContextAccessor.HttpContext.Request.Cookies[CULTURE_COOKIE_KEY];
-
-            if (cultureName is null)
-            {
-                var acceptLanguage = httpContextAccessor.HttpContext.Request.Headers["accept-language"].FirstOrDefault();
-                if (acceptLanguage is not null)
-                {
-                    cultureName = acceptLanguage
-                                  .Split(",")
-                                  .Select(lang =>
-                                  {
-                                      var arr = lang.Split(';');
-                                      return arr.Length == 1 ? (arr[0], 1) : (arr[0], Convert.ToDecimal(arr[1].Split("=")[1]));
-                                  })
-                                  .OrderByDescending(lang => lang.Item2)
-                                  .FirstOrDefault().Item1;
-                }
-            }
+            uiCulture = GetValidCulture(uiCultureName, options.Value.Locale?.UIFallback ?? culture.Name);
         }
 
-        cultureName ??= options.Value.Locale?.Current;
-
-        var culture = GetValidCulture(cultureName, options.Value.Locale?.Fallback ?? "en-us");
-
-        SetCulture(culture);
+        SetCulture(culture, uiCulture);
     }
 
     [NotNull]
@@ -53,15 +29,19 @@ public class I18n
     [NotNull]
     public IReadOnlyDictionary<string, string>? Locale { get; private set; }
 
-    public void SetCulture(CultureInfo culture)
+    public void SetCulture(CultureInfo culture, CultureInfo? uiCulture = null)
     {
-        _cookieStorage?.SetItemAsync(CULTURE_COOKIE_KEY, culture);
+        SetCultureInternal(culture, uiCulture ?? culture);
+    }
 
-        SetCultureAndLocale(culture);
+    private void SetCultureInternal(CultureInfo culture, CultureInfo uiCulture)
+    {
+        SetCultureAndLocale(uiCulture);
 
         CultureChanged?.Invoke(this, EventArgs.Empty);
 
-        CultureInfo.DefaultThreadCurrentUICulture = culture;
+        CultureInfo.DefaultThreadCurrentCulture = culture;
+        CultureInfo.DefaultThreadCurrentUICulture = uiCulture;
     }
 
     public void AddLocale(CultureInfo culture, IReadOnlyDictionary<string, string>? locale) => I18nCache.AddLocale(culture, locale);
@@ -123,15 +103,15 @@ public class I18n
         }
     }
 
-    private void SetCultureAndLocale(CultureInfo culture)
+    private void SetCultureAndLocale(CultureInfo uiCulture)
     {
-        if (!EmbeddedLocales.ContainsLocale(culture))
+        if (!EmbeddedLocales.ContainsLocale(uiCulture))
         {
-            AddLocale(culture, EmbeddedLocales.GetSpecifiedLocale(culture));
+            AddLocale(uiCulture, EmbeddedLocales.GetSpecifiedLocale(uiCulture));
         }
 
-        Culture = culture;
-        Locale = I18nCache.GetLocale(culture);
+        Culture = uiCulture;
+        Locale = I18nCache.GetLocale(uiCulture);
     }
 
     private static CultureInfo GetValidCulture(string? cultureName, string fallbackCultureName)
@@ -159,7 +139,7 @@ public class I18n
             }
         }
 
-        culture ??= CultureInfo.CurrentUICulture;
+        culture ??= CultureInfo.CurrentCulture;
 
         // https://github.com/dotnet/runtime/issues/18998#issuecomment-254565364
         // `CultureInfo.CreateSpecificCulture` has the different behavior in different OS,
@@ -168,7 +148,7 @@ public class I18n
         {
             "zh-Hans-CN" => new CultureInfo("zh-CN"),
             "zh-Hant-CN" => new CultureInfo("zh-TW"),
-            _ => culture
+            _            => culture
         };
     }
 }
