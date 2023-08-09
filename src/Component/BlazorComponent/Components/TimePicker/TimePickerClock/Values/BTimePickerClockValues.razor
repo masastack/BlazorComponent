@@ -4,7 +4,7 @@
 
     @for (var value = Min; value <= Max; value = value + Step)
 {
-    <span class="@CssProvider.GetClass("item",index:value)" style="@CssProvider.GetStyle("item",index:value)">
+    <span class="@CssProvider.GetClass("item",data:value)" style="@CssProvider.GetStyle("item",data:value)">
         <span>@Format?.Invoke(value)</span>
     </span>
 }
