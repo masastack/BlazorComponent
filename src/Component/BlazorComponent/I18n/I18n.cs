@@ -78,17 +78,17 @@ public class I18n
     public string? T(string? scope, string? key, [DoesNotReturnIf(true)] bool whenNullReturnKey = true, string? defaultValue = null,
         params object[] args)
     {
-        string? value;
+        string? value = null;
 
-        if (key is null)
-        {
-            value = null;
-        }
-        else
+        if (key is not null)
         {
             var scopeKey = scope is null ? key : $"{scope}.{key}";
 
-            value = Locale.GetValueOrDefault(scopeKey);
+            var matchKey = Locale.Keys.FirstOrDefault(k => k.Equals(scopeKey, StringComparison.OrdinalIgnoreCase));
+            if (matchKey is not null)
+            {
+                value = Locale.GetValueOrDefault(matchKey);
+            }
 
             if (value is null && whenNullReturnKey)
             {
