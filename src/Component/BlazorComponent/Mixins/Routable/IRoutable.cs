@@ -83,7 +83,7 @@ public interface IRoutable
 
         if (exact || href == "/")
         {
-            href += "$";
+            href += "/?$";
         }
 
         href = "^" + href;
