@@ -3,7 +3,11 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
+#if NET6_0
+    public partial class BRadio<TValue> : IRadio<TValue>
+#else
     public partial class BRadio<TValue> : IRadio<TValue> where TValue : notnull
+#endif
     {
         [CascadingParameter]
         public IRadioGroup<TValue>? RadioGroup { get; set; }

@@ -10,7 +10,11 @@ public abstract class TransitionElementBase : Element
     internal BlazorComponent.Web.Element? ElementInfo { get; set; }
 }
 
+#if NET6_0
+public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAsyncDisposable
+#else
 public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAsyncDisposable where TValue : notnull
+#endif
 {
     [Inject]
     [NotNull]
