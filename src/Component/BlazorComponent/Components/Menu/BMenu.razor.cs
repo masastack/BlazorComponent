@@ -18,6 +18,9 @@ public partial class BMenu : BMenuable, IDependent
     [CascadingParameter(Name = "AppIsDark")]
     public bool AppIsDark { get; set; }
 
+    [CascadingParameter(Name = "IsDark")]
+    public bool CascadingIsDark { get; set; }
+
     [Parameter]
     public bool Auto { get; set; }
 
@@ -78,6 +81,11 @@ public partial class BMenu : BMenuable, IDependent
             if (Light)
             {
                 return false;
+            }
+
+            if (CascadingIsDark)
+            {
+                return true;
             }
 
             return AppIsDark;
