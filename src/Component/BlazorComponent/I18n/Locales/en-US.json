@@ -95,20 +95,12 @@
         "week": "Per week",
         "year": "Per year"
       },
-      "range": {
-        "from": "Period start from",
-        "to": "to"
-      },
-      "startFrom": {
-        "from": "from",
-        "middle": "{0}start,per",
-        "end": "{0}execute once"
-      },
-      "weekStartFrom": {
-        "from": "On the",
-        "middle": "",
-        "end": "of the month"
-      },
+      "fromTo": "Period start from {0}{2} to {1}{2}",
+      "startFromAndExec":"Start at {0}{2} and execute every {1}{2}",
+      "weekDayOfWeek": "The {1} of the {0} week",
+      "nearestWorkDayPerMonth": "The nearest working day on the {0} of per month",
+      "lastDayOfPerMonth": "The last day of per month",
+      "lastWeekDayOfPerMonth": "The last {0} of per month",
       "specify": "Specify",
       "notSpecify": "Not specify",
       "exception": {
@@ -135,10 +127,6 @@
         "InvalidNthOfWeek": "Nthday of week must be between 1 and 5",
         "IncrementCannotLargeThen": "Value cannot large then {0}, now is :{1}",
         "WOptionLargeThen31": "The 'W' option does not make sense with values larger than 31 (max number of days in a month)"
-      },
-      "demo": {
-        "cronExpressionLabel": "Cron Expression",
-        "nextTenRunTime": "The next ten run time"
       }
     },
     "Period": {
