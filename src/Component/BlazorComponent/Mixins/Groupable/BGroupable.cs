@@ -89,7 +89,9 @@
         /// </summary>
         protected bool IsBooted { get; private set; }
 
-        protected virtual bool IsEager { get; }
+        protected virtual bool IsEager { get; } = false;
+
+        protected virtual bool HasTransition { get; } = false;
 
         protected override void OnInitialized()
         {
@@ -142,30 +144,47 @@
 
         protected async Task SetInternalIsActive(bool val, bool force = false)
         {
-            if (!IsEager && _bootable && !IsBooted)
+            if (IsEager)
             {
-                if (val)
+                if (InternalIsActive != val || force)
                 {
-                    IsBooted = true;
-
-                    _firstRenderAfterBooting = true;
-
-                    await Task.Delay(16);
-
-                    StateHasChanged();
+                    InternalIsActive = val;
                 }
             }
-            else if (InternalIsActive != val || force)
+            else
             {
-                if (_firstRenderAfterBooting)
+                if (!IsBooted)
                 {
-                    // waiting for one frame(16ms) to make sure the element has been rendered,
-                    // and then set the InternalIsActive to be true to invoke transition. 
-                    await Task.Delay(16);
-                    _firstRenderAfterBooting = false;
-                }
+                    if (val)
+                    {
+                        IsBooted = true;
 
-                InternalIsActive = val;
+                        if (HasTransition)
+                        {
+                            _firstRenderAfterBooting = true;
+
+                            await Task.Delay(16);
+                        }
+                        else
+                        {
+                            InternalIsActive = true;
+                        }
+
+                        StateHasChanged();
+                    }
+                }
+                else if (InternalIsActive != val || force)
+                {
+                    if (_firstRenderAfterBooting)
+                    {
+                        // waiting for one frame(16ms) to make sure the element has been rendered,
+                        // and then set the InternalIsActive to be true to invoke transition. 
+                        await Task.Delay(16);
+                        _firstRenderAfterBooting = false;
+                    }
+
+                    InternalIsActive = val;
+                }
             }
         }
 
