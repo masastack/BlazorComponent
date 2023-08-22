@@ -6,7 +6,8 @@
 {
     <div class="@CssProvider.GetClass("select")">
         @ItemsPerPageText
-        <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(ISelect<,,>))"></AbstractComponent>
+        <CascadingValue Value="true" Name="DisableDefaultsProvider">
+            <AbstractComponent Metadata="AbstractProvider.GetMetadata(typeof(ISelect<,,>))"></AbstractComponent>
+        </CascadingValue>
     </div>
 }
-

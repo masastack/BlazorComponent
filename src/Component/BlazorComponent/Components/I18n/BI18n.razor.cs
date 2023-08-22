@@ -85,7 +85,7 @@ public partial class BI18n : BDomComponentBase
 
             segments.Add(new I18nValueSegment(prev));
 
-            var index = segments.Count(s => s.PlaceholderIndex != -1);
+            var index = Convert.ToInt32(match.Value.TrimStart('{').TrimEnd('}')); // {0} -> 0, {1} -> 1
             segments.Add(new I18nValueSegment(match.Value, index));
 
             startIndex = match.Index + match.Value.Length;

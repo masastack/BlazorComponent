@@ -71,6 +71,14 @@ namespace BlazorComponent
         }
 
         private bool _forceStatus;
+        private bool _internalValueChangingFromOnValueChanged;
+        private CancellationTokenSource? _cancellationTokenSource;
+        private List<string>? _errorMessages;
+
+        /// <summary>
+        /// A flag to indicate whether the callback of value change is from immediate
+        /// </summary>
+        private bool _immediateCallbackForValueChange = true;
 
         protected virtual TValue DefaultValue => default;
 
@@ -191,11 +199,6 @@ namespace BlazorComponent
         /// </summary>
         protected bool ValueChangedInternally { get; set; }
 
-        private bool _internalValueChangingFromOnValueChanged;
-        private CancellationTokenSource? _cancellationTokenSource;
-
-        private List<string>? _errorMessages;
-
         public virtual int InternalDebounceInterval => 0;
 
         protected override void OnInitialized()
@@ -263,7 +266,7 @@ namespace BlazorComponent
             base.RegisterWatchers(watcher);
 
             watcher
-                .Watch<TValue>(nameof(Value), OnValueChanged, immediate: true)
+                .Watch<TValue>(nameof(Value), OnValueChanged, immediate: _immediateCallbackForValueChange)
                 .Watch<TValue>(nameof(LazyValue), OnLazyValueChange)
                 .Watch<TValue>(nameof(InternalValue), OnInternalValueChange)
                 .Watch<bool>(nameof(IsFocused), IsFocusedChangeCallback);
@@ -305,7 +308,15 @@ namespace BlazorComponent
 
             if (!isEqual)
             {
-                _internalValueChangingFromOnValueChanged = true;
+                if (_immediateCallbackForValueChange)
+                {
+                    _immediateCallbackForValueChange = false;
+                }
+                else
+                {
+                    _internalValueChangingFromOnValueChanged = true;
+                }
+
                 InternalValue = val;
             }
 
@@ -313,7 +324,7 @@ namespace BlazorComponent
             {
                 if (DisableSetValueByJsInterop) return;
 
-                _ = SetValueByJsInterop(val?.ToString());
+                _ = SetValueByJsInterop(Formatter(val));
             }
             else
             {
@@ -399,6 +410,8 @@ namespace BlazorComponent
 
             if (Rules != null && Rules.Any())
             {
+                var previousErrorBucket = ErrorBucket;
+
                 ErrorBucket.Clear();
 
                 foreach (var rule in Rules)
@@ -410,13 +423,18 @@ namespace BlazorComponent
                     }
                 }
 
-                if (ErrorBucket.Count > 0)
+                if (previousErrorBucket.OrderBy(e => e).SequenceEqual(ErrorBucket.OrderBy(e => e)))
                 {
                     StateHasChanged();
                 }
             }
 
             Form?.UpdateValidValue();
+        }
+
+        protected virtual string? Formatter(object? val)
+        {
+            return BindConverter.FormatValue(val, CultureInfo.CurrentUICulture)?.ToString();
         }
 
         /// <summary>

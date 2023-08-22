@@ -4,10 +4,7 @@
 <CascadingValue Value="this" IsFixed>
     <CascadingValue Value="EditContext" IsFixed>
         <form class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" @onsubmit="HandleOnSubmitAsync">
-            @if (ChildContent != null)
-            {
-                @ChildContent(new FormContext(EditContext, this))
-            }
+            @ChildContent?.Invoke(FormContext)
         </form>
     </CascadingValue>
 </CascadingValue>

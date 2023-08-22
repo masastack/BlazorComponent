@@ -143,17 +143,15 @@
         /// Get class of named element
         /// </summary>
         /// <param name="name"></param>
-        /// <param name="index"></param>
         /// <param name="data"></param>
         /// <param name="addDefaultCssImplicitly"></param>
         /// <returns></returns>
-        public string? GetClass(string name, int index = 0, object? data = null, bool addDefaultCssImplicitly = true)
+        public string? GetClass(string name, object? data = null, bool addDefaultCssImplicitly = true)
         {
             var action = _cssConfig.GetValueOrDefault(name);
 
             var builder = new CssBuilder
             {
-                Index = index,
                 Data = data
             };
 
@@ -171,16 +169,14 @@
         /// Get style of named element
         /// </summary>
         /// <param name="name"></param>
-        /// <param name="index"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        public string? GetStyle(string name, int index = 0, object? data = null)
+        public string? GetStyle(string name, object? data = null)
         {
             var action = _styleConfig.GetValueOrDefault(name);
 
             var builder = new StyleBuilder
             {
-                Index = index,
                 Data = data
             };
 

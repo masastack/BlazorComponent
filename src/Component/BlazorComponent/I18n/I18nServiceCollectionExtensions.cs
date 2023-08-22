@@ -14,7 +14,6 @@ public static class I18nServiceCollectionExtensions
     internal static IServiceCollection AddI18n(this IServiceCollection services)
     {
         services.TryAddScoped<I18n>();
-        services.TryAddScoped<CookieStorage>();
         services.AddHttpContextAccessor();
 
         return services;
