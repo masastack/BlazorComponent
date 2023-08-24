@@ -98,8 +98,6 @@
 
         public static string GetProp => $"{JsInteropFuncNamePrefix}getProp";
 
-        public static string IsMobile => $"{JsInteropFuncNamePrefix}isMobile";
-
         public static string SetStyle => $"{JsInteropFuncNamePrefix}css";
 
         public static string GetZIndex => $"{JsInteropFuncNamePrefix}getZIndex";
@@ -133,5 +131,9 @@
         public static string SetCookie => $"{JsInteropFuncNamePrefix}setCookie";
 
         public static string GetCookie => $"{JsInteropFuncNamePrefix}getCookie";
+
+        public static string RegisterDragEvent => $"{JsInteropFuncNamePrefix}registerDragEvent";
+
+        public static string UnregisterDragEvent => $"{JsInteropFuncNamePrefix}unregisterDragEvent";
     }
 }

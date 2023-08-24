@@ -1,7 +1,7 @@
 import registerDirective from "./directive/index";
-import { parseTouchEvent, touchEvents } from "./events/EventType";
+import { parseDragEvent, parseTouchEvent, touchEvents } from "./events/EventType";
 import { registerExtraEvents } from "./events/index";
-import { getDom, getElementSelector } from "./utils/helper";
+import { getBlazorId, getDom, getElementSelector } from "./utils/helper";
 
 export function getZIndex(el?: Element | null): number {
   if (!el || el.nodeType !== Node.ELEMENT_NODE) return 0
@@ -1260,4 +1260,33 @@ export function getCookie(name) {
     return unescape(arr[2]);
   }
   return null;
+}
+
+export function registerDragEvent(el: HTMLElement, dataKey?: string) {
+  if (el) {
+    const blazorId = getBlazorId(el);
+    const listener = (e: DragEvent) => {
+      if (dataKey) {
+        const dataValue = (e.target as HTMLElement).getAttribute(dataKey);
+        e.dataTransfer.setData(dataKey, dataValue);
+        e.dataTransfer.setData('offsetX', e.offsetX.toString())
+        e.dataTransfer.setData('offsetY', e.offsetY.toString())
+      }
+    };
+    const key = `${blazorId}:dragstart`;
+    htmlElementEventListenerConfigs[key] = [listener];
+    el.addEventListener("dragstart", listener);
+  }
+}
+
+export function unregisterDragEvent(el: HTMLElement) {
+  const blazorId = getBlazorId(el);
+  if (blazorId) {
+    const key = `${blazorId}:dragstart`;
+    if (htmlElementEventListenerConfigs[key]) {
+      htmlElementEventListenerConfigs[key].forEach((listener) => {
+        el.removeEventListener("dragstart", listener);
+      });
+    }
+  }
 }
