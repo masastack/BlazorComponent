@@ -13,10 +13,6 @@ class EChartsProxy {
   ) {
     this.instance = echarts.init(elOrString, theme, initOptions);
 
-    window.addEventListener("resize", () => {
-      this.instance.resize();
-    });
-
     this.intersectionObserver = new IntersectionObserver((entries) => {
       if (entries.some((e) => e.isIntersecting)) {
         this.instance.resize();
