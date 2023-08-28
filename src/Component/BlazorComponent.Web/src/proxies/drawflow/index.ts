@@ -63,6 +63,22 @@ class DrawflowProxy {
     this.editor.updateNodeDataFromId(id, data);
   }
 
+  addNodeInput(id: number) {
+    this.editor.addNodeInput(id);
+  }
+
+  addNodeOutput(id: number) {
+    this.editor.addNodeOutput(id);
+  }
+
+  removeNodeInput(id: number, inputClass: string) {
+    this.editor.removeNodeInput(id, inputClass);
+  }
+
+  removeNodeOutput(id: number, outputClass: string) {
+    this.editor.removeNodeOutput(id, outputClass);
+  }
+
   export(withoutData: boolean = false) {
     const res = this.editor.export();
 
