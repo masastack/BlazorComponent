@@ -2,7 +2,8 @@ import { ECharts, EChartsResizeOption } from "echarts";
 
 class EChartsProxy {
   instance: ECharts;
-  observer: IntersectionObserver;
+  intersectionObserver: IntersectionObserver;
+  resizeObserver: ResizeObserver;
   dotNetHelper: DotNet.DotNetObject;
 
   constructor(
@@ -12,17 +13,18 @@ class EChartsProxy {
   ) {
     this.instance = echarts.init(elOrString, theme, initOptions);
 
-    window.addEventListener("resize", () => {
-      this.instance.resize();
-    });
-
-    this.observer = new IntersectionObserver((entries) => {
+    this.intersectionObserver = new IntersectionObserver((entries) => {
       if (entries.some((e) => e.isIntersecting)) {
         this.instance.resize();
       }
     });
 
-    this.observer.observe(this.instance.getDom());
+    this.resizeObserver = new ResizeObserver((entries) => {
+      this.instance.resize();
+    })
+
+    this.intersectionObserver.observe(this.instance.getDom());
+    this.resizeObserver.observe(this.instance.getDom());
   }
 
   setDotNetObjectReference(
@@ -53,7 +55,7 @@ class EChartsProxy {
   ) {
     this.instance.setOption(eval("option=" + option), notMerge, lazyUpdate);
   }
-  
+
   resize(opts?: EChartsResizeOption) {
     this.instance.resize(opts);
   }
@@ -61,7 +63,9 @@ class EChartsProxy {
   dispose() {
     if (this.instance.isDisposed()) return;
 
-    this.observer.disconnect();
+    this.intersectionObserver.disconnect();
+
+    this.resizeObserver.disconnect();
 
     this.instance.dispose();
   }

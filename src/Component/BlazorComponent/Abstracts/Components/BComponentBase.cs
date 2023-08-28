@@ -27,6 +27,9 @@
             set => _refBack = value;
         }
 
+        // BlazorComponent will be merge into Masa.Blazor in feature
+        public static readonly string ImplementedAssemblyName = "Masa.Blazor";
+
         private ForwardRef? _refBack;
         private bool _shouldRender = true;
         private string[] _dirtyParameters = Array.Empty<string>();
@@ -36,6 +39,17 @@
             get
             {
                 var type = this.GetType();
+
+                while (type.Assembly.GetName().Name != ImplementedAssemblyName)
+                {
+                    if (type.BaseType is null)
+                    {
+                        break;
+                    }
+
+                    type = type.BaseType;
+                }
+
                 return type.IsGenericType ? type.Name.Split('`')[0] : type.Name;
             }
         }
