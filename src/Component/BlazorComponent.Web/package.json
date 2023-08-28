@@ -22,7 +22,8 @@
     "build:outsideclick": "rollup --config rollup.config.outsideclick.ts",
     "dev:baidumap": "rollup --config rollup.config.maps.ts --watch",
     "build:baidumap": "rollup --config rollup.config.maps.ts",
-    "build:scrollStrategies": "rollup --config rollup.config.scrollStrategies.ts"
+    "build:scrollStrategies": "rollup --config rollup.config.scrollStrategies.ts",
+    "build:swiper": "rollup --config rollup.config.swiper.ts"
   },
   "author": "",
   "license": "MIT",
@@ -49,6 +50,7 @@
     "punycode": "^2.1.1",
     "rollup": "^2.79.0",
     "rollup-plugin-terser": "^7.0.2",
+    "swiper": "^10.2.0",
     "tslib": "^2.4.0",
     "typescript": "^4.8.2"
   }
