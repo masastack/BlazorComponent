@@ -27,9 +27,18 @@ class SwiperProxy {
 
         console.log('el', el)
         console.log('swiperOptions', swiperOptions)
+        console.log("swiperOptions.pagination['el']", swiperOptions.pagination['el'])
+        const e = document.querySelector(swiperOptions.pagination['el'])
+        console.log(e)
+        
         Object.keys(swiperOptions).forEach(k => {
             
         })
+        
+        if (swiperOptions.pagination) {
+            swiperOptions.pagination["type"] = swiperOptions.pagination["type"].toLowerCase();
+        }
+        console.log('swiperOptions', swiperOptions)
 
         const swiper = new Swiper(el, swiperOptions);
     }
