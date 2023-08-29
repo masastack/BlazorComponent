@@ -2,8 +2,25 @@ import Drawflow, { DrawFlowEditorMode, DrawflowModuleData } from "drawflow";
 
 class DrawflowProxy {
   editor: Drawflow;
+  dotnetHelper: DotNet.DotNetObject;
 
-  constructor(selector: string, mode: DrawFlowEditorMode) {
+  mousedown = new MouseEvent("mousedown", {
+    view: window,
+    bubbles: true,
+    cancelable: false,
+  });
+
+  mouseup = new MouseEvent("mouseup", {
+    view: window,
+    bubbles: true,
+    cancelable: false,
+  });
+
+  constructor(
+    selector: string,
+    dotnetHelper: DotNet.DotNetObject,
+    mode: DrawFlowEditorMode
+  ) {
     var el = document.querySelector<HTMLElement>(selector);
     this.editor = new Drawflow(el);
     this.editor.start();
@@ -11,8 +28,19 @@ class DrawflowProxy {
     const that = this;
 
     this.editor.on("nodeCreated", function (id) {
-      const node = that.editor.getNodeFromId(id);
-      console.log("nodeCreated", id, node);
+      dotnetHelper.invokeMethodAsync("OnNodeCreated", id.toString());
+    });
+
+    this.editor.on("nodeRemoved", function (id) {
+      dotnetHelper.invokeMethodAsync("OnNodeRemoved", id.toString());
+    });
+
+    this.editor.on("nodeDataChanged", function (id) {
+      dotnetHelper.invokeMethodAsync("OnNodeDataChanged", id.toString());
+    });
+
+    this.editor.on("import", function (e) {
+      dotnetHelper.invokeMethodAsync("OnImport");
     });
   }
 
@@ -33,12 +61,26 @@ class DrawflowProxy {
     html: string
   ) {
     if (this.editor.editor_mode == "fixed") {
-      return
+      return;
     }
 
-    const posX = clientX * ( this.editor.precanvas.clientWidth / (this.editor.precanvas.clientWidth * this.editor.zoom)) - (this.editor.precanvas.getBoundingClientRect().x * ( this.editor.precanvas.clientWidth / (this.editor.precanvas.clientWidth * this.editor.zoom))) - offsetX;
+    const posX =
+      clientX *
+        (this.editor.precanvas.clientWidth /
+          (this.editor.precanvas.clientWidth * this.editor.zoom)) -
+      this.editor.precanvas.getBoundingClientRect().x *
+        (this.editor.precanvas.clientWidth /
+          (this.editor.precanvas.clientWidth * this.editor.zoom)) -
+      offsetX;
 
-    const posY = clientY * ( this.editor.precanvas.clientHeight / (this.editor.precanvas.clientHeight * this.editor.zoom)) - (this.editor.precanvas.getBoundingClientRect().y * ( this.editor.precanvas.clientHeight / (this.editor.precanvas.clientHeight * this.editor.zoom))) - offsetY;
+    const posY =
+      clientY *
+        (this.editor.precanvas.clientHeight /
+          (this.editor.precanvas.clientHeight * this.editor.zoom)) -
+      this.editor.precanvas.getBoundingClientRect().y *
+        (this.editor.precanvas.clientHeight /
+          (this.editor.precanvas.clientHeight * this.editor.zoom)) -
+      offsetY;
 
     var nodeId = this.editor.addNode(
       name,
@@ -59,23 +101,34 @@ class DrawflowProxy {
     this.editor.removeNodeId(id);
   }
 
-  updateNodeDataFromId(id: number, data: object) {
-    this.editor.updateNodeDataFromId(id, data);
+  getNodeFromId(id: string) {
+    const node = this.editor.getNodeFromId(id);
+    node["id"] = node.id.toString();
+    return node;
   }
 
-  addNodeInput(id: number) {
+  updateNodeDataFromId(id: string, data: object) {
+    this.editor.updateNodeDataFromId(id, data);
+    this.editor.dispatch("nodeDataChanged", id);
+  }
+
+  updateNodeHtml(id: string, html: string) {
+    this.editor.drawflow.drawflow.Home.data[id].html = html;
+  }
+
+  addNodeInput(id: string) {
     this.editor.addNodeInput(id);
   }
 
-  addNodeOutput(id: number) {
+  addNodeOutput(id: string) {
     this.editor.addNodeOutput(id);
   }
 
-  removeNodeInput(id: number, inputClass: string) {
+  removeNodeInput(id: string, inputClass: string) {
     this.editor.removeNodeInput(id, inputClass);
   }
 
-  removeNodeOutput(id: number, outputClass: string) {
+  removeNodeOutput(id: string, outputClass: string) {
     this.editor.removeNodeOutput(id, outputClass);
   }
 
@@ -96,10 +149,80 @@ class DrawflowProxy {
 
     return JSON.stringify(res);
   }
+
+  import(json: string) {
+    const data = JSON.parse(json);
+    this.editor.import(data);
+  }
+
+  focusNode(id: string) {
+    document
+      .querySelector(`#node-${id} .drawflow_content_node`)
+      .dispatchEvent(this.mousedown);
+    document
+      .querySelector(`#node-${id} .drawflow_content_node`)
+      .dispatchEvent(this.mouseup);
+  }
+
+  centerNode(id: string, animate: boolean) {
+    const node = document.getElementById(`node-${id}`);
+    const args = {
+      node_x: this.editor.drawflow.drawflow.Home.data[id].pos_x,
+      node_y: this.editor.drawflow.drawflow.Home.data[id].pos_y,
+      node_w: node.clientWidth,
+      node_h: node.clientHeight,
+      canvas_w: this.editor.precanvas.clientWidth,
+      canvas_h: this.editor.precanvas.clientHeight,
+    };
+    const pos_x = -args.node_x + args.canvas_w / 2 - args.node_w / 2;
+    const pos_y = -args.node_y + args.canvas_h / 2 - args.node_h / 2;
+    const zoom = this.editor.zoom;
+    this.setTranslate(pos_x, pos_y, zoom);
+
+    if (animate) {
+      const millisecondsStart = 50;
+      const millisecondsAnimate = 500;
+      node.style.transition = `all ${millisecondsAnimate / 1000}s ease 0s`;
+      window.setTimeout(() => {
+        node.style.transform = "scale(1.1)";
+      }, millisecondsStart);
+      window.setTimeout(() => {
+        node.style.transform = "scale(1.0)";
+      }, millisecondsStart + millisecondsAnimate);
+      window.setTimeout(() => {
+        node.style.transition = "";
+        node.style.transform = "";
+      }, millisecondsStart + millisecondsAnimate * 2);
+    }
+
+    this.focusNode(id);
+  }
+
+  setTranslate(x: number, y: number, zoom: number) {
+    this.editor.canvas_x = x;
+    this.editor.canvas_y = y;
+    let storedZoom = zoom;
+    this.editor.zoom = 1;
+    this.editor.precanvas.style.transform =
+      "translate(" +
+      this.editor.canvas_x +
+      "px, " +
+      this.editor.canvas_y +
+      "px) scale(" +
+      this.editor.zoom +
+      ")";
+    this.editor.zoom = storedZoom;
+    this.editor.zoom_last_value = 1;
+    this.editor.zoom_refresh();
+  }
 }
 
-function init(selector: string, mode: DrawFlowEditorMode = "edit") {
-  return new DrawflowProxy(selector, mode);
+function init(
+  selector: string,
+  dotNetHelper: DotNet.DotNetObject,
+  mode: DrawFlowEditorMode = "edit"
+) {
+  return new DrawflowProxy(selector, dotNetHelper, mode);
 }
 
 export { init };
