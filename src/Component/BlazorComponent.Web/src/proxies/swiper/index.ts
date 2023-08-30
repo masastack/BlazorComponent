@@ -1,53 +1,66 @@
-// import Swiper from "swiper/types/swiper-class";
-// import Swiper from "swiper";
+import SwiperClass from "swiper";
 import { SwiperOptions } from "swiper/types/swiper-options";
 
-declare const Swiper;
-
-// class Swiper {
-//     (el: HTMLElement, swiperOptions: SwiperOptions): boolean;
-// }
-// class Swiper {
-//     constructor(el: HTMLElement, swiperOptions: SwiperOptions) {
-//     }
-// }
+declare const Swiper: SwiperClass;
 
 class SwiperProxy {
-    constructor(el: HTMLElement, swiperOptions: SwiperOptions = {}) {
+  swiper: SwiperClass;
+  dotnetHelper: DotNet.DotNetObject;
+  isDisposed: boolean;
 
-        // const swiperOptions: SwiperOptions = {}
+  constructor(
+    el: HTMLElement,
+    swiperOptions: SwiperOptions,
+    dotnetHelper: DotNet.DotNetObject
+  ) {
+    this.dotnetHelper = dotnetHelper;
 
-        // for (const key of Object.keys(modules)) {
-        //     if (key === "pagination") {
-        //         swiperOptions.pagination = modules[key]
-        //     } else if (key === "navigation") {
-        //         swiperOptions.navigation = modules[key]
-        //     }
-        // }
+    swiperOptions ??= {};
 
-        console.log('el', el)
-        console.log('swiperOptions', swiperOptions)
-        console.log("swiperOptions.pagination['el']", swiperOptions.pagination['el'])
-        const e = document.querySelector(swiperOptions.pagination['el'])
-        console.log(e)
-        
-        Object.keys(swiperOptions).forEach(k => {
-            
-        })
-        
-        if (swiperOptions.pagination) {
-            swiperOptions.pagination["type"] = swiperOptions.pagination["type"].toLowerCase();
-        }
-        console.log('swiperOptions', swiperOptions)
-
-        const swiper = new Swiper(el, swiperOptions);
+    if (swiperOptions.pagination) {
+      swiperOptions.pagination["type"] =
+        swiperOptions.pagination["type"].toLowerCase();
     }
+
+    this.swiper = new (Swiper as any)(el, swiperOptions);
+
+    this.swiper.on("realIndexChange", this.onRealIndexChange);
+  }
+
+  slideTo(index: number, speed?: number, runCallbacks?: boolean) {
+    this.swiper.slideToLoop(index, speed, runCallbacks);
+  }
+
+  slideNext(speed?: number) {
+    this.swiper.slideNext(speed);
+  }
+
+  slidePrev(speed?: number) {
+    this.swiper.slidePrev(speed);
+  }
+
+  dispose() {
+    if (this.dotnetHelper["dispose"]) {
+      this.isDisposed = true;
+      this.swiper.off("realIndexChange", this.onRealIndexChange);
+      this.swiper.destroy(true);
+      this.dotnetHelper["dispose"]();
+    }
+  }
+
+  async onRealIndexChange(e: SwiperClass) {
+    if (this.dotnetHelper) {
+      await this.dotnetHelper.invokeMethodAsync("OnIndexChanged", e.realIndex);
+    }
+  }
 }
 
-function init(el: HTMLElement, swiperOptions: SwiperOptions) {
-    return new SwiperProxy(el, swiperOptions);
+function init(
+  el: HTMLElement,
+  swiperOptions: SwiperOptions,
+  dotnetHelper: DotNet.DotNetObject
+) {
+  return new SwiperProxy(el, swiperOptions, dotnetHelper);
 }
 
-export {
-    init
-}
+export { init };
