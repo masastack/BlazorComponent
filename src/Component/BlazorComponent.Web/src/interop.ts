@@ -1261,3 +1261,143 @@ export function getCookie(name) {
   }
   return null;
 }
+
+export function resizableDataTable(dataTable: HTMLElement) {
+  const table = dataTable.querySelector('table')
+  const row = table.querySelector('.m-data-table-header').getElementsByTagName('tr')[0];
+  const cols = row ? row.children : [];
+  if (!cols) return;
+
+  table.style.overflow = 'hidden';
+
+  const tableHeight = table.offsetHeight;
+
+  for (var i = 0; i < cols.length; i++) {
+    const col: any = cols[i];
+    const colResizeDiv: HTMLDivElement = col.querySelector(".m-data-table-header__col-resize");
+    colResizeDiv.style.height = tableHeight + "px"
+
+    let minWidth = (col.firstElementChild as HTMLElement).offsetWidth; // width of span
+    minWidth = minWidth + 32 + 18 + 1 + 1; // 32:padding 18:sort
+    if(!col.style.minWidth){
+      col.minWidth = minWidth;
+      col.style.minWidth = minWidth + "px";
+    }
+
+    setListeners(colResizeDiv);
+  }
+
+  function setListeners(div: HTMLDivElement) {
+    let pageX:number
+    let curCol: HTMLElement;
+    let nxtCol: HTMLElement;
+    let curColWidth: number;
+    let nxtColWidth: number;
+    let tableWidth: number;
+
+    div.addEventListener('click', e => e.stopPropagation());
+
+    div.addEventListener('mousedown', function (e) {
+      curCol = (e.target as HTMLElement).parentElement;
+      nxtCol = curCol.nextElementSibling as HTMLElement;
+      pageX = e.pageX;
+
+      tableWidth = table.offsetWidth;
+
+      var padding = paddingDiff(curCol);
+
+      curColWidth = curCol.offsetWidth - padding;
+      if (nxtCol)
+        nxtColWidth = nxtCol.offsetWidth - padding;
+    });
+
+    document.addEventListener("mousemove", function (e) {
+      if (curCol) {
+        var diffX = e.pageX - pageX;
+        let newCurColWidth = curColWidth + diffX;
+
+        curCol.style.width = newCurColWidth + "px";
+
+        const isOverflow = dataTable.classList.contains(
+          "m-data-table--resizable-overflow"
+        );
+        if (isOverflow) {
+          table.style.width = tableWidth + diffX + "px";
+          return;
+        }
+
+        const isIndependent = dataTable.classList.contains(
+          "m-data-table--resizable-independent"
+        );
+        if (isIndependent) {
+          let newNextColWidth = nxtColWidth - diffX;
+          const twoColWidth = curColWidth + nxtColWidth;
+
+          if (diffX > 0) {
+            if (nxtCol) {
+              if (newNextColWidth < nxtCol["minWidth"]) {
+                newNextColWidth = nxtCol["minWidth"];
+                newCurColWidth = twoColWidth - newNextColWidth;
+              }
+            }
+          } else {
+            if (newCurColWidth < curCol["minWidth"]) {
+              newCurColWidth = curCol["minWidth"];
+              newNextColWidth = twoColWidth - newCurColWidth;
+            }
+          }
+
+          curCol.style.width = newCurColWidth + "px";
+
+          if (nxtCol) {
+            nxtCol.style.width = newNextColWidth + "px";
+          }
+        }
+      }
+    });
+
+    document.addEventListener('mouseup', function (e) {
+      if (curCol) {
+        for (let i = 0; i < cols.length; i++) {
+          const col:any = cols[i];
+          col.style.width = col['offsetWidth'] + "px"
+        }
+      }
+      curCol = undefined;
+      nxtCol = undefined;
+      pageX = undefined;
+      nxtColWidth = undefined;
+      curColWidth = undefined;
+      tableWidth = undefined;
+    });
+  }
+
+  function paddingDiff(col) {
+    if (getStyleVal(col, 'box-sizing') == 'border-box') {
+      return 0;
+    }
+
+    var padLeft = getStyleVal(col, 'padding-left');
+    var padRight = getStyleVal(col, 'padding-right');
+    return (parseInt(padLeft) + parseInt(padRight));
+  }
+
+  function getStyleVal(elm, css) {
+    return (window.getComputedStyle(elm, null).getPropertyValue(css))
+  }
+}
+
+export function updateDataTableResizeHeight(dataTable: HTMLElement) {
+  const table = dataTable.querySelector('table')
+  const row = table.querySelector('.m-data-table-header').getElementsByTagName('tr')[0];
+  const cols = row ? row.children : [];
+  if (!cols) return;
+
+  const tableHeight = table.offsetHeight;
+
+  for (var i = 0; i < cols.length; i++) {
+    const col: any = cols[i];
+    const colResizeDiv: HTMLDivElement = col.querySelector(".m-data-table-header__col-resize");
+    colResizeDiv.style.height = tableHeight + "px"
+  }
+}

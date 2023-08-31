@@ -13,6 +13,8 @@
         string SortIcon { get; }
 
         bool ShowGroupBy { get; }
+        
+        bool Resizable { get; }
 
         RenderFragment<DataTableHeader>? HeaderColContent { get; }
 

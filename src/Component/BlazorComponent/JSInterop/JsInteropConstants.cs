@@ -133,5 +133,9 @@
         public static string SetCookie => $"{JsInteropFuncNamePrefix}setCookie";
 
         public static string GetCookie => $"{JsInteropFuncNamePrefix}getCookie";
+
+        public static string ResizableDataTable = $"{JsInteropFuncNamePrefix}resizableDataTable";
+
+        public static string UpdateDataTableResizeHeight = $"{JsInteropFuncNamePrefix}updateDataTableResizeHeight";
     }
 }

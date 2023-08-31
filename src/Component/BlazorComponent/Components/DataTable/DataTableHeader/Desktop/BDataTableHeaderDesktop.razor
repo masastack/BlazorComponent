@@ -46,6 +46,11 @@
                 {
                     @RenderPart(typeof(BDataTableGroupByToggle<>), header, arg1: GroupText)
                 }
+                
+                @if (Resizable)
+                {
+                    <div class="@CssProvider.GetClass("col-resize")"></div>
+                }
             }
         </th>
     }
