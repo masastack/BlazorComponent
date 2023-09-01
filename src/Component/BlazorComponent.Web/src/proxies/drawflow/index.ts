@@ -35,6 +35,14 @@ class DrawflowProxy {
       dotnetHelper.invokeMethodAsync("OnNodeRemoved", id.toString());
     });
 
+    this.editor.on("nodeSelected", function (id) {
+      dotnetHelper.invokeMethodAsync("OnNodeSelected", id.toString());
+    });
+
+    this.editor.on("nodeUnselected", function (id) {
+      dotnetHelper.invokeMethodAsync("OnNodeUnselected", id.toString());
+    });
+
     this.editor.on("nodeDataChanged" as any, function (id) {
       dotnetHelper.invokeMethodAsync("OnNodeDataChanged", id.toString());
     });
