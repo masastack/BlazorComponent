@@ -14,6 +14,8 @@
 
         public bool ShowGroupBy => Component.ShowGroupBy;
 
+        public bool Resizable => Component.Resizable;
+
         public RenderFragment<DataTableHeader>? HeaderColContent => Component.HeaderColContent;
 
         public DataOptions Options => Component.Options;

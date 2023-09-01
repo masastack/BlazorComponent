@@ -35,7 +35,7 @@ class DrawflowProxy {
       dotnetHelper.invokeMethodAsync("OnNodeRemoved", id.toString());
     });
 
-    this.editor.on("nodeDataChanged", function (id) {
+    this.editor.on("nodeDataChanged" as any, function (id) {
       dotnetHelper.invokeMethodAsync("OnNodeDataChanged", id.toString());
     });
 
@@ -102,14 +102,14 @@ class DrawflowProxy {
   }
 
   getNodeFromId(id: string) {
-    const node = this.editor.getNodeFromId(id);
+    const node: any = this.editor.getNodeFromId(id);
     node["id"] = node.id.toString();
     return node;
   }
 
   updateNodeDataFromId(id: string, data: object) {
     this.editor.updateNodeDataFromId(id, data);
-    this.editor.dispatch("nodeDataChanged", id);
+    (this.editor as any).dispatch("nodeDataChanged", id);
   }
 
   updateNodeHtml(id: string, html: string) {

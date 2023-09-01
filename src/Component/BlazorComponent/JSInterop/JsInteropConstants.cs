@@ -98,6 +98,8 @@
 
         public static string GetProp => $"{JsInteropFuncNamePrefix}getProp";
 
+        public static string IsMobile => $"{JsInteropFuncNamePrefix}isMobile";
+
         public static string SetStyle => $"{JsInteropFuncNamePrefix}css";
 
         public static string GetZIndex => $"{JsInteropFuncNamePrefix}getZIndex";
@@ -132,6 +134,10 @@
 
         public static string GetCookie => $"{JsInteropFuncNamePrefix}getCookie";
 
+        public static string ResizableDataTable = $"{JsInteropFuncNamePrefix}resizableDataTable";
+
+        public static string UpdateDataTableResizeHeight = $"{JsInteropFuncNamePrefix}updateDataTableResizeHeight";
+        
         public static string RegisterDragEvent => $"{JsInteropFuncNamePrefix}registerDragEvent";
 
         public static string UnregisterDragEvent => $"{JsInteropFuncNamePrefix}unregisterDragEvent";
