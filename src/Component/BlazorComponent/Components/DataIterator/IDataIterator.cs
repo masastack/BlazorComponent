@@ -33,6 +33,8 @@
         string? NoResultsText { get; }
 
         IEnumerable<IGrouping<string, TItem>> GroupedItems { get; }
+        
+        ElementReference Ref { get; set; }
     }
 }
 

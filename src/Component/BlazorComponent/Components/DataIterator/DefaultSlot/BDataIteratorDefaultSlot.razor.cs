@@ -5,5 +5,13 @@
         public RenderFragment? HeaderContent => Component.HeaderContent;
 
         public RenderFragment? FooterContent => Component.FooterContent;
+
+        public ElementReference ElementReference
+        {
+            set
+            {
+                Component.Ref = value;
+            }
+        }
     }
 }
