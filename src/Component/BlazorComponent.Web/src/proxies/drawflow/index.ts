@@ -146,21 +146,8 @@ class DrawflowProxy {
     this.editor.clear();
   }
 
-  export(withoutData: boolean = false, indented: boolean = false) {
+  export(indented: boolean = false) {
     const res = this.editor.export();
-
-    if (withoutData) {
-      const workspace_keys = Object.keys(res.drawflow);
-      for (const workspace_key of workspace_keys) {
-        const workspace = res.drawflow[workspace_key].data;
-        const node_keys = Object.keys(workspace);
-        for (const node_key of node_keys) {
-          const node = workspace[node_key];
-          node.data = {};
-        }
-      }
-    }
-
     return JSON.stringify(res, null, indented ? 2 : null);
   }
 
