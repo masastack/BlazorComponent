@@ -62,9 +62,9 @@
 
         TValue InternalValue { get; }
 
-        EventCallback<MouseEventArgs> OnAppendClick { get; }
+        bool HasPrependClick { get; }
 
-        EventCallback<MouseEventArgs> OnPrependClick { get; }
+        bool HasAppendClick { get; }
 
         Task HandleOnPrependClickAsync(MouseEventArgs args)
         {
