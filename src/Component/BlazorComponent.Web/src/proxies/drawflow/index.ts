@@ -1,7 +1,9 @@
-import Drawflow, { DrawFlowEditorMode, DrawflowModuleData } from "drawflow";
+import DrawflowClass, { DrawFlowEditorMode, DrawflowModuleData } from "drawflow";
+
+declare const Drawflow: DrawflowClass;
 
 class DrawflowProxy {
-  editor: Drawflow;
+  editor: DrawflowClass;
   dotnetHelper: DotNet.DotNetObject;
 
   mousedown = new MouseEvent("mousedown", {
@@ -22,7 +24,7 @@ class DrawflowProxy {
     mode: DrawFlowEditorMode
   ) {
     var el = document.querySelector<HTMLElement>(selector);
-    this.editor = new Drawflow(el);
+    this.editor = new (Drawflow as any)(el);
     this.editor.start();
     this.editor.editor_mode = mode;
     const that = this;
@@ -140,7 +142,11 @@ class DrawflowProxy {
     this.editor.removeNodeOutput(id, outputClass);
   }
 
-  export(withoutData: boolean = false) {
+  clear() {
+    this.editor.clear();
+  }
+
+  export(withoutData: boolean = false, indented: boolean = false) {
     const res = this.editor.export();
 
     if (withoutData) {
@@ -155,7 +161,7 @@ class DrawflowProxy {
       }
     }
 
-    return JSON.stringify(res);
+    return JSON.stringify(res, null, indented ? 2 : null);
   }
 
   import(json: string) {

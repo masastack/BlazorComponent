@@ -14,5 +14,5 @@ export default defineConfig({
       sourcemap: true,
     },
   ],
-  plugins: [typescript(), resolve(), commonjs(), terser()],
+  plugins: [typescript(), terser()],
 });

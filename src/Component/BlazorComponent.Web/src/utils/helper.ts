@@ -89,6 +89,9 @@ export function composedPath (e: Event): EventTarget[] {
 }
 
 export function getBlazorId(el) {
+  if (!el) {
+    return null;
+  }
   let _bl_ = el.getAttributeNames().find(a => a.startsWith('_bl_'))
   if (_bl_) {
     _bl_ = _bl_.substring(4);

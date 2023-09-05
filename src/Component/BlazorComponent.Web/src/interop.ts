@@ -1291,7 +1291,6 @@ export function unregisterDragEvent(el: HTMLElement) {
   }
 }
 
-
 export function resizableDataTable(dataTable: HTMLElement) {
   const table = dataTable.querySelector('table')
   const row = table.querySelector('.m-data-table-header').getElementsByTagName('tr')[0];
