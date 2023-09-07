@@ -82,6 +82,8 @@ namespace BlazorComponent
 
         protected virtual TValue DefaultValue => default;
 
+        protected virtual IEnumerable<Func<TValue, StringBoolean>> InternalRules => Rules ?? Enumerable.Empty<Func<TValue, StringBoolean>>();
+
         protected EditContext? OldEditContext { get; set; }
 
         public FieldIdentifier ValueIdentifier { get; set; }
@@ -403,33 +405,38 @@ namespace BlazorComponent
 
         protected virtual void InternalValidate()
         {
-            if (EditContext != null && !EqualityComparer<FieldIdentifier>.Default.Equals(ValueIdentifier, default))
+            var previousErrorBucket = ErrorBucket;
+            ErrorBucket.Clear();
+
+            if (EditContext != null)
             {
-                EditContext.NotifyFieldChanged(ValueIdentifier);
-            }
-
-            if (Rules != null && Rules.Any())
-            {
-                var previousErrorBucket = ErrorBucket;
-
-                ErrorBucket.Clear();
-
-                foreach (var rule in Rules)
+                if (!EqualityComparer<FieldIdentifier>.Default.Equals(ValueIdentifier, default))
                 {
-                    var result = rule(InternalValue);
-                    if (result.IsT0)
-                    {
-                        ErrorBucket.Add(result.AsT0);
-                    }
+                    EditContext.NotifyFieldChanged(ValueIdentifier);
                 }
-
-                if (previousErrorBucket.OrderBy(e => e).SequenceEqual(ErrorBucket.OrderBy(e => e)))
+            }
+            else
+            {
+                ErrorBucket.AddRange(ValidateRules(InternalValue));
+                if (!previousErrorBucket.OrderBy(e => e).SequenceEqual(ErrorBucket.OrderBy(e => e)))
                 {
                     StateHasChanged();
                 }
             }
 
             Form?.UpdateValidValue();
+        }
+
+        private IEnumerable<string> ValidateRules(TValue value)
+        {
+            foreach (var rule in InternalRules)
+            {
+                var result = rule(value);
+                if (result.IsT0)
+                {
+                    yield return result.AsT0;
+                }
+            }
         }
 
         protected virtual string? Formatter(object? val)
@@ -472,20 +479,12 @@ namespace BlazorComponent
                 HasFocused = true;
             }
 
-            if (Rules != null && Rules.Any())
+            if (InternalRules.Any())
             {
                 var value = EqualityComparer<TValue>.Default.Equals(val, default) ? InternalValue : val;
 
                 ErrorBucket.Clear();
-
-                foreach (var rule in Rules)
-                {
-                    var result = rule(value);
-                    if (result.IsT0)
-                    {
-                        ErrorBucket.Add(result.AsT0);
-                    }
-                }
+                ErrorBucket.AddRange(ValidateRules(value));
 
                 valid = ErrorBucket.Count == 0;
             }
@@ -519,26 +518,20 @@ namespace BlazorComponent
             // The following conditions require an error message to be displayed:
             // 1. Force validation, because it validates all input elements
             // 2. The input pointed to by ValueIdentifier has been modified
-            if (!_forceStatus && EditContext?.IsModified() is true && !EditContext.IsModified(ValueIdentifier))
+            if (!_forceStatus && EditContext?.IsModified() is true
+                              && !EditContext.IsModified(ValueIdentifier)
+                              && InternalRules.Any() is false)
+            {
                 return;
+            }
 
             _forceStatus = false;
 
-            var errors = EditContext!.GetValidationMessages(ValueIdentifier).ToList();
+            var editContextErrors = EditContext!.GetValidationMessages(ValueIdentifier).ToList();
+            ErrorBucket.AddRange(editContextErrors);
 
-            if (!errors.Any())
-            {
-                if (ErrorBucket.Count == 0)
-                {
-                    return;
-                }
-
-                ErrorBucket.Clear();
-            }
-            else
-            {
-                ErrorBucket = errors.ToList();
-            }
+            var ruleErrors = ValidateRules(InternalValue);
+            ErrorBucket.AddRange(ruleErrors);
 
             InvokeStateHasChanged();
         }
