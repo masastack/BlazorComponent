@@ -1,5 +1,5 @@
 import { getElementSelector } from "../utils/helper";
-import { parseMouseEvent, parseTouchEvent } from "./EventType";
+import { parseDragEvent, parseMouseEvent, parseTouchEvent } from "./EventType";
 
 export function registerExtraMouseEvent(eventType: string, eventName: string) {
   if (Blazor) {
@@ -15,6 +15,28 @@ export function registerExtraTouchEvent(eventType: string, eventName: string) {
     Blazor.registerCustomEventType(eventType, {
       browserEventName: eventName,
       createEventArgs: e => createSharedEventArgs("touch", e)
+    })
+  }
+}
+
+export function registerExtraDropEvent(eventType: string, eventName: string) {
+  if (Blazor) {
+    Blazor.registerCustomEventType(eventType, {
+      browserEventName: eventName,
+      createEventArgs: (e: DragEvent) => {
+        const eventArgs = parseDragEvent(e);
+        const value = e.dataTransfer.getData('data-value');
+        const offsetX = e.dataTransfer.getData('offsetX');
+        const offsetY = e.dataTransfer.getData('offsetY');
+
+        eventArgs.dataTransfer['data'] = {
+          value,
+          offsetX: Number(offsetX),
+          offsetY: Number(offsetY)
+        }
+
+        return eventArgs;
+      }
     })
   }
 }

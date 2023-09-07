@@ -22,7 +22,7 @@ namespace BlazorComponent
         public IComponentIdGenerator? ComponentIdGenerator { get; set; }
 
         [Parameter]
-        public string? Id { get; set; }
+        public string Id { get; set; } = null!;
 
         /// <summary>
         /// Specifies one or more class names for an DOM element.
