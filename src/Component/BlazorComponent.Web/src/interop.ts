@@ -1342,7 +1342,13 @@ export function resizableDataTable(dataTable: HTMLElement) {
 
     document.addEventListener("mousemove", function (e) {
       if (curCol) {
-        var diffX = e.pageX - pageX;
+        let diffX = e.pageX - pageX;
+
+        const isRtl = dataTable.classList.contains("m-data-table--rtl")
+        if (isRtl) {
+          diffX = 0 - diffX;
+        }
+
         let newCurColWidth = curColWidth + diffX;
 
         curCol.style.width = newCurColWidth + "px";

@@ -16,7 +16,6 @@ export function getScrollParents (el?: Element | null, stopAt?: Element | null) 
     if (hasScrollbar(el)) elements.push(el as HTMLElement)
     if (el === stopAt) break
     el = el.parentElement!
-    console.log('el', el, elements)
   }
 
   return elements
