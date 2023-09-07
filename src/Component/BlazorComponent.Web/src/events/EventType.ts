@@ -81,6 +81,19 @@ export function parseChangeEvent(event: Event): Blazor.ChangeEventArgs {
   }
 }
 
+export function parseDragEvent(event: DragEvent): Blazor.DragEventArgs {
+  return {
+    ...parseMouseEvent(event),
+    dataTransfer: event.dataTransfer ? {
+      dropEffect: event.dataTransfer.dropEffect,
+      effectAllowed: event.dataTransfer.effectAllowed,
+      files: Array.from(event.dataTransfer.files).map(f => f.name),
+      items: Array.from(event.dataTransfer.items).map(i => ({ kind: i.kind, type: i.type })),
+      types: event.dataTransfer.types
+    } : null,
+  };
+}
+
 function isTimeBasedInput(element: Element): element is HTMLInputElement {
   return timeBasedInputs.indexOf(element.getAttribute("type")!) !== -1;
 }

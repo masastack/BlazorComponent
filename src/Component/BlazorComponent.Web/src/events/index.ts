@@ -1,4 +1,4 @@
-import { registerExtraMouseEvent, registerExtraTouchEvent } from "./extra";
+import { registerExtraDropEvent, registerExtraMouseEvent, registerExtraTouchEvent } from "./extra";
 
 export function registerExtraEvents() {
     registerExtraMouseEvent("exmousedown", "mousedown");
@@ -9,6 +9,7 @@ export function registerExtraEvents() {
     registerExtraMouseEvent("exmousemove", "mousemove");
     registerExtraTouchEvent("extouchstart", "touchstart");
     registerEvent("transitionend", "transitionend")
+    registerExtraDropEvent("exdrop", "drop");
 }
 
 function registerEvent(eventType: string, eventName: string) {
