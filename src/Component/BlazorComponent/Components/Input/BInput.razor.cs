@@ -121,6 +121,10 @@
         //We want InternalValue to be protected
         TValue IInput<TValue>.InternalValue => InternalValue;
 
+        public virtual bool HasPrependClick => OnPrependClick.HasDelegate;
+
+        public virtual bool HasAppendClick => OnAppendClick.HasDelegate;
+
         public virtual async Task HandleOnPrependClickAsync(MouseEventArgs args)
         {
             if (OnPrependClick.HasDelegate)
