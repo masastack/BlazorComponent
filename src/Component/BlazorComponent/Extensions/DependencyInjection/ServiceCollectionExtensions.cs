@@ -1,5 +1,4 @@
 ﻿using BlazorComponent;
-using FluentValidation;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -22,7 +21,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddSingleton<IComponentIdGenerator, GuidComponentIdGenerator>();
             services.AddScoped(typeof(BDragDropService));
             services.AddSingleton<IComponentActivator, AbstractComponentActivator>();
-            services.AddValidators();
             services.AddI18n();
 
             services.TryAddTransient<ActivatableJsModule>();
@@ -31,14 +29,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddTransient<InputJSModule>();
 
             return new BlazorComponentBuilder(services);
-        }
-
-        internal static IServiceCollection AddValidators(this IServiceCollection services)
-        {
-            var referenceAssembles = AppDomain.CurrentDomain.GetAssemblies();
-            services.AddValidatorsFromAssemblies(referenceAssembles, ServiceLifetime.Scoped, includeInternalTypes: true);
-
-            return services;
         }
     }
 }
