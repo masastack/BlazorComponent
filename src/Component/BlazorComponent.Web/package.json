@@ -25,7 +25,8 @@
     "build:scrollStrategies": "rollup --config rollup.config.scrollStrategies.ts",
     "dev:drawflow": "rollup --config rollup.config.drawflow.ts --watch",
     "build:drawflow": "rollup --config rollup.config.drawflow.ts",
-    "build:swiper": "rollup --config rollup.config.swiper.ts"
+    "build:swiper": "rollup --config rollup.config.swiper.ts",
+    "build:intersect": "rollup --config rollup.config.intersect.ts"
   },
   "author": "",
   "license": "MIT",

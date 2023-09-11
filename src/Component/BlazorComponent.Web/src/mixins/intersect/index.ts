@@ -1,46 +1,70 @@
-class Intersect {
-  el: HTMLElement;
-  dotnetHelper: DotNet.DotNetObject;
-  observer: IntersectionObserver;
-
-  constructor(
-    el: HTMLElement,
-    dotnetHelper: DotNet.DotNetObject,
-    options?: IntersectionObserverInit
-  ) {
-    this.el = el;
-    this.dotnetHelper = dotnetHelper;
-
-    this.observer = new IntersectionObserver(
-      (
-        entries: IntersectionObserverEntry[] = [],
-        observer: IntersectionObserver
-      ) => {
-        const isIntersecting = entries.some((entry) => entry.isIntersecting);
-        if (isIntersecting) {
-          dotnetHelper.invokeMethodAsync("invoke");
-        }
-      },
-      options ?? {}
-    );
-
-    this.observer.observe(el);
-  }
-
-  dispose() {
-    if (this.dotnetHelper["dispose"]) {
-      this.observer.unobserve(this.el);
-      this.dotnetHelper["dispose"]();
-    }
-  }
+interface IntersectionObserverOptions {
+  rootSelector?: string;
+  rootMargin?: string;
+  threshold: number[];
+  once: boolean;
 }
 
-function init(
+function observe(
   el: HTMLElement,
-  dotnetHelper: DotNet.DotNetObject,
-  options?: IntersectionObserverInit
+  handle: DotNet.DotNetObject,
+  options?: IntersectionObserverOptions
 ) {
-  return new Intersect(el, dotnetHelper, options);
+  if (!handle) {
+    throw new Error("the handle cannot be null");
+  }
+
+  const once = options?.once ?? false;
+  const standardOptions = formatToStandardOptions(options);
+
+  const observer = new IntersectionObserver(
+    async (
+      entries: IntersectionObserverEntry[] = [],
+      observer: IntersectionObserver
+    ) => {
+      const isIntersecting = entries.some((entry) => entry.isIntersecting);
+      if (!once || isIntersecting) {
+        await handle.invokeMethodAsync("Invoke", { isIntersecting });
+      }
+
+      if (isIntersecting && once) {
+        unobserve(el);
+      }
+    },
+    standardOptions
+  );
+
+  el["_observe"] = Object(el["_observe"]);
+  el["_observe"] = { handle, observer };
+
+  observer.observe(el);
 }
 
-export { init };
+function unobserve(el: HTMLElement) {
+  const observe = el["_observe"];
+  if (!observe) {
+    return;
+  }
+
+  observe.observer.unobserve(el);
+  observe.handle.dispose();
+  delete el["_observe"];
+}
+
+function formatToStandardOptions(
+  options?: IntersectionObserverOptions
+): IntersectionObserverInit | null {
+  if (!options) {
+    return null;
+  }
+
+  return {
+    rootMargin: options.rootMargin,
+    root: options.rootSelector
+      ? document.querySelector(options.rootSelector)
+      : null,
+    threshold: options.threshold,
+  };
+}
+
+export { observe, unobserve };
