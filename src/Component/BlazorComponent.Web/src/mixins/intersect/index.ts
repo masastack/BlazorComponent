@@ -41,10 +41,10 @@ function observe(
 }
 
 function unobserve(el: HTMLElement) {
+  if (!el) return;
+
   const observe = el["_observe"];
-  if (!observe) {
-    return;
-  }
+  if (!observe) return;
 
   observe.observer.unobserve(el);
   observe.handle.dispose();
