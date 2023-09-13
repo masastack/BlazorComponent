@@ -6,13 +6,17 @@ declare const Swiper: SwiperClass;
 class SwiperProxy {
   swiper: SwiperClass;
   dotnetHelper: DotNet.DotNetObject;
-  isDisposed: boolean;
 
   constructor(
     el: HTMLElement,
     swiperOptions: SwiperOptions,
     dotnetHelper: DotNet.DotNetObject
   ) {
+    if (el._swiper) {
+      el._swiper.instance.destroy(true);
+      delete el["_swiper"];
+    }
+
     this.dotnetHelper = dotnetHelper;
 
     swiperOptions ??= {};
@@ -23,8 +27,12 @@ class SwiperProxy {
     }
 
     this.swiper = new (Swiper as any)(el, swiperOptions);
+    this.swiper.on("realIndexChange", (e) => this.onRealIndexChange(e, this));
 
-    this.swiper.on("realIndexChange", this.onRealIndexChange);
+    el._swiper = {
+      instance: this.swiper,
+      handle: dotnetHelper,
+    };
   }
 
   slideTo(index: number, speed?: number, runCallbacks?: boolean) {
@@ -41,16 +49,14 @@ class SwiperProxy {
 
   dispose() {
     if (this.dotnetHelper["dispose"]) {
-      this.isDisposed = true;
-      this.swiper.off("realIndexChange", this.onRealIndexChange);
       this.swiper.destroy(true);
       this.dotnetHelper["dispose"]();
     }
   }
 
-  async onRealIndexChange(e: SwiperClass) {
-    if (this.dotnetHelper) {
-      await this.dotnetHelper.invokeMethodAsync("OnIndexChanged", e.realIndex);
+  async onRealIndexChange(e: SwiperClass, that: SwiperProxy) {
+    if (that.dotnetHelper) {
+      await that.dotnetHelper.invokeMethodAsync("OnIndexChanged", e.realIndex);
     }
   }
 }
