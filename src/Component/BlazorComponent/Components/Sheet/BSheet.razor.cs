@@ -41,10 +41,5 @@ namespace BlazorComponent
                 return CascadingIsDark;
             }
         }
-
-        /// <summary>
-        /// Determines if the DOM element is ready to be displayed.
-        /// </summary>
-        protected virtual bool IsBooted { get; set; } = true;
     }
 }
