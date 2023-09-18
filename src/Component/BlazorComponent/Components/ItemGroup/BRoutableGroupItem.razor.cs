@@ -44,8 +44,6 @@ public partial class BRoutableGroupItem<TGroup> : BGroupItem<TGroup>, IRoutable
     {
         await base.OnInitializedAsync();
 
-        Router = new Router(this);
-
         await UpdateActiveForRoutable();
 
         NavigationManager.LocationChanged += OnLocationChanged;
@@ -69,8 +67,8 @@ public partial class BRoutableGroupItem<TGroup> : BGroupItem<TGroup>, IRoutable
     {
         base.OnParametersSet();
 
-        // Router = new Router(this);
-        
+        Router = new Router(this);
+
         (Tag, Attributes) = Router.GenerateRouteLink();
     }
 
