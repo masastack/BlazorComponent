@@ -153,4 +153,11 @@ declare global {
   interface ChangeEvent extends InputEvent {
     target: HTMLInputElement;
   }
+
+  interface HTMLElement {
+    _swiper: {
+      instance: any;
+      handle: DotNet.DotNetObject;
+    };
+  }
 }
