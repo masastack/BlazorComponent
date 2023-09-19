@@ -13,13 +13,29 @@ public abstract class JSModule : IAsyncDisposable
     protected async ValueTask InvokeVoidAsync(string identifier, params object?[]? args)
     {
         var module = await _moduleTask.Value;
-        await module.InvokeVoidAsync(identifier, args);
+
+        try
+        {
+            await module.InvokeVoidAsync(identifier, args);
+        }
+        catch (JSDisconnectedException)
+        {
+            // ignored
+        }
     }
 
     protected async ValueTask<T> InvokeAsync<T>(string identifier, params object?[]? args)
     {
         var module = await _moduleTask.Value;
-        return await module.InvokeAsync<T>(identifier, args);
+
+        try
+        {
+            return await module.InvokeAsync<T>(identifier, args);
+        }
+        catch (JSDisconnectedException)
+        {
+            return default(T);
+        }
     }
 
     public async virtual ValueTask DisposeAsync()
@@ -31,7 +47,7 @@ public abstract class JSModule : IAsyncDisposable
             {
                 await module.DisposeAsync();
             }
-            catch
+            catch (JSDisconnectedException)
             {
                 // ignored
             }
