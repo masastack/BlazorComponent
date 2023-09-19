@@ -42,7 +42,7 @@ public partial class BRoutableGroupItem<TGroup> : BGroupItem<TGroup>, IRoutable
 
     protected override async Task OnInitializedAsync()
     {
-        await base.OnInitializedAsync()；
+        await base.OnInitializedAsync();
 
         NavigationManager.LocationChanged += OnLocationChanged;
     }
