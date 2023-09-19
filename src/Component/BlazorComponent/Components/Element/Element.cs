@@ -5,24 +5,15 @@ namespace BlazorComponent
 {
     public class Element : ComponentBase
     {
-        [Parameter]
-        public string Tag
-        {
-            get => _tag ?? "div";
-            set => _tag = value;
-        }
+        [Parameter] [ApiDefaultValue("div")] public string? Tag { get; set; } = "div";
 
-        [Parameter]
-        public RenderFragment? ChildContent { get; set; }
+        [Parameter] public RenderFragment? ChildContent { get; set; }
 
-        [Parameter]
-        public string? Class { get; set; }
+        [Parameter] public string? Class { get; set; }
 
-        [Parameter]
-        public string? Style { get; set; }
+        [Parameter] public string? Style { get; set; }
 
-        [Parameter]
-        public Action<ElementReference>? ReferenceCaptureAction { get; set; }
+        [Parameter] public Action<ElementReference>? ReferenceCaptureAction { get; set; }
 
         [Parameter(CaptureUnmatchedValues = true)]
         public virtual IDictionary<string, object?> AdditionalAttributes { get; set; } = new Dictionary<string, object?>();

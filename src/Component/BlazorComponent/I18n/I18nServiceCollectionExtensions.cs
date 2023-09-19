@@ -14,7 +14,6 @@ public static class I18nServiceCollectionExtensions
     internal static IServiceCollection AddI18n(this IServiceCollection services)
     {
         services.TryAddScoped<I18n>();
-        services.AddHttpContextAccessor();
 
         return services;
     }
@@ -74,7 +73,8 @@ public static class I18nServiceCollectionExtensions
         return builder;
     }
 
-    public static async Task<IBlazorComponentBuilder> AddI18nForWasmAsync(this IBlazorComponentBuilder builder, string localesDirectoryApi, Encoding? encoding = null)
+    public static async Task<IBlazorComponentBuilder> AddI18nForWasmAsync(this IBlazorComponentBuilder builder, string localesDirectoryApi,
+        Encoding? encoding = null)
     {
         using var httpclient = new HttpClient();
 

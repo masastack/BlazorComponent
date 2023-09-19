@@ -96,7 +96,7 @@ const ripples = {
           delete el.dataset.previousPosition;
         }
 
-        animation.parentNode && el.removeChild(animation.parentNode);
+        animation.parentNode && el && el.removeChild(animation.parentNode);
       }, 300);
     }, delay);
   },
