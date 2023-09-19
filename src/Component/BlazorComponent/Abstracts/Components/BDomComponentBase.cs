@@ -50,6 +50,8 @@ namespace BlazorComponent
         private ElementReference? _prevRef;
         private bool _elementReferenceChanged;
 
+        private bool HostedInWebAssembly => Js is IJSInProcessRuntime;
+
         protected ILogger Logger => LoggerFactory.CreateLogger(GetType());
 
         public ComponentCssProvider CssProvider { get; }
@@ -82,19 +84,21 @@ namespace BlazorComponent
             }
         }
 
-        /// <summary>
-        /// Register watchers at the first render.
-        /// </summary>
-        /// <param name="watcher"></param>
-        protected virtual void RegisterWatchers(PropertyWatcher watcher)
-        {
-        }
-
         protected override void OnInitialized()
         {
             Id ??= ComponentIdGenerator.Generate(this);
             base.OnInitialized();
             SetComponentClass();
+        }
+
+        protected override async Task OnInitializedAsync()
+        {
+            await base.OnInitializedAsync();
+
+            if (HostedInWebAssembly)
+            {
+                await OnJSInteropReadyAsync(onAfterRender: false);
+            }
         }
 
         protected override void OnAfterRender(bool firstRender)
@@ -111,11 +115,28 @@ namespace BlazorComponent
         {
             await base.OnAfterRenderAsync(firstRender);
 
+            if (firstRender && !HostedInWebAssembly)
+            {
+                await OnJSInteropReadyAsync(onAfterRender: true);
+            }
+
             if (_elementReferenceChanged)
             {
                 _elementReferenceChanged = false;
                 await OnElementReferenceChangedAsync();
             }
+        }
+
+        /// <summary>
+        /// Called when the component is ready for JS interop.
+        /// When hosted in WebAssembly, this is called during OnInitializedAsync.
+        /// When hosted in Server, this is called in the firstRender during OnAfterRenderAsync.
+        /// </summary>
+        /// <param name="onAfterRender">Determines if this is called during OnAfterRenderAsync.</param>
+        /// <returns></returns>
+        protected virtual Task OnJSInteropReadyAsync(bool onAfterRender)
+        {
+            return Task.CompletedTask;
         }
 
         protected virtual Task OnElementReferenceChangedAsync()
@@ -124,6 +145,14 @@ namespace BlazorComponent
         }
 
         protected virtual void SetComponentClass()
+        {
+        }
+
+        /// <summary>
+        /// Register watchers at the first render.
+        /// </summary>
+        /// <param name="watcher"></param>
+        protected virtual void RegisterWatchers(PropertyWatcher watcher)
         {
         }
 
