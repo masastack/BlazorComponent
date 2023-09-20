@@ -12,6 +12,11 @@ class SwiperProxy {
     swiperOptions: SwiperOptions,
     dotnetHelper: DotNet.DotNetObject
   ) {
+    if (!el) {
+      dotnetHelper && dotnetHelper['dispose'] && dotnetHelper['dispose']();
+      return
+    }
+
     if (el._swiper) {
       el._swiper.instance.destroy(true);
       delete el["_swiper"];
@@ -49,7 +54,7 @@ class SwiperProxy {
 
   dispose() {
     if (this.dotnetHelper["dispose"]) {
-      this.swiper.destroy(true);
+      this.swiper && this.swiper.destroy(true);
       this.dotnetHelper["dispose"]();
     }
   }
