@@ -5,7 +5,7 @@
 @typeparam TColumnItemValue
 
 <div class="@CssProvider.GetClass("view")" style="@CssProvider.GetStyle("view")" @ontouchmove:preventDefault>
-    <CascadingValue Value="this">
+    <CascadingValue Value="this" IsFixed>
         @foreach (var (item, columnIndex) in FormattedColumns.Select((item, index) => (item, index)))
         {
             <BMobilePickerColumn TColumn="TColumn"
