@@ -71,7 +71,7 @@ class DrawflowProxy {
     html: string
   ) {
     if (this.editor.editor_mode == "fixed") {
-      return;
+      return null;
     }
 
     const posX =
@@ -104,7 +104,7 @@ class DrawflowProxy {
       false
     );
 
-    return nodeId;
+    return nodeId.toString();
   }
 
   removeNodeId(id: string) {
