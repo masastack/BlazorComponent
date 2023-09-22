@@ -14,7 +14,6 @@ namespace Microsoft.Extensions.DependencyInjection
             }
 
             services.TryAddScoped<LocalStorage>();
-            services.TryAddScoped<DomEventJsInterop>();
             services.TryAddScoped<Document>();
             services.TryAddScoped(serviceProvider => new Window(serviceProvider.GetRequiredService<Document>()));
             services.TryAddScoped<IPopupProvider, PopupProvider>();

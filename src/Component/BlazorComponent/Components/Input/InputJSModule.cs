@@ -71,12 +71,12 @@ public class InputJSModule : JSModule
 
     public override async ValueTask DisposeAsync()
     {
-        await base.DisposeAsync();
-
         _isDisposed = true;
 
         _selfReference?.Dispose();
 
-        _instance.TryDisposeAsync();
+        await _instance.TryDisposeAsync();
+
+        await base.DisposeAsync();
     }
 }

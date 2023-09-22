@@ -1,9 +1,9 @@
 ﻿namespace BlazorComponent
 {
-    public partial class BTabs : BDomComponentBase, ITabs, IAncestorRoutable
+    public partial class BTabs : BDomComponentBase, ITabs, IAncestorRoutable, IAsyncDisposable
     {
         [Inject]
-        private DomEventJsInterop? DomEventJsInterop { get; set; }
+        protected IResizeJSModule ResizeJSModule { get; set; } = null!;
 
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
@@ -105,10 +105,7 @@
 
             if (firstRender)
             {
-                if (Ref.TryGetSelector(out var selector))
-                {
-                    DomEventJsInterop?.ResizeObserver(selector, OnResize);
-                }
+                await ResizeJSModule.ObserverAsync(Ref, OnResize);
 
                 await CallSlider();
             }
@@ -169,6 +166,22 @@
             }
 
             await CallSlider();
+        }
+
+        async ValueTask IAsyncDisposable.DisposeAsync()
+        {
+            try
+            {
+                await ResizeJSModule.UnobserveAsync(Ref);
+            }
+            catch (InvalidOperationException)
+            {
+                // ignored
+            }
+            catch (JSDisconnectedException)
+            {
+                // ignored
+            }
         }
     }
 }

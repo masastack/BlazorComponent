@@ -43,6 +43,7 @@ public abstract class JSModule : IAsyncDisposable
         if (_moduleTask.IsValueCreated)
         {
             var module = await _moduleTask.Value;
+
             try
             {
                 await module.DisposeAsync();

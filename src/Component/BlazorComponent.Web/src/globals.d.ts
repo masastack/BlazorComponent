@@ -159,5 +159,15 @@ declare global {
       instance: any;
       handle: DotNet.DotNetObject;
     };
+    _resizeObserver: {
+      observer: ResizeObserver;
+      handle: DotNet.DotNetObject;
+    };
+  }
+
+  namespace DotNet {
+    interface DotNetObject {
+      dispose(): void;
+    }
   }
 }
