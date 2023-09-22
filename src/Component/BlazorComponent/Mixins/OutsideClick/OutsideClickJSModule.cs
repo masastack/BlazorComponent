@@ -45,13 +45,13 @@ public class OutsideClickJSModule : JSModule
 
     public override async ValueTask DisposeAsync()
     {
-        await base.DisposeAsync();
-
         _selfReference?.Dispose();
 
         if (_instance is not null)
         {
             await _instance.DisposeAsync();
         }
+
+        await base.DisposeAsync();
     }
 }

@@ -2,7 +2,7 @@
 
 namespace BlazorComponent;
 
-public partial class BInfiniteScroll : BDomComponentBase
+public partial class BInfiniteScroll : BDomComponentBase, IAsyncDisposable
 {
     [Parameter, EditorRequired]
     public EventCallback<InfiniteScrollLoadEventArgs> OnLoad { get; set; }
@@ -154,6 +154,23 @@ public partial class BInfiniteScroll : BDomComponentBase
 
             Logger.LogWarning(e, "Failed to load more");
             StateHasChanged();
+        }
+    }
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        try
+        {
+            if (_parentSelector is null)
+            {
+                return;
+            }
+
+            await Js.RemoveHtmlElementEventListener(_parentSelector, "scroll");
+        }
+        catch (JSDisconnectedException)
+        {
+            // ignored
         }
     }
 }
