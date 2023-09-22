@@ -14,6 +14,11 @@ function observe(
     throw new Error("the handle cannot be null");
   }
 
+  if (!el) {
+    handle.dispose();
+    return;
+  }
+
   const once = options?.once ?? false;
   const standardOptions = formatToStandardOptions(options);
 
@@ -37,7 +42,7 @@ function observe(
   el["_observe"] = Object(el["_observe"]);
   el["_observe"] = { handle, observer };
 
-  observer.observe(el);
+    observer.observe(el);
 }
 
 function unobserve(el: HTMLElement) {
