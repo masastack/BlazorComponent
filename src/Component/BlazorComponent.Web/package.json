@@ -26,7 +26,8 @@
     "dev:drawflow": "rollup --config rollup.config.drawflow.ts --watch",
     "build:drawflow": "rollup --config rollup.config.drawflow.ts",
     "build:swiper": "rollup --config rollup.config.swiper.ts",
-    "build:intersect": "rollup --config rollup.config.intersect.ts"
+    "build:intersect": "rollup --config rollup.config.intersect.ts",
+    "build:resize": "rollup --config rollup.config.resize.ts"
   },
   "author": "",
   "license": "MIT",
@@ -37,13 +38,14 @@
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@rollup/plugin-replace": "^5.0.1",
     "@rollup/plugin-typescript": "^8.4.0",
-    "@types/drawflow": "^0.0.5",
     "@types/blazor__javascript-interop": "^3.1.4",
+    "@types/drawflow": "^0.0.5",
     "@types/echarts": "^4.9.16",
     "@types/node": "^18.7.14",
     "drawflow": "^0.0.59",
     "gridstack": "^7.2.1",
-    "lodash.kebabcase": "^4.1.1",
+    "just-debounce-it": "^3.2.0",
+    "just-throttle": "^4.2.0",
     "markdown-it": "^13.0.1",
     "markdown-it-anchor": "^8.6.5",
     "markdown-it-attrs": "^4.1.4",
@@ -58,5 +60,6 @@
     "swiper": "^10.2.0",
     "tslib": "^2.4.0",
     "typescript": "^4.8.2"
-  }
+  },
+  "dependencies": {}
 }

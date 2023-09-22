@@ -5,11 +5,11 @@ import resolve from "@rollup/plugin-node-resolve";
 import typescript from "@rollup/plugin-typescript";
 
 export default defineConfig({
-  input: "./src/main.ts",
+  input: "./src/mixins/resize/index.ts",
   output: [
     {
-      file: "../BlazorComponent/wwwroot/js/blazor-component.js",
-      format: "iife",
+      file: "../../../../MASA.Blazor/wwwroot/js/resize.js",
+      format: "esm",
       sourcemap: true,
     },
   ],
