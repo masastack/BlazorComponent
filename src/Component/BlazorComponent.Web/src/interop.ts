@@ -1,3 +1,6 @@
+import debounceIt from "just-debounce-it";
+import throttle from "just-throttle";
+
 import registerDirective from "./directive/index";
 import { parseDragEvent, parseTouchEvent, touchEvents } from "./events/EventType";
 import { registerExtraEvents } from "./events/index";
@@ -125,7 +128,13 @@ export function getBoundingClientRect(element, attach = "body") {
   return result;
 }
 
-var htmlElementEventListenerConfigs: { [prop: string]: any[] } = {}
+var htmlElementEventListenerConfigs: { [prop: string]: HtmlElementEventListenerConfig[] } = {}
+
+type HtmlElementEventListenerConfig = {
+  listener?: (args: any) => void;
+  options?: any;
+  handle?: DotNet.DotNetObject;
+}
 
 export function addHtmlElementEventListener<K extends keyof HTMLElementTagNameMap>(
   selector: "window" | "document" | K,
@@ -146,7 +155,7 @@ export function addHtmlElementEventListener<K extends keyof HTMLElementTagNameMa
   var key = extras?.key || `${selector}:${type}`;
 
   //save for remove
-  var config = {};
+  const config: HtmlElementEventListenerConfig = {};
 
   var listener = (e: any): void => {
     if (extras?.stopPropagation) {
@@ -192,28 +201,15 @@ export function addHtmlElementEventListener<K extends keyof HTMLElementTagNameMa
   };
 
   if (extras?.debounce && extras.debounce > 0) {
-    let timeout;
-    config["listener"] = function (args: any) {
-      clearTimeout(timeout)
-      timeout = setTimeout(() => listener(args), extras.debounce);
-    }
-  }
-  else if (extras?.throttle && extras.throttle > 0) {
-    let throttled: boolean;
-    config["listener"] = function (args: any) {
-      if (!throttled) {
-        listener(args)
-        throttled = true;
-        setTimeout(() => {
-          throttled = false;
-        }, (extras?.throttle ?? 0));
-      }
-    }
+    config.listener = debounceIt(listener, extras.debounce)
+  } else if (extras?.throttle && extras.throttle > 0) {
+    config.listener = throttle(listener, extras.throttle, { trailing: true })
   } else {
-    config["listener"] = listener;
+    config.listener = listener;
   }
 
-  config['options'] = options;
+  config.options = options;
+  config.handle = invoker
 
   if (htmlElementEventListenerConfigs[key]) {
     htmlElementEventListenerConfigs[key].push(config);
@@ -222,7 +218,7 @@ export function addHtmlElementEventListener<K extends keyof HTMLElementTagNameMa
   }
 
   if (htmlElement) {
-    htmlElement.addEventListener(type, config["listener"], options);
+    htmlElement.addEventListener(type, config.listener, config.options);
   }
 }
 
@@ -243,7 +239,8 @@ export function removeHtmlElementEventListener(selector, type, k?: string) {
 
   if (configs) {
     configs.forEach(item => {
-      htmlElement?.removeEventListener(type, item["listener"], item['options']);
+      item.handle.dispose();
+      htmlElement?.removeEventListener(type, item.listener, item.options);
     });
 
     htmlElementEventListenerConfigs[k] = []
@@ -754,40 +751,6 @@ export function enablePreventDefaultForEvent(element: any, event: string, condit
   }
 }
 
-export function resizeObserver(selector: string, invoker: DotNet.DotNetObject) {
-  var el = document.querySelector(selector);
-  if (!el) return;
-
-  const resizeObserver = new ResizeObserver((entries => {
-    const dimensions = [];
-    for (var entry of entries) {
-      const dimension = entry.contentRect;
-      dimensions.push(dimension);
-    }
-    invoker.invokeMethodAsync('Invoke', dimensions);
-  }));
-
-  resizeObserver.observe(el);
-}
-
-export function intersectionObserver(selector: string, invokers: DotNet.DotNetObject[]) {
-  var el = document.querySelector(selector);
-  if (!el) return;
-
-  const observer = new IntersectionObserver((
-    entries: IntersectionObserverEntry[] = [],
-    observer: IntersectionObserver
-  ) => {
-    if (entries.some(e => e.isIntersecting)) {
-      invokers.forEach(item => {
-        item.invokeMethodAsync('Invoke')
-      })
-    }
-  })
-
-  observer.observe(el)
-}
-
 export function getBoundingClientRects(selector) {
   var elements = document.querySelectorAll(selector);
 
@@ -888,7 +851,8 @@ function registerPasteWithData(customEventName) {
 export function registerTextFieldOnMouseDown(element, inputElement, callback) {
   if (!element || !inputElement) return
 
-  element.addEventListener('mousedown', (e: MouseEvent) => {
+  addHtmlElementEventListener
+  const listener = (e: MouseEvent) => {
     const target = e.target;
     const inputDom = getDom(inputElement);
     if (target !== inputDom) {
@@ -918,7 +882,30 @@ export function registerTextFieldOnMouseDown(element, inputElement, callback) {
 
       callback.invokeMethodAsync('Invoke', mouseEventArgs);
     }
-  })
+  };
+
+  element.addEventListener('mousedown', listener)
+
+  const config: HtmlElementEventListenerConfig = {
+    listener,
+    handle: callback
+  };
+
+  const key =`registerTextFieldOnMouseDown_${getBlazorId(element)}`;
+  htmlElementEventListenerConfigs[key] = [config]
+}
+
+export function unregisterTextFieldOnMouseDown(element: HTMLElement) {
+  const key =`registerTextFieldOnMouseDown_${getBlazorId(element)}`;
+  const configs = htmlElementEventListenerConfigs[key]
+  if (configs && configs.length) {
+    configs.forEach(item => {
+      item.handle.dispose();
+      if (element) {
+        element.removeEventListener("mousedown", item.listener);
+      }
+    })
+  }
 }
 
 export function containsActiveElement(selector) {
@@ -1086,13 +1073,23 @@ export function invokeMultipleMethod(windowProps, documentProps, hasActivator, a
 
 export function registerOTPInputOnInputEvent(elementList, callback) {
   for (let i = 0; i < elementList.length; i++) {
-    elementList[i].addEventListener('input', (e: Event) => otpInputOnInputEvent(e, i, elementList, callback));
-    elementList[i].addEventListener('focus', (e: Event) => otpInputFocusEvent(e, i, elementList));
-    elementList[i].addEventListener('keyup', (e: KeyboardEvent) => otpInputKeyupEvent(e, i, elementList, callback));
+    const inputListener = (e: Event) => otpInputOnInputEvent(e, i, elementList, callback);
+    const focusListener = (e: Event) => otpInputFocusEvent(e, i, elementList);
+    const keyupListener =(e: KeyboardEvent) => otpInputKeyupEvent(e, i, elementList, callback);
+
+    elementList[i].addEventListener('input', inputListener);
+    elementList[i].addEventListener('focus', focusListener);
+    elementList[i].addEventListener('keyup', keyupListener);
+
+    elementList[i]._optInput = {
+      inputListener,
+      focusListener,
+      keyupListener
+    }
   }
 }
 
-export function otpInputKeyupEvent(e: KeyboardEvent, otpIdx: number, elementList, callback) {
+function otpInputKeyupEvent(e: KeyboardEvent, otpIdx: number, elementList, callback) {
   e.preventDefault();
   const eventKey = e.key;
   if (eventKey === 'ArrowLeft' || eventKey === 'Backspace') {
@@ -1113,7 +1110,7 @@ export function otpInputKeyupEvent(e: KeyboardEvent, otpIdx: number, elementList
   }
 }
 
-export function otpInputFocus(focusIndex: number, elementList) {
+function otpInputFocus(focusIndex: number, elementList) {
   if (focusIndex < 0) {
     otpInputFocus(0, elementList);
   }
@@ -1128,14 +1125,14 @@ export function otpInputFocus(focusIndex: number, elementList) {
   }
 }
 
-export function otpInputFocusEvent(e: Event, otpIdx: number, elementList) {
+function otpInputFocusEvent(e: Event, otpIdx: number, elementList) {
   const element = getDom(elementList[otpIdx]) as HTMLInputElement;
   if (element && document.activeElement === element) {
     element.select();
   }
 }
 
-export function otpInputOnInputEvent(e: Event, otpIdx: number, elementList, callback) {
+function otpInputOnInputEvent(e: Event, otpIdx: number, elementList, callback) {
   const target = e.target as HTMLInputElement;
   const value = target.value;
 
@@ -1149,6 +1146,17 @@ export function otpInputOnInputEvent(e: Event, otpIdx: number, elementList, call
         value: value
       }
       callback.invokeMethodAsync('Invoke', JSON.stringify(obj));
+    }
+  }
+}
+
+export function unregisterOTPInputOnInputEvent(elementList) {
+  for (let i = 0; i < elementList.length; i++) {
+    const el = elementList[i]
+    if(el && el._optInput) {
+      el.removeEventListener('input', el._optInput.inputListener)
+      el.removeEventListener('focus', el._optInput.focusListener)
+      el.removeEventListener('keyup', el._optInput.keyupListener)
     }
   }
 }
@@ -1274,7 +1282,9 @@ export function registerDragEvent(el: HTMLElement, dataKey?: string) {
       }
     };
     const key = `${blazorId}:dragstart`;
-    htmlElementEventListenerConfigs[key] = [listener];
+    htmlElementEventListenerConfigs[key] = [{
+      listener
+    }];
     el.addEventListener("dragstart", listener);
   }
 }
@@ -1284,8 +1294,8 @@ export function unregisterDragEvent(el: HTMLElement) {
   if (blazorId) {
     const key = `${blazorId}:dragstart`;
     if (htmlElementEventListenerConfigs[key]) {
-      htmlElementEventListenerConfigs[key].forEach((listener) => {
-        el.removeEventListener("dragstart", listener);
+      htmlElementEventListenerConfigs[key].forEach((config) => {
+        el.removeEventListener("dragstart", config.listener);
       });
     }
   }
