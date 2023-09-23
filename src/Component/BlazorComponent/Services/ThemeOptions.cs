@@ -1,48 +1,29 @@
 ﻿namespace BlazorComponent;
 
-public class ThemeOptions
+public class Palette
 {
-    public string? CombinePrefix { get; set; }
+    public virtual string? CombinePrefix { get; set; }
 
-    public string? Primary { get; set; }
+    public virtual string? Primary { get; set; }
 
-    public string? Secondary { get; set; }
+    public virtual string? Secondary { get; set; }
 
-    public string? Accent { get; set; }
+    public virtual string? Accent { get; set; }
 
-    public string? Error { get; set; }
+    public virtual string? Error { get; set; }
 
-    public string? Info { get; set; }
+    public virtual string? Info { get; set; }
 
-    public string? Success { get; set; }
+    public virtual string? Success { get; set; }
 
-    public string? Warning { get; set; }
+    public virtual string? Warning { get; set; }
 
-    public Dictionary<string, string> UserDefined { get; } = new();
+    public virtual Dictionary<string, string> UserDefined { get; } = new();
 }
 
-public class Theme
+public class Theme(Palette darkPalette, Palette lightPalette)
 {
-    public Theme(bool dark, ThemeOptions lightTheme, ThemeOptions darkTheme)
-    {
-        Dark = dark;
-        Themes = new Themes(lightTheme, darkTheme);
-    }
+    public Palette DarkPalette { get; set; } = darkPalette;
 
-    public bool Dark { get; set; }
-
-    public Themes Themes { get; }
-}
-
-public class Themes
-{
-    public Themes(ThemeOptions light, ThemeOptions dark)
-    {
-        Light = light;
-        Dark = dark;
-    }
-
-    public ThemeOptions Dark { get; }
-
-    public ThemeOptions Light { get; }
+    public Palette LightPalette { get; set; } = lightPalette;
 }

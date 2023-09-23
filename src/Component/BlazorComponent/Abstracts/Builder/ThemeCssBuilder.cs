@@ -1,8 +1,8 @@
 ﻿namespace BlazorComponent
 {
-    public class ThemeCssBuilder
+    public static class ThemeCssBuilder
     {
-        public string Build(ThemeOptions theme)
+        public static string Build(Palette theme)
         {
             var combinePrefix = theme.CombinePrefix;
             combinePrefix ??= string.Empty;
@@ -10,14 +10,13 @@
 
             var lstCss = new List<string>()
             {
-                $"{combinePrefix}a {{ color: {theme.Primary}; }}",
-                Build(combinePrefix, nameof(theme.Primary).ToLowerInvariant(), theme.Primary),
-                Build(combinePrefix, nameof(theme.Secondary).ToLowerInvariant(), theme.Secondary),
-                Build(combinePrefix, nameof(theme.Accent).ToLowerInvariant(), theme.Accent),
-                Build(combinePrefix, nameof(theme.Error).ToLowerInvariant(), theme.Error),
-                Build(combinePrefix, nameof(theme.Info).ToLowerInvariant(), theme.Info),
-                Build(combinePrefix, nameof(theme.Success).ToLowerInvariant(), theme.Success),
-                Build(combinePrefix, nameof(theme.Warning).ToLowerInvariant(), theme.Warning),
+                $":root{{--masa-palette-primary:{theme.Primary};",
+                $"--masa-palette-secondary:{theme.Secondary};",
+                $"--masa-palette-accent:{theme.Accent};",
+                $"--masa-palette-error:{theme.Error};",
+                $"--masa-palette-info:{theme.Info};",
+                $"--masa-palette-success:{theme.Success};",
+                $"--masa-palette-warning:{theme.Warning};}}",
             };
 
             theme.UserDefined?.ForEach(kvp => { lstCss.Add(Build(combinePrefix, kvp.Key.ToLowerInvariant(), kvp.Value)); });
@@ -25,7 +24,7 @@
             return string.Concat(lstCss);
         }
 
-        private string Build(string combinePrefix, string selector, string color)
+        private static string Build(string combinePrefix, string selector, string? color)
         {
             return @$"
                 {combinePrefix}.{selector} {{
