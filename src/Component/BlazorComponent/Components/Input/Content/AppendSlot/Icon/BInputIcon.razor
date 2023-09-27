@@ -4,12 +4,19 @@
 @inherits ComponentPartBase<TInput>
 
 <div class="@CssProvider.GetClass(Type)" @ref="Element">
+    @{
+        var attrs = GetAttributes(typeof(BIcon), Type);
+        if (Type == "clear-icon")
+        {
+            attrs.Add("tabindex", -1);
+        }
+    }
     <BIcon OnClick="OnClick"
            OnClickPreventDefault="OnClick.HasDelegate"
            OnClickStopPropagation="OnClick.HasDelegate"
            OnMouseupPreventDefault="OnClick.HasDelegate"
            OnMouseupStopPropagation="OnClick.HasDelegate"
-           @attributes="@GetAttributes(typeof(BIcon), Type)">
+           @attributes="@attrs">
         @Icon
     </BIcon>
 </div>
