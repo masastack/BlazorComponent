@@ -1314,6 +1314,7 @@ export function resizableDataTable(dataTable: HTMLElement) {
   for (var i = 0; i < cols.length; i++) {
     const col: any = cols[i];
     const colResizeDiv: HTMLDivElement = col.querySelector(".m-data-table-header__col-resize");
+    if (!colResizeDiv) continue
     colResizeDiv.style.height = tableHeight + "px"
 
     let minWidth = (col.firstElementChild as HTMLElement).offsetWidth; // width of span
