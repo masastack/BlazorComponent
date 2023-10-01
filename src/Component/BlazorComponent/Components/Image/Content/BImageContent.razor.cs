@@ -7,4 +7,8 @@ public partial class BImageContent<TImage> : ComponentPartBase<TImage> where TIm
     public string? LazySrc => Component.LazySrc;
 
     public string? Gradient => Component.Gradient;
+
+    public bool IsLoading => Component.IsLoading;
+
+    public string? Transition => Component.Transition;
 }

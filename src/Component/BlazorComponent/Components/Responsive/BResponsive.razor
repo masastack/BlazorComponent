@@ -5,6 +5,7 @@
     <Element id="@Id"
              class="@CssProvider.GetClass()"
              style="@CssProvider.GetStyle()"
+             ReferenceCaptureAction="r => Ref = r"
              @attributes="@Attributes">
         @RenderPart(typeof(BResponsiveBody<>))
     </Element>

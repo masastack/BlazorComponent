@@ -19,4 +19,6 @@ public interface IResponsive : IHasProviderComponent
     StringNumber? MinWidth { get; }
 
     RenderFragment? ChildContent { get; }
+
+    StringNumber? ComputedAspectRatio { get; }
 }

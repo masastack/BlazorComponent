@@ -13,5 +13,7 @@
         string? Src { get; }
 
         string? Gradient { get; }
+
+        string? Transition { get; }
     }
 }
