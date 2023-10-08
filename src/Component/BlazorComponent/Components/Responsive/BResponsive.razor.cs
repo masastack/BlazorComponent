@@ -57,4 +57,6 @@ public partial class BResponsive : BDomComponentBase, IResponsive
             return CascadingIsDark;
         }
     }
+
+    public virtual StringNumber? ComputedAspectRatio => AspectRatio;
 }

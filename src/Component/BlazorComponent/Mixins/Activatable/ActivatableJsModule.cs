@@ -81,13 +81,20 @@ public class ActivatableJsModule : JSModule
 
     public override async ValueTask DisposeAsync()
     {
-        await base.DisposeAsync();
-
-        _selfReference?.Dispose();
-
-        if (_instance != null)
+        try
         {
-            await _instance.DisposeAsync();
+            _selfReference?.Dispose();
+
+            if (_instance != null)
+            {
+                await _instance.DisposeAsync();
+            }
+
+            await base.DisposeAsync();
+        }
+        catch (JSDisconnectedException)
+        {
+            // ignored
         }
     }
 }

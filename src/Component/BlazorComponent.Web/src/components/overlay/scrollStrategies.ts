@@ -1,5 +1,5 @@
-import { convertToUnit } from "utils/helper"
 import { getScrollParents, hasScrollbar } from "utils/getScrollParent";
+import { convertToUnit } from "utils/helper";
 
 export interface StrategyProps {
   scrollStrategy: "none" | "block" // | "close" | "reposition"
@@ -13,6 +13,10 @@ class ScrollStrategies {
   root: HTMLElement;
 
   constructor(root: HTMLElement, contentEl: HTMLElement, props: StrategyProps) {
+    if (!root) {
+      return
+    }
+
     this.root = root;
     const offsetParent = root.offsetParent
 
@@ -46,7 +50,7 @@ class ScrollStrategies {
       el.classList.remove('overflow-y-hidden')
       el.style.removeProperty("padding-inline-end")
     })
-    
+
     if (this.scrollableParent) {
       this.root.classList.remove('v-overlay--scroll-blocked')
       this.root.style.removeProperty("padding-inline-end")

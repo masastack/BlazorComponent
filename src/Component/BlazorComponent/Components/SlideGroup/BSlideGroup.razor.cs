@@ -1,6 +1,6 @@
 ﻿namespace BlazorComponent
 {
-    public partial class BSlideGroup : BItemGroup, ISlideGroup
+    public partial class BSlideGroup : BItemGroup, ISlideGroup, IAsyncDisposable
     {
         public BSlideGroup() : base(GroupType.SlideGroup)
         {
@@ -11,7 +11,7 @@
         }
 
         [Inject]
-        protected DomEventJsInterop? DomEventJsInterop { get; set; }
+        protected IResizeJSModule ResizeJSModule { get; set; } = null!;
 
         [Parameter]
         public bool CenterActive { get; set; }
@@ -36,7 +36,7 @@
         private bool _prevIsOverflowing;
         private CancellationTokenSource? _cts;
 
-        protected virtual bool RTL => false; 
+        protected virtual bool RTL => false;
 
         protected bool IsMobile { get; set; }
 
@@ -95,10 +95,7 @@
 
             if (firstRender)
             {
-                if (Ref.TryGetSelector(out var selector))
-                {
-                    DomEventJsInterop?.ResizeObserver(selector, OnResize);
-                }
+                await ResizeJSModule.ObserverAsync(Ref, OnResize);
             }
 
             var needSetWidths = false;
@@ -173,10 +170,10 @@
                     {
                         return str switch
                         {
-                            "always" => true, // Always show arrows on desktop & mobile
+                            "always"  => true, // Always show arrows on desktop & mobile
                             "desktop" => !IsMobile, // Always show arrows on desktop
-                            "mobile" => IsMobile || (IsOverflowing || Math.Abs(ScrollOffset) > 0), // Show arrows on mobile when overflowing.
-                            _ => hasAffixes
+                            "mobile"  => IsMobile || (IsOverflowing || Math.Abs(ScrollOffset) > 0), // Show arrows on mobile when overflowing.
+                            _         => hasAffixes
                         };
                     },
                     @bool =>
@@ -184,7 +181,7 @@
                         return @bool switch
                         {
                             true => IsOverflowing || Math.Abs(ScrollOffset) > 0, // Always show on mobile
-                            _ => hasAffixes
+                            _    => hasAffixes
                         };
                     });
             }
@@ -305,6 +302,22 @@
             }
 
             await SetWidths();
+        }
+
+        async ValueTask IAsyncDisposable.DisposeAsync()
+        {
+            try
+            {
+                await ResizeJSModule.UnobserveAsync(Ref);
+            }
+            catch (InvalidOperationException)
+            {
+                // ignored
+            }
+            catch (JSDisconnectedException)
+            {
+                // ignored
+            }
         }
     }
 }

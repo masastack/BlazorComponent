@@ -5,24 +5,28 @@ declare const Swiper: SwiperClass;
 
 class SwiperProxy {
   swiper: SwiperClass;
-  dotnetHelper: DotNet.DotNetObject;
+  handle: DotNet.DotNetObject;
 
   constructor(
     el: HTMLElement,
     swiperOptions: SwiperOptions,
-    dotnetHelper: DotNet.DotNetObject
+    handle: DotNet.DotNetObject
   ) {
+    if (!handle) {
+      throw new Error("the handle from .NET cannot be null");
+    }
+
     if (!el) {
-      dotnetHelper && dotnetHelper['dispose'] && dotnetHelper['dispose']();
-      return
+      handle.dispose();
+      return;
     }
 
     if (el._swiper) {
       el._swiper.instance.destroy(true);
-      delete el["_swiper"];
+      delete el._swiper;
     }
 
-    this.dotnetHelper = dotnetHelper;
+    this.handle = handle;
 
     swiperOptions ??= {};
 
@@ -36,7 +40,7 @@ class SwiperProxy {
 
     el._swiper = {
       instance: this.swiper,
-      handle: dotnetHelper,
+      handle: handle,
     };
   }
 
@@ -53,15 +57,13 @@ class SwiperProxy {
   }
 
   dispose() {
-    if (this.dotnetHelper["dispose"]) {
-      this.swiper && this.swiper.destroy(true);
-      this.dotnetHelper["dispose"]();
-    }
+    this.swiper && this.swiper.destroy(true);
+    this.handle.dispose();
   }
 
   async onRealIndexChange(e: SwiperClass, that: SwiperProxy) {
-    if (that.dotnetHelper) {
-      await that.dotnetHelper.invokeMethodAsync("OnIndexChanged", e.realIndex);
+    if (that.handle) {
+      await that.handle.invokeMethodAsync("OnIndexChanged", e.realIndex);
     }
   }
 }

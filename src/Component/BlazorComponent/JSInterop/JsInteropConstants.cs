@@ -82,15 +82,13 @@
 
         public static string RegisterTextFieldOnMouseDown => $"{JsInteropFuncNamePrefix}registerTextFieldOnMouseDown";
 
+        public static string UnregisterTextFieldOnMouseDown => $"{JsInteropFuncNamePrefix}unregisterTextFieldOnMouseDown";
+
         public static string UpsertThemeStyle => $"{JsInteropFuncNamePrefix}upsertThemeStyle";
 
         public static string GetImageDimensions => $"{JsInteropFuncNamePrefix}getImageDimensions";
 
         public static string EnablePreventDefaultForEvent => $"{JsInteropFuncNamePrefix}enablePreventDefaultForEvent";
-
-        public static string ResizeObserver => $"{JsInteropFuncNamePrefix}resizeObserver";
-
-        public static string IntersectionObserver => $"{JsInteropFuncNamePrefix}intersectionObserver";
 
         public static string GetBoundingClientRects => $"{JsInteropFuncNamePrefix}getBoundingClientRects";
 
@@ -109,6 +107,8 @@
         public static string ContainsActiveElement => $"{JsInteropFuncNamePrefix}containsActiveElement";
 
         public static string RegisterOTPInputOnInputEvent => $"{JsInteropFuncNamePrefix}registerOTPInputOnInputEvent";
+
+        public static string UnregisterOTPInputOnInputEvent => $"{JsInteropFuncNamePrefix}unregisterOTPInputOnInputEvent";
 
         public static string CopyChild => $"{JsInteropFuncNamePrefix}copyChild";
 

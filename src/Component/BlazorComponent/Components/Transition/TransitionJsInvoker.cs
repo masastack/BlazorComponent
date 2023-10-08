@@ -28,15 +28,15 @@ public class TransitionJsInvoker : IAsyncDisposable
     {
         try
         {
+            _objRef?.Dispose();
+
             if (_module is not null)
             {
                 _isDisposed = true;
                 await _module.DisposeAsync();
             }
-
-            _objRef?.Dispose();
         }
-        catch (Exception)
+        catch (JSDisconnectedException)
         {
             // ignored
         }

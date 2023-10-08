@@ -2,7 +2,7 @@
 
 namespace BlazorComponent
 {
-    public partial class BOtpInput : BDomComponentBase, IOtpInput
+    public partial class BOtpInput : BDomComponentBase, IOtpInput, IAsyncDisposable
     {
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
@@ -117,11 +117,13 @@ namespace BlazorComponent
             await base.OnParametersSetAsync();
         }
 
+        private DotNetObjectReference<Invoker<string>> _handle;
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
             {
-                await JsInvokeAsync(JsInteropConstants.RegisterOTPInputOnInputEvent, InputRefs, DotNetObjectReference.Create(new Invoker<string>(GetResultFromJs)));
+                _handle = DotNetObjectReference.Create(new Invoker<string>(GetResultFromJs));
+                await JsInvokeAsync(JsInteropConstants.RegisterOTPInputOnInputEvent, InputRefs, _handle);
             }
 
             await base.OnAfterRenderAsync(firstRender);
@@ -254,6 +256,19 @@ namespace BlazorComponent
                         await OnFinish.InvokeAsync(Value);
                     }
                 }
+            }
+        }
+
+        async ValueTask IAsyncDisposable.DisposeAsync()
+        {
+            try
+            {
+                _handle.Dispose();
+                await JsInvokeAsync(JsInteropConstants.UnregisterOTPInputOnInputEvent, InputRefs);
+            }
+            catch (JSDisconnectedException)
+            {
+                // ignored
             }
         }
     }
