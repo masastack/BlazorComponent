@@ -36,7 +36,7 @@ public class ComponentBemCssProvider
                 _                      => throw new ArgumentOutOfRangeException(nameof(blockOrElement), blockOrElement, null)
             };
 
-            var bemCssBuilder = new BemCssBuilder(be);
+            var bemCssBuilder = new BemCssBuilder(be, css.Data);
             cssAction?.Invoke(bemCssBuilder);
             css.Add(bemCssBuilder.GetClass());
         }, styleAction);
