@@ -162,7 +162,7 @@ export function addHtmlElementEventListener<K extends keyof HTMLElementTagNameMa
       e.stopPropagation();
     }
 
-    if (extras?.preventDefault) {
+    if ((typeof e.cancelable !== "boolean" || e.cancelable) && extras?.preventDefault) {
       e.preventDefault();
     }
 
