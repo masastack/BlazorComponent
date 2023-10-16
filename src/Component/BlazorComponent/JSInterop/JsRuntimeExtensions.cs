@@ -38,9 +38,9 @@ public static class JsRuntimeExtensions
         );
     }
 
-    public static async Task RemoveHtmlElementEventListener(this IJSRuntime jsRuntime, string selector, string type)
+    public static async Task RemoveHtmlElementEventListener(this IJSRuntime jsRuntime, string selector, string type, string? key = null)
     {
-        await jsRuntime.InvokeVoidAsync(JsInteropConstants.RemoveHtmlElementEventListener, selector, type);
+        await jsRuntime.InvokeVoidAsync(JsInteropConstants.RemoveHtmlElementEventListener, selector, type, key);
     }
 
     public static async Task ScrollTo(this IJSRuntime jsRuntime, string selector, double? top, double? left = null,
