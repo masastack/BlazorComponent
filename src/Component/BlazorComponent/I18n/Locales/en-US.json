@@ -85,6 +85,12 @@
       "closeTab": "Close tab",
       "closeTabConfirm": "Are you sure you want to close this tab ({0}) ?"
     },
+    "pullRefresh": {
+      "pullingText": "Pull to refresh",
+      "canReleaseText": "Release to refresh",
+      "loadingText": "Loading...",
+      "successText": "Succeed to refresh"
+    },
     "cron": {
       "period": {
         "second": "Per second",

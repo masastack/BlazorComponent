@@ -4,7 +4,7 @@ import throttle from "just-throttle";
 import registerDirective from "./directive/index";
 import { parseDragEvent, parseTouchEvent, touchEvents } from "./events/EventType";
 import { registerExtraEvents } from "./events/index";
-import { getBlazorId, getDom, getElementSelector } from "./utils/helper";
+import { canUseDom, getBlazorId, getDom, getElementSelector } from "./utils/helper";
 
 export function getZIndex(el?: Element | null): number {
   if (!el || el.nodeType !== Node.ELEMENT_NODE) return 0
@@ -621,6 +621,38 @@ export function getScroll() {
   return { x: window.pageXOffset, y: window.pageYOffset };
 }
 
+function isElement(node: Element) {
+  const ELEMENT_NODE_TYPE = 1;
+  return (
+    node.tagName !== "HTML" &&
+    node.tagName !== "BODY" &&
+    node.nodeType == ELEMENT_NODE_TYPE
+  )
+}
+
+export function getScrollParent(el: Element | undefined, root: HTMLElement | Window | undefined = undefined) {
+  root ??= canUseDom ? window : undefined;
+
+  let node = el;
+  while (node && node !== root && isElement(node)) {
+    const { overflowY } = window.getComputedStyle(node);
+    if (/scroll|auto|overlay/i.test(overflowY)) {
+      return node;
+    }
+
+    node = node.parentNode as Element;
+  }
+
+  return root;
+}
+
+export function getScrollTop(el: HTMLElement | Window): number {
+  const top = 'scrollTop' in el ? el.scrollTop : el.pageYOffset;
+
+  // iOS scroll bounce cause minus scrollTop
+  return Math.max(top, 0);
+}
+
 export function getInnerText(element) {
   let dom = getDom(element);
   return dom.innerText;
@@ -851,7 +883,6 @@ function registerPasteWithData(customEventName) {
 export function registerTextFieldOnMouseDown(element, inputElement, callback) {
   if (!element || !inputElement) return
 
-  addHtmlElementEventListener
   const listener = (e: MouseEvent) => {
     const target = e.target;
     const inputDom = getDom(inputElement);
