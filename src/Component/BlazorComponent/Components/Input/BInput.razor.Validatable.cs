@@ -75,11 +75,6 @@ namespace BlazorComponent
         private CancellationTokenSource? _cancellationTokenSource;
         private List<string>? _errorMessages;
 
-        /// <summary>
-        /// A flag to indicate whether the callback of value change is from immediate
-        /// </summary>
-        private bool _immediateCallbackForValueChange = true;
-
         protected virtual TValue DefaultValue => default;
 
         protected virtual IEnumerable<Func<TValue, StringBoolean>> InternalRules => Rules ?? Enumerable.Empty<Func<TValue, StringBoolean>>();
@@ -268,7 +263,7 @@ namespace BlazorComponent
             base.RegisterWatchers(watcher);
 
             watcher
-                .Watch<TValue>(nameof(Value), OnValueChanged, immediate: _immediateCallbackForValueChange)
+                .Watch<TValue>(nameof(Value), OnValueChanged, immediate: true)
                 .Watch<TValue>(nameof(LazyValue), OnLazyValueChange)
                 .Watch<TValue>(nameof(InternalValue), OnInternalValueChange)
                 .Watch<bool>(nameof(IsFocused), IsFocusedChangeCallback);
@@ -310,14 +305,7 @@ namespace BlazorComponent
 
             if (!isEqual)
             {
-                if (_immediateCallbackForValueChange)
-                {
-                    _immediateCallbackForValueChange = false;
-                }
-                else
-                {
-                    _internalValueChangingFromOnValueChanged = true;
-                }
+                _internalValueChangingFromOnValueChanged = true;
 
                 InternalValue = val;
             }
