@@ -30,6 +30,10 @@ class ScrollStrategies {
   }
 
   hideScroll() {
+    if (!this.scrollElements) {
+      return
+    }
+
     this.scrollElements.forEach((el, i) => {
       // review: less of the logic in Vuetify3 about offsetLeft and offsetTop
 
@@ -44,6 +48,10 @@ class ScrollStrategies {
   }
 
   showScroll() {
+    if (!this.scrollElements) {
+      return
+    }
+
     this.scrollElements.forEach((el) => {
       // review: less of the logic in Vuetify3 about offsetLeft and offsetTop
 
