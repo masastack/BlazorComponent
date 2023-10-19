@@ -6,6 +6,10 @@
 
         public static string GetDomInfo => $"{JsInteropFuncNamePrefix}getDomInfo";
 
+        public static string GetScrollParent => $"{JsInteropFuncNamePrefix}getScrollParent";
+
+        public static string GetScrollTop => $"{JsInteropFuncNamePrefix}getScrollTop";
+
         public static string TriggerEvent => $"{JsInteropFuncNamePrefix}triggerEvent";
 
         public static string GetBoundingClientRect => $"{JsInteropFuncNamePrefix}getBoundingClientRect";

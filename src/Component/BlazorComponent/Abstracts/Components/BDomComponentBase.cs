@@ -86,7 +86,7 @@ namespace BlazorComponent
 
         protected override void OnInitialized()
         {
-            Id ??= ComponentIdGenerator.Generate(this);
+            Id ??= ComponentIdGenerator.Generate(this); // TODO: v2 remove this?
             base.OnInitialized();
             SetComponentClass();
         }

@@ -85,6 +85,12 @@
       "closeTab": "关闭标签页",
       "closeTabConfirm": "您确定要关闭标签页（{0}）吗？"
     },
+    "pullRefresh": {
+      "pullingText": "下拉刷新",
+      "canReleaseText": "松开刷新",
+      "loadingText": "正在加载...",
+      "successText": "刷新成功"
+    },
     "cron": {
       "period": {
         "second": "每秒",
