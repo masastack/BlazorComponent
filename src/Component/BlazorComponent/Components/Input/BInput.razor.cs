@@ -48,10 +48,10 @@
         public EventCallback<MouseEventArgs> OnClick { get; set; }
 
         [Parameter]
-        public EventCallback<MouseEventArgs> OnMouseDown { get; set; }
+        public virtual EventCallback<MouseEventArgs> OnMouseDown { get; set; }
 
         [Parameter]
-        public EventCallback<MouseEventArgs> OnMouseUp { get; set; }
+        public virtual EventCallback<MouseEventArgs> OnMouseUp { get; set; }
 
         public ElementReference InputSlotElement { get; set; }
 
