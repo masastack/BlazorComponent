@@ -1,4 +1,4 @@
-import { getElementSelector } from "../utils/helper";
+import { getEventTarget } from "../utils/helper";
 import { parseDragEvent, parseMouseEvent, parseTouchEvent } from "./EventType";
 
 export function registerExtraMouseEvent(eventType: string, eventName: string) {
@@ -55,18 +55,7 @@ export function createSharedEventArgs(type: "mouse" | "touch", e: Event,) {
     }
   }
 
-  if (e.target) {
-    const target = e.target as HTMLElement;
-    const elementReferenceId = target.getAttributeNames().find(a => a.startsWith('_bl_'));
-    if (elementReferenceId) {
-      args.target['elementReferenceId'] = elementReferenceId
-      args.target['selector'] = `[${elementReferenceId}]`
-    } else {
-      args.target['selector'] = getElementSelector(target)
-    }
-
-    args.target['class'] = target.getAttribute('class')
-  }
+  args.target = getEventTarget(e.target);
 
   return args;
 }

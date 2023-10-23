@@ -165,6 +165,12 @@ declare global {
     };
   }
 
+  interface MbEventTarget {
+    elementReferenceId?: string;
+    selector?: string;
+    class?: string;
+  }
+
   namespace DotNet {
     interface DotNetObject {
       dispose(): void;
