@@ -1,3 +1,5 @@
+import { getEventTarget } from "utils/helper";
+
 interface IntersectionObserverOptions {
   rootSelector?: string;
   rootMargin?: string;
@@ -27,9 +29,15 @@ function observe(
       entries: IntersectionObserverEntry[] = [],
       observer: IntersectionObserver
     ) => {
-      const isIntersecting = entries.some((entry) => entry.isIntersecting);
+      const computedEntries = entries.map(entry => ({
+        isIntersecting: entry.isIntersecting,
+        target: getEventTarget(entry.target)
+      }));
+
+      const isIntersecting = computedEntries.some(e => e.isIntersecting);
+
       if (!once || isIntersecting) {
-        await handle.invokeMethodAsync("Invoke", { isIntersecting });
+        await handle.invokeMethodAsync("Invoke", { isIntersecting, entries: computedEntries });
       }
 
       if (isIntersecting && once) {
@@ -42,7 +50,7 @@ function observe(
   el["_observe"] = Object(el["_observe"]);
   el["_observe"] = { handle, observer };
 
-    observer.observe(el);
+  observer.observe(el);
 }
 
 function unobserve(el: HTMLElement) {
@@ -54,6 +62,24 @@ function unobserve(el: HTMLElement) {
   observe.observer.unobserve(el);
   observe.handle.dispose();
   delete el["_observe"];
+}
+
+function observeSelector(
+  selector: string,
+  handle: DotNet.DotNetObject,
+  options?: IntersectionObserverOptions
+) {
+  if (selector) {
+    const el = document.querySelector(selector) as HTMLElement;
+    el && observe(el, handle, options);
+  }
+}
+
+function unobserveSelector(selector: string) {
+  if (selector) {
+    const el = document.querySelector(selector) as HTMLElement;
+    el && unobserve(el);
+  }
 }
 
 function formatToStandardOptions(
@@ -72,4 +98,4 @@ function formatToStandardOptions(
   };
 }
 
-export { observe, unobserve };
+export { observe, unobserve, observeSelector, unobserveSelector };

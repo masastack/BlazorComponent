@@ -31,4 +31,9 @@ public static class NavigationManagerExtensions
     {
         return new Uri(navigationManager.Uri);
     }
+
+    public static string GetHash(this NavigationManager navigationManager)
+    {
+        return navigationManager.ToUri().Fragment;
+    } 
 }
