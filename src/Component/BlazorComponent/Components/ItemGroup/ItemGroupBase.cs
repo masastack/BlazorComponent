@@ -109,6 +109,7 @@ namespace BlazorComponent
         public virtual void Unregister(IGroupable item)
         {
             Items.Remove(item);
+            _registeredItemsIndex--;
         }
 
         private async Task UpdateMandatoryAsync(bool last = false)
