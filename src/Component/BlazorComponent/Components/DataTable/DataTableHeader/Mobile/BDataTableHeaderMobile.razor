@@ -3,58 +3,35 @@
 @inherits ComponentPartBase<TDataTableHeader>
 
 <thead class="@CssProvider.GetClass()">
-<tr>
-    <th>
-        <div class="@CssProvider.GetClass("header-mobile__wrapper")">
-            @{
-                var header = Headers.FirstOrDefault(h => h.Value == "data-table-select");
-                if (header is not null && !SingleSelect)
-                {
-                    <div class="@CssProvider.GetClass("header-mobile__select") @header.Class">
-                        @RenderPart(typeof(BDataTableHeaderSelectAll<>))
-                    </div>
-                }
+    <tr>
+        @{
+            List<RenderFragment> children = new();
 
-                var sortHeaders = Headers.Where(h => h.Sortable && h.Value != "data-table-select").ToList();
-
-                if (!DisableSort && sortHeaders.Any())
-                {
-                    RenderFragment<SelectSelectionProps<DataTableHeader>> selectionContent = context =>
-                        @<BChip @attributes="@GetAttributes(typeof(BChip))"
-                                OnClick="() => Component.HandleOnHeaderColClick(context.Item.Value)"
-                                OnClickStopPropagation>
-                            @if (HeaderColContent != null)
-                            {
-                                @HeaderColContent(context.Item)
-                            }
-                            else
-                            {
-                                @context.Item.Text
-                            }
-
-                            <div class="@CssProvider.GetClass("header-mobile__select-chips", data: context.Item)">
-                                @RenderPart(typeof(BDataTableHeaderSortIcon<>))
-                            </div>
-                        </BChip>;
-
-                    RenderFragment<SelectListItemProps<DataTableHeader>> itemContent = context =>
-                        @<BListItemContent>
-                            @if(HeaderColContent != null)
-                            {
-                                @HeaderColContent(context.Item!)
-                            }
-                            else
-                            {
-                                @context.Item!.Text
-                            }
-                        </BListItemContent>;
-
-                    @RenderPart(typeof(BDataTableHeaderSortSelect<>), sortHeaders, itemContent, selectionContent, MultiSort, "items")
-                }
+            var header = Headers.FirstOrDefault(h => h.Value == "data-table-select");
+            if (header is not null && !SingleSelect)
+            {
+                children.Add(GenSelectContent(header));
             }
-        </div>
-    </th>
-</tr>
+
+            var sortHeaders = Headers.Where(h => h.Sortable && h.Value != "data-table-select").ToList();
+            if (!DisableSort && sortHeaders.Any())
+            {
+                children.Add(GenSortContent(sortHeaders));
+            }
+
+            if (children.Any())
+            {
+                <th>
+                    <div class="@CssProvider.GetClass("header-mobile__wrapper")">
+                        @foreach (var item in children)
+                        {
+                            @item
+                        }
+                    </div>
+                </th>
+            }
+        }
+    </tr>
 </thead>
 
 @code {
@@ -67,5 +44,47 @@
     public bool DisableSort => Component.DisableSort;
 
     public bool MultiSort => Component.MultiSort;
+
+    private RenderFragment GenSelectContent(DataTableHeader header) => __builder =>
+    {
+        <div class="@CssProvider.GetClass("header-mobile__select") @header.Class">
+            @RenderPart(typeof(BDataTableHeaderSelectAll<>))
+        </div>
+    };
+
+    private RenderFragment GenSortContent(List<DataTableHeader> sortHeaders) => __builder =>
+    {
+        RenderFragment<SelectSelectionProps<DataTableHeader>> selectionContent = context =>
+            @<BChip @attributes="@GetAttributes(typeof(BChip))"
+                    OnClick="() => Component.HandleOnHeaderColClick(context.Item.Value)"
+                    OnClickStopPropagation>
+                @if (HeaderColContent != null)
+                {
+                    @HeaderColContent(context.Item)
+                }
+                else
+                {
+                    @context.Item.Text
+                }
+
+                <div class="@CssProvider.GetClass("header-mobile__select-chips", data: context.Item)">
+                    @RenderPart(typeof(BDataTableHeaderSortIcon<>))
+                </div>
+            </BChip>;
+
+        RenderFragment<SelectListItemProps<DataTableHeader>> itemContent = context =>
+            @<BListItemContent>
+                @if (HeaderColContent != null)
+                {
+                    @HeaderColContent(context.Item!)
+                }
+                else
+                {
+                    @context.Item!.Text
+                }
+            </BListItemContent>;
+
+        @RenderPart(typeof(BDataTableHeaderSortSelect<>), sortHeaders, itemContent, selectionContent, MultiSort, "items")
+    };
 
 }
