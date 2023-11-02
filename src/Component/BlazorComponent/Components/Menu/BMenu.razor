@@ -6,17 +6,19 @@
     {
         <CascadingValue Value="this" IsFixed>
             <BCascadingValue Value="IsDark" Name="IsDark">
-                <Transition Name="@Transition">
-                    <ShowTransitionElement
-                        Value="IsActive"
-                        id="@Id"
-                        style="@CssProvider.GetStyle("content")"
-                        class="@CssProvider.GetClass("content")"
-                        @attributes="@Attributes"
-                        ReferenceCaptureAction="el => ContentElement = el">
-                        @ChildContent
-                    </ShowTransitionElement>
-                </Transition>
+                <CascadingValue Value="FirstBoot" Name="FirstBoot">
+                    <Transition Name="@Transition">
+                        <ShowTransitionElement
+                            Value="IsActive"
+                            id="@Id"
+                            style="@CssProvider.GetStyle("content")"
+                            class="@CssProvider.GetClass("content")"
+                            @attributes="@Attributes"
+                            ReferenceCaptureAction="el => ContentElement = el">
+                            @ChildContent
+                        </ShowTransitionElement>
+                    </Transition>
+                </CascadingValue>
             </BCascadingValue>
         </CascadingValue>
     }

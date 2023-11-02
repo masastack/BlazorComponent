@@ -2,6 +2,8 @@
 
 public class BBootable : BActivatable
 {
+    protected bool FirstBoot { get; set; }
+    
     protected override async Task<bool> ShowLazyContent()
     {
         if (!IsBooted)
@@ -11,8 +13,12 @@ public class BBootable : BActivatable
             await Task.Delay(16);
             StateHasChanged();
 
+            FirstBoot = true;
+
             return true;
         }
+
+        FirstBoot = false;
 
         return false;
     }
