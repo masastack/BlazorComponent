@@ -20,6 +20,6 @@ namespace BlazorComponent
 
         IList<IBrowserFile> Files { get; }
 
-        void HandleOnFileChange(InputFileChangeEventArgs args);
+        Task HandleOnFileChange(InputFileChangeEventArgs args);
     }
 }
