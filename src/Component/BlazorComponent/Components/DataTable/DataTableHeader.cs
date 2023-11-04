@@ -51,5 +51,7 @@
         internal ElementReference ElementReference { get; set; }
         
         public double RealWidth { get; internal set; }
+
+        public bool IsFirstFixedColumn { get; internal set; }
     }
 }

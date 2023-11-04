@@ -7,6 +7,9 @@ namespace BlazorComponent
         [Inject]
         private IResizeJSModule ResizeJSModule { get; set; } = null!;
 
+        [CascadingParameter]
+        private BSimpleTable SimpleTable { get; set; } = null!;
+
         [Parameter]
         public List<DataTableHeader<TItem>> Headers { get; set; } = null!;
 
@@ -22,6 +25,8 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment<ItemColProps<TItem>> SlotContent { get; set; } = null!;
 
+        private readonly DelayTask _resizeDelayTask = new();
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
@@ -30,7 +35,7 @@ namespace BlazorComponent
             {
                 foreach (var header in Headers)
                 {
-                    await ResizeJSModule.ObserverAsync(header.ElementReference, () =>OnResizeAsync(header));
+                    await ResizeJSModule.ObserverAsync(header.ElementReference, () => OnResizeAsync(header));
                 }
             }
         }
@@ -38,6 +43,7 @@ namespace BlazorComponent
         private async Task OnResizeAsync(DataTableHeader header)
         {
             header.RealWidth = await Js.InvokeAsync<double>(JsInteropConstants.GetProp, header.ElementReference, "offsetWidth");
+            await _resizeDelayTask.Run(() => InvokeAsync(SimpleTable.InvokeStateChangeForColResize));
         }
 
         async ValueTask IAsyncDisposable.DisposeAsync()
