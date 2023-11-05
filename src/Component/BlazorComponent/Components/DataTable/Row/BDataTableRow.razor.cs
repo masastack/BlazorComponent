@@ -25,7 +25,26 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment<ItemColProps<TItem>> SlotContent { get; set; } = null!;
 
-        private readonly DelayTask _resizeDelayTask = new();
+        private readonly DelayTask _resizeDelayTask = new(16 * 2);
+        
+        private List<DataTableHeader<TItem>> NoSpecificWidthHeaders => Headers.Where(u => u.Width is null).ToList();
+
+        protected override void OnParametersSet()
+        {
+            base.OnParametersSet();
+
+            var lastFixedLeftHeader = Headers.LastOrDefault(u => u.Fixed == DataTableFixed.Left);
+            if (lastFixedLeftHeader != null)
+            {
+                lastFixedLeftHeader.IsFixedShadowColumn = true;
+            }
+
+            var firstFixedRightHeader = Headers.FirstOrDefault(u => u.Fixed == DataTableFixed.Right); 
+            if (firstFixedRightHeader != null)
+            {
+                firstFixedRightHeader.IsFixedShadowColumn = true;
+            }
+        }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -33,7 +52,7 @@ namespace BlazorComponent
 
             if (firstRender)
             {
-                foreach (var header in Headers)
+                foreach (var header in NoSpecificWidthHeaders)
                 {
                     await ResizeJSModule.ObserverAsync(header.ElementReference, () => OnResizeAsync(header));
                 }
@@ -48,7 +67,7 @@ namespace BlazorComponent
 
         async ValueTask IAsyncDisposable.DisposeAsync()
         {
-            foreach (var header in Headers)
+            foreach (var header in NoSpecificWidthHeaders)
             {
                 await ResizeJSModule.UnobserveAsync(header.ElementReference);
             }

@@ -3,47 +3,23 @@
 @inherits BDomComponentBase
 
 <tr class="@CssProvider.GetClass()" @attributes="Attributes">
-    @{
-        var haveSEtFirstLeft = false;
-        var haveSetFirstRight = false;
-        
-        for (var i = 0; i < Headers.Count; i++)
-        {
-            var index = i;
-            var header = Headers[index];
-
-            if (header.Fixed == DataTableFixed.Right)
-            {
-                if (!haveSetFirstRight)
+    @foreach (var header in Headers)
+    {
+        <td class="@CssProvider.GetClass("cell", data: header)"
+            style="@CssProvider.GetStyle("cell", data: header)"
+            @ref="header.ElementReference">
+            @{
+                var props = new ItemColProps<TItem>(header, Item);
+                if (HasSlot(props))
                 {
-                    haveSetFirstRight = true;
-                    header.IsFirstFixedColumn = true;
+                    @SlotContent(props)
+                }
+                else
+                {
+                    @props.Value
                 }
             }
-            else if (header.Fixed == DataTableFixed.Left)
-            {
-                if (!haveSEtFirstLeft)
-                {
-                    haveSEtFirstLeft = true;
-                    header.IsFirstFixedColumn = true;
-                }
-            }
-
-            <td class="@CssProvider.GetClass("cell", data: header)"
-                style="@CssProvider.GetStyle("cell", data: header)"
-                @ref="header.ElementReference">
-                @{
-                    var props = new ItemColProps<TItem>(header, Item);
-                    if (HasSlot(props))
-                    {
-                        @SlotContent(props)
-                    }
-                    else
-                    {
-                        @props.Value
-                    }
-                }
-            </td>
-        }
+        </td>
     }
+
 </tr>

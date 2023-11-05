@@ -52,6 +52,6 @@
         
         public double RealWidth { get; internal set; }
 
-        public bool IsFirstFixedColumn { get; internal set; }
+        public bool IsFixedShadowColumn { get;  set; }
     }
 }
