@@ -42,4 +42,21 @@ function unobserve(el: HTMLElement) {
   delete el._resizeObserver;
 }
 
-export { observe, unobserve };
+function observeSelector(
+  selector: string,
+  handle: DotNet.DotNetObject
+) {
+  if (selector) {
+    const el = document.querySelector(selector) as HTMLElement;
+    el && observe(el, handle);
+  }
+}
+
+function unobserveSelector(selector: string) {
+  if (selector) {
+    const el = document.querySelector(selector) as HTMLElement;
+    el && unobserve(el);
+  }
+}
+
+export { observe, unobserve, observeSelector, unobserveSelector };
