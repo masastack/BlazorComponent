@@ -44,10 +44,10 @@
             await Component.HandleOnRowContextmenuAsync(rowMouseEventArgs);
         }
 
-        private async Task HandleOnRowDbClickAsync(MouseEventArgs args)
+        private async Task HandleOnRowDblClickAsync(MouseEventArgs args)
         {
             var rowMouseEventArgs = new DataTableRowMouseEventArgs<TItem>(Item, IsMobile, IsSelected, IsExpanded, args);
-            await Component.HandleOnRowDbClickAsync(rowMouseEventArgs);
+            await Component.HandleOnRowDblClickAsync(rowMouseEventArgs);
         }
 
         private bool HasExpand(ItemColProps<TItem> props) => props.Header.Value == "data-table-expand" && ShowExpand;

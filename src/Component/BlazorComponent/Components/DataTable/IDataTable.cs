@@ -40,7 +40,7 @@ public interface IDataTable<TItem> : IDataIterator<TItem>
 
     RenderFragment? GroupContent { get; }
 
-    Task HandleOnRowDbClickAsync(DataTableRowMouseEventArgs<TItem> args);
+    Task HandleOnRowDblClickAsync(DataTableRowMouseEventArgs<TItem> args);
 
     RenderFragment<(IEnumerable<DataTableHeader<TItem>> Headers, TItem Item)>? ExpandedItemContent { get; }
 
