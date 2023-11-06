@@ -45,5 +45,13 @@
         public string? CellClass { get; set; }
 
         public StringNumber? Width { get; set; }
+
+        public DataTableFixed Fixed { get; set; }
+        
+        internal ElementReference ElementReference { get; set; }
+        
+        public double RealWidth { get; internal set; }
+
+        public bool IsFixedShadowColumn { get; internal set; }
     }
 }

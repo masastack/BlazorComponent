@@ -21,7 +21,7 @@ namespace BlazorComponent
 
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
-
+        
         public bool IsDark
         {
             get
@@ -38,6 +38,18 @@ namespace BlazorComponent
 
                 return CascadingIsDark;
             }
+        }
+
+        private bool _stateChangeForColResizeHasInvoked;
+
+        internal void InvokeStateChangeForColResize()
+        {
+            if (!_stateChangeForColResizeHasInvoked)
+            {
+                StateHasChanged();
+            }
+
+            _stateChangeForColResizeHasInvoked = true;
         }
     }
 }

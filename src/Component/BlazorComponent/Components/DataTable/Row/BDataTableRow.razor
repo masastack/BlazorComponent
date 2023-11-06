@@ -5,7 +5,9 @@
 <tr class="@CssProvider.GetClass()" @attributes="Attributes">
     @foreach (var header in Headers)
     {
-        <td class="@CssProvider.GetClass("cell", data: header)">
+        <td class="@CssProvider.GetClass("cell", data: header)"
+            style="@CssProvider.GetStyle("cell", data: header)"
+            @ref="header.ElementReference">
             @{
                 var props = new ItemColProps<TItem>(header, Item);
                 if (HasSlot(props))
@@ -19,4 +21,5 @@
             }
         </td>
     }
+
 </tr>
