@@ -14,7 +14,7 @@ namespace BlazorComponent
         public bool Required { get; set; }
 
         [Parameter]
-        [ApiDefaultValue("label")]
+        [MassApiParameter("label")]
         public string Tag { get; set; } = "label";
 
         [Parameter]

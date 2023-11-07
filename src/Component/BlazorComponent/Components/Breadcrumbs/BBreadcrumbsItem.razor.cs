@@ -36,7 +36,7 @@ namespace BlazorComponent
 
         public EventCallback<MouseEventArgs> OnClick { get; }
 
-        [Parameter, ApiDefaultValue("div")]
+        [Parameter, MassApiParameter("div")]
         public string? Tag { get; set; } = "div";
 
         [Parameter]

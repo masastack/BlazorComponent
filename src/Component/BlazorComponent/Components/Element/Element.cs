@@ -5,7 +5,7 @@ namespace BlazorComponent
 {
     public class Element : ComponentBase
     {
-        [Parameter] [ApiDefaultValue("div")] public string? Tag { get; set; } = "div";
+        [Parameter] [MassApiParameter("div")] public string? Tag { get; set; } = "div";
 
         [Parameter] public RenderFragment? ChildContent { get; set; }
 

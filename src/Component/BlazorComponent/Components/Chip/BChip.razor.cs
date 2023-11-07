@@ -12,7 +12,7 @@
         public NavigationManager NavigationManager { get; set; } = null!;
 
         [Parameter]
-        [ApiDefaultValue(true)]
+        [MassApiParameter(true)]
         public bool Active { get; set; } = true;
 
         [Parameter]
@@ -22,7 +22,7 @@
         public string? CloseIcon { get; set; }
 
         [Parameter]
-        [ApiDefaultValue("Close")]
+        [MassApiParameter("Close")]
         public string? CloseLabel { get; set; } = "Close";
 
         [Parameter]
@@ -44,7 +44,7 @@
         public EventCallback<MouseEventArgs> OnCloseClick { get; set; }
 
         [Parameter]
-        [ApiDefaultValue("span")]
+        [MassApiParameter("span")]
         public string? Tag { get; set; } = "span";
 
         [Parameter]

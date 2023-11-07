@@ -21,18 +21,18 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
 
     // TODO: change int to StringNumber, support px, vh, vw, rem
     [Parameter]
-    [ApiDefaultValue(40)]
+    [MassApiParameter(40)]
     public int ItemHeight { get; set; } = 40;
 
     [Parameter]
     public EventCallback<List<TColumnItem>> OnSelect { get; set; }
 
     [Parameter]
-    [ApiDefaultValue(1000)]
+    [MassApiParameter(1000)]
     public int SwipeDuration { get; set; } = 1000;
 
     [Parameter]
-    [ApiDefaultValue(6)]
+    [MassApiParameter(6)]
     public int VisibleItemCount { get; set; } = 6;
 
     [Parameter]

@@ -13,11 +13,11 @@ namespace BlazorComponent
         public IRadioGroup<TValue>? RadioGroup { get; set; }
 
         [Parameter]
-        [ApiDefaultValue("$radioOn")]
+        [MassApiParameter("$radioOn")]
         public string? OnIcon { get; set; } = "$radioOn";
 
         [Parameter]
-        [ApiDefaultValue("$radioOff")]
+        [MassApiParameter("$radioOff")]
         public string? OffIcon { get; set; } = "$radioOff";
 
         [Parameter]
@@ -48,7 +48,7 @@ namespace BlazorComponent
         public string? Label { get; set; }
 
         [Parameter]
-        [ApiDefaultValue(true)]
+        [MassApiParameter(true)]
         public bool Ripple { get; set; } = true;
 
         [Parameter]

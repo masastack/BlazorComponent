@@ -435,13 +435,13 @@ namespace BlazorComponent
         /// <summary>
         /// Gives focus.
         /// </summary>
-        [ApiPublicMethod]
+        [MasaApiPublicMethod]
         public async Task FocusAsync()
         {
             await InputElement.FocusAsync().ConfigureAwait(false);
         }
 
-        [ApiPublicMethod]
+        [MasaApiPublicMethod]
         public async Task BlurAsync()
         {
             await Js.InvokeVoidAsync(JsInteropConstants.Blur, InputElement).ConfigureAwait(false);

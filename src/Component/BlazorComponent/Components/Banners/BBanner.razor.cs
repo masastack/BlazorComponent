@@ -8,7 +8,7 @@ namespace BlazorComponent
         public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
-        [ApiDefaultValue(true)]
+        [MassApiParameter(true)]
         public bool Value { get; set; } = true;
 
         [Parameter]

@@ -73,6 +73,7 @@ function create(
           content: info.title,
           anchor: info.slug,
           level: _token.markup.length,
+          attrs: Object.fromEntries(_token.attrs)
         });
       },
     });

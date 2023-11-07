@@ -15,11 +15,11 @@ namespace BlazorComponent
         }
 
         [Parameter]
-        [ApiDefaultValue(true)]
+        [MassApiParameter(true)]
         public bool Scrim { get; set; } = true;
 
         [Parameter]
-        [ApiDefaultValue(true)]
+        [MassApiParameter(true)]
         public bool Dark { get; set; } = true;
 
         [Parameter]
