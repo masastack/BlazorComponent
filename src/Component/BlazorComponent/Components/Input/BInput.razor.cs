@@ -28,7 +28,7 @@
         public RenderFragment? PrependContent { get; set; }
 
         [Parameter]
-        [ApiDefaultValue(false)]
+        [MassApiParameter(false)]
         public StringBoolean? HideDetails { get; set; } = false;
 
         [Parameter]
@@ -38,7 +38,7 @@
         public bool PersistentHint { get; set; }
 
         [Parameter]
-        [ApiDefaultValue(false)]
+        [MassApiParameter(false)]
         public StringBoolean Loading { get; set; } = false;
 
         [Parameter]

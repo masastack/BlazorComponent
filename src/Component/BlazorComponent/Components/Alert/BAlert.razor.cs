@@ -16,11 +16,11 @@ public partial class BAlert : BDomComponentBase, IAlert, IThemeable
     public RenderFragment? ChildContent { get; set; }
 
     [Parameter]
-    [ApiDefaultValue("$cancel")]
+    [MassApiParameter("$cancel")]
     public string CloseIcon { get; set; } = "$cancel";
 
     [Parameter]
-    [ApiDefaultValue("Close")]
+    [MassApiParameter("Close")]
     public virtual string CloseLabel { get; set; } = "Close";
 
     [Parameter]
@@ -30,7 +30,7 @@ public partial class BAlert : BDomComponentBase, IAlert, IThemeable
     public virtual bool Dismissible { get; set; }
 
     [Parameter]
-    [ApiDefaultValue("div")]
+    [MassApiParameter("div")]
     public string Tag { get; set; } = "div";
 
     [Parameter]
@@ -81,7 +81,7 @@ public partial class BAlert : BDomComponentBase, IAlert, IThemeable
         await ValueChanged.InvokeAsync(false);
     }
 
-    [ApiPublicMethod]
+    [MasaApiPublicMethod]
     public async Task ToggleAsync()
     {
         Value = !Value;

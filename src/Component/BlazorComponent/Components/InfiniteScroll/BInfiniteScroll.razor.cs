@@ -24,7 +24,7 @@ public partial class BInfiniteScroll : BDomComponentBase, IAsyncDisposable
     }
 
     [Parameter]
-    [ApiDefaultValue(250)]
+    [MassApiParameter(250)]
     public StringNumber Threshold { get; set; } = 250;
 
     [Parameter]
