@@ -4,19 +4,17 @@
 <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" @ref="Ref">
     @ComputedActivatorContent
 
-    <CascadingValue Value="FirstBoot" Name="FirstBoot">
     @*TODO: implement TransitionGroup*@
-        <Transition Name="@Transition" Origin="@Origin">
-            <ShowTransitionElement
-                Value="IsActive"
-                id="@Id"
-                Tag="@Tag"
-                class="@CssProvider.GetClass("dial-list")"
-                style="@CssProvider.GetStyle("dial-list")"
-                @attributes="@ContentAttributes"
-                ReferenceCaptureAction="el => ContentElement = el">
-                @ChildContent
-            </ShowTransitionElement>
-        </Transition>
-    </CascadingValue>
+    <Transition Name="@Transition" Origin="@Origin">
+        <ShowTransitionElement
+            Value="IsActive"
+            id="@Id"
+            Tag="@Tag"
+            class="@CssProvider.GetClass("dial-list")"
+            style="@CssProvider.GetStyle("dial-list")"
+            @attributes="@ContentAttributes"
+            ReferenceCaptureAction="el => ContentElement = el">
+            @ChildContent
+        </ShowTransitionElement>
+    </Transition>
 </div>

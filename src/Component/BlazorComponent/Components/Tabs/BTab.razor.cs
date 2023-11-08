@@ -13,18 +13,6 @@
 
         protected override bool IsRoutable => Href != null && HasRoutableAncestor;
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            await base.OnAfterRenderAsync(firstRender);
-
-            if (firstRender)
-            {
-                if (Tabs is null) return;
-
-                await Tabs.CallSlider();
-            }
-        }
-
         protected override async Task OnActiveUpdatedForRoutable()
         {
             if (Tabs == null) return;
