@@ -62,7 +62,7 @@ namespace BlazorComponent
         private async Task OnResizeAsync(DataTableHeader header)
         {
             header.RealWidth = await Js.InvokeAsync<double>(JsInteropConstants.GetProp, header.ElementReference, "offsetWidth");
-            await _resizeDelayTask.Run(() => InvokeAsync(SimpleTable.InvokeStateChangeForColResize));
+            await _resizeDelayTask.RunAsync(() => InvokeAsync(SimpleTable.InvokeStateChangeForColResize));
         }
 
         async ValueTask IAsyncDisposable.DisposeAsync()

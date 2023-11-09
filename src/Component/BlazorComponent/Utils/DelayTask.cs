@@ -2,27 +2,58 @@
 {
     public class DelayTask
     {
-        private CancellationTokenSource _cancellationTokenSource;
+        private CancellationTokenSource _cancellationTokenSource = new();
+        private bool _reset;
 
-        public DelayTask()
-            : this(300)
+        /// <summary>
+        /// Initialize a delay task with 300ms delay.
+        /// </summary>
+        public DelayTask() : this(300)
         {
         }
 
+        /// <summary>
+        /// Initialize a delay task with a custom delay with millisecond.
+        /// </summary>
+        /// <param name="delay"></param>
         public DelayTask(int delay)
         {
             Delay = delay;
         }
 
-        public int Delay { get; set; }
+        public int Delay { get; }
 
-        public async Task Run(Func<Task> function)
+        /// <summary>
+        /// Invoke this method to cancel the last delay task if there are a lot of task in a short time.
+        /// </summary>
+        public void Reset()
         {
-            _cancellationTokenSource?.Cancel();
+            _reset = true;
+
+            _cancellationTokenSource.Cancel();
             _cancellationTokenSource = new CancellationTokenSource();
+        }
+
+        /// <summary>
+        /// Run a task with a delay in a single thread.
+        /// </summary>
+        /// <param name="task"></param>
+        public async Task RunAsync(Func<Task> task)
+        {
+            EnsureReset();
 
             await Task.Delay(Delay, _cancellationTokenSource.Token);
-            await function?.Invoke();
+            await task.Invoke();
+        }
+
+        private void EnsureReset()
+        {
+            if (!_reset)
+            {
+                throw new InvalidOperationException("Before invoke RunAsync, you should invoke Reset() first.");
+            }
+
+            _reset = false;
         }
     }
 }
