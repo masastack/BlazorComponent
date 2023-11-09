@@ -25,7 +25,7 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment<ItemColProps<TItem>> SlotContent { get; set; } = null!;
 
-        private readonly DelayTask _resizeDelayTask = new(16 * 2);
+        private readonly DebounceTask _resizeDebounceTask = new(16 * 2);
         
         private List<DataTableHeader<TItem>> NoSpecificWidthHeaders => Headers.Where(u => u.Width is null).ToList();
 
@@ -62,7 +62,9 @@ namespace BlazorComponent
         private async Task OnResizeAsync(DataTableHeader header)
         {
             header.RealWidth = await Js.InvokeAsync<double>(JsInteropConstants.GetProp, header.ElementReference, "offsetWidth");
-            await _resizeDelayTask.RunAsync(() => InvokeAsync(SimpleTable.InvokeStateChangeForColResize));
+
+            _resizeDebounceTask.Reset();
+            await _resizeDebounceTask.RunAsync(() => InvokeAsync(SimpleTable.InvokeStateChangeForColResize));
         }
 
         async ValueTask IAsyncDisposable.DisposeAsync()
