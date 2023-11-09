@@ -151,7 +151,7 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
 
         if (HavingTransition)
         {
-            if (_transitionJsInvoker is null)
+            if (_transitionJsInvoker?.Registered is not true)
             {
                 if (Reference.Context is null)
                 {
@@ -162,7 +162,11 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
 
                 _transitionJsInvoker = new TransitionJsInvoker(Js);
                 await _transitionJsInvoker.Init(OnTransitionEndAsync, OnTransitionCancelAsync);
-                await RegisterTransitionEventsAsync();
+                if (!_transitionJsInvoker.Registered)
+                {
+                    await RegisterTransitionEventsAsync();
+                }
+
             }
 
             if (!firstRender && ElementReferenceChanged)
@@ -174,7 +178,7 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
                 await RegisterTransitionEventsAsync();
             }
 
-            if (CanMoveNext)
+            if (_transitionJsInvoker.Registered && CanMoveNext)
             {
                 await NextAsync(CurrentState);
             }
