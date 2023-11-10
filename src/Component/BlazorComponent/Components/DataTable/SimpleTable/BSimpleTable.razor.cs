@@ -21,7 +21,7 @@ namespace BlazorComponent
 
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
-        
+
         public bool IsDark
         {
             get
@@ -40,16 +40,14 @@ namespace BlazorComponent
             }
         }
 
-        private bool _stateChangeForColResizeHasInvoked;
+        private CancellationTokenSource _cancellationTokenSource = new();
 
-        internal void InvokeStateChangeForColResize()
+        internal async Task DebounceRenderForColResizeAsync()
         {
-            if (!_stateChangeForColResizeHasInvoked)
-            {
-                StateHasChanged();
-            }
-
-            _stateChangeForColResizeHasInvoked = true;
+            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource = new CancellationTokenSource();
+            await Task.Delay(16 * 2, _cancellationTokenSource.Token);
+            StateHasChanged();
         }
     }
 }
