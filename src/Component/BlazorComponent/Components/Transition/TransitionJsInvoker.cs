@@ -10,6 +10,8 @@ public class TransitionJsInvoker : IAsyncDisposable
 
     public TransitionJsInvoker(IJSRuntime js) => _js = js;
 
+    public bool Registered { get; private set; } 
+
     public async Task Init(Func<string, LeaveEnter, Task> onTransitionEnd, Func<string, LeaveEnter, Task> onTransitionCancel)
     {
         _module = await _js.InvokeAsync<IJSObjectReference>("import", "./_content/BlazorComponent/js/transition.js");
@@ -21,6 +23,7 @@ public class TransitionJsInvoker : IAsyncDisposable
         if (_module is not null && !_isDisposed)
         {
             await _module.InvokeVoidAsync("registerTransitionEvents", token, reference, _objRef);
+            Registered = true;
         }
     }
 
