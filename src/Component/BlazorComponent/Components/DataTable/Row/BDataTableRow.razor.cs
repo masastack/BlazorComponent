@@ -25,8 +25,6 @@ namespace BlazorComponent
         [Parameter]
         public RenderFragment<ItemColProps<TItem>> SlotContent { get; set; } = null!;
 
-        private readonly DelayTask _resizeDelayTask = new(16 * 2);
-        
         private List<DataTableHeader<TItem>> NoSpecificWidthHeaders => Headers.Where(u => u.Width is null).ToList();
 
         protected override void OnParametersSet()
@@ -39,7 +37,7 @@ namespace BlazorComponent
                 lastFixedLeftHeader.IsFixedShadowColumn = true;
             }
 
-            var firstFixedRightHeader = Headers.FirstOrDefault(u => u.Fixed == DataTableFixed.Right); 
+            var firstFixedRightHeader = Headers.FirstOrDefault(u => u.Fixed == DataTableFixed.Right);
             if (firstFixedRightHeader != null)
             {
                 firstFixedRightHeader.IsFixedShadowColumn = true;
@@ -62,7 +60,7 @@ namespace BlazorComponent
         private async Task OnResizeAsync(DataTableHeader header)
         {
             header.RealWidth = await Js.InvokeAsync<double>(JsInteropConstants.GetProp, header.ElementReference, "offsetWidth");
-            await _resizeDelayTask.Run(() => InvokeAsync(SimpleTable.InvokeStateChangeForColResize));
+            await SimpleTable.DebounceRenderForColResizeAsync();
         }
 
         async ValueTask IAsyncDisposable.DisposeAsync()
