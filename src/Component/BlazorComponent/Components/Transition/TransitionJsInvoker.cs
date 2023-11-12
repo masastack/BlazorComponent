@@ -39,7 +39,7 @@ public class TransitionJsInvoker : IAsyncDisposable
                 await _module.DisposeAsync();
             }
         }
-        catch (JSDisconnectedException)
+        catch (Exception)
         {
             // ignored
         }

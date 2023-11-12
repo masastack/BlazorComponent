@@ -66,11 +66,7 @@ namespace BlazorComponent.Web
             {
                 await JS.InvokeVoidAsync(JsInteropConstants.RemoveHtmlElementEventListener, Selector, "resize");
             }
-            catch (InvalidOperationException)
-            {
-                // ignored
-            }
-            catch (JSDisconnectedException)
+            catch (Exception)
             {
                 // ignored
             }

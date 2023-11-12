@@ -30,9 +30,17 @@ public class OutsideClickJSModule : JSModule
 
         _cts?.Cancel();
         _cts = new CancellationTokenSource();
-        await Task.Delay(16, _cts.Token);
 
-        await _instance.InvokeAsync<bool>("updateExcludeSelectors", selectors.ToList());
+        try
+        {
+            await Task.Delay(16, _cts.Token);
+
+            await _instance.InvokeAsync<bool>("updateExcludeSelectors", selectors.ToList());
+        }
+        catch (TaskCanceledException)
+        {
+            // ignored
+        }
     }
 
     [JSInvokable]

@@ -174,11 +174,7 @@
             {
                 await ResizeJSModule.UnobserveAsync(Ref);
             }
-            catch (InvalidOperationException)
-            {
-                // ignored
-            }
-            catch (JSDisconnectedException)
+            catch (Exception)
             {
                 // ignored
             }

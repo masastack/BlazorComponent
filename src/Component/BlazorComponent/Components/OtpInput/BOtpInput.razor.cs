@@ -266,7 +266,7 @@ namespace BlazorComponent
                 _handle.Dispose();
                 await JsInvokeAsync(JsInteropConstants.UnregisterOTPInputOnInputEvent, InputRefs);
             }
-            catch (JSDisconnectedException)
+            catch (Exception)
             {
                 // ignored
             }

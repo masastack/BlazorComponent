@@ -48,7 +48,7 @@ public abstract class JSModule : IAsyncDisposable
             {
                 await module.DisposeAsync();
             }
-            catch (JSDisconnectedException)
+            catch (Exception)
             {
                 // ignored
             }

@@ -92,7 +92,7 @@ public class ActivatableJsModule : JSModule
 
             await base.DisposeAsync();
         }
-        catch (JSDisconnectedException)
+        catch (Exception)
         {
             // ignored
         }
