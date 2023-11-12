@@ -135,17 +135,18 @@
         {
             _cts?.Cancel();
             _cts = new CancellationTokenSource();
-            await Task.Delay(16, _cts.Token);
+            await RunTaskInMicrosecondsAsync(async () =>
+            {
+                (WrapperWidth, ContentWidth) = await GetWidths();
 
-            (WrapperWidth, ContentWidth) = await GetWidths();
+                // The first time IsOverflowing is true, WrapperWidth will become smaller
+                // because the left and right arrows will display 
+                IsOverflowing = WrapperWidth + 1 < ContentWidth;
 
-            // The first time IsOverflowing is true, WrapperWidth will become smaller
-            // because the left and right arrows will display 
-            IsOverflowing = WrapperWidth + 1 < ContentWidth;
+                await ScrollToView(selectedValue);
 
-            await ScrollToView(selectedValue);
-
-            StateHasChanged();
+                StateHasChanged();
+            }, 16, _cts.Token);
         }
 
         private async Task<(double wrapper, double content)> GetWidths()
@@ -310,11 +311,7 @@
             {
                 await ResizeJSModule.UnobserveAsync(Ref);
             }
-            catch (InvalidOperationException)
-            {
-                // ignored
-            }
-            catch (JSDisconnectedException)
+            catch (Exception)
             {
                 // ignored
             }
