@@ -46,8 +46,7 @@ namespace BlazorComponent
         {
             _cancellationTokenSource.Cancel();
             _cancellationTokenSource = new CancellationTokenSource();
-            await Task.Delay(16 * 2, _cancellationTokenSource.Token);
-            StateHasChanged();
+            await RunTaskInMicrosecondsAsync(StateHasChanged, 16 * 2, _cancellationTokenSource.Token);
         }
     }
 }

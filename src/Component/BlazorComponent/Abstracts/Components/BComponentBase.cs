@@ -125,6 +125,44 @@
             _shouldRender = true;
         }
 
+        /// <summary>
+        /// Run a task in microseconds.
+        /// </summary>
+        /// <param name="task">A task to run.</param>
+        /// <param name="millisecondsDelay">Delay in milliseconds.</param>
+        /// <param name="cancellationToken">A cancellation token to cancel the task.</param>
+        protected static async Task RunTaskInMicrosecondsAsync(Func<Task> task, int millisecondsDelay, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                await Task.Delay(millisecondsDelay, cancellationToken);
+                await task.Invoke();
+            }
+            catch (TaskCanceledException)
+            {
+                // ignored
+            }
+        }
+
+        /// <summary>
+        /// Run a task in microseconds.
+        /// </summary>
+        /// <param name="task">A task to run.</param>
+        /// <param name="millisecondsDelay">Delay in milliseconds.</param>
+        /// <param name="cancellationToken">A cancellation token to cancel the task.</param>
+        protected static async Task RunTaskInMicrosecondsAsync(Action task, int millisecondsDelay, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                await Task.Delay(millisecondsDelay, cancellationToken);
+                task.Invoke();
+            }
+            catch (TaskCanceledException)
+            {
+                // ignored
+            }
+        }
+
         protected virtual bool AfterHandleEventShouldRender()
         {
             return true;

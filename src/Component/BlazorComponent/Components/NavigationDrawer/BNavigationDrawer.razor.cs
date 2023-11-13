@@ -182,24 +182,32 @@ namespace BlazorComponent
         {
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource = new CancellationTokenSource();
-            await Task.Delay(150, _cancellationTokenSource.Token);
 
-            if (ExpandOnHover)
-            {
-                IsMouseover = true;
-            }
+            await RunTaskInMicrosecondsAsync(() =>
+                {
+                    if (ExpandOnHover)
+                    {
+                        IsMouseover = true;
+                    }
+                },
+                millisecondsDelay: 150,
+                _cancellationTokenSource.Token);
         }
 
         public virtual async Task HandleOnMouseLeaveAsync(MouseEventArgs e)
         {
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource = new CancellationTokenSource();
-            await Task.Delay(150, _cancellationTokenSource.Token);
 
-            if (ExpandOnHover)
-            {
-                IsMouseover = false;
-            }
+            await RunTaskInMicrosecondsAsync(() =>
+                {
+                    if (ExpandOnHover)
+                    {
+                        IsMouseover = false;
+                    }
+                },
+                millisecondsDelay: 150,
+                _cancellationTokenSource.Token);
         }
 
         //TODO ontransitionend事件
