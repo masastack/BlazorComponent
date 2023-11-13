@@ -168,7 +168,7 @@ public partial class BInfiniteScroll : BDomComponentBase, IAsyncDisposable
 
             await Js.RemoveHtmlElementEventListener(_parentSelector, "scroll");
         }
-        catch (JSDisconnectedException)
+        catch (Exception)
         {
             // ignored
         }
