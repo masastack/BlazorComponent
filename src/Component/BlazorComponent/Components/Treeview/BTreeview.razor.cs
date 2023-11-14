@@ -281,7 +281,9 @@
             nodeState.IsSelected = isSelected;
             nodeState.IsIndeterminate = false;
 
-            if (SelectionType == SelectionType.Leaf)
+            if (SelectionType == SelectionType.Standalone)
+                UpdateChildrenSelected(nodeState.Children, nodeState.IsSelected);
+            else if (SelectionType == SelectionType.Leaf)
             {
                 UpdateChildrenSelected(nodeState.Children, nodeState.IsSelected);
                 UpdateParentSelected(nodeState.Parent);
@@ -292,9 +294,9 @@
         {
             var selected = Nodes.Values.Where(r =>
             {
-                if (SelectionType == SelectionType.Independent)
+                if (SelectionType == SelectionType.Independent || SelectionType == SelectionType.Standalone)
                 {
-                    return  r.IsSelected;
+                    return r.IsSelected;
                 }
 
                 return r.IsSelected && !r.Children.Any();
@@ -413,7 +415,7 @@
             {
                 return Filter.Invoke(item, search, itemText);
             }
-            
+
             if (string.IsNullOrEmpty(search))
             {
                 return true;
@@ -543,7 +545,7 @@
 
                 BuildTree(children, key);
 
-                if (SelectionType != SelectionType.Independent && parent != null && !Nodes.ContainsKey(key) &&
+                if (SelectionType != SelectionType.Independent && SelectionType != SelectionType.Standalone && parent != null && !Nodes.ContainsKey(key) &&
                     Nodes.TryGetValue(parent, out var node))
                 {
                     newNode.IsSelected = node.IsSelected;
@@ -565,7 +567,7 @@
 
                 // TODO: there is still some logic in Vuetify but no implementation here, it's necessarily?
 
-                if (newNode.IsSelected && (SelectionType == SelectionType.Independent || !newNode.Children.Any()))
+                if (newNode.IsSelected && ((SelectionType == SelectionType.Independent || SelectionType == SelectionType.Standalone) || !newNode.Children.Any()))
                 {
                     if (Value == null)
                     {

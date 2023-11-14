@@ -3,6 +3,7 @@
     public enum SelectionType
     {
         Leaf,
-        Independent
+        Independent,
+        Standalone
     }
 }
