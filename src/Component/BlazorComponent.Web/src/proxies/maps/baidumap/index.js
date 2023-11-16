@@ -195,6 +195,12 @@ BMapGL.Polygon.prototype.setPathWithGeoPoint = (points, polygon) => {
 
 const toBMapGLPoint = (point) => new BMapGL.Point(point.lng, point.lat);
 
-const init = (containerId, initArgs) => new BaiduMapProxy(containerId, initArgs);
+const init = (containerId, initArgs) => {
+  if (containerId && document.getElementById(containerId)) {
+    return new BaiduMapProxy(containerId, initArgs);
+  }
+
+  return null;
+}
 
 export { init }
