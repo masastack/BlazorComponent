@@ -22,6 +22,8 @@
 
         ElementReference ThumbElement { get; set; }
 
+        ElementReference SliderElement { get; set; }
+
         Task HandleOnFocusAsync(FocusEventArgs args);
 
         Task HandleOnBlurAsync(FocusEventArgs args);
@@ -50,10 +52,5 @@
         }
 
         Task HandleOnKeyDownAsync(KeyboardEventArgs args);
-
-        Task HandleOnSliderMouseUpAsync(MouseEventArgs args)
-        {
-            return Task.CompletedTask;
-        }
     }
 }
