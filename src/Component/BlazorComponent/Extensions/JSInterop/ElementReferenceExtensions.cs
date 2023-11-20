@@ -7,11 +7,14 @@ public static class ElementReferenceExtensions
         return elementReference?.GetSelector();
     }
 
-    public static string? GetSelector(this ElementReference elementReference)
+    public static string GetSelector(this ElementReference elementReference)
     {
-        elementReference.TryGetSelector(out var selector);
+        if (elementReference.TryGetSelector(out var selector))
+        {
+            return selector;
+        }
 
-        return selector;
+        throw new InvalidOperationException($"ElementReference {elementReference.Id} does not have a selector.");
     }
 
     public static bool TryGetSelector(this ElementReference elementReference, [NotNullWhen(true)] out string? selector)

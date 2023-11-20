@@ -138,12 +138,16 @@
 
         public static string GetCookie => $"{JsInteropFuncNamePrefix}getCookie";
 
-        public static string ResizableDataTable = $"{JsInteropFuncNamePrefix}resizableDataTable";
+        public static string ResizableDataTable => $"{JsInteropFuncNamePrefix}resizableDataTable";
 
-        public static string UpdateDataTableResizeHeight = $"{JsInteropFuncNamePrefix}updateDataTableResizeHeight";
+        public static string UpdateDataTableResizeHeight => $"{JsInteropFuncNamePrefix}updateDataTableResizeHeight";
         
         public static string RegisterDragEvent => $"{JsInteropFuncNamePrefix}registerDragEvent";
 
         public static string UnregisterDragEvent => $"{JsInteropFuncNamePrefix}unregisterDragEvent";
+
+        public static string RegisterSliderEvents => $"{JsInteropFuncNamePrefix}registerSliderEvents";
+
+        public static string UnregisterSliderEvents => $"{JsInteropFuncNamePrefix}unregisterSliderEvents";
     }
 }

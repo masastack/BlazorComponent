@@ -1,3 +1,4 @@
+import * as slider from "./components/slider";
 import * as interop from "./interop";
 import * as overlayable from "./mixins/overlayable";
 
@@ -12,6 +13,7 @@ window.BlazorComponent = {
   interop: {
     ...interop,
     ...overlayable,
+    ...slider,
   },
 };
 
