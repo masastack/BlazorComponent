@@ -3,14 +3,13 @@
 @typeparam TDataTable
 @inherits ComponentPartBase<TDataTable>
 
-@if (Caption != null)
+@if (CaptionContent != null)
 {
     <caption>
-        @Caption
+        @CaptionContent
     </caption>
 }
-else
+else if (!string.IsNullOrWhiteSpace(Caption))
 {
-    @CaptionContent
+    <caption>@Caption</caption>
 }
-
