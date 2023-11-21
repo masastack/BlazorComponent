@@ -3,14 +3,13 @@
 @typeparam TDataTable
 @inherits ComponentPartBase<TDataTable>
 
-@if (Caption != null)
-{
-    <caption>
+<caption>
+    @if (Caption != null)
+    {
         @Caption
-    </caption>
-}
-else
-{
-    @CaptionContent
-}
-
+    }
+    else
+    {
+        @CaptionContent
+    }
+</caption>
