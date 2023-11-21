@@ -7,6 +7,8 @@
         private List<TKey> _oldValue = new();
         private List<TKey> _oldActive = new();
         private List<TKey> _oldOpen = new();
+        private string? _prevSearch;
+        private CancellationTokenSource? _searchUpdateCts;
 
         [Parameter, EditorRequired]
         public List<TItem> Items { get; set; } = null!;
@@ -380,6 +382,11 @@
         {
             if (FilterTreeItem(item, Search, ItemText))
             {
+                if (Nodes.TryGetValue(ItemKey(item), out var nodeState) && nodeState.Parent != null)
+                {
+                    UpdateOpen(nodeState.Parent, true);
+                }
+
                 return true;
             }
 
@@ -393,6 +400,11 @@
                 {
                     if (FilterTreeItems(child, ref excluded))
                     {
+                        if (Nodes.TryGetValue(ItemKey(child), out var nodeState) && nodeState.Parent != null)
+                        {
+                            UpdateOpen(nodeState.Parent, true);
+                        }
+
                         match = true;
                     }
                 }
@@ -413,7 +425,7 @@
             {
                 return Filter.Invoke(item, search, itemText);
             }
-            
+
             if (string.IsNullOrEmpty(search))
             {
                 return true;
@@ -451,7 +463,7 @@
 
             return keys;
         }
-
+        
         protected override async Task OnParametersSetAsync()
         {
             await base.OnParametersSetAsync();
@@ -490,6 +502,15 @@
             {
                 await HandleUpdate(_oldOpen, Open, UpdateOpen, EmitOpenAsync);
                 _oldOpen = Open ?? new List<TKey>();
+            }
+
+            if (_prevSearch != Search)
+            {
+                _prevSearch = Search;
+
+                _searchUpdateCts?.Cancel();
+                _searchUpdateCts = new();
+                await RunTaskInMicrosecondsAsync(EmitOpenAsync, 300, _searchUpdateCts.Token);
             }
         }
 
