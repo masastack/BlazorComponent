@@ -567,7 +567,7 @@
 
                 // TODO: there is still some logic in Vuetify but no implementation here, it's necessarily?
 
-                if (newNode.IsSelected && ((SelectionType == SelectionType.Independent || SelectionType == SelectionType.Standalone) || !newNode.Children.Any()))
+                if (newNode.IsSelected && (SelectionType != SelectionType.Leaf || !newNode.Children.Any()))
                 {
                     if (Value == null)
                     {
