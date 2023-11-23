@@ -545,7 +545,7 @@
 
                 BuildTree(children, key);
 
-                if (SelectionType != SelectionType.Independent && SelectionType != SelectionType.Standalone && parent != null && !Nodes.ContainsKey(key) &&
+                if (SelectionType == SelectionType.Leaf && parent != null && !Nodes.ContainsKey(key) &&
                     Nodes.TryGetValue(parent, out var node))
                 {
                     newNode.IsSelected = node.IsSelected;
