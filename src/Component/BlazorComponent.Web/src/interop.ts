@@ -1,7 +1,7 @@
 import debounceIt from "just-debounce-it";
 import throttle from "just-throttle";
 
-import registerDirective from "./directive/index2";
+import registerDirective from "./directive/ripple";
 import { parseDragEvent, parseTouchEvent, touchEvents } from "./events/EventType";
 import { registerExtraEvents } from "./events/index";
 import { canUseDom, getBlazorId, getDom, getElementSelector } from "./utils/helper";

@@ -158,6 +158,10 @@ declare global {
     getElementsByClassName(classNames: string): NodeListOf<HTMLElement>
   }
 
+  interface Document {
+    querySelectorAll(select: string): NodeListOf<HTMLElement>
+  }
+
   interface HTMLElement {
     _swiper: {
       instance: any;
