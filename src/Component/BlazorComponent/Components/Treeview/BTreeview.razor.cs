@@ -294,7 +294,7 @@
         {
             var selected = Nodes.Values.Where(r =>
             {
-                if (SelectionType == SelectionType.Independent || SelectionType == SelectionType.Standalone)
+                if (SelectionType is SelectionType.Independent or SelectionType.LeafButIndependentParent)
                 {
                     return r.IsSelected;
                 }
