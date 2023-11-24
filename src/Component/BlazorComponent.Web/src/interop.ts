@@ -1,10 +1,16 @@
 import debounceIt from "just-debounce-it";
 import throttle from "just-throttle";
 
-import registerDirective from "./directive/index";
 import { parseDragEvent, parseTouchEvent, touchEvents } from "./events/EventType";
 import { registerExtraEvents } from "./events/index";
+import registerRippleObserver from "./ripple";
 import { canUseDom, getBlazorId, getDom, getElementSelector } from "./utils/helper";
+
+window.onload = function () {
+  registerExtraEvents();
+  registerPasteWithData("pastewithdata")
+  registerRippleObserver();
+}
 
 export function getZIndex(el?: Element | null): number {
   if (!el || el.nodeType !== Node.ELEMENT_NODE) return 0
@@ -857,13 +863,6 @@ export function getScrollHeightWithoutHeight(selectors) {
   el.style.height = height;
 
   return scrollHeight;
-}
-
-//register custom events
-window.onload = function () {
-  registerExtraEvents();
-  registerPasteWithData("pastewithdata")
-  registerDirective();
 }
 
 function registerPasteWithData(customEventName) {
