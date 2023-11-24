@@ -141,10 +141,6 @@ const ripples = {
   },
 };
 
-function isRippleEnabled(value: any): value is true {
-  return typeof value === "undefined" || !!value;
-}
-
 function rippleShow(e: RippleEvent) {
   const value: RippleOptions = {};
   const element = e.currentTarget as HTMLElement;
@@ -252,36 +248,25 @@ function focusRippleHide(e: FocusEvent) {
 }
 export function updateRipple(
   el: HTMLElement,
-  options: RippleOptions | false,
+  options: RippleOptions | null,
   wasEnabled: boolean
 ) {
-  const enabled = isRippleEnabled(options);
-
-  console.log('options', options)
-
-  if (!enabled) {
+  let enabled = false;
+  if (options) {
+    enabled = true;
+  } else {
     ripples.hide(el);
   }
+
   const value = options || {};
-  el._ripple = el._ripple || {}
-  el._ripple.enabled = enabled
+  el._ripple = el._ripple || {};
+  el._ripple.enabled = enabled;
   el._ripple = {
     ...el._ripple,
     centered: value.center,
     class: value.class,
-    circle: value.circle
-  }
-  // if (value.center) {
-  //   el._ripple.centered = true;
-  // }
-  // if (value.class) {
-  //   el._ripple.class = value.class;
-  // }
-  // if (value.circle) {
-  //   el._ripple.circle = value.circle;
-  // }
-
-  console.log('el._ripple', el._ripple)
+    circle: value.circle,
+  };
 
   if (enabled && !wasEnabled) {
     el.addEventListener("touchstart", rippleShow, { passive: true });
@@ -317,8 +302,5 @@ export function removeListeners(el: HTMLElement) {
   el.removeEventListener("keyup", keyboardRippleHide);
   el.removeEventListener("dragstart", rippleHide);
   el.removeEventListener("blur", focusRippleHide);
-}
-
-export function update(el: HTMLElement, options: RippleOptions | false) {
-  updateRipple(el, options, true);
+  el._ripple.enabled = false;
 }

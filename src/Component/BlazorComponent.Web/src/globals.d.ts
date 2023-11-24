@@ -155,11 +155,12 @@ declare global {
   }
 
   interface Element {
-    getElementsByClassName(classNames: string): NodeListOf<HTMLElement>
+    getElementsByClassName(classNames: string): NodeListOf<HTMLElement>;
+    querySelectorAll(selector: string): NodeListOf<HTMLElement>;
   }
 
   interface Document {
-    querySelectorAll(select: string): NodeListOf<HTMLElement>
+    querySelectorAll(selector: string): NodeListOf<HTMLElement>;
   }
 
   interface HTMLElement {
@@ -172,15 +173,15 @@ declare global {
       handle: DotNet.DotNetObject;
     };
     _ripple: {
-      enabled?: boolean
-      centered?: boolean
-      class?: string
-      circle?: boolean
-      touched?: boolean
-      isTouch?: boolean
-      showTimer?: number
-      showTimerCommit?: (() => void) | null
-    }
+      enabled?: boolean;
+      centered?: boolean;
+      class?: string;
+      circle?: boolean;
+      touched?: boolean;
+      isTouch?: boolean;
+      showTimer?: number;
+      showTimerCommit?: (() => void) | null;
+    };
   }
 
   interface MbEventTarget {
