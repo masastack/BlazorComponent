@@ -149,5 +149,9 @@
         public static string RegisterSliderEvents => $"{JsInteropFuncNamePrefix}registerSliderEvents";
 
         public static string UnregisterSliderEvents => $"{JsInteropFuncNamePrefix}unregisterSliderEvents";
+        
+        public static string SsrUpdateTheme => $"{JsInteropFuncNamePrefix}ssr.updateTheme";
+
+        public static string SsrInitTheme => $"{JsInteropFuncNamePrefix}ssr.initTheme";
     }
 }
