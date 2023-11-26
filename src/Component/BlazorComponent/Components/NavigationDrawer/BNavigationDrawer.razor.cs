@@ -14,7 +14,7 @@ namespace BlazorComponent
 
         [Inject]
         private OutsideClickJSModule? OutsideClickJsModule { get; set; }
-        
+
         [CascadingParameter]
         public IDependent? CascadingDependent { get; set; }
 
@@ -79,7 +79,7 @@ namespace BlazorComponent
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
 
-        public bool IsDark
+        public virtual bool IsDark
         {
             get
             {

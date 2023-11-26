@@ -3,8 +3,7 @@
     public abstract class BComponentBase : NextTickComponentBase, IHandleEvent
     {
         [Inject]
-        [NotNull]
-        public virtual IJSRuntime? Js { get; set; }
+        public virtual IJSRuntime Js { get; set; } = null!;
 
         [CascadingParameter]
         protected IDefaultsProvider? DefaultsProvider { get; set; }

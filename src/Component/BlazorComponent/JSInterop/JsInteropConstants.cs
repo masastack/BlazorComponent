@@ -141,7 +141,7 @@
         public static string ResizableDataTable => $"{JsInteropFuncNamePrefix}resizableDataTable";
 
         public static string UpdateDataTableResizeHeight => $"{JsInteropFuncNamePrefix}updateDataTableResizeHeight";
-        
+
         public static string RegisterDragEvent => $"{JsInteropFuncNamePrefix}registerDragEvent";
 
         public static string UnregisterDragEvent => $"{JsInteropFuncNamePrefix}unregisterDragEvent";
@@ -149,9 +149,9 @@
         public static string RegisterSliderEvents => $"{JsInteropFuncNamePrefix}registerSliderEvents";
 
         public static string UnregisterSliderEvents => $"{JsInteropFuncNamePrefix}unregisterSliderEvents";
-        
-        public static string SsrUpdateTheme => $"{JsInteropFuncNamePrefix}ssr.updateTheme";
 
-        public static string SsrInitTheme => $"{JsInteropFuncNamePrefix}ssr.initTheme";
+        public static string SsrSetTheme => $"{JsInteropFuncNamePrefix}ssr.setTheme";
+
+        public static string SsrSetMain => $"{JsInteropFuncNamePrefix}ssr.setMain";
     }
 }
