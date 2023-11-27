@@ -154,6 +154,15 @@ declare global {
     target: HTMLInputElement;
   }
 
+  interface Element {
+    getElementsByClassName(classNames: string): NodeListOf<HTMLElement>;
+    querySelectorAll(selector: string): NodeListOf<HTMLElement>;
+  }
+
+  interface Document {
+    querySelectorAll(selector: string): NodeListOf<HTMLElement>;
+  }
+
   interface HTMLElement {
     _swiper: {
       instance: any;
@@ -162,6 +171,16 @@ declare global {
     _resizeObserver: {
       observer: ResizeObserver;
       handle: DotNet.DotNetObject;
+    };
+    _ripple: {
+      enabled?: boolean;
+      centered?: boolean;
+      class?: string;
+      circle?: boolean;
+      touched?: boolean;
+      isTouch?: boolean;
+      showTimer?: number;
+      showTimerCommit?: (() => void) | null;
     };
   }
 

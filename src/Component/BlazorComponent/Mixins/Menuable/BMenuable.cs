@@ -66,6 +66,13 @@
         [Parameter]
         public bool OffsetY { get; set; }
 
+        /// <summary>
+        /// The lazy content would be created in a [data-permanent] element.
+        /// It's useful when you use this component in a layout.
+        /// </summary>
+        [Parameter]
+        public bool Permanent { get; set; }
+
         [Parameter]
         public bool ExternalActivator { get; set; }
 
