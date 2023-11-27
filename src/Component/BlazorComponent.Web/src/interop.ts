@@ -817,8 +817,12 @@ export function getSize(selectors, sizeProp) {
   return size;
 }
 
-export function getProp(selectors, name) {
-  var el = getDom(selectors);
+export function getProp(elOrString, name) {
+  if (elOrString === 'window') {
+    return window[name];
+  }
+
+  var el = getDom(elOrString);
   if (!el) {
     return null;
   }
