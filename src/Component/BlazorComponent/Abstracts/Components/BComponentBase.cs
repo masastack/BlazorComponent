@@ -149,7 +149,7 @@
         /// </summary>
         /// <param name="task">A task to run.</param>
         /// <param name="millisecondsDelay">Delay in milliseconds.</param>
-        /// <param name="cancellationToken">A cancellation token to cancel tht last task.</param>
+        /// <param name="cancellationToken">A cancellation token to cancel the last task.</param>
         protected static async Task RunTaskInMicrosecondsAsync(Action task, int millisecondsDelay, CancellationToken cancellationToken)
         {
             try
