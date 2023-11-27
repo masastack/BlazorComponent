@@ -275,13 +275,23 @@
         }
 
         public void UpdateSelected(TKey key, bool isSelected)
+            => UpdateSelected(key, isSelected, false);
+
+        private void UpdateSelectedByValue(TKey key, bool isSelected)
+            => UpdateSelected(key, isSelected, true);
+
+        private void UpdateSelected(TKey key, bool isSelected, bool updateByValue)
         {
             if (!Nodes.TryGetValue(key, out var nodeState)) return;
 
             nodeState.IsSelected = isSelected;
             nodeState.IsIndeterminate = false;
 
-            if (SelectionType == SelectionType.Leaf)
+            if (updateByValue && SelectionType == SelectionType.LeafButIndependentParent)
+            {
+                UpdateParentSelected(nodeState.Parent);
+            }
+            else if (SelectionType is SelectionType.Leaf or SelectionType.LeafButIndependentParent)
             {
                 UpdateChildrenSelected(nodeState.Children, nodeState.IsSelected);
                 UpdateParentSelected(nodeState.Parent);
@@ -292,7 +302,7 @@
         {
             var selected = Nodes.Values.Where(r =>
             {
-                if (SelectionType == SelectionType.Independent)
+                if (SelectionType is SelectionType.Independent or SelectionType.LeafButIndependentParent)
                 {
                     return  r.IsSelected;
                 }
@@ -328,7 +338,12 @@
 
             if (Nodes.TryGetValue(parent, out var nodeState))
             {
-                if (isIndeterminate)
+                if (SelectionType == SelectionType.LeafButIndependentParent)
+                {
+                    nodeState.IsSelected = true;
+                    nodeState.IsIndeterminate = false;
+                }
+                else if (isIndeterminate)
                 {
                     nodeState.IsSelected = false;
                     nodeState.IsIndeterminate = true;
@@ -413,7 +428,7 @@
             {
                 return Filter.Invoke(item, search, itemText);
             }
-            
+
             if (string.IsNullOrEmpty(search))
             {
                 return true;
@@ -474,22 +489,25 @@
                 }
             }
 
-            if (!ListComparer.Equals(_oldValue, Value))
+            var value = Value ?? [];
+            if (!ListComparer.Equals(_oldValue, value))
             {
-                await HandleUpdate(_oldValue, Value, UpdateSelected, EmitSelectedAsync);
-                _oldValue = Value ?? new List<TKey>();
+                await HandleUpdate(_oldValue, Value, UpdateSelectedByValue, EmitSelectedAsync);
+                _oldValue = value;
             }
 
-            if (!ListComparer.Equals(_oldActive, Active))
+            var active = Active ?? [];
+            if (!ListComparer.Equals(_oldActive, active))
             {
                 await HandleUpdate(_oldActive, Active, UpdateActive, EmitActiveAsync);
-                _oldActive = Active ?? new List<TKey>();
+                _oldActive = active;
             }
 
-            if (!ListComparer.Equals(_oldOpen, Open))
+            var open = Open ?? [];
+            if (!ListComparer.Equals(_oldOpen, open))
             {
                 await HandleUpdate(_oldOpen, Open, UpdateOpen, EmitOpenAsync);
-                _oldOpen = Open ?? new List<TKey>();
+                _oldOpen = open;
             }
         }
 
@@ -543,8 +561,10 @@
 
                 BuildTree(children, key);
 
-                if (SelectionType != SelectionType.Independent && parent != null && !Nodes.ContainsKey(key) &&
-                    Nodes.TryGetValue(parent, out var node))
+                if (SelectionType == SelectionType.Leaf
+                    && parent != null
+                    && !Nodes.ContainsKey(key)
+                    && Nodes.TryGetValue(parent, out var node))
                 {
                     newNode.IsSelected = node.IsSelected;
                 }
@@ -565,7 +585,7 @@
 
                 // TODO: there is still some logic in Vuetify but no implementation here, it's necessarily?
 
-                if (newNode.IsSelected && (SelectionType == SelectionType.Independent || !newNode.Children.Any()))
+                if (newNode.IsSelected && (SelectionType != SelectionType.Leaf || !newNode.Children.Any()))
                 {
                     if (Value == null)
                     {
