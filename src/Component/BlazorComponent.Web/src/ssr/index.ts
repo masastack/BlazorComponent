@@ -5,14 +5,54 @@ type MainPadding = {
   left: number;
 };
 
-export function setTheme(dark: boolean, updateCache: boolean = true) {
-  const app = document.querySelector(".m-application");
+type MasaBlazorSsrState = {
+  main: MainPadding;
+  rtl: boolean;
+  dark: boolean;
+};
+
+const MASA_BLAZOR_SSR_STATE = "masablazor@ssr-state";
+
+export function setTheme(dark: boolean) {
+  console.log('[index.ts] setTheme', dark)
+  const app = getApp();
   if (app) {
     app.classList.replace(getThemeCss(!dark), getThemeCss(dark));
   }
+
+  updateStorage({ dark });
 }
 
-export function setMain(value: MainPadding) {
+function updateStorage(obj: Partial<MasaBlazorSsrState>) {
+  const stateStr = localStorage.getItem(MASA_BLAZOR_SSR_STATE);
+  if (stateStr) {
+    const state = JSON.parse(stateStr);
+    localStorage.setItem(
+      MASA_BLAZOR_SSR_STATE,
+      JSON.stringify({
+        ...state,
+        ...obj,
+      })
+    );
+  }
+}
+
+export function setRtl(rtl: boolean) {
+  console.log('[index.ts] setRtl', rtl)
+  const app = getApp();
+  if (!app) return;
+
+  const rtlCss = "m-application--is-rtl";
+  if (!rtl) {
+    app.classList.remove(rtlCss);
+  } else if (!app.classList.contains(rtlCss)) {
+    app.classList.add(rtlCss);
+  }
+
+  updateStorage({ rtl });
+}
+
+export function updateMain(value: MainPadding) {
   const main: HTMLElement = document.querySelector(".m-main");
 
   const padding: MainPadding = {
@@ -32,6 +72,15 @@ export function setMain(value: MainPadding) {
   }
 }
 
+export function saveMain(state: MasaBlazorSsrState) {
+  console.log('saveMain', state)
+  localStorage.setItem(MASA_BLAZOR_SSR_STATE, JSON.stringify(state));
+}
+
 function getThemeCss(dark: boolean) {
   return dark ? "theme--dark" : "theme--light";
+}
+
+function getApp() {
+  return document.querySelector(".m-application");
 }

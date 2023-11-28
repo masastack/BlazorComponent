@@ -152,6 +152,10 @@
 
         public static string SsrSetTheme => $"{JsInteropFuncNamePrefix}ssr.setTheme";
 
-        public static string SsrSetMain => $"{JsInteropFuncNamePrefix}ssr.setMain";
+        public static string SsrSetRtl => $"{JsInteropFuncNamePrefix}ssr.setRtl";
+
+        public static string SsrUpdateMain => $"{JsInteropFuncNamePrefix}ssr.updateMain";
+
+        public static string SsrSaveMain => $"{JsInteropFuncNamePrefix}ssr.saveMain";
     }
 }
