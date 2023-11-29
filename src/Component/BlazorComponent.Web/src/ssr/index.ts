@@ -1,26 +1,92 @@
-type MainPadding = {
+export type MasaBlazorApplication = {
+  bar?: number;
   top: number;
   right: number;
   bottom: number;
   left: number;
+  footer?: number;
+  insetFooter?: number;
 };
 
-type MasaBlazorSsrState = {
-  main: MainPadding;
-  rtl: boolean;
-  dark: boolean;
+export type MasaBlazorSsrPassiveState = {
+  application: MasaBlazorApplication;
 };
 
-const MASA_BLAZOR_SSR_STATE = "masablazor@ssr-state";
+export type MasaBlazorSsrState = {
+  culture?: string;
+  rtl?: boolean;
+  dark?: boolean;
+  passive: MasaBlazorSsrPassiveState;
+};
+
+export const MASA_BLAZOR_SSR_STATE = "masablazor@ssr-state";
 
 export function setTheme(dark: boolean) {
-  console.log('[index.ts] setTheme', dark)
+  console.log("[index.ts] setTheme", dark);
   const app = getApp();
   if (app) {
     app.classList.replace(getThemeCss(!dark), getThemeCss(dark));
   }
 
   updateStorage({ dark });
+}
+
+export function setCulture(culture: string) {
+  console.log("[index.ts] setCulture", culture);
+  const app = getApp();
+  if (!app) return;
+
+  updateStorage({ culture });
+}
+
+export function setRtl(rtl: boolean) {
+  console.log("[index.ts] setRtl", rtl);
+  const app = getApp();
+  if (!app) return;
+
+  const rtlCss = "m-application--is-rtl";
+  if (!rtl) {
+    app.classList.remove(rtlCss);
+  } else if (!app.classList.contains(rtlCss)) {
+    app.classList.add(rtlCss);
+  }
+
+  updateStorage({ rtl });
+}
+
+export function updateMain(application: MasaBlazorApplication) {
+  const main: HTMLElement = document.querySelector(".m-main");
+
+  const newApplication: MasaBlazorApplication = {
+    top: application.top ?? getPadding("Top"),
+    right: application.right ?? getPadding("Right"),
+    bottom: application.bottom ?? getPadding("Bottom"),
+    left: application.left ?? getPadding("Left"),
+  };
+
+  restoreMain(newApplication);
+
+  function getPadding(prop: "Top" | "Right" | "Bottom" | "Left") {
+    return Number(main.style[`padding${prop}`].match(/\d+/)[0]);
+  }
+}
+
+export function updatePassiveState(passive: MasaBlazorSsrPassiveState) {
+  const oldState = getState() ?? {};
+  const state: MasaBlazorSsrState = {
+    ...oldState,
+    passive,
+  };
+  console.log("[updatePassiveState] state", state);
+  localStorage.setItem(MASA_BLAZOR_SSR_STATE, JSON.stringify(state));
+}
+
+function getThemeCss(dark: boolean) {
+  return dark ? "theme--dark" : "theme--light";
+}
+
+function getApp() {
+  return document.querySelector(".m-application");
 }
 
 function updateStorage(obj: Partial<MasaBlazorSsrState>) {
@@ -37,50 +103,21 @@ function updateStorage(obj: Partial<MasaBlazorSsrState>) {
   }
 }
 
-export function setRtl(rtl: boolean) {
-  console.log('[index.ts] setRtl', rtl)
-  const app = getApp();
-  if (!app) return;
-
-  const rtlCss = "m-application--is-rtl";
-  if (!rtl) {
-    app.classList.remove(rtlCss);
-  } else if (!app.classList.contains(rtlCss)) {
-    app.classList.add(rtlCss);
-  }
-
-  updateStorage({ rtl });
-}
-
-export function updateMain(value: MainPadding) {
-  const main: HTMLElement = document.querySelector(".m-main");
-
-  const padding: MainPadding = {
-    top: value.top ?? getPadding("Top"),
-    right: value.right ?? getPadding("Right"),
-    bottom: value.bottom ?? getPadding("Bottom"),
-    left: value.left ?? getPadding("Left"),
-  };
-
-  main.style.paddingTop = `${padding.top}px`;
-  main.style.paddingRight = `${padding.right}px`;
-  main.style.paddingBottom = `${padding.bottom}px`;
-  main.style.paddingLeft = `${padding.left}px`;
-
-  function getPadding(prop: "Top" | "Right" | "Bottom" | "Left") {
-    return Number(main.style[`padding${prop}`].match(/\d+/)[0]);
+export function restoreMain(application: MasaBlazorApplication) {
+  const main = document.querySelector(".m-main") as HTMLElement;
+  if (main && application) {
+    main.style.paddingTop = application.top + application.bar + "px";
+    main.style.paddingRight = application.right + "px";
+    main.style.paddingBottom =
+      application.bottom + application.insetFooter + application.bottom + "px";
+    main.style.paddingLeft = application.left + "px";
   }
 }
 
-export function saveMain(state: MasaBlazorSsrState) {
-  console.log('saveMain', state)
-  localStorage.setItem(MASA_BLAZOR_SSR_STATE, JSON.stringify(state));
-}
-
-function getThemeCss(dark: boolean) {
-  return dark ? "theme--dark" : "theme--light";
-}
-
-function getApp() {
-  return document.querySelector(".m-application");
+export function getState(): MasaBlazorSsrState {
+  const stateStr = localStorage.getItem(MASA_BLAZOR_SSR_STATE);
+  if (stateStr) {
+    return JSON.parse(stateStr);
+  }
+  return null;
 }
