@@ -1,4 +1,4 @@
-import { MASA_BLAZOR_SSR_STATE, MasaBlazorApplication, MasaBlazorSsrState, restoreMain } from "./";
+import { getThemeCss, MASA_BLAZOR_SSR_STATE, MasaBlazorSsrState, restoreMain, setRtl } from "./";
 
 let firstUpdate = true;
 
@@ -34,16 +34,21 @@ export function onDispose() {
   console.log("Dispose");
 }
 
-function restoreTheme(state: MasaBlazorSsrState) {
+export function restoreTheme(state: MasaBlazorSsrState) {
   console.log("restoreTheme", state);
   if (typeof state.dark === "boolean") {
-    window.BlazorComponent.interop.ssr.setTheme(state.dark);
+    const selector = `.${getThemeCss(!state.dark)}:not(.theme--independent)`
+    const elements = document.querySelectorAll(selector);
+    for (let i = 0; i < elements.length; i++) {
+      elements[i].classList.remove(getThemeCss(!state.dark));
+      elements[i].classList.add(getThemeCss(state.dark));
+    }
   }
 }
 
-function restoreRtl(state: MasaBlazorSsrState) {
+export function restoreRtl(state: MasaBlazorSsrState) {
   console.log("restoreRtl", state);
   if (typeof state.rtl === "boolean") {
-    window.BlazorComponent.interop.ssr.setRtl(state.rtl);
+    setRtl(state.rtl, false);
   }
 }

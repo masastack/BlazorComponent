@@ -23,9 +23,11 @@ export const MASA_BLAZOR_SSR_STATE = "masablazor@ssr-state";
 
 export function setTheme(dark: boolean) {
   console.log("[index.ts] setTheme", dark);
-  const app = getApp();
-  if (app) {
-    app.classList.replace(getThemeCss(!dark), getThemeCss(dark));
+  const selector = `.${getThemeCss(!dark)}:not(.theme--independent)`
+  const elements = document.querySelectorAll(selector);
+  for (let i = 0; i < elements.length; i++) {
+    elements[i].classList.remove(getThemeCss(!dark));
+    elements[i].classList.add(getThemeCss(dark));
   }
 
   updateStorage({ dark });
@@ -39,7 +41,7 @@ export function setCulture(culture: string) {
   updateStorage({ culture });
 }
 
-export function setRtl(rtl: boolean) {
+export function setRtl(rtl: boolean, updateCache: boolean = true) {
   console.log("[index.ts] setRtl", rtl);
   const app = getApp();
   if (!app) return;
@@ -51,7 +53,9 @@ export function setRtl(rtl: boolean) {
     app.classList.add(rtlCss);
   }
 
-  updateStorage({ rtl });
+  if (updateCache) {
+    updateStorage({ rtl });
+  }
 }
 
 export function updateMain(application: MasaBlazorApplication) {
@@ -81,7 +85,7 @@ export function updatePassiveState(passive: MasaBlazorSsrPassiveState) {
   localStorage.setItem(MASA_BLAZOR_SSR_STATE, JSON.stringify(state));
 }
 
-function getThemeCss(dark: boolean) {
+export function getThemeCss(dark: boolean) {
   return dark ? "theme--dark" : "theme--light";
 }
 

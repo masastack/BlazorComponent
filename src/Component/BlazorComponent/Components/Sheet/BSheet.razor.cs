@@ -24,7 +24,7 @@ namespace BlazorComponent
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
 
-        public virtual bool IsDark
+        public bool IsDark
         {
             get
             {

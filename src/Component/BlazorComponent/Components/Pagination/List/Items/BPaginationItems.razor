@@ -27,7 +27,11 @@
         builder.OpenElement(0, HrefFormat is null ? "button" : "a");
         builder.AddAttribute(1, "class", CssProvider.GetClass(itemClass));
         builder.AddAttribute(2, "onclick", () => HandleItemClickAsync(item));
+        
+        // TODO: hide this if the component is not interactive
+        // https://github.com/dotnet/aspnetcore/issues/49401
         builder.AddAttribute(3, "__internal_preventDefault_onclick", true);
+
         if (HrefFormat is null)
         {
             builder.AddAttribute(4, "type", "button");
