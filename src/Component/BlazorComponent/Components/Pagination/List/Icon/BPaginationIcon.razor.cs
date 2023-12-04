@@ -5,6 +5,10 @@
         [Parameter]
         public int ItemIndex { get; set; }
 
+        public int Value => Component.Value;
+
+        public string? HrefFormat => Component.HrefFormat;
+
         public string GetIcon => Component.GetIcon(ItemIndex);
 
         public bool Disabled => ItemIndex == (int)PaginationIconTypes.First ? Component.PrevDisabled : Component.NextDisabled;

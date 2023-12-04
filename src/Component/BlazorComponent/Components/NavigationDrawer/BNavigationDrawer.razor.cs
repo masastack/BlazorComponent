@@ -14,7 +14,7 @@ namespace BlazorComponent
 
         [Inject]
         private OutsideClickJSModule? OutsideClickJsModule { get; set; }
-        
+
         [CascadingParameter]
         public IDependent? CascadingDependent { get; set; }
 

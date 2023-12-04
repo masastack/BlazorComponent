@@ -141,7 +141,7 @@
         public static string ResizableDataTable => $"{JsInteropFuncNamePrefix}resizableDataTable";
 
         public static string UpdateDataTableResizeHeight => $"{JsInteropFuncNamePrefix}updateDataTableResizeHeight";
-        
+
         public static string RegisterDragEvent => $"{JsInteropFuncNamePrefix}registerDragEvent";
 
         public static string UnregisterDragEvent => $"{JsInteropFuncNamePrefix}unregisterDragEvent";
@@ -149,5 +149,17 @@
         public static string RegisterSliderEvents => $"{JsInteropFuncNamePrefix}registerSliderEvents";
 
         public static string UnregisterSliderEvents => $"{JsInteropFuncNamePrefix}unregisterSliderEvents";
+
+        public static string SsrSetTheme => $"{JsInteropFuncNamePrefix}ssr.setTheme";
+
+        public static string SsrSetRtl => $"{JsInteropFuncNamePrefix}ssr.setRtl";
+
+        public static string SsrSetCulture => $"{JsInteropFuncNamePrefix}ssr.setCulture";
+
+        public static string SsrUpdateMain => $"{JsInteropFuncNamePrefix}ssr.updateMain";
+
+        public static string SsrGetState => $"{JsInteropFuncNamePrefix}ssr.getState";
+
+        public static string SsrUpdatePassiveState => $"{JsInteropFuncNamePrefix}ssr.updatePassiveState";
     }
 }

@@ -27,7 +27,8 @@
     "build:drawflow": "rollup --config rollup.config.drawflow.ts",
     "build:swiper": "rollup --config rollup.config.swiper.ts",
     "build:intersect": "rollup --config rollup.config.intersect.ts",
-    "build:resize": "rollup --config rollup.config.resize.ts"
+    "build:resize": "rollup --config rollup.config.resize.ts",
+    "build:ssr": "rollup --config rollup.config.ssr.ts"
   },
   "author": "",
   "license": "MIT",
