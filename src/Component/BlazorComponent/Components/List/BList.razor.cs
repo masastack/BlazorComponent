@@ -39,7 +39,7 @@ namespace BlazorComponent
         [MassApiParameter(true)]
         public bool If { get; set; } = true;
 
-        public virtual bool IsDark
+        public bool IsDark
         {
             get
             {

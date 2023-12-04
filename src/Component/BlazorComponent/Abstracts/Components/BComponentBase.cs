@@ -84,19 +84,6 @@
             return _dirtyParameters.Contains(parameterName);
         }
 
-        /// <summary>
-        /// Determine whether the component's theme is independent.
-        /// It means that is not affected by root cascading value.
-        /// </summary>
-        protected bool IndependentTheme
-            => _dirtyParameters.Contains("Dark") || _dirtyParameters.Contains("Light") || IsCascadingIsDarkDirty;
-
-        /// <summary>
-        /// Determine whether the cascading value of IsDark from ancestor has been assigned value.
-        /// In SSR, the cascading value is not working for the root interactive component.
-        /// </summary>
-        protected bool IsCascadingIsDarkDirty => _dirtyParameters.Contains("CascadingIsDark");
-
         protected void InvokeStateHasChanged()
         {
             if (!IsDisposed)
