@@ -2,7 +2,7 @@
 {
     public class ThemeCssBuilder
     {
-        public string Build(ThemeOptions theme)
+        public string? Build(ThemeOptions theme)
         {
             var combinePrefix = theme.CombinePrefix;
             combinePrefix ??= string.Empty;
