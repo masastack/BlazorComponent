@@ -22,7 +22,6 @@ export type MasaBlazorSsrState = {
 export const MASA_BLAZOR_SSR_STATE = "masablazor@ssr-state";
 
 export function setTheme(dark: boolean) {
-  console.log("[index.ts] setTheme", dark);
   const selector = `.${getThemeCss(!dark)}:not(.theme--independent)`
   const elements = document.querySelectorAll(selector);
   for (let i = 0; i < elements.length; i++) {
@@ -34,7 +33,6 @@ export function setTheme(dark: boolean) {
 }
 
 export function setCulture(culture: string) {
-  console.log("[index.ts] setCulture", culture);
   const app = getApp();
   if (!app) return;
 
@@ -42,7 +40,6 @@ export function setCulture(culture: string) {
 }
 
 export function setRtl(rtl: boolean, updateCache: boolean = true) {
-  console.log("[index.ts] setRtl", rtl);
   const app = getApp();
   if (!app) return;
 
@@ -81,7 +78,6 @@ export function updatePassiveState(passive: MasaBlazorSsrPassiveState) {
     ...oldState,
     passive,
   };
-  console.log("[updatePassiveState] state", state);
   localStorage.setItem(MASA_BLAZOR_SSR_STATE, JSON.stringify(state));
 }
 

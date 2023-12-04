@@ -28,9 +28,7 @@
     "build:swiper": "rollup --config rollup.config.swiper.ts",
     "build:intersect": "rollup --config rollup.config.intersect.ts",
     "build:resize": "rollup --config rollup.config.resize.ts",
-    "build:ssr-page-script": "rollup --config rollup.config.ssr-page-script.ts",
-    "dev:ssr-page-script": "rollup --config rollup.config.ssr-page-script.ts --watch",
-    "build:ssr-state-restore": "rollup --config rollup.config.ssr-state-restore.ts"
+    "build:ssr": "rollup --config rollup.config.ssr.ts"
   },
   "author": "",
   "license": "MIT",
