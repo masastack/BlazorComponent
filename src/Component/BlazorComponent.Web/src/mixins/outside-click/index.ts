@@ -25,14 +25,15 @@ class OutsideClick {
   }
 
   addListeners() {
+    console.log('test~~~~')
     this.genListeners();
     document.addEventListener("click", this.listener, true);
     document.addEventListener("mousedown", this.mousedownListener, true);
   }
 
   removeListeners() {
-    document.removeEventListener("click", this.listener);
-    document.removeEventListener("mousedown", this.mousedownListener);
+    document.removeEventListener("click", this.listener, true);
+    document.removeEventListener("mousedown", this.mousedownListener, true);
   }
 
   resetListener() {
@@ -51,6 +52,12 @@ class OutsideClick {
 
       return el.contains(e.target as HTMLElement);
     });
+  }
+
+  dispose() {
+    console.log('dispose')
+    this.removeListeners();
+    this.dotNetHelper.dispose();
   }
 }
 

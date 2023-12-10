@@ -32,6 +32,9 @@ public class BActivatableBase : BToggleable, IActivatableJsCallbacks
     [Parameter]
     public bool Eager { get; set; }
 
+    [Parameter]
+    public string? Activator { get; set; }
+
     private string? _activatorId;
 
     protected bool IsBooted { get; set; }
@@ -46,7 +49,7 @@ public class BActivatableBase : BToggleable, IActivatableJsCallbacks
 
     protected string ActivatorId => _activatorId ??= $"_activator_{Guid.NewGuid()}";
 
-    public string ActivatorSelector => $"[{ActivatorId}]";
+    public string ActivatorSelector => Activator ?? $"[{ActivatorId}]";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

@@ -43,6 +43,13 @@ public class OutsideClickJSModule : JSModule
         }
     }
 
+    public async Task Dispose()
+    {
+        if (_instance is null) return;
+        
+        await _instance.InvokeVoidAsync("dispose");
+    }
+
     [JSInvokable]
     public async Task OnOutsideClick()
     {
