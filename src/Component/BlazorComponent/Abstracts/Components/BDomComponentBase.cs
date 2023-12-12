@@ -10,7 +10,6 @@ namespace BlazorComponent
         {
             _watcher = new PropertyWatcher(GetType());
 
-            CssProvider = new(() => Class, () => Style);
             AbstractProvider = new();
         }
 
@@ -25,24 +24,10 @@ namespace BlazorComponent
         public string Id { get; set; } = null!;
 
         /// <summary>
-        /// Specifies one or more class names for an DOM element.
-        /// </summary>
-        [Parameter]
-        public string? Class { get; set; }
-
-        /// <summary>
-        /// Specifies an inline style for an DOM element.
-        /// </summary>
-        [Parameter]
-        public string? Style { get; set; }
-
-        /// <summary>
         /// Custom attributes
         /// </summary>
         [Parameter(CaptureUnmatchedValues = true)]
         public virtual IDictionary<string, object?> Attributes { get; set; } = new Dictionary<string, object?>();
-
-        protected const int BROWSER_RENDER_INTERVAL = 16;
 
         private readonly PropertyWatcher _watcher;
 
@@ -53,8 +38,6 @@ namespace BlazorComponent
         protected bool HostedInWebAssembly => Js is IJSInProcessRuntime;
 
         protected ILogger Logger => LoggerFactory.CreateLogger(GetType());
-
-        public ComponentCssProvider CssProvider { get; }
 
         public ComponentAbstractProvider AbstractProvider { get; }
 
@@ -88,7 +71,6 @@ namespace BlazorComponent
         {
             Id ??= ComponentIdGenerator.Generate(this); // TODO: v2 remove this?
             base.OnInitialized();
-            SetComponentClass();
         }
 
         protected override void OnAfterRender(bool firstRender)
@@ -115,10 +97,6 @@ namespace BlazorComponent
         protected virtual Task OnElementReferenceChangedAsync()
         {
             return Task.CompletedTask;
-        }
-
-        protected virtual void SetComponentClass()
-        {
         }
 
         /// <summary>

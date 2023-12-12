@@ -1,6 +1,6 @@
 ﻿namespace BlazorComponent;
 
-public class NextTickComponentBase : ComponentBase, IDisposable
+public class NextTickComponentBase : CssProviderComponentBase, IDisposable
 {
     private readonly Queue<(Func<Task>, Func<bool>)> _nextTickQueue = new();
 
