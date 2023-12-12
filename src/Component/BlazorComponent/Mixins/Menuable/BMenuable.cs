@@ -456,10 +456,12 @@
             base.Dispose(disposing);
         }
 
-        public async ValueTask DisposeAsync()
+        async ValueTask IAsyncDisposable.DisposeAsync()
         {
             try
             {
+                await DisposeAsync();
+                
                 if (ContentElement.Context is not null)
                 {
                     await JsInvokeAsync(JsInteropConstants.DelElementFrom, ContentElement, AttachSelector);
@@ -470,5 +472,7 @@
                 // ignored
             }
         }
+
+        protected virtual Task DisposeAsync() => Task.CompletedTask;
     }
 }

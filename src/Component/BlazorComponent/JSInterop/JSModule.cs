@@ -38,7 +38,9 @@ public abstract class JSModule : IAsyncDisposable
         }
     }
 
-    public async virtual ValueTask DisposeAsync()
+    protected virtual ValueTask DisposeAsync() => ValueTask.CompletedTask;
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
     {
         if (_moduleTask.IsValueCreated)
         {
@@ -46,6 +48,7 @@ public abstract class JSModule : IAsyncDisposable
 
             try
             {
+                await DisposeAsync();
                 await module.DisposeAsync();
             }
             catch (Exception)

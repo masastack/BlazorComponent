@@ -1,19 +1,14 @@
-﻿using BlazorComponent.JSInterop;
-using BlazorComponent.Mixins;
-using BlazorComponent.Web;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.JSInterop;
+﻿using BlazorComponent.Mixins;
 
 namespace BlazorComponent
 {
-    public abstract partial class BNavigationDrawer : BDomComponentBase, IDependent, IOutsideClickJsCallback
+    public abstract partial class BNavigationDrawer : BDomComponentBase, IDependent, IOutsideClickJsCallback, IAsyncDisposable
     {
         private CancellationTokenSource? _cancellationTokenSource;
         private bool _disposed;
 
         [Inject]
-        private OutsideClickJSModule? OutsideClickJsModule { get; set; }
+        private OutsideClickJSModule OutsideClickJsModule { get; set; } = null!;
 
         [CascadingParameter]
         public IDependent? CascadingDependent { get; set; }
@@ -238,6 +233,18 @@ namespace BlazorComponent
         {
             if (!CloseConditional()) return;
             IsActive = false;
+        }
+
+        async ValueTask IAsyncDisposable.DisposeAsync()
+        {
+            try
+            {
+                await OutsideClickJsModule.Dispose();
+            }
+            catch
+            {
+                // ignore
+            }
         }
     }
 }
