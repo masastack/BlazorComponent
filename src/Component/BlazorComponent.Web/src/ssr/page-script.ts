@@ -1,25 +1,18 @@
 import { getThemeCss, MASA_BLAZOR_SSR_STATE, MasaBlazorSsrState, restoreMain, setRtl } from "./";
 
-let firstUpdate = true;
-
 // Called when the script first gets loaded on the page.
 export function onLoad() {}
 
 // Called when an enhanced page update occurs, plus once immediately after
 // the initial load.
 export function onUpdate() {
-  if (firstUpdate) {
-    firstUpdate = false;
-    return;
-  }
-
   const stateStr = localStorage.getItem(MASA_BLAZOR_SSR_STATE);
   if (!stateStr) return;
 
   const state: MasaBlazorSsrState = JSON.parse(stateStr);
   if (!state) return;
 
-  restoreMain(state.passive.application);
+  // restoreMain(state.passive.application);
   restoreTheme(state);
   restoreRtl(state);
 }
@@ -28,6 +21,7 @@ export function onUpdate() {
 export function onDispose() {}
 
 export function restoreTheme(state: MasaBlazorSsrState) {
+  console.log('restoreTheme', state.dark)
   if (typeof state.dark === "boolean") {
     const selector = `.${getThemeCss(!state.dark)}:not(.theme--independent)`;
     const elements = document.querySelectorAll(selector);

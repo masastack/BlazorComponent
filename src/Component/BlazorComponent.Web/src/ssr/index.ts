@@ -16,13 +16,13 @@ export type MasaBlazorSsrState = {
   culture?: string;
   rtl?: boolean;
   dark?: boolean;
-  passive: MasaBlazorSsrPassiveState;
+  passive?: MasaBlazorSsrPassiveState;
 };
 
 export const MASA_BLAZOR_SSR_STATE = "masablazor@ssr-state";
 
 export function setTheme(dark: boolean) {
-  const selector = `.${getThemeCss(!dark)}:not(.theme--independent)`
+  const selector = `.${getThemeCss(!dark)}:not(.theme--independent)`;
   const elements = document.querySelectorAll(selector);
   for (let i = 0; i < elements.length; i++) {
     elements[i].classList.remove(getThemeCss(!dark));
@@ -30,6 +30,13 @@ export function setTheme(dark: boolean) {
   }
 
   updateStorage({ dark });
+}
+
+export function toggleTheme() {
+  const state = getState();
+  if (state) {
+    setTheme(!state.dark);
+  }
 }
 
 export function setCulture(culture: string) {
@@ -85,7 +92,7 @@ export function getThemeCss(dark: boolean) {
   return dark ? "theme--dark" : "theme--light";
 }
 
-function getApp() {
+export function getApp() {
   return document.querySelector(".m-application");
 }
 
