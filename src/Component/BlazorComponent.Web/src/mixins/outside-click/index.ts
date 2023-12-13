@@ -46,10 +46,8 @@ class OutsideClick {
 
   checkEvent(e: MouseEvent) {
     return this.excludedSelectors.some((selector) => {
-      const el = document.querySelector(selector);
-      if (!el) return false;
-
-      return el.contains(e.target as HTMLElement);
+      const elements = Array.from(document.querySelectorAll(selector));
+      return elements.some(el => el.contains(e.target as HTMLElement));
     });
   }
 
