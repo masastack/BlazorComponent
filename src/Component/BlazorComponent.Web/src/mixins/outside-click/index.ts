@@ -25,7 +25,6 @@ class OutsideClick {
   }
 
   addListeners() {
-    console.log('test~~~~')
     this.genListeners();
     document.addEventListener("click", this.listener, true);
     document.addEventListener("mousedown", this.mousedownListener, true);
@@ -54,10 +53,8 @@ class OutsideClick {
     });
   }
 
-  dispose() {
-    console.log('dispose')
+  unbind() {
     this.removeListeners();
-    this.dotNetHelper.dispose();
   }
 }
 

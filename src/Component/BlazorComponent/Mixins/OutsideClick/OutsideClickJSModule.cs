@@ -24,7 +24,7 @@ public class OutsideClickJSModule : JSModule
         Initialized = true;
     }
 
-    public async Task UpdateDependentElements(params string[] selectors)
+    public async Task UpdateDependentElementsAsync(params string[] selectors)
     {
         if (_instance is null) return;
 
@@ -43,12 +43,15 @@ public class OutsideClickJSModule : JSModule
         }
     }
 
-    public async Task Dispose()
-    {
-        if (_instance is null) return;
-        
-        await _instance.InvokeVoidAsync("dispose");
-    }
+    /// <summary>
+    /// Remove event listener from document and dispose this module
+    /// </summary>
+    public async ValueTask UnbindAndDisposeAsync() => await DisposeAsync();
+
+    /// <summary>
+    /// Remove event listener from document
+    /// </summary>
+    public async Task UnbindAsync() => await _instance.TryInvokeVoidAsync("unbind");
 
     [JSInvokable]
     public async Task OnOutsideClick()
@@ -60,7 +63,7 @@ public class OutsideClickJSModule : JSModule
 
     protected override async ValueTask DisposeAsync()
     {
-        await Dispose();
+        await UnbindAsync();
 
         _selfReference?.Dispose();
 

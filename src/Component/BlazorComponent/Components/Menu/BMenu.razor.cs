@@ -199,7 +199,7 @@ public partial class BMenu : BMenuable, IDependent
     public void RegisterChild(IDependent dependent)
     {
         _dependents.Add(dependent);
-        NextTickWhile(() => { Module?.UpdateDependentElements(DependentSelectors.ToArray()); }, () => Module == null || Module.Initialized == false);
+        NextTickWhile(() => { Module?.UpdateDependentElementsAsync(DependentSelectors.ToArray()); }, () => Module == null || Module.Initialized == false);
     }
 
     //TODO:keydown event
@@ -256,7 +256,7 @@ public partial class BMenu : BMenuable, IDependent
     {
         if (Module is not null)
         {
-            await Module.Dispose();
+            await Module.UnbindAndDisposeAsync();
         }
     }
 }

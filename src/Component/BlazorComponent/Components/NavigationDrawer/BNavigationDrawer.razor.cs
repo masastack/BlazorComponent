@@ -143,7 +143,7 @@ namespace BlazorComponent
         {
             _dependents.Add(dependent);
 
-            NextTickWhile(() => { OutsideClickJsModule?.UpdateDependentElements(DependentSelectors.ToArray()); },
+            NextTickWhile(() => { OutsideClickJsModule?.UpdateDependentElementsAsync(DependentSelectors.ToArray()); },
                 () => OutsideClickJsModule == null || OutsideClickJsModule.Initialized == false);
         }
 
@@ -239,7 +239,7 @@ namespace BlazorComponent
         {
             try
             {
-                await OutsideClickJsModule.Dispose();
+                await OutsideClickJsModule.UnbindAndDisposeAsync();
             }
             catch
             {
