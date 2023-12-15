@@ -46,4 +46,9 @@ public static class NavigationManagerExtensions
     {
         navigationManager.NavigateTo(navigationManager.GetUriWithQueryParameter(name, value));
     }
+    
+    public static void NavigateWithQueryParameter(this NavigationManager navigationManager, string name, int? value)
+    {
+        navigationManager.NavigateTo(navigationManager.GetUriWithQueryParameter(name, value));
+    }
 }
