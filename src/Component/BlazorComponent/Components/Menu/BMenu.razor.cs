@@ -252,11 +252,20 @@ public partial class BMenu : BMenuable, IDependent
         return Dimensions.Activator.Left - DefaultOffset * 2;
     }
 
-    protected override async Task DisposeAsync()
+    protected override async ValueTask DisposeAsync(bool disposing)
     {
         if (Module is not null)
         {
-            await Module.UnbindAndDisposeAsync();
+            try
+            {
+                await Module.UnbindAndDisposeAsync();
+            }
+            catch (JSDisconnectedException)
+            {
+                // ignore
+            }
         }
+
+        await base.DisposeAsync(disposing);
     }
 }

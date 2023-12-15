@@ -24,11 +24,11 @@
             InvokeAsync(StateHasChanged);
         }
 
-        protected override void Dispose(bool disposing)
+        protected override async ValueTask DisposeAsync(bool disposing)
         {
-            base.Dispose(disposing);
-
             PopupProvider.StateChanged -= OnStateChanged;
+
+            await base.DisposeAsync(disposing);
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace BlazorComponent
 {
-    public abstract partial class BNavigationDrawer : BDomComponentBase, IDependent, IOutsideClickJsCallback, IAsyncDisposable
+    public abstract partial class BNavigationDrawer : BDomComponentBase, IDependent, IOutsideClickJsCallback
     {
         private CancellationTokenSource? _cancellationTokenSource;
         private bool _disposed;
@@ -150,7 +150,7 @@ namespace BlazorComponent
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
-
+            
             if (firstRender)
             {
                 await OutsideClickJsModule!.InitializeAsync(this, DependentSelectors.ToArray());
@@ -221,12 +221,7 @@ namespace BlazorComponent
 
         protected bool CloseConditional()
         {
-            return IsActive && !_disposed && ReactsToClick;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            _disposed = true;
+            return IsActive && !IsDisposed && ReactsToClick;
         }
 
         public async Task HandleOnOutsideClickAsync()
@@ -235,15 +230,15 @@ namespace BlazorComponent
             IsActive = false;
         }
 
-        async ValueTask IAsyncDisposable.DisposeAsync()
+        protected override async ValueTask DisposeAsync(bool disposing)
         {
             try
             {
                 await OutsideClickJsModule.UnbindAndDisposeAsync();
             }
-            catch
+            catch (JSDisconnectedException)
             {
-                // ignore
+                // ignored
             }
         }
     }

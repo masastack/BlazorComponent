@@ -1,6 +1,6 @@
 ﻿namespace BlazorComponent;
 
-public class NextTickComponentBase : CssProviderComponentBase, IDisposable
+public class NextTickComponentBase : CssProviderComponentBase, IAsyncDisposable
 {
     private readonly Queue<(Func<Task>, Func<bool>)> _nextTickQueue = new();
 
@@ -125,22 +125,25 @@ public class NextTickComponentBase : CssProviderComponentBase, IDisposable
         }
     }
 
-
-    protected virtual void Dispose(bool disposing)
+    protected virtual async ValueTask DisposeAsync(bool disposing)
     {
-        if (IsDisposed) return;
+        if (IsDisposed)
+        {
+            await ValueTask.CompletedTask;
+        }
+
         IsDisposed = true;
     }
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
-        Dispose(true);
+        await DisposeAsync(true);
         GC.SuppressFinalize(this);
     }
 
     ~NextTickComponentBase()
     {
         // Finalizer calls Dispose(false)
-        Dispose(false);
+        _ = DisposeAsync(false);
     }
 }
