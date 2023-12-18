@@ -35,5 +35,20 @@ public static class NavigationManagerExtensions
     public static string GetHash(this NavigationManager navigationManager)
     {
         return navigationManager.ToUri().Fragment;
-    } 
+    }
+    
+    public static void NavigateWithQueryParameter(this NavigationManager navigationManager, string name, bool? value)
+    {
+        navigationManager.NavigateTo(navigationManager.GetUriWithQueryParameter(name, value));
+    }
+    
+    public static void NavigateWithQueryParameter(this NavigationManager navigationManager, string name, string? value)
+    {
+        navigationManager.NavigateTo(navigationManager.GetUriWithQueryParameter(name, value));
+    }
+    
+    public static void NavigateWithQueryParameter(this NavigationManager navigationManager, string name, int? value)
+    {
+        navigationManager.NavigateTo(navigationManager.GetUriWithQueryParameter(name, value));
+    }
 }

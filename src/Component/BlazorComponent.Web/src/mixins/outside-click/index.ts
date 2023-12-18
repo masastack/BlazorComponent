@@ -31,8 +31,8 @@ class OutsideClick {
   }
 
   removeListeners() {
-    document.removeEventListener("click", this.listener);
-    document.removeEventListener("mousedown", this.mousedownListener);
+    document.removeEventListener("click", this.listener, true);
+    document.removeEventListener("mousedown", this.mousedownListener, true);
   }
 
   resetListener() {
@@ -46,11 +46,13 @@ class OutsideClick {
 
   checkEvent(e: MouseEvent) {
     return this.excludedSelectors.some((selector) => {
-      const el = document.querySelector(selector);
-      if (!el) return false;
-
-      return el.contains(e.target as HTMLElement);
+      const elements = Array.from(document.querySelectorAll(selector));
+      return elements.some(el => el.contains(e.target as HTMLElement));
     });
+  }
+
+  unbind() {
+    this.removeListeners();
   }
 }
 

@@ -188,14 +188,14 @@
             }
         }
 
-        protected override void Dispose(bool disposing)
+        protected override async ValueTask DisposeAsync(bool disposing)
         {
             if (Matched && this is IGroupable item)
             {
                 ItemGroup!.Unregister(item);
             }
 
-            base.Dispose(disposing);
+            await base.DisposeAsync(disposing);
         }
     }
 }

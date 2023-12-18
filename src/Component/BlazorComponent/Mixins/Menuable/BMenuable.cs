@@ -1,6 +1,6 @@
 ﻿namespace BlazorComponent
 {
-    public class BMenuable : BBootable, IAsyncDisposable
+    public class BMenuable : BBootable
     {
         [Parameter]
         public bool Absolute { get; set; }
@@ -450,14 +450,10 @@
             return Task.CompletedTask;
         }
 
-        protected override void Dispose(bool disposing)
+        protected override async ValueTask DisposeAsync(bool disposing)
         {
             Window.OnResize -= HandleOnResizeAsync;
-            base.Dispose(disposing);
-        }
-
-        public async ValueTask DisposeAsync()
-        {
+            
             try
             {
                 if (ContentElement.Context is not null)
@@ -469,6 +465,8 @@
             {
                 // ignored
             }
+
+            await base.DisposeAsync(disposing);
         }
     }
 }

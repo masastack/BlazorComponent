@@ -1,9 +1,4 @@
-﻿using BlazorComponent.JSInterop;
-using BlazorComponent.Mixins;
-using BlazorComponent.Web;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.JSInterop;
+﻿using BlazorComponent.Mixins;
 
 namespace BlazorComponent
 {
@@ -13,7 +8,7 @@ namespace BlazorComponent
         private bool _disposed;
 
         [Inject]
-        private OutsideClickJSModule? OutsideClickJsModule { get; set; }
+        private OutsideClickJSModule OutsideClickJsModule { get; set; } = null!;
 
         [CascadingParameter]
         public IDependent? CascadingDependent { get; set; }
@@ -148,14 +143,14 @@ namespace BlazorComponent
         {
             _dependents.Add(dependent);
 
-            NextTickWhile(() => { OutsideClickJsModule?.UpdateDependentElements(DependentSelectors.ToArray()); },
+            NextTickWhile(() => { OutsideClickJsModule?.UpdateDependentElementsAsync(DependentSelectors.ToArray()); },
                 () => OutsideClickJsModule == null || OutsideClickJsModule.Initialized == false);
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
-
+            
             if (firstRender)
             {
                 await OutsideClickJsModule!.InitializeAsync(this, DependentSelectors.ToArray());
@@ -226,18 +221,25 @@ namespace BlazorComponent
 
         protected bool CloseConditional()
         {
-            return IsActive && !_disposed && ReactsToClick;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            _disposed = true;
+            return IsActive && !IsDisposed && ReactsToClick;
         }
 
         public async Task HandleOnOutsideClickAsync()
         {
             if (!CloseConditional()) return;
             IsActive = false;
+        }
+
+        protected override async ValueTask DisposeAsync(bool disposing)
+        {
+            try
+            {
+                await OutsideClickJsModule.UnbindAndDisposeAsync();
+            }
+            catch (JSDisconnectedException)
+            {
+                // ignored
+            }
         }
     }
 }

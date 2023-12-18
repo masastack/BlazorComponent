@@ -213,7 +213,7 @@ public partial class BDialog : BBootable, IDependent, IAsyncDisposable
     {
         _dependents.Add(dependent);
 
-        NextTickWhile(() => { OutsideClickJsModule?.UpdateDependentElements(DependentSelectors.ToArray()); },
+        NextTickWhile(() => { OutsideClickJsModule?.UpdateDependentElementsAsync(DependentSelectors.ToArray()); },
             () => OutsideClickJsModule == null || OutsideClickJsModule.Initialized == false);
     }
 

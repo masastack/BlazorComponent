@@ -118,11 +118,11 @@ namespace BlazorComponent
             return matched != Matched;
         }
 
-        protected override void Dispose(bool disposing)
+        protected override async ValueTask DisposeAsync(bool disposing)
         {
-            base.Dispose(disposing);
-
             NavigationManager.LocationChanged -= OnLocationChanged;
+
+            await base.DisposeAsync(disposing);
         }
     }
 }
