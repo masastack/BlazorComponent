@@ -15,7 +15,7 @@
         public StringNumber? Offset { get; set; }
 
         [Parameter]
-        [MassApiParameter("div")]
+        [MasaApiParameter("div")]
         public virtual string Tag { get; set; } = "div";
     }
 }

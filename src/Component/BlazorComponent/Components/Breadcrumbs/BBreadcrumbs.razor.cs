@@ -6,7 +6,7 @@
 
         public bool RenderDivider { get; protected set; } = true;
 
-        [Parameter, MassApiParameter("/")]
+        [Parameter, MasaApiParameter("/")]
         public string? Divider { get; set; } = "/";
 
         [Parameter]

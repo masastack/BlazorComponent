@@ -45,7 +45,7 @@
         public StringNumber? ZIndex { get; set; }
 
         [Parameter]
-        [MassApiParameter(false)]
+        [MasaApiParameter(false)]
         public StringBoolean? Attach { get; set; } = false;
 
         [Parameter]
