@@ -11,9 +11,9 @@ public abstract partial class BVirtualScroll<TItem>
     [Parameter]
     public RenderFragment? FooterContent { get; set; }
 
-    [Parameter, MassApiParameter(50)]
+    [Parameter, MasaApiParameter(50)]
     public float ItemSize { get; set; } = 50;
 
-    [Parameter, MassApiParameter(3)]
+    [Parameter, MasaApiParameter(3)]
     public int OverscanCount { get; set; } = 3;
 }

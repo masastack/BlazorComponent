@@ -14,19 +14,19 @@ namespace BlazorComponent
         public string? BackgroundColor { get; set; }
 
         [Parameter]
-        [MassApiParameter(DEFAULT_SIZE)]
+        [MasaApiParameter(DEFAULT_SIZE)]
         public StringNumber? Size { get; set; } = DEFAULT_SIZE;
 
         [Parameter]
-        [MassApiParameter(DEFAULT_ROTATE)]
+        [MasaApiParameter(DEFAULT_ROTATE)]
         public StringNumber? Rotate { get; set; } = DEFAULT_ROTATE;
 
         [Parameter]
-        [MassApiParameter(DEFAULT_WIDTH)]
+        [MasaApiParameter(DEFAULT_WIDTH)]
         public StringNumber? Width { get; set; } = DEFAULT_WIDTH;
 
         [Parameter]
-        [MassApiParameter(DEFAULT_VALUE)]
+        [MasaApiParameter(DEFAULT_VALUE)]
         public StringNumber? Value { get; set; } = DEFAULT_VALUE;
 
         [Parameter]

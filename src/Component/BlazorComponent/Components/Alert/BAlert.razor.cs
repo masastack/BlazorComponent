@@ -16,11 +16,11 @@ public partial class BAlert : BDomComponentBase, IAlert, IThemeable
     public RenderFragment? ChildContent { get; set; }
 
     [Parameter]
-    [MassApiParameter("$cancel")]
+    [MasaApiParameter("$cancel")]
     public string CloseIcon { get; set; } = "$cancel";
 
     [Parameter]
-    [MassApiParameter("Close")]
+    [MasaApiParameter("Close")]
     public virtual string CloseLabel { get; set; } = "Close";
 
     [Parameter]
@@ -30,7 +30,7 @@ public partial class BAlert : BDomComponentBase, IAlert, IThemeable
     public virtual bool Dismissible { get; set; }
 
     [Parameter]
-    [MassApiParameter("div")]
+    [MasaApiParameter("div")]
     public string Tag { get; set; } = "div";
 
     [Parameter]

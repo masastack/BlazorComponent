@@ -11,7 +11,7 @@ namespace BlazorComponent
         public RenderFragment<RatingItem>? ItemContent { get; set; }
 
         [Parameter]
-        [MassApiParameter(5)]
+        [MasaApiParameter(5)]
         public StringNumber Length { get; set; } = 5;
 
         [Parameter]

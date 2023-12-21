@@ -76,10 +76,10 @@
         [Parameter]
         public EventCallback<List<TKey>> OpenChanged { get; set; }
 
-        [Parameter, MassApiParameter("$loading")]
+        [Parameter, MasaApiParameter("$loading")]
         public string LoadingIcon { get; set; } = "$loading";
 
-        [Parameter, MassApiParameter("$subgroup")]
+        [Parameter, MasaApiParameter("$subgroup")]
         public string ExpandIcon { get; set; } = "$subgroup";
 
         [Parameter]

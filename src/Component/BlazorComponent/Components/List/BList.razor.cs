@@ -23,7 +23,7 @@ namespace BlazorComponent
         public bool Routable { get; set; }
 
         [Parameter]
-        [MassApiParameter("div")]
+        [MasaApiParameter("div")]
         public virtual string Tag { get; set; } = "div";
 
         [Parameter]
@@ -36,7 +36,7 @@ namespace BlazorComponent
         public bool CascadingIsDark { get; set; }
 
         [Parameter]
-        [MassApiParameter(true)]
+        [MasaApiParameter(true)]
         public bool If { get; set; } = true;
 
         public bool IsDark

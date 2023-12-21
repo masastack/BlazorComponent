@@ -1,6 +1,6 @@
 ﻿namespace BlazorComponent.Attributes;
 
-public class MassApiParameterAttribute : Attribute
+public class MasaApiParameterAttribute : Attribute
 {
     public object? DefaultValue { get; }
 
@@ -8,18 +8,18 @@ public class MassApiParameterAttribute : Attribute
 
     public string? ReleasedOn { get; set; }
 
-    public MassApiParameterAttribute(object defaultValue)
+    public MasaApiParameterAttribute(object defaultValue)
     {
         DefaultValue = defaultValue;
     }
 
-    public MassApiParameterAttribute(object defaultValue, string releasedOn)
+    public MasaApiParameterAttribute(object defaultValue, string releasedOn)
     {
         DefaultValue = defaultValue;
         ReleasedOn = releasedOn;
     }
 
-    public MassApiParameterAttribute()
+    public MasaApiParameterAttribute()
     {
     }
 }

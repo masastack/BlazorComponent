@@ -46,7 +46,7 @@
         }
 
         [Parameter]
-        [MassApiParameter(1)]
+        [MasaApiParameter(1)]
         public int Page
         {
             get => GetValue(1);
@@ -54,7 +54,7 @@
         }
 
         [Parameter]
-        [MassApiParameter(10)]
+        [MasaApiParameter(10)]
         public int ItemsPerPage
         {
             get => GetValue(10);
@@ -76,7 +76,7 @@
 
         // TODO: check if this is implemented correctly
         [Parameter]
-        [MassApiParameter("en-US")]
+        [MasaApiParameter("en-US")]
         public string Locale { get; set; } = "en-US";
 
         [Parameter]

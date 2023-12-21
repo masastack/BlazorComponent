@@ -24,7 +24,7 @@
         public string? SliderColor { get; set; }
 
         [Parameter]
-        [MassApiParameter(2)]
+        [MasaApiParameter(2)]
         public StringNumber SliderSize { get; set; } = 2;
 
         [Parameter]
