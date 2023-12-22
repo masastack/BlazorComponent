@@ -27,7 +27,8 @@
     "build:drawflow": "rollup --config rollup.config.drawflow.ts",
     "build:swiper": "rollup --config rollup.config.swiper.ts",
     "build:intersect": "rollup --config rollup.config.intersect.ts",
-    "build:resize": "rollup --config rollup.config.resize.ts"
+    "build:resize": "rollup --config rollup.config.resize.ts",
+    "build:xgplayer": "rollup --config rollup.config.xgplayer.ts"
   },
   "author": "",
   "license": "MIT",
@@ -59,7 +60,9 @@
     "rollup-plugin-terser": "^7.0.2",
     "swiper": "^10.2.0",
     "tslib": "^2.4.0",
-    "typescript": "^4.8.2"
+    "typescript": "^4.8.2",
+    "xgplayer": "^3.0.10",
+    "xgplayer-music": "^3.0.10"
   },
   "dependencies": {}
 }

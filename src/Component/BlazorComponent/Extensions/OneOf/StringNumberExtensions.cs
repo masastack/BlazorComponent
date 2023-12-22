@@ -1,4 +1,6 @@
-﻿namespace BlazorComponent
+﻿using System.Runtime;
+
+namespace BlazorComponent
 {
     public static class StringNumberExtensions
     {
@@ -14,6 +16,11 @@
                 t1 => $"{t1}{unit}",
                 t2 => $"{t2}{unit}"
             );
+        }
+
+        public static string? ToUnitOrNull(this StringNumber? stringNumber, string unit = "px")
+        {
+            return stringNumber == null ? null : stringNumber.ToUnit(unit);
         }
 
         // TODO: ConvertToUnit更接近vuetify源码

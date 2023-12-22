@@ -8,7 +8,7 @@ import markdownItTodo from "markdown-it-todo";
 
 import { highlight, highlightToStream } from "./highlighter";
 
-type MarkdownParser = {
+export type MarkdownParser = {
   md: MarkdownIt;
   scope?: string;
   useContainer: (name: string) => void;
