@@ -1486,12 +1486,12 @@ function stopPropagation(e) {
   e.stopPropagation();
 }
 
-export function addStopPropagationEvent(selector: any, type: keyof HTMLElementEventMap) {
-  const dom = getDom(selector);
+export function addStopPropagationEvent(el: any, type: keyof HTMLElementEventMap) {
+  const dom = getDom(el);
   dom.addEventListener(type, stopPropagation);
 }
 
-export function removeStopPropagationEvent(selector: any, type: keyof HTMLElementEventMap) {
-  const dom = getDom(selector);
+export function removeStopPropagationEvent(el: any, type: keyof HTMLElementEventMap) {
+  const dom = getDom(el);
   dom.removeEventListener(type, stopPropagation);
 }
