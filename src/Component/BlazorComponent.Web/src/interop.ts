@@ -1481,3 +1481,17 @@ export function updateDataTableResizeHeight(dataTable: HTMLElement) {
     colResizeDiv.style.height = tableHeight + "px"
   }
 }
+
+function stopPropagation(e) {
+  e.stopPropagation();
+}
+
+export function addStopPropagationEvent(el: any, type: keyof HTMLElementEventMap) {
+  const dom = getDom(el);
+  dom.addEventListener(type, stopPropagation);
+}
+
+export function removeStopPropagationEvent(el: any, type: keyof HTMLElementEventMap) {
+  const dom = getDom(el);
+  dom.removeEventListener(type, stopPropagation);
+}

@@ -13,6 +13,7 @@
 [EventHandler("onextouchstart", typeof(ExTouchEventArgs), true, true)]
 [EventHandler("onpastewithdata", typeof(PasteWithDataEventArgs), true, true)]
 [EventHandler("ontransitionend", typeof(TransitionEventArgs), true, true)]
+[EventHandler("onauxclick", typeof(MouseEventArgs), true, true)]
 public static class EventHandlers
 {
 }
