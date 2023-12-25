@@ -21,7 +21,7 @@ class EChartsProxy {
 
     this.resizeObserver = new ResizeObserver((entries) => {
       this.instance.resize();
-    })
+    });
 
     this.intersectionObserver.observe(this.instance.getDom());
     this.resizeObserver.observe(this.instance.getDom());
@@ -108,11 +108,8 @@ class EChartsProxy {
 }
 
 function init(elOrString, theme, initOptions) {
-  try {
-    return new EChartsProxy(elOrString, theme, initOptions);
-  } catch (error) {
-    console.error(error.message)
-  }
+  if (!elOrString) return null;
+  return new EChartsProxy(elOrString, theme, initOptions);
 }
 
 export { init };
