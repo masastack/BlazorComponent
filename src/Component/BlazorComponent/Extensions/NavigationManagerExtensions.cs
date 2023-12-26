@@ -32,9 +32,10 @@ public static class NavigationManagerExtensions
         return new Uri(navigationManager.Uri);
     }
 
-    public static string GetHash(this NavigationManager navigationManager)
+    public static string? GetHash(this NavigationManager navigationManager)
     {
-        return navigationManager.ToUri().Fragment;
+        var fragment = navigationManager.ToUri().Fragment;
+        return fragment == string.Empty ? null : fragment;
     }
 
     public static void NavigateWithQueryParameter(this NavigationManager navigationManager, string name, bool? value)
