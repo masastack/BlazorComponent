@@ -78,7 +78,7 @@ class XgplayerProxy {
   init(url: IPlayerOptions["url"], options: XgplayerOptions) {
     let playerOptions: IPlayerOptions = {
       el: this.el,
-      url,
+      url
     };
 
     if (options.music) {
@@ -97,7 +97,7 @@ class XgplayerProxy {
 
     if (window.MasaBlazor.xgplayerPlugins) {
       playerOptions.plugins = [
-        ...playerOptions.plugins,
+        ...playerOptions.plugins ?? [],
         ...window.MasaBlazor.xgplayerPlugins,
       ];
 
