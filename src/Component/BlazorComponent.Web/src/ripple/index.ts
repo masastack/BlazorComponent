@@ -66,8 +66,9 @@ export default function registerRippleObserver() {
   // ripple="true",
   // ripple="center",
   // ripple="circle",
-  // ripple="center:custom-css",
-  // ripple="circle:custom-css",
+  // ripple="circle&center"
+  // ripple="center&custom-css",
+  // ripple="circle&custom-css",
   // ripple="custom-css"
   function convertRippleAttributeToOptions(
     target: HTMLElement
@@ -77,25 +78,18 @@ export default function registerRippleObserver() {
       return null;
     }
 
-    const options: RippleOptions = {
-      circle: true,
-      center: false,
-    };
+    const options: RippleOptions = {};
 
-    const [behavior, css] = value.split(":");
-
-    if (behavior) {
-      if (behavior === "center") {
-        options.circle = false;
+    const props = value.split("&");
+    props.forEach((prop) => {
+      if (prop === "center") {
         options.center = true;
-      } else if (behavior !== "circle") {
-        options.class = behavior;
+      } else if (prop === "circle") {
+        options.circle = true;
+      } else {
+        options.class = prop.trim();
       }
-    }
-
-    if (css) {
-      options.class = css;
-    }
+    });
 
     return options;
   }
