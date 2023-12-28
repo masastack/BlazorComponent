@@ -1,4 +1,4 @@
-import Xgplayer, { IPlayerOptions } from "xgplayer";
+import Xgplayer, { Events, IPlayerOptions } from "xgplayer";
 import MusicPreset, { Music } from "xgplayer-music";
 import Mobile from "xgplayer/es/plugins/mobile";
 import Play from "xgplayer/es/plugins/play";
@@ -18,11 +18,13 @@ class XgplayerProxy {
   el: HTMLElement;
   initOptions: XgplayerOptions;
   player: Xgplayer;
+  handle: DotNet.DotNetObject;
 
   constructor(
     selector: string,
     url: IPlayerOptions["url"],
-    options: XgplayerOptions
+    options: XgplayerOptions,
+    handle: DotNet.DotNetObject
   ) {
     const el: HTMLElement = document.querySelector(selector);
 
@@ -38,6 +40,7 @@ class XgplayerProxy {
 
     this.initOptions = options;
     this.el = el;
+    this.handle = handle;
     this.init(url, options);
   }
 
@@ -78,7 +81,7 @@ class XgplayerProxy {
   init(url: IPlayerOptions["url"], options: XgplayerOptions) {
     let playerOptions: IPlayerOptions = {
       el: this.el,
-      url
+      url,
     };
 
     if (options.music) {
@@ -97,7 +100,7 @@ class XgplayerProxy {
 
     if (window.MasaBlazor.xgplayerPlugins) {
       playerOptions.plugins = [
-        ...playerOptions.plugins ?? [],
+        ...(playerOptions.plugins ?? []),
         ...window.MasaBlazor.xgplayerPlugins,
       ];
 
@@ -108,19 +111,28 @@ class XgplayerProxy {
     }
 
     this.player = new Xgplayer(playerOptions);
+
+    this.player.on(Events.FULLSCREEN_CHANGE, (val) => {
+      this.handle.invokeMethodAsync("OnFullscreenChange", val);
+    });
+    this.player.on(Events.CSS_FULLSCREEN_CHANGE, (val) => {
+      this.handle.invokeMethodAsync("OnCssFullscreenChange", val);
+    });
   }
 
   destroy() {
     this.player.destroy();
     this.player = null;
+    this.handle.dispose();
   }
 }
 
 export function init(
   selector: string,
   url: IPlayerOptions["url"],
-  options: XgplayerOptions
+  options: XgplayerOptions,
+  handle: DotNet.DotNetObject
 ) {
-  const instance = new XgplayerProxy(selector, url, options);
+  const instance = new XgplayerProxy(selector, url, options, handle);
   return instance;
 }
