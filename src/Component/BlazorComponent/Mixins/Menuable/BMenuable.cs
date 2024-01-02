@@ -84,6 +84,8 @@
         [NotNull]
         public Document? Document { get; set; }
 
+        protected virtual bool IsRtl => false;
+
         protected double ComputedLeft
         {
             get
@@ -94,7 +96,12 @@
                 var minWidth = Math.Max(activator.Width, content?.Width ?? 0);
 
                 double left = 0;
-                left += Left ? activatorLeft - (minWidth - activator.Width) : activatorLeft;
+
+                left += activatorLeft;
+                if (Left || (IsRtl && !Right) || IsRtl)
+                {
+                    left -= (minWidth - activator.Width);
+                }
 
                 if (OffsetX)
                 {
@@ -227,7 +234,7 @@
 
         protected int ComputedZIndex => ZIndex != null ? ZIndex.ToInt32() : Math.Max(ActivateZIndex, StackMinZIndex);
 
-        protected MenuableDimensions Dimensions { get; } = new();
+        public MenuableDimensions Dimensions { get; } = new();
 
         protected double AbsoluteX { get; set; }
 
