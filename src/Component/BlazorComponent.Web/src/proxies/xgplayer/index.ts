@@ -118,9 +118,18 @@ class XgplayerProxy {
     this.player.on(Events.CSS_FULLSCREEN_CHANGE, (val) => {
       this.handle.invokeMethodAsync("OnCssFullscreenChange", val);
     });
+
+    const fullScreen = this.el.querySelector(".xgplayer-fullscreen");
+    fullScreen.addEventListener("touchend", this.onFullscreenTouchend);
   }
 
+  onFullscreenTouchend = () => {
+    this.handle.invokeMethodAsync("OnFullscreenTouchend");
+  };
+
   destroy() {
+    this.el &&
+      this.el.removeEventListener("touchend", this.onFullscreenTouchend);
     this.player.destroy();
     this.player = null;
     this.handle.dispose();
