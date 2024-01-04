@@ -249,6 +249,8 @@ namespace BlazorComponent
 
         protected virtual bool ValidateOnlyInFocusedState => true;
 
+        protected virtual bool WatchValueChangeImmediately => true;
+
         protected virtual async Task SetValueByJsInterop(string? val)
         {
             _cancellationTokenSource?.Cancel();
@@ -263,7 +265,7 @@ namespace BlazorComponent
             base.RegisterWatchers(watcher);
 
             watcher
-                .Watch<TValue>(nameof(Value), OnValueChanged, immediate: true)
+                .Watch<TValue>(nameof(Value), OnValueChanged, immediate: WatchValueChangeImmediately)
                 .Watch<TValue>(nameof(LazyValue), OnLazyValueChange)
                 .Watch<TValue>(nameof(InternalValue), OnInternalValueChange)
                 .Watch<bool>(nameof(IsFocused), IsFocusedChangeCallback);
