@@ -119,8 +119,12 @@ class XgplayerProxy {
       this.handle.invokeMethodAsync("OnCssFullscreenChange", val);
     });
 
-    const fullScreen = this.el.querySelector(".xgplayer-fullscreen");
-    fullScreen.addEventListener("touchend", this.onFullscreenTouchend);
+    if (!options.music) {
+      const fullScreen = this.el.querySelector(".xgplayer-fullscreen");
+      if (fullScreen) {
+        fullScreen.addEventListener("touchend", this.onFullscreenTouchend);
+      }
+    }
   }
 
   onFullscreenTouchend = () => {
