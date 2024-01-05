@@ -47,9 +47,10 @@
         public StringNumber? Width { get; set; }
 
         public DataTableFixed Fixed { get; set; }
-        
-        internal ElementReference ElementReference { get; set; }
-        
+
+        /// <summary>
+        /// 
+        /// </summary>
         public double RealWidth { get; internal set; }
 
         public bool IsFixedShadowColumn { get; internal set; }
