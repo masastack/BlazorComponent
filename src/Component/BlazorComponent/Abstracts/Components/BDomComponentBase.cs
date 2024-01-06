@@ -1,6 +1,7 @@
 ﻿using BlazorComponent.Abstracts;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
+using BlazorComponent.JSInterop;
 
 namespace BlazorComponent
 {
@@ -65,6 +66,35 @@ namespace BlazorComponent
                 _ref = value;
                 RefBack?.Set(value);
             }
+        }
+
+        private MBRef? _computedRef;
+
+        protected MBRef RootRef
+        {
+            get
+            {
+                if (_computedRef?.Value.Context is null)
+                {
+                    _computedRef = new MBRef(Js, Ref);
+                }
+
+                return _computedRef;
+            }
+        }
+
+        protected IDictionary<string, MBRef> Refs { get; } = new Dictionary<string, MBRef>();
+
+        protected MBRef GenRef(string identifier)
+        {
+            if (Refs.TryGetValue(identifier, out var @ref))
+            {
+                return @ref;
+            }
+
+            var mbRef = new MBRef(Js);
+            Refs[identifier] = mbRef;
+            return mbRef;
         }
 
         protected override void OnInitialized()
@@ -211,3 +241,4 @@ namespace BlazorComponent
         }
     }
 }
+
