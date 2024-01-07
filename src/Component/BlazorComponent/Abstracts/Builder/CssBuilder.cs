@@ -17,7 +17,7 @@
         {
             var classList = GetClassNames();
 
-            if (!classList.Any())
+            if (classList.Count == 0)
             {
                 //In this case,style will never render as class="" but nothing
                 return null;
