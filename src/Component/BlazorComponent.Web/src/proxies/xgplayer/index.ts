@@ -87,6 +87,7 @@ class XgplayerProxy {
     if (options.music) {
       playerOptions = {
         ...playerOptions,
+        mediaType: "audio",
         presets: [MusicPreset],
         plugins: [Mobile, Progress, Play, Playbackrate, Time, Volume],
         ...options,
