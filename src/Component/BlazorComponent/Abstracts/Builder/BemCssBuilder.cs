@@ -21,15 +21,7 @@ public class BemCssBuilder : CssBuilder
     protected override List<string?> GetClassNames()
     {
         var classNames = base.GetClassNames();
-
-        if (_builder != null)
-        {
-            // TODO: insert or add?
-            // classNames.Insert(0, _builder.Invoke(_blockOrElement).Build());
-            var className = _builder.Invoke(_blockOrElement).Build();
-            classNames.Add(className);
-        }
-
+        classNames.Add(_builder == null ? _blockOrElement.Name : _builder.Invoke(_blockOrElement).Build());
         return classNames;
     }
 }
