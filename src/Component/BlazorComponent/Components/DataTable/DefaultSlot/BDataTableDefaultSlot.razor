@@ -12,7 +12,7 @@
     </TopContent>
     <ChildContent>
         @RenderPart(typeof(BDataTableCaption<,>))
-        @RenderPart(typeof(BDataTableColgroup<,>))
+        <BDataTableColgroup TItem="TItem" @attributes="@GetAttributes(typeof(BDataTableColgroup<>))" />
         @RenderPart(typeof(BDataTableHeaders<,>))
         @RenderPart(typeof(BDataTableBody<,>))
         @RenderPart(typeof(BDataTableFoot<,>))

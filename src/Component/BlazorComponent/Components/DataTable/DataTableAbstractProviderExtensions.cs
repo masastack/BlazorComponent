@@ -7,7 +7,6 @@
             return abstractProvider
                 .Merge(typeof(BDataIteratorDefaultSlot<,>), typeof(BDataTableDefaultSlot<TItem, IDataTable<TItem>>))
                 .Apply(typeof(BDataTableCaption<,>), typeof(BDataTableCaption<TItem, IDataTable<TItem>>))
-                .Apply(typeof(BDataTableColgroup<,>), typeof(BDataTableColgroup<TItem, IDataTable<TItem>>))
                 .Apply(typeof(BDataTableHeaders<,>), typeof(BDataTableHeaders<TItem, IDataTable<TItem>>))
                 .Apply(typeof(BDataTableBody<,>), typeof(BDataTableBody<TItem, IDataTable<TItem>>))
                 .Apply(typeof(BDataTableFoot<,>), typeof(BDataTableFoot<TItem, IDataTable<TItem>>))
