@@ -137,8 +137,25 @@ public class NextTickComponentBase : CssProviderComponentBase, IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        await DisposeAsync(true);
-        GC.SuppressFinalize(this);
+        try
+        {
+            await DisposeAsync(true);
+            GC.SuppressFinalize(this);
+        }
+        catch (JSDisconnectedException)
+        {
+            // ignored
+        }
+        // HACK: remove this after https://github.com/dotnet/aspnetcore/issues/52119 is fixed
+        catch (JSException e)
+        {
+            if (e.Message.Contains("has it been disposed") && (OperatingSystem.IsWindows() || OperatingSystem.IsAndroid() || OperatingSystem.IsIOS()))
+            {
+                return;
+            }
+
+            throw;
+        }
     }
 
     ~NextTickComponentBase()
