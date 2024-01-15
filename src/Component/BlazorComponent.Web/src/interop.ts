@@ -970,6 +970,7 @@ export function copyText(text) {
   if (!navigator.clipboard) {
     var textArea = document.createElement("textarea");
     textArea.value = text;
+    textArea.readOnly = true;
 
     // Avoid scrolling to bottom
     textArea.style.top = "0";
