@@ -963,6 +963,7 @@ export function copyChild(el) {
   document.execCommand('selectAll', false, null);
   document.execCommand('copy');
   document.execCommand('unselect');
+  el.blur();
   el.removeAttribute('contenteditable');
 }
 

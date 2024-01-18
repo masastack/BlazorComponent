@@ -232,14 +232,7 @@ namespace BlazorComponent
 
         protected override async ValueTask DisposeAsync(bool disposing)
         {
-            try
-            {
-                await OutsideClickJsModule.UnbindAndDisposeAsync();
-            }
-            catch (JSDisconnectedException)
-            {
-                // ignored
-            }
+            await OutsideClickJsModule.UnbindAndDisposeAsync();
         }
     }
 }
