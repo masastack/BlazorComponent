@@ -23,6 +23,12 @@ public class ComponentBemCssProvider
     public ComponentBemCssProvider Element(string element, Action<BemCssBuilder>? cssAction = null, Action<StyleBuilder>? styleAction = null)
         => Apply(element, BlockOrElement.Element, cssAction, styleAction);
 
+    public ComponentBemCssProvider Apply(string name, Action<CssBuilder>? cssAction = null, Action<StyleBuilder>? styleAction = null)
+    {
+        _cssProvider.Apply(name, cssAction, styleAction);
+        return this;
+    }
+
     private ComponentBemCssProvider Apply(string name, BlockOrElement blockOrElement, Action<BemCssBuilder>? cssAction = null,
         Action<StyleBuilder>? styleAction = null)
     {
