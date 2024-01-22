@@ -178,10 +178,7 @@ public partial class BMenu : BMenuable, IDependent
     {
         base.RegisterWatchers(watcher);
 
-        // BUG: defaultValue is required, because there is a bug about Watcher
-        // default value would not works if GetValue(defaultValue) int CloseOnContentClick's getter never be called,
-        // so there need to assign the default value at Watch method.
-        watcher.Watch(nameof(CloseOnContentClick), () => ResetPopupEvents(CloseOnContentClick), defaultValue: true);
+        watcher.Watch(nameof(CloseOnContentClick), () => ResetPopupEvents(CloseOnContentClick), defaultValue: CloseOnContentClick);
     }
 
     protected override void RunDirectly(bool val)
