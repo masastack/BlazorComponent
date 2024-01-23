@@ -29,10 +29,12 @@ function() {
 """;
 
     private readonly IJSRuntime _jsRuntime;
+    private readonly JsonSerializerOptions _jsonSerializerOptions;
 
-    public LocalStorage(IJSRuntime jsRuntime)
+    public LocalStorage(IJSRuntime jsRuntime, JsonSerializerOptions jsonSerializerOptions)
     {
         _jsRuntime = jsRuntime;
+        _jsonSerializerOptions=jsonSerializerOptions;
     }
 
     public async Task SetItemAsync(string key, string value)
@@ -42,7 +44,7 @@ function() {
 
     public async Task SetItemAsync<TValue>(string key, TValue value)
     {
-        var json = JsonSerializer.Serialize(value);
+        var json = JsonSerializer.Serialize(value, _jsonSerializerOptions);
         await SetItemAsync(key, json);
     }
     
@@ -55,7 +57,7 @@ function() {
     {
         var value = await GetItemAsync(key);
 
-        return value == null ? default : JsonSerializer.Deserialize<T>(value);
+        return value == null ? default : JsonSerializer.Deserialize<T>(value, _jsonSerializerOptions);
     }
 
     public async Task RemoveItemAsync(string key, string value)

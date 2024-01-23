@@ -4,6 +4,9 @@ namespace BlazorComponent
 {
     public partial class BOtpInput : BDomComponentBase, IOtpInput, IAsyncDisposable
     {
+        [Inject]
+        [NotNull]
+        public JsonSerializerOptions? JsonSerializerOptions { get; set; }
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
 
@@ -131,7 +134,7 @@ namespace BlazorComponent
 
         public async Task GetResultFromJs(string result)
         {
-            var jsResult = JsonSerializer.Deserialize<OtpJsResult>(result);
+            var jsResult = JsonSerializer.Deserialize<OtpJsResult>(result, JsonSerializerOptions);
 
             switch (jsResult?.type)
             {
