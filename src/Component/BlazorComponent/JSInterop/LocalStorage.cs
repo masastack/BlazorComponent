@@ -40,6 +40,12 @@ function() {
         await _jsRuntime.InvokeVoidAsync("eval", $"({SET_ITEM_SCRIPT})('{key}', '{value}')");
     }
 
+    public async Task SetItemAsync<TValue>(string key, TValue value)
+    {
+        var json = JsonSerializer.Serialize(value);
+        await SetItemAsync(key, json);
+    }
+    
     public async Task<string?> GetItemAsync(string key)
     {
         return await _jsRuntime.InvokeAsync<string?>("eval", $"({GET_ITEM_SCRIPT})('{key}')");

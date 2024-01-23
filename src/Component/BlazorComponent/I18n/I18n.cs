@@ -54,6 +54,11 @@ public class I18n
         return T(null, key, whenNullReturnKey, defaultValue, args);
     }
 
+    public string T(string? key, params object[] args)
+    {
+        return T(null, key, true, null, args);
+    }
+
     [return: NotNullIfNotNull("defaultValue")]
     public string? T(string? scope, string? key, [DoesNotReturnIf(true)] bool whenNullReturnKey = true, string? defaultValue = null,
         params object[] args)
