@@ -54,7 +54,7 @@ namespace BlazorComponent
         public TValue? GetComputedValue<TValue>(Expression<Func<TValue>> valueExpression, string name)
         {
             var property = GetProperty<TValue>(default, name);
-            if (!property.HasValue)
+            if (!property.Computed)
             {
                 var valueFactory = valueExpression.Compile();
                 property.ValueFactory = valueFactory;
@@ -73,6 +73,7 @@ namespace BlazorComponent
                         SetValue(value, name);
                     });
                 }
+                property.Computed = true;
             }
 
             return property.Value;
@@ -81,7 +82,7 @@ namespace BlazorComponent
         public TValue? GetComputedValue<TValue>(Func<TValue> valueFactory, string[] dependencyProperties, string name)
         {
             var property = GetProperty<TValue>(default, name);
-            if (!property.HasValue)
+            if (!property.Computed)
             {
                 property.ValueFactory = valueFactory;
                 property.Value = valueFactory();
@@ -94,6 +95,8 @@ namespace BlazorComponent
                         SetValue(value, name);
                     });
                 }
+
+                property.Computed = true;
             }
 
             return property.Value;
