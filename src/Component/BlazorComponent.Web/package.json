@@ -28,7 +28,8 @@
     "build:swiper": "rollup --config rollup.config.swiper.ts",
     "build:intersect": "rollup --config rollup.config.intersect.ts",
     "build:resize": "rollup --config rollup.config.resize.ts",
-    "build:xgplayer": "rollup --config rollup.config.xgplayer.ts"
+    "build:xgplayer": "rollup --config rollup.config.xgplayer.ts",
+    "build:scrollToTarget": "rollup --config rollup.config.scrollToTargetJSInterop.ts"
   },
   "author": "",
   "license": "MIT",

@@ -1,6 +1,6 @@
 import { getEventTarget } from "utils/helper";
 
-interface IntersectionObserverOptions {
+export interface IntersectionObserverOptions {
   rootSelector?: string;
   rootMarginLeft?: string;
   rootMarginRight?: string;
@@ -38,6 +38,7 @@ function observe(
       entries: IntersectionObserverEntry[] = [],
       observer: IntersectionObserver
     ) => {
+
       const computedEntries = entries.map((entry) => ({
         isIntersecting: entry.isIntersecting,
         target: getEventTarget(entry.target),
@@ -95,7 +96,7 @@ function unobserveSelector(selector: string) {
   }
 }
 
-function formatToStandardOptions(
+export function formatToStandardOptions(
   options?: IntersectionObserverOptions
 ): IntersectionObserverInit | null {
   if (!options) {
