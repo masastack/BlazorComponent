@@ -427,6 +427,29 @@ export function scrollTo(target, options: ScrollToOptions) {
   }
 }
 
+export function scrollToTarget(
+  target: string,
+  container: string = null,
+  offset: number = 0
+) {
+  const targetEl: HTMLElement = document.querySelector(target);
+  if (targetEl) {
+    let top ;
+    if (container) {
+      top = targetEl.offsetTop;
+    } else {
+      top = targetEl.getBoundingClientRect().top + window.scrollY;
+    }
+    const containerEl = container
+      ? document.querySelector(container)
+      : document.documentElement
+    containerEl.scrollTo({
+      top: top - offset,
+      behavior: "smooth",
+    });
+  }
+}
+
 export function scrollToElement(target, offset: number, behavior?: ScrollBehavior) {
   const dom = getDom(target)
   if (!dom) return;

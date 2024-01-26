@@ -40,6 +40,8 @@
 
         public static string ScrollTo => $"{JsInteropFuncNamePrefix}scrollTo";
 
+        public static string ScrollToTarget => $"{JsInteropFuncNamePrefix}scrollToTarget";
+
         public static string ScrollIntoView => $"{JsInteropFuncNamePrefix}scrollIntoView";
 
         public static string ScrollToElement => $"{JsInteropFuncNamePrefix}scrollToElement";
