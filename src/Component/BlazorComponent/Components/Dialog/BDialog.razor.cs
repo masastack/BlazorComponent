@@ -223,8 +223,7 @@ public partial class BDialog : BBootable, IDependent, IAsyncDisposable
         {
             var elements = _dependents.SelectMany(dependent => dependent.DependentSelectors).ToList();
 
-            var selector = ContentRef.GetSelector();
-            if (selector is not null)
+            if (ContentRef.TryGetSelector(out var selector))
             {
                 elements.Add(selector);
             }
