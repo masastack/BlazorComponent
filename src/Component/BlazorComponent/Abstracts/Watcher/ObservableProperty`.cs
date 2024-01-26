@@ -73,6 +73,12 @@ namespace BlazorComponent
         /// </summary>
         public bool HasValue => _hasValue;
 
+        /// <summary>
+        /// Indicate whether this property is computed, only used for computed property
+        /// TODO: maybe add a new class for computed property in the future
+        /// </summary>
+        public bool Computed { get; set; }
+
         public event Action<TValue?, TValue?>? OnValueChange;
 
         public void NotifyChange(TValue? newValue, TValue? oldValue)
