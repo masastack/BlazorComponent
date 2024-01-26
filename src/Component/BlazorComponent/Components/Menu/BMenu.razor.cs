@@ -24,13 +24,13 @@ public partial class BMenu : BMenuable, IDependent
     [Parameter]
     public bool Auto { get; set; }
 
-    [Parameter]
+    [Parameter] [MasaApiParameter(true)]
     public bool CloseOnClick { get; set; } = true;
 
-    [Parameter]
+    [Parameter] [MasaApiParameter(true)]
     public bool CloseOnContentClick
     {
-        get => GetValue<bool>();
+        get => GetValue(true);
         set => SetValue(value);
     }
 
@@ -43,7 +43,7 @@ public partial class BMenu : BMenuable, IDependent
     [Parameter]
     public bool DisableKeys { get; set; }
 
-    [Parameter]
+    [Parameter] [MasaApiParameter("auto")]
     public StringNumber MaxHeight { get; set; } = "auto";
 
     [Parameter]
