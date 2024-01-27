@@ -44,7 +44,7 @@ namespace BlazorComponent
                 //
                 //We just assume list always changed
                 //This will be changed when we finished data-collect and deep watch
-                if (!_hasValue || !EqualityComparer<TValue>.Default.Equals(_value, value) || (!DisableIListAlwaysNotifying && value is IList))
+                if (!EqualityComparer<TValue>.Default.Equals(_value, value) || (!DisableIListAlwaysNotifying && value is IList))
                 {
                     _oldValue = _value;
                     _value = value;
