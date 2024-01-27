@@ -22,15 +22,20 @@ namespace BlazorComponent
 
             if (!property.HasValue)
             {
+                // TODO: just return @default is ok?
                 property.SetValueWithNoEffect(@default);
             }
 
             return property.Value;
         }
 
-        private ObservableProperty<TValue> GetProperty<TValue>(TValue? @default, string name, bool disableIListAlwaysNotifying = false)
+        private ObservableProperty<TValue> GetProperty<TValue>(TValue? @default, string name, bool disableIListAlwaysNotifying = false,
+            bool fromSetter = false)
         {
-            var prop = _props.GetOrAdd(name, _ => new ObservableProperty<TValue>(name, @default, disableIListAlwaysNotifying));
+            var prop = _props.GetOrAdd(name,
+                _ => fromSetter
+                    ? new ObservableProperty<TValue>(name, @default, disableIListAlwaysNotifying)
+                    : new ObservableProperty<TValue>(name, disableIListAlwaysNotifying));
             if (prop.GetType() == typeof(ObservableProperty))
             {
                 //Internal watch may before `ObservableProperty<TValue>` be created 
@@ -73,6 +78,7 @@ namespace BlazorComponent
                         SetValue(value, name);
                     });
                 }
+
                 property.Computed = true;
             }
 
@@ -104,7 +110,7 @@ namespace BlazorComponent
 
         public void SetValue<TValue>(TValue value, string name, bool disableIListAlwaysNotifying = false)
         {
-            var property = GetProperty<TValue>(default, name, disableIListAlwaysNotifying);
+            var property = GetProperty<TValue>(default, name, disableIListAlwaysNotifying, fromSetter: true);
             property.Value = value;
         }
 
@@ -118,7 +124,7 @@ namespace BlazorComponent
         /// <typeparam name="TFirstValue"></typeparam>
         public void SetValue<TValue, TFirstValue>(TValue value, string name, string propertySetFirst)
         {
-            var property = GetProperty<TFirstValue>(default, propertySetFirst);
+            var property = GetProperty<TFirstValue>(default, propertySetFirst, fromSetter: true);
             if (property.HasValue)
             {
                 Unwatch(propertySetFirst);

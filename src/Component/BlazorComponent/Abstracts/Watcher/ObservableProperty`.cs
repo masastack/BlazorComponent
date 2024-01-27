@@ -19,6 +19,12 @@ namespace BlazorComponent
             DisableIListAlwaysNotifying = disableIListAlwaysNotifying;
         }
 
+        public ObservableProperty(string name, bool disableIListAlwaysNotifying) : base(name)
+        {
+            _internalProperty = this;
+            DisableIListAlwaysNotifying = disableIListAlwaysNotifying;
+        }
+
         public ObservableProperty(IObservableProperty property, TValue? value, bool disableIListAlwaysNotifying = false)
             : base(property.Name)
         {
@@ -44,7 +50,7 @@ namespace BlazorComponent
                 //
                 //We just assume list always changed
                 //This will be changed when we finished data-collect and deep watch
-                if (!EqualityComparer<TValue>.Default.Equals(_value, value) || (!DisableIListAlwaysNotifying && value is IList))
+                if (!_hasValue || !EqualityComparer<TValue>.Default.Equals(_value, value) || (!DisableIListAlwaysNotifying && value is IList))
                 {
                     _oldValue = _value;
                     _value = value;
