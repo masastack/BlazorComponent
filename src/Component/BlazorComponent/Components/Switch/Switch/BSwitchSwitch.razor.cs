@@ -5,5 +5,9 @@
         string? LeftText => Component.LeftText;
 
         string? RightText => Component.RightText;
+        
+        string? LeftIcon => Component.LeftIcon;
+
+        string? RightIcon => Component.RightIcon;
     }
 }
