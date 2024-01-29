@@ -5,6 +5,7 @@ namespace BlazorComponent
 {
     public class ObservableProperty<TValue> : ObservableProperty
     {
+        private readonly bool _disableIListAlwaysNotifying;
         private readonly IObservableProperty _internalProperty;
 
         private bool _hasValue;
@@ -16,13 +17,13 @@ namespace BlazorComponent
         {
             Value = value;
             _internalProperty = this;
-            DisableIListAlwaysNotifying = disableIListAlwaysNotifying;
+            _disableIListAlwaysNotifying = disableIListAlwaysNotifying;
         }
 
         public ObservableProperty(string name, bool disableIListAlwaysNotifying) : base(name)
         {
             _internalProperty = this;
-            DisableIListAlwaysNotifying = disableIListAlwaysNotifying;
+            _disableIListAlwaysNotifying = disableIListAlwaysNotifying;
         }
 
         public ObservableProperty(IObservableProperty property, TValue? value, bool disableIListAlwaysNotifying = false)
@@ -30,7 +31,7 @@ namespace BlazorComponent
         {
             Value = value;
             _internalProperty = property;
-            DisableIListAlwaysNotifying = disableIListAlwaysNotifying;
+            _disableIListAlwaysNotifying = disableIListAlwaysNotifying;
         }
 
         public TValue? Value
@@ -50,7 +51,7 @@ namespace BlazorComponent
                 //
                 //We just assume list always changed
                 //This will be changed when we finished data-collect and deep watch
-                if (!_hasValue || !EqualityComparer<TValue>.Default.Equals(_value, value) || (!DisableIListAlwaysNotifying && value is IList))
+                if (!_hasValue || !EqualityComparer<TValue>.Default.Equals(_value, value) || (!_disableIListAlwaysNotifying && value is IList))
                 {
                     _oldValue = _value;
                     _value = value;
@@ -67,12 +68,16 @@ namespace BlazorComponent
         /// <param name="value"></param>
         public void SetValueWithNoEffect(TValue? value)
         {
+            if (!_hasValue && value is INotifyPropertyChanged notify)
+            {
+                notify.PropertyChanged += (_, _) => { NotifyChange(_value, _oldValue); };
+            }
+
             _value = value;
+            _hasValue = true;
         }
 
         public Func<TValue>? ValueFactory { get; set; }
-
-        public bool DisableIListAlwaysNotifying { get; set; }
 
         /// <summary>
         /// If value has set return true,else false

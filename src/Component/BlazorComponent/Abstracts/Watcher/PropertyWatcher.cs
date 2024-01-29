@@ -18,18 +18,17 @@ namespace BlazorComponent
 
         public TValue? GetValue<TValue>(TValue? @default = default, string name = "", bool disableIListAlwaysNotifying = false)
         {
-            var property = GetProperty(@default, name, disableIListAlwaysNotifying);
+            var property = GetOrSetProperty(@default, name, disableIListAlwaysNotifying);
 
             if (!property.HasValue)
             {
-                // TODO: just return @default is ok?
                 property.SetValueWithNoEffect(@default);
             }
 
             return property.Value;
         }
 
-        private ObservableProperty<TValue> GetProperty<TValue>(TValue? @default, string name, bool disableIListAlwaysNotifying = false,
+        private ObservableProperty<TValue> GetOrSetProperty<TValue>(TValue? @default, string name, bool disableIListAlwaysNotifying = false,
             bool fromSetter = false)
         {
             var prop = _props.GetOrAdd(name,
@@ -43,22 +42,18 @@ namespace BlazorComponent
                 _props[name] = prop;
             }
 
-            var property = (ObservableProperty<TValue>)prop;
-
-            property.DisableIListAlwaysNotifying = disableIListAlwaysNotifying;
-
-            return property;
+            return (ObservableProperty<TValue>)prop;
         }
-
+        
         public TValue? GetComputedValue<TValue>(string name)
         {
-            var property = GetProperty<TValue>(default, name);
+            var property = GetOrSetProperty<TValue>(default, name);
             return !property.HasValue ? default : property.Value;
         }
 
         public TValue? GetComputedValue<TValue>(Expression<Func<TValue>> valueExpression, string name)
         {
-            var property = GetProperty<TValue>(default, name);
+            var property = GetOrSetProperty<TValue>(default, name);
             if (!property.Computed)
             {
                 var valueFactory = valueExpression.Compile();
@@ -87,7 +82,7 @@ namespace BlazorComponent
 
         public TValue? GetComputedValue<TValue>(Func<TValue> valueFactory, string[] dependencyProperties, string name)
         {
-            var property = GetProperty<TValue>(default, name);
+            var property = GetOrSetProperty<TValue>(default, name);
             if (!property.Computed)
             {
                 property.ValueFactory = valueFactory;
@@ -110,7 +105,7 @@ namespace BlazorComponent
 
         public void SetValue<TValue>(TValue value, string name, bool disableIListAlwaysNotifying = false)
         {
-            var property = GetProperty<TValue>(default, name, disableIListAlwaysNotifying, fromSetter: true);
+            var property = GetOrSetProperty<TValue>(default, name, disableIListAlwaysNotifying, fromSetter: true);
             property.Value = value;
         }
 
@@ -124,7 +119,7 @@ namespace BlazorComponent
         /// <typeparam name="TFirstValue"></typeparam>
         public void SetValue<TValue, TFirstValue>(TValue value, string name, string propertySetFirst)
         {
-            var property = GetProperty<TFirstValue>(default, propertySetFirst, fromSetter: true);
+            var property = GetOrSetProperty<TFirstValue>(default, propertySetFirst, fromSetter: true);
             if (property.HasValue)
             {
                 Unwatch(propertySetFirst);
@@ -136,41 +131,31 @@ namespace BlazorComponent
             }
         }
 
-        public PropertyWatcher Watch<TValue>(string name, Action changeCallback, bool immediate = false, bool @override = false,
-            TValue? defaultValue = default)
+        public PropertyWatcher Watch<TValue>(string name, Action changeCallback, bool immediate = false, bool @override = false)
         {
-            return Watch(name, (_, _) => changeCallback.Invoke(), immediate, @override, defaultValue);
+            return Watch<TValue>(name, (_, _) => changeCallback.Invoke(), immediate, @override);
         }
 
-        public PropertyWatcher Watch<TValue>(string name, Func<Task> changeCallback, bool immediate = false, bool @override = false,
-            TValue? defaultValue = default)
+        public PropertyWatcher Watch<TValue>(string name, Func<Task> changeCallback, bool immediate = false, bool @override = false)
         {
-            return Watch(name, (_, _) => changeCallback.Invoke(), immediate, @override, defaultValue);
+            return Watch<TValue>(name, (_, _) => changeCallback.Invoke(), immediate, @override);
         }
 
-        public PropertyWatcher Watch<TValue>(string name, Action<TValue?> changeCallback, bool immediate = false, bool @override = false,
-            TValue? defaultValue = default)
+        public PropertyWatcher Watch<TValue>(string name, Action<TValue?> changeCallback, bool immediate = false, bool @override = false)
         {
-            return Watch(name, (newValue, _) => changeCallback.Invoke(newValue), immediate, @override, defaultValue);
+            return Watch<TValue>(name, (newValue, _) => changeCallback.Invoke(newValue), immediate, @override);
         }
 
-        public PropertyWatcher Watch<TValue>(string name, Action<TValue?, TValue?> changeCallback, bool immediate = false, bool @override = false,
-            TValue? defaultValue = default)
+        public PropertyWatcher Watch<TValue>(string name, Action<TValue?, TValue?> changeCallback, bool immediate = false, bool @override = false)
         {
             if (@override)
             {
                 Unwatch(name);
             }
 
-            var property = GetProperty<TValue>(default, name);
+            var property = GetOrSetProperty<TValue>(default, name);
             property.OnValueChange += changeCallback;
-
-            // TODO: defaultValue should not set to property, also in GetValue(defaultValue)
-            if (defaultValue is not null && !EqualityComparer<TValue>.Default.Equals(defaultValue, default))
-            {
-                property.Value = defaultValue;
-            }
-
+            
             if (immediate)
             {
                 changeCallback.Invoke(property.Value, default);
@@ -187,7 +172,7 @@ namespace BlazorComponent
                 Unwatch(name);
             }
 
-            var property = GetProperty<TValue>(default, name);
+            var property = GetOrSetProperty<TValue>(default, name);
             property.OnValueChange += changeCallback;
             property.ValueFactory = valueFactory;
             property.Value = valueFactory();
