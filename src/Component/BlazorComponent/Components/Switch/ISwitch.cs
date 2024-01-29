@@ -7,5 +7,9 @@
         string? LeftText { get; }
 
         string? RightText { get; }
+        
+        string? LeftIcon { get; }
+
+        string? RightIcon { get; }
     }
 }
