@@ -178,7 +178,7 @@ public partial class BMenu : BMenuable, IDependent
     {
         base.RegisterWatchers(watcher);
 
-        watcher.Watch(nameof(CloseOnContentClick), () => ResetPopupEvents(CloseOnContentClick), defaultValue: CloseOnContentClick);
+        watcher.Watch<bool>(nameof(CloseOnContentClick), () => ResetPopupEvents(CloseOnContentClick));
     }
 
     protected override void RunDirectly(bool val)
