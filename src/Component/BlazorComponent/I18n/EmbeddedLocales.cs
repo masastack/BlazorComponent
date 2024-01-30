@@ -35,7 +35,7 @@ internal static class EmbeddedLocales
 
         var locale = I18nReader.Read(content);
 
-        s_localeCaches.Add(culture, locale);
+        s_localeCaches.TryAdd(culture, locale);
 
         return locale;
     }
