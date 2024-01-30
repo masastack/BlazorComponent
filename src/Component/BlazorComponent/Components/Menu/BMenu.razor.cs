@@ -249,7 +249,7 @@ public partial class BMenu : BMenuable, IDependent
         return Dimensions.Activator.Left - DefaultOffset * 2;
     }
 
-    protected override async ValueTask DisposeAsync(bool disposing)
+    protected override async ValueTask DisposeAsyncCore()
     {
         if (Module is not null)
         {
@@ -263,6 +263,6 @@ public partial class BMenu : BMenuable, IDependent
             }
         }
 
-        await base.DisposeAsync(disposing);
+        await base.DisposeAsyncCore();
     }
 }

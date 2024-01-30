@@ -230,7 +230,7 @@ namespace BlazorComponent
             IsActive = false;
         }
 
-        protected override async ValueTask DisposeAsync(bool disposing)
+        protected override async ValueTask DisposeAsyncCore()
         {
             await OutsideClickJsModule.UnbindAndDisposeAsync();
         }

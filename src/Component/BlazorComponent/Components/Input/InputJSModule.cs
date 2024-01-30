@@ -69,7 +69,7 @@ public class InputJSModule : JSModule
         await _instance.InvokeVoidAsync("setValue", val);
     }
 
-    protected override async ValueTask DisposeAsync()
+    protected override async ValueTask DisposeAsyncCore()
     {
         _isDisposed = true;
 
