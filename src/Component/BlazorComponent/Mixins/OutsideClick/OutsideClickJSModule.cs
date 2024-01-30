@@ -46,7 +46,14 @@ public class OutsideClickJSModule : JSModule
     /// <summary>
     /// Remove event listener from document and dispose this module
     /// </summary>
-    public async ValueTask UnbindAndDisposeAsync() => await DisposeAsync();
+
+    public async ValueTask UnbindAndDisposeAsync()
+    {
+        if (this is IAsyncDisposable asyncDisposable)
+        {
+            await asyncDisposable.DisposeAsync();
+        }
+    }
 
     /// <summary>
     /// Remove event listener from document
@@ -61,7 +68,7 @@ public class OutsideClickJSModule : JSModule
         await _owner.HandleOnOutsideClickAsync();
     }
 
-    protected override async ValueTask DisposeAsync()
+    protected override async ValueTask DisposeAsyncCore()
     {
         await UnbindAsync();
 

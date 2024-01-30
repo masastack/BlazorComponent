@@ -125,30 +125,26 @@ public class NextTickComponentBase : CssProviderComponentBase, IAsyncDisposable
         }
     }
 
-    protected virtual async ValueTask DisposeAsync(bool disposing)
-    {
-        if (IsDisposed)
-        {
-            await ValueTask.CompletedTask;
-        }
-
-        IsDisposed = true;
-    }
+    protected virtual ValueTask DisposeAsyncCore() => ValueTask.CompletedTask;
 
     public async ValueTask DisposeAsync()
     {
+        if (IsDisposed)
+        {
+            return;
+        }
+
         try
         {
-            await DisposeAsync(true);
-            GC.SuppressFinalize(this);
+            await DisposeAsyncCore().ConfigureAwait(false);
         }
         catch (JSDisconnectedException)
         {
             // ignored
         }
-        // HACK: remove this after https://github.com/dotnet/aspnetcore/issues/52119 is fixed
         catch (JSException e)
         {
+            // HACK: remove this after https://github.com/dotnet/aspnetcore/issues/52119 is fixed
             if (e.Message.Contains("has it been disposed") && (OperatingSystem.IsWindows() || OperatingSystem.IsAndroid() || OperatingSystem.IsIOS()))
             {
                 return;
@@ -156,11 +152,8 @@ public class NextTickComponentBase : CssProviderComponentBase, IAsyncDisposable
 
             throw;
         }
-    }
 
-    ~NextTickComponentBase()
-    {
-        // Finalizer calls Dispose(false)
-        _ = DisposeAsync(false);
+        GC.SuppressFinalize(this);
+        IsDisposed = true;
     }
 }

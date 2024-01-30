@@ -171,12 +171,12 @@ namespace BlazorComponent
             }
         }
 
-        protected override async ValueTask DisposeAsync(bool disposing)
+        protected override async ValueTask DisposeAsyncCore()
         {
             List?.Unregister(this);
             NavigationManager.LocationChanged -= OnLocationChanged;
 
-            await base.DisposeAsync(disposing);
+            await base.DisposeAsyncCore();
         }
     }
 }

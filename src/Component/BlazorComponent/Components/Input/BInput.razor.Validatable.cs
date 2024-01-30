@@ -526,14 +526,14 @@ namespace BlazorComponent
             InvokeStateHasChanged();
         }
 
-        protected override ValueTask DisposeAsync(bool disposing)
+        protected override ValueTask DisposeAsyncCore()
         {
             if (EditContext != null)
             {
                 EditContext.OnValidationStateChanged -= HandleOnValidationStateChanged;
             }
 
-            return base.DisposeAsync(disposing);
+            return base.DisposeAsyncCore();
         }
     }
 }
