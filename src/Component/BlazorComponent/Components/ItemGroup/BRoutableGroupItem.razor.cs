@@ -90,10 +90,10 @@ public partial class BRoutableGroupItem<TGroup> : BGroupItem<TGroup>, IRoutable
 
     protected virtual Task OnActiveUpdatedForRoutable() => Task.CompletedTask;
 
-    protected override ValueTask DisposeAsync(bool disposing)
+    protected override ValueTask DisposeAsyncCore()
     {
         NavigationManager.LocationChanged -= OnLocationChanged;
 
-        return base.DisposeAsync(disposing);
+        return base.DisposeAsyncCore();
     }
 }

@@ -457,7 +457,7 @@
             return Task.CompletedTask;
         }
 
-        protected override async ValueTask DisposeAsync(bool disposing)
+        protected override async ValueTask DisposeAsyncCore()
         {
             Window.OnResize -= HandleOnResizeAsync;
             
@@ -473,7 +473,7 @@
                 // ignored
             }
 
-            await base.DisposeAsync(disposing);
+            await base.DisposeAsyncCore();
         }
     }
 }

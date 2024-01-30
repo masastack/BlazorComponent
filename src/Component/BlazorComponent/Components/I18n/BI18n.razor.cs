@@ -102,9 +102,9 @@ public partial class BI18n : BDomComponentBase
 
     private record I18nValueSegment(string Text, int PlaceholderIndex = -1);
 
-    protected override async ValueTask DisposeAsync(bool disposing)
+    protected override async ValueTask DisposeAsyncCore()
     {
         I18n.CultureChanged -= I18nOnCultureChanged;
-        await base.DisposeAsync(disposing);
+        await base.DisposeAsyncCore();
     }
 }

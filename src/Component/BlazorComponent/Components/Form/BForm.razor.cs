@@ -311,11 +311,11 @@ namespace BlazorComponent
             }
         }
 
-        protected override async ValueTask DisposeAsync(bool disposing)
+        protected override async ValueTask DisposeAsyncCore()
         {
             _editContextValidation?.Dispose();
 
-            await base.DisposeAsync(disposing);
+            await base.DisposeAsyncCore();
         }
     }
 }
