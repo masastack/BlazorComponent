@@ -25,7 +25,7 @@ function observe(
     return;
   }
 
-  if (el["_observe"]) {
+  if (el["_intersect"]) {
     return;
   }
 
@@ -60,8 +60,8 @@ function observe(
     standardOptions
   );
 
-  el["_observe"] = Object(el["_observe"]);
-  el["_observe"] = { handle, observer };
+  el["_intersect"] = Object(el["_intersect"]);
+  el["_intersect"] = { handle, observer };
 
   observer.observe(el);
 }
@@ -69,12 +69,12 @@ function observe(
 function unobserve(el: HTMLElement) {
   if (!el) return;
 
-  const observe = el["_observe"];
+  const observe = el["_intersect"];
   if (!observe) return;
 
   observe.observer.unobserve(el);
   observe.handle.dispose();
-  delete el["_observe"];
+  delete el["_intersect"];
 }
 
 function observeSelector(
