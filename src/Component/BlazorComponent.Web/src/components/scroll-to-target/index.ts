@@ -15,7 +15,10 @@ class ScrollToTargetJSInterop {
 
   observe(id: string) {
     const el = document.getElementById(id);
-    if (!el) return;
+    if (!el) {
+      console.warn(`[ScrollToTarget] Element with id '${id}' not found`);
+      return;
+    }
 
     const observer = new IntersectionObserver(
       async (
