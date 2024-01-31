@@ -123,7 +123,8 @@ namespace BlazorComponent
             }
             else if (Activatable && !Disabled)
             {
-                Treeview.UpdateActive(Key, !IsActive);
+                Treeview.UpdateActiveState(Key, !IsActive);
+                Treeview.UpdateActiveValue(Key);
                 await Treeview.EmitActiveAsync();
             }
         }
@@ -132,7 +133,7 @@ namespace BlazorComponent
 
         public async Task CheckChildrenAsync()
         {
-            if (Children == null || Children.Any() || LoadChildren == null || _hasLoaded) return;
+            if (Children == null || Children.Count != 0 || LoadChildren == null || _hasLoaded) return;
 
             IsLoading = true;
 
