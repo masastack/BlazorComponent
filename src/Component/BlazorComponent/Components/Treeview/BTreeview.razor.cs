@@ -207,7 +207,7 @@ namespace BlazorComponent
                 {
                     Active.Remove(key);
                 }
-                _oldActive = [.. Active];
+                _oldActive = [.. Active ?? []];
             }
         }
 
@@ -264,7 +264,7 @@ namespace BlazorComponent
                 {
                     Open.Remove(key);
                 }
-                _oldOpen = [.. Open];
+                _oldOpen = [.. Open ?? []];
             }
         }
 
@@ -336,8 +336,6 @@ namespace BlazorComponent
                 store.Where(c => !c.IsSelected)
                     .Select(c => ItemKey(c.Item))
                     .ForEach(c => Value.Remove(c));
-
-                _oldValue = [.. Value];
             }
         }
 
@@ -549,7 +547,7 @@ namespace BlazorComponent
                 ComputedItems = Items.Where(r => !ExcludedKeys.Contains(ItemKey.Invoke(r))).ToList();
             }
 
-            HashSet<TKey> value = [.. (Value ?? [])];
+            HashSet<TKey> value = [.. Value ?? []];
             if (!IsHashSetEqual(_oldValue, value))
             {
                 //set node not select where old select and current not select
@@ -570,14 +568,14 @@ namespace BlazorComponent
                 _oldValue = value;
             }
 
-            HashSet<TKey> active = [.. (Active ?? [])];
+            HashSet<TKey> active = [.. Active ?? []];
             if (!IsHashSetEqual(_oldValue, active))
             {
                 HandleUpdate(_oldActive, active, UpdateActiveState);
                 _oldActive = active;
             }
 
-            HashSet<TKey> open = [.. (Open ?? [])];
+            HashSet<TKey> open = [.. Open ?? []];
             if (!IsHashSetEqual(_oldOpen, open))
             {
                 HandleUpdate(_oldOpen, open, UpdateOpenState);
