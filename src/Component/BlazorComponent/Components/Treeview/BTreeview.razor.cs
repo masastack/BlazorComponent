@@ -7,7 +7,6 @@
         private HashSet<TKey> _oldActive = [];
         private HashSet<TKey> _oldOpen = [];
         private bool _oldOpenAll;
-        private string? _oldSearch;
 
         [Parameter, EditorRequired]
         public List<TItem> Items { get; set; } = null!;
@@ -532,19 +531,15 @@
                 RebuildTree();
             }
 
-            if (_oldSearch != Search || ExcludedKeys == null)
+            if (string.IsNullOrEmpty(Search))
             {
-                if (string.IsNullOrEmpty(Search))
-                {
-                    ExcludedKeys = [];
-                    ComputedItems = Items;
-                }
-                else
-                {
-                    ExcludedKeys = GetExcludeKeys();
-                    ComputedItems = Items.Where(r => !ExcludedKeys.Contains(ItemKey.Invoke(r))).ToList();
-                }
-                _oldSearch = Search;
+                ExcludedKeys = [];
+                ComputedItems = Items;
+            }
+            else
+            {
+                ExcludedKeys = GetExcludeKeys();
+                ComputedItems = Items.Where(r => !ExcludedKeys.Contains(ItemKey.Invoke(r))).ToList();
             }
 
             HashSet<TKey> value = [.. Value ?? []];
