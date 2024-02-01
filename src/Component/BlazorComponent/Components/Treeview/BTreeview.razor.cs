@@ -314,9 +314,7 @@
         /// <param name="updateByValue"></param>
         /// <param name="store">store affected nodes</param>
         /// <param name="visited">store nodes that have been accessed to prevent them from being accessed again</param>
-        private void UpdateSelectedNode(TKey key, bool isSelected, bool updateByValue
-            , List<NodeState<TItem, TKey>>? store
-            , HashSet<TKey> visited)
+        private void UpdateSelectedNode(TKey key, bool isSelected, bool updateByValue, List<NodeState<TItem, TKey>>? store, HashSet<TKey> visited)
         {
             if (!Nodes.TryGetValue(key, out var nodeState)) return;
 
