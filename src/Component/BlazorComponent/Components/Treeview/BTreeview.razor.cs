@@ -7,8 +7,8 @@
         private HashSet<TKey> _oldActive = [];
         private HashSet<TKey> _oldOpen = [];
         private bool _oldOpenAll;
-        HashSet<TKey>? _excludedKeys;
-        List<TItem>? _computedItems;
+        private HashSet<TKey>? _excludedKeys;
+        private List<TItem>? _computedItems;
 
         [Parameter, EditorRequired]
         public List<TItem> Items { get; set; } = null!;
@@ -201,7 +201,7 @@
                     Active ??= [];
                     Active.Add(key);
                 }
-                else if (!nodeState.IsActive && Active?.Contains(key) is true)
+                else if (!nodeState.IsActive && Active?.Contains(key) == true)
                 {
                     Active.Remove(key);
                 }
@@ -284,32 +284,48 @@
             }
         }
 
+        /// <summary>
+        /// update selected node and then update the params (value and _oldValue)
+        /// it only call from hand mode
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="isSelected"></param>
         public void UpdateSelected(TKey key, bool isSelected)
-            => UpdateSelected(key, isSelected, false, []);
+        {
+            var store = new List<NodeState<TItem, TKey>>();
+            UpdateSelectedNode(key, isSelected, false,store, []);
+            UpdateSelectedValue(store);
+        }
 
+        /// <summary>
+        /// update node state and only call from param change
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="isSelected"></param>
+        /// <param name="visited"></param>
         private void UpdateSelectedByValue(TKey key, bool isSelected, HashSet<TKey> visited)
-            => UpdateSelected(key, isSelected, true, visited);
+            => UpdateSelectedNode(key, isSelected, true, [], visited);
 
         /// <summary>
         /// Update the selection state of node.
-        /// It also set Value and _OldValue if not call from params changed(updateByValue==false).
         /// </summary>
         /// <param name="key"></param>
         /// <param name="isSelected"></param>
         /// <param name="updateByValue"></param>
+        /// <param name="store">store affected nodes</param>
         /// <param name="visited">store nodes that have been accessed to prevent them from being accessed again</param>
-        private void UpdateSelected(TKey key, bool isSelected, bool updateByValue, HashSet<TKey> visited)
+        private void UpdateSelectedNode(TKey key, bool isSelected, bool updateByValue
+            , List<NodeState<TItem, TKey>>? store
+            , HashSet<TKey> visited)
         {
             if (!Nodes.TryGetValue(key, out var nodeState)) return;
 
             nodeState.IsSelected = isSelected;
             nodeState.IsIndeterminate = false;
 
-            //store affected node for adjust selected value when hand click mode
-            var store = new List<NodeState<TItem, TKey>>();
             if(SelectionType != SelectionType.Leaf || nodeState.Children == null)
             {
-                store.Add(nodeState);
+                store?.Add(nodeState);
             }
 
             if (updateByValue && SelectionType == SelectionType.LeafButIndependentParent)
@@ -321,23 +337,24 @@
                 UpdateChildrenSelected(nodeState.Children, nodeState.IsSelected, store);
                 UpdateParentSelected(nodeState.Parent, false, store, visited);
             }
+        }
 
-            if (!updateByValue) //set selected value when hand click mode
-            {
-                Value ??= [];
-                //add selected value when node selected and selected value not contain the node
-                store.Where(c => c.IsSelected)
-                    .Select(c => ItemKey(c.Item))
-                    .Where(c => !Value.Contains(c))
-                    .ForEach(c => Value.Add(c));
+        //update Value and _oldValue from input nodes state
+        private void UpdateSelectedValue(List<NodeState<TItem, TKey>> store)
+        {
+            Value ??= [];
+            //add selected value when node selected and selected value not contain the node
+            store.Where(c => c.IsSelected)
+                .Select(c => ItemKey(c.Item))
+                .Where(c => !Value.Contains(c))
+                .ForEach(c => Value.Add(c));
 
-                //remove selected value when node not selected
-                store.Where(c => !c.IsSelected)
-                    .Select(c => ItemKey(c.Item))
-                    .ForEach(c => Value.Remove(c));
+            //remove selected value when node not selected
+            store.Where(c => !c.IsSelected)
+                .Select(c => ItemKey(c.Item))
+                .ForEach(c => Value.Remove(c));
 
-                _oldValue = [.. Value ?? []];
-            }
+            _oldValue = [.. Value ?? []];
         }
 
         public async Task EmitSelectedAsync()
@@ -371,7 +388,7 @@
             BuildTree(Items, default, oldState);
         }
 
-        private void UpdateParentSelected(TKey? parent, bool isIndeterminate,List<NodeState<TItem, TKey>> store,HashSet<TKey>visited)
+        private void UpdateParentSelected(TKey? parent, bool isIndeterminate,List<NodeState<TItem, TKey>>? store,HashSet<TKey>visited)
         {
             if (parent == null || visited.Contains(parent)) return;
 
@@ -415,13 +432,13 @@
                 // value not contain parent when selection type is Leaf
                 if (SelectionType != SelectionType.Leaf) 
                 {
-                    store.Add(nodeState);
+                    store?.Add(nodeState);
                 }
                 UpdateParentSelected(nodeState.Parent, nodeState.IsIndeterminate,store,visited);
             }
         }
 
-        private void UpdateChildrenSelected(IEnumerable<TKey>? children, bool isSelected, List<NodeState<TItem, TKey>> store)
+        private void UpdateChildrenSelected(IEnumerable<TKey>? children, bool isSelected, List<NodeState<TItem, TKey>>? store)
         {
             if (children == null) return;
 
@@ -431,7 +448,7 @@
                 {
                     //control by parent
                     nodeState.IsSelected = isSelected;
-                    store.Add(nodeState);
+                    store?.Add(nodeState);
                     UpdateChildrenSelected(nodeState.Children, isSelected, store);
                 }
             }
