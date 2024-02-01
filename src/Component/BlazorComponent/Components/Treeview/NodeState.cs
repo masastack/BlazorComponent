@@ -1,19 +1,12 @@
 ﻿namespace BlazorComponent
 {
-    public class NodeState<TItem, TKey>
+    public class NodeState<TItem, TKey>(TItem item, IEnumerable<TKey>? children, TKey? parent = default)
     {
-        public NodeState(TItem item, IEnumerable<TKey> children, TKey? parent = default)
-        {
-            Item = item;
-            Children = children;
-            Parent = parent;
-        }
+        public TItem Item { get; } = item;
 
-        public TItem Item { get; }
+        public IEnumerable<TKey>? Children { get; } = children;
 
-        public IEnumerable<TKey> Children { get; }
-
-        public TKey? Parent { get; }
+        public TKey? Parent { get; } = parent;
 
         public ITreeviewNode<TItem, TKey>? Node { get; set; }
 
