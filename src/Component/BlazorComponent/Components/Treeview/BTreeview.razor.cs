@@ -201,7 +201,7 @@
                     Active ??= [];
                     Active.Add(key);
                 }
-                else if (!nodeState.IsActive && Active?.Contains(key) == true)
+                else if (!nodeState.IsActive && Active?.Contains(key) is true)
                 {
                     Active.Remove(key);
                 }
@@ -290,7 +290,14 @@
         private void UpdateSelectedByValue(TKey key, bool isSelected, HashSet<TKey> visited)
             => UpdateSelected(key, isSelected, true, visited);
 
+        /// <summary>
         /// Update the selection state of node.
+        /// It also set Value and _OldValue if not call from params changed(updateByValue==false).
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="isSelected"></param>
+        /// <param name="updateByValue"></param>
+        /// <param name="visited">store nodes that have been accessed to prevent them from being accessed again</param>
         private void UpdateSelected(TKey key, bool isSelected, bool updateByValue, HashSet<TKey> visited)
         {
             if (!Nodes.TryGetValue(key, out var nodeState)) return;
