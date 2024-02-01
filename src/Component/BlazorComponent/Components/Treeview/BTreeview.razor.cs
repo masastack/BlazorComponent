@@ -7,6 +7,8 @@
         private HashSet<TKey> _oldActive = [];
         private HashSet<TKey> _oldOpen = [];
         private bool _oldOpenAll;
+        HashSet<TKey>? _excludedKeys;
+        List<TItem>? _computedItems;
 
         [Parameter, EditorRequired]
         public List<TItem> Items { get; set; } = null!;
@@ -115,9 +117,8 @@
                 return CascadingIsDark;
             }
         }
+
         public Dictionary<TKey, NodeState<TItem, TKey>> Nodes { get; private set; } = [];
-        HashSet<TKey>? ExcludedKeys;
-        List<TItem>? ComputedItems;
 
         static bool IsHashSetEqual<TValue>(HashSet<TValue> left, HashSet<TValue> right) =>
             left.Count == right.Count && left.All(right.Contains);
@@ -208,7 +209,6 @@
             }
         }
 
-
         public void UpdateActiveState(TKey key, bool isActive)
         {
             if (!Nodes.TryGetValue(key, out var nodeState)) return;
@@ -290,13 +290,7 @@
         private void UpdateSelectedByValue(TKey key, bool isSelected, HashSet<TKey> visited)
             => UpdateSelected(key, isSelected, true, visited);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="isSelected"></param>
-        /// <param name="updateByValue"></param>
-        /// <param name="visited">store nodes that have been accessed to prevent them from being accessed again</param>
+        /// Update the selection state of node.
         private void UpdateSelected(TKey key, bool isSelected, bool updateByValue, HashSet<TKey> visited)
         {
             if (!Nodes.TryGetValue(key, out var nodeState)) return;
@@ -389,7 +383,7 @@
                 else
                 {
                     var children = Nodes
-                                   .Where(r => nodeState.Children.Contains(r.Key))
+                                   .Where(r => nodeState.Children?.Contains(r.Key) == true)
                                    .Select(r => r.Value)
                                    .ToList();
 
@@ -410,8 +404,12 @@
                     }
                 }
                 visited.Add(parent);
-                if (SelectionType != SelectionType.Leaf) // value not contain parent when selection type is Leaf
+                
+                // value not contain parent when selection type is Leaf
+                if (SelectionType != SelectionType.Leaf) 
+                {
                     store.Add(nodeState);
+                }
                 UpdateParentSelected(nodeState.Parent, nodeState.IsIndeterminate,store,visited);
             }
         }
@@ -491,7 +489,7 @@
 
         public bool IsExcluded(TKey key)
         {
-            return !string.IsNullOrEmpty(Search) && ExcludedKeys.Contains(key);
+            return !string.IsNullOrEmpty(Search) && _excludedKeys?.Contains(key) == true;
         }
 
         private bool IsItemsChanged() {
@@ -500,10 +498,11 @@
             _oldItemsKeys = newKeys;
             return true;
         }
+
         private string CombineItemKeys(IList<TItem> list)
         {
             List<string> li = [];
-            ExploreForKeys(list,li,1);
+            ExploreForKeys(list, li, 1);
             return string.Join(",", li);
         }
 
@@ -514,7 +513,7 @@
             {
                 store.Add(ItemKey(item).ToString() ?? "");
                 var children = ItemChildren(item);
-                if (children is not null && children.Count>0)
+                if (children is not null && children.Count > 0)
                 {
                     store.Add($"{level}:"); //consider node position
                     ExploreForKeys(children, store,level+1);
@@ -533,13 +532,13 @@
 
             if (string.IsNullOrEmpty(Search))
             {
-                ExcludedKeys = [];
-                ComputedItems = Items;
+                _excludedKeys = [];
+                _computedItems = Items;
             }
             else
             {
-                ExcludedKeys = GetExcludeKeys();
-                ComputedItems = Items.Where(r => !ExcludedKeys.Contains(ItemKey.Invoke(r))).ToList();
+                _excludedKeys = GetExcludeKeys();
+                _computedItems = Items.Where(r => !_excludedKeys.Contains(ItemKey.Invoke(r))).ToList();
             }
 
             HashSet<TKey> value = [.. Value ?? []];
