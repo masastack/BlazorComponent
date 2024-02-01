@@ -304,7 +304,7 @@
         /// <param name="isSelected"></param>
         /// <param name="visited"></param>
         private void UpdateSelectedByValue(TKey key, bool isSelected, HashSet<TKey> visited)
-            => UpdateSelectedNode(key, isSelected, true, [], visited);
+            => UpdateSelectedNode(key, isSelected, true, null, visited);
 
         /// <summary>
         /// Update the selection state of node.
