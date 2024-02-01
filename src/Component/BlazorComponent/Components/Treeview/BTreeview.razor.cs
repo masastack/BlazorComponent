@@ -336,28 +336,25 @@ namespace BlazorComponent
                 store.Where(c => !c.IsSelected)
                     .Select(c => ItemKey(c.Item))
                     .ForEach(c => Value.Remove(c));
+
+                _oldValue = [.. Value ?? []];
             }
         }
 
         public async Task EmitSelectedAsync()
         {
-            var selected = Nodes.Values.Where(r =>
-            {
-                if (SelectionType is SelectionType.Independent or SelectionType.LeafButIndependentParent)
-                {
-                    return  r.IsSelected;
-                }
-
-                return r.IsSelected && !r.Children.Any();
-            }).Select(r => r.Item).ToList();
-
             if (ValueChanged.HasDelegate)
             {
-                await ValueChanged.InvokeAsync(selected.Select(ItemKey).ToList());
+                await ValueChanged.InvokeAsync(Value);
             }
             else if (OnInput.HasDelegate)
             {
-                await OnInput.InvokeAsync(selected);
+                var hsValue = Value?.ToHashSet() ?? [];
+                var selectedItems = Nodes.Values
+                    .Where(c => hsValue.Contains(ItemKey(c.Item)))
+                    .Select(c => c.Item)
+                    .ToList();
+                await OnInput.InvokeAsync(selectedItems);
             }
             else
             {
@@ -569,7 +566,7 @@ namespace BlazorComponent
             }
 
             HashSet<TKey> active = [.. Active ?? []];
-            if (!IsHashSetEqual(_oldValue, active))
+            if (!IsHashSetEqual(_oldActive, active))
             {
                 HandleUpdate(_oldActive, active, UpdateActiveState);
                 _oldActive = active;
