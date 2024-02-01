@@ -1,7 +1,4 @@
-﻿using System.Reflection;
-using System.Text;
-
-namespace BlazorComponent
+﻿namespace BlazorComponent
 {
     public partial class BTreeview<TItem, TKey> : ITreeview<TItem, TKey> where TKey : notnull
     {
@@ -10,6 +7,7 @@ namespace BlazorComponent
         private HashSet<TKey> _oldActive = [];
         private HashSet<TKey> _oldOpen = [];
         private bool _oldOpenAll;
+        private string? _oldSearch;
 
         [Parameter, EditorRequired]
         public List<TItem> Items { get; set; } = null!;
@@ -119,8 +117,8 @@ namespace BlazorComponent
             }
         }
         public Dictionary<TKey, NodeState<TItem, TKey>> Nodes { get; private set; } = [];
-        HashSet<TKey> ExcludedKeys = [];
-        List<TItem> ComputedItems = [];
+        HashSet<TKey>? ExcludedKeys;
+        List<TItem>? ComputedItems;
 
         static bool IsHashSetEqual<TValue>(HashSet<TValue> left, HashSet<TValue> right) =>
             left.Count == right.Count && left.All(right.Contains);
@@ -533,15 +531,19 @@ namespace BlazorComponent
                 RebuildTree();
             }
 
-            if (string.IsNullOrEmpty(Search))
+            if (_oldSearch != Search || ExcludedKeys == null)
             {
-                ExcludedKeys = [];
-                ComputedItems = Items;
-            }
-            else
-            {
-                ExcludedKeys = GetExcludeKeys();
-                ComputedItems = Items.Where(r => !ExcludedKeys.Contains(ItemKey.Invoke(r))).ToList();
+                if (string.IsNullOrEmpty(Search))
+                {
+                    ExcludedKeys = [];
+                    ComputedItems = Items;
+                }
+                else
+                {
+                    ExcludedKeys = GetExcludeKeys();
+                    ComputedItems = Items.Where(r => !ExcludedKeys.Contains(ItemKey.Invoke(r))).ToList();
+                }
+                _oldSearch = Search;
             }
 
             HashSet<TKey> value = [.. Value ?? []];
