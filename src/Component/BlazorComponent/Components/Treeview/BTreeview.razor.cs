@@ -306,10 +306,11 @@
             nodeState.IsIndeterminate = false;
 
             //store affected node for adjust selected value when hand click mode
-            var store = new List<NodeState<TItem, TKey>>
+            var store = new List<NodeState<TItem, TKey>>();
+            if(SelectionType != SelectionType.Leaf || nodeState.Children == null)
             {
-                nodeState
-            };
+                store.Add(nodeState);
+            }
 
             if (updateByValue && SelectionType == SelectionType.LeafButIndependentParent)
             {
@@ -603,13 +604,14 @@
             value.ForEach(k => updateFn(k, true));
         }
 
-        private void BuildTree(List<TItem> items, TKey? parent, Dictionary<TKey, NodeState<TItem, TKey>> oldNodes)
+        private void BuildTree(List<TItem>? items, TKey? parent, Dictionary<TKey, NodeState<TItem, TKey>> oldNodes)
         {
+            if(items == null) return;
             foreach (var item in items)
             {
                 var key = ItemKey(item);
-                var children = ItemChildren(item) ?? [];
-                var newNode = new NodeState<TItem, TKey>(item, children.Select(ItemKey), parent);
+                var children = ItemChildren(item);
+                var newNode = new NodeState<TItem, TKey>(item, children?.Select(ItemKey), parent);
 
                 if (oldNodes.TryGetValue(key, out var oldNode))
                 {
