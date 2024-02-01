@@ -20,6 +20,10 @@ class ScrollToTargetJSInterop {
       return;
     }
 
+    if (el["_intersectForScrollToTarget"]) {
+      return;
+    }
+
     const observer = new IntersectionObserver(
       async (
         entries: IntersectionObserverEntry[] = [],
@@ -40,8 +44,8 @@ class ScrollToTargetJSInterop {
       this.options
     );
 
-    el["_observe"] = Object(el["_observe"]);
-    el["_observe"] = { handle: this.handle, observer };
+    el["_intersectForScrollToTarget"] = Object(el["_intersectForScrollToTarget"]);
+    el["_intersectForScrollToTarget"] = { handle: this.handle, observer };
 
     observer.observe(el);
   }
@@ -50,11 +54,11 @@ class ScrollToTargetJSInterop {
     const el = document.getElementById(id);
     if (!el) return;
 
-    const observe = el["_observe"];
+    const observe = el["_intersectForScrollToTarget"];
     if (!observe) return;
 
     observe.observer.unobserve(el);
-    delete el["_observe"];
+    delete el["_intersectForScrollToTarget"];
   }
 
   dispose() {
