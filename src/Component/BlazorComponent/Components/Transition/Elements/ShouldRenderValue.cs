@@ -2,13 +2,11 @@
 
 namespace BlazorComponent;
 
-public class Container : ComponentBase
+public class ShouldRenderValue : ComponentBase
 {
-    [Parameter]
-    public bool Value { get; set; }
+    [Parameter] public bool Value { get; set; }
 
-    [Parameter]
-    public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
 
     protected override bool ShouldRender()
     {
