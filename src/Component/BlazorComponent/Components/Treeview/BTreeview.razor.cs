@@ -199,6 +199,10 @@
                 if (nodeState.IsActive && Active?.Contains(key) != true)
                 {
                     Active ??= [];
+                    if (!MultipleActive)
+                    {
+                        Active.Clear();
+                    }
                     Active.Add(key);
                 }
                 else if (!nodeState.IsActive && Active?.Contains(key) == true)
