@@ -1,8 +1,10 @@
-﻿namespace BlazorComponent;
+﻿using System.Text;
+
+namespace BlazorComponent;
 
 public abstract class TransitionElementBase : Element
 {
-    internal abstract TransitionState CurrentState {  get; set; }
+    internal abstract TransitionState CurrentState { get; set; }
 
     /// <summary>
     /// The dom information about the transitional element.
@@ -16,15 +18,11 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
 public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAsyncDisposable where TValue : notnull
 #endif
 {
-    [Inject]
-    [NotNull]
-    protected IJSRuntime? Js { get; set; }
+    [Inject] [NotNull] protected IJSRuntime? Js { get; set; }
 
-    [CascadingParameter]
-    public Transition? Transition { get; set; }
+    [CascadingParameter] public Transition? Transition { get; set; }
 
-    [Parameter, EditorRequired]
-    public TValue Value { get; set; } = default!;
+    [Parameter, EditorRequired] public TValue Value { get; set; } = default!;
 
     private TValue? _preValue;
     private TransitionJsInvoker? _transitionJsInvoker;
@@ -34,7 +32,8 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
     /// <summary>
     /// Whether it is a transitional element.
     /// </summary>
-    protected bool HavingTransition => !string.IsNullOrWhiteSpace(Transition?.Name) && Transition?.TransitionElement == this;
+    protected bool HavingTransition =>
+        !string.IsNullOrWhiteSpace(Transition?.Name) && Transition?.TransitionElement == this;
 
     /// <summary>
     /// No transition or is not a transitional element.
@@ -166,7 +165,6 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
                 {
                     await RegisterTransitionEventsAsync();
                 }
-
             }
 
             if (!firstRender && ElementReferenceChanged)
@@ -193,28 +191,21 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
     {
         get
         {
-            if (Transition is null)
+            if (Transition?.LeaveAbsolute is true && IsLeaveTransitionState && ElementInfo is not null)
             {
-                return base.ComputedStyle;
+                var stringBuilder = new StringBuilder();
+                stringBuilder.Append(Style);
+                stringBuilder.Append(' ');
+                stringBuilder.Append("position:absolute; ");
+                stringBuilder.Append($"top:{ElementInfo.OffsetTop}px; ");
+                stringBuilder.Append($"left:{ElementInfo.OffsetLeft}px; ");
+                stringBuilder.Append($"width:{ElementInfo.OffsetWidth}px; ");
+                stringBuilder.Append($"height:{ElementInfo.OffsetHeight}px; ");
+
+                return stringBuilder.ToString().TrimEnd();
             }
 
-            var styles = new List<string>();
-
-            if (Style != null)
-            {
-                styles.Add(Style);
-            }
-
-            if (IsLeaveTransitionState && Transition.LeaveAbsolute && ElementInfo is not null)
-            {
-                styles.Add("position:absolute");
-                styles.Add($"top:{ElementInfo.OffsetTop}px");
-                styles.Add($"left:{ElementInfo.OffsetLeft}px");
-                styles.Add($"width:{ElementInfo.OffsetWidth}px");
-                styles.Add($"height:{ElementInfo.OffsetHeight}px");
-            }
-
-            return string.Join(';', styles);
+            return base.ComputedStyle;
         }
     }
 

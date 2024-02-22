@@ -1,48 +1,50 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
+﻿using Microsoft.AspNetCore.Components.Rendering;
 
-namespace BlazorComponent
+namespace BlazorComponent;
+
+// TODO：change name to PolyCascadeValue?
+public class BCascadingValue<TValue> : IComponent
 {
-    public class BCascadingValue<TValue> : ComponentBase
+    [Parameter] [EditorRequired] public TValue? Value { get; set; }
+
+    [Parameter] public string? Name { get; set; }
+
+    [Parameter] public bool IsFixed { get; set; }
+
+    [Parameter] [EditorRequired] public RenderFragment? ChildContent { get; set; }
+
+    private Type? _cascadingValueType;
+    private RenderHandle _renderHandle;
+
+    public void Attach(RenderHandle renderHandle)
     {
-        [Parameter]
-        [EditorRequired]
-        public TValue? Value { get; set; }
+        _renderHandle = renderHandle;
+    }
 
-        [Parameter]
-        public string? Name { get; set; }
+    public Task SetParametersAsync(ParameterView parameters)
+    {
+        parameters.SetParameterProperties(this);
 
-        [Parameter]
-        public bool IsFixed { get; set; }
+        if (Value is null) return Task.CompletedTask;
 
-        [Parameter]
-        [EditorRequired]
-        public RenderFragment? ChildContent { get; set; }
+        _cascadingValueType ??= typeof(CascadingValue<>).MakeGenericType(Value.GetType());
 
-        private Type? _cascadingValueType;
+        _renderHandle.Render(Render);
 
-        protected override void OnInitialized()
+        return Task.CompletedTask;
+    }
+
+    private void Render(RenderTreeBuilder builder)
+    {
+        builder.OpenComponent(0, _cascadingValueType!);
+        builder.AddAttribute(1, nameof(Value), Value);
+        if (!string.IsNullOrEmpty(Name))
         {
-            if (Value is null) return;
-
-            _cascadingValueType = typeof(CascadingValue<>).MakeGenericType(Value.GetType());
+            builder.AddAttribute(2, nameof(Name), Name);
         }
 
-        protected override void BuildRenderTree(RenderTreeBuilder builder)
-        {
-            if (Value is null) return;
-            
-            var sequence = 0;
-            builder.OpenComponent(sequence++, _cascadingValueType!);
-            builder.AddAttribute(sequence++, nameof(Value), Value);
-            if (!string.IsNullOrEmpty(Name))
-            {
-                builder.AddAttribute(sequence++, nameof(Name), Name);
-            }
-
-            builder.AddAttribute(sequence++, nameof(IsFixed), IsFixed);
-            builder.AddAttribute(sequence, nameof(ChildContent), ChildContent);
-            builder.CloseComponent();
-        }
+        builder.AddAttribute(3, nameof(IsFixed), IsFixed);
+        builder.AddAttribute(4, nameof(ChildContent), ChildContent);
+        builder.CloseComponent();
     }
 }

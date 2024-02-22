@@ -6,33 +6,6 @@ namespace BlazorComponent;
 
 public static class BemExtensions
 {
-    public static Modifier AddOneOf(this Modifier modifier, 
-        bool modifier1, bool modifier2,
-        [CallerArgumentExpression("modifier1")] string name1 = "",
-        [CallerArgumentExpression("modifier2")] string name2 = "")
-    {
-        if (modifier1)
-        {
-            modifier.Add(name1);
-        }
-        else if (modifier2)
-        {
-            modifier.Add(name2);
-        }
-
-        return modifier;
-    }
-
-    public static Modifier Add(this Modifier modifier, Enum @enum, bool apply = true)
-    {
-        if (apply)
-        {
-            return modifier.Add(@enum);
-        }
-
-        return modifier;
-    }
-    
     public static IBem AddTheme(this IBem bem, bool isDark, bool isIndependent = false)
     {
         bem.AddClass(isDark ? "theme--dark" : "theme--light");
@@ -49,17 +22,17 @@ public static class BemExtensions
     {
         return bem.AddColor(color, false, apply);
     }
-    
+
     public static IBem AddElevation(this IBem bem, StringNumber? elevation)
     {
         if (elevation != null)
         {
             bem.AddClass($"elevation-{elevation}");
         }
-        
+
         return bem;
     }
-    
+
     public static IBem AddRounded(this IBem bem, StringBoolean? rounded, bool tile)
     {
         if (tile)
