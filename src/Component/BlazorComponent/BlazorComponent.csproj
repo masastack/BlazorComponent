@@ -20,7 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="BemIt" Version="1.1.2" />
+        <PackageReference Include="BemIt" Version="1.2.1" />
         <PackageReference Include="DeepCloner" Version="0.10.4" />
         <PackageReference Include="FluentValidation" Version="11.4.0" />
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.4.0" />

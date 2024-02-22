@@ -1,4 +1,6 @@
-﻿namespace BlazorComponent;
+﻿using System.Text;
+
+namespace BlazorComponent;
 
 public class ShowTransitionElement : ToggleableTransitionElement
 {
@@ -6,12 +8,12 @@ public class ShowTransitionElement : ToggleableTransitionElement
     {
         get
         {
-            if (!LazyValue)
-            {
-                return string.Join(";", base.ComputedStyle, "display:none");
-            }
+            if (LazyValue) return base.ComputedStyle;
 
-            return base.ComputedStyle;
+            var stringBuilder = new StringBuilder();
+            stringBuilder.Append(base.ComputedStyle);
+            stringBuilder.Append(" display:none;");
+            return stringBuilder.ToString().Trim();
         }
     }
 }
