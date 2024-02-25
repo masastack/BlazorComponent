@@ -43,18 +43,19 @@ namespace BlazorComponent
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
-            var sequence = 0;
-            builder.OpenElement(sequence++, (Tag ?? "div"));
-
-            builder.AddMultipleAttributes(sequence++, AdditionalAttributes);
-            builder.AddAttribute(sequence++, "class", ComputedClass);
-            builder.AddAttribute(sequence++, "style", ComputedStyle);
-            builder.AddContent(sequence++, ChildContent);
-            builder.AddElementReferenceCapture(sequence, reference =>
+            builder.OpenElement(0, (Tag ?? "div"));
+            builder.AddMultipleAttributes(1, AdditionalAttributes);
+            builder.AddAttribute(2, "class", ComputedClass);
+            builder.AddAttribute(3, "style", ComputedStyle);
+            builder.AddContent(4, ChildContent);
+            if (ReferenceCaptureAction is not null)
             {
-                ReferenceCaptureAction?.Invoke(reference);
-                Reference = reference;
-            });
+                builder.AddElementReferenceCapture(5, reference =>
+                {
+                    ReferenceCaptureAction?.Invoke(reference);
+                    Reference = reference;
+                });
+            }
 
             builder.CloseElement();
         }
