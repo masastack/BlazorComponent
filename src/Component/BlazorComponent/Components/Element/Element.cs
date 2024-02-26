@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
+﻿using Microsoft.AspNetCore.Components.Rendering;
 
 namespace BlazorComponent
 {
@@ -16,30 +15,14 @@ namespace BlazorComponent
         [Parameter] public Action<ElementReference>? ReferenceCaptureAction { get; set; }
 
         [Parameter(CaptureUnmatchedValues = true)]
-        public virtual IDictionary<string, object?> AdditionalAttributes { get; set; } = new Dictionary<string, object?>();
+        public virtual IDictionary<string, object?> AdditionalAttributes { get; set; } =
+            new Dictionary<string, object?>();
 
         private string? _tag;
-        private ElementReference? _reference;
-
-        protected bool ElementReferenceChanged { get; set; }
 
         protected virtual string? ComputedClass => Class;
 
         protected virtual string? ComputedStyle => Style;
-
-        public ElementReference Reference
-        {
-            get => _reference ?? new ElementReference();
-            protected set
-            {
-                if (_reference.HasValue && _reference.Value.Id != value.Id)
-                {
-                    ElementReferenceChanged = true;
-                }
-
-                _reference = value;
-            }
-        }
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
@@ -48,13 +31,10 @@ namespace BlazorComponent
             builder.AddAttribute(2, "class", ComputedClass);
             builder.AddAttribute(3, "style", ComputedStyle);
             builder.AddContent(4, ChildContent);
+
             if (ReferenceCaptureAction is not null)
             {
-                builder.AddElementReferenceCapture(5, reference =>
-                {
-                    ReferenceCaptureAction?.Invoke(reference);
-                    Reference = reference;
-                });
+                builder.AddElementReferenceCapture(5, reference => ReferenceCaptureAction?.Invoke(reference));
             }
 
             builder.CloseElement();

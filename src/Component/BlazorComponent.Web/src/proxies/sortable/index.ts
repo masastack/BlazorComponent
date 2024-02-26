@@ -1,4 +1,4 @@
-import Sortable, { GroupOptions, SortableOptions } from "sortablejs";
+import Sortable, { GroupOptions, SortableEvent, SortableOptions } from "sortablejs";
 
 type Options = Omit<SortableOptions, "store" | "group"> & {
   group: {
@@ -25,10 +25,13 @@ class SortableProxy {
 
     console.log("[Sortable] init", options);
     const { group, ...rest } = options;
+    if (!rest.draggable) {
+      delete rest.draggable;
+    }
 
     this.sortable = new Sortable(el, {
-      ...options,
-      group: {
+      ...rest,
+      group: group && {
         name: group.name,
         pull: group.groupPulls ?? true,
         put: (to, from, drag) => {
@@ -65,10 +68,23 @@ class SortableProxy {
           this.handle.invokeMethodAsync("UpdateOrder", order);
         },
       },
-      onMove(evt, originalEvent) {
-        evt.dragged.getAttribute("data-id");
-      },
+      onAdd: (e) => this._onAdd(e),
+      onRemove: (e) => this._onRemove(e),
     });
+  }
+
+  _onAdd(event: SortableEvent) {
+    this.handle.invokeMethodAsync(
+      "HandleOnAdd",
+      event.item.getAttribute("data-id")
+    );
+  }
+
+  _onRemove(event: SortableEvent) {
+    this.handle.invokeMethodAsync(
+      "HandleOnRemove",
+      event.item.getAttribute("data-id")
+    );
   }
 
   getOrder() {
@@ -83,11 +99,16 @@ class SortableProxy {
 }
 
 function init(
-  el: HTMLElement,
+  el: string | HTMLElement,
   options: Options,
   order: string[],
   handle: DotNet.DotNetObject
 ) {
+  if (typeof el === "string") {
+    const element: HTMLElement = document.querySelector(el);
+    return new SortableProxy(element, options, order, handle);
+  }
+
   return new SortableProxy(el, options, order, handle);
 }
 
