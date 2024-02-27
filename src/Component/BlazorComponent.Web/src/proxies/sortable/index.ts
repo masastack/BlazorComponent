@@ -3,9 +3,8 @@ import Sortable, { GroupOptions, SortableEvent, SortableOptions } from "sortable
 type Options = Omit<SortableOptions, "store" | "group"> & {
   group: {
     name: string;
-    groupPulls?: string[] | undefined;
-    groupPuts?: string[] | undefined;
-    cloneable: boolean;
+    pulls?: string[] | undefined;
+    puts?: string[] | undefined;
   };
 };
 
@@ -23,7 +22,6 @@ class SortableProxy {
     this.el = el;
     this.handle = handle;
 
-    console.log("[Sortable] init", options);
     const { group, ...rest } = options;
     if (!rest.draggable) {
       delete rest.draggable;
@@ -33,9 +31,25 @@ class SortableProxy {
       ...rest,
       group: group && {
         name: group.name,
-        pull: group.groupPulls ?? true,
+        pull: group.pulls,
         put: (to, from, drag) => {
-          if (to.toArray().includes(drag.getAttribute("data-id"))) {
+          const toGroup =
+            typeof to.options.group === "string"
+              ? to.options.group
+              : to.options.group.name;
+          const fromGroup =
+            typeof from.options.group === "string"
+              ? from.options.group
+              : from.options.group.name;
+          const sameGroup = toGroup && fromGroup && toGroup === fromGroup;
+
+          const value = group.puts;
+
+          if (value == null && sameGroup) {
+            return true;
+          } else if (value == null) {
+            return false;
+          } else if (to.toArray().includes(drag.getAttribute("data-id"))) {
             console.warn(
               `[MSortable] Group "${
                 group.name
@@ -44,27 +58,17 @@ class SortableProxy {
               )}", so it can't be added.`
             );
             return false;
+          } else {
+            return group.pulls.includes(toGroup);
           }
-
-          if (!group.groupPulls) {
-            return true;
-          }
-
-          const toGroup =
-            typeof to.options.group === "string"
-              ? to.options.group
-              : to.options.group.name;
-          return group.groupPulls.includes(toGroup);
         },
       },
       store: {
         get: (sortable) => {
-          console.log("[Sortable] get");
           return order;
         },
         set: (sortable) => {
           const order = sortable.toArray();
-          console.log("[Sortable] set", order);
           this.handle.invokeMethodAsync("UpdateOrder", order);
         },
       },
@@ -76,24 +80,28 @@ class SortableProxy {
   _onAdd(event: SortableEvent) {
     this.handle.invokeMethodAsync(
       "HandleOnAdd",
-      event.item.getAttribute("data-id")
+      event.item.getAttribute("data-id"),
+      this.sortable.toArray()
     );
   }
 
   _onRemove(event: SortableEvent) {
     this.handle.invokeMethodAsync(
       "HandleOnRemove",
-      event.item.getAttribute("data-id")
+      event.item.getAttribute("data-id"),
+      this.sortable.toArray()
     );
   }
 
-  getOrder() {
-    return this.sortable.toArray();
-  }
-
-  invokeVoid(prop: string, args: any[]) {
+  invokeVoid(prop: string, ...args: any[]) {
     if (this.sortable[prop] && typeof this.sortable[prop] === "function") {
       this.sortable[prop](...args);
+    }
+  }
+
+  invoke(prop: string, ...args: any[]) {
+    if (this.sortable[prop] && typeof this.sortable[prop] === "function") {
+      return this.sortable[prop](...args);
     }
   }
 }
