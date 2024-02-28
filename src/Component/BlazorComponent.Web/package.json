@@ -29,7 +29,8 @@
     "build:intersect": "rollup --config rollup.config.intersect.ts",
     "build:resize": "rollup --config rollup.config.resize.ts",
     "build:xgplayer": "rollup --config rollup.config.xgplayer.ts",
-    "build:scrollToTarget": "rollup --config rollup.config.scrollToTargetJSInterop.ts"
+    "build:scrollToTarget": "rollup --config rollup.config.scrollToTargetJSInterop.ts",
+    "build:sortable": "rollup --config rollup.config.sortable.ts"
   },
   "author": "",
   "license": "MIT",
@@ -44,6 +45,7 @@
     "@types/drawflow": "^0.0.5",
     "@types/echarts": "^4.9.16",
     "@types/node": "^18.7.14",
+    "@types/sortablejs": "^1.15.8",
     "drawflow": "^0.0.59",
     "gridstack": "^7.2.1",
     "just-debounce-it": "^3.2.0",
@@ -59,11 +61,11 @@
     "punycode": "^2.1.1",
     "rollup": "^2.79.0",
     "rollup-plugin-terser": "^7.0.2",
+    "sortablejs": "^1.15.2",
     "swiper": "^10.2.0",
     "tslib": "^2.4.0",
     "typescript": "^4.8.2",
     "xgplayer": "^3.0.10",
     "xgplayer-music": "^3.0.10"
-  },
-  "dependencies": {}
+  }
 }
