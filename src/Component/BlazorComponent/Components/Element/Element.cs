@@ -18,8 +18,6 @@ namespace BlazorComponent
         public virtual IDictionary<string, object?> AdditionalAttributes { get; set; } =
             new Dictionary<string, object?>();
 
-        private string? _tag;
-
         protected virtual string? ComputedClass => Class;
 
         protected virtual string? ComputedStyle => Style;

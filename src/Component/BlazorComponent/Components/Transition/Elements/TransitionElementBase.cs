@@ -1,14 +1,10 @@
 ﻿using System.Text;
+using Microsoft.AspNetCore.Components.Rendering;
 
 namespace BlazorComponent;
 
 public abstract class TransitionElementBase : Element
 {
-    protected TransitionElementBase()
-    {
-        ReferenceCaptureAction = r => Reference = r;
-    }
-
     private ElementReference? _reference;
 
     protected bool ElementReferenceChanged { get; set; }
@@ -32,6 +28,21 @@ public abstract class TransitionElementBase : Element
 
             _reference = value;
         }
+    }
+
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        builder.OpenElement(0, (Tag ?? "div"));
+        builder.AddMultipleAttributes(1, AdditionalAttributes);
+        builder.AddAttribute(2, "class", ComputedClass);
+        builder.AddAttribute(3, "style", ComputedStyle);
+        builder.AddContent(4, ChildContent);
+        builder.AddElementReferenceCapture(5, reference =>
+        {
+            Reference = reference;
+            ReferenceCaptureAction?.Invoke(reference);
+        });
+        builder.CloseElement();
     }
 }
 
