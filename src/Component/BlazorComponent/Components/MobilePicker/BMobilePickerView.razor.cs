@@ -4,6 +4,7 @@ namespace BlazorComponent;
 
 public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> : BDomComponentBase
 {
+
     [Parameter, EditorRequired]
     public virtual List<TColumn> Columns { get; set; } = null!;
 
