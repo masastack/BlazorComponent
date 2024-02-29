@@ -4,9 +4,7 @@ namespace BlazorComponent;
 
 public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> : BDomComponentBase
 {
-    [Inject]
-    [NotNull]
-    public JsonSerializerOptions? JsonSerializerOptions { get; set; }
+
     [Parameter, EditorRequired]
     public virtual List<TColumn> Columns { get; set; } = null!;
 
@@ -101,7 +99,7 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
 
         var isChanged = false;
 
-        var valueStr = JsonSerializer.Serialize(Value, JsonSerializerOptions);
+        var valueStr = JsonSerializer.Serialize(Value);
         if (_prevValue != valueStr)
         {
             _prevValue = valueStr;
@@ -287,7 +285,7 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
 
         if (ValueChanged.HasDelegate)
         {
-            _prevValue = JsonSerializer.Serialize(InternalValue, JsonSerializerOptions);
+            _prevValue = JsonSerializer.Serialize(InternalValue);
             await ValueChanged.InvokeAsync(InternalValue.ToList());
         }
 
