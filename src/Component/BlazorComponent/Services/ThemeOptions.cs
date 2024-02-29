@@ -47,6 +47,8 @@ public class Theme
     public bool Dark { get; set; }
 
     public Themes Themes { get; }
+    
+    public ThemeOptions CurrentTheme => Dark ? Themes.Dark : Themes.Light;
 }
 
 public class Themes
