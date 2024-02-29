@@ -42,7 +42,7 @@ function() {
 
     public async Task SetItemAsync<TValue>(string key, TValue value)
     {
-        await SetItemAsync(key, null);
+        await SetItemAsync(key, value, null);
     }
 
     public async Task SetItemAsync<TValue>(string key, TValue value, JsonSerializerOptions? jsonSerializerOptions)
