@@ -1,4 +1,5 @@
 ﻿using BlazorComponent.JSInterop;
+using BlazorComponent.JSInterop.ScrollStrategy;
 
 namespace BlazorComponent;
 
@@ -12,20 +13,20 @@ public class ScrollStrategyJSModule : JSModule
 
     public bool Initialized { get; private set; }
 
-    public async Task InitializeAsync(ElementReference root, ElementReference contentRef, object props)
+    public async Task InitializeAsync(ElementReference root, ElementReference contentRef, ScrollStrategyOptions options)
     {
-        _instance = await InvokeAsync<IJSObjectReference>("init", root, contentRef, props);
+        _instance = await InvokeAsync<IJSObjectReference>("init", root, contentRef, options);
 
         Initialized = true;
     }
 
-    public async Task HideScroll()
+    public async Task BindAsync()
     {
-        await _instance.TryInvokeVoidAsync("hideScroll");
+        await _instance.TryInvokeVoidAsync("bind");
     }
 
-    public async Task ShowScroll()
+    public async Task UnbindAsync()
     {
-        await _instance.TryInvokeVoidAsync("showScroll");
+        await _instance.TryInvokeVoidAsync("unbind");
     }
 }
