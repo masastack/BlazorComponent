@@ -10,7 +10,8 @@ public abstract class JSModule : IAsyncDisposable
     private bool _isDisposed;
 
     protected JSModule(IJSRuntime js, string moduleUrl)
-        => _moduleTask = new Lazy<Task<IJSObjectReference>>(() => js.InvokeAsync<IJSObjectReference>("import", moduleUrl).AsTask());
+        => _moduleTask =
+            new Lazy<Task<IJSObjectReference>>(() => js.InvokeAsync<IJSObjectReference>("import", moduleUrl).AsTask());
 
     protected async ValueTask InvokeVoidAsync(string identifier, params object?[]? args)
     {
@@ -74,15 +75,17 @@ public abstract class JSModule : IAsyncDisposable
             {
                 // ignored
             }
-            catch (JSException e)
+            // HACK: remove this after https://github.com/dotnet/aspnetcore/issues/52119 is fixed
+            catch (JSException e) when (e.Message.Contains("has it been disposed", StringComparison.InvariantCulture)
+                                        && (OperatingSystem.IsWindows() || OperatingSystem.IsAndroid() ||
+                                            OperatingSystem.IsIOS()))
             {
-                // HACK: remove this after https://github.com/dotnet/aspnetcore/issues/52119 is fixed
-                if (e.Message.Contains("has it been disposed") && (OperatingSystem.IsWindows() || OperatingSystem.IsAndroid() || OperatingSystem.IsIOS()))
-                {
-                    return;
-                }
-
-                throw;
+                // ignored
+            }
+            catch (InvalidOperationException e) when (e.Message.Contains("prerendering",
+                                                          StringComparison.InvariantCulture))
+            {
+                // ignored
             }
         }
 
