@@ -1308,6 +1308,10 @@ export function get_top_domain() {
 }
 
 export function setCookie(name, value) {
+  if (value === null || value === undefined) {
+    return;
+  }
+
   var domain = get_top_domain();
   if (!domain) {
     domain = '';
