@@ -10,8 +10,7 @@ public abstract class JSModule : IAsyncDisposable
     private bool _isDisposed;
 
     protected JSModule(IJSRuntime js, string moduleUrl)
-        => _moduleTask =
-            new Lazy<Task<IJSObjectReference>>(() => js.InvokeAsync<IJSObjectReference>("import", moduleUrl).AsTask());
+        => _moduleTask = new Lazy<Task<IJSObjectReference>>(() => js.InvokeAsync<IJSObjectReference>("import", moduleUrl).AsTask());
 
     protected async ValueTask InvokeVoidAsync(string identifier, params object?[]? args)
     {
