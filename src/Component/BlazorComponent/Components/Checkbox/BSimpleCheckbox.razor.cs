@@ -18,12 +18,15 @@ namespace BlazorComponent
         public bool Indeterminate { get; set; }
 
         [Parameter]
-        public string IndeterminateIcon { get; set; } = "$minus";
+        [MasaApiParameter("$checkboxIndeterminate")]
+        public string IndeterminateIcon { get; set; } = "$checkboxIndeterminate";
 
         [Parameter]
+        [MasaApiParameter("$checkboxOn")]
         public string OnIcon { get; set; } = "$checkboxOn";
 
         [Parameter]
+        [MasaApiParameter("$checkboxOff")]
         public string OffIcon { get; set; } = "$checkboxOff";
 
         [Parameter]
