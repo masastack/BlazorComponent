@@ -117,38 +117,36 @@ namespace BlazorComponent
             await base.OnParametersSetAsync();
         }
 
-        private DotNetObjectReference<Invoker<string>> _handle;
+        private DotNetObjectReference<Invoker<OtpJsResult>> _handle;
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
             {
-                _handle = DotNetObjectReference.Create(new Invoker<string>(GetResultFromJs));
+                _handle = DotNetObjectReference.Create(new Invoker<OtpJsResult>(GetResultFromJs));
                 await JsInvokeAsync(JsInteropConstants.RegisterOTPInputOnInputEvent, InputRefs, _handle);
             }
 
             await base.OnAfterRenderAsync(firstRender);
         }
 
-        public async Task GetResultFromJs(string result)
+        public async Task GetResultFromJs(OtpJsResult result)
         {
-            var jsResult = JsonSerializer.Deserialize<OtpJsResult>(result);
-
-            switch (jsResult?.type)
+            switch (result.type)
             {
                 case "Backspace":
                 case "Input":
-                    await ApplyValues(jsResult.index, jsResult.value);
+                    await ApplyValues(result.index, result.value);
                     if (ValueChanged.HasDelegate)
                     {
                         await ValueChanged.InvokeAsync(Value);
                     }
 
-                    if (jsResult.type == "input" && OnInput.HasDelegate)
+                    if (result.type == "input" && OnInput.HasDelegate)
                     {
-                        await OnInput.InvokeAsync(jsResult.value);
+                        await OnInput.InvokeAsync(result.value);
                     }
 
-                    if (jsResult.index >= Length - 1 && !Values.Any(p => string.IsNullOrEmpty(p)) && OnFinish.HasDelegate)
+                    if (result.index >= Length - 1 && !Values.Any(p => string.IsNullOrEmpty(p)) && OnFinish.HasDelegate)
                     {
                         await OnFinish.InvokeAsync(Value);
                     }

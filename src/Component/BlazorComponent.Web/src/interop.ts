@@ -1159,7 +1159,7 @@ function otpInputKeyupEvent(e: KeyboardEvent, otpIdx: number, elementList, callb
         value: ''
       }
       if (callback) {
-        callback.invokeMethodAsync('Invoke', JSON.stringify(obj));
+        callback.invokeMethodAsync('Invoke', obj);
       }
     }
     otpInputFocus(otpIdx - 1, elementList);
@@ -1204,7 +1204,7 @@ function otpInputOnInputEvent(e: Event, otpIdx: number, elementList, callback) {
         index: otpIdx,
         value: value
       }
-      callback.invokeMethodAsync('Invoke', JSON.stringify(obj));
+      callback.invokeMethodAsync('Invoke', obj);
     }
   }
 }
