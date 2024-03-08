@@ -1,6 +1,5 @@
 import * as slider from "./components/slider";
 import * as interop from "./interop";
-import * as overlayable from "./mixins/overlayable";
 import { MarkdownParser } from "./proxies/markdown-it";
 
 declare global {
@@ -17,7 +16,6 @@ declare global {
 window.BlazorComponent = {
   interop: {
     ...interop,
-    ...overlayable,
     ...slider,
   },
 };

@@ -18,10 +18,6 @@
 
         public static string RemoveHtmlElementEventListener => $"{JsInteropFuncNamePrefix}removeHtmlElementEventListener";
 
-        public static string HideScroll => $"{JsInteropFuncNamePrefix}hideScroll";
-
-        public static string ShowScroll => $"{JsInteropFuncNamePrefix}showScroll";
-
         public static string Contains => $"{JsInteropFuncNamePrefix}contains";
 
         public static string EqualsOrContains => $"{JsInteropFuncNamePrefix}equalsOrContains";
