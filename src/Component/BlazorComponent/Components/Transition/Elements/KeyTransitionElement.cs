@@ -1,229 +1,103 @@
-﻿using System.Reflection.Metadata;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
-using Microsoft.JSInterop;
+﻿using Microsoft.AspNetCore.Components.Rendering;
 
 namespace BlazorComponent;
 
 public class KeyTransitionElement<TValue> : TransitionElementBase<TValue>
 {
-    private KeyTransitionElementState<TValue>[]? _states;
+    private TValue? _prevValue;
+    private List<KeyTransitionState<TValue>?> _states = new();
+    private bool _needARender;
 
-private IEnumerable<KeyTransitionElementState<TValue>> ComputedStates =>
-        States.Where(state => !state.IsEmpty);
-
-    private KeyTransitionElementState<TValue>[] States =>
-        _states ??= new KeyTransitionElementState<TValue>[]
-        {
-            new(this),
-            new(this)
-        };
-
-    internal override TransitionState CurrentState
+    protected override void OnInitialized()
     {
-        get
-        {
-            if (Transition is not null && Transition.Mode == TransitionMode.InOut)
-            {
-                if (States[1].TransitionState != TransitionState.None)
-                {
-                    return States[1].TransitionState;
-                }
+        base.OnInitialized();
 
-                return States[0].TransitionState;
-            }
-            else
-            {
-                if (States[0].TransitionState != TransitionState.None)
-                {
-                    return States[0].TransitionState;
-                }
+        _prevValue = Value;
+    }
 
-                return States[1].TransitionState;
-            }
-        }
-        set
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        if (!EqualityComparer<TValue>.Default.Equals(Value, _prevValue))
         {
-            States[0].TransitionState = value;
-            States[1].TransitionState = value;
+            _states.Clear();
+            _states.Add(new KeyTransitionState<TValue>(_prevValue, true));
+            _states.Add(new KeyTransitionState<TValue>(Value, false));
+
+            _prevValue = Value;
+
+            _needARender = true;
         }
     }
 
-    protected override void StartTransition()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (!States[1].IsEmpty)
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (_needARender)
         {
-            //Last transition not complete yet
-            States[1].CopyTo(States[0]);
+            _needARender = false;
+
+            _states[0].Value = false;
+            _states[1].Value = true;
+
+            await Task.Delay(17);
+
+            StateHasChanged();
         }
-
-        States[1].Key = Value;
-
-        //First render,don't trigger transition
-        if (ComputedStates.Count() < 2)
-        {
-            return;
-        }
-
-        States[0].TransitionState = TransitionState.Leave;
-        States[1].TransitionState = TransitionState.Enter;
-    }
-
-    protected override async Task NextAsync(TransitionState state)
-    {
-        if (!Transition!.Mode.HasValue)
-        {
-            switch (state)
-            {
-                case TransitionState.Leave:
-                case TransitionState.Enter:
-                    await RequestNextState(TransitionState.LeaveTo, TransitionState.EnterTo);
-                    break;
-            }
-        }
-        else if (Transition.Mode == TransitionMode.OutIn)
-        {
-            switch (state)
-            {
-                case TransitionState.Leave:
-                    await RequestNextState(TransitionState.LeaveTo, TransitionState.None);
-                    break;
-                case TransitionState.Enter:
-                    await RequestNextState(TransitionState.None, TransitionState.EnterTo);
-                    break;
-            }
-        }
-        else if (Transition.Mode == TransitionMode.InOut)
-        {
-            switch (state)
-            {
-                case TransitionState.Enter:
-                    await RequestNextState(TransitionState.None, TransitionState.EnterTo);
-                    break;
-                case TransitionState.Leave:
-                    await RequestNextState(TransitionState.LeaveTo, TransitionState.None);
-                    break;
-            }
-        }
-    }
-
-    protected override Task OnTransitionEndAsync(string referenceId, LeaveEnter transition)
-    {
-        if (referenceId != Reference.Id)
-        {
-            return Task.CompletedTask;
-        }
-
-        if (Transition!.Mode == TransitionMode.OutIn)
-        {
-            if (CurrentState == TransitionState.LeaveTo)
-            {
-                NextState(TransitionState.None, TransitionState.Enter);
-            }
-            else if (CurrentState == TransitionState.EnterTo)
-            {
-                NextState(TransitionState.None, TransitionState.None);
-            }
-        }
-        else if (Transition.Mode == TransitionMode.InOut)
-        {
-            // TODO: InOut mode
-        }
-        else if (!Transition.Mode.HasValue)
-        {
-            if (CurrentState == TransitionState.LeaveTo)
-            {
-                //Remove old element and set new element to first position
-                States[0].Reset();
-
-                NextState(TransitionState.None, TransitionState.None);
-            }
-        }
-
-        return Task.CompletedTask;
-    }
-
-    private void NextState(TransitionState oldTransitionState, TransitionState newTransitionState)
-    {
-        States[0].TransitionState = oldTransitionState;
-        States[1].TransitionState = newTransitionState;
-
-        StateHasChanged();
-    }
-
-    private async Task RequestNextState(TransitionState first, TransitionState second)
-    {
-        await RequestAnimationFrameAsync(() =>
-        {
-            NextState(first, second);
-            return Task.CompletedTask;
-        });
     }
 
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        if (NoTransition)
+        if (_states.Count == 0)
         {
-            base.BuildRenderTree(builder);
-            return;
+            BuildRenderTree2(builder, new KeyTransitionState<TValue>(Value, true));
         }
-
-        List<KeyTransitionElementState<TValue>> filteredStates = new();
-
-        switch (Transition?.Mode)
+        else
         {
-            case TransitionMode.OutIn:
+            foreach (var state in _states)
             {
-                var state = ComputedStates.FirstOrDefault(s => s.TransitionState != TransitionState.None);
-
-                state ??= ComputedStates.LastOrDefault();
-
-                if (state is not null)
-                {
-                    filteredStates.Add(state);
-                }
-
-                break;
+                BuildRenderTree2(builder, state);
             }
-            case TransitionMode.InOut:
-                // TODO: in-out
-                break;
-            default:
-                filteredStates = ComputedStates
-                    .ToList();
-                break;
-        }
-
-        foreach (var state in filteredStates)
-        {
-            var sequence = 0;
-
-            builder.OpenElement(sequence++, Tag);
-
-            builder.AddMultipleAttributes(sequence++, AdditionalAttributes);
-            builder.AddAttribute(sequence++, "class", state.ComputedClass);
-            builder.AddAttribute(sequence++, "style", state.ComputedStyle);
-            builder.AddContent(sequence++, RenderChildContent(state.Key));
-            builder.AddElementReferenceCapture(sequence, reference =>
-            {
-                ReferenceCaptureAction?.Invoke(reference);
-                Reference = reference;
-            });
-            builder.SetKey(state.Key);
-
-            builder.CloseComponent();
         }
     }
 
-    private RenderFragment RenderChildContent(TValue? key)
+    private void BuildRenderTree2(RenderTreeBuilder builder, KeyTransitionState<TValue> state)
+    {
+        Console.Out.WriteLine($"state.Key ={state.Key}, state.Value = {state.Value}");
+
+        builder.OpenComponent<IfTransitionElement>(0);
+        builder.AddAttribute(1, nameof(IfTransitionElement.Value), state.Value);
+        builder.AddAttribute(2, nameof(ChildContent), RenderChildContent(state));
+        builder.AddAttribute(3, nameof(Tag), Tag);
+        builder.SetKey(state.Key);
+        builder.CloseComponent();
+    }
+
+    private RenderFragment RenderChildContent(KeyTransitionState<TValue> state)
     {
         return builder =>
         {
-            var sequence = 0;
-            builder.OpenComponent<ShouldRenderValue>(sequence++);
-            builder.AddAttribute(sequence++, nameof(ShouldRenderValue.Value), EqualityComparer<TValue>.Default.Equals(key, Value));
-            builder.AddAttribute(sequence, nameof(ChildContent), ChildContent);
+            builder.OpenComponent<ShouldRenderContainer>(0);
+            builder.AddAttribute(1, nameof(ShouldRenderContainer.Value),
+                EqualityComparer<TValue>.Default.Equals(state.Key, Value));
+            builder.AddAttribute(2, nameof(ChildContent), ChildContent);
+            builder.SetKey(state.Key);
             builder.CloseComponent();
         };
+    }
+}
+
+public class KeyTransitionState<TKey>
+{
+    public TKey? Key { get; set; }
+
+    public bool Value { get; set; }
+
+    public KeyTransitionState(TKey? key, bool value)
+    {
+        Key = key;
+        Value = value;
     }
 }

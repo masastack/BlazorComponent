@@ -56,11 +56,11 @@ public class KeyTransitionElementState<TValue> where TValue : notnull
 
             var transitionClass = TransitionState switch
             {
-                TransitionState.Enter   => $"{transitionName}-enter {transitionName}-enter-active",
+                TransitionState.Enter => $"{transitionName}-enter {transitionName}-enter-active",
                 TransitionState.EnterTo => $"{transitionName}-enter-active {transitionName}-enter-to",
-                TransitionState.Leave   => $"{transitionName}-leave {transitionName}-leave-active",
+                TransitionState.Leave => $"{transitionName}-leave {transitionName}-leave-active",
                 TransitionState.LeaveTo => $"{transitionName}-leave-active {transitionName}-leave-to",
-                _                       => string.Empty
+                _ => string.Empty
             };
 
             return string.Join(" ", Class, transitionClass);

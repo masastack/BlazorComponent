@@ -40,26 +40,26 @@ class Transition {
       this.el = newEl;
     }
 
-    console.log("this.el", this.el);
+    console.log('onEnter el:', this.el)
+    console.log('onEnter enterClass', this.enterClass)
+    console.log('onEnter enterActiveClass', this.enterActiveClass)
+
 
     this.addTransitionClass(this.el, this.enterClass);
     this.addTransitionClass(this.el, this.enterActiveClass);
 
-    console.log("add enter from class", this.el.className);
 
     const resolve = () => {
+      console.log('onEnter [resolve] remove enterToClass and enterActiveClass')
       this.removeTransitionClass(this.el, this.enterToClass);
       this.removeTransitionClass(this.el, this.enterActiveClass);
-
-      console.log("remove enter to class", this.el.className);
     };
 
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
+        console.log('onEnter [nextTick] remove enterClass and add enterToClass')
         this.removeTransitionClass(this.el, this.enterClass);
         this.addTransitionClass(this.el, this.enterToClass);
-
-        console.log("add enter to class", this.el.className);
 
         this.el.addEventListener("transitionend", resolve);
       });
@@ -78,19 +78,20 @@ class Transition {
     }
 
     const resolve = () => {
+      console.log('onEnterTo [resolve] remove enterToClass and enterActiveClass')
+
       this.removeTransitionClass(this.el, this.enterToClass);
       this.removeTransitionClass(this.el, this.enterActiveClass);
 
-      console.log("remove enter to class", this.el.className);
     };
 
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        console.log("this.el", this.el, this.el.className, this.el.classList);
+        console.log('onEnterTo [nextTick] remove enterClass and add enterToClass')
+
         this.removeTransitionClass(this.el, this.enterClass);
         this.addTransitionClass(this.el, this.enterToClass);
 
-        console.log("add enter to class", this.el.className);
 
         this.el.addEventListener("transitionend", resolve);
       });
@@ -98,7 +99,6 @@ class Transition {
   }
 
   onLeave() {
-    console.log("this.leaveAbsolute", this.leaveAbsolute);
     if (this.leaveAbsolute) {
       const { offsetTop, offsetLeft, offsetWidth, offsetHeight } = this.el;
 
@@ -110,7 +110,6 @@ class Transition {
         height: this.el.style.height,
       };
 
-      console.log("this.el.offsetLeft", this.el.offsetLeft);
 
       this.el.style.position = "absolute";
       this.el.style.top = offsetTop + "px";
@@ -118,26 +117,21 @@ class Transition {
       this.el.style.width = offsetWidth + "px";
       this.el.style.height = offsetHeight + "px";
 
-      console.log("this.el.style.left", this.el.style.left);
     }
 
     this.addTransitionClass(this.el, this.leaveClass);
     this.addTransitionClass(this.el, this.leaveActiveClass);
 
-    console.log("this.el.className", this.el.className);
 
     const resolve = async () => {
-      console.log("OnTransitionEnd.....");
       // It is called here rather than after method removeTransitionClass
       // because the js interop call is affected by the network latency.
       await this.dotnetHelper.invokeMethodAsync("OnTransitionEnd");
 
-      console.log('before removeTransitionClass ->', this.el.className)
 
       this.removeTransitionClass(this.el, this.leaveToClass);
       this.removeTransitionClass(this.el, this.leaveActiveClass);
 
-      console.log('removeTransitionClass this.el.className ->', this.el.className)
 
       if (this.el && this.el["_transitionInitialStyles"]) {
         const { position, top, left, width, height } = this.el["_transitionInitialStyles"];
@@ -151,7 +145,6 @@ class Transition {
     };
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        console.log("requestAnimationFrame...");
         this.removeTransitionClass(this.el, this.leaveClass);
         this.addTransitionClass(this.el, this.leaveToClass);
 

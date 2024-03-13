@@ -1,167 +1,98 @@
-﻿using System.Text;
+﻿using BlazorComponent.Components.Transition;
 
 namespace BlazorComponent;
 
-public class ToggleableTransitionElement : TransitionElementBase<bool>
+public class ToggleableTransitionElement : TransitionElementBase<bool>, ITransitionJSCallback
 {
-    [Parameter(CaptureUnmatchedValues = true)]
-    public override IDictionary<string, object?> AdditionalAttributes
-    {
-        get
-        {
-            var attributes = base.AdditionalAttributes ?? new Dictionary<string, object?>();
+    [Inject] private TransitionJSModule TransitionJSModule { get; set; } = null!;
 
-            attributes["class"] = ComputedClass;
-            attributes["style"] = ComputedStyle;
+    private bool _prevValue;
 
-            return attributes;
-        }
-        set => base.AdditionalAttributes = value;
-    }
+    protected bool LazyValue { get; set; }
 
-    private TransitionState State { get;  set; }
+    // Enter from -> Enter 需要Server端应用CSS
+    private bool _entering;
 
-    protected bool LazyValue { get; private set; }
+    public string? TransitionName => Transition?.Name;
+
+    public bool LeaveAbsolute => Transition?.LeaveAbsolute ?? false;
 
     protected override string? ComputedClass
     {
         get
         {
-            var transitionClass = Transition?.GetClass(State);
-            if (transitionClass != null)
+            if (TransitionName != null && Value && _entering)
             {
-                var stringBuilder = new StringBuilder();
-                stringBuilder.Append(Class);
-                stringBuilder.Append(' ');
-                stringBuilder.Append(transitionClass);
-                return stringBuilder.ToString().TrimEnd();
+                return $"{base.ComputedClass} {TransitionName}-enter {TransitionName}-enter-active";
             }
 
-            return Class;
+            return base.ComputedClass;
         }
     }
 
-    protected override string? ComputedStyle
+    protected override void OnInitialized()
     {
-        get
-        {
-            var style = Transition?.GetStyle(State);
-            if (style != null)
-            {
-                var stringBuilder = new StringBuilder();
-                stringBuilder.Append(base.ComputedStyle);
-                stringBuilder.Append(style);
-                stringBuilder.Append("; ");
-                return stringBuilder.ToString().TrimEnd();
-            }
+        base.OnInitialized();
 
-            return base.ComputedStyle;
-        }
+        _prevValue = Value;
+        LazyValue = Value;
+
+        Console.Out.WriteLine($">>>>>>>>>>>>>>>>>>>> OnInitialized Value = {Value}");
     }
 
-    internal override TransitionState CurrentState
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        get => State;
-        set => State = value;
-    }
-
-    protected override void OnParametersSet()
-    {
-        if (NoTransition)
+        if (firstRender)
         {
-            if (Value)
-            {
-                ShowElement();
-            }
-            else
-            {
-                HideElement();
-            }
-        }
-    }
-
-    /// <summary>
-    /// Value should be true when the status is Enter(To),
-    /// Value should be false when the status is Leave(To),
-    /// otherwise should continue to move
-    /// </summary>
-    protected override bool CanMoveNext => !RequestingAnimationFrame || (IsLeaveTransitionState ? !Value : Value);
-
-    protected override void StartTransition()
-    {
-        //Don't trigger transition in first render
-        if (FirstRender)
-        {
-            ShowElement();
-            return;
+            Console.Out.WriteLine($">>>>>>>>>>>>>>>>>>>> OnAfterRenderAsync Value = {Value}");
         }
 
-        if (Value)
+        if (firstRender && TransitionName != null)
         {
-            ShowElement();
-            State = TransitionState.Enter;
+            Console.Out.WriteLine(
+                $">>>>>>>>>>>>>>>>>>>> OnAfterRenderAsync Value = {Value}, TransitionName = {TransitionName}");
+            await TransitionJSModule.InitializeAsync(this);
+        }
+
+        // TODO: 还得防抖
+
+        if (_prevValue != Value)
+        {
+            _prevValue = Value;
+
+            if (TransitionJSModule.Initialized)
+            {
+                if (Value)
+                {
+                    LazyValue = true;
+                    _entering = true;
+                    Console.Out.WriteLine($">>>>>>>>>>>>>>>>>>>> ValueChanged Value = {Value}");
+                    // await Task.Delay(32); // LeaveAbsolute 时让 Leave的元素先设置绝对定位
+                    NextTick(() => { _ = TransitionJSModule.OnEnterTo(Reference); });
+                    StateHasChanged();
+                }
+                else
+                {
+                    _ = TransitionJSModule.OnLeave();
+                }
+            }
         }
         else
         {
-            State = TransitionState.Leave;
+            _entering = false;
         }
+
+        await base.OnAfterRenderAsync(firstRender);
     }
 
-    protected override async Task NextAsync(TransitionState state)
+    public async Task HandleOnTransitionend()
     {
-        switch (state)
-        {
-            case TransitionState.Enter:
-                await RequestNextStateAsync(TransitionState.EnterTo, true);
-                break;
-            case TransitionState.Leave:
-                await RequestNextStateAsync(TransitionState.LeaveTo, false);
-                break;
-        }
-    }
-
-    protected override async Task OnTransitionEndAsync(string referenceId, LeaveEnter transition)
-    {
-        if (referenceId != Reference.Id)
+        if (Value)
         {
             return;
         }
 
-        if (transition == LeaveEnter.Enter && CurrentState == TransitionState.EnterTo)
-        {
-            await NextState(TransitionState.None);
-        }
-        else if (transition == LeaveEnter.Leave && CurrentState == TransitionState.LeaveTo)
-        {
-            HideElement();
-            await NextState(TransitionState.None);
-        }
-    }
-
-    private async Task NextState(TransitionState transitionState)
-    {
-        State = transitionState;
-        StateHasChanged();
-        await Hooks();
-    }
-
-    private async Task RequestNextStateAsync(TransitionState state, bool checkValue)
-    {
-        await RequestAnimationFrameAsync(async () =>
-        {
-            if (checkValue != Value) return;
-
-            await NextState(state);
-        });
-    }
-
-    private void HideElement()
-    {
         LazyValue = false;
-    }
-
-    private void ShowElement()
-    {
-        LazyValue = true;
+        StateHasChanged();
     }
 }

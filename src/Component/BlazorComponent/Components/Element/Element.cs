@@ -2,15 +2,11 @@
 
 namespace BlazorComponent
 {
-    public class Element : ComponentBase
+    public class Element : NextTickComponentBase
     {
         [Parameter] [MasaApiParameter("div")] public string? Tag { get; set; } = "div";
 
         [Parameter] public RenderFragment? ChildContent { get; set; }
-
-        [Parameter] public string? Class { get; set; }
-
-        [Parameter] public string? Style { get; set; }
 
         [Parameter] public Action<ElementReference>? ReferenceCaptureAction { get; set; }
 
