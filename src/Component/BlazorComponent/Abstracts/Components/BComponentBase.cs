@@ -3,11 +3,18 @@
     public abstract class BComponentBase : NextTickComponentBase, IHandleEvent
     {
         [Inject]
-        [NotNull]
-        public virtual IJSRuntime? Js { get; set; }
+        public virtual IJSRuntime Js { get; set; } = null!;
 
         [CascadingParameter]
         protected IDefaultsProvider? DefaultsProvider { get; set; }
+
+        /// <summary>
+        /// Disable the default value provider.
+        /// Components for internal use should not be affected by the default value provider.
+        /// Just for internal use.
+        /// </summary>
+        [CascadingParameter(Name = "DisableDefaultsProvider")]
+        public bool DisableDefaultsProvider { get; set; }
 
         [CascadingParameter]
         protected IErrorHandler? ErrorHandler { get; set; }
@@ -19,6 +26,9 @@
             set => _refBack = value;
         }
 
+        // BlazorComponent will be merge into Masa.Blazor in feature
+        public static readonly string ImplementedAssemblyName = "Masa.Blazor";
+
         private ForwardRef? _refBack;
         private bool _shouldRender = true;
         private string[] _dirtyParameters = Array.Empty<string>();
@@ -28,6 +38,17 @@
             get
             {
                 var type = this.GetType();
+
+                while (type.Assembly.GetName().Name != ImplementedAssemblyName)
+                {
+                    if (type.BaseType is null)
+                    {
+                        break;
+                    }
+
+                    type = type.BaseType;
+                }
+
                 return type.IsGenericType ? type.Name.Split('`')[0] : type.Name;
             }
         }
@@ -36,13 +57,16 @@
         {
             _dirtyParameters = parameters.ToDictionary().Keys.ToArray();
 
-            if (parameters.TryGetValue<IDefaultsProvider>(nameof(DefaultsProvider), out var defaultsProvider)
+            var disableDefaultsExists = parameters.TryGetValue<bool>(nameof(DisableDefaultsProvider), out var disableDefaults);
+
+            if ((!disableDefaultsExists || (disableDefaultsExists && !disableDefaults))
+                && parameters.TryGetValue<IDefaultsProvider>(nameof(DefaultsProvider), out var defaultsProvider)
                 && defaultsProvider.Defaults is not null
                 && defaultsProvider.Defaults.TryGetValue(ComponentName, out var dictionary)
                 && dictionary is not null)
             {
                 var defaults = ParameterView.FromDictionary(dictionary);
-                await base.SetParametersAsync(defaults);
+                defaults.SetParameterProperties(this);
             }
 
             await base.SetParametersAsync(parameters);
@@ -98,6 +122,44 @@
             _shouldRender = false;
             await funcs.ForEachAsync(func => func());
             _shouldRender = true;
+        }
+
+        /// <summary>
+        /// Debounce a task in microseconds. 
+        /// </summary>
+        /// <param name="task">A task to run.</param>
+        /// <param name="millisecondsDelay">Delay in milliseconds.</param>
+        /// <param name="cancellationToken">A cancellation token to cancel the last task.</param>
+        protected static async Task RunTaskInMicrosecondsAsync(Func<Task> task, int millisecondsDelay, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await Task.Delay(millisecondsDelay, cancellationToken);
+                await task.Invoke();
+            }
+            catch (TaskCanceledException)
+            {
+                // ignored
+            }
+        }
+
+        /// <summary>
+        /// Debounce a task in microseconds.
+        /// </summary>
+        /// <param name="task">A task to run.</param>
+        /// <param name="millisecondsDelay">Delay in milliseconds.</param>
+        /// <param name="cancellationToken">A cancellation token to cancel the last task.</param>
+        protected static async Task RunTaskInMicrosecondsAsync(Action task, int millisecondsDelay, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await Task.Delay(millisecondsDelay, cancellationToken);
+                task.Invoke();
+            }
+            catch (TaskCanceledException)
+            {
+                // ignored
+            }
         }
 
         protected virtual bool AfterHandleEventShouldRender()

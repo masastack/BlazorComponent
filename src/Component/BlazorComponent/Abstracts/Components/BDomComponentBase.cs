@@ -1,5 +1,4 @@
-﻿using BlazorComponent.Abstracts;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 
 namespace BlazorComponent
@@ -10,7 +9,6 @@ namespace BlazorComponent
         {
             _watcher = new PropertyWatcher(GetType());
 
-            CssProvider = new(() => Class, () => Style);
             AbstractProvider = new();
         }
 
@@ -22,19 +20,7 @@ namespace BlazorComponent
         public IComponentIdGenerator? ComponentIdGenerator { get; set; }
 
         [Parameter]
-        public string? Id { get; set; }
-
-        /// <summary>
-        /// Specifies one or more class names for an DOM element.
-        /// </summary>
-        [Parameter]
-        public string? Class { get; set; }
-
-        /// <summary>
-        /// Specifies an inline style for an DOM element.
-        /// </summary>
-        [Parameter]
-        public string? Style { get; set; }
+        public string Id { get; set; } = null!;
 
         /// <summary>
         /// Custom attributes
@@ -42,17 +28,15 @@ namespace BlazorComponent
         [Parameter(CaptureUnmatchedValues = true)]
         public virtual IDictionary<string, object?> Attributes { get; set; } = new Dictionary<string, object?>();
 
-        protected const int BROWSER_RENDER_INTERVAL = 16;
-
         private readonly PropertyWatcher _watcher;
 
         private ElementReference _ref;
         private ElementReference? _prevRef;
         private bool _elementReferenceChanged;
 
-        protected ILogger Logger => LoggerFactory.CreateLogger(GetType());
+        protected bool HostedInWebAssembly => Js is IJSInProcessRuntime;
 
-        public ComponentCssProvider CssProvider { get; }
+        protected ILogger Logger => LoggerFactory.CreateLogger(GetType());
 
         public ComponentAbstractProvider AbstractProvider { get; }
 
@@ -82,19 +66,10 @@ namespace BlazorComponent
             }
         }
 
-        /// <summary>
-        /// Register watchers at the first render.
-        /// </summary>
-        /// <param name="watcher"></param>
-        protected virtual void RegisterWatchers(PropertyWatcher watcher)
-        {
-        }
-
         protected override void OnInitialized()
         {
-            Id ??= ComponentIdGenerator.Generate(this);
+            Id ??= ComponentIdGenerator.Generate(this); // TODO: v2 remove this?
             base.OnInitialized();
-            SetComponentClass();
         }
 
         protected override void OnAfterRender(bool firstRender)
@@ -123,7 +98,11 @@ namespace BlazorComponent
             return Task.CompletedTask;
         }
 
-        protected virtual void SetComponentClass()
+        /// <summary>
+        /// Register watchers at the first render.
+        /// </summary>
+        /// <param name="watcher"></param>
+        protected virtual void RegisterWatchers(PropertyWatcher watcher)
         {
         }
 
@@ -150,11 +129,6 @@ namespace BlazorComponent
         protected void SetValue<TValue>(TValue value, [CallerMemberName] string name = "", bool disableIListAlwaysNotifying = false)
         {
             _watcher.SetValue(value, name, disableIListAlwaysNotifying);
-        }
-
-        protected void SetValue<TValue, TFirstValue>(TValue value, string propertySetFirst, [CallerMemberName] string name = "")
-        {
-            _watcher.SetValue<TValue, TFirstValue>(value, name, propertySetFirst);
         }
 
         protected RenderFragment? RenderPart(Type keyType)
@@ -184,19 +158,6 @@ namespace BlazorComponent
                 builder
                     .Add(arg0Name, arg0)
                     .Add(arg1Name, arg1);
-            });
-        }
-
-        protected RenderFragment? RenderPart(Type keyType, object? arg0, object? arg1, object? arg2,
-            [CallerArgumentExpression("arg0")] string arg0Name = "", [CallerArgumentExpression("arg1")] string arg1Name = "",
-            [CallerArgumentExpression("arg2")] string arg2Name = "")
-        {
-            return AbstractProvider.GetPartContent(keyType, this, builder =>
-            {
-                builder
-                    .Add(arg0Name, arg0)
-                    .Add(arg1Name, arg1)
-                    .Add(arg2Name, arg2);
             });
         }
 

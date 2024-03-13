@@ -17,7 +17,7 @@ namespace BlazorComponent
         public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
-        [ApiDefaultValue("span")]
+        [MasaApiParameter("span")]
         public string Tag { get; set; } = "span";
 
         [Parameter]

@@ -71,8 +71,13 @@ namespace BlazorComponent
         }
 
         private bool _forceStatus;
+        private bool _internalValueChangingFromOnValueChanged;
+        private CancellationTokenSource? _cancellationTokenSource;
+        private List<string>? _errorMessages;
 
         protected virtual TValue DefaultValue => default;
+
+        protected virtual IEnumerable<Func<TValue, StringBoolean>> InternalRules => Rules ?? Enumerable.Empty<Func<TValue, StringBoolean>>();
 
         protected EditContext? OldEditContext { get; set; }
 
@@ -191,11 +196,6 @@ namespace BlazorComponent
         /// </summary>
         protected bool ValueChangedInternally { get; set; }
 
-        private bool _internalValueChangingFromOnValueChanged;
-        private CancellationTokenSource? _cancellationTokenSource;
-
-        private List<string>? _errorMessages;
-
         public virtual int InternalDebounceInterval => 0;
 
         protected override void OnInitialized()
@@ -249,6 +249,8 @@ namespace BlazorComponent
 
         protected virtual bool ValidateOnlyInFocusedState => true;
 
+        protected virtual bool WatchValueChangeImmediately => true;
+
         protected virtual async Task SetValueByJsInterop(string? val)
         {
             _cancellationTokenSource?.Cancel();
@@ -263,7 +265,7 @@ namespace BlazorComponent
             base.RegisterWatchers(watcher);
 
             watcher
-                .Watch<TValue>(nameof(Value), OnValueChanged, immediate: true)
+                .Watch<TValue>(nameof(Value), OnValueChanged, immediate: WatchValueChangeImmediately)
                 .Watch<TValue>(nameof(LazyValue), OnLazyValueChange)
                 .Watch<TValue>(nameof(InternalValue), OnInternalValueChange)
                 .Watch<bool>(nameof(IsFocused), IsFocusedChangeCallback);
@@ -306,6 +308,7 @@ namespace BlazorComponent
             if (!isEqual)
             {
                 _internalValueChangingFromOnValueChanged = true;
+
                 InternalValue = val;
             }
 
@@ -313,7 +316,7 @@ namespace BlazorComponent
             {
                 if (DisableSetValueByJsInterop) return;
 
-                _ = SetValueByJsInterop(val?.ToString());
+                _ = SetValueByJsInterop(Formatter(val));
             }
             else
             {
@@ -392,25 +395,20 @@ namespace BlazorComponent
 
         protected virtual void InternalValidate()
         {
-            if (EditContext != null && !EqualityComparer<FieldIdentifier>.Default.Equals(ValueIdentifier, default))
-            {
-                EditContext.NotifyFieldChanged(ValueIdentifier);
-            }
+            var previousErrorBucket = ErrorBucket;
+            ErrorBucket.Clear();
 
-            if (Rules != null && Rules.Any())
+            if (EditContext != null)
             {
-                ErrorBucket.Clear();
-
-                foreach (var rule in Rules)
+                if (!EqualityComparer<FieldIdentifier>.Default.Equals(ValueIdentifier, default))
                 {
-                    var result = rule(InternalValue);
-                    if (result.IsT0)
-                    {
-                        ErrorBucket.Add(result.AsT0);
-                    }
+                    EditContext.NotifyFieldChanged(ValueIdentifier);
                 }
-
-                if (ErrorBucket.Count > 0)
+            }
+            else
+            {
+                ErrorBucket.AddRange(ValidateRules(InternalValue));
+                if (!previousErrorBucket.OrderBy(e => e).SequenceEqual(ErrorBucket.OrderBy(e => e)))
                 {
                     StateHasChanged();
                 }
@@ -419,16 +417,33 @@ namespace BlazorComponent
             Form?.UpdateValidValue();
         }
 
+        private IEnumerable<string> ValidateRules(TValue value)
+        {
+            foreach (var rule in InternalRules)
+            {
+                var result = rule(value);
+                if (result.IsT0)
+                {
+                    yield return result.AsT0;
+                }
+            }
+        }
+
+        protected virtual string? Formatter(object? val)
+        {
+            return BindConverter.FormatValue(val, CultureInfo.CurrentUICulture)?.ToString();
+        }
+
         /// <summary>
         /// Gives focus.
         /// </summary>
-        [ApiPublicMethod]
+        [MasaApiPublicMethod]
         public async Task FocusAsync()
         {
             await InputElement.FocusAsync().ConfigureAwait(false);
         }
 
-        [ApiPublicMethod]
+        [MasaApiPublicMethod]
         public async Task BlurAsync()
         {
             await Js.InvokeVoidAsync(JsInteropConstants.Blur, InputElement).ConfigureAwait(false);
@@ -454,20 +469,12 @@ namespace BlazorComponent
                 HasFocused = true;
             }
 
-            if (Rules != null && Rules.Any())
+            if (InternalRules.Any())
             {
                 var value = EqualityComparer<TValue>.Default.Equals(val, default) ? InternalValue : val;
 
                 ErrorBucket.Clear();
-
-                foreach (var rule in Rules)
-                {
-                    var result = rule(value);
-                    if (result.IsT0)
-                    {
-                        ErrorBucket.Add(result.AsT0);
-                    }
-                }
+                ErrorBucket.AddRange(ValidateRules(value));
 
                 valid = ErrorBucket.Count == 0;
             }
@@ -501,38 +508,32 @@ namespace BlazorComponent
             // The following conditions require an error message to be displayed:
             // 1. Force validation, because it validates all input elements
             // 2. The input pointed to by ValueIdentifier has been modified
-            if (!_forceStatus && EditContext?.IsModified() is true && !EditContext.IsModified(ValueIdentifier))
+            if (!_forceStatus && EditContext?.IsModified() is true
+                              && !EditContext.IsModified(ValueIdentifier)
+                              && InternalRules.Any() is false)
+            {
                 return;
+            }
 
             _forceStatus = false;
 
-            var errors = EditContext!.GetValidationMessages(ValueIdentifier).ToList();
+            var editContextErrors = EditContext!.GetValidationMessages(ValueIdentifier).ToList();
+            ErrorBucket.AddRange(editContextErrors);
 
-            if (!errors.Any())
-            {
-                if (ErrorBucket.Count == 0)
-                {
-                    return;
-                }
-
-                ErrorBucket.Clear();
-            }
-            else
-            {
-                ErrorBucket = errors.ToList();
-            }
+            var ruleErrors = ValidateRules(InternalValue);
+            ErrorBucket.AddRange(ruleErrors);
 
             InvokeStateHasChanged();
         }
 
-        protected override void Dispose(bool disposing)
+        protected override ValueTask DisposeAsyncCore()
         {
             if (EditContext != null)
             {
                 EditContext.OnValidationStateChanged -= HandleOnValidationStateChanged;
             }
 
-            base.Dispose(disposing);
+            return base.DisposeAsyncCore();
         }
     }
 }

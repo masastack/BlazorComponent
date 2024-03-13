@@ -8,7 +8,7 @@ public record ScrollToOptions
 
     public double? Top { get; }
 
-    [JsonConverter(typeof(LowerCaseEnumConverter))]
+    [JsonConverter(typeof(JsonCamelStringEnumConverter))]
     public ScrollBehavior Behavior { get; }
 
     public ScrollToOptions()

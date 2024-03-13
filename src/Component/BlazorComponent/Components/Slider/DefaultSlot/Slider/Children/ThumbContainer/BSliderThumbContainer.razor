@@ -4,8 +4,10 @@
 @typeparam TInput
 @inherits ComponentPartBase<TInput>
 
-<div class="@CssProvider.GetClass("thumb-container")" style="@CssProvider.GetStyle("thumb-container")"
-     @ref="ThumbElement" @attributes="ThumbAttrs"
+<div class="@CssProvider.GetClass("thumb-container")" 
+     style="@CssProvider.GetStyle("thumb-container")"
+     @ref="ThumbElement"
+     @attributes="ThumbAttrs"
      @onfocus="OnFocus"
      @onblur="OnBlur"
      @onkeydown="OnKeyDown"

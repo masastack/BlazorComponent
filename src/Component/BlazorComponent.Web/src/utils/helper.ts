@@ -89,6 +89,9 @@ export function composedPath (e: Event): EventTarget[] {
 }
 
 export function getBlazorId(el) {
+  if (!el) {
+    return null;
+  }
   let _bl_ = el.getAttributeNames().find(a => a.startsWith('_bl_'))
   if (_bl_) {
     _bl_ = _bl_.substring(4);
@@ -104,7 +107,7 @@ export function getElementSelector(el) {
   while (el.nodeType === Node.ELEMENT_NODE) {
     var selector = el.nodeName.toLowerCase();
     if (el.id) {
-      selector += '#' + el.id;
+      selector = '#' + el.id;
       path.unshift(selector);
       break;
     } else {
@@ -120,6 +123,24 @@ export function getElementSelector(el) {
     el = el.parentNode;
   }
   return path.join(" > ");
+}
+
+export function getEventTarget(target: HTMLElement | EventTarget) {
+  const el = target as HTMLElement;
+  const eventTarget: MbEventTarget = {};
+  const elementReferenceId = el
+    .getAttributeNames()
+    .find((a) => a.startsWith("_bl_"));
+  if (elementReferenceId) {
+    eventTarget.elementReferenceId = elementReferenceId;
+    eventTarget.selector = `[${elementReferenceId}]`;
+  } else {
+    eventTarget.selector = getElementSelector(el);
+  }
+
+  eventTarget.class = el.getAttribute("class");
+
+  return eventTarget;
 }
 
 export function getDom(elOrString: Element | string | undefined) {

@@ -8,7 +8,7 @@ import markdownItTodo from "markdown-it-todo";
 
 import { highlight, highlightToStream } from "./highlighter";
 
-type MarkdownParser = {
+export type MarkdownParser = {
   md: MarkdownIt;
   scope?: string;
   useContainer: (name: string) => void;
@@ -73,6 +73,7 @@ function create(
           content: info.title,
           anchor: info.slug,
           level: _token.markup.length,
+          attrs: Object.fromEntries(_token.attrs)
         });
       },
     });

@@ -7,7 +7,7 @@
 <CascadingValue Value="IsDark" Name="IsDark">
     <BCascadingValue Value="this" IsFixed>
         <CascadingValue Value="IsDisabled" Name="Input_IsDisabled">
-            <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" @ref="Ref">
+            <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()" @ref="Ref" @attributes="@Attributes">
                 @RenderPart(typeof(BInputContent<,>))
             </div>
         </CascadingValue>

@@ -31,4 +31,56 @@ public static class NavigationManagerExtensions
     {
         return new Uri(navigationManager.Uri);
     }
+
+    public static string? GetHash(this NavigationManager navigationManager)
+    {
+        var fragment = navigationManager.ToUri().Fragment;
+        return fragment == string.Empty ? null : fragment;
+    }
+
+    public static void NavigateWithQueryParameter(this NavigationManager navigationManager, string name, bool? value)
+    {
+        navigationManager.NavigateTo(navigationManager.GetUriWithQueryParameter(name, value));
+    }
+
+    public static void NavigateWithQueryParameter(this NavigationManager navigationManager, string name, string? value)
+    {
+        navigationManager.NavigateTo(navigationManager.GetUriWithQueryParameter(name, value));
+    }
+
+    public static void NavigateWithQueryParameter(this NavigationManager navigationManager, string name, int? value)
+    {
+        navigationManager.NavigateTo(navigationManager.GetUriWithQueryParameter(name, value));
+    }
+
+    public static string GetRelativeUriWithQueryParameters(this NavigationManager navigationManager, IReadOnlyDictionary<string, object?> parameters)
+    {
+        var uriWithQueryParameters = navigationManager.GetUriWithQueryParameters(parameters);
+        return navigationManager.ToRelativeUriWithQueryParameters(uriWithQueryParameters);
+    }
+
+    public static string GetRelativeUriWithQueryParameters(this NavigationManager navigationManager, string uri, IReadOnlyDictionary<string, object?> parameters)
+    {
+        var uriWithQueryParameters = navigationManager.GetUriWithQueryParameters(uri, parameters);
+        return navigationManager.ToRelativeUriWithQueryParameters(uriWithQueryParameters);
+    }
+
+    public static string GetRelativeUriWithQueryParameter(this NavigationManager navigationManager, string name, bool? value)
+    {
+        var uriWithQueryParameter = navigationManager.GetUriWithQueryParameter(name, value);
+        return navigationManager.ToRelativeUriWithQueryParameters(uriWithQueryParameter);
+    }
+
+    public static string GetRelativeUriWithQueryParameter(this NavigationManager navigationManager, string name, string? value)
+    {
+        var uriWithQueryParameter = navigationManager.GetUriWithQueryParameter(name, value);
+        return navigationManager.ToRelativeUriWithQueryParameters(uriWithQueryParameter);
+    }
+
+    private static string ToRelativeUriWithQueryParameters(this NavigationManager navigationManager, string absoluteUriWithQueryParameters)
+    {
+        var baseUri = navigationManager.BaseUri;
+        var relativeUriWithQueryParameters = absoluteUriWithQueryParameters.Replace(baseUri, string.Empty);
+        return relativeUriWithQueryParameters.StartsWith("/") ? relativeUriWithQueryParameters : "/" + relativeUriWithQueryParameters;
+    }
 }

@@ -9,7 +9,7 @@ public partial class BSpeedDial : BBootable
     public RenderFragment? ChildContent { get; set; }
 
     [Parameter]
-    [ApiDefaultValue("top")]
+    [MasaApiParameter("top")]
     public string Direction { get; set; } = "top";
 
     [Parameter]
@@ -31,7 +31,7 @@ public partial class BSpeedDial : BBootable
     public bool Absolute { get; set; }
 
     [Parameter]
-    [ApiDefaultValue("scale-transition")]
+    [MasaApiParameter("scale-transition")]
     public string Transition { get; set; } = "scale-transition";
 
     [Parameter]

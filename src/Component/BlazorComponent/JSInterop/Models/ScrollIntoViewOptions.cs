@@ -4,13 +4,13 @@ namespace BlazorComponent.JSInterop;
 
 public class ScrollIntoViewOptions
 {
-    [JsonConverter(typeof(LowerCaseEnumConverter))]
+    [JsonConverter(typeof(JsonCamelStringEnumConverter))]
     public ScrollLogicalPosition? Block { get; }
 
-    [JsonConverter(typeof(LowerCaseEnumConverter))]
+    [JsonConverter(typeof(JsonCamelStringEnumConverter))]
     public ScrollLogicalPosition? Inline { get; }
 
-    [JsonConverter(typeof(LowerCaseEnumConverter))]
+    [JsonConverter(typeof(JsonCamelStringEnumConverter))]
     public ScrollBehavior? Behavior { get; }
 
     public ScrollIntoViewOptions(ScrollLogicalPosition block)

@@ -3,14 +3,14 @@
     public partial class BBorder : BDomComponentBase
     {
         [Parameter]
-        [ApiDefaultValue(Borders.Left)]
+        [MasaApiParameter(Borders.Left)]
         public Borders Border { get; set; } = Borders.Left;
 
         [Parameter]
         public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
-        [ApiDefaultValue("primary")]
+        [MasaApiParameter("primary")]
         public string? Color { get; set; } = "primary";
 
         [Parameter]
@@ -23,11 +23,11 @@
         public string? WrapperStyle { get; set; }
 
         [Parameter]
-        [ApiDefaultValue(true)]
+        [MasaApiParameter(true)]
         public bool Value { get; set; } = true;
 
         [Parameter]
-        [ApiDefaultValue(8)]
+        [MasaApiParameter(8)]
         public StringNumber Width { get; set; } = 8;
 
         protected bool Inactive => !Value || Border == Borders.None;

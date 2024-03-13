@@ -8,7 +8,7 @@ public partial class BInputPrependSlot<TValue, TInput> : ComponentPartBase<TInpu
     public string? PrependIcon => Component.PrependIcon;
 
     public EventCallback<MouseEventArgs> HandleOnPrependClickAsync =>
-        Component.OnPrependClick.HasDelegate
+        Component.HasPrependClick
             ? EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnPrependClickAsync)
             : default;
 }

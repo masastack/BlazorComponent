@@ -40,25 +40,15 @@ public partial class BRoutableGroupItem<TGroup> : BGroupItem<TGroup>, IRoutable
 
     protected virtual bool IsRoutable => Href != null && RoutableAncestor?.Routable is true;
 
+    protected override bool IsEager => true;
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
+        Router = new Router(this);
+        await UpdateActiveForRoutable();
         NavigationManager.LocationChanged += OnLocationChanged;
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await base.OnAfterRenderAsync(firstRender);
-
-        if (firstRender)
-        {
-            var shouldRender = await UpdateActiveForRoutable();
-            if (shouldRender)
-            {
-                StateHasChanged();
-            }
-        }
     }
 
     protected override void OnParametersSet()
@@ -100,10 +90,10 @@ public partial class BRoutableGroupItem<TGroup> : BGroupItem<TGroup>, IRoutable
 
     protected virtual Task OnActiveUpdatedForRoutable() => Task.CompletedTask;
 
-    protected override void Dispose(bool disposing)
+    protected override ValueTask DisposeAsyncCore()
     {
         NavigationManager.LocationChanged -= OnLocationChanged;
 
-        base.Dispose(disposing);
+        return base.DisposeAsyncCore();
     }
 }

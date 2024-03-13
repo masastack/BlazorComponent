@@ -28,7 +28,7 @@
         public RenderFragment? PrependContent { get; set; }
 
         [Parameter]
-        [ApiDefaultValue(false)]
+        [MasaApiParameter(false)]
         public StringBoolean? HideDetails { get; set; } = false;
 
         [Parameter]
@@ -38,7 +38,7 @@
         public bool PersistentHint { get; set; }
 
         [Parameter]
-        [ApiDefaultValue(false)]
+        [MasaApiParameter(false)]
         public StringBoolean Loading { get; set; } = false;
 
         [Parameter]
@@ -48,10 +48,10 @@
         public EventCallback<MouseEventArgs> OnClick { get; set; }
 
         [Parameter]
-        public EventCallback<MouseEventArgs> OnMouseDown { get; set; }
+        public virtual EventCallback<MouseEventArgs> OnMouseDown { get; set; }
 
         [Parameter]
-        public EventCallback<MouseEventArgs> OnMouseUp { get; set; }
+        public virtual EventCallback<MouseEventArgs> OnMouseUp { get; set; }
 
         public ElementReference InputSlotElement { get; set; }
 
@@ -120,6 +120,10 @@
 
         //We want InternalValue to be protected
         TValue IInput<TValue>.InternalValue => InternalValue;
+
+        public virtual bool HasPrependClick => OnPrependClick.HasDelegate;
+
+        public virtual bool HasAppendClick => OnAppendClick.HasDelegate;
 
         public virtual async Task HandleOnPrependClickAsync(MouseEventArgs args)
         {

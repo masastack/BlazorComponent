@@ -2,12 +2,12 @@
 
 namespace BlazorComponent.Web
 {
-    public class Window : JSObject
+    public class Window : JSObject, IAsyncDisposable
     {
         public Window()
         {
         }
-        
+
         public Window(Document document)
             : base(document.JS)
         {
@@ -33,16 +33,18 @@ namespace BlazorComponent.Web
 
         public Document Document { get; }
 
-        public event Func<Task>? OnResize;
+        internal event Func<Task>? OnResize;
 
-        public async Task AddEventListenerAsync(string type, Func<Task> listener, OneOf<EventListenerOptions, bool> options)
+        public async Task AddEventListenerAsync(string type, Func<Task> listener, OneOf<EventListenerOptions, bool> options,
+            EventListenerExtras? extras = null)
         {
             await JS.InvokeVoidAsync(
                 JsInteropConstants.AddHtmlElementEventListener,
                 Selector,
                 type,
                 DotNetObjectReference.Create(new Invoker<object>(_ => { listener?.Invoke(); })),
-                options.Value);
+                options.Value,
+                extras);
         }
 
         public async Task AddResizeEventListenerAsync()
@@ -55,6 +57,18 @@ namespace BlazorComponent.Web
             if (OnResize != null)
             {
                 await OnResize.Invoke();
+            }
+        }
+
+        async ValueTask IAsyncDisposable.DisposeAsync()
+        {
+            try
+            {
+                await JS.InvokeVoidAsync(JsInteropConstants.RemoveHtmlElementEventListener, Selector, "resize");
+            }
+            catch (Exception)
+            {
+                // ignored
             }
         }
     }

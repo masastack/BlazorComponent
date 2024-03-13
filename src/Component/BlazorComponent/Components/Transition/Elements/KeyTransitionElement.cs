@@ -220,8 +220,8 @@ private IEnumerable<KeyTransitionElementState<TValue>> ComputedStates =>
         return builder =>
         {
             var sequence = 0;
-            builder.OpenComponent<Container>(sequence++);
-            builder.AddAttribute(sequence++, nameof(Container.Value), EqualityComparer<TValue>.Default.Equals(key, Value));
+            builder.OpenComponent<ShouldRenderValue>(sequence++);
+            builder.AddAttribute(sequence++, nameof(ShouldRenderValue.Value), EqualityComparer<TValue>.Default.Equals(key, Value));
             builder.AddAttribute(sequence, nameof(ChildContent), ChildContent);
             builder.CloseComponent();
         };

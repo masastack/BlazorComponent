@@ -1,7 +1,16 @@
-import registerDirective from "./directive/index";
-import { parseTouchEvent, touchEvents } from "./events/EventType";
+import debounceIt from "just-debounce-it";
+import throttle from "just-throttle";
+
+import { parseDragEvent, parseTouchEvent, touchEvents } from "./events/EventType";
 import { registerExtraEvents } from "./events/index";
-import { getDom, getElementSelector } from "./utils/helper";
+import registerRippleObserver from "./ripple";
+import { canUseDom, getBlazorId, getDom, getElementSelector } from "./utils/helper";
+
+window.onload = function () {
+  registerExtraEvents();
+  registerPasteWithData("pastewithdata")
+  registerRippleObserver();
+}
 
 export function getZIndex(el?: Element | null): number {
   if (!el || el.nodeType !== Node.ELEMENT_NODE) return 0
@@ -125,7 +134,13 @@ export function getBoundingClientRect(element, attach = "body") {
   return result;
 }
 
-var htmlElementEventListenerConfigs: { [prop: string]: any[] } = {}
+var htmlElementEventListenerConfigs: { [prop: string]: HtmlElementEventListenerConfig[] } = {}
+
+type HtmlElementEventListenerConfig = {
+  listener?: (args: any) => void;
+  options?: any;
+  handle?: DotNet.DotNetObject;
+}
 
 export function addHtmlElementEventListener<K extends keyof HTMLElementTagNameMap>(
   selector: "window" | "document" | K,
@@ -146,14 +161,14 @@ export function addHtmlElementEventListener<K extends keyof HTMLElementTagNameMa
   var key = extras?.key || `${selector}:${type}`;
 
   //save for remove
-  var config = {};
+  const config: HtmlElementEventListenerConfig = {};
 
   var listener = (e: any): void => {
     if (extras?.stopPropagation) {
       e.stopPropagation();
     }
 
-    if (extras?.preventDefault) {
+    if ((typeof e.cancelable !== "boolean" || e.cancelable) && extras?.preventDefault) {
       e.preventDefault();
     }
 
@@ -192,28 +207,15 @@ export function addHtmlElementEventListener<K extends keyof HTMLElementTagNameMa
   };
 
   if (extras?.debounce && extras.debounce > 0) {
-    let timeout;
-    config["listener"] = function (args: any) {
-      clearTimeout(timeout)
-      timeout = setTimeout(() => listener(args), extras.debounce);
-    }
-  }
-  else if (extras?.throttle && extras.throttle > 0) {
-    let throttled: boolean;
-    config["listener"] = function (args: any) {
-      if (!throttled) {
-        listener(args)
-        throttled = true;
-        setTimeout(() => {
-          throttled = false;
-        }, (extras?.throttle ?? 0));
-      }
-    }
+    config.listener = debounceIt(listener, extras.debounce)
+  } else if (extras?.throttle && extras.throttle > 0) {
+    config.listener = throttle(listener, extras.throttle, { trailing: true })
   } else {
-    config["listener"] = listener;
+    config.listener = listener;
   }
 
-  config['options'] = options;
+  config.options = options;
+  config.handle = invoker
 
   if (htmlElementEventListenerConfigs[key]) {
     htmlElementEventListenerConfigs[key].push(config);
@@ -222,7 +224,7 @@ export function addHtmlElementEventListener<K extends keyof HTMLElementTagNameMa
   }
 
   if (htmlElement) {
-    htmlElement.addEventListener(type, config["listener"], options);
+    htmlElement.addEventListener(type, config.listener, config.options);
   }
 }
 
@@ -243,7 +245,8 @@ export function removeHtmlElementEventListener(selector, type, k?: string) {
 
   if (configs) {
     configs.forEach(item => {
-      htmlElement?.removeEventListener(type, item["listener"], item['options']);
+      item.handle.dispose();
+      htmlElement?.removeEventListener(type, item.listener, item.options);
     });
 
     htmlElementEventListenerConfigs[k] = []
@@ -424,6 +427,29 @@ export function scrollTo(target, options: ScrollToOptions) {
   }
 }
 
+export function scrollToTarget(
+  target: string,
+  container: string = null,
+  offset: number = 0
+) {
+  const targetEl: HTMLElement = document.querySelector(target);
+  if (targetEl) {
+    let top ;
+    if (container) {
+      top = targetEl.offsetTop;
+    } else {
+      top = targetEl.getBoundingClientRect().top + window.scrollY;
+    }
+    const containerEl = container
+      ? document.querySelector(container)
+      : document.documentElement
+    containerEl.scrollTo({
+      top: top - offset,
+      behavior: "smooth",
+    });
+  }
+}
+
 export function scrollToElement(target, offset: number, behavior?: ScrollBehavior) {
   const dom = getDom(target)
   if (!dom) return;
@@ -435,15 +461,28 @@ export function scrollToElement(target, offset: number, behavior?: ScrollBehavio
   })
 }
 
-export function scrollToActiveElement(container, target) {
-  let dom: HTMLElement = getDom(container);
+export function scrollToActiveElement(
+  container,
+  element = ".active",
+  position: "center" | number = "center"
+) {
+  let containerEl: HTMLElement = getDom(container);
 
-  target = dom.querySelector('.active') as HTMLElement;
-  if (!target) {
+  let activeEl: HTMLElement
+  if (typeof element === 'string') {
+    activeEl =  container.querySelector(element)
+  }
+
+  if (!containerEl || !activeEl) {
     return;
   }
 
-  dom.scrollTop = target.offsetTop - dom.offsetHeight / 2 + target.offsetHeight / 2;
+  if (position === 'center') {
+    containerEl.scrollTop = activeEl.offsetTop - containerEl.offsetHeight / 2 + activeEl.offsetHeight / 2;
+  }
+  else {
+    containerEl.scrollTop = activeEl.offsetTop - position
+  }
 }
 
 export function addClsToFirstChild(element, className) {
@@ -611,6 +650,38 @@ export function getScroll() {
   return { x: window.pageXOffset, y: window.pageYOffset };
 }
 
+function isElement(node: Element) {
+  const ELEMENT_NODE_TYPE = 1;
+  return (
+    node.tagName !== "HTML" &&
+    node.tagName !== "BODY" &&
+    node.nodeType == ELEMENT_NODE_TYPE
+  )
+}
+
+export function getScrollParent(el: Element | undefined, root: HTMLElement | Window | undefined = undefined) {
+  root ??= canUseDom ? window : undefined;
+
+  let node = el;
+  while (node && node !== root && isElement(node)) {
+    const { overflowY } = window.getComputedStyle(node);
+    if (/scroll|auto|overlay/i.test(overflowY)) {
+      return node;
+    }
+
+    node = node.parentNode as Element;
+  }
+
+  return root;
+}
+
+export function getScrollTop(el: HTMLElement | Window): number {
+  const top = 'scrollTop' in el ? el.scrollTop : el.pageYOffset;
+
+  // iOS scroll bounce cause minus scrollTop
+  return Math.max(top, 0);
+}
+
 export function getInnerText(element) {
   let dom = getDom(element);
   return dom.innerText;
@@ -741,40 +812,6 @@ export function enablePreventDefaultForEvent(element: any, event: string, condit
   }
 }
 
-export function resizeObserver(selector: string, invoker: DotNet.DotNetObject) {
-  var el = document.querySelector(selector);
-  if (!el) return;
-
-  const resizeObserver = new ResizeObserver((entries => {
-    const dimensions = [];
-    for (var entry of entries) {
-      const dimension = entry.contentRect;
-      dimensions.push(dimension);
-    }
-    invoker.invokeMethodAsync('Invoke', dimensions);
-  }));
-
-  resizeObserver.observe(el);
-}
-
-export function intersectionObserver(selector: string, invokers: DotNet.DotNetObject[]) {
-  var el = document.querySelector(selector);
-  if (!el) return;
-
-  const observer = new IntersectionObserver((
-    entries: IntersectionObserverEntry[] = [],
-    observer: IntersectionObserver
-  ) => {
-    if (entries.some(e => e.isIntersecting)) {
-      invokers.forEach(item => {
-        item.invokeMethodAsync('Invoke')
-      })
-    }
-  })
-
-  observer.observe(el)
-}
-
 export function getBoundingClientRects(selector) {
   var elements = document.querySelectorAll(selector);
 
@@ -809,8 +846,12 @@ export function getSize(selectors, sizeProp) {
   return size;
 }
 
-export function getProp(selectors, name) {
-  var el = getDom(selectors);
+export function getProp(elOrString, name) {
+  if (elOrString === 'window') {
+    return window[name];
+  }
+
+  var el = getDom(elOrString);
   if (!el) {
     return null;
   }
@@ -851,13 +892,6 @@ export function getScrollHeightWithoutHeight(selectors) {
   return scrollHeight;
 }
 
-//register custom events
-window.onload = function () {
-  registerExtraEvents();
-  registerPasteWithData("pastewithdata")
-  registerDirective();
-}
-
 function registerPasteWithData(customEventName) {
   if (Blazor) {
     Blazor.registerCustomEventType(customEventName, {
@@ -875,7 +909,7 @@ function registerPasteWithData(customEventName) {
 export function registerTextFieldOnMouseDown(element, inputElement, callback) {
   if (!element || !inputElement) return
 
-  element.addEventListener('mousedown', (e: MouseEvent) => {
+  const listener = (e: MouseEvent) => {
     const target = e.target;
     const inputDom = getDom(inputElement);
     if (target !== inputDom) {
@@ -905,12 +939,30 @@ export function registerTextFieldOnMouseDown(element, inputElement, callback) {
 
       callback.invokeMethodAsync('Invoke', mouseEventArgs);
     }
-  })
+  };
+
+  element.addEventListener('mousedown', listener)
+
+  const config: HtmlElementEventListenerConfig = {
+    listener,
+    handle: callback
+  };
+
+  const key =`registerTextFieldOnMouseDown_${getBlazorId(element)}`;
+  htmlElementEventListenerConfigs[key] = [config]
 }
 
-export function isMobile() {
-  return /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|ipad|iris|kindle|Android|Silk|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(navigator.userAgent)
-    || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(navigator.userAgent.substr(0, 4));
+export function unregisterTextFieldOnMouseDown(element: HTMLElement) {
+  const key =`registerTextFieldOnMouseDown_${getBlazorId(element)}`;
+  const configs = htmlElementEventListenerConfigs[key]
+  if (configs && configs.length) {
+    configs.forEach(item => {
+      item.handle.dispose();
+      if (element) {
+        element.removeEventListener("mousedown", item.listener);
+      }
+    })
+  }
 }
 
 export function containsActiveElement(selector) {
@@ -934,6 +986,7 @@ export function copyChild(el) {
   document.execCommand('selectAll', false, null);
   document.execCommand('copy');
   document.execCommand('unselect');
+  el.blur();
   el.removeAttribute('contenteditable');
 }
 
@@ -941,6 +994,7 @@ export function copyText(text) {
   if (!navigator.clipboard) {
     var textArea = document.createElement("textarea");
     textArea.value = text;
+    textArea.readOnly = true;
 
     // Avoid scrolling to bottom
     textArea.style.top = "0";
@@ -1078,13 +1132,23 @@ export function invokeMultipleMethod(windowProps, documentProps, hasActivator, a
 
 export function registerOTPInputOnInputEvent(elementList, callback) {
   for (let i = 0; i < elementList.length; i++) {
-    elementList[i].addEventListener('input', (e: Event) => otpInputOnInputEvent(e, i, elementList, callback));
-    elementList[i].addEventListener('focus', (e: Event) => otpInputFocusEvent(e, i, elementList));
-    elementList[i].addEventListener('keyup', (e: KeyboardEvent) => otpInputKeyupEvent(e, i, elementList, callback));
+    const inputListener = (e: Event) => otpInputOnInputEvent(e, i, elementList, callback);
+    const focusListener = (e: Event) => otpInputFocusEvent(e, i, elementList);
+    const keyupListener =(e: KeyboardEvent) => otpInputKeyupEvent(e, i, elementList, callback);
+
+    elementList[i].addEventListener('input', inputListener);
+    elementList[i].addEventListener('focus', focusListener);
+    elementList[i].addEventListener('keyup', keyupListener);
+
+    elementList[i]._optInput = {
+      inputListener,
+      focusListener,
+      keyupListener
+    }
   }
 }
 
-export function otpInputKeyupEvent(e: KeyboardEvent, otpIdx: number, elementList, callback) {
+function otpInputKeyupEvent(e: KeyboardEvent, otpIdx: number, elementList, callback) {
   e.preventDefault();
   const eventKey = e.key;
   if (eventKey === 'ArrowLeft' || eventKey === 'Backspace') {
@@ -1095,7 +1159,7 @@ export function otpInputKeyupEvent(e: KeyboardEvent, otpIdx: number, elementList
         value: ''
       }
       if (callback) {
-        callback.invokeMethodAsync('Invoke', JSON.stringify(obj));
+        callback.invokeMethodAsync('Invoke', obj);
       }
     }
     otpInputFocus(otpIdx - 1, elementList);
@@ -1105,7 +1169,7 @@ export function otpInputKeyupEvent(e: KeyboardEvent, otpIdx: number, elementList
   }
 }
 
-export function otpInputFocus(focusIndex: number, elementList) {
+function otpInputFocus(focusIndex: number, elementList) {
   if (focusIndex < 0) {
     otpInputFocus(0, elementList);
   }
@@ -1120,14 +1184,14 @@ export function otpInputFocus(focusIndex: number, elementList) {
   }
 }
 
-export function otpInputFocusEvent(e: Event, otpIdx: number, elementList) {
+function otpInputFocusEvent(e: Event, otpIdx: number, elementList) {
   const element = getDom(elementList[otpIdx]) as HTMLInputElement;
   if (element && document.activeElement === element) {
     element.select();
   }
 }
 
-export function otpInputOnInputEvent(e: Event, otpIdx: number, elementList, callback) {
+function otpInputOnInputEvent(e: Event, otpIdx: number, elementList, callback) {
   const target = e.target as HTMLInputElement;
   const value = target.value;
 
@@ -1140,7 +1204,18 @@ export function otpInputOnInputEvent(e: Event, otpIdx: number, elementList, call
         index: otpIdx,
         value: value
       }
-      callback.invokeMethodAsync('Invoke', JSON.stringify(obj));
+      callback.invokeMethodAsync('Invoke', obj);
+    }
+  }
+}
+
+export function unregisterOTPInputOnInputEvent(elementList) {
+  for (let i = 0; i < elementList.length; i++) {
+    const el = elementList[i]
+    if(el && el._optInput) {
+      el.removeEventListener('input', el._optInput.inputListener)
+      el.removeEventListener('focus', el._optInput.focusListener)
+      el.removeEventListener('keyup', el._optInput.keyupListener)
     }
   }
 }
@@ -1233,6 +1308,10 @@ export function get_top_domain() {
 }
 
 export function setCookie(name, value) {
+  if (value === null || value === undefined) {
+    return;
+  }
+
   var domain = get_top_domain();
   if (!domain) {
     domain = '';
@@ -1242,7 +1321,7 @@ export function setCookie(name, value) {
   var Days = 30;
   var exp = new Date();
   exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
-  document.cookie = `${name}=${escape(value.toString())};path=/;expires=${exp.toUTCString()};domain=${domain}`;
+  document.cookie = `${name}=${escape(value?.toString())};path=/;expires=${exp.toUTCString()};domain=${domain}`;
 }
 
 export function getCookie(name) {
@@ -1252,4 +1331,196 @@ export function getCookie(name) {
     return unescape(arr[2]);
   }
   return null;
+}
+
+export function registerDragEvent(el: HTMLElement, dataKey?: string) {
+  if (el) {
+    const blazorId = getBlazorId(el);
+    const listener = (e: DragEvent) => {
+      if (dataKey) {
+        const dataValue = (e.target as HTMLElement).getAttribute(dataKey);
+        e.dataTransfer.setData(dataKey, dataValue);
+        e.dataTransfer.setData('offsetX', e.offsetX.toString())
+        e.dataTransfer.setData('offsetY', e.offsetY.toString())
+      }
+    };
+    const key = `${blazorId}:dragstart`;
+    htmlElementEventListenerConfigs[key] = [{
+      listener
+    }];
+    el.addEventListener("dragstart", listener);
+  }
+}
+
+export function unregisterDragEvent(el: HTMLElement) {
+  const blazorId = getBlazorId(el);
+  if (blazorId) {
+    const key = `${blazorId}:dragstart`;
+    if (htmlElementEventListenerConfigs[key]) {
+      htmlElementEventListenerConfigs[key].forEach((config) => {
+        el.removeEventListener("dragstart", config.listener);
+      });
+    }
+  }
+}
+
+export function resizableDataTable(dataTable: HTMLElement) {
+  const table = dataTable.querySelector('table')
+  const row = table.querySelector('.m-data-table-header').getElementsByTagName('tr')[0];
+  const cols = row ? row.children : [];
+  if (!cols) return;
+
+  table.style.overflow = 'hidden';
+
+  const tableHeight = table.offsetHeight;
+
+  for (var i = 0; i < cols.length; i++) {
+    const col: any = cols[i];
+    const colResizeDiv: HTMLDivElement = col.querySelector(".m-data-table-header__col-resize");
+    if (!colResizeDiv) continue
+    colResizeDiv.style.height = tableHeight + "px"
+
+    let minWidth = (col.firstElementChild as HTMLElement).offsetWidth; // width of span
+    minWidth = minWidth + 32 + 18 + 1 + 1; // 32:padding 18:sort
+    if(!col.style.minWidth){
+      col.minWidth = minWidth;
+      col.style.minWidth = minWidth + "px";
+    }
+
+    setListeners(colResizeDiv);
+  }
+
+  function setListeners(div: HTMLDivElement) {
+    let pageX:number
+    let curCol: HTMLElement;
+    let nxtCol: HTMLElement;
+    let curColWidth: number;
+    let nxtColWidth: number;
+    let tableWidth: number;
+
+    div.addEventListener('click', e => e.stopPropagation());
+
+    div.addEventListener('mousedown', function (e) {
+      curCol = (e.target as HTMLElement).parentElement;
+      nxtCol = curCol.nextElementSibling as HTMLElement;
+      pageX = e.pageX;
+
+      tableWidth = table.offsetWidth;
+
+      var padding = paddingDiff(curCol);
+
+      curColWidth = curCol.offsetWidth - padding;
+      if (nxtCol)
+        nxtColWidth = nxtCol.offsetWidth - padding;
+    });
+
+    document.addEventListener("mousemove", function (e) {
+      if (curCol) {
+        let diffX = e.pageX - pageX;
+
+        const isRtl = dataTable.classList.contains("m-data-table--rtl")
+        if (isRtl) {
+          diffX = 0 - diffX;
+        }
+
+        let newCurColWidth = curColWidth + diffX;
+
+        curCol.style.width = newCurColWidth + "px";
+
+        const isOverflow = dataTable.classList.contains(
+          "m-data-table--resizable-overflow"
+        );
+        if (isOverflow) {
+          table.style.width = tableWidth + diffX + "px";
+          return;
+        }
+
+        const isIndependent = dataTable.classList.contains(
+          "m-data-table--resizable-independent"
+        );
+        if (isIndependent) {
+          let newNextColWidth = nxtColWidth - diffX;
+          const twoColWidth = curColWidth + nxtColWidth;
+
+          if (diffX > 0) {
+            if (nxtCol) {
+              if (newNextColWidth < nxtCol["minWidth"]) {
+                newNextColWidth = nxtCol["minWidth"];
+                newCurColWidth = twoColWidth - newNextColWidth;
+              }
+            }
+          } else {
+            if (newCurColWidth < curCol["minWidth"]) {
+              newCurColWidth = curCol["minWidth"];
+              newNextColWidth = twoColWidth - newCurColWidth;
+            }
+          }
+
+          curCol.style.width = newCurColWidth + "px";
+
+          if (nxtCol) {
+            nxtCol.style.width = newNextColWidth + "px";
+          }
+        }
+      }
+    });
+
+    document.addEventListener('mouseup', function (e) {
+      if (curCol) {
+        for (let i = 0; i < cols.length; i++) {
+          const col:any = cols[i];
+          col.style.width = col['offsetWidth'] + "px"
+        }
+      }
+      curCol = undefined;
+      nxtCol = undefined;
+      pageX = undefined;
+      nxtColWidth = undefined;
+      curColWidth = undefined;
+      tableWidth = undefined;
+    });
+  }
+
+  function paddingDiff(col) {
+    if (getStyleVal(col, 'box-sizing') == 'border-box') {
+      return 0;
+    }
+
+    var padLeft = getStyleVal(col, 'padding-left');
+    var padRight = getStyleVal(col, 'padding-right');
+    return (parseInt(padLeft) + parseInt(padRight));
+  }
+
+  function getStyleVal(elm, css) {
+    return (window.getComputedStyle(elm, null).getPropertyValue(css))
+  }
+}
+
+export function updateDataTableResizeHeight(dataTable: HTMLElement) {
+  const table = dataTable.querySelector('table')
+  const row = table.querySelector('.m-data-table-header').getElementsByTagName('tr')[0];
+  const cols = row ? row.children : [];
+  if (!cols) return;
+
+  const tableHeight = table.offsetHeight;
+
+  for (var i = 0; i < cols.length; i++) {
+    const col: any = cols[i];
+    const colResizeDiv: HTMLDivElement = col.querySelector(".m-data-table-header__col-resize");
+    colResizeDiv.style.height = tableHeight + "px"
+  }
+}
+
+function stopPropagation(e) {
+  e.stopPropagation();
+}
+
+export function addStopPropagationEvent(el: any, type: keyof HTMLElementEventMap) {
+  const dom = getDom(el);
+  dom.addEventListener(type, stopPropagation);
+}
+
+export function removeStopPropagationEvent(el: any, type: keyof HTMLElementEventMap) {
+  const dom = getDom(el);
+  dom.removeEventListener(type, stopPropagation);
 }

@@ -6,7 +6,7 @@ public partial class BTextFieldIconSlot<TValue, TInput> where TInput : ITextFiel
 
     public RenderFragment? AppendContent => Component.AppendContent;
 
-    public EventCallback<MouseEventArgs> HandleOnAppendClickAsync => Component.OnAppendClick.HasDelegate
+    public EventCallback<MouseEventArgs> HandleOnAppendClickAsync => Component.HasAppendClick
         ? EventCallback.Factory.Create<MouseEventArgs>(Component, Component.HandleOnAppendClickAsync)
         : default;
 

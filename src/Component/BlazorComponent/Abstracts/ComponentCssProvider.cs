@@ -5,8 +5,6 @@
         private readonly Dictionary<string, Action<CssBuilder>> _cssConfig = new();
         private readonly Dictionary<string, Action<StyleBuilder>> _styleConfig = new();
 
-        private string? BaseCssName { get; set; }
-
         private Func<string?> StaticClass { get; }
 
         private Func<string?> StaticStyle { get; }
@@ -16,12 +14,10 @@
             StaticClass = staticClass;
             StaticStyle = staticStyle;
         }
-        
-        public ComponentCssProvider UseBaseCssName(string baseCssName)
-        {
-            BaseCssName ??= baseCssName;
 
-            return this;
+        public ComponentBemCssProvider UseBem(string block, Action<BemCssBuilder>? cssAction = null, Action<StyleBuilder>? styleAction = null)
+        {
+            return new ComponentBemCssProvider(this, block, cssAction, styleAction);
         }
 
         /// <summary>
@@ -44,17 +40,7 @@
         /// <returns></returns>
         public ComponentCssProvider Apply(string name, Action<CssBuilder>? cssAction = null, Action<StyleBuilder>? styleAction = null)
         {
-            if (BaseCssName != null)
-            {
-                _cssConfig.Add(name, b =>
-                {
-                    var css = name == "default" ? BaseCssName : $"{BaseCssName}-{name}";
-                    b.Add(css);
-                    b.SetPrefix(css);
-                    cssAction?.Invoke(b);
-                });
-            }
-            else if (cssAction != null)
+            if (cssAction != null)
             {
                 _cssConfig.Add(name, cssAction);
             }
@@ -143,17 +129,15 @@
         /// Get class of named element
         /// </summary>
         /// <param name="name"></param>
-        /// <param name="index"></param>
         /// <param name="data"></param>
         /// <param name="addDefaultCssImplicitly"></param>
         /// <returns></returns>
-        public string? GetClass(string name, int index = 0, object? data = null, bool addDefaultCssImplicitly = true)
+        public string? GetClass(string name, object? data = null, bool addDefaultCssImplicitly = true)
         {
             var action = _cssConfig.GetValueOrDefault(name);
 
             var builder = new CssBuilder
             {
-                Index = index,
                 Data = data
             };
 
@@ -171,16 +155,14 @@
         /// Get style of named element
         /// </summary>
         /// <param name="name"></param>
-        /// <param name="index"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        public string? GetStyle(string name, int index = 0, object? data = null)
+        public string? GetStyle(string name, object? data = null)
         {
             var action = _styleConfig.GetValueOrDefault(name);
 
             var builder = new StyleBuilder
             {
-                Index = index,
                 Data = data
             };
 

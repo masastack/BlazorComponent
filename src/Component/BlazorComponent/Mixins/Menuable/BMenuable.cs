@@ -1,6 +1,6 @@
 ﻿namespace BlazorComponent
 {
-    public class BMenuable : BBootable, IAsyncDisposable
+    public class BMenuable : BBootable
     {
         [Parameter]
         public bool Absolute { get; set; }
@@ -45,7 +45,7 @@
         public StringNumber? ZIndex { get; set; }
 
         [Parameter]
-        [ApiDefaultValue(false)]
+        [MasaApiParameter(false)]
         public StringBoolean? Attach { get; set; } = false;
 
         [Parameter]
@@ -66,6 +66,13 @@
         [Parameter]
         public bool OffsetY { get; set; }
 
+        /// <summary>
+        /// The lazy content would be created in a [data-permanent] element.
+        /// It's useful when you use this component in a layout.
+        /// </summary>
+        [Parameter]
+        public bool Permanent { get; set; }
+
         [Parameter]
         public bool ExternalActivator { get; set; }
 
@@ -77,6 +84,8 @@
         [NotNull]
         public Document? Document { get; set; }
 
+        protected virtual bool IsRtl => false;
+
         protected double ComputedLeft
         {
             get
@@ -87,7 +96,12 @@
                 var minWidth = Math.Max(activator.Width, content?.Width ?? 0);
 
                 double left = 0;
-                left += Left ? activatorLeft - (minWidth - activator.Width) : activatorLeft;
+
+                left += activatorLeft;
+                if (Left || (IsRtl && !Right) || IsRtl)
+                {
+                    left -= (minWidth - activator.Width);
+                }
 
                 if (OffsetX)
                 {
@@ -220,7 +234,7 @@
 
         protected int ComputedZIndex => ZIndex != null ? ZIndex.ToInt32() : Math.Max(ActivateZIndex, StackMinZIndex);
 
-        protected MenuableDimensions Dimensions { get; } = new();
+        public MenuableDimensions Dimensions { get; } = new();
 
         protected double AbsoluteX { get; set; }
 
@@ -443,14 +457,10 @@
             return Task.CompletedTask;
         }
 
-        protected override void Dispose(bool disposing)
+        protected override async ValueTask DisposeAsyncCore()
         {
             Window.OnResize -= HandleOnResizeAsync;
-            base.Dispose(disposing);
-        }
-
-        public async ValueTask DisposeAsync()
-        {
+            
             try
             {
                 if (ContentElement.Context is not null)
@@ -462,6 +472,8 @@
             {
                 // ignored
             }
+
+            await base.DisposeAsyncCore();
         }
     }
 }

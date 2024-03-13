@@ -3,9 +3,36 @@
 @inherits ComponentPartBase<TPagination>
 
 <li>
-    <button class="@CssProvider.GetClass(IconClassName())" type="button" disabled="@Disabled" @onclick="HandleAsync" @onclick:preventDefault>
-        <BIcon @attributes="GetAttributes(typeof(BIcon))">
-            @GetIcon
-        </BIcon>
-    </button>
+    @CreatePaginationNavigation()
 </li>
+
+@code {
+
+    private RenderFragment CreatePaginationNavigation() => builder =>
+    {
+        builder.OpenElement(0, HrefFormat is null ? "button" : "a");
+        builder.AddAttribute(1, "class", CssProvider.GetClass(IconClassName()));
+        builder.AddAttribute(2, "onclick", HandleAsync);
+        builder.AddAttribute(3, "__internal_preventDefault_onclick", true);
+        if (HrefFormat is null)
+        {
+            builder.AddAttribute(4, "type", "button");
+        }
+        else if (!Disabled)
+        {
+            builder.AddAttribute(5, "href", string.Format(HrefFormat, ItemIndex == -1 ? Value - 1 : Value + 1));
+        }
+
+        builder.AddContent(6, (RenderFragment)(childBuilder =>
+        {
+            childBuilder.OpenComponent<BIcon>(0);
+            childBuilder.AddMultipleAttributes(1, GetAttributes(typeof(BIcon)));
+            // childBuilder.AddContent(2, _ => _.AddContent(0, GetIcon));
+            childBuilder.AddAttribute(2, "ChildContent", (RenderFragment)(childBuilder2 => { childBuilder2.AddContent(0, GetIcon); }));
+            childBuilder.CloseComponent();
+        }));
+
+        builder.CloseElement();
+    };
+
+}

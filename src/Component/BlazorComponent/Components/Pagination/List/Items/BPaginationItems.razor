@@ -13,10 +13,37 @@
         }
         else
         {
-             var itemClass = item.AsT1 == Value ? "current-item" : "item";
-             <button class="@CssProvider.GetClass(itemClass)" type="button" @onclick="async args => await HandleItemClickAsync(item)">
-                 @item
-             </button>
+            @CreatePaginationItem(item)
         }
     </li>
+}
+
+@code {
+
+    private RenderFragment CreatePaginationItem(StringNumber item) => builder =>
+    {
+        var itemClass = item.AsT1 == Value ? "current-item" : "item";
+
+        builder.OpenElement(0, HrefFormat is null ? "button" : "a");
+        builder.AddAttribute(1, "class", CssProvider.GetClass(itemClass));
+        builder.AddAttribute(2, "onclick", () => HandleItemClickAsync(item));
+        
+        // TODO: hide this if the component is not interactive
+        // https://github.com/dotnet/aspnetcore/issues/49401
+        builder.AddAttribute(3, "__internal_preventDefault_onclick", true);
+
+        if (HrefFormat is null)
+        {
+            builder.AddAttribute(4, "type", "button");
+        }
+        else
+        {
+            builder.AddAttribute(5, "href", string.Format(HrefFormat, item));
+        }
+
+        builder.AddContent(6, item);
+
+        builder.CloseElement();
+    };
+
 }

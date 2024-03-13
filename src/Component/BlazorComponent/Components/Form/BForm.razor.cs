@@ -7,13 +7,11 @@ namespace BlazorComponent
 {
     public partial class BForm : BDomComponentBase
     {
-        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> s_modelPropertiesMap = new();
-
         [Inject]
         public IServiceProvider ServiceProvider { get; set; } = null!;
 
         [Parameter]
-        public RenderFragment<FormContext>? ChildContent { get; set; }
+        public RenderFragment<FormContext?>? ChildContent { get; set; }
 
         [Parameter]
         public EventCallback<EventArgs> OnSubmit { get; set; }
@@ -45,10 +43,14 @@ namespace BlazorComponent
         [Parameter]
         public EventCallback OnInvalidSubmit { get; set; }
 
+        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> s_modelPropertiesMap = new();
+
         private object? _oldModel;
         private IDisposable? _editContextValidation;
 
         public EditContext? EditContext { get; protected set; }
+
+        public FormContext? FormContext { get; protected set; }
 
         protected ValidationMessageStore? ValidationMessageStore { get; set; }
 
@@ -61,6 +63,7 @@ namespace BlazorComponent
             if (Model != null && _oldModel != Model)
             {
                 EditContext = new EditContext(Model);
+                FormContext = new FormContext(EditContext, this);
 
                 ValidationMessageStore = new ValidationMessageStore(EditContext);
                 if (EnableValidation)
@@ -175,7 +178,7 @@ namespace BlazorComponent
                 colonIndex += 2;
                 var msg = resultStr.Substring(colonIndex, severityIndex - colonIndex);
                 Enum.TryParse<ValidationResultTypes>(resultStr.Substring(severityIndex + 10), out var type);
-                validationResults.Add(new ValidationResult(msg, field, type));
+                validationResults.Add(new ValidationResult(field, msg, type));
             }
 
             ParseFormValidation(validationResults.ToArray());
@@ -308,11 +311,11 @@ namespace BlazorComponent
             }
         }
 
-        protected override void Dispose(bool disposing)
+        protected override async ValueTask DisposeAsyncCore()
         {
-            base.Dispose(disposing);
-
             _editContextValidation?.Dispose();
+
+            await base.DisposeAsyncCore();
         }
     }
 }

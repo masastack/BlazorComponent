@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BlazorComponent
 {
+    [Obsolete("Use System.ComponentModel.DataAnnotations.ValidateComplexType instead.")]
     [AttributeUsage(AttributeTargets.Property)]
     public class EnumerableValidationAttribute : ValidationAttribute
     {

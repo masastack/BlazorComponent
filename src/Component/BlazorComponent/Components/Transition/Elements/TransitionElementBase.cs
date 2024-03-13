@@ -1,26 +1,62 @@
-﻿namespace BlazorComponent;
+﻿using System.Text;
+using Microsoft.AspNetCore.Components.Rendering;
+
+namespace BlazorComponent;
 
 public abstract class TransitionElementBase : Element
 {
-    internal abstract TransitionState CurrentState {  get; set; }
+    private ElementReference? _reference;
+
+    protected bool ElementReferenceChanged { get; set; }
+
+    internal abstract TransitionState CurrentState { get; set; }
 
     /// <summary>
     /// The dom information about the transitional element.
     /// </summary>
     internal BlazorComponent.Web.Element? ElementInfo { get; set; }
+
+    public ElementReference Reference
+    {
+        get => _reference ?? new ElementReference();
+        protected set
+        {
+            if (_reference.HasValue && _reference.Value.Id != value.Id)
+            {
+                ElementReferenceChanged = true;
+            }
+
+            _reference = value;
+        }
+    }
+
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        builder.OpenElement(0, (Tag ?? "div"));
+        builder.AddMultipleAttributes(1, AdditionalAttributes);
+        builder.AddAttribute(2, "class", ComputedClass);
+        builder.AddAttribute(3, "style", ComputedStyle);
+        builder.AddContent(4, ChildContent);
+        builder.AddElementReferenceCapture(5, reference =>
+        {
+            Reference = reference;
+            ReferenceCaptureAction?.Invoke(reference);
+        });
+        builder.CloseElement();
+    }
 }
 
+#if NET6_0
+public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAsyncDisposable
+#else
 public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAsyncDisposable where TValue : notnull
+#endif
 {
-    [Inject]
-    [NotNull]
-    protected IJSRuntime? Js { get; set; }
+    [Inject] [NotNull] protected IJSRuntime? Js { get; set; }
 
-    [CascadingParameter]
-    public Transition? Transition { get; set; }
+    [CascadingParameter] public Transition? Transition { get; set; }
 
-    [Parameter, EditorRequired]
-    public TValue Value { get; set; } = default!;
+    [Parameter, EditorRequired] public TValue Value { get; set; } = default!;
 
     private TValue? _preValue;
     private TransitionJsInvoker? _transitionJsInvoker;
@@ -30,7 +66,8 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
     /// <summary>
     /// Whether it is a transitional element.
     /// </summary>
-    protected bool HavingTransition => !string.IsNullOrWhiteSpace(Transition?.Name) && Transition?.TransitionElement == this;
+    protected bool HavingTransition =>
+        !string.IsNullOrWhiteSpace(Transition?.Name) && Transition?.TransitionElement == this;
 
     /// <summary>
     /// No transition or is not a transitional element.
@@ -147,7 +184,7 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
 
         if (HavingTransition)
         {
-            if (_transitionJsInvoker is null)
+            if (_transitionJsInvoker?.Registered is not true)
             {
                 if (Reference.Context is null)
                 {
@@ -158,7 +195,10 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
 
                 _transitionJsInvoker = new TransitionJsInvoker(Js);
                 await _transitionJsInvoker.Init(OnTransitionEndAsync, OnTransitionCancelAsync);
-                await RegisterTransitionEventsAsync();
+                if (!_transitionJsInvoker.Registered)
+                {
+                    await RegisterTransitionEventsAsync();
+                }
             }
 
             if (!firstRender && ElementReferenceChanged)
@@ -170,7 +210,7 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
                 await RegisterTransitionEventsAsync();
             }
 
-            if (CanMoveNext)
+            if (_transitionJsInvoker.Registered && CanMoveNext)
             {
                 await NextAsync(CurrentState);
             }
@@ -185,28 +225,21 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
     {
         get
         {
-            if (Transition is null)
+            if (Transition?.LeaveAbsolute is true && IsLeaveTransitionState && ElementInfo is not null)
             {
-                return base.ComputedStyle;
+                var stringBuilder = new StringBuilder();
+                stringBuilder.Append(Style);
+                stringBuilder.Append(' ');
+                stringBuilder.Append("position:absolute; ");
+                stringBuilder.Append($"top:{ElementInfo.OffsetTop}px; ");
+                stringBuilder.Append($"left:{ElementInfo.OffsetLeft}px; ");
+                stringBuilder.Append($"width:{ElementInfo.OffsetWidth}px; ");
+                stringBuilder.Append($"height:{ElementInfo.OffsetHeight}px; ");
+
+                return stringBuilder.ToString().TrimEnd();
             }
 
-            var styles = new List<string>();
-
-            if (Style != null)
-            {
-                styles.Add(Style);
-            }
-
-            if (IsLeaveTransitionState && Transition.LeaveAbsolute && ElementInfo is not null)
-            {
-                styles.Add("position:absolute");
-                styles.Add($"top:{ElementInfo.OffsetTop}px");
-                styles.Add($"left:{ElementInfo.OffsetLeft}px");
-                styles.Add($"width:{ElementInfo.OffsetWidth}px");
-                styles.Add($"height:{ElementInfo.OffsetHeight}px");
-            }
-
-            return string.Join(';', styles);
+            return base.ComputedStyle;
         }
     }
 

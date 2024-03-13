@@ -4,6 +4,7 @@ namespace BlazorComponent;
 
 public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> : BDomComponentBase
 {
+
     [Parameter, EditorRequired]
     public virtual List<TColumn> Columns { get; set; } = null!;
 
@@ -21,18 +22,18 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
 
     // TODO: change int to StringNumber, support px, vh, vw, rem
     [Parameter]
-    [ApiDefaultValue(40)]
+    [MasaApiParameter(40)]
     public int ItemHeight { get; set; } = 40;
 
     [Parameter]
     public EventCallback<List<TColumnItem>> OnSelect { get; set; }
 
     [Parameter]
-    [ApiDefaultValue(1000)]
+    [MasaApiParameter(1000)]
     public int SwipeDuration { get; set; } = 1000;
 
     [Parameter]
-    [ApiDefaultValue(6)]
+    [MasaApiParameter(6)]
     public int VisibleItemCount { get; set; } = 6;
 
     [Parameter]
@@ -76,10 +77,17 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
 
     private string? _dataType;
     private List<TColumn>? _prevColumns;
-    private string? _prevValue;
+    private List<TColumnItemValue>? _preValue;
     private List<TColumnItemValue> _value = new();
 
     private List<TColumnItemValue> InternalValue { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        _preValue = Value;
+    }
 
     public override async Task SetParametersAsync(ParameterView parameters)
     {
@@ -98,10 +106,9 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
 
         var isChanged = false;
 
-        var valueStr = JsonSerializer.Serialize(Value);
-        if (_prevValue != valueStr)
+        if (_preValue == null || !_preValue.SequenceEqual(Value))
         {
-            _prevValue = valueStr;
+            _preValue = [..Value];
             InternalValue = Value.ToList();
 
             isChanged = true;
@@ -284,7 +291,7 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
 
         if (ValueChanged.HasDelegate)
         {
-            _prevValue = JsonSerializer.Serialize(InternalValue);
+            _preValue = [..InternalValue];
             await ValueChanged.InvokeAsync(InternalValue.ToList());
         }
 

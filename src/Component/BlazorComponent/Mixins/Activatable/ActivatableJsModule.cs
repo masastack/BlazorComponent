@@ -79,10 +79,8 @@ public class ActivatableJsModule : JSModule
         await _owner.HandleOnClickAsync(args);
     }
 
-    public override async ValueTask DisposeAsync()
+    protected override async ValueTask DisposeAsyncCore()
     {
-        await base.DisposeAsync();
-
         _selfReference?.Dispose();
 
         if (_instance != null)

@@ -18,16 +18,19 @@ public partial class BMenu : BMenuable, IDependent
     [CascadingParameter(Name = "AppIsDark")]
     public bool AppIsDark { get; set; }
 
+    [CascadingParameter(Name = "IsDark")]
+    public bool CascadingIsDark { get; set; }
+
     [Parameter]
     public bool Auto { get; set; }
 
-    [Parameter]
+    [Parameter] [MasaApiParameter(true)]
     public bool CloseOnClick { get; set; } = true;
 
-    [Parameter]
+    [Parameter] [MasaApiParameter(true)]
     public bool CloseOnContentClick
     {
-        get => GetValue<bool>();
+        get => GetValue(true);
         set => SetValue(value);
     }
 
@@ -40,7 +43,7 @@ public partial class BMenu : BMenuable, IDependent
     [Parameter]
     public bool DisableKeys { get; set; }
 
-    [Parameter]
+    [Parameter] [MasaApiParameter("auto")]
     public StringNumber MaxHeight { get; set; } = "auto";
 
     [Parameter]
@@ -78,6 +81,11 @@ public partial class BMenu : BMenuable, IDependent
             if (Light)
             {
                 return false;
+            }
+
+            if (CascadingIsDark)
+            {
+                return true;
             }
 
             return AppIsDark;
@@ -170,10 +178,7 @@ public partial class BMenu : BMenuable, IDependent
     {
         base.RegisterWatchers(watcher);
 
-        // BUG: defaultValue is required, because there is a bug about Watcher
-        // default value would not works if GetValue(defaultValue) int CloseOnContentClick's getter never be called,
-        // so there need to assign the default value at Watch method.
-        watcher.Watch(nameof(CloseOnContentClick), () => ResetPopupEvents(CloseOnContentClick), defaultValue: true);
+        watcher.Watch<bool>(nameof(CloseOnContentClick), () => ResetPopupEvents(CloseOnContentClick));
     }
 
     protected override void RunDirectly(bool val)
@@ -191,7 +196,7 @@ public partial class BMenu : BMenuable, IDependent
     public void RegisterChild(IDependent dependent)
     {
         _dependents.Add(dependent);
-        NextTickWhile(() => { Module?.UpdateDependentElements(DependentSelectors.ToArray()); }, () => Module == null || Module.Initialized == false);
+        NextTickWhile(() => { Module?.UpdateDependentElementsAsync(DependentSelectors.ToArray()); }, () => Module == null || Module.Initialized == false);
     }
 
     //TODO:keydown event
@@ -242,5 +247,22 @@ public partial class BMenu : BMenuable, IDependent
     private double CalcLeftAuto()
     {
         return Dimensions.Activator.Left - DefaultOffset * 2;
+    }
+
+    protected override async ValueTask DisposeAsyncCore()
+    {
+        if (Module is not null)
+        {
+            try
+            {
+                await Module.UnbindAndDisposeAsync();
+            }
+            catch (JSDisconnectedException)
+            {
+                // ignore
+            }
+        }
+
+        await base.DisposeAsyncCore();
     }
 }

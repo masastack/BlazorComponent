@@ -36,7 +36,7 @@ namespace BlazorComponent
 
         public EventCallback<MouseEventArgs> OnClick { get; }
 
-        [Parameter, ApiDefaultValue("div")]
+        [Parameter, MasaApiParameter("div")]
         public string? Tag { get; set; } = "div";
 
         [Parameter]
@@ -118,11 +118,11 @@ namespace BlazorComponent
             return matched != Matched;
         }
 
-        protected override void Dispose(bool disposing)
+        protected override async ValueTask DisposeAsyncCore()
         {
-            base.Dispose(disposing);
-
             NavigationManager.LocationChanged -= OnLocationChanged;
+
+            await base.DisposeAsyncCore();
         }
     }
 }

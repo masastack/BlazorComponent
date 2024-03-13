@@ -3,17 +3,21 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorComponent
 {
+#if NET6_0
+    public partial class BRadio<TValue> : IRadio<TValue>
+#else
     public partial class BRadio<TValue> : IRadio<TValue> where TValue : notnull
+#endif
     {
         [CascadingParameter]
         public IRadioGroup<TValue>? RadioGroup { get; set; }
 
         [Parameter]
-        [ApiDefaultValue("$radioOn")]
+        [MasaApiParameter("$radioOn")]
         public string? OnIcon { get; set; } = "$radioOn";
 
         [Parameter]
-        [ApiDefaultValue("$radioOff")]
+        [MasaApiParameter("$radioOff")]
         public string? OffIcon { get; set; } = "$radioOff";
 
         [Parameter]
@@ -44,7 +48,7 @@ namespace BlazorComponent
         public string? Label { get; set; }
 
         [Parameter]
-        [ApiDefaultValue(true)]
+        [MasaApiParameter(true)]
         public bool Ripple { get; set; } = true;
 
         [Parameter]

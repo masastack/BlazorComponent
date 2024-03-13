@@ -18,13 +18,18 @@ public class JSObjectReferenceProxy : IJSObjectReference
     public ValueTask InvokeVoidAsync(string identifier, params object?[]? args)
         => _jsObjectReference.InvokeVoidAsync(identifier, args);
 
-    public async ValueTask DisposeAsync()
+    async ValueTask IAsyncDisposable.DisposeAsync()
     {
-        await DisposeAsync(true);
+        try
+        {
+            await DisposeAsync();
+            await _jsObjectReference.DisposeAsync();
+        }
+        catch (Exception)
+        {
+            // ignored
+        }
     }
 
-    protected virtual ValueTask DisposeAsync(bool disposing)
-    {
-        return ValueTask.CompletedTask;
-    }
+    protected virtual ValueTask DisposeAsync() => ValueTask.CompletedTask;
 }

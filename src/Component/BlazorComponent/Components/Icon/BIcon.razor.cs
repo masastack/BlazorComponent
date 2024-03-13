@@ -37,7 +37,7 @@ namespace BlazorComponent
         public StringNumber? Size { get; set; }
 
         [Parameter]
-        [ApiDefaultValue("i")]
+        [MasaApiParameter("i")]
         public string? Tag { get; set; } = "i";
 
         [Parameter]

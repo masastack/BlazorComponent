@@ -2,6 +2,8 @@
 {
     public interface IPagination : IHasProviderComponent
     {
+        string? HrefFormat { get; }
+        
         string GetIcon(int index);
 
         IEnumerable<StringNumber> GetItems();

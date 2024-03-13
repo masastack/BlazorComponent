@@ -23,7 +23,7 @@ public partial class BMobilePickerColumn<TColumnItem>
     public int SwipeDuration { get; set; }
 
     [Parameter]
-    [ApiDefaultValue(6)]
+    [MasaApiParameter(6)]
     public StringNumber? VisibleItemCount { get; set; } = 6;
 
     [Parameter]
