@@ -19,7 +19,7 @@ public class ToggleableTransitionElement : TransitionElementBase<bool>
         set => base.AdditionalAttributes = value;
     }
 
-    private TransitionState State { get;  set; }
+    private TransitionState State { get; set; }
 
     protected bool LazyValue { get; private set; }
 
@@ -120,7 +120,7 @@ public class ToggleableTransitionElement : TransitionElementBase<bool>
         }
     }
 
-    protected override async Task OnTransitionEndAsync(string referenceId, LeaveEnter transition)
+    public override async Task OnTransitionEnd(string referenceId, LeaveEnter transition)
     {
         if (referenceId != Reference.Id)
         {

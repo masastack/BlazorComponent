@@ -7,3 +7,4 @@ global using Microsoft.Extensions.Logging;
 global using OneOf;
 global using Microsoft.JSInterop;
 global using BemIt;
+global using BlazorComponent.Components.Transition;
