@@ -20,7 +20,7 @@ namespace BlazorComponent
         public bool ValidateOnBlur { get; set; }
 
         [Parameter]
-        public virtual TValue Value
+        public virtual TValue? Value
         {
             get => GetValue(DefaultValue);
             set => SetValue(value);
@@ -45,11 +45,7 @@ namespace BlazorComponent
         public int ErrorCount { get; set; } = 1;
 
         [Parameter]
-        public List<string> ErrorMessages
-        {
-            get => _errorMessages ?? new();
-            set => _errorMessages = value;
-        }
+        public List<string>? ErrorMessages { get; set; }
 
         [Parameter]
         public List<string>? Messages { get; set; } = new();
@@ -64,20 +60,27 @@ namespace BlazorComponent
         public List<string>? SuccessMessages { get; set; }
 
         [Parameter]
-        public IEnumerable<Func<TValue, StringBoolean>>? Rules
+        public IEnumerable<Func<TValue?, StringBoolean>>? Rules
         {
-            get => GetValue<IEnumerable<Func<TValue, StringBoolean>>>();
+            get => GetValue<IEnumerable<Func<TValue?, StringBoolean>>>();
             set => SetValue(value);
         }
 
         private bool _forceStatus;
         private bool _internalValueChangingFromOnValueChanged;
         private CancellationTokenSource? _cancellationTokenSource;
-        private List<string>? _errorMessages;
 
-        protected virtual TValue DefaultValue => default;
+        private InternalValueChangeType _changeType;
 
-        protected virtual IEnumerable<Func<TValue, StringBoolean>> InternalRules => Rules ?? Enumerable.Empty<Func<TValue, StringBoolean>>();
+        protected void UpdateInternalValue(TValue? value, InternalValueChangeType changeType)
+        {
+            _changeType = changeType;
+            InternalValue = value;
+        }
+
+        protected virtual TValue? DefaultValue => default;
+
+        protected virtual IEnumerable<Func<TValue?, StringBoolean>> InternalRules => Rules ?? Enumerable.Empty<Func<TValue?, StringBoolean>>();
 
         protected EditContext? OldEditContext { get; set; }
 
@@ -89,23 +92,12 @@ namespace BlazorComponent
 
         public virtual ElementReference InputElement { get; set; }
 
-        protected virtual TValue LazyValue
+        protected virtual TValue? InternalValue
         {
             get => GetValue<TValue>();
-            set => SetValue(value);
-        }
-
-        protected TValue InternalValue
-        {
-            get
-            {
-                var clonedLazyValue = LazyValue.TryDeepClone();
-                return GetValue(clonedLazyValue);
-            }
             set
             {
                 var clonedLazyValue = value.TryDeepClone();
-                LazyValue = clonedLazyValue;
                 SetValue(clonedLazyValue);
             }
         }
@@ -118,9 +110,9 @@ namespace BlazorComponent
 
         public List<string> ErrorBucket { get; protected set; } = new();
 
-        public virtual bool HasError => (ErrorMessages != null && ErrorMessages.Count > 0) || ErrorBucket.Count > 0 || Error;
+        public virtual bool HasError => ErrorMessages is { Count: > 0 } || ErrorBucket.Count > 0 || Error;
 
-        public virtual bool HasSuccess => (SuccessMessages != null && SuccessMessages.Count > 0) || Success;
+        public virtual bool HasSuccess => SuccessMessages is { Count: > 0 } || Success;
 
         public virtual bool HasState
         {
@@ -141,7 +133,7 @@ namespace BlazorComponent
         {
             get
             {
-                if (ErrorMessages?.Count > 0)
+                if (ErrorMessages is { Count: > 0 })
                 {
                     return ErrorMessages;
                 }
@@ -189,12 +181,7 @@ namespace BlazorComponent
             }
         }
 
-        public virtual bool ExternalError => ErrorMessages.Count > 0 || Error;
-
-        /// <summary>
-        /// Determine whether the value is changed internally, such as in the input event
-        /// </summary>
-        protected bool ValueChangedInternally { get; set; }
+        public virtual bool ExternalError => ErrorMessages is { Count: > 0  } || Error;
 
         public virtual int InternalDebounceInterval => 0;
 
@@ -202,9 +189,9 @@ namespace BlazorComponent
         {
             base.OnInitialized();
 
-            LazyValue = Value;
-
             Form?.Register(this);
+
+            InternalValue = Value;
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -213,11 +200,12 @@ namespace BlazorComponent
 
             if (firstRender)
             {
-                LazyValue = Value;
-
                 await InputJSModule.InitializeAsync(this);
 
-                StateHasChanged();
+                if (!DisableSetValueByJsInterop)
+                {
+                    _ = SetValueByJsInterop(Formatter(Value));
+                }
             }
         }
 
@@ -227,7 +215,6 @@ namespace BlazorComponent
             {
                 if (ValueChanged.HasDelegate)
                 {
-                    ValueChangedInternally = true;
                     await ValueChanged.InvokeAsync(val);
                 }
             }
@@ -266,7 +253,6 @@ namespace BlazorComponent
 
             watcher
                 .Watch<TValue>(nameof(Value), OnValueChanged, immediate: WatchValueChangeImmediately)
-                .Watch<TValue>(nameof(LazyValue), OnLazyValueChange)
                 .Watch<TValue>(nameof(InternalValue), OnInternalValueChange)
                 .Watch<bool>(nameof(IsFocused), IsFocusedChangeCallback);
         }
@@ -288,14 +274,20 @@ namespace BlazorComponent
         protected override void OnParametersSet()
         {
             SubscribeValidationStateChanged();
+
+            if (!EqualityComparer<TValue>.Default.Equals(Value, InternalValue))
+            {
+                OnValueChanged(Value);
+            }
         }
 
-        protected virtual void OnValueChanged(TValue val)
+        protected virtual void OnValueChanged(TValue? val)
         {
             var isEqual = true;
             if (val is IList valList && InternalValue is IList internalValueList)
             {
-                if (valList.Count != internalValueList.Count || valList.Cast<object>().Any(valItem => !internalValueList.Contains(valItem)))
+                if (valList.Count != internalValueList.Count ||
+                    valList.Cast<object>().Any(valItem => !internalValueList.Contains(valItem)))
                 {
                     isEqual = false;
                 }
@@ -309,24 +301,16 @@ namespace BlazorComponent
             {
                 _internalValueChangingFromOnValueChanged = true;
 
+                if (!DisableSetValueByJsInterop)
+                {
+                    _ = SetValueByJsInterop(Formatter(val));
+                }
+
                 InternalValue = val;
             }
-
-            if (!ValueChangedInternally)
-            {
-                if (DisableSetValueByJsInterop) return;
-
-                _ = SetValueByJsInterop(Formatter(val));
-            }
-            else
-            {
-                ValueChangedInternally = false;
-            }
-
-            LazyValue = val.TryDeepClone();
         }
 
-        protected virtual void OnInternalValueChange(TValue val)
+        protected virtual void OnInternalValueChange(TValue? val)
         {
             // If it's the first time we're setting input,
             // mark it with hasInput
@@ -350,13 +334,13 @@ namespace BlazorComponent
             }
             else if (ValueChanged.HasDelegate)
             {
+                if (_changeType != InternalValueChangeType.Input && !DisableSetValueByJsInterop)
+                {
+                    _ = SetValueByJsInterop(Formatter(val));
+                }
+                
                 _ = ValueChanged.InvokeAsync(val.TryDeepClone());
             }
-        }
-
-        protected virtual void OnLazyValueChange(TValue val)
-        {
-            HasInput = true;
         }
 
         protected virtual void SubscribeValidationStateChanged()
@@ -417,7 +401,7 @@ namespace BlazorComponent
             Form?.UpdateValidValue();
         }
 
-        private IEnumerable<string> ValidateRules(TValue value)
+        private IEnumerable<string> ValidateRules(TValue? value)
         {
             foreach (var rule in InternalRules)
             {
@@ -454,7 +438,7 @@ namespace BlazorComponent
             return Validate(default);
         }
 
-        protected bool Validate(TValue val)
+        protected bool Validate(TValue? val)
         {
             var force = true;
 
@@ -489,13 +473,9 @@ namespace BlazorComponent
             HasInput = false;
             HasFocused = false;
 
-            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (ValueIdentifier.Model is not null)
-            {
-                EditContext?.MarkAsUnmodified(ValueIdentifier);
-            }
+            EditContext?.MarkAsUnmodified(ValueIdentifier);
 
-            InternalValue = default;
+            UpdateInternalValue(default, InternalValueChangeType.InternalOperation);
         }
 
         public void ResetValidation()
