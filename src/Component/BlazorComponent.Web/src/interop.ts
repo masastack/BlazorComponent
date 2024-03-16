@@ -1524,3 +1524,7 @@ export function removeStopPropagationEvent(el: any, type: keyof HTMLElementEvent
   const dom = getDom(el);
   dom.removeEventListener(type, stopPropagation);
 }
+
+export function historyBack() {
+  history.back();
+}

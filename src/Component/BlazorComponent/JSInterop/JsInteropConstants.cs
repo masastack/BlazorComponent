@@ -151,5 +151,7 @@
         public static string AddStopPropagationEvent => $"{JsInteropFuncNamePrefix}addStopPropagationEvent";
 
         public static string RemoveStopPropagationEvent => $"{JsInteropFuncNamePrefix}removeStopPropagationEvent";
+        
+        public static string HistoryBack => $"{JsInteropFuncNamePrefix}historyBack";
     }
 }
