@@ -37,6 +37,13 @@ public partial class StringNumber : OneOfBase<string, int, double>
 
     public static bool operator ==(StringNumber? left, StringNumber? right)
     {
+        // if left is not null but its value is null.
+        // for example `left == null` should be true
+        if (right is null && left is { IsT0: true, AsT0: null })
+        {
+            return true;
+        }
+
         if (Equals(left, right))
         {
             return true;
@@ -52,6 +59,13 @@ public partial class StringNumber : OneOfBase<string, int, double>
 
     public static bool operator !=(StringNumber? left, StringNumber? right)
     {
+        // if left is not null but its value is null.
+        // for example `left != null` should be false
+        if (right is null && left is { IsT0: true, AsT0: null })
+        {
+            return false;
+        }
+
         if (Equals(left, right))
         {
             return false;

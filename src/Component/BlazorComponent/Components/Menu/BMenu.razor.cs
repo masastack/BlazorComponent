@@ -24,13 +24,13 @@ public partial class BMenu : BMenuable, IDependent
     [Parameter]
     public bool Auto { get; set; }
 
-    [Parameter]
+    [Parameter] [MasaApiParameter(true)]
     public bool CloseOnClick { get; set; } = true;
 
-    [Parameter]
+    [Parameter] [MasaApiParameter(true)]
     public bool CloseOnContentClick
     {
-        get => GetValue<bool>();
+        get => GetValue(true);
         set => SetValue(value);
     }
 
@@ -43,7 +43,7 @@ public partial class BMenu : BMenuable, IDependent
     [Parameter]
     public bool DisableKeys { get; set; }
 
-    [Parameter]
+    [Parameter] [MasaApiParameter("auto")]
     public StringNumber MaxHeight { get; set; } = "auto";
 
     [Parameter]
@@ -178,7 +178,7 @@ public partial class BMenu : BMenuable, IDependent
     {
         base.RegisterWatchers(watcher);
 
-        watcher.Watch(nameof(CloseOnContentClick), () => ResetPopupEvents(CloseOnContentClick), defaultValue: CloseOnContentClick);
+        watcher.Watch<bool>(nameof(CloseOnContentClick), () => ResetPopupEvents(CloseOnContentClick));
     }
 
     protected override void RunDirectly(bool val)
@@ -249,7 +249,7 @@ public partial class BMenu : BMenuable, IDependent
         return Dimensions.Activator.Left - DefaultOffset * 2;
     }
 
-    protected override async ValueTask DisposeAsync(bool disposing)
+    protected override async ValueTask DisposeAsyncCore()
     {
         if (Module is not null)
         {
@@ -263,6 +263,6 @@ public partial class BMenu : BMenuable, IDependent
             }
         }
 
-        await base.DisposeAsync(disposing);
+        await base.DisposeAsyncCore();
     }
 }

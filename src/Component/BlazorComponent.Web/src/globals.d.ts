@@ -184,6 +184,10 @@ declare global {
     };
   }
 
+  interface TransitionEvent {
+    target: HTMLElement;
+  }
+
   interface MbEventTarget {
     elementReferenceId?: string;
     selector?: string;

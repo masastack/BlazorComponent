@@ -1,8 +1,0 @@
-﻿@namespace BlazorComponent
-@typeparam TOverlay
-@inherits ComponentPartBase<TOverlay>
-
-@if (Scrim)
-{
-    <div class="@CssProvider.GetClass("scrim")" style="@CssProvider.GetStyle("scrim")"></div>
-}

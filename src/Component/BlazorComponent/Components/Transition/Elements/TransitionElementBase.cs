@@ -1,40 +1,77 @@
-﻿namespace BlazorComponent;
+﻿using System.Text;
+using Microsoft.AspNetCore.Components.Rendering;
+
+namespace BlazorComponent.Components.Transition;
 
 public abstract class TransitionElementBase : Element
 {
-    internal abstract TransitionState CurrentState {  get; set; }
+    private ElementReference? _reference;
+
+    protected bool ElementReferenceChanged { get; set; }
+
+    internal abstract TransitionState CurrentState { get; set; }
 
     /// <summary>
     /// The dom information about the transitional element.
     /// </summary>
     internal BlazorComponent.Web.Element? ElementInfo { get; set; }
+
+    public ElementReference Reference
+    {
+        get => _reference ?? new ElementReference();
+        protected set
+        {
+            if (_reference.HasValue && _reference.Value.Id != value.Id)
+            {
+                ElementReferenceChanged = true;
+            }
+
+            _reference = value;
+        }
+    }
+
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        builder.OpenElement(0, (Tag ?? "div"));
+        builder.AddMultipleAttributes(1, AdditionalAttributes);
+        builder.AddAttribute(2, "class", ComputedClass);
+        builder.AddAttribute(3, "style", ComputedStyle);
+        builder.AddContent(4, ChildContent);
+        builder.AddElementReferenceCapture(5, reference =>
+        {
+            Reference = reference;
+            ReferenceCaptureAction?.Invoke(reference);
+        });
+        builder.CloseElement();
+    }
 }
 
 #if NET6_0
-public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAsyncDisposable
+public abstract class TransitionElementBase<TValue> : TransitionElementBase, ITransitionElement, IAsyncDisposable
 #else
-public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAsyncDisposable where TValue : notnull
+public abstract class TransitionElementBase<TValue> : TransitionElementBase, ITransitionElement, IAsyncDisposable
+    where TValue : notnull
 #endif
 {
-    [Inject]
-    [NotNull]
-    protected IJSRuntime? Js { get; set; }
+    [Inject] private TransitionJSModule TransitionJSModule { get; set; } = null!;
 
-    [CascadingParameter]
-    public Transition? Transition { get; set; }
+    [Inject] [NotNull] protected IJSRuntime? Js { get; set; }
 
-    [Parameter, EditorRequired]
-    public TValue Value { get; set; } = default!;
+    [CascadingParameter] public BlazorComponent.Transition? Transition { get; set; }
+
+    [Parameter, EditorRequired] public TValue Value { get; set; } = default!;
 
     private TValue? _preValue;
-    private TransitionJsInvoker? _transitionJsInvoker;
+    private DotNetObjectReference<TransitionJsInteropHandle>? _transitionJsInterop;
+    private IJSObjectReference? _transitionJSObjectReference;
 
     protected bool FirstRender { get; private set; } = true;
 
     /// <summary>
     /// Whether it is a transitional element.
     /// </summary>
-    protected bool HavingTransition => !string.IsNullOrWhiteSpace(Transition?.Name) && Transition?.TransitionElement == this;
+    protected bool HavingTransition =>
+        !string.IsNullOrWhiteSpace(Transition?.Name) && Transition?.TransitionElement == this;
 
     /// <summary>
     /// No transition or is not a transitional element.
@@ -43,6 +80,8 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
 
     protected override void OnInitialized()
     {
+        _transitionJsInterop = DotNetObjectReference.Create(new TransitionJsInteropHandle(this));
+
         if (Transition is not null && Transition.TransitionElement is null)
         {
             Transition.TransitionElement = this;
@@ -149,39 +188,35 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
             FirstRender = false;
         }
 
-        if (HavingTransition)
+        if (!HavingTransition)
         {
-            if (_transitionJsInvoker?.Registered is not true)
+            return;
+        }
+
+        if (!TransitionJSModule.Initialized)
+        {
+            if (Reference.Context is null)
             {
-                if (Reference.Context is null)
-                {
-                    return;
-                }
-
-                Transition!.ElementReference = Reference;
-
-                _transitionJsInvoker = new TransitionJsInvoker(Js);
-                await _transitionJsInvoker.Init(OnTransitionEndAsync, OnTransitionCancelAsync);
-                if (!_transitionJsInvoker.Registered)
-                {
-                    await RegisterTransitionEventsAsync();
-                }
-
+                return;
             }
 
-            if (!firstRender && ElementReferenceChanged)
-            {
-                ElementReferenceChanged = false;
+            Transition!.ElementReference = Reference;
 
-                Transition!.ElementReference = Reference;
+            _transitionJSObjectReference = await TransitionJSModule.InitAsync(Reference, _transitionJsInterop!);
+        }
 
-                await RegisterTransitionEventsAsync();
-            }
+        if (!firstRender && ElementReferenceChanged)
+        {
+            ElementReferenceChanged = false;
 
-            if (_transitionJsInvoker.Registered && CanMoveNext)
-            {
-                await NextAsync(CurrentState);
-            }
+            Transition!.ElementReference = Reference;
+
+            _transitionJSObjectReference?.TryInvokeVoidAsync("reset", Reference);
+        }
+
+        if (TransitionJSModule.Initialized && CanMoveNext)
+        {
+            await NextAsync(CurrentState);
         }
     }
 
@@ -193,28 +228,21 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
     {
         get
         {
-            if (Transition is null)
+            if (Transition?.LeaveAbsolute is true && IsLeaveTransitionState && ElementInfo is not null)
             {
-                return base.ComputedStyle;
+                var stringBuilder = new StringBuilder();
+                stringBuilder.Append(Style);
+                stringBuilder.Append(' ');
+                stringBuilder.Append("position:absolute; ");
+                stringBuilder.Append($"top:{ElementInfo.OffsetTop}px; ");
+                stringBuilder.Append($"left:{ElementInfo.OffsetLeft}px; ");
+                stringBuilder.Append($"width:{ElementInfo.OffsetWidth}px; ");
+                stringBuilder.Append($"height:{ElementInfo.OffsetHeight}px; ");
+
+                return stringBuilder.ToString().TrimEnd();
             }
 
-            var styles = new List<string>();
-
-            if (Style != null)
-            {
-                styles.Add(Style);
-            }
-
-            if (IsLeaveTransitionState && Transition.LeaveAbsolute && ElementInfo is not null)
-            {
-                styles.Add("position:absolute");
-                styles.Add($"top:{ElementInfo.OffsetTop}px");
-                styles.Add($"left:{ElementInfo.OffsetLeft}px");
-                styles.Add($"width:{ElementInfo.OffsetWidth}px");
-                styles.Add($"height:{ElementInfo.OffsetHeight}px");
-            }
-
-            return string.Join(';', styles);
+            return base.ComputedStyle;
         }
     }
 
@@ -227,9 +255,9 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
     /// <returns></returns>
     protected abstract Task NextAsync(TransitionState currentState);
 
-    protected virtual Task OnTransitionEndAsync(string referenceId, LeaveEnter transition) => Task.CompletedTask;
+    public virtual Task OnTransitionEnd(string referenceId, LeaveEnter transition) => Task.CompletedTask;
 
-    protected virtual Task OnTransitionCancelAsync(string referenceId, LeaveEnter transition) => Task.CompletedTask;
+    public virtual Task OnTransitionCancel(string referenceId, LeaveEnter transition) => Task.CompletedTask;
 
     protected async Task RequestAnimationFrameAsync(Func<Task> callback)
     {
@@ -239,26 +267,8 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
         await callback();
     }
 
-    private async Task RegisterTransitionEventsAsync()
-    {
-        if (Reference.Context is not null && _transitionJsInvoker is not null)
-        {
-            await _transitionJsInvoker.RegisterTransitionEvents(Reference);
-        }
-    }
-
     public async ValueTask DisposeAsync()
     {
-        try
-        {
-            if (_transitionJsInvoker is not null)
-            {
-                await _transitionJsInvoker.DisposeAsync();
-            }
-        }
-        catch (Exception)
-        {
-            // ignored
-        }
+        _transitionJSObjectReference?.TryInvokeVoidAsync("dispose");
     }
 }

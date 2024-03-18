@@ -12,8 +12,13 @@ namespace BlazorComponent
 
         protected TValue? GetValue<TValue>(TValue? @default = default, [CallerMemberName] string name = "")
         {
-            var prop = _props.GetOrAdd(name, _ => new ObservableProperty<TValue>(name, @default));
+            var prop = _props.GetOrAdd(name, _ => new ObservableProperty<TValue>(name, disableIListAlwaysNotifying: false));
             var property = (ObservableProperty<TValue>)prop;
+            if (!property.HasValue)
+            {
+                property.SetValueWithNoEffect(@default);
+            }
+
             return property.Value;
         }
 
@@ -24,7 +29,7 @@ namespace BlazorComponent
 
         private void SetValue<TValue>(string name, TValue value)
         {
-            var prop = _props.GetOrAdd(name, _ => new ObservableProperty<TValue>(name, value));
+            var prop = _props.GetOrAdd(name, _ => new ObservableProperty<TValue>(name, value: value));
             var property = (ObservableProperty<TValue>)prop;
 
             property.OnChange += NotifyPropertyChange;

@@ -1,5 +1,4 @@
-﻿using BlazorComponent.Abstracts;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 
 namespace BlazorComponent
@@ -132,11 +131,6 @@ namespace BlazorComponent
             _watcher.SetValue(value, name, disableIListAlwaysNotifying);
         }
 
-        protected void SetValue<TValue, TFirstValue>(TValue value, string propertySetFirst, [CallerMemberName] string name = "")
-        {
-            _watcher.SetValue<TValue, TFirstValue>(value, name, propertySetFirst);
-        }
-
         protected RenderFragment? RenderPart(Type keyType)
         {
             return AbstractProvider.GetPartContent(keyType, this);
@@ -164,19 +158,6 @@ namespace BlazorComponent
                 builder
                     .Add(arg0Name, arg0)
                     .Add(arg1Name, arg1);
-            });
-        }
-
-        protected RenderFragment? RenderPart(Type keyType, object? arg0, object? arg1, object? arg2,
-            [CallerArgumentExpression("arg0")] string arg0Name = "", [CallerArgumentExpression("arg1")] string arg1Name = "",
-            [CallerArgumentExpression("arg2")] string arg2Name = "")
-        {
-            return AbstractProvider.GetPartContent(keyType, this, builder =>
-            {
-                builder
-                    .Add(arg0Name, arg0)
-                    .Add(arg1Name, arg1)
-                    .Add(arg2Name, arg2);
             });
         }
 

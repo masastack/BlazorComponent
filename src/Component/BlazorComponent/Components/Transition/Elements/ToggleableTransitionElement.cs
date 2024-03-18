@@ -1,4 +1,6 @@
-﻿namespace BlazorComponent;
+﻿using System.Text;
+
+namespace BlazorComponent;
 
 public class ToggleableTransitionElement : TransitionElementBase<bool>
 {
@@ -17,7 +19,7 @@ public class ToggleableTransitionElement : TransitionElementBase<bool>
         set => base.AdditionalAttributes = value;
     }
 
-    private TransitionState State { get;  set; }
+    private TransitionState State { get; set; }
 
     protected bool LazyValue { get; private set; }
 
@@ -25,21 +27,35 @@ public class ToggleableTransitionElement : TransitionElementBase<bool>
     {
         get
         {
-            if (Transition == null) return Class;
+            var transitionClass = Transition?.GetClass(State);
+            if (transitionClass != null)
+            {
+                var stringBuilder = new StringBuilder();
+                stringBuilder.Append(Class);
+                stringBuilder.Append(' ');
+                stringBuilder.Append(transitionClass);
+                return stringBuilder.ToString().TrimEnd();
+            }
 
-            var transitionClass = Transition.GetClass(State);
-            return string.Join(" ", Class, transitionClass);
+            return Class;
         }
     }
 
-    protected override string ComputedStyle
+    protected override string? ComputedStyle
     {
         get
         {
-            var style = base.ComputedStyle;
+            var style = Transition?.GetStyle(State);
+            if (style != null)
+            {
+                var stringBuilder = new StringBuilder();
+                stringBuilder.Append(base.ComputedStyle);
+                stringBuilder.Append(style);
+                stringBuilder.Append("; ");
+                return stringBuilder.ToString().TrimEnd();
+            }
 
-            var transitionStyle = Transition?.GetStyle(State);
-            return string.Join(';', style, transitionStyle);
+            return base.ComputedStyle;
         }
     }
 
@@ -104,7 +120,7 @@ public class ToggleableTransitionElement : TransitionElementBase<bool>
         }
     }
 
-    protected override async Task OnTransitionEndAsync(string referenceId, LeaveEnter transition)
+    public override async Task OnTransitionEnd(string referenceId, LeaveEnter transition)
     {
         if (referenceId != Reference.Id)
         {

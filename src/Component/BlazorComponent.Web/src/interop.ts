@@ -427,6 +427,29 @@ export function scrollTo(target, options: ScrollToOptions) {
   }
 }
 
+export function scrollToTarget(
+  target: string,
+  container: string = null,
+  offset: number = 0
+) {
+  const targetEl: HTMLElement = document.querySelector(target);
+  if (targetEl) {
+    let top ;
+    if (container) {
+      top = targetEl.offsetTop;
+    } else {
+      top = targetEl.getBoundingClientRect().top + window.scrollY;
+    }
+    const containerEl = container
+      ? document.querySelector(container)
+      : document.documentElement
+    containerEl.scrollTo({
+      top: top - offset,
+      behavior: "smooth",
+    });
+  }
+}
+
 export function scrollToElement(target, offset: number, behavior?: ScrollBehavior) {
   const dom = getDom(target)
   if (!dom) return;
@@ -1136,7 +1159,7 @@ function otpInputKeyupEvent(e: KeyboardEvent, otpIdx: number, elementList, callb
         value: ''
       }
       if (callback) {
-        callback.invokeMethodAsync('Invoke', JSON.stringify(obj));
+        callback.invokeMethodAsync('Invoke', obj);
       }
     }
     otpInputFocus(otpIdx - 1, elementList);
@@ -1181,7 +1204,7 @@ function otpInputOnInputEvent(e: Event, otpIdx: number, elementList, callback) {
         index: otpIdx,
         value: value
       }
-      callback.invokeMethodAsync('Invoke', JSON.stringify(obj));
+      callback.invokeMethodAsync('Invoke', obj);
     }
   }
 }
@@ -1285,6 +1308,10 @@ export function get_top_domain() {
 }
 
 export function setCookie(name, value) {
+  if (value === null || value === undefined) {
+    return;
+  }
+
   var domain = get_top_domain();
   if (!domain) {
     domain = '';
@@ -1496,4 +1523,8 @@ export function addStopPropagationEvent(el: any, type: keyof HTMLElementEventMap
 export function removeStopPropagationEvent(el: any, type: keyof HTMLElementEventMap) {
   const dom = getDom(el);
   dom.removeEventListener(type, stopPropagation);
+}
+
+export function historyBack() {
+  history.back();
 }

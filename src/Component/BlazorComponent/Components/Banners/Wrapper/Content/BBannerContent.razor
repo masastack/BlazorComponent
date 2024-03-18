@@ -1,8 +1,0 @@
-﻿@namespace BlazorComponent
-@typeparam TBanner
-@inherits ComponentPartBase<TBanner>
-
-<div class="@CssProvider.GetClass("content")">
-    @RenderPart(typeof(BBannerIcon<>))
-    @RenderPart(typeof(BBannerText<>))
-</div>

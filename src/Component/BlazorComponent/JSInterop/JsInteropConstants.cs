@@ -18,10 +18,6 @@
 
         public static string RemoveHtmlElementEventListener => $"{JsInteropFuncNamePrefix}removeHtmlElementEventListener";
 
-        public static string HideScroll => $"{JsInteropFuncNamePrefix}hideScroll";
-
-        public static string ShowScroll => $"{JsInteropFuncNamePrefix}showScroll";
-
         public static string Contains => $"{JsInteropFuncNamePrefix}contains";
 
         public static string EqualsOrContains => $"{JsInteropFuncNamePrefix}equalsOrContains";
@@ -39,6 +35,8 @@
         public static string Blur => $"{JsInteropFuncNamePrefix}blur";
 
         public static string ScrollTo => $"{JsInteropFuncNamePrefix}scrollTo";
+
+        public static string ScrollToTarget => $"{JsInteropFuncNamePrefix}scrollToTarget";
 
         public static string ScrollIntoView => $"{JsInteropFuncNamePrefix}scrollIntoView";
 
@@ -153,5 +151,7 @@
         public static string AddStopPropagationEvent => $"{JsInteropFuncNamePrefix}addStopPropagationEvent";
 
         public static string RemoveStopPropagationEvent => $"{JsInteropFuncNamePrefix}removeStopPropagationEvent";
+        
+        public static string HistoryBack => $"{JsInteropFuncNamePrefix}historyBack";
     }
 }

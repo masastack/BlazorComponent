@@ -1,7 +1,4 @@
-﻿using System.Reflection.Metadata;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
-using Microsoft.JSInterop;
+﻿using Microsoft.AspNetCore.Components.Rendering;
 
 namespace BlazorComponent;
 
@@ -107,7 +104,7 @@ private IEnumerable<KeyTransitionElementState<TValue>> ComputedStates =>
         }
     }
 
-    protected override Task OnTransitionEndAsync(string referenceId, LeaveEnter transition)
+    public override Task OnTransitionEnd(string referenceId, LeaveEnter transition)
     {
         if (referenceId != Reference.Id)
         {
@@ -220,8 +217,8 @@ private IEnumerable<KeyTransitionElementState<TValue>> ComputedStates =>
         return builder =>
         {
             var sequence = 0;
-            builder.OpenComponent<Container>(sequence++);
-            builder.AddAttribute(sequence++, nameof(Container.Value), EqualityComparer<TValue>.Default.Equals(key, Value));
+            builder.OpenComponent<ShouldRenderValue>(sequence++);
+            builder.AddAttribute(sequence++, nameof(ShouldRenderValue.Value), EqualityComparer<TValue>.Default.Equals(key, Value));
             builder.AddAttribute(sequence, nameof(ChildContent), ChildContent);
             builder.CloseComponent();
         };

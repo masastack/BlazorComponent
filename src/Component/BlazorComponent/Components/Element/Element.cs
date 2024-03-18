@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
+﻿using Microsoft.AspNetCore.Components.Rendering;
 
 namespace BlazorComponent
 {
@@ -16,45 +15,25 @@ namespace BlazorComponent
         [Parameter] public Action<ElementReference>? ReferenceCaptureAction { get; set; }
 
         [Parameter(CaptureUnmatchedValues = true)]
-        public virtual IDictionary<string, object?> AdditionalAttributes { get; set; } = new Dictionary<string, object?>();
-
-        private string? _tag;
-        private ElementReference? _reference;
-
-        protected bool ElementReferenceChanged { get; set; }
+        public virtual IDictionary<string, object?> AdditionalAttributes { get; set; } =
+            new Dictionary<string, object?>();
 
         protected virtual string? ComputedClass => Class;
 
         protected virtual string? ComputedStyle => Style;
 
-        public ElementReference Reference
-        {
-            get => _reference ?? new ElementReference();
-            protected set
-            {
-                if (_reference.HasValue && _reference.Value.Id != value.Id)
-                {
-                    ElementReferenceChanged = true;
-                }
-
-                _reference = value;
-            }
-        }
-
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
-            var sequence = 0;
-            builder.OpenElement(sequence++, (Tag ?? "div"));
+            builder.OpenElement(0, (Tag ?? "div"));
+            builder.AddMultipleAttributes(1, AdditionalAttributes);
+            builder.AddAttribute(2, "class", ComputedClass);
+            builder.AddAttribute(3, "style", ComputedStyle);
+            builder.AddContent(4, ChildContent);
 
-            builder.AddMultipleAttributes(sequence++, AdditionalAttributes);
-            builder.AddAttribute(sequence++, "class", ComputedClass);
-            builder.AddAttribute(sequence++, "style", ComputedStyle);
-            builder.AddContent(sequence++, ChildContent);
-            builder.AddElementReferenceCapture(sequence, reference =>
+            if (ReferenceCaptureAction is not null)
             {
-                ReferenceCaptureAction?.Invoke(reference);
-                Reference = reference;
-            });
+                builder.AddElementReferenceCapture(5, reference => ReferenceCaptureAction?.Invoke(reference));
+            }
 
             builder.CloseElement();
         }

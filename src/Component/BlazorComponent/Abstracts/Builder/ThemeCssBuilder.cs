@@ -12,6 +12,12 @@ namespace BlazorComponent
 
             var lstCss = new List<string>()
             {
+                $$"""
+                :root {
+                    color-scheme: {{(dark ? "dark" : "light")}};
+                }
+
+                """,
                 $"{combinePrefix}a {{ color: {theme.Primary}; }}",
                 Build(combinePrefix, nameof(theme.Primary).ToLowerInvariant(), theme.Primary, theme.OnPrimary),
                 Build(combinePrefix, nameof(theme.Secondary).ToLowerInvariant(), theme.Secondary, theme.OnSecondary),

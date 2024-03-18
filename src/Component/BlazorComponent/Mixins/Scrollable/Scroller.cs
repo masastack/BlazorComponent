@@ -74,15 +74,21 @@ public class Scroller : IScrollable
         PreviousScroll = CurrentScroll;
 
         // TODO: Merge the following two js interops
-        var dom = await Js.InvokeAsync<Web.Element>(JsInteropConstants.GetDomInfo, ScrollTarget);
-        if (dom != null)
+        if (ScrollTarget.Equals("window", StringComparison.InvariantCultureIgnoreCase))
         {
-            CurrentScroll = dom.ScrollTop;
+            await GetPageYOffsetAsync();
         }
         else
         {
-            var window = await Js.InvokeAsync<Window>(JsInteropConstants.GetWindow);
-            CurrentScroll = window.PageYOffset;
+            var dom = await Js.InvokeAsync<Web.Element?>(JsInteropConstants.GetDomInfo, ScrollTarget);
+            if (dom != null)
+            {
+                CurrentScroll = dom.ScrollTop;
+            }
+            else
+            {
+                await GetPageYOffsetAsync();
+            }
         }
 
         IsScrollingUp = CurrentScroll < PreviousScroll;
@@ -91,6 +97,12 @@ public class Scroller : IScrollable
         if (Math.Abs(CurrentScroll - SavedScroll) > ComputedScrollThreshold)
         {
             thresholdMet.Invoke(this);
+        }
+
+        async Task GetPageYOffsetAsync()
+        {
+            var window = await Js.InvokeAsync<Window>(JsInteropConstants.GetWindow);
+            CurrentScroll = window.PageYOffset;
         }
     }
 }

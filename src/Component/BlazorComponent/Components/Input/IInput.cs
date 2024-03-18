@@ -2,7 +2,7 @@
 {
     public interface IInput<TValue> : IHasProviderComponent
     {
-        TValue Value { get; }
+        TValue? Value { get; }
 
         RenderFragment? AppendContent
         {
