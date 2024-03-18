@@ -4,15 +4,9 @@ class Transition {
   el: HTMLElement;
   handle: DotNet.DotNetObject;
 
-  constructor(elOrSelector: HTMLElement | string, handle: DotNet.DotNetObject) {
+  constructor(elOrSelector: HTMLElement, handle: DotNet.DotNetObject) {
     this.handle = handle;
-
-    if (typeof elOrSelector === "string") {
-      this.el = document.querySelector(elOrSelector);
-    } else {
-      this.el = elOrSelector;
-    }
-
+    this.el = elOrSelector;
     this.el.addEventListener("transitionend", this._onTransitionEnd);
     this.el.addEventListener("transitioncancel", this._onTransitionCancel);
   }
@@ -66,7 +60,18 @@ class Transition {
 }
 
 function init(elOrSelector: HTMLElement | string, handle: DotNet.DotNetObject) {
-  const transitionEl = new Transition(elOrSelector, handle);
+  let el: HTMLElement
+  if (typeof elOrSelector === "string") {
+    el = document.querySelector(elOrSelector);
+  } else {
+    el = elOrSelector;
+  }
+
+  if (!el) {
+    return null;
+  }
+
+  const transitionEl = new Transition(el, handle);
   return transitionEl;
 }
 
