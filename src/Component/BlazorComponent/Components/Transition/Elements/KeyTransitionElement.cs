@@ -1,7 +1,4 @@
-﻿using System.Reflection.Metadata;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
-using Microsoft.JSInterop;
+﻿using Microsoft.AspNetCore.Components.Rendering;
 
 namespace BlazorComponent;
 
@@ -107,7 +104,7 @@ private IEnumerable<KeyTransitionElementState<TValue>> ComputedStates =>
         }
     }
 
-    protected override Task OnTransitionEndAsync(string referenceId, LeaveEnter transition)
+    public override Task OnTransitionEnd(string referenceId, LeaveEnter transition)
     {
         if (referenceId != Reference.Id)
         {

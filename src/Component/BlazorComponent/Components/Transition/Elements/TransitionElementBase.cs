@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Components.Rendering;
 
-namespace BlazorComponent;
+namespace BlazorComponent.Components.Transition;
 
 public abstract class TransitionElementBase : Element
 {
@@ -47,19 +47,23 @@ public abstract class TransitionElementBase : Element
 }
 
 #if NET6_0
-public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAsyncDisposable
+public abstract class TransitionElementBase<TValue> : TransitionElementBase, ITransitionElement, IAsyncDisposable
 #else
-public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAsyncDisposable where TValue : notnull
+public abstract class TransitionElementBase<TValue> : TransitionElementBase, ITransitionElement, IAsyncDisposable
+    where TValue : notnull
 #endif
 {
+    [Inject] private TransitionJSModule TransitionJSModule { get; set; } = null!;
+
     [Inject] [NotNull] protected IJSRuntime? Js { get; set; }
 
-    [CascadingParameter] public Transition? Transition { get; set; }
+    [CascadingParameter] public BlazorComponent.Transition? Transition { get; set; }
 
     [Parameter, EditorRequired] public TValue Value { get; set; } = default!;
 
     private TValue? _preValue;
-    private TransitionJsInvoker? _transitionJsInvoker;
+    private DotNetObjectReference<TransitionJsInteropHandle>? _transitionJsInterop;
+    private IJSObjectReference? _transitionJSObjectReference;
 
     protected bool FirstRender { get; private set; } = true;
 
@@ -76,6 +80,8 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
 
     protected override void OnInitialized()
     {
+        _transitionJsInterop = DotNetObjectReference.Create(new TransitionJsInteropHandle(this));
+
         if (Transition is not null && Transition.TransitionElement is null)
         {
             Transition.TransitionElement = this;
@@ -182,38 +188,35 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
             FirstRender = false;
         }
 
-        if (HavingTransition)
+        if (!HavingTransition)
         {
-            if (_transitionJsInvoker?.Registered is not true)
+            return;
+        }
+
+        if (!TransitionJSModule.Initialized)
+        {
+            if (Reference.Context is null)
             {
-                if (Reference.Context is null)
-                {
-                    return;
-                }
-
-                Transition!.ElementReference = Reference;
-
-                _transitionJsInvoker = new TransitionJsInvoker(Js);
-                await _transitionJsInvoker.Init(OnTransitionEndAsync, OnTransitionCancelAsync);
-                if (!_transitionJsInvoker.Registered)
-                {
-                    await RegisterTransitionEventsAsync();
-                }
+                return;
             }
 
-            if (!firstRender && ElementReferenceChanged)
-            {
-                ElementReferenceChanged = false;
+            Transition!.ElementReference = Reference;
 
-                Transition!.ElementReference = Reference;
+            _transitionJSObjectReference = await TransitionJSModule.InitAsync(Reference, _transitionJsInterop!);
+        }
 
-                await RegisterTransitionEventsAsync();
-            }
+        if (!firstRender && ElementReferenceChanged)
+        {
+            ElementReferenceChanged = false;
 
-            if (_transitionJsInvoker.Registered && CanMoveNext)
-            {
-                await NextAsync(CurrentState);
-            }
+            Transition!.ElementReference = Reference;
+
+            _transitionJSObjectReference?.TryInvokeVoidAsync("reset", Reference);
+        }
+
+        if (TransitionJSModule.Initialized && CanMoveNext)
+        {
+            await NextAsync(CurrentState);
         }
     }
 
@@ -252,9 +255,9 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
     /// <returns></returns>
     protected abstract Task NextAsync(TransitionState currentState);
 
-    protected virtual Task OnTransitionEndAsync(string referenceId, LeaveEnter transition) => Task.CompletedTask;
+    public virtual Task OnTransitionEnd(string referenceId, LeaveEnter transition) => Task.CompletedTask;
 
-    protected virtual Task OnTransitionCancelAsync(string referenceId, LeaveEnter transition) => Task.CompletedTask;
+    public virtual Task OnTransitionCancel(string referenceId, LeaveEnter transition) => Task.CompletedTask;
 
     protected async Task RequestAnimationFrameAsync(Func<Task> callback)
     {
@@ -264,26 +267,8 @@ public abstract class TransitionElementBase<TValue> : TransitionElementBase, IAs
         await callback();
     }
 
-    private async Task RegisterTransitionEventsAsync()
-    {
-        if (Reference.Context is not null && _transitionJsInvoker is not null)
-        {
-            await _transitionJsInvoker.RegisterTransitionEvents(Reference);
-        }
-    }
-
     public async ValueTask DisposeAsync()
     {
-        try
-        {
-            if (_transitionJsInvoker is not null)
-            {
-                await _transitionJsInvoker.DisposeAsync();
-            }
-        }
-        catch (Exception)
-        {
-            // ignored
-        }
+        _transitionJSObjectReference?.TryInvokeVoidAsync("dispose");
     }
 }
