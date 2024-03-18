@@ -120,9 +120,6 @@
 
         public Dictionary<TKey, NodeState<TItem, TKey>> Nodes { get; private set; } = [];
 
-        static bool IsHashSetEqual<TValue>(HashSet<TValue> left, HashSet<TValue> right) =>
-            left.Count == right.Count && left.All(right.Contains);
-
         private HashSet<TKey> GetExcludeKeys()
         {
             var keys = new HashSet<TKey>();
@@ -568,7 +565,7 @@
             }
 
             HashSet<TKey> value = [.. Value ?? []];
-            if (!IsHashSetEqual(_oldValue, value))
+            if (!_oldValue.SetEquals(value))
             {
                 //set node not select where old select and current not select
                 _oldValue.Where(c => !value.Contains(c)).ForEach(c =>
@@ -589,14 +586,14 @@
             }
 
             HashSet<TKey> active = [.. Active ?? []];
-            if (!IsHashSetEqual(_oldActive, active))
+            if (!_oldActive.SetEquals(active))
             {
                 HandleUpdate(_oldActive, active, UpdateActiveState);
                 _oldActive = active;
             }
 
             HashSet<TKey> open = [.. Open ?? []];
-            if (!IsHashSetEqual(_oldOpen, open))
+            if (!_oldOpen.SetEquals(open))
             {
                 HandleUpdate(_oldOpen, open, UpdateOpenState);
                 _oldOpen = open;
