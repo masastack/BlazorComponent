@@ -142,6 +142,14 @@ class DrawflowProxy {
     this.editor.removeNodeOutput(id, outputClass);
   }
 
+  updateConnectionNodes(id: string) {
+    this.editor.updateConnectionNodes(id);
+  }
+
+  removeConnectionNodeId(id: string) {
+    this.editor.removeConnectionNodeId(id);
+  }
+
   clear() {
     this.editor.clear();
   }
