@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
+﻿using BlazorComponent;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
