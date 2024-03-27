@@ -2,7 +2,7 @@
 
 namespace BlazorComponent;
 
-public class ShouldRenderValue : ComponentBase
+public class BShouldRender : ComponentBase
 {
     [Parameter] public bool Value { get; set; }
 
