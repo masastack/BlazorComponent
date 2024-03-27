@@ -158,6 +158,11 @@ export function addHtmlElementEventListener<K extends keyof HTMLElementTagNameMa
     htmlElement = document.querySelector(selector);
   }
 
+  if (!htmlElement) {
+    // throw new Error("Unable to find the element.");
+    return false;
+  }
+
   var key = extras?.key || `${selector}:${type}`;
 
   //save for remove
@@ -223,9 +228,9 @@ export function addHtmlElementEventListener<K extends keyof HTMLElementTagNameMa
     htmlElementEventListenerConfigs[key] = [config]
   }
 
-  if (htmlElement) {
-    htmlElement.addEventListener(type, config.listener, config.options);
-  }
+  htmlElement.addEventListener(type, config.listener, config.options);
+
+  return true;
 }
 
 export function removeHtmlElementEventListener(selector, type, k?: string) {
