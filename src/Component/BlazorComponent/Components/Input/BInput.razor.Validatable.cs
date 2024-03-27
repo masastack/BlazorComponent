@@ -308,6 +308,10 @@ namespace BlazorComponent
 
                 InternalValue = val;
             }
+            else
+            {
+                _internalValueChangingFromOnValueChanged = false;
+            }
         }
 
         protected virtual void OnInternalValueChange(TValue? val)
