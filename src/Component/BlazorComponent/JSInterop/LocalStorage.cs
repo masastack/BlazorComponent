@@ -68,9 +68,9 @@ function() {
         return value == null ? default : JsonSerializer.Deserialize<T>(value, jsonSerializerOptions);
     }
 
-    public async Task RemoveItemAsync(string key, string value)
+    public async Task RemoveItemAsync(string key)
     {
-        await _jsRuntime.InvokeVoidAsync("eval", $"({REMOVE_ITEM_SCRIPT})('{key}', '{value}')");
+        await _jsRuntime.InvokeVoidAsync("eval", $"({REMOVE_ITEM_SCRIPT})('{key}')");
     }
 
     public async Task ClearAsync()
