@@ -20,8 +20,6 @@ public class ThemeOptions
     public string? OnAccent { get; set; }
 
     public string? Error { get; set; }
-    
-    public string? OnError { get; set; }
 
     public string? Info { get; set; }
 
