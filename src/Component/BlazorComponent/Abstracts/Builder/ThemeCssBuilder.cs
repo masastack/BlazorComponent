@@ -33,7 +33,6 @@ namespace BlazorComponent
                       --m-theme-on-accent: {{options.OnAccent}};
                       --m-theme-error: {{options.Error}};
                       --m-theme-error-text: {{options.Error}};
-                      --m-theme-on-error: {{options.OnError}};
                       --m-theme-info: {{options.Info}};
                       --m-theme-info-text: {{options.Info}};
                       --m-theme-success: {{options.Success}};
@@ -51,10 +50,10 @@ namespace BlazorComponent
                 Build(combinePrefix, nameof(options.Primary).ToLowerInvariant(), hasOnColor: true),
                 Build(combinePrefix, nameof(options.Secondary).ToLowerInvariant(), hasOnColor: true),
                 Build(combinePrefix, nameof(options.Accent).ToLowerInvariant(), hasOnColor: true),
-                Build(combinePrefix, nameof(options.Error).ToLowerInvariant(), hasOnColor: true),
                 Build(combinePrefix, nameof(options.Info).ToLowerInvariant()),
                 Build(combinePrefix, nameof(options.Success).ToLowerInvariant()),
                 Build(combinePrefix, nameof(options.Warning).ToLowerInvariant()),
+                Build(combinePrefix, nameof(options.Error).ToLowerInvariant()),
                 Build(combinePrefix, nameof(options.Surface).ToLowerInvariant(), hasOnColor: true),
             };
 
