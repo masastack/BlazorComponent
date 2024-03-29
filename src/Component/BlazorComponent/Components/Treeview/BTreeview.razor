@@ -6,9 +6,9 @@
 <CascadingValue Value="IsDark" Name="IsDark">
     <BCascadingValue Value="this" IsFixed>
         <div class="@CssProvider.GetClass()" style="@CssProvider.GetStyle()">
-            @if (_computedItems.Any())
+            @if (ComputedItems.Any())
             {
-                foreach (var item in _computedItems)
+                foreach (var item in ComputedItems)
                 {
                     @RenderPart(typeof(BTreeviewNodeChild<,,>), item, ItemDisabled?.Invoke(item) ?? false, arg1Name: "ParentIsDisabled")
                 }

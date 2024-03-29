@@ -1,4 +1,7 @@
-﻿namespace BlazorComponent
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
+
+namespace BlazorComponent
 {
     public partial class BTreeviewNode<TItem, TKey>
     {
@@ -120,8 +123,7 @@
             }
             else if (Activatable && !Disabled)
             {
-                Treeview.UpdateActiveState(Key, !IsActive);
-                Treeview.UpdateActiveValue(Key);
+                Treeview.UpdateActive(Key, !IsActive);
                 await Treeview.EmitActiveAsync();
             }
         }
@@ -130,7 +132,7 @@
 
         public async Task CheckChildrenAsync()
         {
-            if (Children == null || Children.Count != 0 || LoadChildren == null || _hasLoaded) return;
+            if (Children == null || Children.Any() || LoadChildren == null || _hasLoaded) return;
 
             IsLoading = true;
 

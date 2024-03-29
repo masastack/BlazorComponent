@@ -2,13 +2,13 @@
 {
     public partial class BTreeview<TItem, TKey> : ITreeview<TItem, TKey> where TKey : notnull
     {
+        private List<TItem>? _oldItems;
         private string? _oldItemsKeys;
-        private HashSet<TKey> _oldValue = [];
-        private HashSet<TKey> _oldActive = [];
-        private HashSet<TKey> _oldOpen = [];
-        private bool _oldOpenAll;
-        private HashSet<TKey>? _excludedKeys;
-        private List<TItem>? _computedItems;
+        private List<TKey> _oldValue = new();
+        private List<TKey> _oldActive = new();
+        private List<TKey> _oldOpen = new();
+        private string? _prevSearch;
+        private CancellationTokenSource? _searchUpdateCts;
 
         [Parameter, EditorRequired]
         public List<TItem> Items { get; set; } = null!;
@@ -118,17 +118,39 @@
             }
         }
 
-        public Dictionary<TKey, NodeState<TItem, TKey>> Nodes { get; private set; } = [];
-
-        private HashSet<TKey> GetExcludeKeys()
+        public List<TItem> ComputedItems
         {
-            var keys = new HashSet<TKey>();
-            if (string.IsNullOrEmpty(Search)) return keys;
-            foreach (var item in Items)
+            get
             {
-                FilterTreeItems(item, keys);
+                if (string.IsNullOrEmpty(Search))
+                {
+                    return Items;
+                }
+
+                return Items.Where(r => !IsExcluded(ItemKey.Invoke(r))).ToList();
             }
-            return keys;
+        }
+
+        public Dictionary<TKey, NodeState<TItem, TKey>> Nodes { get; private set; } = new();
+
+        public List<TKey> ExcludedItems
+        {
+            get
+            {
+                var excluded = new List<TKey>();
+
+                if (string.IsNullOrEmpty(Search))
+                {
+                    return excluded;
+                }
+
+                foreach (var item in Items)
+                {
+                    FilterTreeItems(item, ref excluded);
+                }
+
+                return excluded;
+            }
         }
 
         public override async Task SetParametersAsync(ParameterView parameters)
@@ -189,28 +211,7 @@
             return false;
         }
 
-        public void UpdateActiveValue(TKey key)
-        {
-            if (Nodes.TryGetValue(key, out var nodeState))
-            {
-                if (nodeState.IsActive && Active?.Contains(key) != true)
-                {
-                    Active ??= [];
-                    if (!MultipleActive)
-                    {
-                        Active.Clear();
-                    }
-                    Active.Add(key);
-                }
-                else if (!nodeState.IsActive && Active?.Contains(key) == true)
-                {
-                    Active.Remove(key);
-                }
-                _oldActive = [.. Active ?? []];
-            }
-        }
-
-        public void UpdateActiveState(TKey key, bool isActive)
+        public void UpdateActive(TKey key, bool isActive)
         {
             if (!Nodes.TryGetValue(key, out var nodeState)) return;
 
@@ -253,16 +254,6 @@
             if (Nodes.TryGetValue(key, out var nodeState))
             {
                 nodeState.IsOpen = !nodeState.IsOpen;
-                if (nodeState.IsOpen && Open?.Contains(key) != true)
-                {
-                    Open ??= [];
-                    Open.Add(key);
-                }
-                else if(!nodeState.IsOpen && Open?.Contains(key) == true)
-                {
-                    Open.Remove(key);
-                }
-                _oldOpen = [.. Open ?? []];
             }
         }
 
@@ -285,91 +276,49 @@
             }
         }
 
-        /// <summary>
-        /// update selected node and then update the params (value and _oldValue)
-        /// it only call from hand mode
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="isSelected"></param>
         public void UpdateSelected(TKey key, bool isSelected)
-        {
-            var store = new List<NodeState<TItem, TKey>>();
-            UpdateSelectedNode(key, isSelected, false,store, []);
-            UpdateSelectedValue(store);
-        }
+            => UpdateSelected(key, isSelected, false);
 
-        /// <summary>
-        /// update node state and only call from param change
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="isSelected"></param>
-        /// <param name="visited"></param>
-        private void UpdateSelectedByValue(TKey key, bool isSelected, HashSet<TKey> visited)
-            => UpdateSelectedNode(key, isSelected, true, null, visited);
+        private void UpdateSelectedByValue(TKey key, bool isSelected)
+            => UpdateSelected(key, isSelected, true);
 
-        /// <summary>
-        /// Update the selection state of node.
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="isSelected"></param>
-        /// <param name="updateByValue"></param>
-        /// <param name="store">store affected nodes</param>
-        /// <param name="visited">store nodes that have been accessed to prevent them from being accessed again</param>
-        private void UpdateSelectedNode(TKey key, bool isSelected, bool updateByValue, List<NodeState<TItem, TKey>>? store, HashSet<TKey> visited)
+        private void UpdateSelected(TKey key, bool isSelected, bool updateByValue)
         {
             if (!Nodes.TryGetValue(key, out var nodeState)) return;
 
             nodeState.IsSelected = isSelected;
             nodeState.IsIndeterminate = false;
 
-            if(SelectionType != SelectionType.Leaf || nodeState.Children == null)
-            {
-                store?.Add(nodeState);
-            }
-
             if (updateByValue && SelectionType == SelectionType.LeafButIndependentParent)
             {
-                UpdateParentSelected(nodeState.Parent, false, store, visited);
+                UpdateParentSelected(nodeState.Parent);
             }
             else if (SelectionType is SelectionType.Leaf or SelectionType.LeafButIndependentParent)
             {
-                UpdateChildrenSelected(nodeState.Children, nodeState.IsSelected, store);
-                UpdateParentSelected(nodeState.Parent, false, store, visited);
+                UpdateChildrenSelected(nodeState.Children, nodeState.IsSelected);
+                UpdateParentSelected(nodeState.Parent);
             }
-        }
-
-        //update Value and _oldValue from input nodes state
-        private void UpdateSelectedValue(List<NodeState<TItem, TKey>> store)
-        {
-            Value ??= [];
-            //add selected value when node selected and selected value not contain the node
-            store.Where(c => c.IsSelected)
-                .Select(c => ItemKey(c.Item))
-                .Where(c => !Value.Contains(c))
-                .ForEach(c => Value.Add(c));
-
-            //remove selected value when node not selected
-            store.Where(c => !c.IsSelected)
-                .Select(c => ItemKey(c.Item))
-                .ForEach(c => Value.Remove(c));
-
-            _oldValue = [.. Value ?? []];
         }
 
         public async Task EmitSelectedAsync()
         {
+            var selected = Nodes.Values.Where(r =>
+            {
+                if (SelectionType is SelectionType.Independent or SelectionType.LeafButIndependentParent)
+                {
+                    return  r.IsSelected;
+                }
+
+                return r.IsSelected && !r.Children.Any();
+            }).Select(r => r.Item).ToList();
+
             if (ValueChanged.HasDelegate)
             {
-                await ValueChanged.InvokeAsync(Value);
+                await ValueChanged.InvokeAsync(selected.Select(ItemKey).ToList());
             }
             else if (OnInput.HasDelegate)
             {
-                var hsValue = Value?.ToHashSet() ?? [];
-                var selectedItems = Nodes.Values
-                    .Where(c => hsValue.Contains(ItemKey(c.Item)))
-                    .Select(c => c.Item)
-                    .ToList();
-                await OnInput.InvokeAsync(selectedItems);
+                await OnInput.InvokeAsync(selected);
             }
             else
             {
@@ -382,14 +331,12 @@
         /// </summary>
         public void RebuildTree()
         {
-            var oldState = Nodes;
-            Nodes = [];
-            BuildTree(Items, default, oldState);
+            BuildTree(Items, default);
         }
 
-        private void UpdateParentSelected(TKey? parent, bool isIndeterminate,List<NodeState<TItem, TKey>>? store,HashSet<TKey>visited)
+        private void UpdateParentSelected(TKey? parent, bool isIndeterminate = false)
         {
-            if (parent == null || visited.Contains(parent)) return;
+            if (parent == null) return;
 
             if (Nodes.TryGetValue(parent, out var nodeState))
             {
@@ -406,7 +353,7 @@
                 else
                 {
                     var children = Nodes
-                                   .Where(r => nodeState.Children?.Contains(r.Key) == true)
+                                   .Where(r => nodeState.Children.Contains(r.Key))
                                    .Select(r => r.Value)
                                    .ToList();
 
@@ -426,18 +373,12 @@
                         nodeState.IsIndeterminate = true;
                     }
                 }
-                visited.Add(parent);
-                
-                // value not contain parent when selection type is Leaf
-                if (SelectionType != SelectionType.Leaf) 
-                {
-                    store?.Add(nodeState);
-                }
-                UpdateParentSelected(nodeState.Parent, nodeState.IsIndeterminate,store,visited);
+
+                UpdateParentSelected(nodeState.Parent, nodeState.IsIndeterminate);
             }
         }
 
-        private void UpdateChildrenSelected(IEnumerable<TKey>? children, bool isSelected, List<NodeState<TItem, TKey>>? store)
+        private void UpdateChildrenSelected(IEnumerable<TKey>? children, bool isSelected)
         {
             if (children == null) return;
 
@@ -447,19 +388,18 @@
                 {
                     //control by parent
                     nodeState.IsSelected = isSelected;
-                    store?.Add(nodeState);
-                    UpdateChildrenSelected(nodeState.Children, isSelected, store);
+                    UpdateChildrenSelected(nodeState.Children, isSelected);
                 }
             }
         }
 
-        private bool FilterTreeItems(TItem item, HashSet<TKey> excluded)
+        private bool FilterTreeItems(TItem item, ref List<TKey> excluded)
         {
             if (FilterTreeItem(item, Search, ItemText))
             {
                 if (Nodes.TryGetValue(ItemKey(item), out var nodeState) && nodeState.Parent != null)
                 {
-                    UpdateOpenState(nodeState.Parent, true);
+                    UpdateOpen(nodeState.Parent, true);
                 }
 
                 return true;
@@ -473,11 +413,11 @@
 
                 foreach (var child in children)
                 {
-                    if (FilterTreeItems(child, excluded))
+                    if (FilterTreeItems(child, ref excluded))
                     {
                         if (Nodes.TryGetValue(ItemKey(child), out var nodeState) && nodeState.Parent != null)
                         {
-                            UpdateOpenState(nodeState.Parent, true);
+                            UpdateOpen(nodeState.Parent, true);
                         }
 
                         match = true;
@@ -512,132 +452,195 @@
 
         public bool IsExcluded(TKey key)
         {
-            return !string.IsNullOrEmpty(Search) && _excludedKeys?.Contains(key) == true;
-        }
-
-        private bool IsItemsChanged() {
-            var newKeys = CombineItemKeys(Items);
-            if (_oldItemsKeys == newKeys) return false;
-            _oldItemsKeys = newKeys;
-            return true;
+            return !string.IsNullOrEmpty(Search) && ExcludedItems.Contains(key);
         }
 
         private string CombineItemKeys(IList<TItem> list)
         {
-            List<string> li = [];
-            ExploreForKeys(list, li, 1);
-            return string.Join(",", li);
-        }
+            string keys = string.Empty;
 
-        private void ExploreForKeys(IList<TItem> list,List<string> store,int level)
-        {
-            if (list == null || list.Count == 0) return;
+            if (list == null || list.Count == 0)
+            {
+                return keys;
+            }
+
             foreach (var item in list)
             {
-                store.Add(ItemKey(item).ToString() ?? "");
+                var key = ItemKey(item);
+                keys += key.ToString();
+
                 var children = ItemChildren(item);
-                if (children is not null && children.Count > 0)
+                if (children is not null)
                 {
-                    store.Add($"{level}:"); //consider node position
-                    ExploreForKeys(children, store,level+1);
+                    keys += CombineItemKeys(children);
                 }
             }
-        }
 
+            return keys;
+        }
+        
         protected override async Task OnParametersSetAsync()
         {
             await base.OnParametersSetAsync();
 
-            if (IsItemsChanged())
+            if (_oldItems != Items)
             {
-                RebuildTree();
-            }
+                _oldItems = Items;
+                _oldItemsKeys = CombineItemKeys(Items);
 
-            if (string.IsNullOrEmpty(Search))
-            {
-                _excludedKeys = [];
-                _computedItems = Items;
+                BuildTree(Items, default);
             }
             else
             {
-                _excludedKeys = GetExcludeKeys();
-                _computedItems = Items.Where(r => !_excludedKeys.Contains(ItemKey.Invoke(r))).ToList();
+                var itemKeys = CombineItemKeys(Items);
+                if (_oldItemsKeys != itemKeys)
+                {
+                    _oldItemsKeys = itemKeys;
+
+                    BuildTree(Items, default);
+                }
             }
 
-            HashSet<TKey> value = [.. Value ?? []];
-            if (!_oldValue.SetEquals(value))
+            var value = Value ?? [];
+            if (!ListComparer.Equals(_oldValue, value))
             {
-                //set node not select where old select and current not select
-                _oldValue.Where(c => !value.Contains(c)).ForEach(c =>
-                {
-                    if (!Nodes.TryGetValue(c, out var nodeState)) return;
-                    nodeState.IsSelected = false;
-                });
-
-                //set node select where current select
-                value.ForEach(c =>
-                {
-                    if (!Nodes.TryGetValue(c, out var nodeState)) return;
-                    nodeState.IsSelected = true;
-                });
-                HashSet<TKey> visited = []; //store visited nodes to prevent duplicate execution
-                value.ForEach(k => UpdateSelectedByValue(k, true, visited));
+                await HandleUpdate(_oldValue, Value, UpdateSelectedByValue, EmitSelectedAsync);
                 _oldValue = value;
             }
 
-            HashSet<TKey> active = [.. Active ?? []];
-            if (!_oldActive.SetEquals(active))
+            var active = Active ?? [];
+            if (!ListComparer.Equals(_oldActive, active))
             {
-                HandleUpdate(_oldActive, active, UpdateActiveState);
+                await HandleUpdate(_oldActive, Active, UpdateActive, EmitActiveAsync);
                 _oldActive = active;
             }
 
-            HashSet<TKey> open = [.. Open ?? []];
-            if (!_oldOpen.SetEquals(open))
+            var open = Open ?? [];
+            if (!ListComparer.Equals(_oldOpen, open))
             {
-                HandleUpdate(_oldOpen, open, UpdateOpenState);
+                await HandleUpdate(_oldOpen, Open, UpdateOpen, EmitOpenAsync);
                 _oldOpen = open;
             }
 
-            if(OpenAll != _oldOpenAll)
+            if (_prevSearch != Search)
             {
-                Nodes.Values.ForEach(c => c.IsOpen = OpenAll);
-                _oldOpenAll = OpenAll;
+                _prevSearch = Search;
+
+                _searchUpdateCts?.Cancel();
+                _searchUpdateCts = new();
+                await RunTaskInMicrosecondsAsync(EmitOpenAsync, 300, _searchUpdateCts.Token);
             }
         }
 
-        private void UpdateOpenState(TKey key, bool isOpen)
+        protected override void OnAfterRender(bool firstRender)
+        {
+            base.OnAfterRender(firstRender);
+
+            if (firstRender)
+            {
+                if (OpenAll)
+                {
+                    UpdateAll(true);
+                }
+
+                StateHasChanged();
+            }
+        }
+
+        public void UpdateAll(bool val)
+        {
+            Nodes.Values.ForEach(nodeState => { nodeState.IsOpen = val; });
+        }
+
+        private void UpdateOpen(TKey key, bool isOpen)
         {
             if (!Nodes.TryGetValue(key, out var nodeState)) return;
 
             nodeState.IsOpen = isOpen;
         }
 
-        static void HandleUpdate(HashSet<TKey> old, HashSet<TKey> value, Action<TKey, bool> updateFn)
+        private async Task HandleUpdate(List<TKey> old, List<TKey>? value, Action<TKey, bool> updateFn, Func<Task> emitFn)
         {
             if (value == null) return;
 
             old.ForEach(k => updateFn(k, false));
             value.ForEach(k => updateFn(k, true));
+
+            await emitFn.Invoke();
         }
 
-        private void BuildTree(List<TItem>? items, TKey? parent, Dictionary<TKey, NodeState<TItem, TKey>> oldNodes)
+        private void BuildTree(List<TItem> items, TKey? parent)
         {
-            if(items == null) return;
             foreach (var item in items)
             {
                 var key = ItemKey(item);
-                var children = ItemChildren(item);
-                var newNode = new NodeState<TItem, TKey>(item, children?.Select(ItemKey), parent);
+                var children = ItemChildren(item) ?? new List<TItem>();
 
-                if (oldNodes.TryGetValue(key, out var oldNode))
+                Nodes.TryGetValue(key, out var oldNode);
+
+                var newNode = new NodeState<TItem, TKey>(item, children.Select(ItemKey), parent);
+
+                BuildTree(children, key);
+
+                if (SelectionType == SelectionType.Leaf
+                    && parent != null
+                    && !Nodes.ContainsKey(key)
+                    && Nodes.TryGetValue(parent, out var node))
                 {
+                    newNode.IsSelected = node.IsSelected;
+                }
+                else if (oldNode is not null)
+                {
+                    newNode.IsSelected = oldNode.IsSelected;
+                    newNode.IsIndeterminate = oldNode.IsIndeterminate;
+                }
+
+                if (oldNode is not null)
+                {
+                    newNode.Node = oldNode.Node;
                     newNode.IsActive = oldNode.IsActive;
                     newNode.IsOpen = oldNode.IsOpen;
                 }
+
                 Nodes[key] = newNode;
 
-                BuildTree(children, key, oldNodes);
+                // TODO: there is still some logic in Vuetify but no implementation here, it's necessarily?
+
+                if (newNode.IsSelected && (SelectionType != SelectionType.Leaf || !newNode.Children.Any()))
+                {
+                    if (Value == null)
+                    {
+                        Value = new List<TKey> { key };
+                    }
+                    else
+                    {
+                        Value.Add(key);
+                    }
+                }
+
+                if (newNode.IsActive)
+                {
+                    if (Active == null)
+                    {
+                        Active = new List<TKey> { key };
+                    }
+                    else
+                    {
+                        Active.Add(key);
+                    }
+                }
+
+                if (newNode.IsOpen)
+                {
+                    if (Open == null)
+                    {
+                        Open = new List<TKey> { key };
+                    }
+                    else
+                    {
+                        Open.Add(key);
+                    }
+                }
             }
         }
     }
