@@ -6,9 +6,7 @@
 
         void AddNode(ITreeviewNode<TItem, TKey> node);
 
-        void UpdateActiveState(TKey key, bool isActive);
-
-        void UpdateActiveValue(TKey key);
+        void UpdateActive(TKey key, bool isActive);
 
         void UpdateSelected(TKey key, bool isSelected);
 
