@@ -83,7 +83,11 @@
         public string ExpandIcon { get; set; } = "$subgroup";
 
         [Parameter]
+        [Obsolete("Use OnSelectUpdate instead.")]
         public EventCallback<List<TItem>> OnInput { get; set; }
+
+        [Parameter]
+        public EventCallback<List<TItem>> OnSelectUpdate { get; set; }
 
         [Parameter]
         public EventCallback<List<TItem>> OnActiveUpdate { get; set; }
@@ -243,7 +247,8 @@
             {
                 await ActiveChanged.InvokeAsync(active.Select(ItemKey).ToList());
             }
-            else
+
+            if (!ActiveChanged.HasDelegate && !OnActiveUpdate.HasDelegate)
             {
                 StateHasChanged();
             }
@@ -270,7 +275,8 @@
             {
                 await OpenChanged.InvokeAsync(open.Select(ItemKey).ToList());
             }
-            else
+            
+            if (!OpenChanged.HasDelegate && !OnOpenUpdate.HasDelegate)
             {
                 StateHasChanged();
             }
@@ -312,15 +318,18 @@
                 return r.IsSelected && !r.Children.Any();
             }).Select(r => r.Item).ToList();
 
+            var onSelectUpdate = OnSelectUpdate.HasDelegate ? OnSelectUpdate : OnInput;
+            if (onSelectUpdate.HasDelegate)
+            {
+                _ = onSelectUpdate.InvokeAsync(selected);
+            }
+            
             if (ValueChanged.HasDelegate)
             {
                 await ValueChanged.InvokeAsync(selected.Select(ItemKey).ToList());
             }
-            else if (OnInput.HasDelegate)
-            {
-                await OnInput.InvokeAsync(selected);
-            }
-            else
+
+            if (!ValueChanged.HasDelegate && !onSelectUpdate.HasDelegate)
             {
                 StateHasChanged();
             }
