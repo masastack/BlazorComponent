@@ -83,7 +83,11 @@
         public string ExpandIcon { get; set; } = "$subgroup";
 
         [Parameter]
+        [Obsolete("Use OnSelectUpdate instead.")]
         public EventCallback<List<TItem>> OnInput { get; set; }
+
+        [Parameter]
+        public EventCallback<List<TItem>> OnSelectUpdate { get; set; }
 
         [Parameter]
         public EventCallback<List<TItem>> OnActiveUpdate { get; set; }
@@ -243,7 +247,8 @@
             {
                 await ActiveChanged.InvokeAsync(active.Select(ItemKey).ToList());
             }
-            else
+
+            if (!ActiveChanged.HasDelegate && !OnActiveUpdate.HasDelegate)
             {
                 StateHasChanged();
             }
@@ -270,7 +275,8 @@
             {
                 await OpenChanged.InvokeAsync(open.Select(ItemKey).ToList());
             }
-            else
+            
+            if (!OpenChanged.HasDelegate && !OnOpenUpdate.HasDelegate)
             {
                 StateHasChanged();
             }
@@ -291,12 +297,12 @@
 
             if (updateByValue && SelectionType == SelectionType.LeafButIndependentParent)
             {
-                UpdateParentSelected(nodeState.Parent);
+                UpdateParentSelected(nodeState);
             }
             else if (SelectionType is SelectionType.Leaf or SelectionType.LeafButIndependentParent)
             {
                 UpdateChildrenSelected(nodeState.Children, nodeState.IsSelected);
-                UpdateParentSelected(nodeState.Parent);
+                UpdateParentSelected(nodeState);
             }
         }
 
@@ -312,15 +318,18 @@
                 return r.IsSelected && !r.Children.Any();
             }).Select(r => r.Item).ToList();
 
+            var onSelectUpdate = OnSelectUpdate.HasDelegate ? OnSelectUpdate : OnInput;
+            if (onSelectUpdate.HasDelegate)
+            {
+                _ = onSelectUpdate.InvokeAsync(selected);
+            }
+            
             if (ValueChanged.HasDelegate)
             {
                 await ValueChanged.InvokeAsync(selected.Select(ItemKey).ToList());
             }
-            else if (OnInput.HasDelegate)
-            {
-                await OnInput.InvokeAsync(selected);
-            }
-            else
+
+            if (!ValueChanged.HasDelegate && !onSelectUpdate.HasDelegate)
             {
                 StateHasChanged();
             }
@@ -334,11 +343,32 @@
             BuildTree(Items, default);
         }
 
-        private void UpdateParentSelected(TKey? parent, bool isIndeterminate = false)
+        private NodeState<TItem, TKey>[] GetParents(NodeState<TItem, TKey> node)
         {
-            if (parent == null) return;
+            var parents = new List<NodeState<TItem, TKey>>();
+            var parent = node.Parent;
+            var parentKeys = new List<TKey>();
+            while (parent != null && !parentKeys.Contains(parent))
+            {
+                parentKeys.Add(parent);
+                if (Nodes.TryGetValue(parent, out var parentNode))
+                {
+                    parents.Add(parentNode);
+                    parent = parentNode.Parent;
+                }
+                else
+                {
+                    break;
+                }
+            }
 
-            if (Nodes.TryGetValue(parent, out var nodeState))
+            return parents.ToArray();
+        }
+
+        private void UpdateParentSelected(NodeState<TItem, TKey> node, bool isIndeterminate = false)
+        {
+            var parents = GetParents(node);
+            foreach (var nodeState in parents)
             {
                 if (SelectionType == SelectionType.LeafButIndependentParent)
                 {
@@ -353,9 +383,9 @@
                 else
                 {
                     var children = Nodes
-                                   .Where(r => nodeState.Children.Contains(r.Key))
-                                   .Select(r => r.Value)
-                                   .ToList();
+                        .Where(r => nodeState.Children.Contains(r.Key))
+                        .Select(r => r.Value)
+                        .ToList();
 
                     if (children.All(r => r.IsSelected))
                     {
@@ -373,8 +403,6 @@
                         nodeState.IsIndeterminate = true;
                     }
                 }
-
-                UpdateParentSelected(nodeState.Parent, nodeState.IsIndeterminate);
             }
         }
 
