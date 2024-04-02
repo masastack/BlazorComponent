@@ -82,13 +82,6 @@ public partial class BMobilePickerView<TColumn, TColumnItem, TColumnItemValue> :
 
     private List<TColumnItemValue> InternalValue { get; set; } = new();
 
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-
-        _preValue = Value;
-    }
-
     public override async Task SetParametersAsync(ParameterView parameters)
     {
         await base.SetParametersAsync(parameters);
