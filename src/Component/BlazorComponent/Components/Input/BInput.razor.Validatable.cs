@@ -275,7 +275,7 @@ namespace BlazorComponent
         {
             SubscribeValidationStateChanged();
 
-            if (!EqualityComparer<TValue>.Default.Equals(Value, InternalValue))
+            if (ValueChanged.HasDelegate && !EqualityComparer<TValue>.Default.Equals(Value, InternalValue))
             {
                 OnValueChanged(Value);
             }
