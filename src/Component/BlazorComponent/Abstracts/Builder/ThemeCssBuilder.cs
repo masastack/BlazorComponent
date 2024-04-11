@@ -20,8 +20,6 @@ namespace BlazorComponent
                 $$"""
                   :root {
                       color-scheme: {{(isDark ? "dark" : "normal")}};
-                      --m-theme-surface: {{options.Surface}};
-                      --m-theme-on-surface: {{options.OnSurface}};
                       --m-theme-primary: {{options.Primary}};
                       --m-theme-primary-text: {{options.Primary}};
                       --m-theme-on-primary: {{options.OnPrimary}};
@@ -33,27 +31,43 @@ namespace BlazorComponent
                       --m-theme-on-accent: {{options.OnAccent}};
                       --m-theme-error: {{options.Error}};
                       --m-theme-error-text: {{options.Error}};
+                      --m-theme-on-error: {{options.OnError}};
                       --m-theme-info: {{options.Info}};
                       --m-theme-info-text: {{options.Info}};
+                      --m-theme-on-info: {{options.OnInfo}};
                       --m-theme-success: {{options.Success}};
                       --m-theme-success-text: {{options.Success}};
+                      --m-theme-on-success: {{options.OnSuccess}};
                       --m-theme-warning: {{options.Warning}};
                       --m-theme-warning-text: {{options.Warning}};
+                      --m-theme-on-warning: {{options.OnWarning}};
+
+                      --m-theme-surface: {{options.Surface}};
+                      --m-theme-on-surface: {{options.OnSurface}};
+                      --m-theme-inverse-surface: {{options.InverseSurface}};
+                      --m-theme-inverse-on-surface: {{options.InverseOnSurface}};
+                      --m-theme-inverse-primary: {{options.InversePrimary}};
 
                       --m-theme-light-surface: {{light.Surface}};
                       --m-theme-light-on-surface: {{light.OnSurface}};
                       --m-theme-dark-surface: {{dark.Surface}};
                       --m-theme-dark-on-surface: {{dark.OnSurface}};
+                      --m-theme-light-inverse-surface: {{light.InverseSurface}};
+                      --m-theme-light-inverse-on-surface: {{light.InverseOnSurface}};
+                      --m-theme-light-inverse-primary: {{light.InversePrimary}};
+                      --m-theme-dark-inverse-surface: {{dark.InverseSurface}};
+                      --m-theme-dark-inverse-on-surface: {{dark.InverseOnSurface}};
+                      --m-theme-dark-inverse-primary: {{dark.InversePrimary}};
                   }
                   """,
                 $"{combinePrefix}a {{ color: {options.Primary}; }}",
                 Build(combinePrefix, nameof(options.Primary).ToLowerInvariant(), hasOnColor: true),
                 Build(combinePrefix, nameof(options.Secondary).ToLowerInvariant(), hasOnColor: true),
                 Build(combinePrefix, nameof(options.Accent).ToLowerInvariant(), hasOnColor: true),
-                Build(combinePrefix, nameof(options.Info).ToLowerInvariant()),
-                Build(combinePrefix, nameof(options.Success).ToLowerInvariant()),
-                Build(combinePrefix, nameof(options.Warning).ToLowerInvariant()),
-                Build(combinePrefix, nameof(options.Error).ToLowerInvariant()),
+                Build(combinePrefix, nameof(options.Info).ToLowerInvariant(), hasOnColor: true),
+                Build(combinePrefix, nameof(options.Success).ToLowerInvariant(), hasOnColor: true),
+                Build(combinePrefix, nameof(options.Warning).ToLowerInvariant(), hasOnColor: true),
+                Build(combinePrefix, nameof(options.Error).ToLowerInvariant(), hasOnColor: true),
                 Build(combinePrefix, nameof(options.Surface).ToLowerInvariant(), hasOnColor: true),
             };
 
@@ -78,6 +92,7 @@ namespace BlazorComponent
             if (hasOnColor)
             {
                 stringBuilder.Append($"""
+
                                       color: var(--m-theme-on-{selector}) !important;
                                       """);
             }
