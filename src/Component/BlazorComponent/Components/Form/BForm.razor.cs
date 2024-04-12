@@ -87,6 +87,11 @@ namespace BlazorComponent
             Validatables.Add(validatable);
         }
 
+        public void Remove(IValidatable validatable)
+        {
+            Validatables.Remove(validatable);
+        }
+
         private async Task HandleOnSubmitAsync(EventArgs args)
         {
             var valid = Validate();
@@ -279,9 +284,9 @@ namespace BlazorComponent
         {
             EditContext?.MarkAsUnmodified();
 
-            foreach (var validatable in Validatables)
+            for (int i = 0; i < Validatables.Count; i++)
             {
-                validatable.Reset();
+                Validatables[i].Reset();
             }
 
             _ = UpdateValue(true);
@@ -289,14 +294,7 @@ namespace BlazorComponent
 
         public void ResetValidation()
         {
-            EditContext?.MarkAsUnmodified();
-
-            foreach (var validatable in Validatables)
-            {
-                validatable.ResetValidation();
-            }
-
-            _ = UpdateValue(true);
+            Reset();
         }
 
         private async Task UpdateValue(bool val)
