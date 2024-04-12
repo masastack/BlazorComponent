@@ -1,8 +1,0 @@
-﻿@namespace BlazorComponent
-@typeparam TSnackbar
-@inherits ComponentPartBase<TSnackbar>
-
-<ShowTransitionElement Value="Value" class="@CssProvider.GetClass("wrap")" style="@CssProvider.GetStyle("wrap")">
-    @RenderPart(typeof(BSnackbarContent<>))
-    @RenderPart(typeof(BSnackbarAction<>))
-</ShowTransitionElement>
