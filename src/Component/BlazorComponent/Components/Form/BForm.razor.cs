@@ -87,7 +87,7 @@ namespace BlazorComponent
             Validatables.Add(validatable);
         }
 
-        public void Remove(IValidatable validatable)
+        internal void Remove(IValidatable validatable)
         {
             Validatables.Remove(validatable);
         }
