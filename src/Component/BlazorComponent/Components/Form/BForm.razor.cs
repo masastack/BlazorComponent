@@ -294,7 +294,14 @@ namespace BlazorComponent
 
         public void ResetValidation()
         {
-            Reset();
+            EditContext?.MarkAsUnmodified();
+
+            for (int i = 0; i < Validatables.Count; i++)
+            {
+                Validatables[i].ResetValidation();
+            }
+
+            _ = UpdateValue(true);
         }
 
         private async Task UpdateValue(bool val)
