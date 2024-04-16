@@ -68,7 +68,7 @@ namespace BlazorComponent
                 true);
         }
 
-        public override void Register(IGroupable item)
+        internal override void Register(IGroupable item)
         {
             base.Register(item);
 
