@@ -70,6 +70,8 @@
 
         private StringNumber? _prevValue;
         private int _registeredTabItemsIndex;
+        private bool _callSliderOnAfterRender;
+        private CancellationTokenSource? _callSliderCts;
 
         private List<ITabItem> TabItems { get; set; } = new();
 
@@ -98,7 +100,7 @@
         }
 
         List<ITabItem> ITabs.TabItems => TabItems;
-
+        
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
@@ -106,12 +108,17 @@
             if (firstRender)
             {
                 await ResizeJSModule.ObserverAsync(Ref, OnResize);
-
-                await CallSlider();
+                _callSliderOnAfterRender = true;
             }
             else if (_prevValue != Value)
             {
                 _prevValue = Value;
+                _callSliderOnAfterRender = true;
+            }
+
+            if (_callSliderOnAfterRender)
+            {
+                _callSliderOnAfterRender = false;
                 await CallSlider();
             }
         }
@@ -134,28 +141,45 @@
             TabItems.Remove(tabItem);
         }
 
+        /// <summary>
+        /// Re-render slider immediately. For the case of deleting tabs,
+        /// it is recommended to use <see cref="CallSliderAfterRender"/>.
+        /// </summary>
+        [MasaApiPublicMethod]
         public async Task CallSlider()
         {
             if (HideSlider) return;
 
-            var item = Instance?.Items?.FirstOrDefault(item => item.Value == Instance.Value);
-            if (item?.Ref.Context == null)
+            _callSliderCts?.Cancel();
+            _callSliderCts = new();
+
+            try
             {
-                Slider = (0, 0, 0, 0, 0);
-            }
-            else
-            {
-                var el = await JsInvokeAsync<Web.Element>(JsInteropConstants.GetDomInfo, item.Ref);
-                var height = !Vertical ? SliderSize.TryGetNumber().number : el.ScrollHeight;
-                var left = Vertical ? 0 : el.OffsetLeft;
-                var right = Vertical ? 0 : el.OffsetLeft + el.OffsetWidth;
-                var top = el.OffsetTop;
+                await Task.Delay(16, _callSliderCts.Token);
+
+                var item = Instance?.Items?.FirstOrDefault(item => item.Value == Instance.Value);
+                if (item?.Ref.Context == null)
+                {
+                    Slider = (0, 0, 0, 0, 0);
+                }
+                else
+                {
+                    var el = await JsInvokeAsync<Web.Element>(JsInteropConstants.GetDomInfo, item.Ref);
+                    var height = !Vertical ? SliderSize.TryGetNumber().number : el.ScrollHeight;
+                    var left = Vertical ? 0 : el.OffsetLeft;
+                    var right = Vertical ? 0 : el.OffsetLeft + el.OffsetWidth;
+                    var top = el.OffsetTop;
                 var width = Vertical ? SliderSize.TryGetNumber().number : el.ClientWidth; // REVIEW: el.ScrollWidth was used in Vuetify2
 
-                Slider = (height, left, right, top, width);
-            }
+                    Slider = (height, left, right, top, width);
+                }
 
-            StateHasChanged();
+                StateHasChanged();
+            }
+            catch (TaskCanceledException)
+            {
+                // ignored
+            }
         }
 
         private async Task OnResize()
@@ -166,6 +190,15 @@
             }
 
             await CallSlider();
+        }
+
+        /// <summary>
+        /// Re-render slider in <see cref="OnAfterRenderAsync"/>
+        /// </summary>
+        [MasaApiPublicMethod]
+        public void CallSliderAfterRender()
+        {
+            _callSliderOnAfterRender = true;
         }
 
         async ValueTask IAsyncDisposable.DisposeAsync()
