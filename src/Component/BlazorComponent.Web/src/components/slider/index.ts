@@ -75,9 +75,11 @@ export function registerSliderEvents(
 }
 
 export function unregisterSliderEvents(el: HTMLElement, id: number) {
-  const onSliderMouseDown = sliderHandlesById[id];
-  el.removeEventListener("mousedown", onSliderMouseDown);
-  el.removeEventListener("touchstart", onSliderMouseDown);
+  if (el) {
+    const onSliderMouseDown = sliderHandlesById[id];
+    el.removeEventListener("mousedown", onSliderMouseDown);
+    el.removeEventListener("touchstart", onSliderMouseDown);
 
-  delete sliderHandlesById[id];
+    delete sliderHandlesById[id];
+  }
 }
