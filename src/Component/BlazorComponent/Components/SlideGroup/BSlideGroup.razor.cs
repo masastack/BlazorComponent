@@ -1,6 +1,6 @@
 ﻿namespace BlazorComponent
 {
-    public partial class BSlideGroup : BItemGroup, ISlideGroup, IAsyncDisposable
+    public partial class BSlideGroup : BItemGroup, ISlideGroup
     {
         public BSlideGroup() : base(GroupType.SlideGroup)
         {
@@ -305,16 +305,9 @@
             await SetWidths();
         }
 
-        async ValueTask IAsyncDisposable.DisposeAsync()
+        protected override async ValueTask DisposeAsyncCore()
         {
-            try
-            {
-                await ResizeJSModule.UnobserveAsync(Ref);
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
+            await ResizeJSModule.UnobserveAsync(Ref);
         }
     }
 }
