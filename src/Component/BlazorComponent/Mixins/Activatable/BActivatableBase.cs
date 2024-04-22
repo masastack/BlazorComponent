@@ -42,7 +42,6 @@ public class BActivatableBase : BToggleable, IActivatableJsCallbacks
     public virtual Dictionary<string, object?> ActivatorAttributes => new()
     {
         { ActivatorId, true },
-        { "role", "button" },
         { "aria-haspopup", true },
         { "aria-expanded", IsActive }
     };

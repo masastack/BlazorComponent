@@ -517,6 +517,8 @@ namespace BlazorComponent
                 EditContext.OnValidationStateChanged -= HandleOnValidationStateChanged;
             }
 
+            Form?.Remove(this);
+
             return base.DisposeAsyncCore();
         }
     }

@@ -1,5 +1,6 @@
 ﻿namespace BlazorComponent
 {
+    // TODO: change to JustifyType
     public enum JustifyTypes
     {
         None = 0,
