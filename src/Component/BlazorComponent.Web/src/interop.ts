@@ -1533,3 +1533,11 @@ export function removeStopPropagationEvent(el: any, type: keyof HTMLElementEvent
 export function historyBack() {
   history.back();
 }
+
+export function historyGo(delta: number) {
+  history.go(delta);
+}
+
+export function historyReplace(href) {
+  history.replaceState(null, /*ignore title*/ '', href);
+}
