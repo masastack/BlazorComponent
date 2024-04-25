@@ -2,7 +2,7 @@
 
 namespace BlazorComponent
 {
-    public partial class BOtpInput : BDomComponentBase, IOtpInput, IAsyncDisposable
+    public partial class BOtpInput : BDomComponentBase, IOtpInput
     {
         [CascadingParameter(Name = "IsDark")]
         public bool CascadingIsDark { get; set; }
@@ -257,17 +257,10 @@ namespace BlazorComponent
             }
         }
 
-        async ValueTask IAsyncDisposable.DisposeAsync()
+        protected override async ValueTask DisposeAsyncCore()
         {
-            try
-            {
-                _handle.Dispose();
-                await JsInvokeAsync(JsInteropConstants.UnregisterOTPInputOnInputEvent, InputRefs);
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
+            _handle.Dispose();
+            await JsInvokeAsync(JsInteropConstants.UnregisterOTPInputOnInputEvent, InputRefs);
         }
     }
 }

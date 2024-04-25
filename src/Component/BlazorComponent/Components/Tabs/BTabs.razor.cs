@@ -1,6 +1,6 @@
 ﻿namespace BlazorComponent
 {
-    public partial class BTabs : BDomComponentBase, ITabs, IAncestorRoutable, IAsyncDisposable
+    public partial class BTabs : BDomComponentBase, ITabs, IAncestorRoutable
     {
         [Inject]
         protected IResizeJSModule ResizeJSModule { get; set; } = null!;
@@ -201,16 +201,9 @@
             _callSliderOnAfterRender = true;
         }
 
-        async ValueTask IAsyncDisposable.DisposeAsync()
+        protected override async ValueTask DisposeAsyncCore()
         {
-            try
-            {
-                await ResizeJSModule.UnobserveAsync(Ref);
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
+            await ResizeJSModule.UnobserveAsync(Ref);
         }
     }
 }

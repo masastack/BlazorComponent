@@ -62,6 +62,15 @@ namespace BlazorComponent
         [Parameter]
         public string? Key { get; set; }
 
+        [Parameter] [MasaApiParameter(ReleasedOn = "v1.5.0")]
+        public string? IconName { get; set; }
+
+        [Parameter] [MasaApiParameter(ReleasedOn = "v1.5.0")]
+        public string? LeftIconName { get; set; }
+        
+        [Parameter] [MasaApiParameter(ReleasedOn = "v1.5.0")]
+        public string? RightIconName { get; set; }
+
         /// <summary>
         /// Determine whether rendering a loader component
         /// </summary>
@@ -71,6 +80,9 @@ namespace BlazorComponent
         /// Set the button's type attribute
         /// </summary>
         protected string TypeAttribute { get; set; } = "button";
+        
+        [MemberNotNullWhen(true, nameof(IconName))]
+        protected bool HasBuiltInIcon => !string.IsNullOrWhiteSpace(IconName);
 
         public bool IsDark
         {

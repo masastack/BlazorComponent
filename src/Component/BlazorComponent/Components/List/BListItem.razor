@@ -17,7 +17,51 @@
         }
         else
         {
+            @GenAvatarCore(PrependAvatar)
+            @GenIcon(PrependIcon)
+            @GenContent()
+            @GenIcon(AppendIcon)
+            @GenAvatarCore(AppendAvatar)
             @ChildContent
         }
     </Element>
 </CascadingValue>
+
+@code {
+
+    RenderFragment GenIcon(string? icon) => __builder =>
+    {
+        @if (!string.IsNullOrWhiteSpace(icon))
+        {
+            <BListItemIcon>
+                <BIcon>@icon</BIcon>
+            </BListItemIcon>
+        }
+    };
+
+    private RenderFragment GenAvatarCore(string? src) => __builder =>
+    {
+        @if (!string.IsNullOrWhiteSpace(src))
+        {
+            @GenAvatar(src)
+        }
+    };
+
+    protected virtual RenderFragment GenAvatar(string? src) => __builder => { };
+
+    RenderFragment GenContent() => __builder =>
+    {
+        if (HasBuiltInContent)
+        {
+            <BListItemContent>
+                <BListItemTitle>
+                    @Title
+                </BListItemTitle>
+                <BListItemSubtitle>
+                    @Subtitle
+                </BListItemSubtitle>
+            </BListItemContent>
+        }
+    };
+
+}

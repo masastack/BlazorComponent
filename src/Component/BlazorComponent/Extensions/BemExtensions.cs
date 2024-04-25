@@ -33,7 +33,7 @@ public static class BemExtensions
         return bem;
     }
 
-    public static IBem AddRounded(this IBem bem, StringBoolean? rounded, bool tile)
+    public static IBem AddRounded(this IBem bem, StringBoolean? rounded, bool tile = false)
     {
         if (tile)
         {

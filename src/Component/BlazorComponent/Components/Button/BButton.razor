@@ -17,12 +17,7 @@
             __internal_preventDefault_onclick="@OnClickPreventDefault"
             @attributes="Attributes">
 
-            @if (HasLoader)
-            {
-                @RenderPart(typeof(BButtonLoader<>))
-            }
-
-            @RenderPart(typeof(BButtonContent<>))
+            @GenContent()
         </KeyTransitionElement>
     }
     else
@@ -39,13 +34,56 @@
             __internal_stopPropagation_onclick="@OnClickStopPropagation"
             __internal_preventDefault_onclick="@OnClickPreventDefault"
             @attributes="Attributes">
-
-            @if (HasLoader)
-            {
-                @RenderPart(typeof(BButtonLoader<>))
-            }
-
-            @RenderPart(typeof(BButtonContent<>))
+            @GenContent()
         </ShowTransitionElement>
     }
 </CascadingValue>
+
+@code {
+
+
+    RenderFragment GenContent() => __builder =>
+    {
+        if (HasLoader)
+        {
+            @if (Loading)
+            {
+                <div class="@CssProvider.GetClass("loader")" style="@CssProvider.GetStyle("loader")">
+                    @if (LoaderContent == null)
+                    {
+                        <BProgressCircular @attributes="@GetAttributes(typeof(BProgressCircular))"></BProgressCircular>
+                    }
+                    else
+                    {
+                        @LoaderContent
+                    }
+                </div>
+            }
+        }
+
+        <span class="@CssProvider.GetClass("content")" style="@CssProvider.GetStyle("content")">
+            @GenIcon("left")
+            @GenIcon()
+            @ChildContent
+            @GenIcon("right")
+        </span>
+    };
+
+    RenderFragment GenIcon(string? position = null) => __builder =>
+    {
+        var (icon, left, right) = position switch
+        {
+            "left" => (LeftIconName, true, false),
+            "right" => (RightIconName, false, true),
+            _ => (IconName, false, false)
+        };
+
+        if (string.IsNullOrWhiteSpace(icon))
+        {
+            return;
+        }
+
+        <BIcon Left="@left" Right="@right" @attributes="@GetAttributes(typeof(BIcon), data: position)">@icon</BIcon>
+    };
+
+}

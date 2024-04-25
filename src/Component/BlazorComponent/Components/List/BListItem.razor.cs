@@ -35,6 +35,18 @@ namespace BlazorComponent
         [Parameter]
         public bool OnClickPreventDefault { get; set; }
 
+        [Parameter] [MasaApiParameter(ReleasedOn = "v1.5.0")] public string? Title { get; set; }
+
+        [Parameter] [MasaApiParameter(ReleasedOn = "v1.5.0")] public string? Subtitle { get; set; }
+
+        [Parameter] [MasaApiParameter(ReleasedOn = "v1.5.0")] public string? PrependIcon { get; set; }
+
+        [Parameter] [MasaApiParameter(ReleasedOn = "v1.5.0")] public string? PrependAvatar { get; set; }
+
+        [Parameter] [MasaApiParameter(ReleasedOn = "v1.5.0")] public string? AppendIcon { get; set; }
+
+        [Parameter] [MasaApiParameter(ReleasedOn = "v1.5.0")] public string? AppendAvatar { get; set; }
+
         [Parameter]
         public bool Dark { get; set; }
 
@@ -67,6 +79,8 @@ namespace BlazorComponent
         public bool IsLink => Router?.IsLink is true;
 
         protected override bool IsRoutable => Href != null && List?.Routable is true;
+
+        private bool HasBuiltInContent => !string.IsNullOrWhiteSpace(Title) || !string.IsNullOrWhiteSpace(Subtitle);
 
         protected override void OnParametersSet()
         {
