@@ -13,13 +13,6 @@
 
         protected override bool IsRoutable => Href != null && HasRoutableAncestor;
 
-        protected override async Task OnActiveUpdatedForRoutable()
-        {
-            if (Tabs == null) return;
-
-            await Tabs.CallSlider();
-        }
-
         protected override bool AfterHandleEventShouldRender() => false;
 
         private async Task HandleOnClick(MouseEventArgs args)

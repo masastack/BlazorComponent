@@ -72,9 +72,14 @@ namespace BlazorComponent
             Items.ForEach(item => item.RefreshState());
         }
 
-        public virtual void Register(IGroupable item)
+        protected virtual StringNumber InitDefaultItemValue()
         {
-            item.Value ??= _registeredItemsIndex++;
+            return _registeredItemsIndex++;
+        }
+
+        internal virtual void Register(IGroupable item)
+        {
+            item.Value ??= InitDefaultItemValue();
 
             Items.Add(item);
 
@@ -109,7 +114,11 @@ namespace BlazorComponent
         public virtual void Unregister(IGroupable item)
         {
             Items.Remove(item);
-            _registeredItemsIndex--;
+
+            if (_registeredItemsIndex > 0)
+            {
+                _registeredItemsIndex--;
+            }
         }
 
         private async Task UpdateMandatoryAsync(bool last = false)

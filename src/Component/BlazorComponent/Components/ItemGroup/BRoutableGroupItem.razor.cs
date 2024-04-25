@@ -82,13 +82,10 @@ public partial class BRoutableGroupItem<TGroup> : BGroupItem<TGroup>, IRoutable
         if (matched && ItemGroup is not null && !isActive)
         {
             await ItemGroup.ToggleAsync(Value);
-            await OnActiveUpdatedForRoutable();
         }
 
         return isActive != matched;
     }
-
-    protected virtual Task OnActiveUpdatedForRoutable() => Task.CompletedTask;
 
     protected override ValueTask DisposeAsyncCore()
     {
