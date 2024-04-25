@@ -188,6 +188,10 @@ declare global {
     target: HTMLElement;
   }
 
+  interface MouseEvent {
+    target: HTMLElement;
+  }
+
   interface MbEventTarget {
     elementReferenceId?: string;
     selector?: string;
