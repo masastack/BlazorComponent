@@ -72,7 +72,7 @@ namespace BlazorComponent
             Items.ForEach(item => item.RefreshState());
         }
 
-        protected virtual StringNumber InitDefaultItemValue()
+        protected StringNumber InitDefaultItemValue()
         {
             return _registeredItemsIndex++;
         }

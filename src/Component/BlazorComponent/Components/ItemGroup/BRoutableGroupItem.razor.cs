@@ -44,11 +44,15 @@ public partial class BRoutableGroupItem<TGroup> : BGroupItem<TGroup>, IRoutable
 
     protected override async Task OnInitializedAsync()
     {
-        await base.OnInitializedAsync();
+        if (IsRoutable)
+        {
+            Router = new Router(this);
+            Value = Href;
+            await UpdateActiveForRoutable();
+            NavigationManager.LocationChanged += OnLocationChanged;
+        }
 
-        Router = new Router(this);
-        await UpdateActiveForRoutable();
-        NavigationManager.LocationChanged += OnLocationChanged;
+        await base.OnInitializedAsync();
     }
 
     protected override void OnParametersSet()
@@ -56,7 +60,6 @@ public partial class BRoutableGroupItem<TGroup> : BGroupItem<TGroup>, IRoutable
         base.OnParametersSet();
 
         Router = new Router(this);
-
         (Tag, Attributes) = Router.GenerateRouteLink();
     }
 
@@ -71,7 +74,7 @@ public partial class BRoutableGroupItem<TGroup> : BGroupItem<TGroup>, IRoutable
 
     private async Task<bool> UpdateActiveForRoutable()
     {
-        if (!IsRoutable || Router is null) return false;
+        if (Router is null) return false;
 
         var isActive = InternalIsActive;
 
@@ -89,7 +92,10 @@ public partial class BRoutableGroupItem<TGroup> : BGroupItem<TGroup>, IRoutable
 
     protected override ValueTask DisposeAsyncCore()
     {
-        NavigationManager.LocationChanged -= OnLocationChanged;
+        if (IsRoutable)
+        {
+            NavigationManager.LocationChanged -= OnLocationChanged;
+        }
 
         return base.DisposeAsyncCore();
     }

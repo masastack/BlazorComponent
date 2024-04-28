@@ -6,8 +6,7 @@
         {
         }
 
-        [CascadingParameter]
-        public BTabs? Tabs { get; set; }
+        [CascadingParameter] public BTabs? Tabs { get; set; }
 
         protected override bool HasRoutableAncestor => Tabs?.Routable is true;
 
@@ -17,7 +16,10 @@
 
         private async Task HandleOnClick(MouseEventArgs args)
         {
-            await ToggleAsync();
+            if (!IsRoutable)
+            {
+                await ToggleAsync();
+            }
 
             if (OnClick.HasDelegate)
             {
