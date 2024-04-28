@@ -83,9 +83,9 @@ namespace BlazorComponent
             }
         }
 
-        private bool IsDisabled => Disabled || RadioGroup?.IsDisabled is true;
+        protected bool IsDisabled => Disabled || RadioGroup?.IsDisabled is true;
 
-        private bool IsReadonly => Readonly || RadioGroup?.IsReadonly is true;
+        protected bool IsReadonly => Readonly || RadioGroup?.IsReadonly is true;
 
         private async Task HandleClick(MouseEventArgs args)
         {
