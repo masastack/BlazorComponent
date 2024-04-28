@@ -93,16 +93,16 @@
 
         protected virtual bool HasTransition { get; } = false;
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
-            base.OnInitialized();
-
             if (!Matched) return;
 
             if (this is IGroupable item)
             {
                 ItemGroup!.Register(item);
             }
+
+            await base.OnInitializedAsync();
         }
 
         protected override async Task OnParametersSetAsync()
