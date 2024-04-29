@@ -6,7 +6,8 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class ServiceCollectionExtensions
     {
         public static IBlazorComponentBuilder AddBlazorComponent(this IServiceCollection services,
-            Action<BlazorComponentOptions>? optionsAction = null)
+            Action<BlazorComponentOptions>? optionsAction = null,
+            ServiceLifetime masaBlazorServiceLifetime = ServiceLifetime.Scoped)
         {
             if (optionsAction is not null)
             {
@@ -16,7 +17,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddScoped<LocalStorage>();
             services.TryAddScoped<Document>();
             services.TryAddScoped(serviceProvider => new Window(serviceProvider.GetRequiredService<Document>()));
-            services.TryAddScoped<IPopupProvider, PopupProvider>();
+            services.TryAdd(new ServiceDescriptor(typeof(IPopupProvider), typeof(PopupProvider),
+                masaBlazorServiceLifetime));
             services.TryAddSingleton<IComponentIdGenerator, GuidComponentIdGenerator>();
             services.AddScoped(typeof(BDragDropService));
             services.AddSingleton<IComponentActivator, AbstractComponentActivator>();
