@@ -44,7 +44,7 @@ class XgplayerProxy {
     this.init(url, options);
   }
 
-  invokeVoid(prop: string, args: any[]) {
+  invokeVoid(prop: string, ...args: any[]) {
     if (this.player[prop] && typeof this.player[prop] === "function") {
       this.player[prop](...args);
     }
