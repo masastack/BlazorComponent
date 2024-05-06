@@ -579,6 +579,7 @@ export function getWindowAndDocumentProps(windowProps: string[] = [], documentPr
 
   if (windowProps) {
     windowProps.forEach(prop => obj[prop] = window[prop]);
+    obj['pageYOffset'] = getPageYOffset();
   }
 
   if (documentProps) {
@@ -1061,7 +1062,7 @@ export function getMenuableDimensions(hasActivator, activatorSelector, isDefault
     if (contentElement) {
       if (contentElement.offsetParent) {
         const offsetRect = getRoundedBoundedClientRect(contentElement.offsetParent)
-        dimensions.relativeYOffset = window.pageYOffset + offsetRect.top
+        dimensions.relativeYOffset = getPageYOffset() + offsetRect.top
 
         if (hasActivator) {
           dimensions.activator.top -= dimensions.relativeYOffset
@@ -1076,6 +1077,15 @@ export function getMenuableDimensions(hasActivator, activatorSelector, isDefault
   }, contentElement);
 
   return dimensions;
+}
+
+function getPageYOffset() {
+  let pageYOffset = window.pageYOffset
+  const blockedScrollY = parseInt(document.documentElement.style.getPropertyValue('--m-body-scroll-y'))
+  if (blockedScrollY) {
+    pageYOffset += Math.abs(blockedScrollY);
+  }
+  return pageYOffset
 }
 
 function measure(el: HTMLElement, isDefaultAttach) {
