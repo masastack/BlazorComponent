@@ -11,6 +11,10 @@ class ScrollStrategies {
   contentEl: HTMLElement;
   options: StrategyProps;
 
+  // maybe only used for block strategy
+  scrollElements: HTMLElement[];
+  scrollableParent: Element | null;
+
   constructor(
     root: HTMLElement,
     contentEl: HTMLElement,
@@ -27,6 +31,7 @@ class ScrollStrategies {
 
   bind() {
     if (this.options.strategy === "block") {
+      this._prepareBlock();
       this._blockScroll();
     }
   }
@@ -39,7 +44,7 @@ class ScrollStrategies {
 
   _prepareBlock() {
     const offsetParent = this.root.offsetParent;
-    const scrollElements = [
+    this.scrollElements = [
       ...new Set([
         ...getScrollParents(
           this.contentEl,
@@ -48,24 +53,20 @@ class ScrollStrategies {
       ]),
     ];
 
-    const scrollableParent = ((el) => hasScrollbar(el) && el)(
+    this.scrollableParent = ((el) => hasScrollbar(el) && el)(
       offsetParent || document.documentElement
     );
-
-    return { scrollableParent, scrollElements };
   }
 
   _blockScroll() {
-    let { scrollableParent, scrollElements } = this._prepareBlock();
-
-    if (scrollableParent) {
+    if (this.scrollableParent) {
       this.root.classList.add("m-overlay--scroll-blocked");
     }
 
     const scrollbarWidth =
       window.innerWidth - document.documentElement.offsetWidth;
 
-    scrollElements
+    this.scrollElements
       .filter((el) => !el.classList.contains("m-overlay-scroll-blocked"))
       .forEach((el, i) => {
         el.style.setProperty(
@@ -86,9 +87,7 @@ class ScrollStrategies {
   }
 
   _unblockScroll() {
-    const { scrollableParent, scrollElements } = this._prepareBlock();
-
-    scrollElements
+    this.scrollElements
       .filter((el) => el.classList.contains("m-overlay-scroll-blocked"))
       .forEach((el, i) => {
         const x = parseFloat(el.style.getPropertyValue("--m-body-scroll-x"));
@@ -108,7 +107,7 @@ class ScrollStrategies {
         el.style.scrollBehavior = scrollBehavior;
       });
 
-    if (scrollableParent) {
+    if (this.scrollableParent) {
       this.root.classList.remove("m-overlay--scroll-blocked");
     }
   }
