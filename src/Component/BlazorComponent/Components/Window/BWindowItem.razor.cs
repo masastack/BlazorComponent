@@ -14,6 +14,11 @@
 
         [Parameter]
         public bool Eager { get; set; }
+        
+        /// <summary>
+        /// Internal use
+        /// </summary>
+        public virtual string Tag { get; set; }
 
         protected override bool IsEager => Eager;
 
