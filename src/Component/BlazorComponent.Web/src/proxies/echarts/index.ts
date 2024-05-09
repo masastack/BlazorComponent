@@ -56,6 +56,14 @@ class EChartsProxy {
     this.instance.setOption(eval("option=" + option), notMerge, lazyUpdate);
   }
 
+  showLoading(opts?: object){
+    this.instance.showLoading('default', opts);
+  }
+  
+  hideLoading(){
+    this.instance.hideLoading();
+  }
+
   resize(opts?: EChartsResizeOption) {
     this.instance.resize(opts);
   }
