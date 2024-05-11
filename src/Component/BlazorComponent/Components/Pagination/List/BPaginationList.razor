@@ -1,9 +1,0 @@
-﻿@namespace BlazorComponent
-@typeparam TPagination
-@inherits ComponentPartBase<TPagination>
-
-<ul class="@CssProvider.GetClass("list")">
-    @RenderPart(typeof(BPaginationIcon<>),(int)PaginationIconTypes.First,arg0Name:"ItemIndex")
-    @RenderPart(typeof(BPaginationItems<>))
-    @RenderPart(typeof(BPaginationIcon<>),(int)PaginationIconTypes.Second,arg0Name:"ItemIndex")
-</ul>
