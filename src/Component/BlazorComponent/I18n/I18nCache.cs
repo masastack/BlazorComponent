@@ -12,11 +12,12 @@ internal static class I18nCache
         Cache = new ConcurrentDictionary<CultureInfo, IReadOnlyDictionary<string, string>>();
     }
 
-    public static void AddLocale(CultureInfo culture, IReadOnlyDictionary<string, string>? locale)
+    public static void AddLocale(CultureInfo culture, IReadOnlyDictionary<string, string>? locale,
+        bool isBuiltInLocale = false)
     {
         if (locale is null) return;
 
-        Cache.AddOrUpdate(culture, locale, (_,  dictionary) => Merge(dictionary, locale));
+        Cache.AddOrUpdate(culture, locale, (_, exists) => Merge(exists, locale, isBuiltInLocale));
     }
 
     public static IReadOnlyDictionary<string, string>? GetLocale(CultureInfo culture)
@@ -30,13 +31,17 @@ internal static class I18nCache
 
     public static IEnumerable<CultureInfo> GetCultures() => Cache.Keys;
 
-    private static IReadOnlyDictionary<TK, TV> Merge<TK, TV>(params IReadOnlyDictionary<TK, TV>[] dictionaries)
+    private static IReadOnlyDictionary<string, string> Merge(IReadOnlyDictionary<string, string> exists,
+        IReadOnlyDictionary<string, string> locale, bool isBuiltInLocale)
     {
-        var result = new Dictionary<TK, TV>();
+        var dict1 = isBuiltInLocale ? locale : exists;
+        var dict2 = isBuiltInLocale ? exists : locale;
 
-        foreach (var dict in dictionaries)
+        var result = dict1.ToDictionary(x => x.Key, x => x.Value);
+
+        foreach (var pair in dict2)
         {
-            dict.ToList().ForEach(pair => result[pair.Key] = pair.Value);
+            result[pair.Key] = pair.Value;
         }
 
         return result;
