@@ -11,6 +11,7 @@ namespace BlazorComponent
         public RenderFragment? ChildContent { get; set; }
 
         [Parameter]
+        [Obsolete("This parameter is little usefulness, it will be removed in the future.")]
         public int Height { get; set; }
 
         [Parameter]
