@@ -44,7 +44,7 @@ public class I18n
         CultureInfo.DefaultThreadCurrentUICulture = uiCulture;
     }
 
-    public void AddLocale(CultureInfo culture, IReadOnlyDictionary<string, string>? locale) => I18nCache.AddLocale(culture, locale);
+    public void AddLocale(CultureInfo culture, IReadOnlyDictionary<string, string>? locale) => I18nCache.AddLocale(culture, locale, true);
 
     public IEnumerable<CultureInfo> SupportedCultures => I18nCache.GetCultures();
 
