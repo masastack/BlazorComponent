@@ -1,6 +1,6 @@
 ﻿namespace BlazorComponent
 {
-    public interface IInput<TValue> : IHasProviderComponent
+    public interface IInput<TValue>
     {
         TValue? Value { get; }
 

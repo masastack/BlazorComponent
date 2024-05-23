@@ -4,11 +4,11 @@ public class SvgPath
 {
     public string D { get; }
 
-    public Dictionary<string, object?>? Attributes { get; }
+    public Dictionary<string, object> Attributes { get; }
 
-    public SvgPath(string d, Dictionary<string, object?>? attributes = null)
+    public SvgPath(string d, Dictionary<string, object>? attributes = null)
     {
         D = d;
-        Attributes = attributes;
+        Attributes = attributes ?? new();
     }
 }

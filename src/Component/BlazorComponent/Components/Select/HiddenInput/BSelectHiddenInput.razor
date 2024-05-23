@@ -1,8 +1,0 @@
-﻿@namespace BlazorComponent
-@typeparam TItem
-@typeparam TItemValue
-@typeparam TValue
-@typeparam TInput
-@inherits ComponentPartBase<TInput>
-
-<input type="hidden" value="@(Multiple ? string.Join(',', InternalValues) : InternalValue)" />

@@ -39,7 +39,7 @@ public class BActivatableBase : BToggleable, IActivatableJsCallbacks
 
     protected bool IsBooted { get; set; }
 
-    public virtual Dictionary<string, object?> ActivatorAttributes => new()
+    public virtual Dictionary<string, object> ActivatorAttributes => new()
     {
         { ActivatorId, true },
         { "aria-haspopup", true },

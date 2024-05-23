@@ -21,7 +21,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 masaBlazorServiceLifetime));
             services.TryAddSingleton<IComponentIdGenerator, GuidComponentIdGenerator>();
             services.AddScoped(typeof(BDragDropService));
-            services.AddSingleton<IComponentActivator, AbstractComponentActivator>();
             services.AddI18n();
 
             services.TryAddTransient<ActivatableJsModule>();

@@ -43,5 +43,7 @@
         public bool Top { get; set; }
 
         public string? Transition { get; set; }
+        
+        public string? ContentStyle { get; set; }
     }
 }

@@ -5,33 +5,29 @@ namespace BlazorComponent
 {
     public class ObservableProperty<TValue> : ObservableProperty
     {
-        private readonly bool _disableIListAlwaysNotifying;
         private readonly IObservableProperty _internalProperty;
 
         private bool _hasValue;
         private TValue? _oldValue;
         private TValue? _value;
 
-        public ObservableProperty(string name, TValue? value, bool disableIListAlwaysNotifying = false)
+        public ObservableProperty(string name, TValue? value)
             : base(name)
         {
             Value = value;
             _internalProperty = this;
-            _disableIListAlwaysNotifying = disableIListAlwaysNotifying;
         }
 
-        public ObservableProperty(string name, bool disableIListAlwaysNotifying) : base(name)
+        public ObservableProperty(string name) : base(name)
         {
             _internalProperty = this;
-            _disableIListAlwaysNotifying = disableIListAlwaysNotifying;
         }
 
-        public ObservableProperty(IObservableProperty property, TValue? value, bool disableIListAlwaysNotifying = false)
+        public ObservableProperty(IObservableProperty property, TValue? value)
             : base(property.Name)
         {
             Value = value;
             _internalProperty = property;
-            _disableIListAlwaysNotifying = disableIListAlwaysNotifying;
         }
 
         public TValue? Value
@@ -51,7 +47,7 @@ namespace BlazorComponent
                 //
                 //We just assume list always changed
                 //This will be changed when we finished data-collect and deep watch
-                if (!_hasValue || !EqualityComparer<TValue>.Default.Equals(_value, value) || (!_disableIListAlwaysNotifying && value is IList))
+                if (!_hasValue || !EqualityComparer<TValue>.Default.Equals(_value, value))
                 {
                     _oldValue = _value;
                     _value = value;

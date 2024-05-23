@@ -1,9 +1,0 @@
-﻿@namespace BlazorComponent
-@typeparam TChip
-@inherits ComponentPartBase<TChip>
-
-<span class="@CssProvider.GetClass("content")">
-    @RenderPart(typeof(BChipFilter<>))
-    @ComponentChildContent
-    @RenderPart(typeof(BChipClose<>))
-</span>

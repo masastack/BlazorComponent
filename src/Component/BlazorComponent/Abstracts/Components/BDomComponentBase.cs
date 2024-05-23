@@ -106,9 +106,9 @@ namespace BlazorComponent
         {
         }
 
-        protected TValue? GetValue<TValue>(TValue? @default = default, [CallerMemberName] string name = "", bool disableIListAlwaysNotifying = false)
+        protected TValue? GetValue<TValue>(TValue? @default = default, [CallerMemberName] string name = "")
         {
-            return _watcher.GetValue(@default, name, disableIListAlwaysNotifying);
+            return _watcher.GetValue(@default, name);
         }
 
         protected TValue? GetComputedValue<TValue>([CallerMemberName] string name = "")

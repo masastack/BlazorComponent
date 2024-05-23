@@ -12,7 +12,7 @@ namespace BlazorComponent
 
         protected TValue? GetValue<TValue>(TValue? @default = default, [CallerMemberName] string name = "")
         {
-            var prop = _props.GetOrAdd(name, _ => new ObservableProperty<TValue>(name, disableIListAlwaysNotifying: false));
+            var prop = _props.GetOrAdd(name, _ => new ObservableProperty<TValue>(name));
             var property = (ObservableProperty<TValue>)prop;
             if (!property.HasValue)
             {

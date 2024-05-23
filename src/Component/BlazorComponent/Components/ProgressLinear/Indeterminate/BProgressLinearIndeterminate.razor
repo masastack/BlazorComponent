@@ -1,9 +1,0 @@
-﻿@namespace BlazorComponent
-@typeparam TProgressLinear
-@inherits ComponentPartBase<TProgressLinear>
-
-<div class="@CssProvider.GetClass("indeterminate")">
-    @RenderPart(typeof(BProgressLinearLong<>))
-    @RenderPart(typeof(BProgressLinearShort<>))
-</div>
-

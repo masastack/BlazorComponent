@@ -16,9 +16,9 @@ namespace BlazorComponent
             _objectType = objectType;
         }
 
-        public TValue? GetValue<TValue>(TValue? @default = default, string name = "", bool disableIListAlwaysNotifying = false)
+        public TValue? GetValue<TValue>(TValue? @default = default, string name = "")
         {
-            var property = GetOrSetProperty(@default, name, disableIListAlwaysNotifying);
+            var property = GetOrSetProperty(@default, name);
 
             if (!property.HasValue)
             {
@@ -33,12 +33,12 @@ namespace BlazorComponent
         {
             var prop = _props.GetOrAdd(name,
                 _ => fromSetter
-                    ? new ObservableProperty<TValue>(name, @default, disableIListAlwaysNotifying)
-                    : new ObservableProperty<TValue>(name, disableIListAlwaysNotifying));
+                    ? new ObservableProperty<TValue>(name, @default)
+                    : new ObservableProperty<TValue>(name));
             if (prop.GetType() == typeof(ObservableProperty))
             {
                 //Internal watch may before `ObservableProperty<TValue>` be created 
-                prop = new ObservableProperty<TValue>(prop, @default, disableIListAlwaysNotifying);
+                prop = new ObservableProperty<TValue>(prop, @default);
                 _props[name] = prop;
             }
 
