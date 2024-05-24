@@ -3,13 +3,11 @@ using System.Runtime.CompilerServices;
 
 namespace BlazorComponent
 {
-    public abstract class BDomComponentBase : BComponentBase, IHasProviderComponent
+    public abstract class BDomComponentBase : BComponentBase
     {
         protected BDomComponentBase()
         {
             _watcher = new PropertyWatcher(GetType());
-
-            AbstractProvider = new();
         }
 
         [Inject]
@@ -37,8 +35,6 @@ namespace BlazorComponent
         protected bool HostedInWebAssembly => Js is IJSInProcessRuntime;
 
         protected ILogger Logger => LoggerFactory.CreateLogger(GetType());
-
-        public ComponentAbstractProvider AbstractProvider { get; }
 
         /// <summary>
         /// Returned ElementRef reference for DOM element.
@@ -129,46 +125,6 @@ namespace BlazorComponent
         protected void SetValue<TValue>(TValue value, [CallerMemberName] string name = "", bool disableIListAlwaysNotifying = false)
         {
             _watcher.SetValue(value, name, disableIListAlwaysNotifying);
-        }
-
-        protected RenderFragment? RenderPart(Type keyType)
-        {
-            return AbstractProvider.GetPartContent(keyType, this);
-        }
-
-        protected RenderFragment? RenderPart(Type keyType, Action<AttributesBuilder> builderAction)
-        {
-            return AbstractProvider.GetPartContent(keyType, this, builderAction);
-        }
-
-        protected RenderFragment? RenderPart(Type keyType, object? arg0, [CallerArgumentExpression("arg0")] string arg0Name = "")
-        {
-            return AbstractProvider.GetPartContent(keyType, this, builder =>
-            {
-                builder
-                    .Add(arg0Name, arg0);
-            });
-        }
-
-        protected RenderFragment? RenderPart(Type keyType, object? arg0, object? arg1, [CallerArgumentExpression("arg0")] string arg0Name = "",
-            [CallerArgumentExpression("arg1")] string arg1Name = "")
-        {
-            return AbstractProvider.GetPartContent(keyType, this, builder =>
-            {
-                builder
-                    .Add(arg0Name, arg0)
-                    .Add(arg1Name, arg1);
-            });
-        }
-
-        protected Dictionary<string, object?> GetAttributes(Type type, object? data = null)
-        {
-            return AbstractProvider.GetMetadata(type, data).Attributes;
-        }
-
-        protected Dictionary<string, object?> GetAttributes(Type type, string name, object? data = null)
-        {
-            return AbstractProvider.GetMetadata(type, name, data).Attributes;
         }
 
         public EventCallback<TValue> CreateEventCallback<TValue>(Func<TValue, Task> callback)
