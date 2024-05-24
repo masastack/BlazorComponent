@@ -23,7 +23,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped(typeof(BDragDropService));
             services.AddI18n();
 
-            services.TryAddTransient<ActivatableJsModule>();
             services.TryAddTransient<OutsideClickJSModule>();
             services.TryAddTransient<ScrollStrategyJSModule>();
             services.TryAddTransient<InputJSModule>();
