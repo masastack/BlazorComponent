@@ -17,8 +17,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddScoped<LocalStorage>();
             services.TryAddScoped<Document>();
             services.TryAddScoped(serviceProvider => new Window(serviceProvider.GetRequiredService<Document>()));
-            services.TryAdd(new ServiceDescriptor(typeof(IPopupProvider), typeof(PopupProvider),
-                masaBlazorServiceLifetime));
             services.TryAddSingleton<IComponentIdGenerator, GuidComponentIdGenerator>();
             services.AddI18n();
 
