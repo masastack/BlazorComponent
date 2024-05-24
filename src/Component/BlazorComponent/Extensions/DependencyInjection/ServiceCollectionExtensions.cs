@@ -20,12 +20,10 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAdd(new ServiceDescriptor(typeof(IPopupProvider), typeof(PopupProvider),
                 masaBlazorServiceLifetime));
             services.TryAddSingleton<IComponentIdGenerator, GuidComponentIdGenerator>();
-            services.AddScoped(typeof(BDragDropService));
             services.AddI18n();
 
             services.TryAddTransient<OutsideClickJSModule>();
             services.TryAddTransient<ScrollStrategyJSModule>();
-            services.TryAddTransient<TransitionJSModule>();
 
             return new BlazorComponentBuilder(services);
         }

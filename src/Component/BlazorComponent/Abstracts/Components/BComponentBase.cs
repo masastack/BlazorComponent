@@ -1,12 +1,9 @@
 ﻿namespace BlazorComponent
 {
-    public abstract class BComponentBase : NextTickComponentBase, IHandleEvent
+    public abstract class BComponentBase : NextTickComponentBase
     {
         [Inject]
         public virtual IJSRuntime Js { get; set; } = null!;
-
-        [CascadingParameter]
-        protected IDefaultsProvider? DefaultsProvider { get; set; }
 
         /// <summary>
         /// Disable the default value provider.
@@ -15,9 +12,6 @@
         /// </summary>
         [CascadingParameter(Name = "DisableDefaultsProvider")]
         public bool DisableDefaultsProvider { get; set; }
-
-        [CascadingParameter]
-        protected IErrorHandler? ErrorHandler { get; set; }
 
         [Parameter]
         public ForwardRef RefBack
@@ -56,18 +50,6 @@
         public override async Task SetParametersAsync(ParameterView parameters)
         {
             _dirtyParameters = parameters.ToDictionary().Keys.ToArray();
-
-            var disableDefaultsExists = parameters.TryGetValue<bool>(nameof(DisableDefaultsProvider), out var disableDefaults);
-
-            if ((!disableDefaultsExists || (disableDefaultsExists && !disableDefaults))
-                && parameters.TryGetValue<IDefaultsProvider>(nameof(DefaultsProvider), out var defaultsProvider)
-                && defaultsProvider.Defaults is not null
-                && defaultsProvider.Defaults.TryGetValue(ComponentName, out var dictionary)
-                && dictionary is not null)
-            {
-                var defaults = ParameterView.FromDictionary(dictionary);
-                defaults.SetParameterProperties(this);
-            }
 
             await base.SetParametersAsync(parameters);
         }
@@ -165,52 +147,6 @@
         protected virtual bool AfterHandleEventShouldRender()
         {
             return true;
-        }
-
-        Task IHandleEvent.HandleEventAsync(EventCallbackWorkItem callback, object? arg)
-        {
-            var task = callback.InvokeAsync(arg);
-            var shouldAwaitTask = task.Status != TaskStatus.RanToCompletion &&
-                                  task.Status != TaskStatus.Canceled;
-
-            if (AfterHandleEventShouldRender())
-            {
-                StateHasChanged();
-            }
-
-            return shouldAwaitTask
-                ? CallStateHasChangedOnAsyncCompletion(task)
-                : Task.CompletedTask;
-        }
-
-        private async Task CallStateHasChangedOnAsyncCompletion(Task task)
-        {
-            try
-            {
-                await task;
-            }
-            catch (Exception ex) // avoiding exception filters for AOT runtime support
-            {
-                // Ignore exceptions from task cancellations, but don't bother issuing a state change.
-                if (task.IsCanceled)
-                {
-                    return;
-                }
-
-                if (ErrorHandler != null)
-                {
-                    await ErrorHandler.HandleExceptionAsync(ex);
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            if (AfterHandleEventShouldRender())
-            {
-                StateHasChanged();
-            }
         }
     }
 }
