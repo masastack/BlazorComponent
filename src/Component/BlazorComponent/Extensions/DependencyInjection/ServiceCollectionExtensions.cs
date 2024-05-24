@@ -22,9 +22,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddSingleton<IComponentIdGenerator, GuidComponentIdGenerator>();
             services.AddI18n();
 
-            services.TryAddTransient<OutsideClickJSModule>();
-            services.TryAddTransient<ScrollStrategyJSModule>();
-
             return new BlazorComponentBuilder(services);
         }
     }
