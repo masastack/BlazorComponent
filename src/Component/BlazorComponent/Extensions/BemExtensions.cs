@@ -1,23 +1,21 @@
-﻿using System.Runtime.CompilerServices;
-using System.Text;
-using BemIt;
+﻿using System.Text;
 
 namespace BlazorComponent;
 
 public static class BemExtensions
 {
-    public static IBem AddTheme(this IBem bem, bool isDark, bool isIndependent = false)
+    public static ModifierBuilder AddTheme(this ModifierBuilder bem, bool isDark, bool isIndependent = false)
     {
         bem.AddClass(CssClassUtils.GetTheme(isDark, isIndependent));
         return bem;
     }
 
-    public static IBem AddBackgroundColor(this IBem bem, string? color, bool apply = true)
+    public static ModifierBuilder AddBackgroundColor(this ModifierBuilder bem, string? color, bool apply = true)
     {
         return bem.AddColor(color, false, apply);
     }
 
-    public static IBem AddElevation(this IBem bem, StringNumber? elevation)
+    public static ModifierBuilder AddElevation(this ModifierBuilder bem, StringNumber? elevation)
     {
         if (elevation != null)
         {
@@ -27,7 +25,7 @@ public static class BemExtensions
         return bem;
     }
 
-    public static IBem AddRounded(this IBem bem, StringBoolean? rounded, bool tile = false)
+    public static ModifierBuilder AddRounded(this ModifierBuilder bem, StringBoolean? rounded, bool tile = false)
     {
         if (tile)
         {
@@ -56,12 +54,12 @@ public static class BemExtensions
         return bem;
     }
 
-    public static IBem AddTextColor(this IBem bem, string? color, bool apply = true)
+    public static ModifierBuilder AddTextColor(this ModifierBuilder bem, string? color, bool apply = true)
     {
         return bem.AddColor(color, true, apply);
     }
 
-    public static IBem AddColor(this IBem bem, string? color, bool isText, bool apply = true)
+    public static ModifierBuilder AddColor(this ModifierBuilder bem, string? color, bool isText, bool apply = true)
     {
         if (apply)
         {
@@ -80,17 +78,17 @@ public static class CssClassUtils
         {
             return "m-size--x-small";
         }
-        
+
         if (small)
         {
             return "m-size--small";
         }
-        
+
         if (large)
         {
             return "m-size--large";
         }
-        
+
         if (xLarge)
         {
             return "m-size--x-large";
@@ -132,17 +130,27 @@ public static class CssClassUtils
         return stringBuilder.Length > 0 ? stringBuilder.ToString().Trim() : null;
     }
     
-    public static string? GetTheme(bool isDark, bool isIndependent = false)
+    public static string? GetTextColor(string? color)
+    {
+        return GetColor(color, true);
+    }
+    
+    public static string? GetBackgroundColor(string? color)
+    {
+        return GetColor(color, false);
+    }
+
+    public static string GetTheme(bool isDark, bool isIndependent = false)
     {
         StringBuilder stringBuilder = new();
 
-        stringBuilder.Append(isDark ? "theme--dark " : "theme--light ");
+        stringBuilder.Append(isDark ? "theme--dark" : "theme--light");
 
         if (isIndependent)
         {
-            stringBuilder.Append("theme--independent ");
+            stringBuilder.Append(" theme--independent");
         }
 
-        return stringBuilder.Length > 0 ? stringBuilder.ToString().Trim() : null;
+        return stringBuilder.ToString();
     }
 }
