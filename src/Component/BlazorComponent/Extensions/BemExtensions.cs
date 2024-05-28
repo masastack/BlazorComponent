@@ -174,6 +174,16 @@ public static class CssStyleUtils
         
         return $"color: {color}; caret-color: {color};";
     }
+    
+    public static string? GetBackgroundColor(string? color, bool condition = true)
+    {
+        if (!condition || string.IsNullOrWhiteSpace(color) || !IsCssColor(color))
+        {
+            return null;
+        }
+        
+        return $"background-color: {color}; border-color: {color};";
+    }
 
     public static string? GetHeight(StringNumber? height)
     {

@@ -17,7 +17,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddScoped<LocalStorage>();
             services.TryAddScoped<Document>();
             services.TryAddScoped(serviceProvider => new Window(serviceProvider.GetRequiredService<Document>()));
-            services.TryAddSingleton<IComponentIdGenerator, GuidComponentIdGenerator>();
             services.AddI18n();
 
             return new BlazorComponentBuilder(services);
