@@ -14,12 +14,7 @@
             StaticClass = staticClass;
             StaticStyle = staticStyle;
         }
-
-        public ComponentBemCssProvider UseBem(string block, Action<BemCssBuilder>? cssAction = null, Action<StyleBuilder>? styleAction = null)
-        {
-            return new ComponentBemCssProvider(this, block, cssAction, styleAction);
-        }
-
+        
         /// <summary>
         /// Apply css to default element
         /// </summary>
